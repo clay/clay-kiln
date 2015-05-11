@@ -1,0 +1,23 @@
+{
+  "name": "byline-editor",
+  "version": "1.0.0",
+  "description": "Editor tools for Byline",
+  "main": "client.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nymag/byline-editor.git"
+  },
+  "keywords": [
+    "byline",
+    "editor"
+  ],
+  "author": "New York Media",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nymag/byline-editor/issues"
+  },
+  "homepage": "https://github.com/nymag/byline-editor"
+}
