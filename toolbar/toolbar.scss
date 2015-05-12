@@ -1,0 +1,22 @@
+@import '../mixins';
+
+.editor-toolbar {
+  background-color: #fafafa;
+  border-bottom: 1px solid #eee;
+  box-shadow: 0 1px 10px -5px #000;
+  height: 50px;
+  left: -10px;
+  position: relative;
+  top: -10px;
+  width: calc(100% + 20px);
+}
+
+.editor-toolbar > button {
+  @include editor-button();
+  float: left;
+  margin: 14px 16px 0 0;
+}
+
+.editor-toolbar > button:first-of-type {
+  margin-left: 16px;
+}

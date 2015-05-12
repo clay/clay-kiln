@@ -2,7 +2,8 @@
   "name": "byline-editor",
   "version": "1.0.0",
   "description": "Editor tools for Byline",
-  "main": "client.js",
+  "browser": "client.js",
+  "template": "toolbar/template.nunjucks",
   "scripts": {
     "test": "mocha"
   },
@@ -19,5 +20,10 @@
   "bugs": {
     "url": "https://github.com/nymag/byline-editor/issues"
   },
-  "homepage": "https://github.com/nymag/byline-editor"
+  "homepage": "https://github.com/nymag/byline-editor",
+  "dependencies": {
+    "lodash": "^3.8.0",
+    "lodash-deep": "^1.6.0",
+    "riot": "^2.0.15"
+  }
 }

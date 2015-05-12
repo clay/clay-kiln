@@ -1,0 +1,87 @@
+'use strict';
+
+module.exports = {
+  /**
+   * This function can be minimized smaller than document.querySelector
+   * @param {Element} [el]
+   * @param {string} selector
+   * @returns {Element}
+   * @example find('ul') //finds globally
+   * @example find(el, '.list') //finds within
+   */
+  find(el, selector) {
+    if (!selector) {
+      selector = el;
+      el = document;
+    }
+    return el.querySelector(selector);
+  },
+
+  /**
+   * This function can be minimized smaller than document.querySelector
+   * @param {Element} [el]
+   * @param {string} selector
+   * @returns {NodeList}
+   * @example findAll('ul') //finds globally
+   * @example findAll(el, '.list') //finds within
+   */
+  findAll(el, selector) {
+    if (!selector) {
+      selector = el;
+      el = document;
+    }
+    return el.querySelectorAll(selector);
+  },
+
+  /**
+   * NOTE: nodeType of 1 means Element
+   */
+  getFirstChildElement(parent) {
+    var cursor = parent.firstChild;
+    while (cursor && cursor.nodeType !== 1) {
+      cursor = cursor.nextSibling;
+    }
+    return cursor;
+  },
+
+  prependChild(parent, child) {
+    if (parent.firstChild) {
+      parent.insertBefore(child, parent.firstChild);
+    } else {
+      parent.appendChild(child);
+    }
+  },
+
+  /**
+   * Fast way to clear all children
+   * @see http://jsperf.com/innerhtml-vs-removechild/294
+   * @param {Element} el
+   */
+  clearChildren(el) {
+    while (el.firstChild) {
+      el.removeChild(el.firstChild);
+    }
+  },
+
+  /**
+   * Remove a single element from its parent
+   * @param {Element} el
+   */
+  removeElement(el) {
+    el.parentNode.removeChild(el);
+  },
+
+  preventDefault(e) {
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
+  },
+
+  replaceElement(el, replacementEl) {
+    var parent = el.parentNode;
+
+    if (parent) {
+      parent.replaceChild(replacementEl, el);
+    }
+  }
+};
