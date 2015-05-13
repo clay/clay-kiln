@@ -4,3 +4,15 @@
   <button class="new">New Page</button>
   <button class="publish">Publish</button>
 </section>
+
+{# editor templates #}
+{# note: right now we're globbing the templates in server.js #}
+{% for template in templates %}
+  {% include template %}
+{% endfor %}
+
+{# compiled styles #}
+<link rel="stylesheet" href="/css/byline-editor.css">
+
+{# compiled scripts #}
+<script src="/js/byline-editor.js"></script>

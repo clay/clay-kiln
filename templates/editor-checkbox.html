@@ -1,0 +1,9 @@
+<script type="text/template" class="editor-checkbox">
+  <label><span class="input-label"><%- label %></span> 
+    <% if (obj._tooltip) { %><p class="label-tooltip"><%- obj._tooltip %></p> <% } %>
+    <input name="<%- name %>" type="checkbox" <%
+      if (obj._required === true) { %> required <% }
+      if (value === 'true') { %> checked <% }
+      %> />
+  </label>
+</script>

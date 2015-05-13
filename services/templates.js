@@ -1,6 +1,8 @@
 'use strict';
 var _template = require('lodash/string/template'),
   dom = require('./dom'),
+
+  // cache templates
   templates = {};
 
 module.exports.apply = function (name, data) {

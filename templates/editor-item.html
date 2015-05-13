@@ -1,0 +1,12 @@
+<script type="text/template" class="editor-item">
+  <li class="item" data-ref="<%- _ref %>" draggable="true">
+    <span class="component-name"><%- Editor.getComponentNameFromReference(_ref) %></span>
+    <span class="component-id"><%- Editor.getInstanceIdFromReference(_ref) %></span>
+  </li>
+</script>
+
+<script type="text/template" class="editor-list">
+  <ul class="editor-list" data-component-list-name="<%- name %>">
+    <li class="item addition">add</li>
+  </ul>
+</script>

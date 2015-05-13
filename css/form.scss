@@ -1,0 +1,231 @@
+@import '../mixins';
+
+.editor {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  margin: 0;
+  max-height: 100%;
+  min-width: 200px;
+  padding: 0;
+  position: relative;
+}
+
+.editor > header {
+  bottom: calc(100% + 30px);
+  color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  left: 0;
+  position: absolute;
+  text-align: left;
+}
+
+.editor > form {
+  @include clearfix();
+
+  flex: 0 0 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.editor .editor-section {
+  margin-left: -20px;
+  padding: 0 20px;
+  width: calc(100% + 40px);
+}
+
+.editor .editor-section + .editor-section {
+  border-top: 1px dashed #eee;
+  margin-top: 5px;
+}
+
+.editor .editor-section:last-of-type {
+  margin-bottom: 20px;
+}
+
+.editor .editor-section > h2 {
+  color: #51a2bf;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.editor .button-container {
+  align-content: space-around;
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-end;
+}
+
+.editor .button-container button {
+  @include editor-button();
+}
+
+/* Input container contains inputs, textareas, or whatever else, arranged in columns from top to bottom.  Each item
+ is in its own column. */
+.editor .input-container {
+  align-content: stretch;
+  align-items: stretch;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+}
+
+/* labels are containers that refer to inputs, textareas, or whatever else */
+.editor .input-container label {
+  @include clearfix();
+
+  flex: 1 1;
+  font-family: Arial, sans-serif;
+  min-width: 30rem;
+  position: relative;
+}
+
+/* contenteditable */
+.editor .input-container [contenteditable] {
+  min-height: 20px;
+  min-width: 100%;
+}
+
+.editor .input-label {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-right: 10px;
+}
+
+.editor .label-min,
+.editor .label-max,
+.editor .label-tooltip {
+  color: #888;
+  font-size: 1.4rem;
+}
+
+.editor .label-tooltip {
+  margin: 5px 0 0;
+}
+
+.editor input[type=text],
+.editor input[type=url] {
+  border: 1px solid #999;
+  font-size: 1.4rem;
+  margin: 10px 0 20px;
+  padding: 4px 6px;
+  width: 100%;
+}
+
+.editor input[type=checkbox],
+.editor input[type=radio] {
+  float: right;
+  margin-bottom: 20px;
+}
+
+.editor input:required {
+  border: 1px solid #999;
+}
+
+.editor input:optional {
+  border: 1px dotted rgba(216, 242, 242, 1.0);
+}
+
+.editor input:valid,
+.editor input:in-range {
+  border-color: rgba(63, 191, 63, 1.0);
+}
+
+.editor input:invalid,
+.editor input:out-of-range {
+  background: rgba(242, 216, 216, 1.0);
+  border-color: rgba(191, 63, 63, 1.0);
+}
+
+/* inline editor */
+
+.editor-inline,
+.editor-inline form {
+  min-height: 20px;
+  position: relative;
+  width: 100%;
+}
+
+.editor-inline form {
+  @include clearfix();
+}
+
+.editor-inline .input-container,
+.editor-inline .button-container {
+  float: left;
+  min-height: 20px;
+}
+
+.editor-inline .input-container {
+  margin-bottom: 4px;
+  width: 80%;
+}
+
+.editor-inline .input-container input {
+  height: 20px;
+  max-width: 100%;
+  padding: 2px;
+}
+
+.editor-inline input[type=text],
+.editor-inline input[type=url] {
+  border: 1px solid #999;
+  margin-left: 1rem;
+  max-width: 20rem;
+  width: 80%;
+}
+
+.editor-inline input:required {
+  border: 1px solid #999;
+}
+
+.editor-inline input:optional {
+  border: 1px dotted rgba(216, 242, 242, 1.0);
+}
+
+.editor-inline input:valid,
+.editor-inline input:in-range {
+  border-color: rgba(63, 191, 63, 1.0);
+}
+
+.editor-inline input:invalid,
+.editor-inline input:out-of-range {
+  background: rgba(242, 216, 216, 1.0);
+  border-color: rgba(191, 63, 63, 1.0);
+}
+
+/* General horizontal-list editor. */
+ol.horizontal-list {
+  align-content: flex-start;
+  align-items: flex-start;
+  background: #fff;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  width: 80%;
+}
+ol.horizontal-list li {
+  list-style-type: none;
+  width: 10rem;
+}
+ol.horizontal-list li:before {
+  display: none;
+}
+
+/* Specific to tags editor. */
+[data-component="tags"] .horizontal-list .input-label {
+  display: none;
+}
+[data-component="tags"] .horizontal-list [name="isRubric"] {
+  position: relative;
+  top: -3.5rem;
+}

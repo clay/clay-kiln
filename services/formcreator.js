@@ -3,6 +3,7 @@ var _ = require('lodash'),
   dom = require('./dom'),
   references = require('./references'),
   templates = require('./templates'),
+  
   // Deals with the creation and reading of the values of editor forms.
   typeProperty = references.typeProperty,
   displayProperty = references.displayProperty,
