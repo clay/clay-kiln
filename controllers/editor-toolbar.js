@@ -63,7 +63,6 @@ module.exports = function () {
           modal = templates.apply('editor-modal', { html: form.outerHTML });
         
         document.body.appendChild(modal);
-        dom.find('html').classList.add('noscroll');
 
         // instantiate modal and form controllers
         ds.controller('editor-modal', require('./editor-modal'));

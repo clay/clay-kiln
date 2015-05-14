@@ -3,8 +3,16 @@ module.exports = function () {
   var dom = require('../services/dom');
   
   function constructor(el) {
+    var modal = dom.find(el, '.editor-modal');
+    // set the height so we don't scroll past the modal
+    console.log(getComputedStyle(modal).height)
+    // dom.find('html')
+
+    // set noscroll on the html when a modal opens
+    dom.find('html').classList.add('noscroll');
+
     this.overlay = el;
-    this.modal = dom.find(el, '.editor-modal');
+    this.modal = modal;
   }
 
   constructor.prototype = {
