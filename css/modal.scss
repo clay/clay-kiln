@@ -1,5 +1,6 @@
 /* modal */
 @import '../mixins';
+@import '../node_modules/include-media/dist/_include-media';
 
 .editor-modal-overlay {
   background-color: rgba(0,0,0,.8);
@@ -21,7 +22,15 @@
   overflow: visible;
   padding: 20px;
   position: relative;
-  width: 80%;
+  width: 100%;
+
+  @include media(">=600px") {
+    width: 90%;
+  }
+
+  @include media(">=1024px") {
+    width: 80%;
+  }
 }
 
 /* don't scroll the page when modal is open */

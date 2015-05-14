@@ -28,6 +28,7 @@
     "dollar-slice": "^2.1.0",
     "glob": "^5.0.6",
     "lodash": "^3.8.0",
-    "lodash-deep": "^1.6.0"
+    "lodash-deep": "^1.6.0",
+    "include-media": "git@github.com:eduardoboucas/include-media.git"
   }
 }
