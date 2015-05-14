@@ -1,18 +1,20 @@
-<section data-component="editor-toolbar" class="editor-toolbar" ref="{{_ref}}">
-  <button class="close">Close</button>
-  <button class="meta">Edit Story Settings</button>
-  <button class="new">New Page</button>
-  <button class="publish">Publish</button>
-</section>
+{%- if state.locals.isEditMode -%}
+  <section data-component="editor-toolbar" class="editor-toolbar" ref="{{_ref}}">
+    <button class="close">Close</button>
+    <button class="meta">Edit Story Settings</button>
+    <button class="new">New Page</button>
+    <button class="publish">Publish</button>
+  </section>
 
-{# editor templates #}
-{# note: right now we're globbing the templates in server.js #}
-{% for template in templates %}
-  {% include template %}
-{% endfor %}
+  {# editor templates #}
+  {# note: right now we're globbing the templates in server.js #}
+  {% for template in templates %}
+    {{ template | safe }}
+  {% endfor %}
 
-{# compiled styles #}
-<link rel="stylesheet" href="/css/byline-editor.css">
+  {# compiled styles #}
+  <link rel="stylesheet" href="/css/byline-editor.css">
 
-{# compiled scripts #}
-<script src="/js/byline-editor.js"></script>
+  {# compiled scripts #}
+  <script src="/js/byline-editor.js"></script>
+{% endif %}

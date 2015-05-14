@@ -1,10 +1,7 @@
 'use strict';
 var ds = require('dollar-slice');
 
-// init controllers
-ds.get(__dirname + '/controllers/editor-toolbar', document.querySelector('[data-component="editor-toolbar"]'));
-
-window.setTimeout(function () {
+document.addEventListener('DOMContentLoaded', function () {
   var components = document.querySelectorAll('[data-component]'),
     i = 0,
     l = components.length,
@@ -17,7 +14,12 @@ window.setTimeout(function () {
 
     // todo: order this by leaf components? make sure not to add event handlers twice
     if (name !== 'editor-toolbar' && name !== 'nym2015-layout') {
-      DS.get(__dirname + '/controllers/component-edit', component);
+      ds.controller('component-edit', require('./controllers/component-edit'));
+      ds.get('component-edit', component);
     }
   }
-}, 0);
+
+  // init controllers
+  ds.controller('editor-toolbar', require('./controllers/editor-toolbar'));
+  ds.get('editor-toolbar', document.querySelector('[data-component="editor-toolbar"]'));
+});

@@ -1,12 +1,11 @@
 'use strict';
 // controller that gets instantiated for all editable components
 module.exports = function () {
-  var svc = '../services/',
-    dom = require(svc + 'dom'),
-    references = require(svc + 'references'),
-    formcreator = require(svc + 'formcreator'),
-    templates = require(svc + 'templates'),
-    edit = require(svc + 'edit'),
+  var dom = require('../services/dom'),
+    references = require('../services/references'),
+    formcreator = require('../services/formcreator'),
+    templates = require('../services/templates'),
+    edit = require('../services/edit'),
     ds = require('dollar-slice'),
     _ = require('lodash');
 
@@ -33,16 +32,19 @@ module.exports = function () {
           dom.find('html').classList.add('noscroll');
 
           // instantiate modal controller
-          ds.get(__dirname + '/editor-modal', modal);
+          ds.controller('editor-modal', require('./editor-modal'));
+          ds.get('editor-modal', modal);
           // instantiate form controller
-          ds.get(__dirname + '/editor-form', dom.find(modal, 'form'), ref, name);
+          ds.controller('editor-form', require('./editor-form'));
+          ds.get('editor-form', dom.find(modal, 'form'), ref, name);
         } else if (display === 'inline') {
           // create form
           form = formcreator.createInlineForm(name, { schema: schema, data: data });
           dom.clearChildren(el);
           el.appendChild(form);
           // instantiate form controller
-          ds.get(__dirname + '/editor-form', form, ref, name);
+          ds.controller('editor-form', require('./editor-form'));
+          ds.get('editor-form', form, ref, name);
         }
       });
     }

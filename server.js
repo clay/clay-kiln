@@ -1,15 +1,21 @@
 'use strict';
 var Promise = require('bluebird'),
-  glob = require('glob');
+  glob = require('glob'),
+  fs = require('fs');
 
 module.exports = function () {
-  var d = Promise.defer();
+  var d = Promise.defer(),
+    templates;
 
-  glob('./templates/*.html', function (err, files) {
+  glob(__dirname + '/templates/*', function (err, files) {
+    templates = files.map(function (file) {
+      return fs.readFileSync(file).toString();
+    });
+
     if (err) {
       d.reject(err);
     } else {
-      d.resolve({ templates: files });
+      d.resolve({ templates: templates });
     }
   });
 

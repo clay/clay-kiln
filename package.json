@@ -4,7 +4,7 @@
   "description": "Editor tools for Byline",
   "browser": "client.js",
   "main": "server.js",
-  "style": "css/styles.scss",
+  "style": "css/styles.*",
   "template": "toolbar/template.nunjucks",
   "scripts": {
     "test": "mocha"

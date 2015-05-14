@@ -1,12 +1,11 @@
 'use strict';
 module.exports = function () {
-  var svc = '../services/',
-    dom = require(svc + 'dom'),
-    db = require(svc + 'db'),
-    references = require(svc + 'references'),
-    formcreator = require(svc + 'formcreator'),
-    templates = require(svc + 'templates'),
-    edit = require(svc + 'edit'),
+  var dom = require('../services/dom'),
+    db = require('../services/db'),
+    references = require('../services/references'),
+    formcreator = require('../services/formcreator'),
+    templates = require('../services/templates'),
+    edit = require('../services/edit'),
     ds = require('dollar-slice');
 
   function constructor(el) {
@@ -62,13 +61,15 @@ module.exports = function () {
       edit.getSchemaAndData(ref).then(function (res) {
         var form = formcreator.createForm(name, {schema: res.schema, data: res.data, display: 'meta'}),
           modal = templates.apply('editor-modal', { html: form.outerHTML });
-
+        
         document.body.appendChild(modal);
         dom.find('html').classList.add('noscroll');
 
         // instantiate modal and form controllers
-        ds.get(__dirname + '/editor-modal', modal);
-        ds.get(__dirname + '/editor-form', dom.getFirstChildElement(dom.find(modal, '.editor-modal')), ref);
+        ds.controller('editor-modal', require('./editor-modal'));
+        ds.controller('editor-form', require('./editor-form'));
+        ds.get('editor-modal', modal);
+        ds.get('editor-form', dom.getFirstChildElement(dom.find(modal, '.editor-modal')), ref);
       });
     },
 

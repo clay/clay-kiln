@@ -1,5 +1,5 @@
 'use strict';
-var _template = require('lodash/string/template'),
+var _ = require('lodash'),
   dom = require('./dom'),
 
   // cache templates
@@ -14,7 +14,7 @@ module.exports.apply = function (name, data) {
     if (!template) {
       throw new Error('Template not found: ' + name);
     }
-    templates[name] = _template(dom.find('.' + name + '[type="text/template"]').innerHTML);
+    templates[name] = _.template(dom.find('.' + name + '[type="text/template"]').innerHTML);
   }
 
   el.innerHTML = templates[name](data);
