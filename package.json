@@ -9,7 +9,7 @@
     "behaviors/*.scss",
     "toolbar.scss"
   ],
-  "template": "toolbar/template.nunjucks",
+  "template": "template.nunjucks",
   "scripts": {
     "test": "mocha"
   },
