@@ -1,4 +1,4 @@
-@import '../styleguide/mixins';
+@import 'styleguide/mixins';
 
 .editor-toolbar {
   background-color: #fafafa;
@@ -19,4 +19,9 @@
 
 .editor-toolbar > button:first-of-type {
   margin-left: 16px;
+}
+
+// hide all templates
+script[type="text/template"] {
+  display: none !important;
 }

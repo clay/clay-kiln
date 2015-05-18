@@ -1,9 +1,0 @@
-@import 'form';
-@import 'mask';
-@import 'modal';
-@import '../toolbar/toolbar';
-
-// hide all templates
-script[type="text/template"] {
-  display: none !important;
-}
