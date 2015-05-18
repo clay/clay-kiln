@@ -6,12 +6,6 @@
     <button class="publish">Publish</button>
   </section>
 
-  {# editor templates #}
-  {# note: right now we're globbing the templates in server.js #}
-  {% for template in templates %}
-    {{ template | safe }}
-  {% endfor %}
-
   {# compiled styles #}
   <link rel="stylesheet" href="/css/byline-editor.css">
 
