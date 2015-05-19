@@ -1,6 +1,8 @@
 'use strict';
 
 module.exports = {
+  componentAttribute: 'data-component',
+  nameAttribute: 'name',
   referenceAttribute: 'data-ref',
   referenceProperty: '_ref',
   fieldProperty: '_has', // used to determine if a node is a field

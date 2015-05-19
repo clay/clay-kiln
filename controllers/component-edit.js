@@ -5,10 +5,7 @@ module.exports = function () {
     references = require('../services/references'),
     formcreator = require('../services/formcreator'),
     edit = require('../services/edit'),
-    _ = require('lodash'),
-    h = require('hyperscript');
-
-  _.mixin(require('lodash-deep'));
+    placeholder = require('../services/placeholder');
 
   function open(ref, name, el) {
     var possChildEl = dom.getFirstChildElement(el);
@@ -38,9 +35,9 @@ module.exports = function () {
   function constructor(el) {
     var ref = el.getAttribute(references.referenceAttribute),
       // Normally name is only on children of components. One exception is the tags component.
-      componentHasName = el.getAttribute('data-component') && el.getAttribute('name'),
+      componentHasName = el.getAttribute(references.componentAttribute) && el.getAttribute(references.nameAttribute),
       walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, { acceptNode: function (node) {
-        if (!node.getAttribute('data-component')) {
+        if (!node.getAttribute(references.componentAttribute)) {
           return NodeFilter.FILTER_ACCEPT;
         } else {
           return NodeFilter.FILTER_REJECT;
@@ -57,11 +54,11 @@ module.exports = function () {
 
     // add click events to children with [name], but NOT children inside child components
     while ((node = walker.nextNode())) {
-      if (name = node.getAttribute('name')) { // jshint ignore:line
+      if (name = node.getAttribute(references.nameAttribute)) { // jshint ignore:line
         // add click event that generates a form
         node.addEventListener('click', open.bind(null, ref, name, node));
         // add mask
-        addMask(ref, node);
+        placeholder(ref, node);
       }
     }
   }
