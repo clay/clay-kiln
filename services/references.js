@@ -21,12 +21,12 @@ module.exports = {
    * @example /components/text/instances/0  returns text
    * @example /components/image.html  returns image
    */
-  getComponentNameFromReference(ref) {
+  getComponentNameFromReference: function (ref) {
     var result = /components\/(.+?)[\/\.]/.exec(ref) || /components\/(.*)/.exec(ref);
     return result && result[1];
   },
 
-  getInstanceIdFromReference(ref) {
+  getInstanceIdFromReference: function (ref) {
     var result = /\/components\/.+?\/instances\/(.+)/.exec(ref);
     return result && result[1];
   }

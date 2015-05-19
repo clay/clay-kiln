@@ -32,5 +32,19 @@
     "include-media": "git@github.com:eduardoboucas/include-media.git",
     "lodash": "^3.8.0",
     "lodash-deep": "^1.6.0"
+  },
+  "devDependencies": {
+    "chai": "^2.3.0",
+    "karma": "^0.12.32",
+    "karma-browserify": "^4.1.2",
+    "karma-browserstack-launcher": "^0.1.2",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^0.1.12",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-mocha": "^0.1.10",
+    "karma-safari-launcher": "^0.1.1",
+    "karma-sinon": "^1.0.4",
+    "mocha": "^2.2.5",
+    "sinon": "^1.14.1"
   }
 }
