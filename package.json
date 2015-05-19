@@ -28,8 +28,9 @@
   "homepage": "https://github.com/nymag/byline-editor",
   "dependencies": {
     "dollar-slice": "^2.1.0",
+    "hyperscript": "^1.4.6",
+    "include-media": "git@github.com:eduardoboucas/include-media.git",
     "lodash": "^3.8.0",
-    "lodash-deep": "^1.6.0",
-    "include-media": "git@github.com:eduardoboucas/include-media.git"
+    "lodash-deep": "^1.6.0"
   }
 }

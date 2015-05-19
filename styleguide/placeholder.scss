@@ -1,4 +1,4 @@
-.editor-mask {
+.editor-placeholder {
   align-items: center;
   border: 2px dashed #eee;
   display: flex;
@@ -9,7 +9,7 @@
   width: 100%;
 }
 
-.editor-mask .mask-label {
+.editor-placeholder .placeholder-label {
   color: #888;
   flex: 1 1;
   font-family: Arial,sans-serif;

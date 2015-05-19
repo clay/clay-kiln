@@ -1,11 +1,13 @@
 'use strict';
+
 module.exports = {
   referenceAttribute: 'data-ref',
-  componentListAttribute: 'data-component-list-name',
-  componentMarkdownAttribute: 'data-component-markdown-name',
   referenceProperty: '_ref',
-  typeProperty: '_type',
+  fieldProperty: '_has', // used to determine if a node is a field
+  behaviorKey: 'fn', // used to look up behavior function
   displayProperty: '_display',
+  placeholderProperty: '_placeholder',
+  labelProperty: '_label',
 
   // utility methods
 
