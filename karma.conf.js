@@ -11,11 +11,12 @@ module.exports = function (karma) {
     autoWatch: false,
     colors: true,
     singleRun: true,
-    // transports: ['websocket'],
+    transports: ['websocket'],
     // browerstack config + launchers
     browserStack: {
       username: process.env.BROWSERSTACK_USERNAME,
-      accessKey: process.env.BROWSERSTACK_ACCESS_KEY
+      accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
+      retryLimit: 1 // yolo
     },
     customLaunchers: {
       // browserstack loves snake_case

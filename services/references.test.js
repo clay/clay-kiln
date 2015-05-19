@@ -57,8 +57,12 @@ describe('references service', function () {
       expect(references.getInstanceIdFromReference('/components/base/instances/0')).to.equal('0');
     });
 
-    it('gets instance id from html ref', function () {
-      expect(references.getInstanceIdFromReference('/components/base/instances/0.html')).to.equal('0');
+    it('CANNOT get instance id from default ref', function () {
+      expect(references.getInstanceIdFromReference('/components/base')).to.not.equal('0');
+    });
+
+    it('CANNOT get instance id from html ref', function () {
+      expect(references.getInstanceIdFromReference('/components/base/instances/0.html')).to.not.equal('0');
     });
   });
 });
