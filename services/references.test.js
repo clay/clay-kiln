@@ -37,4 +37,28 @@ describe('references service', function () {
   it('has label property', function () {
     expect(references.labelProperty).to.equal('_label');
   });
+
+  describe('getComponentNameFromReference()', function () {
+    it('gets name from default ref', function () {
+      expect(references.getComponentNameFromReference('/components/base')).to.equal('base');
+    });
+
+    it('gets name from instance ref', function() {
+      expect(references.getComponentNameFromReference('/components/base/instances/0')).to.equal('base');
+    });
+
+    it('gets name from html ref', function () {
+      expect(references.getComponentNameFromReference('/components/base.html')).to.equal('base');
+    });
+  });
+
+  describe('getInstanceIdFromReference()', function () {
+    it('gets instance id from ref', function() {
+      expect(references.getInstanceIdFromReference('/components/base/instances/0')).to.equal('0');
+    });
+
+    it('gets instance id from html ref', function () {
+      expect(references.getInstanceIdFromReference('/components/base/instances/0.html')).to.equal('0');
+    });
+  });
 });
