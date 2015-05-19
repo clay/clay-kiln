@@ -16,7 +16,7 @@ module.exports = function (karma) {
     browserStack: {
       username: process.env.BROWSERSTACK_USERNAME,
       accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
-      retryLimit: 1 // yolo
+      retryLimit: 0 // yolo
     },
     customLaunchers: {
       // browserstack loves snake_case
@@ -41,19 +41,19 @@ module.exports = function (karma) {
         browser_version: '11.0',
         os: 'Windows',
         os_version: '8.1'
-      },
-      iPhone6: {
-        base: 'BrowserStack',
-        device: 'iPhone 6',
-        os: 'ios',
-        os_version: '8.0'
       }
+      // iPhone6: {
+      //   base: 'BrowserStack',
+      //   device: 'iPhone 6',
+      //   os: 'ios',
+      //   os_version: '8.0'
+      // }
       // jshint ignore:end
     },
     reporters: ['dots'],
     files: files,
     frameworks: ['mocha', 'chai', 'sinon', 'browserify'],
-    browsers: ['chromeMac', 'firefoxMac', 'ie11', 'iPhone6'],
+    browsers: ['chromeMac', 'firefoxMac', 'ie11'],
     preprocessors: {
       'controllers/**': ['browserify'],
       'behaviors/**': ['browserify'],
