@@ -5,7 +5,7 @@ var _ = require('lodash'),
 function getBehavior(behavior) {
   var key;
 
-  if (_.isString(behavior)) {
+  if (_.isString(behavior) && behavior.length) {
     // _has: text
     return { fn: behavior, args: {} };
   } else if (_.isPlainObject(behavior) && _.isString(behavior[references.behaviorKey])) {

@@ -55,8 +55,9 @@ describe('behaviors service', function () {
       }]);
     });
 
-    it('throws an error if you pass in anything other than a string, object, or array (of strings or objects)', function () {
+    it('throws an error if you pass in anything that it can\'t parse', function () {
       expect(function () { b.getExpandedBehaviors(); }).to.throw(Error);
+      expect(function () { b.getExpandedBehaviors(''); }).to.throw(Error);
       expect(function () { b.getExpandedBehaviors(1); }).to.throw(Error);
       expect(function () { b.getExpandedBehaviors([]); }).to.throw(Error);
       expect(function () { b.getExpandedBehaviors({}); }).to.throw(Error);
