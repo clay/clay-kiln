@@ -2,25 +2,38 @@
 var _ = require('lodash'),
   references = require('./references');
 
-function getExpandedBehaviors(behaviors) {
-  if (_.isString(behaviors)) {
+function getBehavior(behavior) {
+  var key;
+
+  if (_.isString(behavior)) {
     // _has: text
-    return [{ fn: behaviors, args: {} }];
-  } else if (_.isObject(behaviors) && _.isString(behaviors[references.behaviorKey])) {
+    return { fn: behavior, args: {} };
+  } else if (_.isPlainObject(behavior) && _.isString(behavior[references.behaviorKey])) {
     /* _has:
      *   fn: text
      *   required: true
      */
-    delete behaviors[references.behaviorKey];
-    return [{ fn: behaviors[references.behaviorKey], args: behaviors }];
-  } else if (_.isArray(behaviors)) {
+    key = behavior[references.behaviorKey]; // hold onto this reference
+    delete behavior[references.behaviorKey]; // delete it from the object (since the object becomes the args)
+    return { fn: key, args: behavior };
+  } else {
+    throw new Error('Cannot parse behavior: ' + behavior);
+  }
+}
+
+function getExpandedBehaviors(behaviors) {
+  if (_.isString(behaviors) || _.isPlainObject(behaviors)) {
+    return [getBehavior(behaviors)]; // wrap it in an array
+  } else if (_.isArray(behaviors) && behaviors.length) {
     /* _has:
      *   - text
      *   -
      *     fn: other-behavior
      *     required: true
      */
-    return behaviors.map(getExpandedBehaviors); // recursive!
+    return behaviors.map(getBehavior);
+  } else {
+    throw new Error('Cannot parse behaviors: ' + behaviors);
   }
 }
 
