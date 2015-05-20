@@ -2,7 +2,8 @@
 var _ = require('lodash'),
   h = require('hyperscript'),
   references = require('./references'),
-  edit = require('./edit');
+  edit = require('./edit'),
+  getExpandedBehaviors = require('./behaviors').getExpandedBehaviors;
 
 /**
  * get placeholder text
@@ -15,7 +16,7 @@ var _ = require('lodash'),
  * @return {string}          
  */
 function getPlaceholderText(name, partials) {
-  var fieldSchema = partials.fieldSchema,
+  var fieldSchema = partials.schema,
     possiblePlaceholderText = fieldSchema[references.placeholderProperty],
     possibleLabelText = fieldSchema[references.labelProperty];
 
@@ -34,13 +35,20 @@ function getPlaceholderText(name, partials) {
  * @return {string}
  */
 function getPlaceholderHeight(behaviors) {
-  return _.reduce(behaviors, function (behavior) {
-    switch (behavior[references.behaviorKey]) {
-      case 'vertical-list': return '600px';
-      case 'component': return '300px';
-      default: return 'auto';
+  // expand the behaviors into an array of objects
+  var expanded = getExpandedBehaviors(behaviors);
+
+  return _.reduce(expanded, function (height, behavior) {
+    if (height === 'auto') {
+      switch (behavior[references.behaviorKey]) {
+        case 'vertical-list': return '600px';
+        case 'component': return '300px';
+        default: return 'auto';
+      }
+    } else {
+      return height;
     }
-  });
+  }, 'auto');
 }
 
 function isFieldEmpty(data) {
@@ -56,6 +64,7 @@ function isFieldEmpty(data) {
 function addPlaceholderDom(node, obj) {
   var placeholder = h('.editor-placeholder', { style: { height: obj.height }}, h('span.placeholder-label', obj.text));
   node.appendChild(placeholder);
+  return node;
 }
 
 /**
@@ -68,15 +77,17 @@ function addPlaceholderDom(node, obj) {
 function addPlaceholder(ref, node) {
   var name = node.getAttribute('name');
 
-  edit.getSchemaAndData(ref, name).then(function (partials) {
-    var hasMask = partials.schema[references.placeholderProperty],
+  return edit.getSchemaAndData(ref, name).then(function (partials) {
+    var hasPlaceholder = partials.schema[references.placeholderProperty],
       isField = partials.schema[references.fieldProperty];
 
-    if (hasMask && isField && isFieldEmpty(partials.data)) {
-      addPlaceholderDom(node, {
+    if (hasPlaceholder && isField && isFieldEmpty(partials.data)) {
+      return addPlaceholderDom(node, {
         text: getPlaceholderText(name, partials),
         height: getPlaceholderHeight(partials.schema[references.fieldProperty])
       });
+    } else {
+      return node;
     }
   });
 }
@@ -87,4 +98,3 @@ module.exports = addPlaceholder;
 module.exports.getPlaceholderText = getPlaceholderText;
 module.exports.getPlaceholderHeight = getPlaceholderHeight;
 module.exports.isFieldEmpty = isFieldEmpty;
-module.exports.addPlaceholderDom = addPlaceholderDom;
