@@ -1,24 +1,24 @@
 'use strict';
 var _ = require('lodash'),
   references = require('./references');
-  
+
 /**
  * determines if a field (or group of fields) should display
  * note: if this returns false, createField() won't traverse the schema past this point
  * @param  {string} [display]
- * @param  {{}} [value]
+ * @param  {{}} [schema]
  * @return {bool}
  */
-function shouldDisplay(display, value) {
+function shouldDisplay(display, schema) {
   if (_.isObject(display)) {
-    value = display;
+    schema = display;
     display = 'modal';
   } else {
-    value = value || {};
+    schema = schema || {};
     display = display || 'modal';
   }
 
-  var displayVal = value[references.displayProperty];
+  var displayVal = schema[references.displayProperty];
 
   if (display === 'meta' && displayVal === 'meta') {
     // meta will display if it's meta

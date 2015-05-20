@@ -5,35 +5,49 @@ var h = require('hyperscript'),
   references = require('./references'),
   label = require('./label'),
   shouldDisplay = require('./display'),
-  callBehaviors = require('./behaviors');
+  behaviors = require('./behaviors');
 
 // field creation
 
 /**
  * create fields recursively
- * @param  {string} key     field
- * @param  {{}} value   schema at this level
+ * @param  {string} fieldName
+ * @param  {{schema: {}, data: {}}} partials
  * @param  {string} [display] flag for entire form
  * @return {NodeElement | undefined}
  */
-function createField(key, value, display) {
-  var innerEl;
+function createField(fieldName, partials, display) {
+  var schema = partials.schema || {},
+    data = partials.data || {},
+    innerEl, finalEl;
 
-  if (value[references.fieldProperty] && shouldDisplay(display, value)) {
+  if (schema[references.fieldProperty] && shouldDisplay(display, schema)) {
     // call behaviors
-    return callBehaviors(key, value);
-  } else if (shouldDisplay(display, value)) {
+    return behaviors.run(fieldName, partials);
+  } else if (shouldDisplay(display, schema)) {
     // iterate through this level of the schema, creating more fields
     innerEl = document.createDocumentFragment();
 
-    _.forOwn(value, function (subvalue, subkey) {
-      var subfield = createField(subkey, subvalue, display);
+    _.forOwn(schema, function (subSchema, subFieldName) {
+      if (!_.contains(subFieldName, '_')) { // don't create fields for metadata
+        var subData = data[subFieldName],
+          subfield = createField(subFieldName, {schema: subSchema, data: subData}, display);
 
-      if (subfield) {
-        innerEl.appendChild(subfield); // recursive!
+        if (subfield && subfield.nodeType === 1) {
+          innerEl.appendChild(subfield); // node element
+        } else if (subfield && subfield.nodeType === 11) {
+          innerEl.appendChild(subfield.cloneNode(true)); // document fragment
+        }
       }
     });
-    return innerEl;
+
+    // once we're done iterating, put those in a section
+    finalEl = h('section.editor-section',
+      h('h2.editor-section-head', label(fieldName)),
+      h('.editor-section-body', innerEl)
+    );
+
+    return finalEl;
   }
 }
 
@@ -88,11 +102,14 @@ function createForm(name, options) {
     finalEl;
 
   // iterate through the schema, creating forms and fields
-  _.forOwn(schema, function (value, key) {
-    var field = createField(key, value, display);
+  _.forOwn(schema, function (subSchema, subFieldName) {
+    if (!_.contains(subFieldName, '_')) { // don't create fields for metadata
+      var subData = data[subFieldName],
+        subfield = createField(subFieldName, {schema: subSchema, data: subData}, display);
 
-    if (field) {
-      innerEl.appendChild(field);
+      if (subfield && subfield.nodeType === 1) {
+        innerEl.appendChild(subfield);
+      }
     }
   });
 
@@ -116,11 +133,14 @@ function createInlineForm(name, options, el) {
     innerEl = document.createDocumentFragment();
 
   // iterate through the schema, creating forms and fields
-  _.forOwn(schema, function (value, key) {
-    var field = createField(key, value, display);
+  _.forOwn(schema, function (subSchema, subFieldName) {
+    if (!_.contains(subFieldName, '_')) { // don't create fields for metadata
+      var subData = data[subFieldName],
+        subfield = createField(subFieldName, {schema: subSchema, data: subData}, display);
 
-    if (field) {
-      innerEl.appendChild(field);
+      if (subfield && subfield.nodeType === 1) {
+        innerEl.appendChild(subfield);
+      }
     }
   });
 

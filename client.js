@@ -1,7 +1,14 @@
 'use strict';
 var ds = require('dollar-slice'),
-  references = require('./services/references');
+  references = require('./services/references'),
+  behaviors = require('./services/behaviors');
 
+// manually add built-in behaviors
+// since browserify's require() uses static analysis
+behaviors.add('text', require('./behaviors/text'));
+
+
+// kick off controller loading when DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
   var components = document.querySelectorAll('[' + references.componentAttribute + ']'),
     i = 0,
