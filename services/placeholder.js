@@ -9,9 +9,7 @@ var _ = require('lodash'),
 /**
  * get placeholder text
  * if placeholder has a string, use it
- * else use the label if it exists
- * else get the name of the field/group, prettified
- * e.g. "title.social" would become "Title » Social"
+ * else call the label service
  * @param  {string} name     
  * @param  {{}} partials 
  * @return {string}          
