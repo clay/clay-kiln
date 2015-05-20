@@ -5,13 +5,9 @@ var h = require('hyperscript'),
   references = require('./references'),
   label = require('./label'),
   shouldDisplay = require('./display'),
-  getExpandedBehaviors = require('./behaviors').getExpandedBehaviors;
+  callBehaviors = require('./behaviors');
 
 // field creation
-
-function callBehaviors(key, value) {
-  return document.createElement('div');
-}
 
 /**
  * create fields recursively

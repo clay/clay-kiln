@@ -37,6 +37,9 @@ function getExpandedBehaviors(behaviors) {
   }
 }
 
-module.exports = {
-  getExpandedBehaviors: getExpandedBehaviors
-};
+function callBehaviors(key, value) {
+  return document.createElement('div');
+}
+
+module.exports = callBehaviors;
+module.exports.getExpandedBehaviors = getExpandedBehaviors;
