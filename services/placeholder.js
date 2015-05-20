@@ -3,6 +3,7 @@ var _ = require('lodash'),
   h = require('hyperscript'),
   references = require('./references'),
   edit = require('./edit'),
+  label = require('./label'),
   getExpandedBehaviors = require('./behaviors').getExpandedBehaviors;
 
 /**
@@ -17,15 +18,12 @@ var _ = require('lodash'),
  */
 function getPlaceholderText(name, partials) {
   var fieldSchema = partials.schema,
-    possiblePlaceholderText = fieldSchema[references.placeholderProperty],
-    possibleLabelText = fieldSchema[references.labelProperty];
+    possiblePlaceholderText = fieldSchema[references.placeholderProperty];
 
   if (typeof possiblePlaceholderText === 'string' && possiblePlaceholderText !== 'true') {
     return possiblePlaceholderText;
-  } else if (typeof possibleLabelText === 'string') {
-    return possibleLabelText;
   } else {
-    return name.split('.').map(_.startCase).join(' » ');
+    return label(name, fieldSchema);
   }
 }
 

@@ -18,13 +18,7 @@ describe('placeholder service', function () {
       expect(placeholder.getPlaceholderText(name, partials)).to.equal('Baz');
     });
 
-    it('falls back to _label string if it exists (and _placeholder is simply `true`)', function () {
-      partials.schema._placeholder = 'true';
-      partials.schema._label = 'Baz';
-      expect(placeholder.getPlaceholderText(name, partials)).to.equal('Baz');
-    });
-
-    it('falls back to prettified name if no _label (and _placeholder is simply `true`)', function () {
+    it('falls back to calling label service', function () {
       partials.schema._placeholder = 'true';
       expect(placeholder.getPlaceholderText(name, partials)).to.equal('Foo » Bar');
     });
