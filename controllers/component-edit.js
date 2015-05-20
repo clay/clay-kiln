@@ -20,11 +20,12 @@ module.exports = function () {
           formOptions = {
             schema: schema,
             data: data,
-            ref: ref
+            ref: ref,
+            display: display
           };
 
         if (display === 'modal') {
-          formcreator.createModalForm(name, formOptions);
+          formcreator.createForm(name, formOptions);
         } else if (display === 'inline') {
           formcreator.createInlineForm(name, formOptions, el);
         }

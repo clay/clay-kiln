@@ -63,10 +63,11 @@ module.exports = function () {
         var formOptions = {
           schema: res.schema,
           data: res.data,
-          ref: ref
+          ref: ref,
+          display: 'meta'
         };
 
-        formcreator.createMetaForm(name, formOptions);
+        formcreator.createForm(name, formOptions);
       });
     },
 
