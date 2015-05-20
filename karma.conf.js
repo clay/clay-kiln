@@ -34,14 +34,15 @@ module.exports = function (karma) {
         browser_version: '35.0',
         os: 'OS X',
         os_version: 'Yosemite'
-      },
-      ie11: {
-        base: 'BrowserStack',
-        browser: 'ie',
-        browser_version: '11.0',
-        os: 'Windows',
-        os_version: '8.1'
       }
+      // ie11 doesn't support us, so we don't support it!
+      // ie11: {
+      //   base: 'BrowserStack',
+      //   browser: 'ie',
+      //   browser_version: '11.0',
+      //   os: 'Windows',
+      //   os_version: '8.1'
+      // }
       // iPhone6: {
       //   base: 'BrowserStack',
       //   device: 'iPhone 6',
@@ -53,7 +54,7 @@ module.exports = function (karma) {
     reporters: ['dots'],
     files: files,
     frameworks: ['mocha', 'chai', 'sinon', 'browserify'],
-    browsers: ['chromeMac', 'firefoxMac', 'ie11'],
+    browsers: ['chromeMac', 'firefoxMac'],
     preprocessors: {
       'controllers/**': ['browserify'],
       'behaviors/**': ['browserify'],
