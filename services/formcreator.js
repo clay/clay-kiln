@@ -1,11 +1,11 @@
 'use strict';
-var h = require('hyperscript'),
-  _ = require('lodash'),
+var _ = require('lodash'),
   ds = require('dollar-slice'),
   references = require('./references'),
   label = require('./label'),
   shouldDisplay = require('./display'),
-  behaviors = require('./behaviors');
+  behaviors = require('./behaviors'),
+  dom = require('./dom');
 
 // field creation
 
@@ -42,10 +42,13 @@ function createField(fieldName, partials, display) {
     });
 
     // once we're done iterating, put those in a section
-    finalEl = h('section.editor-section',
-      h('h2.editor-section-head', label(fieldName)),
-      h('.editor-section-body', innerEl)
-    );
+    finalEl = dom.create(`
+      <section class="editor-section">
+        <h2 class="editor-section-head">${label(fieldName)}</h2>
+        <div class="editor-section-body">
+      </section>
+    `);
+    dom.find(finalEl, '.editor-section-body').appendChild(innerEl);
 
     return finalEl;
   }
@@ -54,30 +57,44 @@ function createField(fieldName, partials, display) {
 // form element creation
 
 function createModalEl(innerEl) {
-  return h('.editor-modal-overlay', h('.editor-modal', innerEl));
+  var el = dom.create(`
+    <div class="editor-modal-overlay">
+      <div class="editor-modal"></div>
+    </div>
+  `);
+  dom.find(el, '.editor-modal').appendChild(innerEl);
+  return el;
 }
 
 function createModalFormEl(formLabel, innerEl) {
-  return h('section.editor',
-    h('header', formLabel),
-    h('form',
-      h('.input-container', innerEl),
-      h('.button-container',
-        h('button.save', 'Save')
-      )
-    )
-  );
+  var el = dom.create(`
+    <section class="editor">
+      <header>${formLabel}</header>
+      <form>
+        <div class="input-container"></div>
+        <div class="button-container">
+          <button class="save">Save</button>
+        </div>
+      </form>
+    </section>
+  `);
+  dom.find(el, '.input-container').appendChild(innerEl);
+  return el;
 }
 
 function createInlineFormEl(innerEl) {
-  return h('section.editor-inline',
-    h('form',
-      h('.input-container', innerEl),
-      h('.button-container',
-        h('button.save', 'Save')
-      )
-    )
-  );
+  var el = dom.create(`
+    <section class="editor-inline">
+      <form>
+        <div class="input-container"></div>
+        <div class="button-container">
+          <button class="save">Save</button>
+        </div>
+      </form>
+    </section>
+  `);
+  dom.find(el, '.input-container').appendChild(innerEl);
+  return el;
 }
 
 // form creation

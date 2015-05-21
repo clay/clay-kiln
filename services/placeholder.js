@@ -1,9 +1,9 @@
 'use strict';
 var _ = require('lodash'),
-  h = require('hyperscript'),
   references = require('./references'),
   edit = require('./edit'),
   label = require('./label'),
+  dom = require('./dom'),
   getExpandedBehaviors = require('./behaviors').getExpandedBehaviors;
 
 /**
@@ -58,7 +58,11 @@ function isFieldEmpty(data) {
  * @param {{ height: string, text: string }} obj
  */
 function addPlaceholderDom(node, obj) {
-  var placeholder = h('.editor-placeholder', { style: { height: obj.height }}, h('span.placeholder-label', obj.text));
+  var placeholder = dom.create(`
+    <div class="editor-placeholder" style="height: ${obj.height};">
+      <span class="placeholder-label">${obj.text}</span>
+    </div>
+  `);
   node.appendChild(placeholder);
   return node;
 }

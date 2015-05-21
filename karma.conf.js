@@ -12,6 +12,10 @@ module.exports = function (karma) {
     colors: true,
     singleRun: true,
     transports: ['websocket'],
+    browserify: {
+      debug: true,
+      transform: ['es6ify']
+    },
     // browerstack config + launchers
     browserStack: {
       username: process.env.BROWSERSTACK_USERNAME,

@@ -52,7 +52,7 @@ function runBehaviors(name, partials) {
  * @return {{}}
  */
 function expandBehavior(behavior) {
-  var key;
+  var key, obj;
 
   if (_.isString(behavior) && behavior.length) {
     // _has: text
@@ -63,7 +63,9 @@ function expandBehavior(behavior) {
      *   required: true
      */
     key = behavior[references.behaviorKey]; // hold onto this reference
-    return { fn: key, args: behavior };
+    obj = _.cloneDeep(behavior);
+    delete obj[references.behaviorKey]; // delete it from the object (since the object becomes the args)
+    return { fn: key, args: obj };
   } else {
     throw new Error('Cannot parse behavior: ' + behavior);
   }
