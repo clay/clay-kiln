@@ -63,7 +63,6 @@ function expandBehavior(behavior) {
      *   required: true
      */
     key = behavior[references.behaviorKey]; // hold onto this reference
-    delete behavior[references.behaviorKey]; // delete it from the object (since the object becomes the args)
     return { fn: key, args: behavior };
   } else {
     throw new Error('Cannot parse behavior: ' + behavior);
