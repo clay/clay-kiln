@@ -3,7 +3,9 @@ var _ = require('lodash'),
   rivets = require('rivets'),
   references = require('./references'),
   // hash of all behaviors
-  behaviorsHash = {};
+  behaviorsHash = {},
+  // has of current bindings
+  bindingsHash = {};
 
 /**
  * add a behavior to the hash. called by users who want to create custom behaviors
@@ -25,6 +27,7 @@ function addBehavior(name, fn) {
 function runBehaviors(name, partials) {
   var schema = partials.schema,
     data = partials.data || '',
+    path = partials.path || name,
     behaviors = getExpandedBehaviors(schema[references.fieldProperty]),
     done;
 
@@ -39,10 +42,10 @@ function runBehaviors(name, partials) {
       console.log('Behavior "' + behaviorName + '" not found. Make sure you add it!');
       return result;
     }
-  }, { el: document.createDocumentFragment(), bindings: { data: data, name: name }, rivets: rivets });
+  }, { el: document.createDocumentFragment(), bindings: { data: data, name: name, path: path }, rivets: rivets });
 
   // use the rivets instance that was passed through the behaviors, since it may have formatters/etc added to it
-  done.rivets.bind(done.el, done.bindings); // compile and bind templates
+  bindingsHash[name] = done.rivets.bind(done.el, done.bindings); // compile and bind templates, persist them to bindingsHash
   return done.el;
 }
 
@@ -92,6 +95,11 @@ function getExpandedBehaviors(behaviors) {
   }
 }
 
-module.exports.add = addBehavior;
-module.exports.run = runBehaviors;
-module.exports.getExpandedBehaviors = getExpandedBehaviors;
+function getBinding(name) {
+  return bindingsHash[name];
+}
+
+exports.add = addBehavior;
+exports.run = runBehaviors;
+exports.getExpandedBehaviors = getExpandedBehaviors;
+exports.getBinding = getBinding;

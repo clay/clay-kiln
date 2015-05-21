@@ -31,7 +31,7 @@ function createField(fieldName, partials, display) {
     _.forOwn(schema, function (subSchema, subFieldName) {
       if (!_.contains(subFieldName, '_')) { // don't create fields for metadata
         var subData = data[subFieldName],
-          subfield = createField(subFieldName, {schema: subSchema, data: subData}, display);
+          subfield = createField(subFieldName, {schema: subSchema, data: subData, path: partials.path + '.' + subFieldName}, display);
 
         if (subfield && subfield.nodeType === 1) {
           innerEl.appendChild(subfield); // node element
@@ -122,7 +122,7 @@ function createForm(name, options) {
   _.forOwn(schema, function (subSchema, subFieldName) {
     if (!_.contains(subFieldName, '_')) { // don't create fields for metadata
       var subData = data[subFieldName],
-        subfield = createField(subFieldName, {schema: subSchema, data: subData}, display);
+        subfield = createField(subFieldName, {schema: subSchema, data: subData, path: subFieldName}, display);
 
       if (subfield) {
         innerEl.appendChild(subfield).cloneNode(true);
@@ -153,7 +153,7 @@ function createInlineForm(name, options, el) {
   _.forOwn(schema, function (subSchema, subFieldName) {
     if (!_.contains(subFieldName, '_')) { // don't create fields for metadata
       var subData = data[subFieldName],
-        subfield = createField(subFieldName, {schema: subSchema, data: subData}, display);
+        subfield = createField(subFieldName, {schema: subSchema, data: subData, path: subFieldName}, display);
 
       if (subfield) {
         innerEl.appendChild(subfield).cloneNode(true);

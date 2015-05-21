@@ -12,7 +12,7 @@ module.exports = function (result, args) {
 
   var tpl = `
       <label><span class="input-label">{ label }</span> 
-        <input name="{ name }" type="text" rv-required="required" rv-pattern="pattern" rv-minLength="minLength" rv-maxLength="maxLength" rv-placeholder="placeholder" rv-value="data" />
+        <input name="${bindings.name}" type="text" rv-required="required" rv-pattern="pattern" rv-minLength="minLength" rv-maxLength="maxLength" rv-placeholder="placeholder" rv-value="data" />
       </label>
     `,
     textField = dom.create(tpl);

@@ -1,7 +1,8 @@
 'use strict';
 module.exports = function () {
   var dom = require('../services/dom'),
-    edit = require('../services/edit');
+    edit = require('../services/edit'),
+    formvalues = require('../services/formvalues');
     
   function constructor(el, ref, path) {
     this.el = el;
@@ -17,13 +18,12 @@ module.exports = function () {
     },
 
     saveData: function (e) {
+      e.preventDefault();
+
       var form = this.form,
         ref = this.ref,
         path = this.path,
-        newData = null; //formCreator.getFormValues(form);
-
-      // prevent default form submit
-      dom.preventDefault(e);
+        newData = formvalues(form);
 
       if (form.checkValidity()) {
         edit.update(ref, newData, path);
