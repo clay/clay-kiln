@@ -1,5 +1,12 @@
 # Behaviors
 
+```
+behaviors/
+  my-behavior.js - behavior code
+  my-behavior.test.js - test code, runs automatically in karma
+  my-behavior.scss - styles, can also be straight css
+```
+
 Behaviors are added to fields in your `schema.yaml`. They are an array of objects, with a `fn` property and any number of arguments:
 
 ```yaml
