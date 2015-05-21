@@ -11,7 +11,7 @@
   ],
   "template": "template.nunjucks",
   "scripts": {
-    "test": "mocha"
+    "test": "karma start"
   },
   "repository": {
     "type": "git",

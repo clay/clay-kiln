@@ -1,0 +1,15 @@
+machine:
+  timezone:
+    America/New_York
+  node:
+    version: iojs-v1.2.0
+dependencies:
+  pre:
+    - npm install -g karma
+    - npm install -g istanbul
+# test:
+#   post:
+#     - cp -r ./coverage/* $CIRCLE_ARTIFACTS
+#     - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+
+
