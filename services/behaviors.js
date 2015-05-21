@@ -33,7 +33,7 @@ function runBehaviors(name, partials) {
 
     // each behavior gets called and returns a modified element
     if (behaviorsHash[behaviorName]) {
-      return behaviorsHash[behaviorName](el, behaviorArgs, data, name);
+      return behaviorsHash[behaviorName](el, {args: behaviorArgs, data: data, name: name});
     } else {
       console.log('Behavior "' + behaviorName + '" not found. Make sure you add it!');
       return el;

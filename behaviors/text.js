@@ -3,8 +3,10 @@ var label = require('../services/label'),
   dom = require('../services/dom'),
   rivets = require('rivets');
 
-module.exports = function (el, args, data, name) {
-  data = data || ''; // default to empty string
+module.exports = function (el, options) {
+  var args = options.args,
+    data = options.data || '',
+    name = options.name;
 
   // add some stuff
   args.value = data;
@@ -19,8 +21,6 @@ module.exports = function (el, args, data, name) {
     textField = dom.create(tpl);
 
   rivets.bind(textField, args);
-
-  console.log(textField);
 
   if (el.nodeType === 1) {
     el.appendChild(textField);
