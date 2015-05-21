@@ -5,8 +5,9 @@
   "browser": "client.js",
   "style": [
     "styleguide/*.scss",
+    "styleguide/*.css",
     "behaviors/*.scss",
-    "toolbar.scss"
+    "behaviors/*.css"
   ],
   "template": "template.nunjucks",
   "scripts": {

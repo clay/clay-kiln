@@ -6,6 +6,7 @@ var ds = require('dollar-slice'),
 // manually add built-in behaviors
 // since browserify's require() uses static analysis
 behaviors.add('text', require('./behaviors/text'));
+behaviors.add('soft-maxlength', require('./behaviors/soft-maxlength'));
 
 // kick off controller loading when DOM is ready
 document.addEventListener('DOMContentLoaded', function () {

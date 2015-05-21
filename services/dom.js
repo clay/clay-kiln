@@ -53,6 +53,12 @@ module.exports = {
     }
   },
 
+  insertAfter: function (node, newNode) {
+    if (node.parentNode) {
+      node.parentNode.insertBefore(newNode, node.nextSibling);
+    }
+  },
+
   /**
    * Fast way to clear all children
    * @see http://jsperf.com/innerhtml-vs-removechild/294

@@ -1,5 +1,6 @@
 'use strict';
 var _ = require('lodash'),
+  rivets = require('rivets'),
   references = require('./references'),
   // hash of all behaviors
   behaviorsHash = {};
@@ -24,21 +25,26 @@ function addBehavior(name, fn) {
 function runBehaviors(name, partials) {
   var schema = partials.schema,
     data = partials.data,
-    behaviors = getExpandedBehaviors(schema[references.fieldProperty]);
+    behaviors = getExpandedBehaviors(schema[references.fieldProperty]),
+    done;
 
   console.log('\nrunning behaviors for "' + name + '"');
-  return _.reduce(behaviors, function (el, behavior) {
+  done = _.reduce(behaviors, function (result, behavior) {
     var behaviorName = behavior[references.behaviorKey],
       behaviorArgs = behavior.args;
 
     // each behavior gets called and returns a modified element
     if (behaviorsHash[behaviorName]) {
-      return behaviorsHash[behaviorName](el, {args: behaviorArgs, data: data, name: name});
+      return behaviorsHash[behaviorName](result, {args: behaviorArgs, data: data, name: name});
     } else {
       console.log('Behavior "' + behaviorName + '" not found. Make sure you add it!');
-      return el;
+      return result;
     }
-  }, document.createDocumentFragment());
+  }, { el: document.createDocumentFragment(), bindings: {}, rivets: rivets });
+
+  // use the rivets instance that was passed through the behaviors, since it may have formatters/etc added to it
+  done.rivets.bind(done.el, done.bindings); // compile and bind templates
+  return done.el;
 }
 
 /**
