@@ -1,6 +1,5 @@
 /* modal */
 @import 'mixins';
-@import '../node_modules/include-media/dist/_include-media';
 
 .editor-modal-overlay {
   background-color: rgba(0,0,0,.8);
@@ -24,11 +23,11 @@
   position: relative;
   width: 100%;
 
-  @include media(">=600px") {
+  @media screen and (min-width: 600px) {
     width: 90%;
   }
 
-  @include media(">=1024px") {
+  @media screen and (min-width: 1024px") {
     width: 80%;
   }
 }
