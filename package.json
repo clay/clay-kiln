@@ -32,7 +32,7 @@
     "dollar-slice": "^2.1.0",
     "domify": "^1.3.3",
     "hyperscript": "^1.4.6",
-    "include-media": "https://github.com/eduardoboucas/include-media.git",
+    "include-media": "eduardoboucas/include-media",
     "lodash": "^3.8.0",
     "lodash-deep": "^1.6.0",
     "rivets": "^0.8.1"
