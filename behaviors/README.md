@@ -17,27 +17,26 @@ my-field:
 When the form is created, each behavior is called *in order*. The function signature for a behavior looks like this:
 
 ```js
-module.exports = function (result, options) {
+module.exports = function (result, args) {
   /*
   result = { el, bindings, rivets }
-  options = { args, data, name }
+  args = { arguments from the schema }
    */
 
   return result; // pass it on
 };
 ```
 
-There are two objects passed into the behavior. The first (`result`) contains the element, any data bindings (for templating and event handling), and the `rivets` instance. The `text` binding would look like:
+There are two objects passed into the behavior. The first (`result`) contains the element, any data bindings (for templating and event handling), and the `rivets` instance. The `bindings` object by default contains the field's `name` and `data`. Add more properties to it if you want them to appear in the template:
 
 ```js
-module.exports = function (result, options) {
+module.exports = function (result, args) {
   var bindings = result.bindings,
     el = result.el;
 
   // add bindings from the data, args, etc
-  bindings.data = options.data;
-  bindings.label = _.startCase(options.name);
-  bindings.required = options.args.required;
+  bindings.label = _.startCase(bindings.name);
+  bindings.required = args.required;
 
   var tpl = `
       <label>{ label }</label> 

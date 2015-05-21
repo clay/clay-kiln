@@ -2,17 +2,12 @@
 var label = require('../services/label'),
   dom = require('../services/dom');
 
-module.exports = function (result, options) {
+module.exports = function (result, args) {
   var el = result.el,
-    bindings = result.bindings,
-    args = options.args,
-    data = options.data || '',
-    name = options.name;
+    bindings = result.bindings;
 
   // add some stuff to the bindings
-  bindings.data = data;
-  bindings.label = label(name);
-  bindings.name = name;
+  bindings.label = label(bindings.name);
   bindings.required = args.required;
 
   var tpl = `

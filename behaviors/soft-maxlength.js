@@ -1,7 +1,7 @@
 'use strict';
 var dom = require('../services/dom');
 
-module.exports = function (result, options) {
+module.exports = function (result, args) {
   var el = result.el,
     bindings = result.bindings,
     rivets = result.rivets,
@@ -10,7 +10,7 @@ module.exports = function (result, options) {
     `,
     span = dom.create(tpl);
 
-  bindings.max = options.args.value;
+  bindings.max = args.value;
   rivets.formatters.charsRemaining = function (max, data) {
     var length = parseInt(data.length),
       remaining = max - length,

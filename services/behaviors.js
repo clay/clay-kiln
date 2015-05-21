@@ -24,23 +24,22 @@ function addBehavior(name, fn) {
  */
 function runBehaviors(name, partials) {
   var schema = partials.schema,
-    data = partials.data,
+    data = partials.data || '',
     behaviors = getExpandedBehaviors(schema[references.fieldProperty]),
     done;
 
   console.log('\nrunning behaviors for "' + name + '"');
   done = _.reduce(behaviors, function (result, behavior) {
-    var behaviorName = behavior[references.behaviorKey],
-      behaviorArgs = behavior.args;
+    var behaviorName = behavior[references.behaviorKey];
 
     // each behavior gets called and returns a modified element
     if (behaviorsHash[behaviorName]) {
-      return behaviorsHash[behaviorName](result, {args: behaviorArgs, data: data, name: name});
+      return behaviorsHash[behaviorName](result, behavior.args);
     } else {
       console.log('Behavior "' + behaviorName + '" not found. Make sure you add it!');
       return result;
     }
-  }, { el: document.createDocumentFragment(), bindings: {}, rivets: rivets });
+  }, { el: document.createDocumentFragment(), bindings: { data: data, name: name }, rivets: rivets });
 
   // use the rivets instance that was passed through the behaviors, since it may have formatters/etc added to it
   done.rivets.bind(done.el, done.bindings); // compile and bind templates
