@@ -1,4 +1,5 @@
 'use strict';
+var domify = require('domify');
 
 module.exports = {
   /**
@@ -81,5 +82,7 @@ module.exports = {
     if (parent) {
       parent.replaceChild(replacementEl, el);
     }
-  }
+  },
+
+  create: domify // create elements from strings!
 };

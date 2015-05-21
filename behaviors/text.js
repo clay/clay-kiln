@@ -1,22 +1,31 @@
 'use strict';
-var h = require('hyperscript'),
-  label = require('../services/label');
+var label = require('../services/label'),
+  dom = require('../services/dom'),
+  rivets = require('rivets');
 
 module.exports = function (el, args, data, name) {
-  var textField = h('label',
-    h('span.input-label', label(name)),
-    args.minLength ? h('span.label-min', args.minLength + ' chars min'): '',
-    args.minLength && args.maxLength ? ', ' : '',
-    args.maxLength ? h('span.label-max', args.maxLength + ' chars max'): '',
-    h('input', {
-      name: name,
-      type: 'text',
-      required: args.required ? 'true' : 'false',
-      placeholder: args.placeholder ? args.placeholder : '',
-      value: data
-    })
-  );
+  data = data || ''; // default to empty string
 
-  el.appendChild(textField);
-  return el;
+  // add some stuff
+  args.value = data;
+  args.label = label(name);
+  args.name = name;
+
+  var tpl = `
+      <label><span class="input-label">{ label }</span> 
+        <input name="{ name }" type="text" rv-required="required" rv-pattern="pattern" rv-minLength="minLength" rv-maxLength="maxLength" rv-placeholder="placeholder" rv-value="value" />
+      </label>
+    `,
+    textField = dom.create(tpl);
+
+  rivets.bind(textField, args);
+
+  console.log(textField);
+
+  if (el.nodeType === 1) {
+    el.appendChild(textField);
+    return el;
+  } else {
+    return textField;
+  }
 };

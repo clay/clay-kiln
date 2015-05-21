@@ -107,8 +107,8 @@ function createForm(name, options) {
       var subData = data[subFieldName],
         subfield = createField(subFieldName, {schema: subSchema, data: subData}, display);
 
-      if (subfield && subfield.nodeType === 1) {
-        innerEl.appendChild(subfield);
+      if (subfield) {
+        innerEl.appendChild(subfield).cloneNode(true);
       }
     }
   });
@@ -138,8 +138,8 @@ function createInlineForm(name, options, el) {
       var subData = data[subFieldName],
         subfield = createField(subFieldName, {schema: subSchema, data: subData}, display);
 
-      if (subfield && subfield.nodeType === 1) {
-        innerEl.appendChild(subfield);
+      if (subfield) {
+        innerEl.appendChild(subfield).cloneNode(true);
       }
     }
   });

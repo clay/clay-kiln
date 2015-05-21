@@ -7,7 +7,6 @@ var ds = require('dollar-slice'),
 // since browserify's require() uses static analysis
 behaviors.add('text', require('./behaviors/text'));
 
-
 // kick off controller loading when DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
   var components = document.querySelectorAll('[' + references.componentAttribute + ']'),
