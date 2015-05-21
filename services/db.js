@@ -81,20 +81,20 @@ function expectHTMLResult(ref) {
 }
 
 module.exports = {
-  getSchemaFromReference(ref) {
+  getSchemaFromReference: function (ref) {
     return send('/components/' + references.getComponentNameFromReference(ref) + '/schema')
       .then(expectJSONResult);
   },
 
-  getComponentJSONFromReference(ref) {
+  getComponentJSONFromReference: function (ref) {
     return send(ref).then(expectJSONResult);
   },
 
-  getComponentHTMLFromReference(ref) {
+  getComponentHTMLFromReference: function (ref) {
     return send(ref + '.html').then(expectHTMLResult(ref));
   },
 
-  putToReference(ref, data) {
+  putToReference: function (ref, data) {
     var options = {
       method: 'PUT',
       url: ref,
@@ -107,7 +107,7 @@ module.exports = {
     return send(options);
   },
 
-  postToReference(ref, data) {
+  postToReference: function (ref, data) {
     var options = {
       method: 'POST',
       url: ref,
@@ -118,5 +118,8 @@ module.exports = {
     };
 
     return send(options).then(expectJSONResult);
-  }
+  },
+
+  // for testing
+  send: send
 };

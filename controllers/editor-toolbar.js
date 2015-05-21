@@ -4,13 +4,12 @@ module.exports = function () {
     db = require('../services/db'),
     references = require('../services/references'),
     formcreator = require('../services/formcreator'),
-    templates = require('../services/templates'),
-    edit = require('../services/edit'),
-    ds = require('dollar-slice');
+    edit = require('../services/edit');
 
   function constructor(el) {
     // grab the first component in the primary area
-    this.main = dom.find('.main .primary [data-component]');
+    // todo: make this usable in other layouts...
+    this.main = dom.find('.main .primary [' + references.componentAttribute + ']');
     this.toolbar = el;
   }
 
@@ -37,15 +36,17 @@ module.exports = function () {
       location.href = location.href.split('?').shift();
     },
 
+    // todo: allow users to choose their layout / components
     newPage: function () {
-      var articlePage = {
-        layout: '/components/nym2015-layout/instances/article',
-        main: '/components/story'
-      };
+      var layoutName = dom.find('[data-layout]'),
+        articlePage = {
+          layout: '/components/' + layoutName + '/instances/article',
+          main: '/components/story'
+        };
 
       db.postToReference('/pages', articlePage)
         .then(function (res) {
-          location.href = res._ref + '.html?edit=true';
+          location.href = res[references.referenceProperty] + '.html?edit=true';
         });
     },
 
@@ -59,16 +60,14 @@ module.exports = function () {
         ref = main.getAttribute(references.referenceAttribute);
 
       edit.getSchemaAndData(ref).then(function (res) {
-        var form = formcreator.createForm(name, {schema: res.schema, data: res.data, display: 'meta'}),
-          modal = templates.apply('editor-modal', { html: form.outerHTML });
-        
-        document.body.appendChild(modal);
+        var formOptions = {
+          schema: res.schema,
+          data: res.data,
+          ref: ref,
+          display: 'meta'
+        };
 
-        // instantiate modal and form controllers
-        ds.controller('editor-modal', require('./editor-modal'));
-        ds.controller('editor-form', require('./editor-form'));
-        ds.get('editor-modal', modal);
-        ds.get('editor-form', dom.getFirstChildElement(dom.find(modal, '.editor-modal')), ref);
+        formcreator.createForm(name, formOptions);
       });
     },
 

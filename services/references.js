@@ -1,11 +1,15 @@
 'use strict';
+
 module.exports = {
+  componentAttribute: 'data-component',
+  nameAttribute: 'name',
   referenceAttribute: 'data-ref',
-  componentListAttribute: 'data-component-list-name',
-  componentMarkdownAttribute: 'data-component-markdown-name',
   referenceProperty: '_ref',
-  typeProperty: '_type',
+  fieldProperty: '_has', // used to determine if a node is a field
+  behaviorKey: 'fn', // used to look up behavior function
   displayProperty: '_display',
+  placeholderProperty: '_placeholder',
+  labelProperty: '_label',
 
   // utility methods
 
@@ -17,12 +21,12 @@ module.exports = {
    * @example /components/text/instances/0  returns text
    * @example /components/image.html  returns image
    */
-  getComponentNameFromReference(ref) {
+  getComponentNameFromReference: function (ref) {
     var result = /components\/(.+?)[\/\.]/.exec(ref) || /components\/(.*)/.exec(ref);
     return result && result[1];
   },
 
-  getInstanceIdFromReference(ref) {
+  getInstanceIdFromReference: function (ref) {
     var result = /\/components\/.+?\/instances\/(.+)/.exec(ref);
     return result && result[1];
   }

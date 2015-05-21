@@ -1,4 +1,5 @@
 'use strict';
+var domify = require('domify');
 
 module.exports = {
   /**
@@ -9,7 +10,7 @@ module.exports = {
    * @example find('ul') //finds globally
    * @example find(el, '.list') //finds within
    */
-  find(el, selector) {
+  find: function (el, selector) {
     if (!selector) {
       selector = el;
       el = document;
@@ -25,7 +26,7 @@ module.exports = {
    * @example findAll('ul') //finds globally
    * @example findAll(el, '.list') //finds within
    */
-  findAll(el, selector) {
+  findAll: function (el, selector) {
     if (!selector) {
       selector = el;
       el = document;
@@ -36,7 +37,7 @@ module.exports = {
   /**
    * NOTE: nodeType of 1 means Element
    */
-  getFirstChildElement(parent) {
+  getFirstChildElement: function (parent) {
     var cursor = parent.firstChild;
     while (cursor && cursor.nodeType !== 1) {
       cursor = cursor.nextSibling;
@@ -44,11 +45,17 @@ module.exports = {
     return cursor;
   },
 
-  prependChild(parent, child) {
+  prependChild: function (parent, child) {
     if (parent.firstChild) {
       parent.insertBefore(child, parent.firstChild);
     } else {
       parent.appendChild(child);
+    }
+  },
+
+  insertAfter: function (node, newNode) {
+    if (node.parentNode) {
+      node.parentNode.insertBefore(newNode, node.nextSibling);
     }
   },
 
@@ -57,7 +64,7 @@ module.exports = {
    * @see http://jsperf.com/innerhtml-vs-removechild/294
    * @param {Element} el
    */
-  clearChildren(el) {
+  clearChildren: function (el) {
     while (el.firstChild) {
       el.removeChild(el.firstChild);
     }
@@ -67,21 +74,21 @@ module.exports = {
    * Remove a single element from its parent
    * @param {Element} el
    */
-  removeElement(el) {
+  removeElement: function (el) {
     el.parentNode.removeChild(el);
   },
 
-  preventDefault(e) {
-    if (e && e.preventDefault) {
-      e.preventDefault();
-    }
+  preventDefault: function (e) {
+    e.preventDefault ? e.preventDefault() : e.returnValue = false;
   },
 
-  replaceElement(el, replacementEl) {
+  replaceElement: function (el, replacementEl) {
     var parent = el.parentNode;
 
     if (parent) {
       parent.replaceChild(replacementEl, el);
     }
-  }
+  },
+
+  create: domify // create elements from strings!
 };
