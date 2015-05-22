@@ -11,6 +11,7 @@ describe('behaviors service', function () {
     });
 
     it('gets a behavior defined as an object', function () {
+      console.log(b.getExpandedBehaviors({ fn: 'foo', baz: 'qux' }))
       expect(b.getExpandedBehaviors({ fn: 'foo', baz: 'qux' })).to.eql([{
         fn: 'foo',
         args: { baz: 'qux' }
