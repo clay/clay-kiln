@@ -1,0 +1,16 @@
+.simple-list-item {
+  border: 1px solid #eee;
+  border-radius: 4px;
+  display: inline-block;
+  margin: 2px;
+  padding: 2px 5px;
+  outline: none !important;
+}
+
+.simple-list-item:focus {
+  border: 3px solid #aaa;
+}
+
+.simple-list-item.primary {
+  border: 3px solid green;
+}
