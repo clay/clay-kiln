@@ -2,8 +2,7 @@
 var dom = require('../services/dom');
 
 module.exports = function (result, args) {
-  var el = result.el,
-    bindings = result.bindings;
+  var bindings = result.bindings;
 
   // add some stuff to the bindings
   bindings.required = args.required;
@@ -15,11 +14,7 @@ module.exports = function (result, args) {
     `,
     textField = dom.create(tpl);
 
-  if (el.nodeType === 1) {
-    el.appendChild(textField);
-  } else {
-    el = textField;
-  }
+  result.el = textField;
 
-  return {el: el, bindings: bindings, rivets: result.rivets };
+  return result;
 };

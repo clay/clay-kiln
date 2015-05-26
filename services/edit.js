@@ -75,8 +75,8 @@ function validate(data, schema) {
  * @returns {Promise}
  */
 function update(ref, newData, path) {
-  // if path is specified, deepSet newData into the proper place
-  if (path && !_.contains(Object.keys(newData), path)) {
+  // if path is specified (and it's not the root-level of the component), deepSet newData into the proper place
+  if (path && !_.contains(Object.keys(newData), path) && !_.contains(ref, path)) {
     newData = _.deepSet({}, path, newData);
   }
 
