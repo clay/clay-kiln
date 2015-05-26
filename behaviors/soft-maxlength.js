@@ -32,6 +32,6 @@ module.exports = function (result, args) {
     }
   };
 
-  dom.insertAfter(dom.find(el, '.input-label'), span);
+  dom.insertAfter(dom.find(el, '.label-inner'), span);
   return result;
 };

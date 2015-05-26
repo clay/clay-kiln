@@ -6,7 +6,7 @@ function createOptions(name, options) {
   return options.map(function (option) {
     return `
       <li class="editor-radio-item">
-        <label class="option-label">${ _.startCase(option) }
+        <label class="option-label">${ _.startCase(option) || 'None' }
           <input name="${name}" type="radio" rv-checked="data" value="${option}" />
         </label>
       </li>`;
@@ -22,7 +22,7 @@ module.exports = function (result, args) {
   bindings.required = !!args.required;
 
   var tpl = `
-      <span class="input-label">{ label }</span>
+      <span class="input-label"><span class="label-inner">{ label }</span></span>
       <ul class="editor-radios">
         ${ createOptions(name, options) }
       </ul>

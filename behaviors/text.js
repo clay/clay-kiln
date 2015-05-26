@@ -8,7 +8,7 @@ module.exports = function (result, args) {
   bindings.required = args.required;
 
   var tpl = `
-      <label><span class="input-label">{ label }</span> 
+      <label class="input-label"><span class="label-inner">{ label }</span> 
         <input name="${bindings.name}" type="text" rv-required="required" rv-pattern="pattern" rv-minLength="minLength" rv-maxLength="maxLength" rv-placeholder="placeholder" rv-value="data" />
       </label>
     `,

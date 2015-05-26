@@ -13,5 +13,11 @@
 }
 
 .option-label {
-  font-size: 1.6rem;
+  flex: 1 1;
+  font-family: Arial, sans-serif;
+  min-width: 20rem;
+  position: relative;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-left: 20px
 }
