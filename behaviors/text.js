@@ -1,13 +1,11 @@
 'use strict';
-var label = require('../services/label'),
-  dom = require('../services/dom');
+var dom = require('../services/dom');
 
 module.exports = function (result, args) {
   var el = result.el,
     bindings = result.bindings;
 
   // add some stuff to the bindings
-  bindings.label = label(bindings.name);
   bindings.required = args.required;
 
   var tpl = `

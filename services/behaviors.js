@@ -2,6 +2,7 @@
 var _ = require('lodash'),
   rivets = require('rivets'),
   references = require('./references'),
+  label = require('./label'),
   // hash of all behaviors
   behaviorsHash = {},
   // has of current bindings
@@ -42,7 +43,15 @@ function runBehaviors(name, partials) {
       console.log('Behavior "' + behaviorName + '" not found. Make sure you add it!');
       return result;
     }
-  }, { el: document.createDocumentFragment(), bindings: { data: data, name: name, path: path }, rivets: rivets });
+  }, { el: document.createDocumentFragment(), bindings: { data: data, name: name, path: path, label: label(path, schema) }, rivets: rivets });
+  /*
+  ~= BINDINGS ADDED BY DEFAULT =~
+  `el` is a new document fragment that behaviors can attach to (or replace)
+  `data` is the data for that field
+  `name` is the property key of that field, e.g. long
+  `path` is the full path from the top of the form to that field, e.g. title.long
+  `label` is the nicely-formatted label for that field, e.g. "Your Long Title" (from _label) or "Title » Long" (generated from the path)
+   */
 
   // use the rivets instance that was passed through the behaviors, since it may have formatters/etc added to it
   bindingsHash[name] = done.rivets.bind(done.el, done.bindings); // compile and bind templates, persist them to bindingsHash
@@ -66,7 +75,7 @@ function expandBehavior(behavior) {
      *   required: true
      */
     key = behavior[references.behaviorKey]; // hold onto this reference
-    return { fn: key, args: _.omit(behavior, key) };
+    return { fn: key, args: _.omit(behavior, references.behaviorKey) };
   } else {
     throw new Error('Cannot parse behavior: ' + behavior);
   }

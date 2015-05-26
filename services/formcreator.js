@@ -44,7 +44,7 @@ function createField(fieldName, partials, display) {
     // once we're done iterating, put those in a section
     finalEl = dom.create(`
       <section class="editor-section">
-        <h2 class="editor-section-head">${label(fieldName)}</h2>
+        <h2 class="editor-section-head">${label(fieldName, schema)}</h2>
         <div class="editor-section-body">
       </section>
     `);
@@ -131,7 +131,7 @@ function createForm(name, options) {
   });
 
   // build up form el
-  finalEl = createModalEl(createModalFormEl(label(name), innerEl));
+  finalEl = createModalEl(createModalFormEl(label(name, schema), innerEl));
   // append it to the body
   document.body.appendChild(finalEl);
 
