@@ -17,6 +17,7 @@ function getInputValues(data, el) {
   if (binding && binding.models) {
     path = binding.models.path;
     viewData = binding.models.data;
+    console.log(path, viewData)
     _.deepSet(data, path, viewData);
   }
 

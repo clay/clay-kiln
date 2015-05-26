@@ -98,10 +98,12 @@ function update(ref, newData, path) {
               .omit('_ref')
               .value();
 
+            console.log(data)
+
             return db.putToReference(ref, data)
               .then(function () {
                 // todo: replace component without page reload
-                location.reload();
+                // location.reload();
               });
           });
       }
