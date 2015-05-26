@@ -53,6 +53,12 @@ module.exports = {
     }
   },
 
+  insertBefore: function (node, newNode) {
+    if (node.parentNode) {
+      node.parentNode.insertBefore(newNode, node);
+    }
+  },
+
   insertAfter: function (node, newNode) {
     if (node.parentNode) {
       node.parentNode.insertBefore(newNode, node.nextSibling);
