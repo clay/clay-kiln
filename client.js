@@ -10,6 +10,7 @@ behaviors.add('soft-maxlength', require('./behaviors/soft-maxlength'));
 behaviors.add('radio', require('./behaviors/radio'));
 behaviors.add('tooltip', require('./behaviors/tooltip'));
 behaviors.add('checkbox', require('./behaviors/checkbox'));
+behaviors.add('textarea', require('./behaviors/textarea'));
 
 // kick off controller loading when DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
