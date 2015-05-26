@@ -76,7 +76,7 @@
 }
 
 /* labels are containers that refer to inputs, textareas, or whatever else */
-.editor .input-container label {
+.editor .input-label {
   @include clearfix();
 
   flex: 1 1;
@@ -91,7 +91,7 @@
   min-width: 100%;
 }
 
-.editor .input-label {
+.editor .label-inner {
   font-size: 1.6rem;
   font-weight: 700;
   margin-right: 10px;

@@ -22,7 +22,7 @@ module.exports = function (result, args) {
   bindings.required = !!args.required;
 
   var tpl = `
-      <span class="input-label">{ label }</span>
+      <span class="input-label"><span class="label-inner">{ label }</span></span>
       <ul class="editor-radios">
         ${ createOptions(name, options) }
       </ul>
