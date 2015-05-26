@@ -75,8 +75,8 @@ function validate(data, schema) {
  * @returns {Promise}
  */
 function update(ref, newData, path) {
-  // if path is specified, deepSet newData into the proper place
-  if (path && !_.contains(Object.keys(newData), path)) {
+  // if path is specified (and it's not the root-level of the component), deepSet newData into the proper place
+  if (path && !_.contains(Object.keys(newData), path) && !_.contains(ref, path)) {
     newData = _.deepSet({}, path, newData);
   }
 
@@ -98,12 +98,10 @@ function update(ref, newData, path) {
               .omit('_ref')
               .value();
 
-            console.log(data)
-
             return db.putToReference(ref, data)
               .then(function () {
                 // todo: replace component without page reload
-                // location.reload();
+                location.reload();
               });
           });
       }

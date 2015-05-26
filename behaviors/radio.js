@@ -1,33 +1,35 @@
 'use strict';
-var label = require('../services/label'),
+var _ = require('lodash'),
   dom = require('../services/dom');
 
+function createOptions(name, options) {
+  return options.map(function (option) {
+    return `
+      <li class="editor-radio-item">
+        <label class="option-label">${ _.startCase(option) }
+          <input name="${name}" type="radio" rv-checked="data" value="${option}" />
+        </label>
+      </li>`;
+  }).join('\n');
+}
+
 module.exports = function (result, args) {
-  var el = result.el,
-    bindings = result.bindings;
+  var bindings = result.bindings,
+    name = bindings.name,
+    options = args.options;
 
   // add some stuff to the bindings
-  bindings.label = label(bindings.name);
-  bindings.options = args.options;
-  bindings.required = args.required;
+  bindings.required = !!args.required;
 
   var tpl = `
       <span class="input-label">{ label }</span>
       <ul class="editor-radios">
-        <li rv-each-option="options" class="editor-radio-item">
-          <label class="option-label">{ option }
-            <input name="${bindings.name}" type="radio" rv-checked="data" rv-value="option" />
-          </label>
-        </li>
+        ${ createOptions(name, options) }
       </ul>
     `,
     field = dom.create(tpl);
 
-  if (el.nodeType === 1) {
-    el.appendChild(field);
-  } else {
-    el = field;
-  }
+  result.el = field;
 
-  return {el: el, bindings: bindings, rivets: result.rivets };
+  return result;
 };

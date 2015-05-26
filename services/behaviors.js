@@ -8,6 +8,22 @@ var _ = require('lodash'),
   // has of current bindings
   bindingsHash = {};
 
+// add Object.observe() to rivets, instead of the normal `.` adapter
+rivets.adapters['.'] = {
+  observe: function(obj,keypath,callback){
+      Object.observe(obj,callback);
+  },
+  unobserve: function(obj,keypath,callback){
+      Object.unobserve(obj,callback);
+  },
+  get: function(obj,keypath){
+      return obj[keypath];
+  },
+  set: function(obj,keypath,value){
+      obj[keypath] = value;
+  }
+};
+
 /**
  * add a behavior to the hash. called by users who want to create custom behaviors
  * @param {string}   name

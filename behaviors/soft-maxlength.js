@@ -1,5 +1,6 @@
 'use strict';
-var dom = require('../services/dom');
+var _ = require('lodash'),
+  dom = require('../services/dom');
 
 module.exports = function (result, args) {
   var el = result.el,
@@ -32,5 +33,5 @@ module.exports = function (result, args) {
   };
 
   dom.insertAfter(dom.find(el, '.input-label'), span);
-  return {el: el, bindings: bindings, rivets: rivets };
+  return result;
 };
