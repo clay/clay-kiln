@@ -71,7 +71,7 @@ module.exports = function (result, args) {
       var adapter = result.rivets.adapters[result.rivets.rootInterface],
         model = this.model,
         keypath = this.keypath,
-        items = dom.find(el, '.simple-list-item'),
+        items = dom.findAll(el, '.simple-list-item'),
         addEl = dom.find(el, '.simple-list-add');
 
       // add new item

@@ -1,5 +1,6 @@
 .simple-list {
   display: flex;
+  flex-flow: row wrap;
 }
 
 .simple-list-item {
