@@ -6,11 +6,13 @@
 .simple-list-item {
   border: 1px solid #eee;
   border-radius: 4px;
+  cursor: pointer;
   display: inline-block;
   flex: 0 0 auto;
   margin: 2px;
   outline: none;
   padding: 2px 5px;
+  user-select: none;
 }
 
 .simple-list-item.selected {

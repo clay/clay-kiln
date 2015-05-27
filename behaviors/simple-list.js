@@ -42,22 +42,18 @@ module.exports = function (result, args) {
     var key = keycode(e),
       index = bindings.data.indexOf(bindings.item);
 
+    console.log(index, bindings.data.length)
+
     if (key === 'left' && index > 0) {
       selectItem({ item: bindings.data[index - 1], data: bindings.data });
       e.target.previousSibling.focus();
     } else if ((key === 'tab' || key === 'right') && index < bindings.data.length) {
+      e.preventDefault(); // kill that tab!
       selectItem({ item: bindings.data[index + 1], data: bindings.data });
       e.target.nextSibling.focus();
     } else if (key === 'delete' || key === 'backspace') {
       e.preventDefault();
       bindings.data.splice(index, 1); // remove item from the list
-
-      // select item, or focus the input
-      if (index < bindings.data.length) {
-        selectItem({ item: bindings.data[index + 1], data: bindings.data });
-      } else {
-        dom.find(el, '.simple-list-add').focus();
-      }
     }
   };
 
@@ -97,15 +93,17 @@ module.exports = function (result, args) {
       }
 
       // add keyboard events to add-item field
-      addEl.addEventListener('keyup', function (e) {
+      addEl.addEventListener('keydown', function (e) {
         var key = keycode(e);
 
         if (key === 'enter' || key === 'tab') {
           // add new item
+          e.preventDefault();
           addItem(e);
         } else if (key === 'delete' || key === 'backspace') {
           // select last item
           if (!addEl.innerText.length) {
+            e.preventDefault();
             selectLastItem();
           }
         }
