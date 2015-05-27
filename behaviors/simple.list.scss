@@ -1,20 +1,27 @@
+.simple-list {
+  display: flex;
+}
+
 .simple-list-item {
   border: 1px solid #eee;
   border-radius: 4px;
   display: inline-block;
+  flex: 0 0 auto;
   margin: 2px;
+  outline: none;
   padding: 2px 5px;
 }
 
-.simple-list-item.primary {
-  border: 3px solid green;
+.simple-list-item.selected {
+  border: 2px solid #999;
 }
 
 .simple-list-add {
   display: inline-block;
+  flex: 1 0 auto;
   margin: 2px;
   min-height: 20px;
   min-width: 20px;
-  padding: 2px 5px;
   outline: none;
+  padding: 2px 5px;
 }
