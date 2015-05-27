@@ -33,7 +33,6 @@ function getFormValues(form) {
   _.reduce(dom.findAll(form, 'input,select,textarea'), getValues, data);
   _.reduce(dom.findAll(form, '.simple-list'), getValues, data);
   // todo: re-add more exotic behaviors: lists, contenteditable, etc
-  console.log(data)
   return data;
 }
 
