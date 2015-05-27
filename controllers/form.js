@@ -5,6 +5,13 @@ module.exports = function () {
     edit = require('../services/edit'),
     formvalues = require('../services/formvalues');
 
+  /**
+   * constructor
+   * @param  {Element} el    
+   * @param  {string} ref   component ref
+   * @param  {string} path  dot-delineated path to the data
+   * @param  {Element} [oldEl] hold a reference to the old element for inline forms
+   */
   function constructor(el, ref, path, oldEl) {
     function outsideClickhandler(e) {
       if (!_.contains(e.path, el)) {
@@ -13,6 +20,7 @@ module.exports = function () {
       }
     }
 
+    // if this is an inline form, add an event handler that will close the form when you click out of it
     if (oldEl) {
       dom.find('html').addEventListener('click', outsideClickhandler);
     }
