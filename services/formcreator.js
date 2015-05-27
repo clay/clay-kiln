@@ -68,7 +68,7 @@ function createModalEl(innerEl) {
 
 function createModalFormEl(formLabel, innerEl) {
   var el = dom.create(`
-    <section class="editor">
+    <section data-form-display="modal" class="editor">
       <header>${formLabel}</header>
       <form>
         <div class="input-container"></div>
@@ -84,7 +84,7 @@ function createModalFormEl(formLabel, innerEl) {
 
 function createInlineFormEl(innerEl) {
   var el = dom.create(`
-    <section class="editor-inline">
+    <section data-form-display="inline" class="editor-inline">
       <form>
         <div class="input-container"></div>
         <div class="button-container">
@@ -138,7 +138,7 @@ function createForm(name, options) {
   // register + instantiate controllers
   ds.controller('form', require('../controllers/form'));
   ds.controller('modal', require('../controllers/modal'));
-  ds.get('form', finalEl.querySelector('form'), ref, name);
+  ds.get('form', finalEl, ref, name);
   ds.get('modal', finalEl);
 }
 
@@ -147,6 +147,7 @@ function createInlineForm(name, options, el) {
     ref = options.ref,
     display = 'inline',
     data = ensureValidFormData(name, schema, options.data),
+    oldEl = el.cloneNode(true),
     innerEl = document.createDocumentFragment();
 
   if (schema._has) {
@@ -171,7 +172,7 @@ function createInlineForm(name, options, el) {
 
   // register + instantiate form controller
   ds.controller('form', require('../controllers/form'));
-  ds.get('form', el.querySelector('form'), ref, name);
+  ds.get('form', el, ref, name, oldEl);
 }
 
 module.exports = {
