@@ -35,7 +35,6 @@ module.exports = function () {
   constructor.prototype = {
     events: {
       'submit': 'saveData',
-      '.save click': 'saveData',
       'close': 'closeForm'
     },
 

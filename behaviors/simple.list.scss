@@ -1,3 +1,6 @@
+@import '../styleguide/validity-colors';
+$select-color: #999;
+
 .simple-list {
   display: flex;
   flex-flow: row wrap;
@@ -9,22 +12,32 @@
   cursor: pointer;
   display: inline-block;
   flex: 0 0 auto;
+  font-family: Arial, sans-serif;
+  font-size: 1.4rem;
   margin: 2px;
   outline: none;
-  padding: 2px 5px;
+  padding: 4px 8px;
   user-select: none;
 }
 
 .simple-list-item.selected {
-  border: 2px solid #999;
+  border: 2px solid $select-color;
 }
 
 .simple-list-add {
   display: inline-block;
   flex: 1 0 auto;
-  margin: 2px;
-  min-height: 20px;
-  min-width: 20px;
+  font-family: Arial, sans-serif;
+  font-size: 1.4rem;
   outline: none;
-  padding: 2px 5px;
+   border: none;
+   font-size: 1.6rem;
+   height: 32px;
+   min-width: 20px;
+   padding: 2px;
+   width: auto;
+}
+
+.simple-list-add:invalid {
+  border: 1px solid $border-color-invalid;
 }

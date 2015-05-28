@@ -97,39 +97,6 @@
   margin-right: 10px;
 }
 
-.editor input[type=text],
-.editor input[type=url] {
-  border: 1px solid #999;
-  font-size: 1.4rem;
-  margin: 10px 0 20px;
-  padding: 4px 6px;
-  width: 100%;
-}
-
-.editor input[type=checkbox] {
-  float: right;
-  margin-bottom: 20px;
-}
-
-.editor input:required {
-  border: 1px solid #999;
-}
-
-.editor input:optional {
-  border: 1px dotted rgba(216, 242, 242, 1.0);
-}
-
-.editor input:valid,
-.editor input:in-range {
-  border-color: rgba(63, 191, 63, 1.0);
-}
-
-.editor input:invalid,
-.editor input:out-of-range {
-  background: rgba(242, 216, 216, 1.0);
-  border-color: rgba(191, 63, 63, 1.0);
-}
-
 /* inline editor */
 
 .editor-inline,
@@ -152,68 +119,4 @@
 .editor-inline .input-container {
   margin-bottom: 4px;
   width: 80%;
-}
-
-.editor-inline .input-container input {
-  height: 20px;
-  max-width: 100%;
-  padding: 2px;
-}
-
-.editor-inline input[type=text],
-.editor-inline input[type=url] {
-  border: 1px solid #999;
-  margin-left: 1rem;
-  max-width: 20rem;
-  width: 80%;
-}
-
-.editor-inline input:required {
-  border: 1px solid #999;
-}
-
-.editor-inline input:optional {
-  border: 1px dotted rgba(216, 242, 242, 1.0);
-}
-
-.editor-inline input:valid,
-.editor-inline input:in-range {
-  border-color: rgba(63, 191, 63, 1.0);
-}
-
-.editor-inline input:invalid,
-.editor-inline input:out-of-range {
-  background: rgba(242, 216, 216, 1.0);
-  border-color: rgba(191, 63, 63, 1.0);
-}
-
-/* General horizontal-list editor. */
-ol.horizontal-list {
-  align-content: flex-start;
-  align-items: flex-start;
-  background: #fff;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  width: 80%;
-}
-ol.horizontal-list li {
-  list-style-type: none;
-  width: 10rem;
-}
-ol.horizontal-list li:before {
-  display: none;
-}
-
-/* Specific to tags editor. */
-[data-component="tags"] .horizontal-list .input-label {
-  display: none;
-}
-[data-component="tags"] .horizontal-list [name="isRubric"] {
-  position: relative;
-  top: -3.5rem;
 }

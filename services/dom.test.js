@@ -70,18 +70,16 @@ describe('dom service', function () {
       expect(dom.closest(childEl, 'section')).to.eql(el);
     });
 
+    it('returns null if no parent matches', function () {
+      expect(dom.closest(childEl, '.something.that.doesnt.match')).to.eql(null);
+    });
+
     it('throws error if no selector passed in as second arg', function () {
       function noSelector() { return dom.closest(childEl); }
       function nonStringSelector() { return dom.closest(childEl, 1); }
 
       expect(noSelector).to.throw(Error);
       expect(nonStringSelector).to.throw(Error);
-    });
-
-    it('throws error if no parent matches', function () {
-      function noMatch() { return dom.closest(childEl, '.something.that.doesnt.match'); }
-
-      expect(noMatch).to.throw(Error);
     });
   });
 

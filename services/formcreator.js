@@ -73,7 +73,7 @@ function createModalFormEl(formLabel, innerEl) {
       <form>
         <div class="input-container"></div>
         <div class="button-container">
-          <button class="save">Save</button>
+          <button type="submit" class="save">Save</button>
         </div>
       </form>
     </section>
@@ -88,7 +88,7 @@ function createInlineFormEl(innerEl) {
       <form>
         <div class="input-container"></div>
         <div class="button-container">
-          <button class="save">Save</button>
+          <button type="submit" class="save">Save</button>
         </div>
       </form>
     </section>

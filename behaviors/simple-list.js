@@ -5,10 +5,11 @@ var _ = require('lodash'),
 
 module.exports = function (result, args) {
   var min = args.min,
+    max = args.max,
     listTpl = `
       <section name="${result.bindings.name}" class="simple-list" rv-simplelist="data">
         <span tabindex="0" rv-each-item="data" class="simple-list-item" rv-class-selected="item.selected" rv-on-click="selectItem" rv-on-keydown="keyactions">{ item.text }</span>
-        <span class="simple-list-add" rv-on-click="unselectAll" contenteditable="true"></span>
+        <input class="simple-list-add" rv-on-click="unselectAll" />
       </section>`,
       el = dom.create(listTpl);
 
@@ -119,13 +120,13 @@ module.exports = function (result, args) {
       // add new item from the add-items field
       function addItem(e) {
         var data = adapter.get(model, keypath),
-          newText = { text: addEl.innerText }; // get the new item text
+          newText = { text: addEl.value }; // get the new item text
 
         // prevent creating newlines or tabbing out of the field
         if (e) {
           e.preventDefault();
         }
-        addEl.innerText = ''; // remove it from the add-item field
+        addEl.value = ''; // remove it from the add-item field
         data.push(newText); // put it into the data
         adapter.set(model, keypath, data); // update!
       }
@@ -134,7 +135,7 @@ module.exports = function (result, args) {
       function selectLastItem(e) {
         var data = adapter.get(model, keypath);
 
-        if (!addEl.innerText.length) {
+        if (!addEl.value || !addEl.value.length) {
           e.preventDefault(); // prevent triggering the browser's back button
           _.last(data).selected = true;
           adapter.set(model, keypath, data); // update!
@@ -152,8 +153,22 @@ module.exports = function (result, args) {
           selectLastItem(e);
         }
       }
-      
+
       addEl.addEventListener('keydown', handleItemKeyEvents);
+    },
+
+    // this is called whenever the data changes
+    routine: function (el, items) {
+      var addEl = dom.find(el, '.simple-list-add');
+
+      // if there's a minimum / maximum number of items allowed, toggle form validity
+      if (min && items.length < min) {
+        addEl.setCustomValidity('The minimum number of items is ' + min);
+      } else if (max && items.length > max) {
+        addEl.setCustomValidity('The maximum number of items is ' + max);
+      } else {
+        addEl.setCustomValidity('');
+      }
     }
   };
 
