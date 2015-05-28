@@ -74,7 +74,7 @@ module.exports = function (karma) {
     reporters: ['dots', 'coverage'],
     files: files,
     frameworks: ['mocha', 'chai', 'sinon', 'browserify'],
-    browsers: ['chromeMac'],
+    browsers: ['chromeMac', 'firefoxMac'],
     preprocessors: {
       'controllers/**/*.js': ['browserify'],
       'behaviors/**/*.js': ['browserify'],
