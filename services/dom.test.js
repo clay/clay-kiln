@@ -60,6 +60,31 @@ describe('dom service', function () {
     });
   });
 
+  describe('closest()', function () {
+    it('returns itself if it matches', function () {
+      expect(dom.closest(childEl, '.child-el')).to.eql(childEl);
+    });
+
+    it('returns parent that matches', function () {
+      expect(dom.closest(childEl, '.parent-el')).to.eql(el);
+      expect(dom.closest(childEl, 'section')).to.eql(el);
+    });
+
+    it('throws error if no selector passed in as second arg', function () {
+      function noSelector() { return dom.closest(childEl); }
+      function nonStringSelector() { return dom.closest(childEl, 1); }
+
+      expect(noSelector).to.throw(Error);
+      expect(nonStringSelector).to.throw(Error);
+    });
+
+    it('throws error if no parent matches', function () {
+      function noMatch() { return dom.closest(childEl, '.something.that.doesnt.match'); }
+
+      expect(noMatch).to.throw(Error);
+    });
+  });
+
   describe('prependChild()', function () {
     it('adds a child to an empty element', function () {
       var tmpEl = document.createDocumentFragment();

@@ -45,6 +45,31 @@ module.exports = {
     return cursor;
   },
 
+  /**
+   * get closest parent element that matches selector
+   * @param  {Element} node           
+   * @param  {string} parentSelector 
+   * @throws {Error} If nothing matches before it hits the body
+   * @return {Element}
+   */
+  closest: function (node, parentSelector) {
+    if (!parentSelector || typeof parentSelector !== 'string') {
+      throw new Error('Please specify a selector to match against!');
+    }
+
+    var cursor = node;
+    while (!cursor.matches('body') && !cursor.matches(parentSelector)) {
+      cursor = cursor.parentNode;
+    }
+
+    // throw an error if we hit the body before matching anything
+    if (cursor.matches('body')) {
+      throw new Error(parentSelector + ' not found!');
+    }
+
+    return cursor;
+  },
+
   prependChild: function (parent, child) {
     if (parent.firstChild) {
       parent.insertBefore(child, parent.firstChild);
