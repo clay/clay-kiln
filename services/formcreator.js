@@ -68,7 +68,7 @@ function createModalEl(innerEl) {
 
 function createModalFormEl(formLabel, innerEl) {
   var el = dom.create(`
-    <section data-form-display="modal" class="editor">
+    <section class="editor">
       <header>${formLabel}</header>
       <form>
         <div class="input-container"></div>
@@ -84,7 +84,7 @@ function createModalFormEl(formLabel, innerEl) {
 
 function createInlineFormEl(innerEl) {
   var el = dom.create(`
-    <section data-form-display="inline" class="editor-inline">
+    <section class="editor-inline">
       <form>
         <div class="input-container"></div>
         <div class="button-container">
