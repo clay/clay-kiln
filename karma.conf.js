@@ -1,9 +1,9 @@
 var istanbul = require('browserify-istanbul');
 
 var files = [
-  'controllers/*.test.js',
-  'behaviors/*.test.js',
-  'services/*.test.js'
+  'controllers/*.js',
+  'behaviors/*.js',
+  'services/*.js'
 ];
 
 module.exports = function (karma) {
