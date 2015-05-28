@@ -1,3 +1,5 @@
+var istanbul = require('browserify-istanbul');
+
 var files = [
   'controllers/*.test.js',
   'behaviors/*.test.js',
@@ -14,13 +16,27 @@ module.exports = function (karma) {
     transports: ['websocket'],
     browserify: {
       debug: true,
-      transform: ['es6ify']
+      transform: ['es6ify', istanbul({
+        ignore: ['**/node_modules/**', '**/test/**', '**/tests/**'],
+        defaultIgnore: true
+      })]
     },
     // browerstack config + launchers
     browserStack: {
       username: process.env.BROWSERSTACK_USERNAME,
       accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
       retryLimit: 0 // yolo
+    },
+    coverageReporter: {
+      type : 'lcovonly',
+      dir : 'coverage/',
+      includeAllSources: true,
+      watermarks: {
+        statements: [ 50, 75 ],
+        functions: [ 50, 75 ],
+        branches: [ 50, 75 ],
+        lines: [ 50, 75 ]
+      }
     },
     customLaunchers: {
       // browserstack loves snake_case
@@ -55,16 +71,17 @@ module.exports = function (karma) {
       // }
       // jshint ignore:end
     },
-    reporters: ['dots'],
+    reporters: ['dots', 'coverage'],
     files: files,
     frameworks: ['mocha', 'chai', 'sinon', 'browserify'],
-    browsers: ['chromeMac', 'firefoxMac'],
+    browsers: ['chromeMac'],
     preprocessors: {
-      'controllers/**': ['browserify'],
-      'behaviors/**': ['browserify'],
-      'services/**': ['browserify']
+      'controllers/**/*.js': ['browserify'],
+      'behaviors/**/*.js': ['browserify'],
+      'services/**/*.js': ['browserify']
     },
     plugins: [
+      'karma-coverage',
       'karma-browserify',
       'karma-browserstack-launcher',
       'karma-chai',
