@@ -4,12 +4,12 @@ var _ = require('lodash'),
   behaviors = require('./behaviors');
 
 /**
- * get values from inputs
+ * get values from inputs, lists, etc
  * @param  {{}} data 
  * @param  {Element} el   
  * @return {{}}      
  */
-function getInputValues(data, el) {
+function getValues(data, el) {
   var name = el.getAttribute('name'),
     binding = behaviors.getBinding(name),
     path, viewData;
@@ -30,7 +30,8 @@ function getInputValues(data, el) {
 function getFormValues(form) {
   var data = {};
 
-  _.reduce(dom.findAll(form, 'input,select,textarea'), getInputValues, data);
+  _.reduce(dom.findAll(form, 'input,select,textarea'), getValues, data);
+  _.reduce(dom.findAll(form, '.simple-list'), getValues, data);
   // todo: re-add more exotic behaviors: lists, contenteditable, etc
   return data;
 }

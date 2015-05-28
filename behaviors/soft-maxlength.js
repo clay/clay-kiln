@@ -15,7 +15,8 @@ module.exports = function (result, args) {
   rivets.formatters.charsRemaining = function (max, data) {
     var length = parseInt(data.length),
       remaining = max - length,
-      input = dom.find(el, 'input');
+      input = dom.find(el, 'input'),
+      label = dom.find(el, '.label-inner').innerText;
 
     if (remaining > 0) {
       span.classList.remove('too-long');
@@ -27,7 +28,7 @@ module.exports = function (result, args) {
       return -remaining + ' characters over limit!';
     } else {
       span.classList.add('too-long');
-      input.setCustomValidity(input.getAttribute('name') + ' is too long!');
+      input.setCustomValidity(label + ' is too long!');
       return -remaining + ' characters over limit!';
     }
   };

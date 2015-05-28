@@ -73,7 +73,7 @@ function createModalFormEl(formLabel, innerEl) {
       <form>
         <div class="input-container"></div>
         <div class="button-container">
-          <button class="save">Save</button>
+          <button type="submit" class="save">Save</button>
         </div>
       </form>
     </section>
@@ -88,7 +88,7 @@ function createInlineFormEl(innerEl) {
       <form>
         <div class="input-container"></div>
         <div class="button-container">
-          <button class="save">Save</button>
+          <button type="submit" class="save">Save</button>
         </div>
       </form>
     </section>
@@ -138,35 +138,41 @@ function createForm(name, options) {
   // register + instantiate controllers
   ds.controller('form', require('../controllers/form'));
   ds.controller('modal', require('../controllers/modal'));
-  ds.get('form', finalEl.querySelector('form'), ref, name);
+  ds.get('form', finalEl, ref, name);
   ds.get('modal', finalEl);
 }
 
 function createInlineForm(name, options, el) {
   var schema = options.schema,
     ref = options.ref,
-    display = options.display || 'modal',
+    display = 'inline',
     data = ensureValidFormData(name, schema, options.data),
+    oldEl = el.cloneNode(true),
     innerEl = document.createDocumentFragment();
 
-  // iterate through the schema, creating forms and fields
-  _.forOwn(schema, function (subSchema, subFieldName) {
-    if (!_.contains(subFieldName, '_')) { // don't create fields for metadata
-      var subData = data[subFieldName],
-        subfield = createField(subFieldName, {schema: subSchema, data: subData, path: subFieldName}, display);
+  if (schema._has) {
+    innerEl = createField(name, { schema: schema, data: data, path: name }, display);
+  } else {
+    // iterate through the schema, creating forms and fields
+    _.forOwn(schema, function (subSchema, subFieldName) {
+      if (!_.contains(subFieldName, '_')) { // don't create fields for metadata
+        var subData = data[subFieldName],
+          subfield = createField(subFieldName, {schema: subSchema, data: subData, path: subFieldName}, display);
 
-      if (subfield) {
-        innerEl.appendChild(subfield).cloneNode(true);
+        if (subfield) {
+          innerEl.appendChild(subfield);
+        }
       }
-    }
-  });
+    });
+  }
 
   // build up form el
-  el.appendChild(createInlineFormEl(innerEl));
+  dom.clearChildren(el);
+  dom.prependChild(el, createInlineFormEl(innerEl));
 
   // register + instantiate form controller
   ds.controller('form', require('../controllers/form'));
-  ds.get('form', el.querySelector('form'), ref, name);
+  ds.get('form', el, ref, name, oldEl);
 }
 
 module.exports = {

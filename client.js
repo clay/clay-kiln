@@ -13,6 +13,8 @@ behaviors.add('checkbox', require('./behaviors/checkbox'));
 behaviors.add('textarea', require('./behaviors/textarea'));
 behaviors.add('url', require('./behaviors/url'));
 behaviors.add('select', require('./behaviors/select'));
+behaviors.add('simple-list', require('./behaviors/simple-list'));
+behaviors.add('simple-list-primary', require('./behaviors/simple-list-primary'));
 
 // kick off controller loading when DOM is ready
 document.addEventListener('DOMContentLoaded', function () {

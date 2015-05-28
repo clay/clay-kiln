@@ -45,6 +45,29 @@ module.exports = {
     return cursor;
   },
 
+  /**
+   * get closest parent element that matches selector
+   * @param  {Element} node           
+   * @param  {string} parentSelector 
+   * @return {Element|null}
+   */
+  closest: function (node, parentSelector) {
+    if (!parentSelector || typeof parentSelector !== 'string') {
+      throw new Error('Please specify a selector to match against!');
+    }
+
+    var cursor = node;
+    while (cursor && !cursor.matches('body') && !cursor.matches(parentSelector)) {
+      cursor = cursor.parentNode;
+    }
+
+    if (!cursor || cursor.matches('body')) {
+      return null;
+    } else {
+      return cursor;
+    }
+  },
+
   prependChild: function (parent, child) {
     if (parent.firstChild) {
       parent.insertBefore(child, parent.firstChild);
