@@ -7,9 +7,9 @@ dependencies:
   pre:
     - npm install -g karma-cli
     - npm install -g istanbul
-# test:
-#   post:
-#     - cp -r ./coverage/* $CIRCLE_ARTIFACTS
-#     - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+test:
+  post:
+    - cp -r ./coverage/* $CIRCLE_ARTIFACTS
+    - cat ./coverage/Chrome*/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 
 
