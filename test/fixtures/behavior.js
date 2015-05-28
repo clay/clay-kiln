@@ -3,7 +3,7 @@ var rivets = require('rivets'),
   defaults = {
     el: document.createDocumentFragment(),
     bindings: {
-      data: 'foobar',
+      data: null,
       name: 'foo',
       path: 'foo',
       label: 'Foo'
