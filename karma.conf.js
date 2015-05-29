@@ -3,6 +3,7 @@ var files, settings,
   _ = require('lodash');
 
 files = [
+  'test/setup.js',
   'controllers/*.js',
   'behaviors/*.js',
   'services/*.js'
@@ -16,7 +17,7 @@ settings = {
   browserify: {
     debug: true,
     transform: ['es6ify', istanbul({
-      ignore: ['**/node_modules/**', '**/test/**', '**/tests/**'],
+      ignore: ['**/node_modules/**'],
       defaultIgnore: true
     })]
   },

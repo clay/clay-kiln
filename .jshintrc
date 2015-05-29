@@ -26,6 +26,7 @@
     "afterEach": false,
     /* CHAI */
     "expect": false,
+    "chai": false,
     /* SINON */
     "sinon": false
   }
