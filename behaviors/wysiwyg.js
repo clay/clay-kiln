@@ -6,7 +6,7 @@ module.exports = function (result, args) {
   var rivets = result.rivets,
     textInput = dom.find(result.el, 'input');
 
-  var tpl = `<span class="wysiwyg-input" contenteditable="true" rv-contenteditable="data"></span>`,
+  var tpl = `<span class="wysiwyg-input" contenteditable="true" rv-wysiwyg="data"></span>`,
     wysiwygField = dom.create(tpl);
 
   // hide the original input, while preserving html validation
@@ -15,7 +15,7 @@ module.exports = function (result, args) {
   // put the rich text field after the input
   dom.insertAfter(textInput, wysiwygField);
 
-  rivets.binders.contenteditable = {
+  rivets.binders.wysiwyg = {
     publish: true,
     bind: function (el) {
         // this is called when the binder initializes
@@ -26,7 +26,7 @@ module.exports = function (result, args) {
 
         el.innerHTML = initialText;
 
-        el.addEventListener('keyup', function (e) {
+        el.addEventListener('keyup', function () {
           var text = el.innerHTML;
           adapter.set(model, keypath, text);
         });
@@ -37,7 +37,7 @@ module.exports = function (result, args) {
 
           if (key === 'enter' || key === 'return') {
             e.preventDefault();
-            dom.closest(el, 'form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+            dom.find(dom.closest(el, 'form'), '.save').dispatchEvent(new Event('click', { bubbles: true, cancelable: true }));
           }
         });
 
