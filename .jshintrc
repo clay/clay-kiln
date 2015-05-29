@@ -17,14 +17,17 @@
   "latedef":    true,   // don't use variables before they're defined
   "esnext":     true,   // enable es6 syntax
   "globals": {
-      /* MOCHA */
-      "describe": false,
-      "it": false,
-      "before": false,
-      "beforeEach": false,
-      "after": false,
-      "afterEach": false,
-      /* CHAI */
-      "expect": false
+    /* MOCHA */
+    "describe": false,
+    "it": false,
+    "before": false,
+    "beforeEach": false,
+    "after": false,
+    "afterEach": false,
+    /* CHAI */
+    "expect": false,
+    "chai": false,
+    /* SINON */
+    "sinon": false
   }
 }
