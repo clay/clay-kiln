@@ -2,26 +2,40 @@
 var _ = require('lodash'),
   db = require('./db'),
   // store the component data in memory
-  componentData = {},
+  refData = {},
   // store the component schemas in memory
-  componentSchemas = {};
+  refSchema = {};
   // todo: figure out multi-user edit, since this won't pull in changes correctly if
   // multiple people are changing data in a component without page reloads
 
 _.mixin(require('lodash-deep'));
 
 /**
+ * @param {object} value
+ */
+function setSchemaCache(value) {
+  refSchema = value;
+}
+
+/**
+ * @param {object} value
+ */
+function setDataCache(value) {
+  refData = value;
+}
+
+/**
  * get data for a component. cached on the client side
  * @param  {string}   ref
  * @returns {Promise}
  */
-function getData(ref) {
-  if (componentData[ref]) {
-    return Promise.resolve(componentData[ref]);
+function getDataOnly(ref) {
+  if (refData[ref]) {
+    return Promise.resolve(refData[ref]);
   } else {
     return db.getComponentJSONFromReference(ref)
       .then(function (data) {
-        componentData[ref] = data;
+        refData[ref] = data;
         return data;
       });
   }
@@ -33,15 +47,40 @@ function getData(ref) {
  * @returns  {Promise}
  */
 function getSchema(ref) {
-  if (componentSchemas[ref]) {
-    return Promise.resolve(componentSchemas[ref]);
+  console.log('getSchema', ref);
+  if (refSchema[ref]) {
+    return Promise.resolve(refSchema[ref]);
   } else {
     return db.getSchemaFromReference(ref)
       .then(function (schema) {
-        componentSchemas[ref] = schema;
+        refSchema[ref] = schema;
         return schema;
       });
   }
+}
+
+function mapSchemaToData(schema, data) {
+  _.each(data, function (value, key, list) {
+    var schemaPart = schema[key];
+    if (_.isObject(schemaPart)) {
+      if (!_.isObject(value)) {
+        list[key] = {
+          _schema: schemaPart,
+          value: value
+        };
+      } else {
+        mapSchemaToData(schemaPart, value);
+      }
+    }
+  });
+  data._schema = schema;
+  return data;
+}
+
+function getData(ref) {
+  return Promise.all([getSchema(ref), getDataOnly(ref)]).then(function (res) {
+    return mapSchemaToData(res[0], res[1]);
+  });
 }
 
 /**
@@ -51,7 +90,7 @@ function getSchema(ref) {
  * @return {Promise}      { schema: obj, data: obj }
  */
 function getSchemaAndData(ref, path) {
-  return Promise.all([getSchema(ref), getData(ref)]).then(function (res) {
+  return Promise.all([getSchema(ref), getDataOnly(ref)]).then(function (res) {
     var schema = res[0],
       data = res[1];
 
@@ -89,7 +128,7 @@ function update(ref, newData, path) {
         throw new Error(validationErrors);
       } else {
         // then get the old data and merge it
-        return getData(ref)
+        return getDataOnly(ref)
           .then(function (oldData) {
             var data;
 
@@ -111,8 +150,11 @@ function update(ref, newData, path) {
 // expose main methods
 module.exports = {
   getData: getData,
+  getDataOnly: getDataOnly,
   getSchema: getSchema,
   getSchemaAndData: getSchemaAndData,
   validate: validate,
-  update: update
+  update: update,
+  setSchemaCache: setSchemaCache,
+  setDataCache: setDataCache
 };

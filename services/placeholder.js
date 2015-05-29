@@ -54,7 +54,7 @@ function isFieldEmpty(data) {
 
 /**
  * create dom element for the placeholder, add it to the specified node
- * @param {NodeElement} node
+ * @param {Element} node
  * @param {{ height: string, text: string }} obj
  */
 function addPlaceholderDom(node, obj) {
@@ -72,7 +72,7 @@ function addPlaceholderDom(node, obj) {
  * placeholder should be shown if:
  * - name is a field and field is blank
  * @param {string} ref
- * @param {NodeElement} node
+ * @param {Element} node
  */
 function addPlaceholder(ref, node) {
   var name = node.getAttribute('name');
