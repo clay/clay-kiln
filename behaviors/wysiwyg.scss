@@ -1,0 +1,40 @@
+@import '../styleguide/validity-colors';
+
+.input-text.hidden-input {
+  height: 1px;
+  visibility: visible;
+  margin: 0;
+  padding: 0;
+  border: none;
+  position: absolute;
+  outline: none;
+  top: 100%;
+  left: 0;
+  z-index: 0;
+}
+
+.wysiwyg-input {
+  border: 1px solid #999;
+  font-family: Arial, sans-serif;
+  font-size: 1.4rem;
+  margin: 10px 0 20px;
+  padding: 4px 6px;
+  width: 100%;
+  display: inline-block;
+  white-space: no-wrap;
+  outline: none;
+  z-index: 1;
+  background-color: #fff;
+  position: relative;
+  white-space: pre; // prevents &nbsp;, which messes with character counts
+  cursor: text;
+}
+
+.input-text:valid + .wysiwyg-input {
+  border-color: $border-color-valid;
+}
+
+.input-text:invalid + .wysiwyg-input {
+  background: $background-color-invalid;
+  border-color: $border-color-invalid;
+}
