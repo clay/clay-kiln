@@ -3,34 +3,35 @@
 module.exports = function () {
   var dom = require('../services/dom'),
     references = require('../services/references'),
-    formcreator = require('../services/formcreator'),
+    formCreator = require('../services/form-creator'),
     edit = require('../services/edit'),
     placeholder = require('../services/placeholder');
 
-  function open(ref, name, el) {
+  /**
+   * @param {Element} el
+   * @returns {boolean}
+   */
+  function hasOpenInlineForms(el) {
     var possChildEl = dom.getFirstChildElement(el);
-    // first, check to make sure any inline forms aren't open in this element's children
-    if (possChildEl && possChildEl.classList.contains('editor-inline')) {
-      return;
-    } else {
-      edit.getSchemaAndData(ref, name).then(function (res) {
-        var schema = res.schema,
-          data = res.data,
-          display = schema[references.displayProperty] || 'modal', // defaults to modal
-          formOptions = {
-            schema: schema,
-            data: data,
-            ref: ref,
-            display: display
-          };
+    return !!possChildEl && possChildEl.classList.contains('editor-inline');
+  }
 
-        if (display === 'modal') {
-          formcreator.createForm(name, formOptions);
-        } else if (display === 'inline') {
-          formcreator.createInlineForm(name, formOptions, el);
-        }
-      });
+  function open(ref, name, el) {
+    // first, check to make sure any inline forms aren't open in this element's children
+    if (hasOpenInlineForms()) {
+      return;
     }
+
+    edit.getData(ref).then(function (data) {
+      data[references.referenceProperty] = ref;
+
+      switch (data._schema[references.displayProperty]) {
+        case 'inline':
+          return formCreator.createInlineForm(name, data, el);
+        default: //case 'modal':
+          return formCreator.createForm(name, data);
+      }
+    });
   }
 
   function constructor(el) {

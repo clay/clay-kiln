@@ -3,7 +3,7 @@ module.exports = function () {
   var dom = require('../services/dom'),
     db = require('../services/db'),
     references = require('../services/references'),
-    formcreator = require('../services/formcreator'),
+    formCreator = require('../services/form-creator'),
     edit = require('../services/edit');
 
   function constructor(el) {
@@ -67,7 +67,7 @@ module.exports = function () {
           display: 'meta'
         };
 
-        formcreator.createForm(name, formOptions);
+        formCreator.createForm(name, formOptions);
       });
     },
 

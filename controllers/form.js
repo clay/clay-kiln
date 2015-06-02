@@ -3,7 +3,7 @@ module.exports = function () {
   var _ = require('lodash'),
     dom = require('../services/dom'),
     edit = require('../services/edit'),
-    formvalues = require('../services/formvalues');
+    formValues = require('../services/form-values');
 
   /**
    * constructor
@@ -44,7 +44,7 @@ module.exports = function () {
       var form = this.form,
         ref = this.ref,
         path = this.path,
-        newData = formvalues(form);
+        newData = formValues(form);
 
       if (form.checkValidity()) {
         edit.update(ref, newData, path);

@@ -39,7 +39,7 @@ function addBehavior(name, fn) {
  * run behaviors for a field, in order
  * @param  {string} name     field name
  * @param  {{data: {}, schema: {}}} partials
- * @return {NodeElement}
+ * @return {Element}
  */
 function runBehaviors(name, partials) {
   var schema = partials.schema,
@@ -102,7 +102,7 @@ function expandBehavior(behavior) {
  * @param  {*} behaviors
  * @return {[]}           array of {fn: string, args: {}}
  */
-function getExpandedBehaviors(behaviors) {
+function getExpandedBehaviors (behaviors) {
   if (_.isString(behaviors) || _.isPlainObject(behaviors)) {
     return [expandBehavior(behaviors)]; // wrap it in an array
   } else if (_.isArray(behaviors) && behaviors.length) {
