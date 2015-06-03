@@ -1,67 +1,103 @@
 'use strict';
-var b = require('./behaviors');
+var dirname = __dirname.split('/').pop(),
+  filename = __filename.split('/').pop().split('.').shift(),
+  lib = require('./behaviors'), //static-analysis means this must be string, not ('./' + filename);
+  singleElement = '<div class="behaviour-element"></div>';
 
-describe('behaviors service', function () {
-  describe('getExpandedBehaviors()', function () {
-    it('gets a behavior defined as a string', function () {
-      expect(b.getExpandedBehaviors('foo')).to.eql([{
-        fn: 'foo',
-        args: {}
-      }]);
+describe(dirname, function () {
+  describe(filename, function () {
+    describe('run', function () {
+      var fn = lib[this.title];
+
+      function addTestBehaviors() {
+        lib.add('testBehavior', function (context) {
+          var el = document.createElement('div');
+          el.setAttribute('class', 'behaviour-element');
+          context.el.appendChild(el);
+          return context;
+        });
+      }
+
+      it('accepts shortcut notation', function () {
+        addTestBehaviors();
+        var result = fn({data:{_schema:{_has: 'testBehavior'}}, name: 'name', path: 'name'});
+        expect(result.firstElementChild.outerHTML).to.equal(singleElement);
+      });
+
+      it('accepts inner shortcut notation', function () {
+        addTestBehaviors();
+        var result = fn({data:{_schema:{_has: ['testBehavior']}}, name: 'name', path: 'name'});
+        expect(result.firstElementChild.outerHTML).to.equal(singleElement);
+      });
+
+      it('accepts normal notation', function () {
+        addTestBehaviors();
+        var result = fn({data:{_schema:{_has: [{ fn: 'testBehavior'}]}}, name: 'name', path: 'name'});
+        expect(result.firstElementChild.outerHTML).to.equal(singleElement);
+      });
+
+      it('accepts multiple behaviors', function () {
+        addTestBehaviors();
+        var result = fn({data:{_schema:{_has: [{ fn: 'testBehavior'}, { fn: 'testBehavior' }]}}, name: 'name', path: 'name'});
+        expect(result.firstElementChild.outerHTML).to.equal(singleElement);
+        expect(result.firstElementChild.nextElementSibling.outerHTML).to.equal(singleElement);
+      });
     });
 
-    it('gets a behavior defined as an object', function () {
-      expect(b.getExpandedBehaviors({ fn: 'foo', baz: 'qux' })).to.eql([{
-        fn: 'foo',
-        args: { baz: 'qux' }
-      }]);
-    });
+    describe('getExpandedBehaviors', function () {
+      var fn = lib[this.title];
 
-    it('gets an array of string behaviors', function () {
-      expect(b.getExpandedBehaviors(['foo', 'bar'])).to.eql([{
-        fn: 'foo',
-        args: {}
-      }, {
-        fn: 'bar',
-        args: {}
-      }]);
-    });
+      it('gets a behavior defined as a string', function () {
+        expect(fn('foo')).to.eql([{
+          fn: 'foo',
+          args: {}
+        }]);
+      });
 
-    it('gets an array of object behaviors', function () {
-      expect(b.getExpandedBehaviors([{
-        fn: 'foo'
-      }, {
-        fn: 'bar',
-        baz: 'qux'
-      }])).to.eql([{
-        fn: 'foo',
-        args: {}
-      }, {
-        fn: 'bar',
-        args: { baz: 'qux' }
-      }]);
-    });
+      it('gets a behavior defined as an object', function () {
+        expect(fn({ fn: 'foo', baz: 'qux' })).to.eql([{
+          fn: 'foo',
+          args: { baz: 'qux' }
+        }]);
+      });
 
-    it('gets mixed string and object behaviors in an array', function () {
-      expect(b.getExpandedBehaviors(['foo', {
-        fn: 'bar',
-        baz: 'qux'
-      }])).to.eql([{
-        fn: 'foo',
-        args: {}
-      }, {
-        fn: 'bar',
-        args: { baz: 'qux' }
-      }]);
-    });
+      it('gets an array of string behaviors', function () {
+        expect(fn(['foo', 'bar'])).to.eql([{
+          fn: 'foo',
+          args: {}
+        }, {
+          fn: 'bar',
+          args: {}
+        }]);
+      });
 
-    it('throws an error if you pass in anything that it can\'t parse', function () {
-      expect(function () { b.getExpandedBehaviors(); }).to.throw(Error);
-      expect(function () { b.getExpandedBehaviors(''); }).to.throw(Error);
-      expect(function () { b.getExpandedBehaviors(1); }).to.throw(Error);
-      expect(function () { b.getExpandedBehaviors([]); }).to.throw(Error);
-      expect(function () { b.getExpandedBehaviors({}); }).to.throw(Error);
-      expect(function () { b.getExpandedBehaviors(/^\w$/i); }).to.throw(Error);
+      it('gets an array of object behaviors', function () {
+        expect(fn([{
+          fn: 'foo'
+        }, {
+          fn: 'bar',
+          baz: 'qux'
+        }])).to.eql([{
+            fn: 'foo',
+            args: {}
+          }, {
+            fn: 'bar',
+            args: { baz: 'qux' }
+          }]);
+      });
+
+      it('gets mixed string and object behaviors in an array', function () {
+        expect(fn(['foo', {
+          fn: 'bar',
+          baz: 'qux'
+        }])).to.eql([{
+            fn: 'foo',
+            args: {}
+          }, {
+            fn: 'bar',
+            args: { baz: 'qux' }
+          }]);
+      });
     });
   });
 });

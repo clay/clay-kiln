@@ -18,7 +18,7 @@ module.exports = function () {
 
   function open(ref, name, el) {
     // first, check to make sure any inline forms aren't open in this element's children
-    if (hasOpenInlineForms()) {
+    if (hasOpenInlineForms(el)) {
       return;
     }
 
