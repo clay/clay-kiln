@@ -10,7 +10,7 @@ module.exports = function (result, args) {
 
   var tpl = `
       <label class="input-label"><span class="label-inner">{ label }</span> 
-        <input name="${bindings.name}" type="url" rv-required="required" rv-placeholder="placeholder" rv-value="data" />
+        <input name="${bindings.name}" type="url" rv-required="required" rv-placeholder="placeholder" rv-value="data.value" />
       </label>
     `,
     urlField = dom.create(tpl);

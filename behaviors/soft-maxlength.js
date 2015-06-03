@@ -13,7 +13,7 @@ module.exports = function (result, args) {
 
   bindings.max = args.value;
   rivets.formatters.charsRemaining = function (max, data) {
-    var length = parseInt(data.length),
+    var length = parseInt(data.value.length),
       remaining = max - length,
       input = dom.find(el, 'input'),
       label = dom.find(el, '.label-inner').innerText;

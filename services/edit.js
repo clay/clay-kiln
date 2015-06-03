@@ -31,7 +31,8 @@ function setDataCache(value) {
  */
 function getDataOnly(ref) {
   if (refData[ref]) {
-    return Promise.resolve(refData[ref]);
+    //clone because other people are modifying data, and we don't want to change the cache.
+    return Promise.resolve(_.cloneDeep(refData[ref]));
   } else {
     return db.getComponentJSONFromReference(ref)
       .then(function (data) {
@@ -100,6 +101,19 @@ function getSchemaAndData(ref, path) {
   });
 }
 
+/**
+ * @param data
+ */
+function removeSchemaFromData(data) {
+  _.each(data, function (value) {
+    if (typeof value === 'object' && value !== null) {
+      removeSchemaFromData(value);
+    }
+  });
+  delete data._schema;
+  return data;
+}
+
 // todo: add validation
 function validate(data, schema) {
   return [];
@@ -113,10 +127,17 @@ function validate(data, schema) {
  * @returns {Promise}
  */
 function update(ref, newData, path) {
+  //as soon as we're trying to change data, clear the cache because it'll only tell us what we want to hear: that there
+  // have been no changes
+  refSchema = {};
+  refData = {};
+
   // if path is specified (and it's not the root-level of the component), deepSet newData into the proper place
   if (path && !_.contains(Object.keys(newData), path) && !_.contains(ref, path)) {
     newData = _.deepSet({}, path, newData);
   }
+
+  removeSchemaFromData(newData);
 
   // get the schema and validate data
   return getSchema(ref)
@@ -127,11 +148,11 @@ function update(ref, newData, path) {
         throw new Error(validationErrors);
       } else {
         // then get the old data and merge it
-        return getDataOnly(ref)
+        return getData(ref)
+          .then(removeSchemaFromData)
           .then(function (oldData) {
-            var data;
 
-            data = _(oldData)
+            var data = _(oldData)
               .assign(newData)
               .omit('_ref')
               .value();

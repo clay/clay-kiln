@@ -10,7 +10,7 @@ module.exports = function (result, args) {
 
   var tpl = `
       <label class="input-label"><span class="label-inner">{ label }</span> 
-        <textarea class="editor-textarea" name="${bindings.name}" rv-required="required" rv-placeholder="placeholder" rv-value="data"></textarea>
+        <textarea class="editor-textarea" name="${bindings.name}" rv-required="required" rv-placeholder="placeholder" rv-value="data.value"></textarea>
       </label>
     `,
     textArea = dom.create(tpl);
