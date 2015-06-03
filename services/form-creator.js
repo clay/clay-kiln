@@ -103,9 +103,8 @@ function expandFields(context) {
   return _(data._schema)
     .omit(isMetadata)
     .pick(_.isObject)
-    .forOwn(function (value, name) {
+    .map(function (value, name) {
       var path = context.path ? context.path + '.' + name : name;
-      console.log('expandFields', data, data[name], value, name);
       return createField({data: data[name], name: name, path: path, display: context.display});
     })
     .reduce(appendElementClones, document.createDocumentFragment());
@@ -121,8 +120,6 @@ function createField(context) {
     el, finalEl;
 
   if (schema[references.fieldProperty]) {
-    // call behaviors
-    console.log('behaviors', context);
     return behaviors.run(context);
   }
 

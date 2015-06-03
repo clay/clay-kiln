@@ -47,7 +47,6 @@ function getDataOnly(ref) {
  * @returns  {Promise}
  */
 function getSchema(ref) {
-  console.log('getSchema', ref);
   if (refSchema[ref]) {
     return Promise.resolve(refSchema[ref]);
   } else {

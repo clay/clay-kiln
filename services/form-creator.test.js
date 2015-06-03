@@ -32,12 +32,15 @@ describe(dirname, function () {
     }
 
     function expectSingleItemBehavior(display) {
+      var el = document.createElement('div');
+      el.setAttribute('class', 'behaviour-element');
+
       sandbox.mock(behaviors).expects('run').withArgs({
         data: { _schema: { _has: ['text'] }, value: 'hi' },
         display: display,
         name: 'thing',
         path: 'thing'
-      }).once();
+      }).once().returns(el);
     }
 
     describe('createForm', function () {
@@ -88,7 +91,9 @@ describe(dirname, function () {
           <section class="editor">
             <header>Some Name</header>
             <form>
-              <div class="input-container"></div>
+              <div class="input-container">
+                <div class="behaviour-element"></div>
+              </div>
               <div class="button-container">
                 <button type="submit" class="save">Save</button>
               </div>
@@ -140,7 +145,9 @@ describe(dirname, function () {
 
         expect(condense(el.firstElementChild.innerHTML)).to.equal(condense(`
         <form>
-          <div class="input-container"></div>
+          <div class="input-container">
+            <div class="behaviour-element"></div>
+          </div>
           <div class="button-container">
             <button type="submit" class="save">Save</button>
           </div>
