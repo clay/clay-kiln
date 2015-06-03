@@ -10,7 +10,7 @@ module.exports = function (result, args) {
 
   textField = dom.create(`
       <label class="input-label"><span class="label-inner">{ label }</span>
-        <input class="input-text" name="${bindings.name}" type="text" rv-required="required" rv-pattern="pattern" rv-minLength="minLength" rv-maxLength="maxLength" rv-placeholder="placeholder" rv-value="data" />
+        <input class="input-text" name="${bindings.name}" type="text" rv-required="required" rv-pattern="pattern" rv-minLength="minLength" rv-maxLength="maxLength" rv-placeholder="placeholder" rv-value="data.value" />
       </label>
     `);
 
