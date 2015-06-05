@@ -11,13 +11,13 @@ var _ = require('lodash'),
  */
 function getValues(data, el) {
   var name = el.getAttribute('name'),
-    binding = behaviors.getBinding(name),
+    view = behaviors.getBinding(name),
     path, viewData;
 
-  if (binding && binding.models) {
-    path = binding.models.path;
-    viewData = binding.models.data;
-    _.deepSet(data, path, viewData);
+  if (view && view.models) {
+    path = view.models.path;
+    viewData = view.models.data;
+    _.set(data, path, viewData);
   }
 
   return data;

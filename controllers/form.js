@@ -34,20 +34,23 @@ module.exports = function () {
 
   constructor.prototype = {
     events: {
-      'submit': 'saveData',
-      'close': 'closeForm'
+      submit: 'saveData',
+      close: 'closeForm'
     },
 
     saveData: function (e) {
       e.preventDefault();
 
-      var form = this.form,
+      var data,
+        form = this.form,
         ref = this.ref,
-        path = this.path,
-        newData = formValues(form);
+        path = this.path;
+
+      //only things relative to path have changed
+      data = _.get(formValues(form), path);
 
       if (form.checkValidity()) {
-        edit.update(ref, newData, path);
+        edit.update(ref, data, path);
       }
     },
 

@@ -1,14 +1,14 @@
 'use strict';
 var _ = require('lodash'),
   db = require('./db'),
+  references = require('./references'),
   // store the component data in memory
   refData = {},
   // store the component schemas in memory
   refSchema = {};
-  // todo: figure out multi-user edit, since this won't pull in changes correctly if
-  // multiple people are changing data in a component without page reloads
 
-_.mixin(require('lodash-deep'));
+// todo: figure out multi-user edit, since this won't pull in changes correctly if
+// multiple people are changing data in a component without page reloads
 
 /**
  * @param {object} value
@@ -36,6 +36,8 @@ function getDataOnly(ref) {
   } else {
     return db.getComponentJSONFromReference(ref)
       .then(function (data) {
+        //be nice, remember where this data is from
+        data[references.referenceProperty] = ref;
         refData[ref] = data;
         return data;
       });
@@ -59,7 +61,12 @@ function getSchema(ref) {
   }
 }
 
-function mapSchemaToData(schema, data) {
+/**
+ * @param {object} schema
+ * @param {object} data
+ * @returns {object}
+ */
+function addSchemaToData(schema, data) {
   _.each(data, function (value, key, list) {
     var schemaPart = schema[key];
     if (_.isObject(schemaPart)) {
@@ -69,7 +76,7 @@ function mapSchemaToData(schema, data) {
           value: value
         };
       } else {
-        mapSchemaToData(schemaPart, value);
+        addSchemaToData(schemaPart, value);
       }
     }
   });
@@ -79,25 +86,7 @@ function mapSchemaToData(schema, data) {
 
 function getData(ref) {
   return Promise.all([getSchema(ref), getDataOnly(ref)]).then(function (res) {
-    return mapSchemaToData(res[0], res[1]);
-  });
-}
-
-/**
- * convenience function to get schema + data
- * @param  {string} ref  
- * @param  {string} [path] path to a subset of the schema/data, e.g. title.long
- * @return {Promise}      { schema: obj, data: obj }
- */
-function getSchemaAndData(ref, path) {
-  return Promise.all([getSchema(ref), getDataOnly(ref)]).then(function (res) {
-    var schema = res[0],
-      data = res[1];
-
-    return {
-      schema: path ? _.deepGet(schema, path) : schema,
-      data: path ? _.deepGet(data, path) : data
-    };
+    return addSchemaToData(res[0], res[1]);
   });
 }
 
@@ -105,9 +94,13 @@ function getSchemaAndData(ref, path) {
  * @param data
  */
 function removeSchemaFromData(data) {
-  _.each(data, function (value) {
+  _.each(data, function (value, key) {
     if (typeof value === 'object' && value !== null) {
-      removeSchemaFromData(value);
+      if (value.value !== undefined && !!value._schema && _.size(value) === 2) {
+        data[key] = value.value;
+      } else {
+        removeSchemaFromData(value);
+      }
     }
   });
   delete data._schema;
@@ -122,47 +115,40 @@ function validate(data, schema) {
 /**
  * update data for a component.
  * @param  {string}   ref
- * @param {{}} newData
+ * @param {{}} data  (relative to path)
  * @param {string} [path] part of the schema (for partial updates)
  * @returns {Promise}
  */
-function update(ref, newData, path) {
+function update(ref, data, path) {
   //as soon as we're trying to change data, clear the cache because it'll only tell us what we want to hear: that there
   // have been no changes
   refSchema = {};
   refData = {};
 
-  // if path is specified (and it's not the root-level of the component), deepSet newData into the proper place
-  if (path && !_.contains(Object.keys(newData), path) && !_.contains(ref, path)) {
-    newData = _.deepSet({}, path, newData);
-  }
-
-  removeSchemaFromData(newData);
+  //remove top-level self-reference
+  removeSchemaFromData(data);
 
   // get the schema and validate data
   return getSchema(ref)
     .then(function (schema) {
-      var validationErrors = validate(newData, schema);
+      var validationErrors = validate(data, schema);
 
       if (validationErrors.length) {
         throw new Error(validationErrors);
       } else {
-        // then get the old data and merge it
-        return getData(ref)
-          .then(removeSchemaFromData)
-          .then(function (oldData) {
+        return getDataOnly(ref).then(function (oldData) {
+          // if path is specified, set newData into the proper place
+          if (path) {
+            data = _.set(oldData, path, data);
+          }
+          delete data._ref;
 
-            var data = _(oldData)
-              .assign(newData)
-              .omit('_ref')
-              .value();
-
-            return db.putToReference(ref, data)
-              .then(function () {
-                // todo: replace component without page reload
-                location.reload();
-              });
-          });
+          return db.putToReference(ref, data)
+            .then(function () {
+              // todo: replace component without page reload
+              location.reload();
+            });
+        });
       }
     });
 }
@@ -172,7 +158,6 @@ module.exports = {
   getData: getData,
   getDataOnly: getDataOnly,
   getSchema: getSchema,
-  getSchemaAndData: getSchemaAndData,
   validate: validate,
   update: update,
   setSchemaCache: setSchemaCache,

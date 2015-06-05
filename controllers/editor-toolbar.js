@@ -59,15 +59,8 @@ module.exports = function () {
         name = main.getAttribute('data-component'),
         ref = main.getAttribute(references.referenceAttribute);
 
-      edit.getSchemaAndData(ref).then(function (res) {
-        var formOptions = {
-          schema: res.schema,
-          data: res.data,
-          ref: ref,
-          display: 'meta'
-        };
-
-        formCreator.createForm(name, formOptions);
+      edit.getData(ref).then(function (data) {
+        formCreator.createForm(name, data);
       });
     },
 

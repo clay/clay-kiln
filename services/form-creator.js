@@ -20,14 +20,14 @@ function isMetadata(value, key) {
 }
 
 /**
- * Schema and name are required for all forms
+ * Schema and path are required for all forms
  * NOTE: Since exceptions are throw if the data is bad, no need to return anything unless we're _modifying_ the data.
- * @param name
+ * @param path
  * @param data
  */
-function ensureValidFormData(name, data) {
-  if (!_.isString(name) || _.isEmpty(name)) {
-    throw new Error('Name is required to create a form!');
+function ensureValidFormData(path, data) {
+  if (!_.isString(path) || _.isEmpty(path)) {
+    throw new Error('Path is required to create a form!');
   } else if (!_.isObject(data)) {
     throw new Error('Data is required to create a form!');
   } else if (!_.isObject(data._schema)) {
@@ -87,7 +87,7 @@ function createInlineFormEl(innerEl) {
  */
 function appendElementClones(el, value) {
   if (value && (value.nodeType === 1 || value.nodeType === 11)) {
-    el.appendChild(value.cloneNode(true));
+    el.appendChild(value);
   }
   return el;
 }
@@ -95,7 +95,7 @@ function appendElementClones(el, value) {
 /**
  * Iterate through this level of the schema, creating more fields
  *
- * @param {{display: string, name: string, path: string, data: object}} context
+ * @param {{display: string, path: string, data: object}} context
  * @returns {Element}
  */
 function expandFields(context) {
@@ -105,14 +105,14 @@ function expandFields(context) {
     .pick(_.isObject)
     .map(function (value, name) {
       var path = context.path ? context.path + '.' + name : name;
-      return createField({data: data[name], name: name, path: path, display: context.display});
+      return createField({data: data[name], path: path, display: context.display});
     })
     .reduce(appendElementClones, document.createDocumentFragment());
 }
 
 /**
  * create fields recursively
- * @param  {{name: string, display: string, data: object}} context
+ * @param  {{path: string, display: string, data: object}} context
  * @return {Element | undefined}
  */
 function createField(context) {
@@ -129,7 +129,7 @@ function createField(context) {
   // once we're done iterating, put those in a section
   finalEl = dom.create(`
     <section class="editor-section">
-      <h2 class="editor-section-head">${label(context.name, schema)}</h2>
+      <h2 class="editor-section-head">${label(context.path, schema)}</h2>
       <div class="editor-section-body">
     </section>
   `);
@@ -139,41 +139,42 @@ function createField(context) {
 }
 
 /**
- *
- * @param {string} name
- * @param {object} data
+ * @param {string} ref  Place we'll be saving to
+ * @param {string} path  What path within the data is being shown/modified
+ * @param {object} data  The data itself (starting from path)
  * @param {Element} [rootEl=document.body]   Root element to temporarily insert the modal
  */
-function createForm(name, data, rootEl) {
-  ensureValidFormData(name, data);
+function createForm(ref, path, data, rootEl) {
+  ensureValidFormData(path, data);
   rootEl = rootEl || document.body;
 
   // iterate through first level of the schema, creating forms and fields
   var el = expandFields({
     data: data,
-    name: name,
+    path: path,
     display: data._schema[references.displayProperty] || 'modal'
   });
 
   // build up form el
-  el = createModalEl(createModalFormEl(label(name, data._schema), el));
+  el = createModalEl(createModalFormEl(label(path, data._schema), el));
   // append it to the body
   rootEl.appendChild(el);
 
   // register + instantiate controllers
   ds.controller('form', require('../controllers/form'));
   ds.controller('modal', require('../controllers/modal'));
-  ds.get('form', el, data[references.referenceProperty], name);
+  ds.get('form', el, ref, path);
   ds.get('modal', el);
 }
 
 /**
- * @param {string} name
- * @param {object} data
- * @param {Element} el
+ * @param {string} ref  Place we'll be saving to
+ * @param {string} path  What path within the data is being shown/modified
+ * @param {object} data  The data itself (starting from path)
+ * @param {Element} el   Root element that is being inline edited
  */
-function createInlineForm(name, data, el) {
-  ensureValidFormData(name, data);
+function createInlineForm(ref, path, data, el) {
+  ensureValidFormData(path, data);
 
   var innerEl,
     schema = data._schema,
@@ -181,7 +182,7 @@ function createInlineForm(name, data, el) {
     isField = !!schema[references.fieldProperty],
     context = {
       data: data,
-      name: name,
+      path: path,
       display: 'inline'
     };
 
@@ -197,7 +198,7 @@ function createInlineForm(name, data, el) {
 
   // register + instantiate form controller
   ds.controller('form', require('../controllers/form'));
-  ds.get('form', el, data[references.referenceProperty], name, oldEl);
+  ds.get('form', el, ref, path, oldEl);
 }
 
 module.exports = {

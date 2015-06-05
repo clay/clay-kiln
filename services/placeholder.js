@@ -77,14 +77,15 @@ function addPlaceholderDom(node, obj) {
 function addPlaceholder(ref, node) {
   var name = node.getAttribute('name');
 
-  return edit.getSchemaAndData(ref, name).then(function (partials) {
-    var hasPlaceholder = partials.schema[references.placeholderProperty],
-      isField = partials.schema[references.fieldProperty];
+  return edit.getData(ref, name).then(function (data) {
+    var field = data._schema[references.fieldProperty],
+      hasPlaceholder = data._schema[references.placeholderProperty],
+      isField = !!field;
 
-    if (hasPlaceholder && isField && isFieldEmpty(partials.data)) {
+    if (hasPlaceholder && isField && isFieldEmpty(data.data)) {
       return addPlaceholderDom(node, {
-        text: getPlaceholderText(name, partials),
-        height: getPlaceholderHeight(partials.schema[references.fieldProperty])
+        text: getPlaceholderText(name, data),
+        height: getPlaceholderHeight(field) //ugh
       });
     } else {
       return node;
