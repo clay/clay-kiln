@@ -94,17 +94,14 @@ function getData(ref) {
  * @param data
  */
 function removeSchemaFromData(data) {
-  _.each(data, function (value, key) {
-    if (typeof value === 'object' && value !== null) {
-      if (value.value !== undefined && !!value._schema && _.size(value) === 2) {
-        data[key] = value.value;
-      } else {
-        removeSchemaFromData(value);
-      }
-    }
-  });
-  delete data._schema;
-  return data;
+  if (data.value !== undefined && !!data._schema && _.size(data) === 2) {
+    //not an object anymore
+    return data.value;
+  } else {
+    //still an object
+    delete data._schema;
+    return _.mapValues(data, removeSchemaFromData);
+  }
 }
 
 // todo: add validation
@@ -126,7 +123,7 @@ function update(ref, data, path) {
   refData = {};
 
   //remove top-level self-reference
-  removeSchemaFromData(data);
+  data = removeSchemaFromData(data);
 
   // get the schema and validate data
   return getSchema(ref)

@@ -10,18 +10,17 @@ var _ = require('lodash'),
  * get placeholder text
  * if placeholder has a string, use it
  * else call the label service
- * @param  {string} name     
- * @param  {{}} partials 
+ * @param  {string} path
+ * @param  {{}} schema
  * @return {string}          
  */
-function getPlaceholderText(name, partials) {
-  var fieldSchema = partials.schema,
-    possiblePlaceholderText = fieldSchema[references.placeholderProperty];
+function getPlaceholderText(path, schema) {
+  var possiblePlaceholderText = schema[references.placeholderProperty];
 
   if (typeof possiblePlaceholderText === 'string' && possiblePlaceholderText !== 'true') {
     return possiblePlaceholderText;
   } else {
-    return label(name, fieldSchema);
+    return label(path, schema);
   }
 }
 
@@ -75,16 +74,17 @@ function addPlaceholderDom(node, obj) {
  * @param {Element} node
  */
 function addPlaceholder(ref, node) {
-  var name = node.getAttribute('name');
+  var path = node.getAttribute('name');
 
-  return edit.getData(ref, name).then(function (data) {
-    var field = data._schema[references.fieldProperty],
-      hasPlaceholder = data._schema[references.placeholderProperty],
+  return edit.getData(ref).then(function (data) {
+    var schema = _.get(data, path)._schema,
+      field = schema[references.fieldProperty],
+      hasPlaceholder = schema[references.placeholderProperty],
       isField = !!field;
 
     if (hasPlaceholder && isField && isFieldEmpty(data.data)) {
       return addPlaceholderDom(node, {
-        text: getPlaceholderText(name, data),
+        text: getPlaceholderText(path, schema),
         height: getPlaceholderHeight(field) //ugh
       });
     } else {
