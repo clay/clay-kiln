@@ -88,7 +88,7 @@ describe(dirname, function () {
       });
 
       it('can show item in template', function () {
-        //expectNoLogging();
+        expectNoLogging();
         expectSingleItemBehavior('modal');
 
         fn('ref', 'name', singleItem, el);
@@ -152,7 +152,7 @@ describe(dirname, function () {
       });
 
       it('can show item in template', function () {
-        //expectNoLogging();
+        expectNoLogging();
         expectSingleItemBehavior('inline');
 
         fn('ref', 'name', singleItem, el);

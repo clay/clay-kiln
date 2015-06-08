@@ -13,7 +13,7 @@ var _ = require('lodash'),
  * @param {string}   name
  * @param {Function} fn   usually from a browserify require() call
  */
-function addBehavior(name, fn) {
+function add(name, fn) {
   // note: this WILL overwrite behaviors already in the hash,
   // allowing people to use custom versions of our core behaviors
   behaviorsHash[name] = fn;
@@ -105,7 +105,7 @@ function getBinding(name) {
   return bindingsHash[name];
 }
 
-exports.add = addBehavior;
+exports.add = add;
 exports.run = run;
 exports.getExpandedBehaviors = getExpandedBehaviors;
 exports.getBinding = getBinding;

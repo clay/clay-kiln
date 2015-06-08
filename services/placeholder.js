@@ -87,7 +87,7 @@ function addPlaceholder(ref, node) {
     if (hasPlaceholder && isField && isFieldEmpty(data)) {
       return addPlaceholderDom(node, {
         text: getPlaceholderText(path, schema),
-        height: getPlaceholderHeight(field) //ugh
+        height: getPlaceholderHeight(field) //todo: change to be better, remove access to this function.
       });
     } else {
       return node;
