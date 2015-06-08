@@ -14,7 +14,11 @@
   "ecmaFeatures": {
     "blockBindings": true,
     "forOf": true,
-    "modules": true,
+    "objectLiteralDuplicateProperties": true,
+    "objectLiteralShorthandProperties": true,
+    "objectLiteralShorthandMethods": true,
+    "octalLiterals": true,
+    "binaryLiterals": true,
     "templateStrings": true,
     "generators": true
   },
