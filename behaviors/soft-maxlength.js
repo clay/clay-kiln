@@ -1,5 +1,5 @@
 'use strict';
-var _ = require('lodash'),
+var striptags = require('striptags'),
   dom = require('../services/dom');
 
 module.exports = function (result, args) {
@@ -13,22 +13,22 @@ module.exports = function (result, args) {
 
   bindings.max = args.value;
   rivets.formatters.charsRemaining = function (max, data) {
-    var length = parseInt(data.length),
-      remaining = max - length,
-      input = dom.find(el, 'input'),
-      label = dom.find(el, '.label-inner').innerText;
+    var length = parseInt(striptags(data).length),
+      remaining = max - length;
+      // input = dom.find(el, 'input'),
+      // label = dom.find(el, '.label-inner').innerText;
 
     if (remaining > 0) {
       span.classList.remove('too-long');
-      input.setCustomValidity('');
+      // input.setCustomValidity('');
       return remaining + ' characters remaining';
     } else if (remaining === 0) {
       span.classList.remove('too-long');
-      input.setCustomValidity('');
+      // input.setCustomValidity('');
       return -remaining + ' characters over limit!';
     } else {
       span.classList.add('too-long');
-      input.setCustomValidity(label + ' is too long!');
+      // input.setCustomValidity(label + ' is too long!');
       return -remaining + ' characters over limit!';
     }
   };

@@ -34,7 +34,8 @@
     "lodash": "^3.8.0",
     "lodash-deep": "^1.6.0",
     "medium-editor": "^5.0.0-alpha.0",
-    "rivets": "^0.8.1"
+    "rivets": "^0.8.1",
+    "striptags": "^2.0.2"
   },
   "devDependencies": {
     "browserify-istanbul": "^0.2.1",
