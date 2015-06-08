@@ -22,11 +22,16 @@ function isMetadata(value, key) {
 /**
  * Schema and path are required for all forms
  * NOTE: Since exceptions are throw if the data is bad, no need to return anything unless we're _modifying_ the data.
+ * @param ref
  * @param path
  * @param data
  */
-function ensureValidFormData(path, data) {
-  if (!_.isString(path) || _.isEmpty(path)) {
+function ensureValidFormData(ref, path, data) {
+
+
+  if (!_.isString(ref) || _.isEmpty(ref)) {
+    throw new Error('Reference is required to create a form!');
+  } else if (!_.isString(path) || _.isEmpty(path)) {
     throw new Error('Path is required to create a form!');
   } else if (!_.isObject(data)) {
     throw new Error('Data is required to create a form!');
@@ -145,7 +150,7 @@ function createField(context) {
  * @param {Element} [rootEl=document.body]   Root element to temporarily insert the modal
  */
 function createForm(ref, path, data, rootEl) {
-  ensureValidFormData(path, data);
+  ensureValidFormData(ref, path, data);
   rootEl = rootEl || document.body;
 
   // iterate through first level of the schema, creating forms and fields
@@ -174,7 +179,7 @@ function createForm(ref, path, data, rootEl) {
  * @param {Element} el   Root element that is being inline edited
  */
 function createInlineForm(ref, path, data, el) {
-  ensureValidFormData(path, data);
+  ensureValidFormData(ref, path, data);
 
   var innerEl,
     schema = data._schema,
