@@ -36,7 +36,6 @@
     "complexity": [1, 8],
     "consistent-return": 1,
     "default-case": 1,
-    "dot-location": 2,
     "guard-for-in": 2,
     "no-alert": 1,
     "no-floating-decimal": 1,
