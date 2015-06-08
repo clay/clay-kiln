@@ -1,4 +1,3 @@
-'use strict';
 var label = require('./label');
 
 describe('label service', function () {
@@ -6,6 +5,7 @@ describe('label service', function () {
 
   it('uses _label string if it exists', function () {
     var schema = { _label: 'Baz' };
+
     expect(label(name, schema)).to.equal('Baz');
   });
 

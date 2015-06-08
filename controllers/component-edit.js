@@ -3,8 +3,6 @@
  * @class
  */
 
-'use strict';
-
 function ComponentEdit() {
   var _ = require('lodash'),
     dom = require('../services/dom'),
@@ -19,13 +17,14 @@ function ComponentEdit() {
    */
   function hasOpenInlineForms(el) {
     var possChildEl = dom.getFirstChildElement(el);
+
     return !!possChildEl && possChildEl.classList.contains('editor-inline');
   }
 
   /**
-   * @param ref
-   * @param el
-   * @param path
+   * @param {string} ref
+   * @param {Element} el
+   * @param {string} path
    */
   function open(ref, el, path) {
     // first, check to make sure any inline forms aren't open in this element's children
@@ -34,7 +33,7 @@ function ComponentEdit() {
     }
 
     edit.getData(ref).then(function (data) {
-      //If name, then we're going deep; Note anything with a name either modal by default or has a displayProperty.
+      // If name, then we're going deep; Note anything with a name either modal by default or has a displayProperty.
       if (path) {
         data = _.get(data, path);
       }
@@ -42,7 +41,7 @@ function ComponentEdit() {
       switch (data._schema[references.displayProperty]) {
         case 'inline':
           return formCreator.createInlineForm(ref, path, data, el);
-        default: //case 'modal':
+        default: // case 'modal':
           return formCreator.createForm(ref, path, data);
       }
     });
@@ -50,7 +49,7 @@ function ComponentEdit() {
 
   /**
    * @constructs
-   * @param el
+   * @param {Element} el
    */
   function constructor(el) {
     var ref = el.getAttribute(references.referenceAttribute),
@@ -75,14 +74,16 @@ function ComponentEdit() {
     }
 
     // add click events to children with [name], but NOT children inside child components
-    while ((node = walker.nextNode())) {
-      name = node.getAttribute(references.nameAttribute)
+    node = walker.nextNode();
+    while (node) {
+      name = node.getAttribute(references.nameAttribute);
       if (name) {
         // add click event that generates a form
         node.addEventListener('click', open.bind(null, ref, node, name));
         // add mask
         placeholder(ref, node);
       }
+      node = walker.nextNode();
     }
   }
 

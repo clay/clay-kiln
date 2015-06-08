@@ -1,4 +1,3 @@
-'use strict';
 var domify = require('domify');
 
 module.exports = {
@@ -36,9 +35,12 @@ module.exports = {
 
   /**
    * NOTE: nodeType of 1 means Element
+   * @param {Element} parent
+   * @returns {Element} cursor
    */
   getFirstChildElement: function (parent) {
     var cursor = parent.firstChild;
+
     while (cursor && cursor.nodeType !== 1) {
       cursor = cursor.nextSibling;
     }

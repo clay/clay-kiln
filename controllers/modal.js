@@ -1,4 +1,3 @@
-'use strict';
 module.exports = function () {
   var dom = require('../services/dom');
 

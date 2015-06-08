@@ -1,4 +1,3 @@
-'use strict';
 var _ = require('lodash'),
   rivets = require('rivets'),
   references = require('./references'),
@@ -52,7 +51,7 @@ function expandBehavior(behavior) {
 
 /**
  * _has: 'text' or _has: { thing: thing } is shorthand
- * @param behaviors
+ * @param {*} behaviors
  * @returns {Boolean|*}
  */
 function isShortHandDefinition(behaviors) {
@@ -82,12 +81,13 @@ function run(context) {
     contextLabel = label(context.path, context.data._schema),
     behaviors = getExpandedBehaviors(context.data._schema[references.fieldProperty]);
 
-  //apply behaviours to create new context containing form element
+  // apply behaviours to create new context containing form element
   result = _(behaviors)
     .filter(omitMissingBehaviors)
     .reduce(function (currentContext, behavior) {
-      //apply behaviours
+      // apply behaviours
       var name = behavior[references.behaviorKey];
+
       return behaviorsHash[name](currentContext, behavior.args);
     }, {
       el: document.createDocumentFragment(),

@@ -1,4 +1,3 @@
-'use strict';
 module.exports = function () {
   var dom = require('../services/dom'),
     db = require('../services/db'),
@@ -64,7 +63,7 @@ module.exports = function () {
     },
 
     publish: function () {
-      alert('published');
+      alert('published'); // eslint-disable-line
       // todo: figure out publish functionality
     }
   };

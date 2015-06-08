@@ -1,4 +1,3 @@
-'use strict';
 var _ = require('lodash'),
   ds = require('dollar-slice'),
   references = require('./references'),
@@ -22,9 +21,9 @@ function isMetadata(value, key) {
 /**
  * Schema and path are required for all forms
  * NOTE: Since exceptions are throw if the data is bad, no need to return anything unless we're _modifying_ the data.
- * @param ref
- * @param path
- * @param data
+ * @param {string} ref
+ * @param {string} path
+ * @param {object} data
  */
 function ensureValidFormData(ref, path, data) {
 
@@ -48,6 +47,7 @@ function createModalEl(innerEl) {
       <div class="editor-modal"></div>
     </div>
   `);
+
   dom.find(el, '.editor-modal').appendChild(innerEl);
   return el;
 }
@@ -64,6 +64,7 @@ function createModalFormEl(formLabel, innerEl) {
       </form>
     </section>
   `);
+
   dom.find(el, '.input-container').appendChild(innerEl);
   return el;
 }
@@ -79,6 +80,7 @@ function createInlineFormEl(innerEl) {
       </form>
     </section>
   `);
+
   dom.find(el, '.input-container').appendChild(innerEl);
   return el;
 }
@@ -98,24 +100,6 @@ function appendElementClones(el, value) {
 }
 
 /**
- * Iterate through this level of the schema, creating more fields
- *
- * @param {{display: string, path: string, data: object}} context
- * @returns {Element}
- */
-function expandFields(context) {
-  var data = context.data;
-  return _(data._schema)
-    .omit(isMetadata)
-    .pick(_.isObject)
-    .map(function (value, name) {
-      var path = context.path ? context.path + '.' + name : name;
-      return createField({data: data[name], path: path, display: context.display});
-    })
-    .reduce(appendElementClones, document.createDocumentFragment());
-}
-
-/**
  * create fields recursively
  * @param  {{path: string, display: string, data: object}} context
  * @return {Element | undefined}
@@ -129,7 +113,7 @@ function createField(context) {
   }
 
   // iterate through this level of the schema, creating more fields
-  el = expandFields(context);
+  el = expandFields(context); // eslint-disable-line
 
   // once we're done iterating, put those in a section
   finalEl = dom.create(`
@@ -141,6 +125,26 @@ function createField(context) {
   dom.find(finalEl, '.editor-section-body').appendChild(el);
 
   return finalEl;
+}
+
+/**
+ * Iterate through this level of the schema, creating more fields
+ *
+ * @param {{display: string, path: string, data: object}} context
+ * @returns {Element}
+ */
+function expandFields(context) {
+  var data = context.data;
+
+  return _(data._schema)
+    .omit(isMetadata)
+    .pick(_.isObject)
+    .map(function (value, name) {
+      var path = context.path ? context.path + '.' + name : name;
+
+      return createField({data: data[name], path: path, display: context.display});
+    })
+    .reduce(appendElementClones, document.createDocumentFragment());
 }
 
 /**

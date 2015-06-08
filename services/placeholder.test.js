@@ -1,4 +1,3 @@
-'use strict';
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./placeholder'),
@@ -98,6 +97,7 @@ describe(dirname, function () {
 
     function stubNode() {
       var node = document.createElement('div');
+
       node.setAttribute('name', 'title');
       return node;
     }

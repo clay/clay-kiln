@@ -1,4 +1,3 @@
-'use strict';
 var _ = require('lodash'),
   db = require('./db'),
   references = require('./references'),
@@ -31,12 +30,12 @@ function setDataCache(value) {
  */
 function getDataOnly(ref) {
   if (refData[ref]) {
-    //clone because other people are modifying data, and we don't want to change the cache.
+    // clone because other people are modifying data, and we don't want to change the cache.
     return Promise.resolve(_.cloneDeep(refData[ref]));
   } else {
     return db.getComponentJSONFromReference(ref)
       .then(function (data) {
-        //be nice, remember where this data is from
+        // be nice, remember where this data is from
         data[references.referenceProperty] = ref;
         refData[ref] = data;
         return data;
@@ -69,6 +68,7 @@ function getSchema(ref) {
 function addSchemaToData(schema, data) {
   _.each(data, function (value, key, list) {
     var schemaPart = schema[key];
+
     if (_.isObject(schemaPart)) {
       if (!_.isObject(value)) {
         list[key] = {
@@ -91,21 +91,22 @@ function getData(ref) {
 }
 
 /**
- * @param data
+ * @param {object} data
+ * @returns {object}
  */
 function removeSchemaFromData(data) {
   if (data.value !== undefined && !!data._schema && _.size(data) === 2) {
-    //not an object anymore
+    // not an object anymore
     return data.value;
   } else {
-    //still an object
+    // still an object
     delete data._schema;
     return _.mapValues(data, removeSchemaFromData);
   }
 }
 
 // todo: add validation
-function validate(data, schema) {
+function validate() {
   return [];
 }
 
@@ -117,12 +118,12 @@ function validate(data, schema) {
  * @returns {Promise}
  */
 function update(ref, data, path) {
-  //as soon as we're trying to change data, clear the cache because it'll only tell us what we want to hear: that there
+  // as soon as we're trying to change data, clear the cache because it'll only tell us what we want to hear: that there
   // have been no changes
   refSchema = {};
   refData = {};
 
-  //remove top-level self-reference
+  // remove top-level self-reference
   data = removeSchemaFromData(data);
 
   // get the schema and validate data

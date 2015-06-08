@@ -1,7 +1,7 @@
-'use strict';
+/* eslint max-nested-callbacks: [1, 5] */
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
-  lib = require('./form-creator'), //static-analysis means this must be string, not ('./' + filename);
+  lib = require('./form-creator'), // static-analysis means this must be string, not ('./' + filename);
   behaviors = require('./behaviors'),
   refIsRequired = /ref\w* is required/i,
   pathIsRequired = /path is required/i,
@@ -34,6 +34,7 @@ describe(dirname, function () {
 
     function expectSingleItemBehavior(display) {
       var itemEl = document.createElement('div');
+
       itemEl.setAttribute('class', 'behaviour-element');
 
       sandbox.mock(behaviors).expects('run').withArgs({

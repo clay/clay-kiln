@@ -1,7 +1,6 @@
-'use strict';
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
-  lib = require('./behaviors'), //static-analysis means this must be string, not ('./' + filename);
+  lib = require('./behaviors'), // static-analysis means this must be string, not ('./' + filename);
   singleElement = '<div class="behaviour-element"></div>';
 
 describe(dirname, function () {
@@ -12,6 +11,7 @@ describe(dirname, function () {
       function addTestBehaviors() {
         lib.add('testBehavior', function (context) {
           var el = document.createElement('div');
+
           el.setAttribute('class', 'behaviour-element');
           context.el.appendChild(el);
           return context;

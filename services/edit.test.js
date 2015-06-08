@@ -1,4 +1,3 @@
-'use strict';
 var lib = require('./edit'),
   db = require('./db');
 

@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
   componentAttribute: 'data-component',
   nameAttribute: 'name',
@@ -23,11 +21,13 @@ module.exports = {
    */
   getComponentNameFromReference: function (ref) {
     var result = /components\/(.+?)[\/\.]/.exec(ref) || /components\/(.*)/.exec(ref);
+
     return result && result[1];
   },
 
   getInstanceIdFromReference: function (ref) {
     var result = /\/components\/.+?\/instances\/(.+)/.exec(ref);
+
     return result && result[1];
   }
 };

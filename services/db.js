@@ -1,4 +1,3 @@
-'use strict';
 var _ = require('lodash'),
   dom = require('./dom'),
   references = require('./references');
@@ -28,6 +27,7 @@ function send(options) {
 
     request.onreadystatechange = function (e) {
       var target = e.currentTarget || e.target;
+
       if (target.readyState === 4) {
         try {
           resolve(target);
@@ -41,6 +41,7 @@ function send(options) {
 
 /**
  * Translate the response into what we expect
+ * @param {Element} target
  * @returns {{}}
  */
 function expectJSONResult(target) {
