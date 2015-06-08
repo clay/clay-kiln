@@ -48,7 +48,8 @@ function getPlaceholderHeight(behaviors) {
 
 function isFieldEmpty(data) {
   // note: 0, false, etc are valid bits of data for numbers, booleans, etc so they shouldn't be masked
-  return data === undefined || data === null || data === '' || (Array.isArray(data) && !data.length);
+  var value = data.value;
+  return !_.isBoolean(value) && !_.isNumber(value) && _.isEmpty(value);
 }
 
 /**
@@ -77,12 +78,13 @@ function addPlaceholder(ref, node) {
   var path = node.getAttribute('name');
 
   return edit.getData(ref).then(function (data) {
-    var schema = _.get(data, path)._schema,
+    data = _.get(data, path);
+    var schema = data._schema,
       field = schema[references.fieldProperty],
       hasPlaceholder = schema[references.placeholderProperty],
       isField = !!field;
 
-    if (hasPlaceholder && isField && isFieldEmpty(data.data)) {
+    if (hasPlaceholder && isField && isFieldEmpty(data)) {
       return addPlaceholderDom(node, {
         text: getPlaceholderText(path, schema),
         height: getPlaceholderHeight(field) //ugh
