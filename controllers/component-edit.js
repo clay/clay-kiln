@@ -1,52 +1,73 @@
+/**
+ * controller that gets instantiated for all editable components
+ * @class
+ */
+
 'use strict';
-// controller that gets instantiated for all editable components
-module.exports = function () {
-  var dom = require('../services/dom'),
+
+function ComponentEdit() {
+  var _ = require('lodash'),
+    dom = require('../services/dom'),
     references = require('../services/references'),
-    formcreator = require('../services/formcreator'),
+    formCreator = require('../services/form-creator'),
     edit = require('../services/edit'),
     placeholder = require('../services/placeholder');
 
-  function open(ref, name, el) {
+  /**
+   * @param {Element} el
+   * @returns {boolean}
+   */
+  function hasOpenInlineForms(el) {
     var possChildEl = dom.getFirstChildElement(el);
-    // first, check to make sure any inline forms aren't open in this element's children
-    if (possChildEl && possChildEl.classList.contains('editor-inline')) {
-      return;
-    } else {
-      edit.getSchemaAndData(ref, name).then(function (res) {
-        var schema = res.schema,
-          data = res.data,
-          display = schema[references.displayProperty] || 'modal', // defaults to modal
-          formOptions = {
-            schema: schema,
-            data: data,
-            ref: ref,
-            display: display
-          };
-
-        if (display === 'modal') {
-          formcreator.createForm(name, formOptions);
-        } else if (display === 'inline') {
-          formcreator.createInlineForm(name, formOptions, el);
-        }
-      });
-    }
+    return !!possChildEl && possChildEl.classList.contains('editor-inline');
   }
 
+  /**
+   * @param ref
+   * @param el
+   * @param path
+   */
+  function open(ref, el, path) {
+    // first, check to make sure any inline forms aren't open in this element's children
+    if (hasOpenInlineForms(el)) {
+      return;
+    }
+
+    edit.getData(ref).then(function (data) {
+      //If name, then we're going deep; Note anything with a name either modal by default or has a displayProperty.
+      if (path) {
+        data = _.get(data, path);
+      }
+
+      switch (data._schema[references.displayProperty]) {
+        case 'inline':
+          return formCreator.createInlineForm(ref, path, data, el);
+        default: //case 'modal':
+          return formCreator.createForm(ref, path, data);
+      }
+    });
+  }
+
+  /**
+   * @constructs
+   * @param el
+   */
   function constructor(el) {
     var ref = el.getAttribute(references.referenceAttribute),
-      // Normally name is only on children of components. One exception is the tags component.
+    // Normally name is only on children of components. One exception is the tags component.
       componentHasName = el.getAttribute(references.componentAttribute) && el.getAttribute(references.nameAttribute),
-      walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, { acceptNode: function (node) {
-        if (!node.getAttribute(references.componentAttribute)) {
-          return NodeFilter.FILTER_ACCEPT;
-        } else {
-          return NodeFilter.FILTER_REJECT;
+      walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, {
+        acceptNode: function (node) {
+          if (!node.getAttribute(references.componentAttribute)) {
+            return NodeFilter.FILTER_ACCEPT;
+          } else {
+            return NodeFilter.FILTER_REJECT;
+          }
         }
-      }}),
+      }),
       node,
       name;
-    
+
     // Special case when name is in the component element.
     if (componentHasName) {
       name = componentHasName;
@@ -57,7 +78,7 @@ module.exports = function () {
     while ((node = walker.nextNode())) {
       if (name = node.getAttribute(references.nameAttribute)) { // jshint ignore:line
         // add click event that generates a form
-        node.addEventListener('click', open.bind(null, ref, name, node));
+        node.addEventListener('click', open.bind(null, ref, node, name));
         // add mask
         placeholder(ref, node);
       }
@@ -76,6 +97,7 @@ module.exports = function () {
       dom.preventDefault(e);
     }
   };
-
   return constructor;
-};
+}
+
+module.exports = ComponentEdit;

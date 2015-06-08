@@ -10,18 +10,17 @@ var _ = require('lodash'),
  * get placeholder text
  * if placeholder has a string, use it
  * else call the label service
- * @param  {string} name     
- * @param  {{}} partials 
+ * @param  {string} path
+ * @param  {{}} schema
  * @return {string}          
  */
-function getPlaceholderText(name, partials) {
-  var fieldSchema = partials.schema,
-    possiblePlaceholderText = fieldSchema[references.placeholderProperty];
+function getPlaceholderText(path, schema) {
+  var possiblePlaceholderText = schema[references.placeholderProperty];
 
   if (typeof possiblePlaceholderText === 'string' && possiblePlaceholderText !== 'true') {
     return possiblePlaceholderText;
   } else {
-    return label(name, fieldSchema);
+    return label(path, schema);
   }
 }
 
@@ -49,12 +48,13 @@ function getPlaceholderHeight(behaviors) {
 
 function isFieldEmpty(data) {
   // note: 0, false, etc are valid bits of data for numbers, booleans, etc so they shouldn't be masked
-  return data === undefined || data === null || data === '' || (Array.isArray(data) && !data.length);
+  var value = data.value;
+  return !_.isBoolean(value) && !_.isNumber(value) && _.isEmpty(value);
 }
 
 /**
  * create dom element for the placeholder, add it to the specified node
- * @param {NodeElement} node
+ * @param {Element} node
  * @param {{ height: string, text: string }} obj
  */
 function addPlaceholderDom(node, obj) {
@@ -72,19 +72,22 @@ function addPlaceholderDom(node, obj) {
  * placeholder should be shown if:
  * - name is a field and field is blank
  * @param {string} ref
- * @param {NodeElement} node
+ * @param {Element} node
  */
 function addPlaceholder(ref, node) {
-  var name = node.getAttribute('name');
+  var path = node.getAttribute('name');
 
-  return edit.getSchemaAndData(ref, name).then(function (partials) {
-    var hasPlaceholder = partials.schema[references.placeholderProperty],
-      isField = partials.schema[references.fieldProperty];
+  return edit.getData(ref).then(function (data) {
+    data = _.get(data, path);
+    var schema = data._schema,
+      field = schema[references.fieldProperty],
+      hasPlaceholder = schema[references.placeholderProperty],
+      isField = !!field;
 
-    if (hasPlaceholder && isField && isFieldEmpty(partials.data)) {
+    if (hasPlaceholder && isField && isFieldEmpty(data)) {
       return addPlaceholderDom(node, {
-        text: getPlaceholderText(name, partials),
-        height: getPlaceholderHeight(partials.schema[references.fieldProperty])
+        text: getPlaceholderText(path, schema),
+        height: getPlaceholderHeight(field) //todo: change to be better, remove access to this function.
       });
     } else {
       return node;

@@ -7,7 +7,7 @@ function createOptions(name, options) {
     return `
       <li class="editor-radio-item">
         <label class="option-label">${ _.startCase(option) || 'None' }
-          <input name="${name}" type="radio" rv-checked="data" value="${option}" />
+          <input name="${name}" type="radio" rv-checked="data.value" value="${option}" />
         </label>
       </li>`;
   }).join('\n');

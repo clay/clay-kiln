@@ -3,7 +3,7 @@ module.exports = function () {
   var _ = require('lodash'),
     dom = require('../services/dom'),
     edit = require('../services/edit'),
-    formvalues = require('../services/formvalues');
+    formValues = require('../services/form-values');
 
   /**
    * constructor
@@ -34,20 +34,23 @@ module.exports = function () {
 
   constructor.prototype = {
     events: {
-      'submit': 'saveData',
-      'close': 'closeForm'
+      submit: 'saveData',
+      close: 'closeForm'
     },
 
     saveData: function (e) {
       e.preventDefault();
 
-      var form = this.form,
+      var data,
+        form = this.form,
         ref = this.ref,
-        path = this.path,
-        newData = formvalues(form);
+        path = this.path;
+
+      //only things relative to path have changed
+      data = _.get(formValues(form), path);
 
       if (form.checkValidity()) {
-        edit.update(ref, newData, path);
+        edit.update(ref, data, path);
       }
     },
 

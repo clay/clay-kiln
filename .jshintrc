@@ -13,7 +13,7 @@
   "undef":      true,   // prevent explicitly undeclared variables
   "unused":     true,   // warn when defining variables that are never used
   "strict":     true,   // use strict mode
-  "node":       true,   // allow node global vars
+  "browserify": true,   // allow node global vars
   "latedef":    true,   // don't use variables before they're defined
   "esnext":     true,   // enable es6 syntax
   "globals": {
