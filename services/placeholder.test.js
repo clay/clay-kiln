@@ -121,8 +121,8 @@ describe(dirname, function () {
       }});
 
       return lib('fakeRef', stubNode()).then(function (el) {
-        expect(el.querySelector('.editor-placeholder')).to.not.exist;
-        expect(el.querySelector('span.placeholder-label')).to.not.exist;
+        expect(el.querySelector('.editor-placeholder')).to.equal(null);
+        expect(el.querySelector('span.placeholder-label')).to.equal(null);
       });
     });
 
@@ -132,8 +132,8 @@ describe(dirname, function () {
       }});
 
       return lib('fakeRef', stubNode()).then(function (el) {
-        expect(el.querySelector('.editor-placeholder')).to.not.exist;
-        expect(el.querySelector('span.placeholder-label')).to.not.exist;
+        expect(el.querySelector('.editor-placeholder')).to.equal(null);
+        expect(el.querySelector('span.placeholder-label')).to.equal(null);
       });
     });
 
@@ -143,8 +143,8 @@ describe(dirname, function () {
       }});
 
       return lib('fakeRef', stubNode()).then(function (el) {
-        expect(el.querySelector('.editor-placeholder')).to.not.exist;
-        expect(el.querySelector('span.placeholder-label')).to.not.exist;
+        expect(el.querySelector('.editor-placeholder')).to.equal(null);
+        expect(el.querySelector('span.placeholder-label')).to.equal(null);
       });
     });
 

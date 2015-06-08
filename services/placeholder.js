@@ -12,7 +12,7 @@ var _ = require('lodash'),
  * else call the label service
  * @param  {string} path
  * @param  {{}} schema
- * @return {string}          
+ * @return {string}
  */
 function getPlaceholderText(path, schema) {
   var possiblePlaceholderText = schema[references.placeholderProperty];
@@ -78,11 +78,13 @@ function addPlaceholder(ref, node) {
   var path = node.getAttribute('name');
 
   return edit.getData(ref).then(function (data) {
+    var schema, field, hasPlaceholder, isField;
+
     data = _.get(data, path);
-    var schema = data._schema,
-      field = schema[references.fieldProperty],
-      hasPlaceholder = schema[references.placeholderProperty],
-      isField = !!field;
+    schema = data._schema;
+    field = schema[references.fieldProperty];
+    hasPlaceholder = schema[references.placeholderProperty];
+    isField = !!field;
 
     if (hasPlaceholder && isField && isFieldEmpty(data)) {
       return addPlaceholderDom(node, {

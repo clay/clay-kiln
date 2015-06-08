@@ -150,11 +150,13 @@ function createField(context) {
  * @param {Element} [rootEl=document.body]   Root element to temporarily insert the modal
  */
 function createForm(ref, path, data, rootEl) {
+  var el;
+
   ensureValidFormData(ref, path, data);
   rootEl = rootEl || document.body;
 
   // iterate through first level of the schema, creating forms and fields
-  var el = expandFields({
+  el = expandFields({
     data: data,
     path: path,
     display: data._schema[references.displayProperty] || 'modal'
@@ -179,17 +181,18 @@ function createForm(ref, path, data, rootEl) {
  * @param {Element} el   Root element that is being inline edited
  */
 function createInlineForm(ref, path, data, el) {
+  var innerEl, schema, oldEl, isField, context;
+
   ensureValidFormData(ref, path, data);
 
-  var innerEl,
-    schema = data._schema,
-    oldEl = el.cloneNode(true),
-    isField = !!schema[references.fieldProperty],
-    context = {
-      data: data,
-      path: path,
-      display: 'inline'
-    };
+  schema = data._schema;
+  oldEl = el.cloneNode(true);
+  isField = !!schema[references.fieldProperty];
+  context = {
+    data: data,
+    path: path,
+    display: 'inline'
+  };
 
   if (isField) {
     innerEl = createField(context);

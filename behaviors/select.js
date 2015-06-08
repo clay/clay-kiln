@@ -1,4 +1,3 @@
-'use strict';
 var _ = require('lodash'),
   dom = require('../services/dom');
 
@@ -10,19 +9,19 @@ function createOptions(options) {
 
 module.exports = function (result, args) {
   var bindings = result.bindings,
-    options = args.options;
+    options = args.options,
+    field;
 
   // add some stuff to the bindings
   bindings.required = !!args.required;
 
-  var tpl = `
-      <label class="input-label"><span class="label-inner">{ label }</span> 
-        <select class="editor-select" name="${bindings.name}" rv-value="data.value">
-          ${ createOptions(options) }
-        </select>
-      </label>
-    `,
-    field = dom.create(tpl);
+  field = dom.create(`
+    <label class="input-label"><span class="label-inner">{ label }</span>
+      <select class="editor-select" name="${bindings.name}" rv-value="data.value">
+        ${ createOptions(options) }
+      </select>
+    </label>
+  `);
 
   result.el = field;
 

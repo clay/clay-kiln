@@ -33,14 +33,14 @@ describe(dirname, function () {
     }
 
     function expectSingleItemBehavior(display) {
-      var el = document.createElement('div');
-      el.setAttribute('class', 'behaviour-element');
+      var itemEl = document.createElement('div');
+      itemEl.setAttribute('class', 'behaviour-element');
 
       sandbox.mock(behaviors).expects('run').withArgs({
         data: { _schema: { _has: ['text'] }, value: 'hi' },
         display: display,
         path: 'name.thing'
-      }).once().returns(el);
+      }).once().returns(itemEl);
     }
 
     describe('createForm', function () {
@@ -172,4 +172,3 @@ describe(dirname, function () {
     });
   });
 });
-

@@ -7,7 +7,7 @@ module.exports = function () {
 
   /**
    * constructor
-   * @param  {Element} el    
+   * @param  {Element} el
    * @param  {string} ref   component ref
    * @param  {string} path  dot-delineated path to the data
    * @param  {Element} [oldEl] hold a reference to the old element for inline forms
@@ -39,14 +39,14 @@ module.exports = function () {
     },
 
     saveData: function (e) {
-      e.preventDefault();
-
       var data,
         form = this.form,
         ref = this.ref,
         path = this.path;
 
-      //only things relative to path have changed
+      e.preventDefault();
+
+      // only things relative to path have changed
       data = _.get(formValues(form), path);
 
       if (form.checkValidity()) {

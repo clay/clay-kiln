@@ -5,14 +5,14 @@ var _ = require('lodash'),
 
 function send(options) {
   return new Promise(function (resolve, reject) {
+    var request = new XMLHttpRequest();
+
     if (_.isString(options)) {
       options = {
         method: 'GET',
         url: options
       };
     }
-
-    var request = new XMLHttpRequest();
 
     request.open(options.method, options.url, true);
 
@@ -60,12 +60,13 @@ function expectJSONResult(target) {
  * @returns {function}
  */
 function expectHTMLResult(ref) {
+  var result, parent, statusCodeGroup;
+
   return function (error, target) {
     if (error) {
       throw error;
     } else {
-      var result, parent,
-        statusCodeGroup = target.status.toString()[0];
+      statusCodeGroup = target.status.toString()[0];
 
       if (statusCodeGroup === '2') {
         parent = document.createElement('div');

@@ -1,7 +1,7 @@
 'use strict';
 module.exports = function () {
   var dom = require('../services/dom');
-  
+
   function constructor(el) {
     var modal = dom.find(el, '.editor-modal');
 

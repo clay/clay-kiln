@@ -19,26 +19,34 @@ describe(dirname, function () {
       }
 
       it('accepts shortcut notation', function () {
+        var result;
+
         addTestBehaviors();
-        var result = fn({data:{_schema:{_has: 'testBehavior'}}, name: 'name', path: 'name'});
+        result = fn({data: {_schema: {_has: 'testBehavior'}}, name: 'name', path: 'name'});
         expect(result.firstElementChild.outerHTML).to.equal(singleElement);
       });
 
       it('accepts inner shortcut notation', function () {
+        var result;
+
         addTestBehaviors();
-        var result = fn({data:{_schema:{_has: ['testBehavior']}}, name: 'name', path: 'name'});
+        result = fn({data: {_schema: {_has: ['testBehavior']}}, name: 'name', path: 'name'});
         expect(result.firstElementChild.outerHTML).to.equal(singleElement);
       });
 
       it('accepts normal notation', function () {
+        var result;
+
         addTestBehaviors();
-        var result = fn({data:{_schema:{_has: [{ fn: 'testBehavior'}]}}, name: 'name', path: 'name'});
+        result = fn({data: {_schema: {_has: [{ fn: 'testBehavior'}]}}, name: 'name', path: 'name'});
         expect(result.firstElementChild.outerHTML).to.equal(singleElement);
       });
 
       it('accepts multiple behaviors', function () {
+        var result;
+
         addTestBehaviors();
-        var result = fn({data:{_schema:{_has: [{ fn: 'testBehavior'}, { fn: 'testBehavior' }]}}, name: 'name', path: 'name'});
+        result = fn({data: {_schema: {_has: [{ fn: 'testBehavior'}, { fn: 'testBehavior' }]}}, name: 'name', path: 'name'});
         expect(result.firstElementChild.outerHTML).to.equal(singleElement);
         expect(result.firstElementChild.nextElementSibling.outerHTML).to.equal(singleElement);
       });

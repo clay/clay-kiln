@@ -19,16 +19,16 @@ describe('edit service', function () {
     var fn = lib[this.title];
 
     it('returns data with schema', function () {
-      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({some:'data'}));
-      sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({some:'schema'}));
+      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({some: 'data'}));
+      sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({some: 'schema'}));
       return fn('foo').then(function (data) {
         expect(data).to.include.keys('_schema');
       });
     });
 
     it('returns data with self-reference', function () {
-      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({some:'data'}));
-      sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({some:'schema'}));
+      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({some: 'data'}));
+      sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({some: 'schema'}));
       return fn('foo').then(function (data) {
         expect(data).to.include.keys('_ref');
       });
@@ -47,16 +47,16 @@ describe('edit service', function () {
     var fn = lib[this.title];
 
     it('does not have schema', function () {
-      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({foo:'bar'}));
-      sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({foo:'bar'}));
+      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({foo: 'bar'}));
+      sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({foo: 'bar'}));
       return fn('foo').then(function (data) {
         expect(data).to.not.include.keys('_schema');
       });
     });
 
     it('returns self-reference', function () {
-      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({foo:'bar'}));
-      sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({foo:'bar'}));
+      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({foo: 'bar'}));
+      sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({foo: 'bar'}));
       return fn('foo').then(function (data) {
         expect(data).to.include.keys('_ref');
       });
@@ -67,10 +67,10 @@ describe('edit service', function () {
     var fn = lib[this.title];
 
     it('gets schema', function () {
-      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({foo:'bar'}));
-      sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({foo:'bar'}));
+      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({foo: 'bar'}));
+      sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({foo: 'bar'}));
       return fn('foo').then(function (data) {
-        expect(data).to.deep.equal({foo:'bar'});
+        expect(data).to.deep.equal({foo: 'bar'});
       });
     });
   });

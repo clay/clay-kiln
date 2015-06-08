@@ -85,10 +85,10 @@ function run(context) {
   //apply behaviours to create new context containing form element
   result = _(behaviors)
     .filter(omitMissingBehaviors)
-    .reduce(function (context, behavior) {
+    .reduce(function (currentContext, behavior) {
       //apply behaviours
       var name = behavior[references.behaviorKey];
-      return behaviorsHash[name](context, behavior.args);
+      return behaviorsHash[name](currentContext, behavior.args);
     }, {
       el: document.createDocumentFragment(),
       bindings: _.assign({ label: contextLabel, name: context.path }, context),

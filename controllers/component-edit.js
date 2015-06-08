@@ -57,8 +57,8 @@ function ComponentEdit() {
     // Normally name is only on children of components. One exception is the tags component.
       componentHasName = el.getAttribute(references.componentAttribute) && el.getAttribute(references.nameAttribute),
       walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, {
-        acceptNode: function (node) {
-          if (!node.getAttribute(references.componentAttribute)) {
+        acceptNode: function (currentNode) {
+          if (!currentNode.getAttribute(references.componentAttribute)) {
             return NodeFilter.FILTER_ACCEPT;
           } else {
             return NodeFilter.FILTER_REJECT;
@@ -76,7 +76,8 @@ function ComponentEdit() {
 
     // add click events to children with [name], but NOT children inside child components
     while ((node = walker.nextNode())) {
-      if (name = node.getAttribute(references.nameAttribute)) { // jshint ignore:line
+      name = node.getAttribute(references.nameAttribute)
+      if (name) {
         // add click event that generates a form
         node.addEventListener('click', open.bind(null, ref, node, name));
         // add mask
