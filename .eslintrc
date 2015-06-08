@@ -1,0 +1,83 @@
+{
+  "env": {
+    "browser": true,
+    "node": true,
+    "mocha": true
+  },
+  // add global vars for chai, etc
+  "globals": {
+    "expect": false,
+    "chai": false,
+    "sinon": false
+  },
+  // enable the es6 features supported by our browsers / iojs
+  "ecmaFeatures": {
+    "blockBindings": true,
+    "forOf": true,
+    "modules": true,
+    "templateStrings": true,
+    "generators": true
+  },
+  "rules": {
+    // possible errors
+    "comma-dangle": 1,
+    "no-extra-parens": 1,
+    "no-extra-semi": 1,
+    "valid-jsdoc": [1, {
+      "requireReturn": false,
+      "requireParamDescription": false,
+      "requireReturnDescription": false
+    }],
+    // best practices
+    "complexity": [1, 8],
+    "consistent-return": 1,
+    "default-case": 1,
+    "dot-location": 2,
+    "guard-for-in": 2,
+    "no-alert": 1,
+    "no-floating-decimal": 1,
+    "no-new-wrappers": 1,
+    "no-self-compare": 2,
+    "no-throw-literal": 2,
+    "no-void": 2,
+    "vars-on-top": 2,
+    "wrap-iife": 1,
+    // strict mode
+    "strict": [1, "never"],
+    // variables
+    "no-unused-vars": 1,
+    "no-use-before-define": 1,
+    // node.js
+    "handle-callback-err": [1, "^.*(e|E)rr"],
+    "no-mixed-requires": 0,
+    "no-new-require": 2,
+    "no-path-concat": 1,
+    // stylistic issues
+    "brace-style": [2, "1tbs", { "allowSingleLine": true }],
+    "comma-spacing": [1, {"before": false, "after": true}],
+    "comma-style": [1, "last"],
+    "eol-last": 1,
+    "func-names": 1,
+    "indent": [1, 2, { "indentSwitchCase": true }],
+    "max-nested-callbacks": [1, 3],
+    "newline-after-var": [1, "always"],
+    "no-nested-ternary": 2,
+    "no-spaced-func": 0,
+    "no-trailing-spaces": 1,
+    "no-underscore-dangle": 1,
+    "no-unneeded-ternary": 1,
+    "one-var": 1,
+    "quotes": [1, "single", "avoid-escape"],
+    "semi": [1, "always"],
+    "space-after-keywords": [1, "always"],
+    "space-before-blocks": [1, "always"],
+    "space-before-function-paren": [1, {"anonymous": "always", "named": "never"}],
+    "space-infix-ops": [1, {"int32Hint": false}],
+    "spaced-line-comment": [1, "always"],
+    // es6
+    "generator-star-spacing": [2, "before"],
+    // legacy jshint rules
+    "max-depth": [1, 3],
+    "max-params": [1, 4]
+  }
+}
