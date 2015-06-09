@@ -24,62 +24,55 @@
   },
   "rules": {
     // possible errors
-    "comma-dangle": 1,
     "no-extra-parens": 1,
-    "no-extra-semi": 1,
     "valid-jsdoc": [1, {
       "requireReturn": false,
       "requireParamDescription": false,
       "requireReturnDescription": false
     }],
     // best practices
-    "complexity": [1, 8],
-    "consistent-return": 1,
-    "default-case": 1,
+    "complexity": [2, 8],
+    "default-case": 2,
     "guard-for-in": 2,
     "no-alert": 1,
     "no-floating-decimal": 1,
-    "no-new-wrappers": 1,
     "no-self-compare": 2,
     "no-throw-literal": 2,
     "no-void": 2,
     "vars-on-top": 2,
-    "wrap-iife": 1,
+    "wrap-iife": 2,
     // strict mode
-    "strict": [1, "never"],
+    "strict": [2, "never"],
     // variables
-    "no-unused-vars": 1,
-    "no-use-before-define": 1,
+    "no-unused-vars": 2,
     // node.js
-    "handle-callback-err": [1, "^.*(e|E)rr"],
+    "handle-callback-err": [2, "^.*(e|E)rr"],
     "no-mixed-requires": 0,
     "no-new-require": 2,
-    "no-path-concat": 1,
+    "no-path-concat": 2,
     // stylistic issues
     "brace-style": [2, "1tbs", { "allowSingleLine": true }],
-    "comma-spacing": [1, {"before": false, "after": true}],
-    "comma-style": [1, "last"],
-    "eol-last": 1,
-    "indent": [1, 2, { "indentSwitchCase": true }],
-    "max-nested-callbacks": [1, 4],
-    "newline-after-var": [1, "always"],
+    "comma-style": [2, "last"],
+    "indent": [2, 2, { "indentSwitchCase": true }],
+    "max-nested-callbacks": [2, 4],
+    "newline-after-var": [2, "always"],
     "no-nested-ternary": 2,
     "no-spaced-func": 0,
-    "no-trailing-spaces": 1,
+    "no-trailing-spaces": 2,
     "no-underscore-dangle": 0,
     "no-unneeded-ternary": 1,
-    "one-var": 1,
-    "quotes": [1, "single", "avoid-escape"],
-    "semi": [1, "always"],
-    "space-after-keywords": [1, "always"],
-    "space-before-blocks": [1, "always"],
-    "space-before-function-paren": [1, {"anonymous": "always", "named": "never"}],
+    "one-var": 2,
+    "quotes": [2, "single", "avoid-escape"],
+    "semi": [2, "always"],
+    "space-after-keywords": [2, "always"],
+    "space-before-blocks": [2, "always"],
+    "space-before-function-paren": [2, {"anonymous": "always", "named": "never"}],
     "space-infix-ops": [1, {"int32Hint": false}],
     "spaced-line-comment": [1, "always"],
     // es6
     "generator-star-spacing": [2, "before"],
     // legacy jshint rules
-    "max-depth": [1, 4],
-    "max-params": [1, 4]
+    "max-depth": [2, 4],
+    "max-params": [2, 4]
   }
 }
