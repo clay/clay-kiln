@@ -1,4 +1,3 @@
-'use strict';
 var striptags = require('striptags'),
   dom = require('../services/dom');
 
@@ -13,7 +12,7 @@ module.exports = function (result, args) {
 
   bindings.max = args.value;
   rivets.formatters.charsRemaining = function (max, data) {
-    var length = parseInt(striptags(data).length),
+    var length = parseInt(striptags(data.value).length),
       remaining = max - length;
       // input = dom.find(el, 'input'),
       // label = dom.find(el, '.label-inner').innerText;

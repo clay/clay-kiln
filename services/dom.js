@@ -1,4 +1,3 @@
-'use strict';
 var domify = require('domify');
 
 module.exports = {
@@ -36,9 +35,12 @@ module.exports = {
 
   /**
    * NOTE: nodeType of 1 means Element
+   * @param {Element} parent
+   * @returns {Element} cursor
    */
   getFirstChildElement: function (parent) {
     var cursor = parent.firstChild;
+
     while (cursor && cursor.nodeType !== 1) {
       cursor = cursor.nextSibling;
     }
@@ -47,16 +49,17 @@ module.exports = {
 
   /**
    * get closest parent element that matches selector
-   * @param  {Element} node           
-   * @param  {string} parentSelector 
+   * @param  {Element} node
+   * @param  {string} parentSelector
    * @return {Element|null}
    */
   closest: function (node, parentSelector) {
+    var cursor = node;
+
     if (!parentSelector || typeof parentSelector !== 'string') {
       throw new Error('Please specify a selector to match against!');
     }
 
-    var cursor = node;
     while (cursor && !cursor.matches('body') && !cursor.matches(parentSelector)) {
       cursor = cursor.parentNode;
     }
@@ -108,7 +111,7 @@ module.exports = {
   },
 
   preventDefault: function (e) {
-    e.preventDefault ? e.preventDefault() : e.returnValue = false;
+    e.preventDefault ? e.preventDefault() : e.returnValue = false; // eslint-disable-line
   },
 
   replaceElement: function (el, replacementEl) {

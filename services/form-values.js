@@ -1,23 +1,22 @@
-'use strict';
 var _ = require('lodash'),
   dom = require('./dom'),
   behaviors = require('./behaviors');
 
 /**
  * get values from inputs, lists, etc
- * @param  {{}} data 
- * @param  {Element} el   
- * @return {{}}      
+ * @param  {{}} data
+ * @param  {Element} el
+ * @return {{}}
  */
 function getValues(data, el) {
   var name = el.getAttribute('name'),
-    binding = behaviors.getBinding(name),
+    view = behaviors.getBinding(name),
     path, viewData;
 
-  if (binding && binding.models) {
-    path = binding.models.path;
-    viewData = binding.models.data;
-    _.deepSet(data, path, viewData);
+  if (view && view.models) {
+    path = view.models.path;
+    viewData = view.models.data;
+    _.set(data, path, viewData);
   }
 
   return data;

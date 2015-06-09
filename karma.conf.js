@@ -1,42 +1,67 @@
-var istanbul = require('browserify-istanbul');
+var files, settings,
+  istanbul = require('browserify-istanbul'),
+  _ = require('lodash');
 
-var files = [
+files = [
+  'test/setup.js',
   'controllers/*.js',
   'behaviors/*.js',
   'services/*.js'
 ];
 
+settings = {
+  autoWatch: false,
+  colors: true,
+  singleRun: true,
+  transports: ['websocket'],
+  browserify: {
+    debug: true,
+    transform: ['es6ify', istanbul({
+      ignore: ['**/node_modules/**'],
+      defaultIgnore: true
+    })]
+  },
+  coverageReporter: {
+    type: 'lcovonly',
+    dir: 'coverage/',
+    includeAllSources: true,
+    watermarks: {
+      statements: [50, 75],
+      functions: [50, 75],
+      branches: [50, 75],
+      lines: [50, 75]
+    }
+  },
+  reporters: ['dots', 'coverage'],
+  files: files,
+  frameworks: ['mocha', 'chai', 'sinon', 'browserify'],
+  preprocessors: {
+    'controllers/**/*.js': ['browserify'],
+    'behaviors/**/*.js': ['browserify'],
+    'services/**/*.js': ['browserify']
+  },
+  plugins: [
+    'karma-coverage',
+    'karma-browserify',
+    'karma-browserstack-launcher',
+    'karma-chai',
+    'karma-chrome-launcher',
+    'karma-firefox-launcher',
+    'karma-mocha',
+    'karma-safari-launcher',
+    'karma-sinon'
+  ]
+};
+
 module.exports = function (karma) {
   'use strict';
 
-  karma.set({
-    autoWatch: false,
-    colors: true,
-    singleRun: true,
-    transports: ['websocket'],
-    browserify: {
-      debug: true,
-      transform: ['es6ify', istanbul({
-        ignore: ['**/node_modules/**', '**/test/**', '**/tests/**'],
-        defaultIgnore: true
-      })]
-    },
+  karma.set(_.assign(settings, {
     // browerstack config + launchers
     browserStack: {
       username: process.env.BROWSERSTACK_USERNAME,
       accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
       retryLimit: 0 // yolo
-    },
-    coverageReporter: {
-      type : 'lcovonly',
-      dir : 'coverage/',
-      includeAllSources: true,
-      watermarks: {
-        statements: [ 50, 75 ],
-        functions: [ 50, 75 ],
-        branches: [ 50, 75 ],
-        lines: [ 50, 75 ]
-      }
     },
     customLaunchers: {
       // browserstack loves snake_case
@@ -71,25 +96,9 @@ module.exports = function (karma) {
       // }
       // jshint ignore:end
     },
-    reporters: ['dots', 'coverage'],
-    files: files,
-    frameworks: ['mocha', 'chai', 'sinon', 'browserify'],
-    browsers: ['chromeMac', 'firefoxMac'],
-    preprocessors: {
-      'controllers/**/*.js': ['browserify'],
-      'behaviors/**/*.js': ['browserify'],
-      'services/**/*.js': ['browserify']
-    },
-    plugins: [
-      'karma-coverage',
-      'karma-browserify',
-      'karma-browserstack-launcher',
-      'karma-chai',
-      'karma-chrome-launcher',
-      'karma-firefox-launcher',
-      'karma-mocha',
-      'karma-safari-launcher',
-      'karma-sinon'
-    ]
-  });
+    browsers: ['chromeMac', 'firefoxMac']
+  }));
 };
+
+module.exports.files = files;
+module.exports.settings = settings;

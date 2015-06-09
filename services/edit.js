@@ -1,27 +1,43 @@
-'use strict';
 var _ = require('lodash'),
   db = require('./db'),
+  references = require('./references'),
   // store the component data in memory
-  componentData = {},
+  refData = {},
   // store the component schemas in memory
-  componentSchemas = {};
-  // todo: figure out multi-user edit, since this won't pull in changes correctly if
-  // multiple people are changing data in a component without page reloads
+  refSchema = {};
 
-_.mixin(require('lodash-deep'));
+// todo: figure out multi-user edit, since this won't pull in changes correctly if
+// multiple people are changing data in a component without page reloads
+
+/**
+ * @param {object} value
+ */
+function setSchemaCache(value) {
+  refSchema = value;
+}
+
+/**
+ * @param {object} value
+ */
+function setDataCache(value) {
+  refData = value;
+}
 
 /**
  * get data for a component. cached on the client side
  * @param  {string}   ref
  * @returns {Promise}
  */
-function getData(ref) {
-  if (componentData[ref]) {
-    return Promise.resolve(componentData[ref]);
+function getDataOnly(ref) {
+  if (refData[ref]) {
+    // clone because other people are modifying data, and we don't want to change the cache.
+    return Promise.resolve(_.cloneDeep(refData[ref]));
   } else {
     return db.getComponentJSONFromReference(ref)
       .then(function (data) {
-        componentData[ref] = data;
+        // be nice, remember where this data is from
+        data[references.referenceProperty] = ref;
+        refData[ref] = data;
         return data;
       });
   }
@@ -33,77 +49,104 @@ function getData(ref) {
  * @returns  {Promise}
  */
 function getSchema(ref) {
-  if (componentSchemas[ref]) {
-    return Promise.resolve(componentSchemas[ref]);
+  if (refSchema[ref]) {
+    return Promise.resolve(refSchema[ref]);
   } else {
     return db.getSchemaFromReference(ref)
       .then(function (schema) {
-        componentSchemas[ref] = schema;
+        refSchema[ref] = schema;
         return schema;
       });
   }
 }
 
 /**
- * convenience function to get schema + data
- * @param  {string} ref  
- * @param  {string} [path] path to a subset of the schema/data, e.g. title.long
- * @return {Promise}      { schema: obj, data: obj }
+ * @param {object} schema
+ * @param {object} data
+ * @returns {object}
  */
-function getSchemaAndData(ref, path) {
-  return Promise.all([getSchema(ref), getData(ref)]).then(function (res) {
-    var schema = res[0],
-      data = res[1];
+function addSchemaToData(schema, data) {
+  _.each(data, function (value, key, list) {
+    var schemaPart = schema[key];
 
-    return {
-      schema: path ? _.deepGet(schema, path) : schema,
-      data: path ? _.deepGet(data, path) : data
-    };
+    if (_.isObject(schemaPart)) {
+      if (!_.isObject(value)) {
+        list[key] = {
+          _schema: schemaPart,
+          value: value
+        };
+      } else {
+        addSchemaToData(schemaPart, value);
+      }
+    }
+  });
+  data._schema = schema;
+  return data;
+}
+
+function getData(ref) {
+  return Promise.all([getSchema(ref), getDataOnly(ref)]).then(function (res) {
+    return addSchemaToData(res[0], res[1]);
   });
 }
 
+/**
+ * @param {object} data
+ * @returns {object}
+ */
+function removeSchemaFromData(data) {
+  if (data.value !== undefined && !!data._schema && _.size(data) === 2) {
+    // not an object anymore
+    return data.value;
+  } else {
+    // still an object
+    delete data._schema;
+    return _.mapValues(data, removeSchemaFromData);
+  }
+}
+
 // todo: add validation
-function validate(data, schema) {
+function validate() {
   return [];
 }
 
 /**
  * update data for a component.
  * @param  {string}   ref
- * @param {{}} newData
+ * @param {{}} data  (relative to path)
  * @param {string} [path] part of the schema (for partial updates)
  * @returns {Promise}
  */
-function update(ref, newData, path) {
-  // if path is specified (and it's not the root-level of the component), deepSet newData into the proper place
-  if (path && !_.contains(Object.keys(newData), path) && !_.contains(ref, path)) {
-    newData = _.deepSet({}, path, newData);
-  }
+function update(ref, data, path) {
+  // as soon as we're trying to change data, clear the cache because it'll only tell us what we want to hear: that there
+  // have been no changes
+  refSchema = {};
+  refData = {};
+
+  // remove top-level self-reference
+  data = removeSchemaFromData(data);
 
   // get the schema and validate data
   return getSchema(ref)
     .then(function (schema) {
-      var validationErrors = validate(newData, schema);
+      var validationErrors = validate(data, schema);
 
       if (validationErrors.length) {
         throw new Error(validationErrors);
       } else {
-        // then get the old data and merge it
-        return getData(ref)
-          .then(function (oldData) {
-            var data;
+        return getDataOnly(ref).then(function (oldData) {
+          // if path is specified, set newData into the proper place
+          if (path) {
+            data = _.set(oldData, path, data);
+          }
+          delete data._ref;
 
-            data = _(oldData)
-              .assign(newData)
-              .omit('_ref')
-              .value();
-
-            return db.putToReference(ref, data)
-              .then(function () {
-                // todo: replace component without page reload
-                location.reload();
-              });
-          });
+          return db.putToReference(ref, data)
+            .then(function () {
+              // todo: replace component without page reload
+              location.reload();
+            });
+        });
       }
     });
 }
@@ -111,8 +154,10 @@ function update(ref, newData, path) {
 // expose main methods
 module.exports = {
   getData: getData,
+  getDataOnly: getDataOnly,
   getSchema: getSchema,
-  getSchemaAndData: getSchemaAndData,
   validate: validate,
-  update: update
+  update: update,
+  setSchemaCache: setSchemaCache,
+  setDataCache: setDataCache
 };

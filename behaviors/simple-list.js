@@ -1,4 +1,3 @@
-'use strict';
 var _ = require('lodash'),
   keycode = require('keycode'),
   dom = require('../services/dom');
@@ -15,8 +14,8 @@ module.exports = function (result, args) {
 
   /**
    * unselect all items
-   * @param  {[]} items 
-   * @return {[]}       
+   * @param  {[]} items
+   * @return {[]}
    */
   function unselectAll(items) {
     return items.map(function (item) {
@@ -27,7 +26,7 @@ module.exports = function (result, args) {
 
   /**
    * unselect all items, then select a specific item
-   * @param  {{ item: {}, data: []}} bindings 
+   * @param  {{ item: {}, data: []}} bindings
    */
   function selectItem(bindings) {
     var item = bindings.item,
@@ -39,9 +38,9 @@ module.exports = function (result, args) {
 
   /**
    * select previous item in list
-   * @param  {Event} e        
-   * @param  {number} index    
-   * @param  {{item: {}, data: []}} bindings 
+   * @param  {Event} e
+   * @param  {number} index
+   * @param  {{item: {}, data: []}} bindings
    */
   function selectPrevious(e, index, bindings) {
     if (index > 0) {
@@ -52,9 +51,9 @@ module.exports = function (result, args) {
 
   /**
    * select next item in list
-   * @param  {Event} e        
-   * @param  {number} index    
-   * @param  {{item: {}, data: []}} bindings 
+   * @param  {Event} e
+   * @param  {number} index
+   * @param  {{item: {}, data: []}} bindings
    */
   function selectNext(e, index, bindings) {
     if (index < bindings.data.length) {
@@ -66,9 +65,9 @@ module.exports = function (result, args) {
 
   /**
    * remove item from list
-   * @param  {Event} e        
-   * @param  {number} index    
-   * @param  {{item: {}, data: []}} bindings 
+   * @param  {Event} e
+   * @param  {number} index
+   * @param  {{item: {}, data: []}} bindings
    */
   function deleteItem(e, index, bindings) {
     e.preventDefault(); // prevent triggering the browser's back button
@@ -109,13 +108,13 @@ module.exports = function (result, args) {
   // add binder for creating new items
   result.rivets.binders.simplelist = {
     publish: true,
-    bind: function (el) {
+    bind: function (boundEl) {
       // this is called when the binder initializes
       var adapter = result.rivets.adapters[result.rivets.rootInterface], // use default adapter
         model = this.model,
         keypath = this.keypath,
-        items = dom.findAll(el, '.simple-list-item'),
-        addEl = dom.find(el, '.simple-list-add');
+        items = dom.findAll(boundEl, '.simple-list-item'),
+        addEl = dom.find(boundEl, '.simple-list-add');
 
       // add new item from the add-items field
       function addItem(e) {
@@ -158,8 +157,8 @@ module.exports = function (result, args) {
     },
 
     // this is called whenever the data changes
-    routine: function (el, items) {
-      var addEl = dom.find(el, '.simple-list-add');
+    routine: function (routineEl, items) {
+      var addEl = dom.find(routineEl, '.simple-list-add');
 
       // if there's a minimum / maximum number of items allowed, toggle form validity
       if (min && items.length < min) {

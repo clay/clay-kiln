@@ -1,4 +1,3 @@
-'use strict';
 var references = require('./references');
 
 describe('references service', function () {
@@ -43,7 +42,7 @@ describe('references service', function () {
       expect(references.getComponentNameFromReference('/components/base')).to.equal('base');
     });
 
-    it('gets name from instance ref', function() {
+    it('gets name from instance ref', function () {
       expect(references.getComponentNameFromReference('/components/base/instances/0')).to.equal('base');
     });
 
@@ -53,7 +52,7 @@ describe('references service', function () {
   });
 
   describe('getInstanceIdFromReference()', function () {
-    it('gets instance id from ref', function() {
+    it('gets instance id from ref', function () {
       expect(references.getInstanceIdFromReference('/components/base/instances/0')).to.equal('0');
     });
 

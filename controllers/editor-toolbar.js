@@ -1,9 +1,8 @@
-'use strict';
 module.exports = function () {
   var dom = require('../services/dom'),
     db = require('../services/db'),
     references = require('../services/references'),
-    formcreator = require('../services/formcreator'),
+    formCreator = require('../services/form-creator'),
     edit = require('../services/edit');
 
   function constructor(el) {
@@ -44,10 +43,9 @@ module.exports = function () {
           main: '/components/story'
         };
 
-      db.postToReference('/pages', articlePage)
-        .then(function (res) {
-          location.href = res[references.referenceProperty] + '.html?edit=true';
-        });
+      db.postToReference('/pages', articlePage).then(function (res) {
+        location.href = res[references.referenceProperty] + '.html?edit=true';
+      });
     },
 
     /**
@@ -59,20 +57,13 @@ module.exports = function () {
         name = main.getAttribute('data-component'),
         ref = main.getAttribute(references.referenceAttribute);
 
-      edit.getSchemaAndData(ref).then(function (res) {
-        var formOptions = {
-          schema: res.schema,
-          data: res.data,
-          ref: ref,
-          display: 'meta'
-        };
-
-        formcreator.createForm(name, formOptions);
+      edit.getData(ref).then(function (data) {
+        formCreator.createForm(name, data);
       });
     },
 
     publish: function () {
-      alert('published');
+      alert('published'); // eslint-disable-line
       // todo: figure out publish functionality
     }
   };

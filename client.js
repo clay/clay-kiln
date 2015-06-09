@@ -1,4 +1,5 @@
-'use strict';
+'use strict'; // eslint-disable-line
+// note: use strict above is applied to the whole browserified doc
 var ds = require('dollar-slice'),
   references = require('./services/references'),
   behaviors = require('./services/behaviors');

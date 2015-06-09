@@ -1,4 +1,3 @@
-'use strict';
 var _ = require('lodash'),
   references = require('./references');
 
@@ -7,18 +6,12 @@ var _ = require('lodash'),
  * if _label exists, use it
  * else get the name of the field/group, prettified
  * e.g. "title.social" would become "Title » Social"
- * @param  {string} name     
- * @param  {{}} schema 
- * @return {string}          
+ * @param  {string} name
+ * @param  {object} schema
+ * @return {string}
  */
 module.exports = function (name, schema) {
-  schema = schema || {};
-  
-  var possibleLabelText = schema[references.labelProperty];
+  var label = schema && schema[references.labelProperty];
 
-  if (typeof possibleLabelText === 'string') {
-    return possibleLabelText;
-  } else {
-    return name.split('.').map(_.startCase).join(' » ');
-  }
+  return _.isString(label) ? label : name.split('.').map(_.startCase).join(' » ');
 };
