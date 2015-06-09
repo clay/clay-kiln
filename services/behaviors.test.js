@@ -1,7 +1,6 @@
-'use strict';
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
-  lib = require('./behaviors'), //static-analysis means this must be string, not ('./' + filename);
+  lib = require('./behaviors'), // static-analysis means this must be string, not ('./' + filename);
   singleElement = '<div class="behaviour-element"></div>';
 
 describe(dirname, function () {
@@ -12,6 +11,7 @@ describe(dirname, function () {
       function addTestBehaviors() {
         lib.add('testBehavior', function (context) {
           var el = document.createElement('div');
+
           el.setAttribute('class', 'behaviour-element');
           context.el.appendChild(el);
           return context;
@@ -19,26 +19,34 @@ describe(dirname, function () {
       }
 
       it('accepts shortcut notation', function () {
+        var result;
+
         addTestBehaviors();
-        var result = fn({data:{_schema:{_has: 'testBehavior'}}, name: 'name', path: 'name'});
+        result = fn({data: {_schema: {_has: 'testBehavior'}}, name: 'name', path: 'name'});
         expect(result.firstElementChild.outerHTML).to.equal(singleElement);
       });
 
       it('accepts inner shortcut notation', function () {
+        var result;
+
         addTestBehaviors();
-        var result = fn({data:{_schema:{_has: ['testBehavior']}}, name: 'name', path: 'name'});
+        result = fn({data: {_schema: {_has: ['testBehavior']}}, name: 'name', path: 'name'});
         expect(result.firstElementChild.outerHTML).to.equal(singleElement);
       });
 
       it('accepts normal notation', function () {
+        var result;
+
         addTestBehaviors();
-        var result = fn({data:{_schema:{_has: [{ fn: 'testBehavior'}]}}, name: 'name', path: 'name'});
+        result = fn({data: {_schema: {_has: [{ fn: 'testBehavior'}]}}, name: 'name', path: 'name'});
         expect(result.firstElementChild.outerHTML).to.equal(singleElement);
       });
 
       it('accepts multiple behaviors', function () {
+        var result;
+
         addTestBehaviors();
-        var result = fn({data:{_schema:{_has: [{ fn: 'testBehavior'}, { fn: 'testBehavior' }]}}, name: 'name', path: 'name'});
+        result = fn({data: {_schema: {_has: [{ fn: 'testBehavior'}, { fn: 'testBehavior' }]}}, name: 'name', path: 'name'});
         expect(result.firstElementChild.outerHTML).to.equal(singleElement);
         expect(result.firstElementChild.nextElementSibling.outerHTML).to.equal(singleElement);
       });

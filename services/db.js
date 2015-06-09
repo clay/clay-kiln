@@ -1,18 +1,17 @@
-'use strict';
 var _ = require('lodash'),
   dom = require('./dom'),
   references = require('./references');
 
 function send(options) {
   return new Promise(function (resolve, reject) {
+    var request = new XMLHttpRequest();
+
     if (_.isString(options)) {
       options = {
         method: 'GET',
         url: options
       };
     }
-
-    var request = new XMLHttpRequest();
 
     request.open(options.method, options.url, true);
 
@@ -28,6 +27,7 @@ function send(options) {
 
     request.onreadystatechange = function (e) {
       var target = e.currentTarget || e.target;
+
       if (target.readyState === 4) {
         try {
           resolve(target);
@@ -41,6 +41,7 @@ function send(options) {
 
 /**
  * Translate the response into what we expect
+ * @param {Element} target
  * @returns {{}}
  */
 function expectJSONResult(target) {
@@ -60,12 +61,13 @@ function expectJSONResult(target) {
  * @returns {function}
  */
 function expectHTMLResult(ref) {
+  var result, parent, statusCodeGroup;
+
   return function (error, target) {
     if (error) {
       throw error;
     } else {
-      var result, parent,
-        statusCodeGroup = target.status.toString()[0];
+      statusCodeGroup = target.status.toString()[0];
 
       if (statusCodeGroup === '2') {
         parent = document.createElement('div');

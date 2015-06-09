@@ -1,6 +1,4 @@
-'use strict';
-var _ = require('lodash'),
-  dom = require('../services/dom');
+var dom = require('../services/dom');
 
 module.exports = function (result, args) {
   var el = result.el,

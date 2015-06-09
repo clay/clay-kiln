@@ -1,13 +1,12 @@
-'use strict';
 var _ = require('lodash'),
   dom = require('./dom'),
   behaviors = require('./behaviors');
 
 /**
  * get values from inputs, lists, etc
- * @param  {{}} data 
- * @param  {Element} el   
- * @return {{}}      
+ * @param  {{}} data
+ * @param  {Element} el
+ * @return {{}}
  */
 function getValues(data, el) {
   var name = el.getAttribute('name'),

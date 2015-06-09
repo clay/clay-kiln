@@ -1,4 +1,3 @@
-'use strict';
 var _ = require('lodash'),
   references = require('./references');
 
@@ -13,5 +12,6 @@ var _ = require('lodash'),
  */
 module.exports = function (name, schema) {
   var label = schema && schema[references.labelProperty];
+
   return _.isString(label) ? label : name.split('.').map(_.startCase).join(' » ');
 };

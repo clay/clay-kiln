@@ -1,4 +1,3 @@
-'use strict';
 module.exports = function () {
   var dom = require('../services/dom'),
     db = require('../services/db'),
@@ -44,10 +43,9 @@ module.exports = function () {
           main: '/components/story'
         };
 
-      db.postToReference('/pages', articlePage)
-        .then(function (res) {
-          location.href = res[references.referenceProperty] + '.html?edit=true';
-        });
+      db.postToReference('/pages', articlePage).then(function (res) {
+        location.href = res[references.referenceProperty] + '.html?edit=true';
+      });
     },
 
     /**
@@ -65,7 +63,7 @@ module.exports = function () {
     },
 
     publish: function () {
-      alert('published');
+      alert('published'); // eslint-disable-line
       // todo: figure out publish functionality
     }
   };

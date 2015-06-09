@@ -1,4 +1,3 @@
-'use strict';
 var _ = require('lodash'),
   dom = require('../services/dom');
 
@@ -7,7 +6,7 @@ module.exports = function (result, args) {
     itemEls = dom.findAll(result.el, '.simple-list-item');
 
   // add doubleclick event to all list items
-  _.forEach(itemEls , function (itemEl) {
+  _.forEach(itemEls, function (itemEl) {
     itemEl.setAttribute('rv-on-dblclick', 'setPrimary');
     itemEl.setAttribute('rv-class-primary', 'item.' + prop);
     return itemEl;

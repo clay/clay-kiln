@@ -1,4 +1,3 @@
-'use strict';
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./placeholder'),
@@ -98,6 +97,7 @@ describe(dirname, function () {
 
     function stubNode() {
       var node = document.createElement('div');
+
       node.setAttribute('name', 'title');
       return node;
     }
@@ -121,8 +121,8 @@ describe(dirname, function () {
       }});
 
       return lib('fakeRef', stubNode()).then(function (el) {
-        expect(el.querySelector('.editor-placeholder')).to.not.exist;
-        expect(el.querySelector('span.placeholder-label')).to.not.exist;
+        expect(el.querySelector('.editor-placeholder')).to.equal(null);
+        expect(el.querySelector('span.placeholder-label')).to.equal(null);
       });
     });
 
@@ -132,8 +132,8 @@ describe(dirname, function () {
       }});
 
       return lib('fakeRef', stubNode()).then(function (el) {
-        expect(el.querySelector('.editor-placeholder')).to.not.exist;
-        expect(el.querySelector('span.placeholder-label')).to.not.exist;
+        expect(el.querySelector('.editor-placeholder')).to.equal(null);
+        expect(el.querySelector('span.placeholder-label')).to.equal(null);
       });
     });
 
@@ -143,8 +143,8 @@ describe(dirname, function () {
       }});
 
       return lib('fakeRef', stubNode()).then(function (el) {
-        expect(el.querySelector('.editor-placeholder')).to.not.exist;
-        expect(el.querySelector('span.placeholder-label')).to.not.exist;
+        expect(el.querySelector('.editor-placeholder')).to.equal(null);
+        expect(el.querySelector('span.placeholder-label')).to.equal(null);
       });
     });
 

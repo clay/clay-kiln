@@ -1,4 +1,3 @@
-'use strict';
 var _ = require('lodash'),
   references = require('./references'),
   edit = require('./edit'),
@@ -12,7 +11,7 @@ var _ = require('lodash'),
  * else call the label service
  * @param  {string} path
  * @param  {{}} schema
- * @return {string}          
+ * @return {string}
  */
 function getPlaceholderText(path, schema) {
   var possiblePlaceholderText = schema[references.placeholderProperty];
@@ -49,6 +48,7 @@ function getPlaceholderHeight(behaviors) {
 function isFieldEmpty(data) {
   // note: 0, false, etc are valid bits of data for numbers, booleans, etc so they shouldn't be masked
   var value = data.value;
+
   return !_.isBoolean(value) && !_.isNumber(value) && _.isEmpty(value);
 }
 
@@ -56,6 +56,7 @@ function isFieldEmpty(data) {
  * create dom element for the placeholder, add it to the specified node
  * @param {Element} node
  * @param {{ height: string, text: string }} obj
+ * @returns {Element} node
  */
 function addPlaceholderDom(node, obj) {
   var placeholder = dom.create(`
@@ -63,6 +64,7 @@ function addPlaceholderDom(node, obj) {
       <span class="placeholder-label">${obj.text}</span>
     </div>
   `);
+
   node.appendChild(placeholder);
   return node;
 }
@@ -73,21 +75,24 @@ function addPlaceholderDom(node, obj) {
  * - name is a field and field is blank
  * @param {string} ref
  * @param {Element} node
+ * @returns {Element} node
  */
 function addPlaceholder(ref, node) {
   var path = node.getAttribute('name');
 
   return edit.getData(ref).then(function (data) {
+    var schema, field, hasPlaceholder, isField;
+
     data = _.get(data, path);
-    var schema = data._schema,
-      field = schema[references.fieldProperty],
-      hasPlaceholder = schema[references.placeholderProperty],
-      isField = !!field;
+    schema = data._schema;
+    field = schema[references.fieldProperty];
+    hasPlaceholder = schema[references.placeholderProperty];
+    isField = !!field;
 
     if (hasPlaceholder && isField && isFieldEmpty(data)) {
       return addPlaceholderDom(node, {
         text: getPlaceholderText(path, schema),
-        height: getPlaceholderHeight(field) //todo: change to be better, remove access to this function.
+        height: getPlaceholderHeight(field) // todo: change to be better, remove access to this function.
       });
     } else {
       return node;

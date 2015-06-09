@@ -7,9 +7,8 @@ dependencies:
   pre:
     - npm install -g karma-cli
     - npm install -g istanbul
+    - npm install -g eslint
 test:
   post:
     - cp -r ./coverage/* $CIRCLE_ARTIFACTS
     - cat ./coverage/Chrome*/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-
-

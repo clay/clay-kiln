@@ -1,4 +1,3 @@
-'use strict';
 var dom = require('./dom');
 
 describe('dom service', function () {
@@ -93,6 +92,7 @@ describe('dom service', function () {
 
     it('adds a child to an element with children', function () {
       var tmpEl = document.createDocumentFragment();
+
       tmpEl.appendChild(childEl);
 
       dom.prependChild(tmpEl, secondChildEl);
@@ -110,6 +110,7 @@ describe('dom service', function () {
   describe('removeElement()', function () {
     it('removes the element', function () {
       var tmpEl = document.createDocumentFragment();
+
       tmpEl.appendChild(childEl);
 
       dom.removeElement(childEl);
@@ -120,6 +121,7 @@ describe('dom service', function () {
   describe('replaceElement()', function () {
     it('replaces in place', function () {
       var tmpEl = document.createDocumentFragment();
+
       tmpEl.appendChild(childEl);
 
       dom.replaceElement(childEl, secondChildEl);
