@@ -9,13 +9,16 @@ var _ = require('lodash'),
  * @return {{}}
  */
 function getValues(data, el) {
-  var name = el.getAttribute('name'),
+  var binding,
+    name = el.getAttribute('name'),
     view = behaviors.getBinding(name),
     path, viewData;
 
-  if (view && view.models) {
+  if (view && view.models && view.bindings) {
+    binding = _.find(view.bindings, function (value) { return value.el === el; });
     path = view.models.path;
-    viewData = view.models.data;
+    // clear out the _rv's and getters and setters
+    viewData = _.cloneDeep(binding.observer.value());
     _.set(data, path, viewData);
   }
 

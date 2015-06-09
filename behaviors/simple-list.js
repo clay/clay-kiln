@@ -5,12 +5,11 @@ var _ = require('lodash'),
 module.exports = function (result, args) {
   var min = args.min,
     max = args.max,
-    listTpl = `
+    el = dom.create(`
       <section name="${result.bindings.name}" class="simple-list" rv-simplelist="data">
         <span tabindex="0" rv-each-item="data" class="simple-list-item" rv-class-selected="item.selected" rv-on-click="selectItem" rv-on-keydown="keyactions">{ item.text }</span>
         <input class="simple-list-add" rv-on-click="unselectAll" />
-      </section>`,
-      el = dom.create(listTpl);
+      </section>`);
 
   /**
    * unselect all items
@@ -110,15 +109,13 @@ module.exports = function (result, args) {
     publish: true,
     bind: function (boundEl) {
       // this is called when the binder initializes
-      var adapter = result.rivets.adapters[result.rivets.rootInterface], // use default adapter
-        model = this.model,
-        keypath = this.keypath,
-        items = dom.findAll(boundEl, '.simple-list-item'),
-        addEl = dom.find(boundEl, '.simple-list-add');
+      var items = dom.findAll(boundEl, '.simple-list-item'),
+        addEl = dom.find(boundEl, '.simple-list-add'),
+        observer = this.observer;
 
       // add new item from the add-items field
       function addItem(e) {
-        var data = adapter.get(model, keypath),
+        var data = observer.value(),
           newText = { text: addEl.value }; // get the new item text
 
         // prevent creating newlines or tabbing out of the field
@@ -127,17 +124,17 @@ module.exports = function (result, args) {
         }
         addEl.value = ''; // remove it from the add-item field
         data.push(newText); // put it into the data
-        adapter.set(model, keypath, data); // update!
+        observer.setValue(data);
       }
 
       // select the last item when you backspace from the add-items field
       function selectLastItem(e) {
-        var data = adapter.get(model, keypath);
+        var data = observer.value();
 
         if (!addEl.value || !addEl.value.length) {
           e.preventDefault(); // prevent triggering the browser's back button
           _.last(data).selected = true;
-          adapter.set(model, keypath, data); // update!
+          observer.setValue(data);
           _.last(items).focus(); // focus on the last item
         }
       }
