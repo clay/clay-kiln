@@ -14,6 +14,51 @@ var EditorToolbar,
   events = require('../services/events');
 
 /**
+ * Publish current page.
+ */
+function publish() {
+  edit.getPageReference().then(function (result) {
+    // eslint-disable-line
+    console.log('published', result);
+  }).catch(console.error);
+}
+
+/**
+ * Open modal for editing metadata
+ * @param {string} ref
+ * @param {string} path
+ */
+function editMetadata(ref, path) {
+  edit.getData(ref).then(function (data) {
+    formCreator.createForm(ref, path, data);
+  }).catch(console.error);
+}
+
+/**
+ * Create a new page with the same layout as the current page.
+ * @param {string} layoutName
+ */
+function createPage(layoutName) {
+  // todo: allow users to choose their layout / components
+
+  var articlePage = {
+    layout: '/components/' + layoutName + '/instances/article',
+    main: '/components/story'
+  };
+
+  db.postToReference('/pages', articlePage).then(function (res) {
+    location.href = res[references.referenceProperty] + '.html?edit=true';
+  }).catch(console.error);
+}
+
+/**
+ * Remove querystring from current location
+ */
+function removeQuerystring() {
+  location.href = location.href.split('?').shift();
+}
+
+/**
  * @class EditorToolbar
  * @param {Element} el
  * @property {Element} el
@@ -25,10 +70,10 @@ EditorToolbar = function (el) {
   this.el = el;
 
   events.add(el, {
-    '.close click': 'close',
-    '.new click': 'newPage',
-    '.meta click': 'editMetadata',
-    '.publish click': 'publish'
+    '.close click': 'onClose',
+    '.new click': 'onNewPage',
+    '.meta click': 'onEditMetadata',
+    '.publish click': 'onPublish'
   }, this);
 };
 
@@ -37,42 +82,37 @@ EditorToolbar = function (el) {
  */
 EditorToolbar.prototype = {
   /**
-   * goes back to view mode
+   * On close button
    */
-  close: function () {
-    location.href = location.href.split('?').shift();
-  },
-
-  // todo: allow users to choose their layout / components
-  newPage: function () {
-    var layoutName = dom.find('[data-layout]'),
-      articlePage = {
-        layout: '/components/' + layoutName + '/instances/article',
-        main: '/components/story'
-      };
-
-    db.postToReference('/pages', articlePage).then(function (res) {
-      location.href = res[references.referenceProperty] + '.html?edit=true';
-    });
+  onClose: function () {
+    removeQuerystring();
   },
 
   /**
-   * edit metadata for the main component
-   * opens a modal with ???
+   * On new page button
    */
-  editMetadata: function () {
-    var main = this.main,
-      name = main.getAttribute('data-component'),
-      ref = main.getAttribute(references.referenceAttribute);
+  onNewPage: function () {
+    var layoutName = dom.find('[data-layout]');
 
-    edit.getData(ref).then(function (data) {
-      formCreator.createForm(name, data);
-    });
+    createPage(layoutName);
   },
 
-  publish: function () {
-    alert('published'); // eslint-disable-line
-    // todo: figure out publish functionality
+  /**
+   * On edit metadata button
+   */
+  onEditMetadata: function () {
+    var primaryComponent = dom.find('.main .primary [' + references.componentAttribute + ']'),
+      path = primaryComponent.getAttribute('data-component'),
+      ref = primaryComponent.getAttribute(references.referenceAttribute);
+
+    editMetadata(ref, path);
+  },
+
+  /**
+   * On publish button
+   */
+  onPublish: function () {
+    publish();
   }
 };
 

@@ -5,8 +5,7 @@ var ds = require('dollar-slice'),
   behaviors = require('./services/behaviors'),
   dom = require('./services/dom'),
   EditorToolbar = require('./controllers/editor-toolbar'),
-  edit = require('./services/edit'),
-  pageToolbar, pageReference;
+  pageToolbar;
 
 // manually add built-in behaviors
 // since browserify's require() uses static analysis
@@ -41,11 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  // because eslint complains if we don't use the new thing we've created.  We will add to this later.
   pageToolbar = new EditorToolbar(dom.find('[' + references.componentAttribute + '="editor-toolbar"]'));
-
-  // get pageReference, just to show we can.
-  edit.getPageReference().then(function (result) {
-    pageReference = result;
-  });
-
+  console.log('toolbar initialized: ', pageToolbar);
 });

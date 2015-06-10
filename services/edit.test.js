@@ -125,8 +125,37 @@ describe('edit service', function () {
   describe('getPageReference', function () {
     var fn = lib[this.title];
 
-    it('gets page', function () {
-      fn({pathname: '/thing/thing'});
+    it('gets page from string', function () {
+      var data = '/pages/thing';
+
+      sandbox.stub(db, 'getTextFromReference').returns(Promise.resolve(data));
+
+      return fn('place.com/thing/thing').then(function (result) {
+        expect(result).to.equal(data);
+      });
+    });
+
+    it('gets page from location', function () {
+      var data = '/pages/thing';
+
+      sandbox.stub(db, 'getTextFromReference').returns(Promise.resolve(data));
+
+      return fn({hostname: 'place.com', pathname: '/thing/thing'}).then(function (result) {
+        expect(result).to.equal(data);
+      });
+    });
+
+    it('gets page from redirect uri', function () {
+      var redirect = '/uris/cGxhY2UuY29tL3RoaW5nL3RoaW5n',
+        data = '/pages/thing',
+        stub = sandbox.stub(db, 'getTextFromReference');
+
+      stub.withArgs(redirect).returns(Promise.resolve(data));
+      stub.returns(Promise.resolve(redirect));
+
+      return fn({hostname: 'place.com', pathname: '/thing/thing'}).then(function (result) {
+        expect(result).to.equal(data);
+      });
     });
   });
 });

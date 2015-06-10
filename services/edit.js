@@ -158,9 +158,15 @@ function update(ref, data, path) {
     });
 }
 
+/**
+ * Get page reference from current location
+ * @param {string|object|DOMLocator} [location=document.location]
+ * @returns {Promise.string}
+ */
 function getPageReference(location) {
+  location = location || document.location;
   if (_.isString(location)) {
-    return getDataOnly(location).then(function (result) {
+    return db.getTextFromReference(location).then(function (result) {
       if (result.match(/^\/uris\//)) {
         getPageReference(result);
       } else {
@@ -168,7 +174,7 @@ function getPageReference(location) {
       }
     });
   } else {
-    return getPageReference('/uris/' + btoa(document.location.hostname + document.location.pathname));
+    return getPageReference('/uris/' + btoa(location.hostname + location.pathname));
   }
 }
 
@@ -182,5 +188,6 @@ module.exports = {
   setSchemaCache: setSchemaCache,
   setDataCache: setDataCache,
   addSchemaToData: addSchemaToData,
-  removeSchemaFromData: removeSchemaFromData
+  removeSchemaFromData: removeSchemaFromData,
+  getPageReference: getPageReference
 };
