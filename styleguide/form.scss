@@ -1,6 +1,7 @@
 @import 'mixins';
 @import 'buttons';
 @import 'typography';
+@import 'colors';
 
 .editor {
   display: flex;
@@ -14,14 +15,10 @@
 }
 
 .editor > header {
+  @include section-header();
   bottom: calc(100% + 30px);
-  color: #fff;
-  font-family: Arial, sans-serif;
-  font-size: 3rem;
-  font-weight: 700;
   left: 0;
   position: absolute;
-  text-align: left;
 }
 
 .editor > form {
@@ -39,7 +36,7 @@
 }
 
 .editor .editor-section + .editor-section {
-  border-top: 1px dashed #eee;
+  border-top: 1px dashed $grey;
   margin-top: 5px;
 }
 
@@ -48,11 +45,7 @@
 }
 
 .editor .editor-section > h2 {
-  color: #51a2bf;
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 2rem;
-  font-weight: 700;
-  text-transform: uppercase;
+  @include subsection-header();
 }
 
 .editor .button-container {
