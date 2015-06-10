@@ -95,13 +95,20 @@ function getData(ref) {
  * @returns {object}
  */
 function removeSchemaFromData(data) {
-  if (data.value !== undefined && !!data._schema && _.size(data) === 2) {
+  if (!!data && data.value !== undefined && !!data._schema && _.size(data) === 2) {
     // not an object anymore
     return data.value;
-  } else {
+  } else if (_.isObject(data)) {
     // still an object
     delete data._schema;
-    return _.mapValues(data, removeSchemaFromData);
+    if (_.isArray(data)) {
+      return _.map(data, removeSchemaFromData);
+    } else {
+      return _.mapValues(data, removeSchemaFromData);
+    }
+
+  } else {
+    return data;
   }
 }
 
@@ -159,5 +166,7 @@ module.exports = {
   validate: validate,
   update: update,
   setSchemaCache: setSchemaCache,
-  setDataCache: setDataCache
+  setDataCache: setDataCache,
+  addSchemaToData: addSchemaToData,
+  removeSchemaFromData: removeSchemaFromData
 };

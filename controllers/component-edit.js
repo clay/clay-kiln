@@ -70,7 +70,7 @@ function ComponentEdit() {
     // Special case when name is in the component element.
     if (componentHasName) {
       name = componentHasName;
-      el.addEventListener('click', open.bind(null, ref, name, el));
+      el.addEventListener('click', open.bind(null, ref, el, name));
     }
 
     // add click events to children with [name], but NOT children inside child components
