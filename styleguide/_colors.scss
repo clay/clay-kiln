@@ -1,8 +1,45 @@
+// basic colors
 
+$light-grey: #f4f4f4;
+$grey: #e3e3e3;
+
+// 25% 50% 75% 100%
+
+// black
+$black-25: #c3c3c3;
+$black-50: #888888;
+$black-75: #4D4D4D;
+$black-100: #111;
+$black: $black-100;
+
+// green
+$green-25: #C4E4C8;
+$green-50: #89CA91;
+$green-75: #4FB05B;
+$green-100: #149524;
+$green: $green-100;
+
+// red
+$red-25: #F6CBC6;
+$red-50: #EE978D;
+$red-75: #E66355;
+$red-100: #DD2F1C;
+$red: $red-100;
+
+// blue
+$blue-25: #C5E0E9;
+$blue-50: #8BC0D4;
+$blue-75: #51A2BF;
+$blue-100: #1782A9;
+$blue: $blue-100;
+
+// yellow
+$yellow-100: #FFE600;
+$yellow: $yellow-100;
 
 // validity
 
-$border-color-valid: rgba(63, 191, 63, 1.0);
-$border-color-invalid: rgba(191, 63, 63, 1.0);
+$border-color-valid: $green;
+$border-color-invalid: $red;
 
-$background-color-invalid: rgba(242, 216, 216, 1.0);
+$background-color-invalid: $red-25;
