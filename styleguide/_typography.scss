@@ -1,11 +1,31 @@
 @import 'colors';
 
-// links
-@mixin link {
-  color: $blue;
+// general typography
+
+@mixin body-copy {
   font-family: Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 19px;
+  color: $black;
+}
+
+@mixin section-header {
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 28px;
+  color: $white;
+}
+
+@mixin subsection-header {
+  @include body-copy();
+  color: $blue;
+}
+
+// links
+@mixin link {
+  @include body-copy();
+  color: $blue;
   text-decoration: none;
 
   &:hover,
