@@ -73,4 +73,52 @@ describe('edit service', function () {
       });
     });
   });
+
+  describe('addSchemaToData', function () {
+    var fn = lib[this.title];
+
+    it('number to object with schema', function () {
+      expect(fn({ num: {}}, { num: 123 })).to.deep.equal({ num: { _schema: {}, value: 123 }, _schema: { num: {} } });
+    });
+
+    it('text to object with schema', function () {
+      expect(fn({ num: {}}, { num: '123' })).to.deep.equal({ num: { _schema: {}, value: '123' }, _schema: { num: {} } });
+    });
+
+    it('undefined without schema', function () {
+      expect(fn({}, { num: undefined })).to.deep.equal({ num: undefined, _schema: {} });
+    });
+
+    it('number without schema', function () {
+      expect(fn({}, { num: 123 })).to.deep.equal({ num: 123, _schema: {} });
+    });
+
+    it('text without schema', function () {
+      expect(fn({}, { num: '123' })).to.deep.equal({ num: '123', _schema: {} });
+    });
+  });
+
+  describe('removeSchemaFromData', function () {
+    var fn = lib[this.title];
+
+    it('number to object with schema', function () {
+      expect(fn({ num: { _schema: {}, value: 123 }, _schema: { num: {} } })).to.deep.equal({ num: 123 });
+    });
+
+    it('text to object with schema', function () {
+      expect(fn({ num: { _schema: {}, value: '123' }, _schema: { num: {} } })).to.deep.equal({ num: '123' } );
+    });
+
+    it('undefined without schema', function () {
+      expect(fn({ num: undefined })).to.deep.equal({ num: undefined });
+    });
+
+    it('number without schema', function () {
+      expect(fn({ num: 123 })).to.deep.equal({ num: 123 });
+    });
+
+    it('text without schema', function () {
+      expect(fn({ num: '123' })).to.deep.equal({ num: '123' } );
+    });
+  });
 });
