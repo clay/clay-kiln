@@ -7,6 +7,8 @@ module.exports = function (result, args) {
   var rivets = result.rivets,
     isMultiline = !!args.multiline,
     buttons = args.buttons,
+    // add placeholder text if it's passed through, else remove the placeholder
+    placeholder = args.placeholder ? { text: args.placeholder } : false,
     textInput = dom.find(result.el, 'input'),
     wysiwygField = dom.create(`<div class="wysiwyg-input" data-field="${result.bindings.name}" rv-wysiwyg="data.value"></div>`);
 
@@ -33,9 +35,9 @@ module.exports = function (result, args) {
       autoLink: true, // create links automatically when urls are entered
       imageDragging: false, // disallow dragging inline images
       targetBlank: true,
-      placeholder: '',
       allowMultiParagraphSelection: isMultiline,
       disableReturn: !isMultiline,
+      placeholder: placeholder,
       extensions: {
         tieredToolbar: new MediumButton({
           label: '&hellip;',
@@ -80,7 +82,6 @@ module.exports = function (result, args) {
       // persist editor data to data model on blur and enter
       editor.subscribe('editableInput', function (e, editable) {
         observer.setValue(editable.innerHTML);
-        console.log(observer.value());
       });
 
       // el.addEventListener('keyup', function () {
@@ -89,14 +90,14 @@ module.exports = function (result, args) {
       // });
 
       // submit form on enter keydown
-      // el.addEventListener('keydown', function (e) {
-      //   var key = keycode(e);
+      el.addEventListener('keydown', function (e) {
+        var key = keycode(e);
 
-      //   if (key === 'enter' || key === 'return') {
-      //     e.preventDefault();
-      //     dom.find(dom.closest(el, 'form'), '.save').dispatchEvent(new Event('click', { bubbles: true, cancelable: true }));
-      //   }
-      // });
+        if (key === 'enter' || key === 'return') {
+          e.preventDefault();
+          dom.find(dom.closest(el, 'form'), '.save').dispatchEvent(new Event('click', { bubbles: true, cancelable: true }));
+        }
+      });
 
       // todo: clicking this seems to focus() the actual input. this stops it, but I don't know why it's happening
       // el.addEventListener('click', function (e) {
