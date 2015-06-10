@@ -1,4 +1,5 @@
 @import 'mixins';
+@import 'buttons';
 
 .editor {
   display: flex;
@@ -61,8 +62,9 @@
   justify-content: flex-end;
 }
 
-.editor .button-container button {
-  @include editor-button();
+.editor .button-container .save {
+  @include button-small();
+  @include button-primary-1();
 }
 
 /* Input container contains inputs, textareas, or whatever else, arranged in columns from top to bottom.  Each item
