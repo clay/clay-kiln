@@ -1,4 +1,5 @@
 @import '../styleguide/colors';
+@import '../styleguide/buttons';
 
 .simple-list {
   display: flex;
@@ -6,21 +7,20 @@
 }
 
 .simple-list-item {
-  border: 1px solid #eee;
-  border-radius: 4px;
-  cursor: pointer;
+  @include button-small();
+
+  color: $black;
+  border: 1px solid $black;
+  background-color: $white;
   display: inline-block;
   flex: 0 0 auto;
-  font-family: Arial, sans-serif;
-  font-size: 1.4rem;
   margin: 2px;
-  outline: none;
-  padding: 4px 8px;
+  position: relative;
   user-select: none;
 }
 
 .simple-list-item.selected {
-  border: 2px solid $black-50;
+  border: 2px solid $blue;
 }
 
 .simple-list-add {

@@ -3,12 +3,16 @@ var _ = require('lodash'),
 
 module.exports = function (result, args) {
   var prop = args.propertyName,
+    badge = args.badge || prop,
     itemEls = dom.findAll(result.el, '.simple-list-item');
 
   // add doubleclick event to all list items
   _.forEach(itemEls, function (itemEl) {
     itemEl.setAttribute('rv-on-dblclick', 'setPrimary');
     itemEl.setAttribute('rv-class-primary', 'item.' + prop);
+
+    // add primary badge
+    itemEl.appendChild(dom.create('<div class="badge">' + badge + '</div>'));
     return itemEl;
   });
 
