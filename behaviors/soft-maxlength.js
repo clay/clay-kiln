@@ -17,16 +17,16 @@ module.exports = function (result, args) {
 
     if (remaining > 0) {
       span.classList.remove('too-long');
-      return remaining + ' characters remaining';
+      return 'Remaining: ' + remaining;
     } else if (remaining === 0) {
       span.classList.remove('too-long');
-      return -remaining + ' characters over limit!';
+      return -remaining + ' characters over the limit';
     } else {
       span.classList.add('too-long');
-      return -remaining + ' characters over limit!';
+      return -remaining + ' characters over the limit';
     }
   };
 
-  dom.insertAfter(dom.find(el, '.label-inner'), span);
+  el.appendChild(span);
   return result;
 };
