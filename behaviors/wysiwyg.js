@@ -1,4 +1,3 @@
-'use strict';
 var keycode = require('keycode'),
   MediumEditor = require('medium-editor'),
   MediumButton = require('../services/medium-button'),
@@ -6,11 +5,15 @@ var keycode = require('keycode'),
 
 module.exports = function (result, args) {
   var rivets = result.rivets,
+    isMultiline = !!args.multiline,
+    buttons = args.buttons,
     textInput = dom.find(result.el, 'input'),
-    isMultiline = args.multiline;
+    wysiwygField = dom.create(`<div class="wysiwyg-input" rv-wysiwyg="data.value"></div>`);
 
-  var tpl = `<div class="wysiwyg-input" rv-wysiwyg="data"></div>`,
-    wysiwygField = dom.create(tpl);
+  // if more than 5 buttons, put the rest on the second tier
+  if (buttons.length > 5) {
+    buttons = buttons.splice(5, 0, 'tieredToolbar'); // clicking this expands the toolbar with a second tier
+  }
 
   // hide the original input, while preserving html validation
   // textInput.classList.add('hidden-input');
@@ -23,18 +26,7 @@ module.exports = function (result, args) {
     return new MediumEditor(wysiwygField, {
       toolbar: {
         // buttons that go in the toolbar
-        buttons: [
-          'bold',
-          'italic',
-          'underline',
-          'strikethrough',
-          'anchor',
-          'tieredToolbar', // clicking this expands the toolbar with a second tier
-          'header1',
-          'quote',
-          'unorderedList',
-          'orderedList'
-        ],
+        buttons: buttons,
         standardizeSelectionStart: true
       },
       paste: { forcePlainText: true }, // todo: clean pasted content
@@ -42,7 +34,7 @@ module.exports = function (result, args) {
       imageDragging: false, // disallow dragging inline images
       targetBlank: true,
       placeholder: '',
-      allowMultiParagraphSelection: isMultiline ? true : false,
+      allowMultiParagraphSelection: isMultiline,
       extensions: {
         tieredToolbar: new MediumButton({
           label: '&hellip;',
@@ -68,48 +60,50 @@ module.exports = function (result, args) {
   rivets.binders.wysiwyg = {
     publish: true,
     bind: function (el) {
-        // this is called when the binder initializes
-        var adapter = result.rivets.adapters[result.rivets.rootInterface], // use default adapter
-          model = this.model,
-          keypath = this.keypath,
-          initialData = adapter.get(model, keypath),
-          editor = createEditor();
+      // this is called when the binder initializes
+      var adapter = this.view.adapters[this.view.rootInterface],
+        model = this.model,
+        keypath = 'value',
+        initialData = adapter.get(model, keypath),
+        editor = createEditor();
 
-        console.log('initial data', initialData)
+      console.log('model ', model)
+      console.log('keypath: ', keypath)
+      console.log('initial data', initialData);
 
-        // put the initial data into the editor
-        el.innerHTML = initialData;
+      // put the initial data into the editor
+      el.innerHTML = initialData;
 
-        // hide the tier2 buttons when closing the toolbar
-        editor.subscribe('hideToolbar', function () {
-            dom.find('.medium-editor-toolbar').classList.remove('show-all');
-            dom.find('.medium-editor-toolbar').classList.remove('show-none');
-        });
+      // hide the tier2 buttons when closing the toolbar
+      editor.subscribe('hideToolbar', function () {
+        dom.find('.medium-editor-toolbar').classList.remove('show-all');
+        dom.find('.medium-editor-toolbar').classList.remove('show-none');
+      });
 
-        // persist editor data to data model on blur and enter
-        editor.subscribe('editableInput', function (e, editable) {
-          adapter.set(model, keypath, editable.innerHTML);
-        });
+      // persist editor data to data model on blur and enter
+      editor.subscribe('editableInput', function (e, editable) {
+        adapter.set(model, keypath, editable.innerHTML);
+      });
 
-        // el.addEventListener('keyup', function () {
-        //   var text = el.innerHTML;
-        //   adapter.set(model, keypath, text);
-        // });
+      // el.addEventListener('keyup', function () {
+      //   var text = el.innerHTML;
+      //   adapter.set(model, keypath, text);
+      // });
 
-        // submit form on enter keydown
-        // el.addEventListener('keydown', function (e) {
-        //   var key = keycode(e);
+      // submit form on enter keydown
+      // el.addEventListener('keydown', function (e) {
+      //   var key = keycode(e);
 
-        //   if (key === 'enter' || key === 'return') {
-        //     e.preventDefault();
-        //     dom.find(dom.closest(el, 'form'), '.save').dispatchEvent(new Event('click', { bubbles: true, cancelable: true }));
-        //   }
-        // });
+      //   if (key === 'enter' || key === 'return') {
+      //     e.preventDefault();
+      //     dom.find(dom.closest(el, 'form'), '.save').dispatchEvent(new Event('click', { bubbles: true, cancelable: true }));
+      //   }
+      // });
 
-        // todo: clicking this seems to focus() the actual input. this stops it, but I don't know why it's happening
-        // el.addEventListener('click', function (e) {
-        //   e.preventDefault();
-        // });
+      // todo: clicking this seems to focus() the actual input. this stops it, but I don't know why it's happening
+      // el.addEventListener('click', function (e) {
+      //   e.preventDefault();
+      // });
     }
   };
 
