@@ -1,4 +1,4 @@
-@import '../styleguide/validity-colors';
+@import '../styleguide/colors';
 $select-color: #999;
 
 .simple-list {
@@ -30,12 +30,12 @@ $select-color: #999;
   font-family: Arial, sans-serif;
   font-size: 1.4rem;
   outline: none;
-   border: none;
-   font-size: 1.6rem;
-   height: 32px;
-   min-width: 20px;
-   padding: 2px;
-   width: auto;
+ border: none;
+ font-size: 1.6rem;
+ height: 32px;
+ min-width: 20px;
+ padding: 2px;
+ width: auto;
 }
 
 .simple-list-add:invalid {
