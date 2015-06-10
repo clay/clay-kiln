@@ -1,5 +1,4 @@
 @import '../styleguide/colors';
-$select-color: #999;
 
 .simple-list {
   display: flex;
@@ -21,7 +20,7 @@ $select-color: #999;
 }
 
 .simple-list-item.selected {
-  border: 2px solid $select-color;
+  border: 2px solid $black-50;
 }
 
 .simple-list-add {
@@ -39,5 +38,5 @@ $select-color: #999;
 }
 
 .simple-list-add:invalid {
-  border: 1px solid $border-color-invalid;
+  border: 1px solid $red;
 }

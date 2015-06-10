@@ -1,5 +1,6 @@
 @import 'mixins';
 @import 'buttons';
+@import 'typography';
 
 .editor {
   display: flex;
@@ -82,20 +83,12 @@
   @include clearfix();
 
   flex: 1 1;
-  font-family: Arial, sans-serif;
   min-width: 30rem;
   position: relative;
 }
 
-/* contenteditable */
-.editor .input-container [contenteditable] {
-  min-height: 20px;
-  min-width: 100%;
-}
-
 .editor .label-inner {
-  font-size: 1.6rem;
-  font-weight: 700;
+  @include label();
   margin-right: 10px;
 }
 

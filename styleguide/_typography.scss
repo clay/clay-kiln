@@ -7,6 +7,10 @@
   font-size: 16px;
   line-height: 19px;
   color: $black;
+
+  &::selection {
+    background-color: $blue-50;
+  }
 }
 
 @mixin section-header {
@@ -20,6 +24,11 @@
 @mixin subsection-header {
   @include body-copy();
   color: $blue;
+}
+
+@mixin label {
+  @include body-copy();
+  font-weight: 700;
 }
 
 // links

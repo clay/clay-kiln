@@ -38,9 +38,6 @@ $blue: $blue-100;
 $yellow-100: #FFE600;
 $yellow: $yellow-100;
 
-// validity
-
-$border-color-valid: $green;
-$border-color-invalid: $red;
-
-$background-color-invalid: $red-25;
+// shadows
+$shadow-30: rgba(0, 0, 0, .3);
+$shadow-50: rgba(0, 0, 0, .5);
