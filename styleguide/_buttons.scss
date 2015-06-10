@@ -72,3 +72,21 @@
   border: 1px solid $red;
   color: $white;
 }
+
+// icon buttons
+
+@mixin icon-large {
+  border: 1px solid $blue;
+  border-radius: 4px;
+  width: 40px;
+  height: 40px;
+  position: relative;
+}
+
+@mixin icon-small {
+  border: 1px solid $blue;
+  border-radius: 4px;
+  width: 22px;
+  height: 22px;
+  position: relative;
+}

@@ -1,0 +1,17 @@
+@import 'colors';
+
+// links
+@mixin link {
+  color: $blue;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 19px;
+  text-decoration: none;
+
+  &:hover,
+  &:active,
+  &:visited {
+    color: $blue;
+    text-decoration: none;
+  }
+}
