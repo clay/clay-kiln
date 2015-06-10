@@ -93,7 +93,7 @@ module.exports = function (result, args) {
       el.addEventListener('keydown', function (e) {
         var key = keycode(e);
 
-        if (key === 'enter' || key === 'return') {
+        if (!isMultiline && (key === 'enter' || key === 'return')) {
           e.preventDefault();
           dom.find(dom.closest(el, 'form'), '.save').dispatchEvent(new Event('click', { bubbles: true, cancelable: true }));
         }
