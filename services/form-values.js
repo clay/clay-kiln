@@ -10,7 +10,7 @@ var _ = require('lodash'),
  */
 function getValues(data, el) {
   var binding,
-    name = el.getAttribute('name'),
+    name = el.getAttribute('data-field'),
     view = behaviors.getBinding(name),
     path, viewData;
 
@@ -32,9 +32,8 @@ function getValues(data, el) {
 function getFormValues(form) {
   var data = {};
 
-  _.reduce(dom.findAll(form, 'input,select,textarea'), getValues, data);
-  _.reduce(dom.findAll(form, '.simple-list'), getValues, data);
-  // todo: re-add more exotic behaviors: lists, contenteditable, etc
+  _.reduce(dom.findAll(form, '[data-field]'), getValues, data);
+  // all bound fields should have a [data-field] attribute
   return data;
 }
 

@@ -1,0 +1,219 @@
+@import '../styleguide/validity-colors';
+@import '../node_modules/medium-editor/src/sass/medium-editor';
+
+.wysiwyg-input {
+  background-color: #fff;
+  border: 1px solid #999;
+  cursor: text;
+  display: inline-block;
+  font-family: Arial, sans-serif;
+  font-size: 1.4rem;
+  margin: 10px 0 20px;
+  outline: none;
+  padding: 4px 6px;
+  position: relative;
+  white-space: pre; // prevents &nbsp;, which messes with character counts
+  white-space: no-wrap;
+  width: 100%;
+  z-index: 1;
+}
+
+.wysiwyg-input p {
+  margin: 0;
+}
+
+.wysiwyg-input blockquote {
+  border-left: 10px solid #eee;
+  margin-left: 0;
+  padding-left: 20px;
+}
+
+// toolbar
+
+// settings
+$wysiwyg-color: #000;
+$wysiwyg-bgcolor: #fff;
+$wysiwyg-selected-bgcolor: #c5e0e9;
+$wysiwyg-button-size: 32px;
+$wysiwyg-border-color: #e3e3e3;
+$wysiwyg-border-radius: 4px;
+$wysiwyg-boxshadow: 0 0 6px 0 rgba(0,0,0,.50);
+$wysiwyg-dropshadow: 0 0 6px rgba(0,0,0,.50);
+
+.medium-toolbar-arrow-over:before {
+  border-color: transparent transparent $wysiwyg-bgcolor;
+  filter: drop-shadow($wysiwyg-dropshadow);
+  top: -8px;
+}
+
+.medium-toolbar-arrow-under:after {
+  border-color: $wysiwyg-bgcolor transparent transparent transparent;
+  filter: drop-shadow($wysiwyg-dropshadow);
+  top: $wysiwyg-button-size;
+  z-index: -1;
+}
+
+.medium-editor-toolbar {
+  border: none;
+  border-radius: $wysiwyg-border-radius;
+  box-shadow: $wysiwyg-boxshadow;
+
+  .medium-editor-toolbar-actions,
+  .medium-editor-toolbar-form {
+    background-color: $wysiwyg-bgcolor;
+    border-radius: $wysiwyg-border-radius;
+
+    input {
+      padding: 6px 6px 6px 10px;
+    }
+  }
+
+  li {
+    border-right: 1px solid $wysiwyg-border-color;
+
+    &:nth-child(6n) {
+      border-right: none;
+    }
+
+    button {
+      background-color: transparent;
+      border: none;
+      color: $wysiwyg-color;
+      height: $wysiwyg-button-size;
+      line-height: 32px;
+      padding: 0;
+      text-align: center;
+      transition: background-color .2s ease-in;
+      width: $wysiwyg-button-size;
+      // todo: do the tooltip buttons have a hover state?
+      // &:hover {
+      //   background-color: #C5E0E9;
+      // }
+    }
+
+    .medium-editor-button-active {
+      background-color: $wysiwyg-selected-bgcolor;
+    }
+  }
+}
+
+.medium-editor-toolbar-form {
+  background: transparent;
+  border-radius: $wysiwyg-border-radius;
+  color: $wysiwyg-color;
+
+  .medium-editor-toolbar-input {
+    background: transparent;
+    color: $wysiwyg-color;
+    height: $wysiwyg-button-size;
+  }
+
+  a {
+    color: $wysiwyg-color;
+  }
+
+  .medium-editor-toolbar-save {
+    color: $border-color-valid;
+    font-size: 18px;
+    margin: 0 5px;
+  }
+
+  .medium-editor-toolbar-close {
+    color: $border-color-invalid;
+    margin: 0 10px 0 5px;
+  }
+}
+
+.medium-editor-anchor-preview {
+  background: $wysiwyg-bgcolor;
+  border-radius: $wysiwyg-border-radius;
+  box-shadow: $wysiwyg-boxshadow;
+  color: $wysiwyg-color;
+  max-width: 300px;
+  word-break: break-word;
+  word-wrap: normal;
+}
+
+.medium-editor-toolbar-anchor-preview {
+  background: $wysiwyg-bgcolor;
+  border-radius: $wysiwyg-border-radius;
+  position: relative;
+
+  a {
+    color: $wysiwyg-color;
+    margin: 8px 10px;
+  }
+}
+
+.medium-editor-placeholder:after {
+  color: #b3b3b1;
+}
+
+.medium-editor-toolbar-actions {
+  max-width: ($wysiwyg-button-size * 6) + 5;
+}
+
+// show the first 6 items (tier 1)
+// hide the rest (tier 2)
+.medium-editor-toolbar li:nth-child(n+7) {
+  display: none;
+}
+
+@keyframes medium-editor-animate-tiers {
+  0% {
+    margin-top: 0;
+  }
+  100% {
+    margin-top: -$wysiwyg-button-size;
+  }
+}
+
+@keyframes medium-editor-animate-arrow {
+  0% {
+    top: $wysiwyg-button-size;
+  }
+  100% {
+    top: 2 * $wysiwyg-button-size;
+  }
+}
+
+// showing all
+.medium-editor-toolbar.show-all {
+  animation: medium-editor-animate-tiers 200ms forwards linear;
+}
+.medium-editor-toolbar.show-all .medium-editor-toolbar-form {
+  height: 2 * $wysiwyg-button-size;
+}
+.medium-toolbar-arrow-under.show-all:after {
+  animation: medium-editor-animate-arrow 200ms forwards linear;
+}
+
+.medium-editor-toolbar.show-all li {
+  display: list-item;
+}
+
+// add border-bottom to the first row
+.medium-editor-toolbar.show-all li:nth-child(1),
+.medium-editor-toolbar.show-all li:nth-child(2),
+.medium-editor-toolbar.show-all li:nth-child(3),
+.medium-editor-toolbar.show-all li:nth-child(4),
+.medium-editor-toolbar.show-all li:nth-child(5),
+.medium-editor-toolbar.show-all li:nth-child(6) {
+  border-bottom: 1px solid $wysiwyg-border-color;
+}
+
+// hide items in the second row
+.medium-editor-toolbar.show-none li:nth-child(n+7) {
+  display: none;
+}
+
+// showing none
+.medium-editor-toolbar.show-none {
+  animation: medium-editor-animate-tiers 200ms backwards linear;
+}
+.medium-editor-toolbar.show-none .medium-editor-toolbar-form {
+  height: $wysiwyg-button-size;
+}
+.medium-toolbar-arrow-under.show-none:after {
+  animation: medium-editor-animate-arrow 200ms backwards linear;
+}
