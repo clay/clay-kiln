@@ -158,6 +158,20 @@ function update(ref, data, path) {
     });
 }
 
+function getPageReference(location) {
+  if (_.isString(location)) {
+    return getDataOnly(location).then(function (result) {
+      if (result.match(/^\/uris\//)) {
+        getPageReference(result);
+      } else {
+        return result;
+      }
+    });
+  } else {
+    return getPageReference('/uris/' + btoa(document.location.hostname + document.location.pathname));
+  }
+}
+
 // expose main methods
 module.exports = {
   getData: getData,

@@ -121,4 +121,12 @@ describe('edit service', function () {
       expect(fn({ num: '123' })).to.deep.equal({ num: '123' } );
     });
   });
+
+  describe('getPageReference', function () {
+    var fn = lib[this.title];
+
+    it('gets page', function () {
+      fn({pathname: '/thing/thing'});
+    });
+  });
 });

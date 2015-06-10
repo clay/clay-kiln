@@ -1,5 +1,3 @@
-'use strict';
-
 /*
  idea: autosave happens on a per-component basis
  idea: for now, forms will have explicit save buttons
