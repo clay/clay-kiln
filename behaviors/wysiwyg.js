@@ -68,8 +68,6 @@ module.exports = function (result, args) {
         data = observer.value(),
         editor = createEditor();
 
-      console.log('initial data', data);
-
       // put the initial data into the editor
       el.innerHTML = data;
 
@@ -79,15 +77,10 @@ module.exports = function (result, args) {
         dom.find('.medium-editor-toolbar').classList.remove('show-none');
       });
 
-      // persist editor data to data model on blur and enter
+      // persist editor data to data model on input
       editor.subscribe('editableInput', function (e, editable) {
         observer.setValue(editable.innerHTML);
       });
-
-      // el.addEventListener('keyup', function () {
-      //   var text = el.innerHTML;
-      //   adapter.set(model, keypath, text);
-      // });
 
       // submit form on enter keydown
       el.addEventListener('keydown', function (e) {
@@ -98,11 +91,6 @@ module.exports = function (result, args) {
           dom.find(dom.closest(el, 'form'), '.save').dispatchEvent(new Event('click', { bubbles: true, cancelable: true }));
         }
       });
-
-      // todo: clicking this seems to focus() the actual input. this stops it, but I don't know why it's happening
-      // el.addEventListener('click', function (e) {
-      //   e.preventDefault();
-      // });
     }
   };
 
