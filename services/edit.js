@@ -158,6 +158,26 @@ function update(ref, data, path) {
     });
 }
 
+/**
+ * Get page reference from current location
+ * @param {string|object|DOMLocator} [location=document.location]
+ * @returns {Promise.string}
+ */
+function getPageReference(location) {
+  location = location || document.location;
+  if (_.isString(location)) {
+    return db.getTextFromReference(location).then(function (result) {
+      if (result.match(/^\/uris\//)) {
+        getPageReference(result);
+      } else {
+        return result;
+      }
+    });
+  } else {
+    return getPageReference('/uris/' + btoa(location.hostname + location.pathname));
+  }
+}
+
 // expose main methods
 module.exports = {
   getData: getData,
@@ -168,5 +188,6 @@ module.exports = {
   setSchemaCache: setSchemaCache,
   setDataCache: setDataCache,
   addSchemaToData: addSchemaToData,
-  removeSchemaFromData: removeSchemaFromData
+  removeSchemaFromData: removeSchemaFromData,
+  getPageReference: getPageReference
 };

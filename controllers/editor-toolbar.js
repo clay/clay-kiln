@@ -1,72 +1,119 @@
-module.exports = function () {
-  var dom = require('../services/dom'),
-    db = require('../services/db'),
-    references = require('../services/references'),
-    formCreator = require('../services/form-creator'),
-    edit = require('../services/edit');
+/*
+ idea: autosave happens on a per-component basis
+ idea: for now, forms will have explicit save buttons
+ question: if I PUT to /component/name/instances/id, is that idempotent? (yes)
+ question: should we allow PATCH to /component/name/instances/id with partial data?
+ */
 
-  function constructor(el) {
-    // grab the first component in the primary area
-    // todo: make this usable in other layouts...
-    this.main = dom.find('.main .primary [' + references.componentAttribute + ']');
-    this.toolbar = el;
-  }
+var EditorToolbar,
+  dom = require('../services/dom'),
+  db = require('../services/db'),
+  references = require('../services/references'),
+  formCreator = require('../services/form-creator'),
+  edit = require('../services/edit'),
+  events = require('../services/events');
 
-  // todo: figure out save functionality / autosave
-  /*
-    idea: autosave happens on a per-component basis
-    idea: for now, forms will have explicit save buttons
-    question: if I PUT to /component/name/instances/id, is that idempotent? (yes)
-    question: should we allow PATCH to /component/name/instances/id with partial data?
-   */
+/**
+ * Publish current page.
+ */
+function publish() {
+  edit.getPageReference().then(function (result) {
+    // eslint-disable-line
+    console.log('published', result);
+  }).catch(console.error);
+}
 
-  constructor.prototype = {
-    events: {
-      '.close click': 'close',
-      '.new click': 'newPage',
-      '.meta click': 'editMetadata',
-      '.publish click': 'publish'
-    },
+/**
+ * Open modal for editing metadata
+ * @param {string} ref
+ * @param {string} path
+ */
+function editMetadata(ref, path) {
+  edit.getData(ref).then(function (data) {
+    formCreator.createForm(ref, path, data);
+  }).catch(console.error);
+}
 
-    /**
-     * goes back to view mode
-     */
-    close: function () {
-      location.href = location.href.split('?').shift();
-    },
+/**
+ * Create a new page with the same layout as the current page.
+ * @param {string} layoutName
+ */
+function createPage(layoutName) {
+  // todo: allow users to choose their layout / components
 
-    // todo: allow users to choose their layout / components
-    newPage: function () {
-      var layoutName = dom.find('[data-layout]'),
-        articlePage = {
-          layout: '/components/' + layoutName + '/instances/article',
-          main: '/components/story'
-        };
-
-      db.postToReference('/pages', articlePage).then(function (res) {
-        location.href = res[references.referenceProperty] + '.html?edit=true';
-      });
-    },
-
-    /**
-     * edit metadata for the main component
-     * opens a modal with ???
-     */
-    editMetadata: function () {
-      var main = this.main,
-        name = main.getAttribute('data-component'),
-        ref = main.getAttribute(references.referenceAttribute);
-
-      edit.getData(ref).then(function (data) {
-        formCreator.createForm(name, data);
-      });
-    },
-
-    publish: function () {
-      alert('published'); // eslint-disable-line
-      // todo: figure out publish functionality
-    }
+  var articlePage = {
+    layout: '/components/' + layoutName + '/instances/article',
+    main: '/components/story'
   };
 
-  return constructor;
+  db.postToReference('/pages', articlePage).then(function (res) {
+    location.href = res[references.referenceProperty] + '.html?edit=true';
+  }).catch(console.error);
+}
+
+/**
+ * Remove querystring from current location
+ */
+function removeQuerystring() {
+  location.href = location.href.split('?').shift();
+}
+
+/**
+ * @class EditorToolbar
+ * @param {Element} el
+ * @property {Element} el
+ */
+EditorToolbar = function (el) {
+
+  // grab the first component in the primary area
+  this.main = dom.find('.main .primary [' + references.componentAttribute + ']');
+  this.el = el;
+
+  events.add(el, {
+    '.close click': 'onClose',
+    '.new click': 'onNewPage',
+    '.meta click': 'onEditMetadata',
+    '.publish click': 'onPublish'
+  }, this);
 };
+
+/**
+ * @lends EditorToolbar#
+ */
+EditorToolbar.prototype = {
+  /**
+   * On close button
+   */
+  onClose: function () {
+    removeQuerystring();
+  },
+
+  /**
+   * On new page button
+   */
+  onNewPage: function () {
+    var layoutName = dom.find('[data-layout]');
+
+    createPage(layoutName);
+  },
+
+  /**
+   * On edit metadata button
+   */
+  onEditMetadata: function () {
+    var primaryComponent = dom.find('.main .primary [' + references.componentAttribute + ']'),
+      path = primaryComponent.getAttribute('data-component'),
+      ref = primaryComponent.getAttribute(references.referenceAttribute);
+
+    editMetadata(ref, path);
+  },
+
+  /**
+   * On publish button
+   */
+  onPublish: function () {
+    publish();
+  }
+};
+
+module.exports = EditorToolbar;

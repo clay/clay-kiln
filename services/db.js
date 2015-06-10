@@ -40,9 +40,24 @@ function send(options) {
 }
 
 /**
+ *
+ * @param {Element} target
+ * @returns {string|Element}
+ */
+function expectTextResult(target) {
+  var statusCodeGroup = target.status.toString()[0];
+
+  if (statusCodeGroup === '2') {
+    return target.responseText;
+  } else {
+    return target;
+  }
+}
+
+/**
  * Translate the response into what we expect
  * @param {Element} target
- * @returns {{}}
+ * @returns {{}|Element}
  */
 function expectJSONResult(target) {
   var statusCodeGroup = target.status.toString()[0];
@@ -90,6 +105,10 @@ module.exports = {
 
   getComponentJSONFromReference: function (ref) {
     return send(ref).then(expectJSONResult);
+  },
+
+  getTextFromReference: function (ref) {
+    return send(ref).then(expectTextResult);
   },
 
   getComponentHTMLFromReference: function (ref) {
