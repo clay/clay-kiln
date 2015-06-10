@@ -5,36 +5,19 @@
  */
 
 function getCurrentSelection() {
-  var html = '',
-    sel, container, i, len;
+  var sel = window.getSelection(),
+    container = document.createElement('div'),
+    i = 0,
+    len = sel.rangeCount;
 
-  if (typeof window.getSelection !== 'undefined') {
-    sel = window.getSelection();
-
-    if (sel.rangeCount) {
-      container = document.createElement('div');
-
-      for (i = 0, len = sel.rangeCount; i < len; ++i) {
-        container.appendChild(sel.getRangeAt(i).cloneContents());
-      }
-
-      html = container.innerHTML;
-    }
-  } else if (typeof document.selection !== 'undefined') {
-    if (document.selection.type === 'Text') {
-      html = document.selection.createRange().htmlText;
-    }
+  for (i = 0, len = sel.rangeCount; i < len; ++i) {
+    container.appendChild(sel.getRangeAt(i).cloneContents());
   }
 
-  return html;
+  return container.innerHTML;
 }
 
 function MediumButton(options) {
-  if (!options.label || !options.start && !options.end || !options.label && !options.action) {
-    console.error('[Custom-Button] You need to specify "label", "start" and "end" OR "label" and "action"');
-    return;
-  }
-
   options.start = options.start || '';
   options.end = options.end || '';
 
