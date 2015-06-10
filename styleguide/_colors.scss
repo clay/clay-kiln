@@ -1,0 +1,43 @@
+// basic colors
+
+$light-grey: #f4f4f4;
+$grey: #e3e3e3;
+
+// 25% 50% 75% 100%
+
+// black
+$black-25: #c3c3c3;
+$black-50: #888;
+$black-75: #4d4d4d;
+$black-100: #111;
+$black: $black-100;
+
+// green
+$green-25: #c4e4c8;
+$green-50: #89ca91;
+$green-75: #4fb05b;
+$green-100: #149524;
+$green: $green-100;
+
+// red
+$red-25: #f6cbc6;
+$red-50: #ee978d;
+$red-75: #e66355;
+$red-100: #dd2f1c;
+$red: $red-100;
+
+// blue
+$blue-25: #c5e0e9;
+$blue-50: #8bc0d4;
+$blue-75: #51a2bf;
+$blue-100: #1782a9;
+$blue: $blue-100;
+
+// yellow
+$yellow-100: #ffe600;
+$yellow: $yellow-100;
+
+// shadows
+$shadow-30: rgba(0, 0, 0, .3);
+$shadow-50: rgba(0, 0, 0, .5);
+$shadow-80: rgba(0, 0, 0, .8);

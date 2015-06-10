@@ -1,19 +1,5 @@
-@import '../styleguide/validity-colors';
+@import '../styleguide/inputs';
 
 .input-text {
-  border: 1px solid #999;
-  font-family: Arial, sans-serif;
-  font-size: 1.4rem;
-  margin: 10px 0 20px;
-  padding: 4px 6px;
-  width: 100%;
-}
-
-.input-text:valid {
-  border-color: $border-color-valid;
-}
-
-.input-text:invalid {
-  background: $background-color-invalid;
-  border-color: $border-color-invalid;
+  @include input();
 }

@@ -1,4 +1,27 @@
-.simple-list-item.selected.primary,
+@import '../styleguide/colors';
+
+.badge {
+  display: none;
+}
+
 .simple-list-item.primary {
-  border: 3px solid green;
+  border: 2px solid $green;
+
+  .badge {
+    background-color: #fff;
+    border: 2px solid $green;
+    border-radius: 9px;
+    display: block;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 10px;
+    padding: 2px;
+    position: absolute;
+    right: -6px;
+    top: -9px;
+  }
+}
+
+.simple-list-item.selected.primary {
+  border: 2px solid $blue;
 }

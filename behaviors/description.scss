@@ -1,16 +1,11 @@
 @import '../styleguide/colors';
 @import '../styleguide/typography';
 
-.soft-maxlength {
+.label-description {
   @include body-copy();
 
   color: $black-50;
-  float: right;
   font-size: 14px;
   line-height: 17px;
-  margin-top: 5px;
-}
-
-.soft-maxlength.too-long {
-  color: $red;
+  margin:2px 0 5px 0;
 }

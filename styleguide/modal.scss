@@ -1,8 +1,7 @@
-/* modal */
-@import 'mixins';
+@import 'colors';
 
 .editor-modal-overlay {
-  background-color: rgba(0,0,0,.8);
+  background-color: $shadow-80;
   display: block;
   height: 100%;
   left: 0;

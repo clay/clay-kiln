@@ -1,9 +1,7 @@
+@import '../styleguide/inputs';
+
 .editor-textarea {
-  border: 1px solid #999;
-  font-size: 1.4rem;
-  margin: 10px 0 20px;
+  @include input();
+
   max-width: 100%; // prevents resize
-  min-height: 20px;
-  padding: 4px 6px;
-  width: 100%;
 }

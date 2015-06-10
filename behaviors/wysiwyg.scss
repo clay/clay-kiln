@@ -1,21 +1,9 @@
-@import '../styleguide/validity-colors';
+@import '../styleguide/colors';
+@import '../styleguide/inputs';
 @import '../node_modules/medium-editor/src/sass/medium-editor';
 
 .wysiwyg-input {
-  background-color: #fff;
-  border: 1px solid #999;
-  cursor: text;
-  display: inline-block;
-  font-family: Arial, sans-serif;
-  font-size: 1.4rem;
-  margin: 10px 0 20px;
-  outline: none;
-  padding: 4px 6px;
-  position: relative;
-  white-space: pre; // prevents &nbsp;, which messes with character counts
-  white-space: no-wrap;
-  width: 100%;
-  z-index: 1;
+  @include input();
 }
 
 .wysiwyg-input p {
@@ -23,7 +11,7 @@
 }
 
 .wysiwyg-input blockquote {
-  border-left: 10px solid #eee;
+  border-left: 10px solid $grey;
   margin-left: 0;
   padding-left: 20px;
 }
@@ -31,14 +19,14 @@
 // toolbar
 
 // settings
-$wysiwyg-color: #000;
+$wysiwyg-color: $black;
 $wysiwyg-bgcolor: #fff;
-$wysiwyg-selected-bgcolor: #c5e0e9;
+$wysiwyg-selected-bgcolor: $blue-25;
 $wysiwyg-button-size: 32px;
-$wysiwyg-border-color: #e3e3e3;
+$wysiwyg-border-color: $black-25;
 $wysiwyg-border-radius: 4px;
-$wysiwyg-boxshadow: 0 0 6px 0 rgba(0,0,0,.50);
-$wysiwyg-dropshadow: 0 0 6px rgba(0,0,0,.50);
+$wysiwyg-boxshadow: 0 0 6px 0 $shadow-50;
+$wysiwyg-dropshadow: 0 0 6px $shadow-50;
 
 .medium-toolbar-arrow-over:before {
   border-color: transparent transparent $wysiwyg-bgcolor;
@@ -113,13 +101,13 @@ $wysiwyg-dropshadow: 0 0 6px rgba(0,0,0,.50);
   }
 
   .medium-editor-toolbar-save {
-    color: $border-color-valid;
+    color: $green;
     font-size: 18px;
     margin: 0 5px;
   }
 
   .medium-editor-toolbar-close {
-    color: $border-color-invalid;
+    color: $red;
     margin: 0 10px 0 5px;
   }
 }

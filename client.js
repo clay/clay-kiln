@@ -9,7 +9,7 @@ var ds = require('dollar-slice'),
 behaviors.add('text', require('./behaviors/text'));
 behaviors.add('soft-maxlength', require('./behaviors/soft-maxlength'));
 behaviors.add('radio', require('./behaviors/radio'));
-behaviors.add('tooltip', require('./behaviors/tooltip'));
+behaviors.add('description', require('./behaviors/description'));
 behaviors.add('checkbox', require('./behaviors/checkbox'));
 behaviors.add('textarea', require('./behaviors/textarea'));
 behaviors.add('url', require('./behaviors/url'));

@@ -1,4 +1,7 @@
 @import 'mixins';
+@import 'buttons';
+@import 'typography';
+@import 'colors';
 
 .editor {
   display: flex;
@@ -12,14 +15,10 @@
 }
 
 .editor > header {
+  @include section-header();
   bottom: calc(100% + 30px);
-  color: #fff;
-  font-family: Arial, sans-serif;
-  font-size: 3rem;
-  font-weight: 700;
   left: 0;
   position: absolute;
-  text-align: left;
 }
 
 .editor > form {
@@ -37,7 +36,7 @@
 }
 
 .editor .editor-section + .editor-section {
-  border-top: 1px dashed #eee;
+  border-top: 1px dashed $grey;
   margin-top: 5px;
 }
 
@@ -46,11 +45,12 @@
 }
 
 .editor .editor-section > h2 {
-  color: #51a2bf;
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 2rem;
-  font-weight: 700;
-  text-transform: uppercase;
+  @include subsection-header();
+}
+
+.editor .editor-section-body {
+  display: flex;
+  flex-flow: row wrap;
 }
 
 .editor .button-container {
@@ -61,8 +61,9 @@
   justify-content: flex-end;
 }
 
-.editor .button-container button {
-  @include editor-button();
+.editor .button-container .save {
+  @include button-small();
+  @include button-primary-1();
 }
 
 /* Input container contains inputs, textareas, or whatever else, arranged in columns from top to bottom.  Each item
@@ -80,20 +81,13 @@
   @include clearfix();
 
   flex: 1 1;
-  font-family: Arial, sans-serif;
   min-width: 30rem;
   position: relative;
-}
-
-/* contenteditable */
-.editor .input-container [contenteditable] {
-  min-height: 20px;
-  min-width: 100%;
+  margin: 10px 0 20px;
 }
 
 .editor .label-inner {
-  font-size: 1.6rem;
-  font-weight: 700;
+  @include label();
   margin-right: 10px;
 }
 

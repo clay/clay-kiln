@@ -1,0 +1,46 @@
+@import 'colors';
+
+// general typography
+
+@mixin body-copy {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 19px;
+  color: $black;
+
+  &::selection {
+    background-color: $blue-50;
+  }
+}
+
+@mixin section-header {
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 28px;
+  color: #fff;
+}
+
+@mixin subsection-header {
+  @include body-copy();
+  color: $blue;
+}
+
+@mixin label {
+  @include body-copy();
+  font-weight: 700;
+}
+
+// links
+@mixin link {
+  @include body-copy();
+  color: $blue;
+  text-decoration: none;
+
+  &:hover,
+  &:active,
+  &:visited {
+    color: $blue;
+    text-decoration: none;
+  }
+}
