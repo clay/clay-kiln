@@ -4,8 +4,7 @@
 @mixin input {
   @include body-copy();
 
-  background-color: $white;
-  background-color: $white;
+  background-color: #fff;
   border: 1px solid $black-25;
   box-shadow: inset 2px 1px 6px 0 $shadow-30;
   cursor: text;

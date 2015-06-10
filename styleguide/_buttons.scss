@@ -40,11 +40,11 @@
 @mixin button-primary-1 {
   background-color: $green;
   border: 1px solid $green;
-  color: $white;
+  color: #fff;
 }
 
 @mixin button-primary-2 {
-  background-color: $white;
+  background-color: #fff;
   border: 1px solid $green;
   color: $green;
 }
@@ -56,13 +56,13 @@
 }
 
 @mixin button-secondary-2 {
-  background-color: $white;
+  background-color: #fff;
   border: 1px solid $black-50;
   color: $black-50;
 }
 
 @mixin button-tertiary {
-  background-color: $white;
+  background-color: #fff;
   border: 1px solid $blue;
   color: $blue;
 }
@@ -70,7 +70,7 @@
 @mixin button-warning {
   background-color: $red;
   border: 1px solid $red;
-  color: $white;
+  color: #fff;
 }
 
 // icon buttons

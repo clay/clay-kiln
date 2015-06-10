@@ -1,20 +1,16 @@
+@import 'colors';
+@import 'typography';
+
 .editor-placeholder {
-  align-items: center;
-  border: 2px dashed #eee;
-  display: flex;
+  background-color: $light-grey;
+  border: 2px dashed $black-25;
+  padding: 10px;
   height: 100%;
-  justify-content: center;
   margin: 10px 0;
   position: relative;
   width: 100%;
 }
 
 .editor-placeholder .placeholder-label {
-  color: #888;
-  flex: 1 1;
-  font-family: Arial,sans-serif;
-  font-size: 1.8rem;
-  font-weight: 600;
-  padding: 18px;
-  text-align: center;
+  @include body-copy();
 }

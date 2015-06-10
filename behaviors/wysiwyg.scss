@@ -11,7 +11,7 @@
 }
 
 .wysiwyg-input blockquote {
-  border-left: 10px solid #eee;
+  border-left: 10px solid $grey;
   margin-left: 0;
   padding-left: 20px;
 }
@@ -20,7 +20,7 @@
 
 // settings
 $wysiwyg-color: $black;
-$wysiwyg-bgcolor: $white;
+$wysiwyg-bgcolor: #fff;
 $wysiwyg-selected-bgcolor: $blue-25;
 $wysiwyg-button-size: 32px;
 $wysiwyg-border-color: $black-25;
