@@ -48,6 +48,11 @@
   @include subsection-header();
 }
 
+.editor .editor-section-body {
+  display: flex;
+  flex-flow: row wrap;
+}
+
 .editor .button-container {
   align-content: space-around;
   align-items: center;
