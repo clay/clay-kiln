@@ -8,7 +8,7 @@ module.exports = function (result, args) {
     isMultiline = !!args.multiline,
     buttons = args.buttons,
     textInput = dom.find(result.el, 'input'),
-    wysiwygField = dom.create(`<div class="wysiwyg-input" rv-wysiwyg="data.value"></div>`);
+    wysiwygField = dom.create(`<div class="wysiwyg-input" data-field="${result.bindings.name}" rv-wysiwyg="data.value"></div>`);
 
   // if more than 5 buttons, put the rest on the second tier
   if (buttons.length > 5) {
@@ -35,6 +35,7 @@ module.exports = function (result, args) {
       targetBlank: true,
       placeholder: '',
       allowMultiParagraphSelection: isMultiline,
+      disableReturn: !isMultiline,
       extensions: {
         tieredToolbar: new MediumButton({
           label: '&hellip;',
@@ -61,18 +62,14 @@ module.exports = function (result, args) {
     publish: true,
     bind: function (el) {
       // this is called when the binder initializes
-      var adapter = this.view.adapters[this.view.rootInterface],
-        model = this.model,
-        keypath = 'value',
-        initialData = adapter.get(model, keypath),
+      var observer = this.observer,
+        data = observer.value(),
         editor = createEditor();
 
-      console.log('model ', model)
-      console.log('keypath: ', keypath)
-      console.log('initial data', initialData);
+      console.log('initial data', data);
 
       // put the initial data into the editor
-      el.innerHTML = initialData;
+      el.innerHTML = data;
 
       // hide the tier2 buttons when closing the toolbar
       editor.subscribe('hideToolbar', function () {
@@ -82,7 +79,8 @@ module.exports = function (result, args) {
 
       // persist editor data to data model on blur and enter
       editor.subscribe('editableInput', function (e, editable) {
-        adapter.set(model, keypath, editable.innerHTML);
+        observer.setValue(editable.innerHTML);
+        console.log(observer.value());
       });
 
       // el.addEventListener('keyup', function () {

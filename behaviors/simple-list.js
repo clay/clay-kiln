@@ -6,7 +6,7 @@ module.exports = function (result, args) {
   var min = args.min,
     max = args.max,
     el = dom.create(`
-      <section name="${result.bindings.name}" class="simple-list" rv-simplelist="data">
+      <section data-field="${result.bindings.name}" class="simple-list" rv-simplelist="data">
         <span tabindex="0" rv-each-item="data" class="simple-list-item" rv-class-selected="item.selected" rv-on-click="selectItem" rv-on-keydown="keyactions">{ item.text }</span>
         <input class="simple-list-add" rv-on-click="unselectAll" />
       </section>`);
