@@ -2,6 +2,19 @@ var domify = require('domify');
 
 module.exports = {
   /**
+   * Get url without _how_ to access it, creating a uri.
+   *
+   * Removes port and protocol.
+   *
+   * @returns {string}
+   */
+  uri: function () {
+    var location = document.location;
+
+    return location.hostname + location.pathname;
+  },
+
+  /**
    * This function can be minimized smaller than document.querySelector
    * @param {Element} [el]
    * @param {string} selector

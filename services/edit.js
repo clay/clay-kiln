@@ -1,4 +1,5 @@
 var _ = require('lodash'),
+  dom = require('./dom'),
   db = require('./db'),
   references = require('./references'),
   // store the component data in memory
@@ -160,22 +161,59 @@ function update(ref, data, path) {
 
 /**
  * Get page reference from current location
- * @param {string|object|DOMLocator} [location=document.location]
+ * @param {string} [location]
  * @returns {Promise.string}
  */
-function getPageReference(location) {
-  location = location || document.location;
+function getUriDestination(location) {
   if (_.isString(location)) {
     return db.getTextFromReference(location).then(function (result) {
       if (result.match(/^\/uris\//)) {
-        getPageReference(result);
+        getUriDestination(result);
       } else {
         return result;
       }
     });
   } else {
-    return getPageReference('/uris/' + btoa(location.hostname + location.pathname));
+    return getUriDestination('/uris/' + btoa(dom.uri()));
   }
+}
+
+/**
+ * @param {string} uri
+ * @returns {string}
+ */
+function removeExtension(uri) {
+  return uri.split('.')[0];
+}
+
+/**
+ * @param {string} uri
+ * @returns {string}
+ */
+function removeVersion(uri) {
+  return uri.split('@')[0];
+}
+
+/**
+ * @param {string} uri
+ * @returns {string}
+ */
+function pathOnly(uri) {
+  return removeVersion(removeExtension(uri));
+}
+
+/**
+ * Publish current page's saved data.
+ * @returns {Promise.string}
+ */
+function publishPage() {
+  return getUriDestination().then(function (pageReference) {
+    var path = pathOnly(pageReference);
+
+    return getDataOnly(path).then(function (pageData) {
+      return db.putToReference(path + '@published', pageData);
+    });
+  });
 }
 
 // expose main methods
@@ -189,5 +227,6 @@ module.exports = {
   setDataCache: setDataCache,
   addSchemaToData: addSchemaToData,
   removeSchemaFromData: removeSchemaFromData,
-  getPageReference: getPageReference
+  getUriDestination: getUriDestination,
+  publishPage: publishPage
 };

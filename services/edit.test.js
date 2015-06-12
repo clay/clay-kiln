@@ -1,5 +1,6 @@
 var lib = require('./edit'),
-  db = require('./db');
+  db = require('./db'),
+  dom = require('./dom');
 
 describe('edit service', function () {
   var sandbox;
@@ -122,7 +123,7 @@ describe('edit service', function () {
     });
   });
 
-  describe('getPageReference', function () {
+  describe('getUriDestination', function () {
     var fn = lib[this.title];
 
     it('gets page from string', function () {
@@ -138,9 +139,10 @@ describe('edit service', function () {
     it('gets page from location', function () {
       var data = '/pages/thing';
 
+      sandbox.stub(dom, 'uri').returns('place.com/thing/thing');
       sandbox.stub(db, 'getTextFromReference').returns(Promise.resolve(data));
 
-      return fn({hostname: 'place.com', pathname: '/thing/thing'}).then(function (result) {
+      return fn().then(function (result) {
         expect(result).to.equal(data);
       });
     });
@@ -152,8 +154,43 @@ describe('edit service', function () {
 
       stub.withArgs(redirect).returns(Promise.resolve(data));
       stub.returns(Promise.resolve(redirect));
+      sandbox.stub(dom, 'uri').returns('place.com/thing/thing');
 
-      return fn({hostname: 'place.com', pathname: '/thing/thing'}).then(function (result) {
+      return fn().then(function (result) {
+        expect(result).to.equal(data);
+      });
+    });
+  });
+
+  describe('publishPage', function () {
+    var fn = lib[this.title];
+
+    function expectPublish(uri, pageRef) {
+      var data = pageRef,
+        putData = {};
+
+      sandbox.stub(dom, 'uri').returns(uri);
+      sandbox.stub(db, 'getTextFromReference').returns(Promise.resolve(data));
+      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve(putData));
+      sandbox.mock(db).expects('putToReference').withArgs('/pages/thing@published').returns(Promise.resolve(putData));
+
+      return putData;
+    }
+
+    it('publishes page with version', function () {
+      var data = expectPublish('place.com/thing@thing.html', '/pages/thing@otherthing');
+
+      return fn().then(function (result) {
+        sandbox.verify();
+        expect(result).to.equal(data);
+      });
+    });
+
+    it('publishes page without version', function () {
+      var data = expectPublish('place.com/thing.html', '/pages/thing');
+
+      return fn().then(function (result) {
+        sandbox.verify();
         expect(result).to.equal(data);
       });
     });

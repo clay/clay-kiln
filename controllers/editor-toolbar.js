@@ -17,10 +17,9 @@ var EditorToolbar,
  * Publish current page.
  */
 function publish() {
-  edit.getPageReference().then(function (result) {
-    // eslint-disable-line
-    console.log('published', result);
-  }).catch(console.error);
+  edit.publishPage()
+    .then(console.log)
+    .catch(console.error);
 }
 
 /**
