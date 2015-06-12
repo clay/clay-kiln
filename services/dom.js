@@ -5,10 +5,12 @@ module.exports = {
    * Get url without _how_ to access it, creating a uri.
    *
    * Removes port and protocol.
+   *
+   * @returns {string}
    */
   uri: function () {
     var location = document.location;
-    
+
     return location.hostname + location.pathname;
   },
 
