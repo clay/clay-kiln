@@ -1,6 +1,5 @@
 var dom = require('../services/dom'),
-  db = require('../services/db'),
-  lists = {};
+  db = require('../services/db');
 
 /**
  * Find the first child that is a text input.
@@ -29,6 +28,7 @@ function findFirstTextInput(el) {
  * @returns {string}      Name to be used for the list
  */
 function createListName() {
+
   var somewhatUnique = '' + Math.floor(Math.random() * 100) + (new Date()).getTime();
 
   return 'autocomplete-' + somewhatUnique;
@@ -40,9 +40,7 @@ module.exports = function (result, args) {
   var api = args.api,
     existingInput = findFirstTextInput(result.el),
     listName = createListName(),
-    optionsParent,
-    datalist,
-    options;
+    datalist;
 
   // Requirements.
   if (!api) {
@@ -54,31 +52,29 @@ module.exports = function (result, args) {
     return result;
   }
 
-  // Add elements.
+  // Add element.
   datalist = document.createElement('datalist');
-  options = dom.create(`
-    <label>
-      <select>
-        <option value="">
-      </select>
-    </label>
-  `);
-  datalist.appendChild(options);
-  optionsParent = options.querySelector('select');
 
-  // Set attributes.
-  existingInput.setAttribute('list', listName);
+  // Connect datalist to input.
   datalist.id = listName;
-  
-  // Set values.
+  existingInput.setAttribute('list', listName);
+
+  // Add options.
   db.getComponentJSONFromReference(api).then(function (results) {
-    options = results.reduce(function (prev, curr) {
+
+    var options = results.reduce(function (prev, curr) {
       return prev + '<option>' + curr;
     }, '<option value="">');
 
-    options = dom.create(`${ options }`);
-    dom.clearChildren(optionsParent);
-    optionsParent.appendChild(options);;
+    options = dom.create(`
+      <label>
+        <select>
+          ${ options }
+        </select>
+      </label>
+    `);
+
+    datalist.appendChild(options);
   });
 
   // Add to the result element.
