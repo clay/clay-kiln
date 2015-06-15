@@ -1,6 +1,4 @@
-'use strict';
-var _ = require('lodash'),
-  dom = require('../services/dom'),
+var dom = require('../services/dom'),
   db = require('../services/db'),
   lists = {};
 
@@ -10,11 +8,11 @@ var _ = require('lodash'),
  * @returns {object|undefined}
  */
 function findFirstTextInput(el) {
-  
+
   var inputs, l, i, type, textInput;
 
   inputs = el.querySelectorAll('input');
-  
+
   for (i = 0, l = inputs.length; i < l; i++) {
     type = inputs[i].getAttribute('type');
     if (!type || type === 'text') {
@@ -22,7 +20,7 @@ function findFirstTextInput(el) {
       break;
     }
   }
-  
+
   return textInput;
 }
 
@@ -45,17 +43,20 @@ function getListValues(apiUrl) {
  */
 function createListName() {
   var somewhatUnique = '' + Math.floor(Math.random() * 100) + (new Date()).getTime();
+
   return 'autocomplete-' + somewhatUnique;
 }
 
 
 module.exports = function (result, args) {
-  
+
   var api = args.api,
-    existingInput = findFirstTextInput(result.el), 
+    existingInput = findFirstTextInput(result.el),
     listName = createListName(),
-    optionsParent;
-  
+    optionsParent,
+    datalist,
+    options;
+
   // Requirements.
   if (!api) {
     console.warn('Autocomplete requires an API.');
@@ -65,12 +66,12 @@ module.exports = function (result, args) {
     console.warn('Autocomplete requires a text input.');
     return result;
   }
-  
+
   getListValues(api);
 
   // Add elements.
-  var datalist = document.createElement('datalist');
-  var options = dom.create(`
+  datalist = document.createElement('datalist');
+  options = dom.create(`
     <label>
       <select>
         <option value="">
@@ -79,33 +80,31 @@ module.exports = function (result, args) {
   `);
   datalist.appendChild(options);
   optionsParent = options.querySelector('select');
-  
+
   // Set attributes.
   existingInput.setAttribute('list', listName);
   datalist.id = listName;
 
   // Listen.
-  existingInput.addEventListener('input', (function(optionsParent) { 
-    return function(e) {
+  existingInput.addEventListener('input', function () {
 
-      getListValues(api).then(function (results) {  
-        var options = results.reduce(function (prev, curr) {
-            return prev + '<option>' + curr;
-          }, '<option value="">');
+    getListValues(api).then(function (results) {
+      options = results.reduce(function (prev, curr) {
+          return prev + '<option>' + curr;
+        }, '<option value="">');
 
-        options = dom.create(`${ options }`);
-        dom.clearChildren(optionsParent);
-        optionsParent.appendChild(options);
-        
-        existingInput.focus();
-      });
-      
-    };
-  })(optionsParent));
+      options = dom.create(`${ options }`);
+      dom.clearChildren(optionsParent);
+      optionsParent.appendChild(options);
+
+      existingInput.focus();
+    });
+
+  });
 
   // Add it back to the result element.
   result.el.appendChild(datalist);
-  
+
   return result;
-  
+
 };
