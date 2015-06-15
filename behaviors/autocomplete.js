@@ -25,19 +25,6 @@ function findFirstTextInput(el) {
 }
 
 /**
- * Get the list values from the API and store in memory.
- * @param {string} apiUrl   The endpoint for the list, e.g. '/lists/authors'
- * @returns {promise}
- */
-function getListValues(apiUrl) {
-  if (lists[apiUrl]) {
-    return Promise.resolve(lists[apiUrl]);
-  } else {
-    return db.getComponentJSONFromReference(apiUrl);
-  }
-}
-
-/**
  * Create a unique name for the list. Does not need to be too unique because specific to one form.
  * @returns {string}      Name to be used for the list
  */
@@ -67,8 +54,6 @@ module.exports = function (result, args) {
     return result;
   }
 
-  getListValues(api);
-
   // Add elements.
   datalist = document.createElement('datalist');
   options = dom.create(`
@@ -84,25 +69,19 @@ module.exports = function (result, args) {
   // Set attributes.
   existingInput.setAttribute('list', listName);
   datalist.id = listName;
+  
+  // Set values.
+  db.getComponentJSONFromReference(api).then(function (results) {
+    options = results.reduce(function (prev, curr) {
+      return prev + '<option>' + curr;
+    }, '<option value="">');
 
-  // Listen.
-  existingInput.addEventListener('input', function () {
-
-    getListValues(api).then(function (results) {
-      options = results.reduce(function (prev, curr) {
-          return prev + '<option>' + curr;
-        }, '<option value="">');
-
-      options = dom.create(`${ options }`);
-      dom.clearChildren(optionsParent);
-      optionsParent.appendChild(options);
-
-      existingInput.focus();
-    });
-
+    options = dom.create(`${ options }`);
+    dom.clearChildren(optionsParent);
+    optionsParent.appendChild(options);;
   });
 
-  // Add it back to the result element.
+  // Add to the result element.
   result.el.appendChild(datalist);
 
   return result;
