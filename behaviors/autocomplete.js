@@ -1,6 +1,8 @@
 'use strict';
 var _ = require('lodash'),
-  dom = require('../services/dom');
+  dom = require('../services/dom'),
+  db = require('../services/db'),
+  lists = {};
 
 /**
  * Find the first child that is a text input.
@@ -9,87 +11,100 @@ var _ = require('lodash'),
  */
 function findFirstTextInput(el) {
   
-  var inputs = el.querySelectorAll('input'),
-    l = inputs.length,
-    i = 0,
-    type,
-    textInput;
+  var inputs, l, i, type, textInput;
+
+  inputs = el.querySelectorAll('input');
   
-  while (i < l) {
+  for (i = 0, l = inputs.length; i < l; i++) {
     type = inputs[i].getAttribute('type');
     if (!type || type === 'text') {
       textInput = inputs[i];
       break;
     }
-    i += 1;
   }
   
   return textInput;
 }
 
 /**
- * Temporary, until the endpoint is hooked up.
- * @param q
- * @returns {*}
+ * Get the list values from the API and store in memory.
+ * @param {string} apiUrl   The endpoint for the list, e.g. '/lists/authors'
+ * @returns {promise}
  */
-function mockEndpoint(q) {
-  if (q.toLowerCase().indexOf('m') === 0) {
-    // Names with M
-    return JSON.stringify({results:['Morgan', 'Mindy', 'Miguel']});
+function getListValues(apiUrl) {
+  if (lists[apiUrl]) {
+    return Promise.resolve(lists[apiUrl]);
   } else {
-    // Random names
-    return JSON.stringify({results:['Amy Koran', 'Zena Strother', 'Karole Herdt', 'Sheila Cowell', 'Josiah Hagaman', 'Beatris Doetsch', 'Zachary Brunell', 'Manuel Grassi', 'Amie Ridgell', 'Lupe Harrill', 'Adriana Bakke', 'Francoise Lashley', 'Gwenn Sampley', 'Randall Coller', 'Terence Villegas', 'Matthew Mcconnaughey', 'Rosella Conroy', 'Gemma Osburn', 'Shanel Holt']});
+    return db.getComponentJSONFromReference(apiUrl);
   }
+}
+
+/**
+ * Create a unique name for the list. Does not need to be too unique because specific to one form.
+ * @returns {string}      Name to be used for the list
+ */
+function createListName() {
+  var somewhatUnique = '' + Math.floor(Math.random() * 100) + (new Date()).getTime();
+  return 'autocomplete-' + somewhatUnique;
 }
 
 
 module.exports = function (result, args) {
   
-  var existingInput = findFirstTextInput(result.el);
+  var api = args.api,
+    existingInput = findFirstTextInput(result.el), 
+    listName = createListName(),
+    optionsParent;
   
-  if (existingInput) {
-    
-    // Add element.
-    var datalist = document.createElement('datalist');
+  // Requirements.
+  if (!api) {
+    console.warn('Autocomplete requires an API.');
+    return result;
+  }
+  if (!existingInput) {
+    console.warn('Autocomplete requires a text input.');
+    return result;
+  }
+  
+  getListValues(api);
 
-    // Set attributes.
-    var listName = args.listName || 'list-needs-an-id';
-    existingInput.setAttribute('list', listName);
-    datalist.id = listName;
+  // Add elements.
+  var datalist = document.createElement('datalist');
+  var options = dom.create(`
+    <label>
+      <select>
+        <option value="">
+      </select>
+    </label>
+  `);
+  datalist.appendChild(options);
+  optionsParent = options.querySelector('select');
+  
+  // Set attributes.
+  existingInput.setAttribute('list', listName);
+  datalist.id = listName;
 
-    // Add options.
-    var options = dom.create(`
-      <label>
-        or select from the list:
-        <select name="${ existingInput.getAttribute('name') }">
-          <option value="">
-          <option>Bip
-          <option>Bop
-          <option>Boop
-        </select>
-      </label>
-    `);
-    datalist.appendChild(options);
-    
-    var optionsParent = options.querySelector('select');
+  // Listen.
+  existingInput.addEventListener('input', (function(optionsParent) { 
+    return function(e) {
 
-    existingInput.addEventListener('input', (function(optionsParent) { 
-      return function(e) {
-        
-        var options = JSON.parse(mockEndpoint(e.target.value)).results.reduce(function(prev, curr) { 
-          return prev + '<option>' + curr; 
-        }, '<option value="">');
-        
+      getListValues(api).then(function (results) {  
+        var options = results.reduce(function (prev, curr) {
+            return prev + '<option>' + curr;
+          }, '<option value="">');
+
         options = dom.create(`${ options }`);
-
         dom.clearChildren(optionsParent);
         optionsParent.appendChild(options);
-      };
-    })(optionsParent));
+        
+        existingInput.focus();
+      });
+      
+    };
+  })(optionsParent));
 
-    // Add it back to the result element.
-    result.el.appendChild(datalist);
-  }
+  // Add it back to the result element.
+  result.el.appendChild(datalist);
   
   return result;
   
