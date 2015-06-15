@@ -47,7 +47,7 @@ function getPlaceholderHeight(behaviors) {
 
 function isFieldEmpty(data) {
   // note: 0, false, etc are valid bits of data for numbers, booleans, etc so they shouldn't be masked
-  var value = data.value;
+  var value = data.value || data;
 
   return !_.isBoolean(value) && !_.isNumber(value) && _.isEmpty(value);
 }
