@@ -34,6 +34,27 @@ function createListName() {
   return 'autocomplete-' + somewhatUnique;
 }
 
+/**
+ * Converts array of strings to option elements.
+ * @param {array} options
+ * @returns {object}
+ */
+function formatOptions(options) {
+  options = options.reduce(function (prev, curr) {
+    return prev + '<option>' + curr + '</option>';
+  }, '');
+
+  options = dom.create(`
+    <label>
+      <select>
+        ${ options }
+      </select>
+    </label>
+  `);
+
+  return options;
+}
+
 
 module.exports = function (result, args) {
 
@@ -60,22 +81,11 @@ module.exports = function (result, args) {
   existingInput.setAttribute('list', listName);
 
   // Add options.
-  db.getComponentJSONFromReference(api).then(function (results) {
-
-    var options = results.reduce(function (prev, curr) {
-      return prev + '<option>' + curr;
-    }, '<option value="">');
-
-    options = dom.create(`
-      <label>
-        <select>
-          ${ options }
-        </select>
-      </label>
-    `);
-
-    datalist.appendChild(options);
-  });
+  db.getComponentJSONFromReference(api)
+    .then(formatOptions)
+    .then(function (options) {
+      datalist.appendChild(options);
+    });
 
   // Add to the result element.
   result.el.appendChild(datalist);
@@ -83,3 +93,6 @@ module.exports = function (result, args) {
   return result;
 
 };
+
+// Export for unit testing
+module.exports.formatOptions = formatOptions;
