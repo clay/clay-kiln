@@ -96,7 +96,7 @@
 .editor-inline,
 .editor-inline form {
   @include clearfix();
-  
+
   min-height: 20px;
   position: relative;
   width: 100%;
@@ -113,4 +113,8 @@
 .editor-inline .button-container .save {
   @include button-small();
   @include button-primary-1();
+}
+
+.hidden {
+  display: none;
 }

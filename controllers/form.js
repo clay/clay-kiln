@@ -54,7 +54,17 @@ module.exports = function () {
     },
 
     closeForm: function () {
-      dom.replaceElement(this.el, this.oldEl);
+      var el = this.el,
+        editor = dom.find(el, '.editor-inline');
+
+      if (editor) {
+        // remove the editor
+        el.removeChild(editor);
+        // show the other things in the parent el
+        _.each(el.children, function (child) {
+          child.classList.remove('hidden');
+        });
+      }
     }
   };
 

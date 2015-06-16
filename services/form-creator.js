@@ -205,7 +205,9 @@ function createInlineForm(ref, path, data, el) {
   }
 
   // build up form el
-  dom.clearChildren(el);
+  _.each(el.children, function (child) {
+    child.classList.add('hidden');
+  });
   dom.prependChild(el, createInlineFormEl(innerEl));
 
   // register + instantiate form controller
