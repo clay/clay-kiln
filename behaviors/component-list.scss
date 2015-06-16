@@ -59,8 +59,6 @@
 }
 
 .add-component {
-  @include button-large();
+  @include button-small();
   @include button-secondary-2();
-
-  margin: 0 10px 10px 0;
 }
