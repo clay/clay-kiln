@@ -57,7 +57,6 @@ module.exports = function () {
       var el = this.el,
         oldEl = this.oldEl;
 
-      console.log(el, oldEl)
       dom.replaceElement(el, oldEl);
     }
   };
