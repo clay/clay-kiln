@@ -9,11 +9,15 @@ module.exports = function (result, args) {
     exclude = args.exclude,
     components = result.bindings.data,
     tpl = `
-      <section class="component-list" data-field="${name}">
-        <div class="component-list-item" rv-each-component="data" rv-html="component.outerHTML">
+      <section class="component-list" data-field="${name}" rv-value="data">
+        <div class="component-list-item" rv-each-component="componentEls" rv-html="component.outerHTML">
         </div>
-        <button class="open-add-components" rv-click="openAddComponents">+</button>
-        <section class="add-components-pane">
+        <section class="component-list-bottom">
+          <div class="open-add-components" rv-on-click="toggleAddComponents">
+            <span class="open-add-components-inner">+</span>
+          </div>
+          <section class="add-components-pane">
+          </section>
         </section>
       </section>
     `,
@@ -75,11 +79,11 @@ module.exports = function (result, args) {
 
   // get the html of each component in the list
   // put it into the bindings
-  result.bindings.data = _.map(components, function (component) {
+  result.bindings.componentEls = _.map(components, function (component) {
     return dom.find('[data-ref="' + component._ref + '"]');
   });
 
-  result.bindings.openAddComponents = function (e, bindings) {
+  result.bindings.toggleAddComponents = function (e, bindings) {
     var button = dom.find(list, '.open-add-components'),
       addComponentsPane = dom.find(list, '.add-components-pane');
 
