@@ -14,7 +14,7 @@ module.exports = function (result, args) {
 
   // if more than 5 buttons, put the rest on the second tier
   if (buttons.length > 5) {
-    buttons = buttons.splice(5, 0, 'tieredToolbar'); // clicking this expands the toolbar with a second tier
+    buttons.splice(5, 0, 'tieredToolbar'); // clicking this expands the toolbar with a second tier
   }
 
   // put the rich text field after the input

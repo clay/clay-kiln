@@ -16,9 +16,7 @@ function ComponentEdit() {
    * @returns {boolean}
    */
   function hasOpenInlineForms(el) {
-    var possChildEl = dom.getFirstChildElement(el);
-
-    return !!possChildEl && possChildEl.classList.contains('editor-inline');
+    return !!dom.find(el, '.editor-inline');
   }
 
   /**
@@ -29,23 +27,21 @@ function ComponentEdit() {
    */
   function open(e, ref, el, path) {
     // first, check to make sure any inline forms aren't open in this element's children
-    if (hasOpenInlineForms(el) && e.target === e.currentTarget) {
-      return;
+    if (!hasOpenInlineForms(el)) {
+      edit.getData(ref).then(function (data) {
+        // If name, then we're going deep; Note anything with a name either modal by default or has a displayProperty.
+        if (path) {
+          data = _.get(data, path);
+        }
+
+        switch (data._schema[references.displayProperty]) {
+          case 'inline':
+            return formCreator.createInlineForm(ref, path, data, el);
+          default: // case 'modal':
+            return formCreator.createForm(ref, path, data);
+        }
+      });
     }
-
-    edit.getData(ref).then(function (data) {
-      // If name, then we're going deep; Note anything with a name either modal by default or has a displayProperty.
-      if (path) {
-        data = _.get(data, path);
-      }
-
-      switch (data._schema[references.displayProperty]) {
-        case 'inline':
-          return formCreator.createInlineForm(ref, path, data, el);
-        default: // case 'modal':
-          return formCreator.createForm(ref, path, data);
-      }
-    });
   }
 
   /**
