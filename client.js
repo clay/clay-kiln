@@ -24,19 +24,21 @@ behaviors.add('component-list', require('./behaviors/component-list'));
 
 // kick off controller loading when DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
-  var components = document.querySelectorAll('[' + references.componentAttribute + ']'),
+  var componentEdit = require('./controllers/component-edit'),
+    components = document.querySelectorAll('[' + references.referenceAttribute + ']'),
     i = 0,
     l = components.length,
-    component, name;
+    component, ref, name;
 
   // iterate through all components on the page, instantiate component-edit on them if they aren't editor components
   for (; i < l; i++) {
     component = components[i];
-    name = component.getAttribute(references.componentAttribute);
+    ref = component.getAttribute(references.referenceAttribute);
+    name = references.getComponentNameFromReference(ref);
 
     // todo: order this by leaf components? make sure not to add event handlers twice
-    if (name !== 'editor-toolbar' && name !== 'nym2015-layout') {
-      ds.controller('component-edit', require('./controllers/component-edit'));
+    if (name && name !== 'editor-toolbar' && name !== 'nym2015-layout') {
+      ds.controller('component-edit', componentEdit);
       ds.get('component-edit', component);
     }
   }

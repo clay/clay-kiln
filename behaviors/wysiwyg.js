@@ -9,16 +9,13 @@ module.exports = function (result, args) {
     buttons = args.buttons,
     // add placeholder text if it's passed through, else remove the placeholder
     placeholder = args.placeholder ? { text: args.placeholder } : false,
-    textInput = dom.find(result.el, 'input'),
+    textInput = dom.find(result.el, 'input') || dom.find(result.el, 'textarea'),
     wysiwygField = dom.create(`<div class="wysiwyg-input" data-field="${result.bindings.name}" rv-wysiwyg="data.value"></div>`);
 
   // if more than 5 buttons, put the rest on the second tier
   if (buttons.length > 5) {
     buttons = buttons.splice(5, 0, 'tieredToolbar'); // clicking this expands the toolbar with a second tier
   }
-
-  // hide the original input, while preserving html validation
-  // textInput.classList.add('hidden-input');
 
   // put the rich text field after the input
   dom.replaceElement(textInput, wysiwygField);

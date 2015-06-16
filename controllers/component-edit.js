@@ -22,13 +22,14 @@ function ComponentEdit() {
   }
 
   /**
+   * @param {event} e
    * @param {string} ref
    * @param {Element} el
    * @param {string} path
    */
-  function open(ref, el, path) {
+  function open(e, ref, el, path) {
     // first, check to make sure any inline forms aren't open in this element's children
-    if (hasOpenInlineForms(el)) {
+    if (hasOpenInlineForms(el) && e.target === e.currentTarget) {
       return;
     }
 
@@ -48,42 +49,62 @@ function ComponentEdit() {
   }
 
   /**
+   * recursively decorate nodes with click events and placeholders
+   * note: this only runs on nodes with names!
+   * @param {Element} node
+   * @param {TreeWalker} walker
+   * @param {string} ref
+   */
+  function decorateNodes(node, walker, ref) {
+    var name;
+
+    if (node) {
+      name = node.getAttribute('name');
+
+      // add click event that generates a form
+      node.addEventListener('click', function (e) {
+        open(e, ref, node, name);
+      });
+
+      // add placeholder
+      placeholder(ref, node);
+      decorateNodes(walker.nextNode(), walker, ref);
+    }
+  }
+
+  /**
    * @constructs
    * @param {Element} el
    */
   function constructor(el) {
     var ref = el.getAttribute(references.referenceAttribute),
-    // Normally name is only on children of components. One exception is the tags component.
-      componentHasName = el.getAttribute(references.componentAttribute) && el.getAttribute(references.nameAttribute),
+      isComponentEditable = el.hasAttribute('name') || !!dom.find(el, '[name]'),
+      componentHasName = ref && el.getAttribute('name'),
+      walker, name;
+
+    if (isComponentEditable) {
       walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, {
         acceptNode: function (currentNode) {
-          if (!currentNode.getAttribute(references.componentAttribute)) {
+          if (!currentNode.getAttribute(references.referenceAttribute) && currentNode.getAttribute('name')) {
             return NodeFilter.FILTER_ACCEPT;
           } else {
             return NodeFilter.FILTER_REJECT;
           }
         }
-      }),
-      node,
-      name;
+      });
 
-    // Special case when name is in the component element.
-    if (componentHasName) {
-      name = componentHasName;
-      el.addEventListener('click', open.bind(null, ref, el, name));
-    }
+      // add click events to children with [name], but NOT children inside child components
+      decorateNodes(walker.nextNode(), walker, ref);
 
-    // add click events to children with [name], but NOT children inside child components
-    node = walker.nextNode();
-    while (node) {
-      name = node.getAttribute(references.nameAttribute);
-      if (name) {
-        // add click event that generates a form
-        node.addEventListener('click', open.bind(null, ref, node, name));
-        // add mask
-        placeholder(ref, node);
+      // Special case when name is in the component element.
+      if (componentHasName) {
+        name = el.getAttribute('name');
+        el.addEventListener('click', function (e) {
+          open(e, ref, el, name);
+        });
+        // add placeholder
+        placeholder(ref, el);
       }
-      node = walker.nextNode();
     }
   }
 
