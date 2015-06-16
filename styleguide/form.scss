@@ -72,7 +72,7 @@
   align-content: stretch;
   align-items: stretch;
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: row wrap;
   justify-content: center;
 }
 
@@ -89,32 +89,4 @@
 .editor .label-inner {
   @include label();
   margin-right: 10px;
-}
-
-/* inline editor */
-
-/* .editor-inline,
-.editor-inline form {
-  @include clearfix();
-
-  min-height: 20px;
-  position: relative;
-  width: 100%;
-}
-
-.editor-inline .input-container,
-.editor-inline .button-container {
-  @include clearfix();
-
-  min-height: 20px;
-  width: 100%;
-}
-
-.editor-inline .button-container .save {
-  @include button-small();
-  @include button-primary-1();
-} */
-
-.hidden {
-  display: none;
 }
