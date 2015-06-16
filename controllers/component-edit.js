@@ -47,17 +47,14 @@ function ComponentEdit() {
 
   /**
    * recursively decorate nodes with click events and placeholders
-   * note: this only runs on nodes with names!
    * @param {Element} node
    * @param {TreeWalker} walker
    * @param {string} ref
    */
   function decorateNodes(node, walker, ref) {
-    var name;
+    var name = node && node.getAttribute('name'); // only assign a name if node exists
 
-    if (node) {
-      name = node.getAttribute('name');
-
+    if (name) {
       // add click event that generates a form
       node.addEventListener('click', function (e) {
         open(e, ref, node, name);
@@ -65,6 +62,9 @@ function ComponentEdit() {
 
       // add placeholder
       placeholder(ref, node);
+    }
+
+    if (node) {
       decorateNodes(walker.nextNode(), walker, ref);
     }
   }
@@ -82,7 +82,7 @@ function ComponentEdit() {
     if (isComponentEditable) {
       walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, {
         acceptNode: function (currentNode) {
-          if (!currentNode.getAttribute(references.referenceAttribute) && currentNode.getAttribute('name')) {
+          if (!currentNode.hasAttribute(references.referenceAttribute)) {
             return NodeFilter.FILTER_ACCEPT;
           } else {
             return NodeFilter.FILTER_REJECT;
