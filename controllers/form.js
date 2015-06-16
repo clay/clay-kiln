@@ -55,16 +55,10 @@ module.exports = function () {
 
     closeForm: function () {
       var el = this.el,
-        editor = dom.find(el, '.editor-inline');
+        oldEl = this.oldEl;
 
-      if (editor) {
-        // remove the editor
-        el.removeChild(editor);
-        // show the other things in the parent el
-        _.each(el.children, function (child) {
-          child.classList.remove('hidden');
-        });
-      }
+      console.log(el, oldEl)
+      dom.replaceElement(el, oldEl);
     }
   };
 
