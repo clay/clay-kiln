@@ -1,0 +1,45 @@
+@import '../styleguide/buttons';
+@import '../styleguide/colors';
+
+
+.component-list {
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.component-list-item {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px dashed $blue-50;
+}
+
+.open-add-components,
+.open-add-components:nth-of-type(n+1) {
+  @include icon-large();
+
+  color: $blue;
+  font-size: 30px;
+  margin: 30px auto 20px;
+  outline: none;
+}
+
+.add-components-pane {
+  width: 100%;
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid $blue-50;
+  border-radius: 4px;
+  display: none;
+}
+
+.add-components-pane.open {
+  display: block;
+}
+
+.add-component {
+  @include button-large();
+  @include button-secondary-2();
+
+  margin: 10px;
+}
