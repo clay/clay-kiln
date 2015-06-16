@@ -1,12 +1,10 @@
 var fixture = require('../test/fixtures/behavior'),
   autocomplete = require('./autocomplete'),
-  dom = require('../services/dom'),
-  sinon = require('sinon');
+  dom = require('../services/dom');
 
 describe('autocomplete behavior', function () {
 
-  var sandbox,
-    fakeApi = '/lists/authors',
+  var fakeApi = '/lists/authors',
     fakeList = [
       'Amy Koran',
       'Zena Strother',
@@ -32,23 +30,18 @@ describe('autocomplete behavior', function () {
 
   beforeEach(function () {
 
-    sandbox = sinon.sandbox.create();
-
-    // reset element in fixture to have no children.
+    // Autocomplete expects an input element, so resets fixture.el each time.
     dom.clearChildren(fixture.el);
+    fixture.el.appendChild(fakeInput);
 
-  });
-
-  afterEach(function () {
-    sandbox.restore();
   });
 
   it('does not render a datalist if no api', function () {
-    fixture.el.appendChild(fakeInput);
     expect(autocomplete(fixture, {}).el.querySelector('datalist')).to.equal(null);
   });
 
   it('does not render a datalist if no input', function () {
+    dom.clearChildren(fixture.el); // Remove input.
     expect(autocomplete(fixture, {api: fakeApi}).el.querySelector('datalist')).to.equal(null);
   });
 
@@ -59,12 +52,8 @@ describe('autocomplete behavior', function () {
   it('assigns an unique id to each datalist', function () {
     var firstId, secondId;
 
-    fixture.el.appendChild(fakeInput);
-    firstId = autocomplete(fixture, {api: fakeApi}).el.querySelector('datalist').id;
-
-    dom.clearChildren(fixture.el);
-    fixture.el.appendChild(fakeInput);
-    secondId = autocomplete(fixture, {api: fakeApi}).el.querySelector('datalist').id;
+    firstId = autocomplete(fixture, {api: fakeApi}).el.querySelectorAll('datalist')[0].id;
+    secondId = autocomplete(fixture, {api: fakeApi}).el.querySelectorAll('datalist')[1].id;
 
     expect(firstId).to.not.equal(secondId);
   });
