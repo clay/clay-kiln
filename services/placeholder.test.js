@@ -62,9 +62,6 @@ describe(dirname, function () {
     describe('isFieldEmpty', function () {
       var fn = lib[this.title];
 
-      it('is true if undefined', function () {
-        expect(fn({value: undefined})).to.equal(true);
-      });
       it('is true if null', function () {
         expect(fn({value: null})).to.equal(true);
       });
@@ -72,12 +69,24 @@ describe(dirname, function () {
         expect(fn({value: ''})).to.equal(true);
       });
       it('is true if empty array', function () {
-        expect(fn({value: []})).to.equal(true);
+        expect(fn([])).to.equal(true);
+      });
+      it('is true if empty obj', function () {
+        expect(fn({})).to.equal(true);
+      });
+      it('is true if empty array w/ schema', function () {
+        var emptyWithSchema = [];
+
+        emptyWithSchema._schema = {};
+        expect(fn(emptyWithSchema)).to.equal(true);
+      });
+      it('is true if empty obj w/ schema', function () {
+        var emptyWithSchema = [];
+
+        emptyWithSchema._schema = {};
+        expect(fn(emptyWithSchema)).to.equal(true);
       });
 
-      it('is false if empty obj', function () {
-        expect(fn({value: {}})).to.equal(true);
-      });
       it('is false if string w/ characters', function () {
         expect(fn({value: '123'})).to.equal(false);
       });
