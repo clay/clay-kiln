@@ -3,8 +3,8 @@ var _ = require('lodash'),
 
 module.exports = function (result, args) {
   var name = result.bindings.name,
-    min = args.min,
-    max = args.max,
+    // min = args.min,
+    // max = args.max, // todo: add these when we have a use-case
     include = args.include,
     exclude = args.exclude,
     components = result.bindings.data,
@@ -33,7 +33,7 @@ module.exports = function (result, args) {
     var componentName = e.target.getAttribute('data-component-name');
 
     e.stopPropagation();
-    alert('adding component: ' + componentName); // todo: actually add the component and render it
+    console.log('adding component: ' + componentName); // todo: actually add the component and render it
   }
 
   /**
@@ -83,7 +83,7 @@ module.exports = function (result, args) {
     return dom.find('[data-ref="' + component._ref + '"]');
   });
 
-  result.bindings.toggleAddComponents = function (e, bindings) {
+  result.bindings.toggleAddComponents = function () {
     var button = dom.find(list, '.open-add-components'),
       addComponentsPane = dom.find(list, '.add-components-pane');
 
