@@ -50,7 +50,7 @@ function isFieldEmpty(data) {
   var value;
 
   // only fallback to data if value is undefined (not just falsy)
-  if (typeof data.value !== 'undefined') {
+  if (data.hasOwnProperty('value')) {
     value = data.value;
   } else {
     value = data;
