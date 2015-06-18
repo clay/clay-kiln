@@ -8,19 +8,17 @@ var dom = require('../services/dom'),
  */
 function findFirstTextInput(el) {
 
-  var inputs, l, i, type, textInput;
+  var inputs, l, i, type, isTextInput;
 
   inputs = el.querySelectorAll('input');
 
   for (i = 0, l = inputs.length; i < l; i++) {
     type = inputs[i].getAttribute('type');
-    if (!type || type === 'text') {
-      textInput = inputs[i];
-      break;
+    isTextInput = !type || type === 'text';
+    if (isTextInput) {
+      return inputs[i];
     }
   }
-
-  return textInput;
 }
 
 /**
@@ -75,23 +73,20 @@ module.exports = function (result, args) {
 
   // Add element.
   datalist = document.createElement('datalist');
+  result.el.appendChild(datalist);
 
   // Connect datalist to input.
   datalist.id = listName;
   existingInput.setAttribute('list', listName);
 
-  // Add options.
-  db.getComponentJSONFromReference(api)
+  // Adding options async, so using onload event to keep behavior synchronous for form-creator.
+  datalist.onload = db.getComponentJSONFromReference(api)
     .then(formatOptions)
     .then(function (options) {
       datalist.appendChild(options);
     });
 
-  // Add to the result element.
-  result.el.appendChild(datalist);
-
   return result;
-
 };
 
 // Export for unit testing
