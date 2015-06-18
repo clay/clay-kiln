@@ -30,19 +30,25 @@ describe('autocomplete behavior', function () {
 
   beforeEach(function () {
 
-    // Autocomplete expects an input element, so resets fixture.el each time.
+    // Autocomplete expects an input element, so resets fixture.el and adds input element each time.
     dom.clearChildren(fixture.el);
     fixture.el.appendChild(fakeInput);
 
   });
 
-  it('does not render a datalist if no api', function () {
-    expect(autocomplete(fixture, {}).el.querySelector('datalist')).to.equal(null);
+  it('throws error if no api', function () {
+    function noApi() {
+      return autocomplete(fixture, {});
+    }
+    expect(noApi).to.throw(/Autocomplete requires an API./);
   });
 
-  it('does not render a datalist if no input', function () {
-    dom.clearChildren(fixture.el); // Remove input.
-    expect(autocomplete(fixture, {api: fakeApi}).el.querySelector('datalist')).to.equal(null);
+  it('throws error if no input', function () {
+    dom.clearChildren(fixture.el); // Remove input that was added by beforeEach.
+    function noInput() {
+      return autocomplete(fixture, {api: fakeApi});
+    }
+    expect(noInput).to.throw(/Autocomplete requires a text input./);
   });
 
   it('formats values into option elements', function () {

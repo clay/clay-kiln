@@ -53,6 +53,25 @@ function formatOptions(options) {
   return options;
 }
 
+/**
+ * Throw an error if missing requirements.
+ * @param {string} api
+ * @param {Element} existingInput
+ */
+function handleDevErrors(api, existingInput) {
+  var missing;
+
+  if (!api) {
+    missing = 'an API';
+  } else if (!existingInput) {
+    missing = 'a text input';
+  }
+
+  if (missing) {
+    throw new Error('Autocomplete requires ' + missing + '.');
+  }
+
+}
 
 module.exports = function (result, args) {
 
@@ -61,15 +80,7 @@ module.exports = function (result, args) {
     listName = createListName(),
     datalist;
 
-  // Requirements.
-  if (!api) {
-    console.warn('Autocomplete requires an API.');
-    return result;
-  }
-  if (!existingInput) {
-    console.warn('Autocomplete requires a text input.');
-    return result;
-  }
+  handleDevErrors(api, existingInput);
 
   // Add element.
   datalist = document.createElement('datalist');
