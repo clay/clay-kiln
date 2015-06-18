@@ -1,0 +1,64 @@
+@import '../styleguide/buttons';
+@import '../styleguide/colors';
+@import '../styleguide/mixins';
+
+
+.component-list {
+  display: flex;
+  flex-flow: row wrap;
+  width: 100%;
+}
+
+.component-list-item {
+  border: 1px dashed $blue-50;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+.component-list-bottom {
+  @include clearfix();
+
+  margin: 30px 0 20px;
+  width: 100%;
+}
+
+.open-add-components,
+.open-add-components:nth-of-type(n+1) {
+  @include icon-large();
+
+  cursor: pointer;
+  float: left;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.open-add-components-inner {
+  color: $blue;
+  display: block;
+  font-size: 30px;
+  height: 100%;
+  text-align: center;
+  transform: rotate(0deg);
+  transition: transform 200ms ease-out;
+  width: 100%;
+}
+
+.open-add-components.open .open-add-components-inner {
+  transform: rotate(135deg);
+  transition: transform 250ms ease-out;
+}
+
+.add-components-pane {
+  display: none;
+  float: right;
+  width: calc(100% - 40px);
+}
+
+.add-components-pane.open {
+  display: block;
+}
+
+.add-component {
+  @include button-small();
+  @include button-secondary-2();
+}

@@ -76,17 +76,21 @@
 // icon buttons
 
 @mixin icon-large {
+  background-color: #fff;
   border: 1px solid $blue;
   border-radius: 4px;
-  width: 40px;
   height: 40px;
+  padding: 0;
   position: relative;
+  width: 40px;
 }
 
 @mixin icon-small {
+  background-color: #fff;
   border: 1px solid $blue;
   border-radius: 4px;
-  width: 22px;
   height: 22px;
+  padding: 0;
   position: relative;
+  width: 22px;
 }

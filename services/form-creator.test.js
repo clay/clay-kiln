@@ -138,8 +138,11 @@ describe(dirname, function () {
       });
 
       it('can show basic template', function () {
+        var childEl = document.createElement('div');
+
+        el.appendChild(childEl);
         expectNoLogging();
-        fn('ref', 'name', {_schema: {}}, el);
+        fn('ref', 'name', {_schema: {}}, childEl);
 
         expect(condense(el.firstElementChild.innerHTML)).to.equal(condense(`
         <form>
@@ -153,10 +156,13 @@ describe(dirname, function () {
       });
 
       it('can show item in template', function () {
+        var childEl = document.createElement('div');
+
+        el.appendChild(childEl);
         expectNoLogging();
         expectSingleItemBehavior('inline');
 
-        fn('ref', 'name', singleItem, el);
+        fn('ref', 'name', singleItem, childEl);
 
         expect(condense(el.firstElementChild.innerHTML)).to.equal(condense(`
         <form>

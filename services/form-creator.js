@@ -71,7 +71,7 @@ function createModalFormEl(formLabel, innerEl) {
 
 function createInlineFormEl(innerEl) {
   var el = dom.create(`
-    <section class="editor-inline">
+    <section class="editor editor-inline">
       <form>
         <div class="input-container"></div>
         <div class="button-container">
@@ -182,15 +182,14 @@ function createForm(ref, path, data, rootEl) {
  * @param {string} ref  Place we'll be saving to
  * @param {string} path  What path within the data is being shown/modified
  * @param {object} data  The data itself (starting from path)
- * @param {Element} el   Root element that is being inline edited
+ * @param {Element} oldEl   Root element that is being inline edited
  */
-function createInlineForm(ref, path, data, el) {
-  var innerEl, schema, oldEl, isField, context;
+function createInlineForm(ref, path, data, oldEl) {
+  var innerEl, schema, newEl, isField, context;
 
   ensureValidFormData(ref, path, data);
 
   schema = data._schema;
-  oldEl = el.cloneNode(true);
   isField = !!schema[references.fieldProperty];
   context = {
     data: data,
@@ -205,12 +204,12 @@ function createInlineForm(ref, path, data, el) {
   }
 
   // build up form el
-  dom.clearChildren(el);
-  dom.prependChild(el, createInlineFormEl(innerEl));
+  newEl = createInlineFormEl(innerEl);
+  dom.replaceElement(oldEl, newEl);
 
   // register + instantiate form controller
   ds.controller('form', require('../controllers/form'));
-  ds.get('form', el, ref, path, oldEl);
+  ds.get('form', newEl, ref, path, oldEl);
 }
 
 module.exports = {

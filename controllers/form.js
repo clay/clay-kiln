@@ -54,7 +54,10 @@ module.exports = function () {
     },
 
     closeForm: function () {
-      dom.replaceElement(this.el, this.oldEl);
+      var el = this.el,
+        oldEl = this.oldEl;
+
+      dom.replaceElement(el, oldEl);
     }
   };
 
