@@ -1,5 +1,6 @@
 var dom = require('../services/dom'),
-  db = require('../services/db');
+  db = require('../services/db'),
+  cid = require('../services/cid');
 
 /**
  * Find the first child that is a text input.
@@ -19,17 +20,6 @@ function findFirstTextInput(el) {
       return inputs[i];
     }
   }
-}
-
-/**
- * Create a unique name for the list. Does not need to be too unique because specific to one form.
- * @returns {string}      Name to be used for the list
- */
-function createListName() {
-
-  var somewhatUnique = '' + Math.floor(Math.random() * 100) + (new Date()).getTime();
-
-  return 'autocomplete-' + somewhatUnique;
 }
 
 /**
@@ -59,6 +49,7 @@ function formatOptions(options) {
  * @param {Element} existingInput
  */
 function handleDevErrors(api, existingInput) {
+
   var missing;
 
   if (!api) {
@@ -77,7 +68,7 @@ module.exports = function (result, args) {
 
   var api = args.api,
     existingInput = findFirstTextInput(result.el),
-    listName = createListName(),
+    datalistId = 'autocomplete-' + cid(),
     datalist;
 
   handleDevErrors(api, existingInput);
@@ -87,8 +78,8 @@ module.exports = function (result, args) {
   result.el.appendChild(datalist);
 
   // Connect datalist to input.
-  datalist.id = listName;
-  existingInput.setAttribute('list', listName);
+  datalist.id = datalistId;
+  existingInput.setAttribute('list', datalistId);
 
   // Adding options async, so using onload event to keep behavior synchronous for form-creator.
   datalist.onload = db.getComponentJSONFromReference(api)
