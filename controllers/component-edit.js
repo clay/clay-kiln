@@ -20,7 +20,7 @@ function ComponentEdit() {
   }
 
   /**
-   * @param {event} e
+   * @param {MouseEvent} e
    * @param {string} ref
    * @param {Element} el
    * @param {string} path
