@@ -20,12 +20,12 @@ function ComponentEdit() {
   }
 
   /**
-   * @param {MouseEvent} e
    * @param {string} ref
    * @param {Element} el
    * @param {string} path
+   * @param {MouseEvent} e
    */
-  function open(e, ref, el, path) {
+  function open(ref, el, path, e) {
     // first, check to make sure any inline forms aren't open in this element's children
     if (!hasOpenInlineForms(el)) {
       e.stopPropagation();
@@ -56,9 +56,7 @@ function ComponentEdit() {
 
     if (name) {
       // add click event that generates a form
-      node.addEventListener('click', function (e) {
-        open(e, ref, node, name);
-      });
+      node.addEventListener('click', open.bind(null, ref, node, name));
 
       // add placeholder
       placeholder(ref, node);
@@ -96,9 +94,7 @@ function ComponentEdit() {
       // Special case when name is in the component element.
       if (componentHasName) {
         name = el.getAttribute('name');
-        el.addEventListener('click', function (e) {
-          open(e, ref, el, name);
-        });
+        el.addEventListener('click', open.bind(null, ref, el, name));
         // add placeholder
         placeholder(ref, el);
       }
