@@ -3,36 +3,19 @@ var dom = require('../services/dom'),
   cid = require('../services/cid');
 
 /**
- * Find the first child that is a text input.
- * @param {object} el
- * @returns {object|undefined}
- */
-function findFirstTextInput(el) {
-
-  var inputs, l, i, type, isTextInput;
-
-  inputs = el.querySelectorAll('input');
-
-  for (i = 0, l = inputs.length; i < l; i++) {
-    type = inputs[i].getAttribute('type');
-    isTextInput = !type || type === 'text';
-    if (isTextInput) {
-      return inputs[i];
-    }
-  }
-}
-
-/**
  * Converts array of strings to option elements.
  * @param {array} options
- * @returns {object}
+ * @returns {Element}
  */
 function formatOptions(options) {
+
+  var optionsEl;
+
   options = options.reduce(function (prev, curr) {
     return prev + '<option>' + curr + '</option>';
   }, '');
 
-  options = dom.create(`
+  optionsEl = dom.create(`
     <label>
       <select>
         ${ options }
@@ -40,7 +23,7 @@ function formatOptions(options) {
     </label>
   `);
 
-  return options;
+  return optionsEl;
 }
 
 /**
@@ -67,7 +50,7 @@ function handleDevErrors(api, existingInput) {
 module.exports = function (result, args) {
 
   var api = args.api,
-    existingInput = findFirstTextInput(result.el),
+    existingInput = dom.find(result.el, 'input[type="text"], input:not([type])'), // input without type is still text
     datalistId = 'autocomplete-' + cid(),
     datalist;
 
@@ -81,12 +64,14 @@ module.exports = function (result, args) {
   datalist.id = datalistId;
   existingInput.setAttribute('list', datalistId);
 
-  // Adding options async, so using onload event to keep behavior synchronous for form-creator.
-  datalist.onload = db.getComponentJSONFromReference(api)
-    .then(formatOptions)
-    .then(function (options) {
-      datalist.appendChild(options);
-    });
+  // Todo: once lists become large, this will need to be optimized; perhaps using the 'input' event.
+  existingInput.addEventListener('focus', function () {
+    db.getComponentJSONFromReference(api)
+      .then(formatOptions)
+      .then(function (optionsEl) {
+        datalist.appendChild(optionsEl);
+      });
+  });
 
   return result;
 };
