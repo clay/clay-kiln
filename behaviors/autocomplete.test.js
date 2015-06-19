@@ -1,10 +1,12 @@
 var fixture = require('../test/fixtures/behavior'),
   autocomplete = require('./autocomplete'),
+  db = require('../services/db'),
   dom = require('../services/dom');
 
 describe('autocomplete behavior', function () {
 
-  var fakeApi = '/lists/authors',
+  var sandbox,
+    fakeApi = '/lists/authors',
     fakeList = [
       'Amy Koran',
       'Zena Strother',
@@ -30,10 +32,16 @@ describe('autocomplete behavior', function () {
 
   beforeEach(function () {
 
+    sandbox = sinon.sandbox.create();
+
     // Autocomplete expects an input element, so resets fixture.el and adds input element each time.
     dom.clearChildren(fixture.el);
     fixture.el.appendChild(fakeInput);
 
+  });
+
+  afterEach(function () {
+    sandbox.restore();
   });
 
   it('throws error if no api', function () {
@@ -51,10 +59,6 @@ describe('autocomplete behavior', function () {
     expect(noInput).to.throw(/Autocomplete requires a text input./);
   });
 
-  it('formats values into option elements', function () {
-    expect(Array.prototype.slice.call(autocomplete.formatOptions(fakeList).querySelectorAll('option')).map(function (x) { return x.textContent; })).to.deep.equal(fakeList);
-  });
-
   it('assigns an unique id to each datalist', function () {
     var firstId, secondId;
 
@@ -62,6 +66,20 @@ describe('autocomplete behavior', function () {
     secondId = autocomplete(fixture, {api: fakeApi}).el.querySelectorAll('datalist')[1].id;
 
     expect(firstId).to.not.equal(secondId);
+  });
+
+  it('gets options from API on focus', function () {
+
+    var stubDb = sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve(fakeList)),
+      resultEl = autocomplete(fixture, {api: fakeApi}).el; // Run behavior and get the resulting element.
+
+    resultEl.querySelector('input').dispatchEvent(new Event('focus')); // Trigger focus event.
+    expect(stubDb.called).to.equal(true);
+
+  });
+
+  it('formats values into option elements', function () {
+    expect(Array.prototype.slice.call(autocomplete.formatOptions(fakeList).querySelectorAll('option')).map(function (x) { return x.textContent; })).to.deep.equal(fakeList);
   });
 
 });
