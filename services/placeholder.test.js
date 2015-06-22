@@ -1,7 +1,6 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
-  lib = require('./placeholder'),
-  edit = require('./edit');
+  lib = require('./placeholder');
 
 describe(dirname, function () {
   describe(filename, function () {

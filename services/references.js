@@ -9,6 +9,7 @@ module.exports = {
   displayProperty: '_display',
   placeholderProperty: '_placeholder',
   labelProperty: '_label',
+  componentListProperty: '_componentList',
 
   // utility methods
 
