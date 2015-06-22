@@ -1,6 +1,8 @@
 var _ = require('lodash'),
   edit = require('./edit'),
-  decorators = [];
+  decorators = [
+    require('./placeholder')
+  ];
 
 /**
  * get the schema, then run through the decorators
@@ -10,10 +12,12 @@ var _ = require('lodash'),
  */
 function decorate(el, options) {
   return edit.getData(options.ref).then(function (data) {
-    options.data = data;
+    options.data = _.get(data, options.path);
 
     return _.map(decorators, function (decorator) {
+      console.log('checking placeholder', options)
       if (decorator.when(el, options)) {
+        console.log('running placeholder', el)
         return decorator.handler(el, options);
       }
     });

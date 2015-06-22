@@ -40,8 +40,8 @@ function ComponentEdit() {
   function constructor(el) {
     var ref = el.getAttribute(references.referenceAttribute),
       isComponentEditable = el.hasAttribute(editableAttr) || !!dom.find(el, '[' + editableAttr + ']'),
-      componentHasName = ref && el.getAttribute(editableAttr),
-      walker, name;
+      componentHasPath = ref && el.getAttribute(editableAttr),
+      walker, path;
 
     if (isComponentEditable) {
       walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, {
@@ -57,12 +57,13 @@ function ComponentEdit() {
       // add click events to children with [name], but NOT children inside child components
       decorateNodes(walker.nextNode(), walker, ref);
 
-      // Special case when name is in the component element.
-      if (componentHasName) {
-        name = el.getAttribute(editableAttr);
-        el.addEventListener('click', forms.open.bind(null, ref, el, name));
-        // add placeholder
-        placeholder(ref, el);
+      // special case when editable path is in the component's root element.
+      if (componentHasPath) {
+        path = el.getAttribute(editableAttr);
+        decorate(el, {
+          ref: ref,
+          path: path
+        });
       }
     }
   }
