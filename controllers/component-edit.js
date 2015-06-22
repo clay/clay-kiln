@@ -4,47 +4,11 @@
  */
 
 function ComponentEdit() {
-  var _ = require('lodash'),
+  var forms = require('../services/forms'),
     dom = require('../services/dom'),
     references = require('../services/references'),
-    formCreator = require('../services/form-creator'),
-    edit = require('../services/edit'),
     placeholder = require('../services/placeholder'),
     editableAttr = references.editableAttribute;
-
-  /**
-   * @param {Element} el
-   * @returns {boolean}
-   */
-  function hasOpenInlineForms(el) {
-    return !!dom.find(el, '.editor-inline');
-  }
-
-  /**
-   * @param {string} ref
-   * @param {Element} el
-   * @param {string} path
-   * @param {MouseEvent} e
-   */
-  function open(ref, el, path, e) {
-    // first, check to make sure any inline forms aren't open in this element's children
-    if (!hasOpenInlineForms(el)) {
-      e.stopPropagation();
-      edit.getData(ref).then(function (data) {
-        // If name, then we're going deep; Note anything with a name either modal by default or has a displayProperty.
-        if (path) {
-          data = _.get(data, path);
-        }
-
-        switch (data._schema[references.displayProperty]) {
-          case 'inline':
-            return formCreator.createInlineForm(ref, path, data, el);
-          default: // case 'modal':
-            return formCreator.createForm(ref, path, data);
-        }
-      });
-    }
-  }
 
   /**
    * recursively decorate nodes with click events and placeholders
@@ -57,7 +21,7 @@ function ComponentEdit() {
 
     if (name) {
       // add click event that generates a form
-      node.addEventListener('click', open.bind(null, ref, node, name));
+      node.addEventListener('click', forms.open.bind(null, ref, node, name));
 
       // add placeholder
       placeholder(ref, node);
@@ -95,7 +59,7 @@ function ComponentEdit() {
       // Special case when name is in the component element.
       if (componentHasName) {
         name = el.getAttribute(editableAttr);
-        el.addEventListener('click', open.bind(null, ref, el, name));
+        el.addEventListener('click', forms.open.bind(null, ref, el, name));
         // add placeholder
         placeholder(ref, el);
       }
