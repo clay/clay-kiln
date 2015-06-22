@@ -1,6 +1,5 @@
 var _ = require('lodash'),
   references = require('./references'),
-  edit = require('./edit'),
   label = require('./label'),
   dom = require('./dom'),
   getExpandedBehaviors = require('./behaviors').getExpandedBehaviors;

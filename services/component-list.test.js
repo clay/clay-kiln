@@ -54,23 +54,5 @@ describe(dirname, function () {
         expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'content'})).to.equal(true);
       });
     });
-
-    describe('handler', function () {
-      var fn = lib[this.title];
-
-      // it('adds placeholder', function () {
-      //   var stubData = {
-      //     value: '',
-      //     _schema: {
-      //       _has: 'text',
-      //       _placeholder: true
-      //     }
-      //   },
-      //   newNode = fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'});
-      //
-      //   expect(newNode.querySelector('.editor-placeholder').style.height).to.equal('auto');
-      //   expect(newNode.querySelector('span.placeholder-label').textContent).to.equal('Title');
-      // });
-    });
   });
 });
