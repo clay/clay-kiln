@@ -99,17 +99,27 @@ function when(el, options) {
  */
 function handler(el, options) {
   var args = _.get(options, 'data._schema.' + references.componentListProperty),
-    pane;
+    pane, button;
 
   // if _componentList: true, make the args an object
   args = _.isObject(args) ? args : {};
 
   // create the pane
   pane = createPane(args);
+  button = dom.find(pane, '.open-add-components');
 
-  // todo: add click events to pane
+  // add click events to toggle pane
+  button.addEventListener('click', function () {
+    var addComponentsPane = dom.find(pane, '.add-components-pane');
 
-  return pane;
+    button.classList.toggle('open');
+    addComponentsPane.classList.toggle('open');
+  });
+
+  // add the pane to the end of the component list
+  el.appendChild(pane);
+
+  return el;
 }
 
 module.exports.when = when;

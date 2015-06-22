@@ -4,8 +4,7 @@
  */
 
 function ComponentEdit() {
-  var forms = require('../services/forms'),
-    dom = require('../services/dom'),
+  var dom = require('../services/dom'),
     references = require('../services/references'),
     decorate = require('../services/decorators'),
     editableAttr = references.editableAttribute;
@@ -21,10 +20,7 @@ function ComponentEdit() {
 
     if (path) {
       // this element is editable, decorate it!
-      decorate(node, {
-        ref: ref,
-        path: path
-      });
+      decorate(node, ref, path);
     }
 
     if (node) {
@@ -60,10 +56,7 @@ function ComponentEdit() {
       // special case when editable path is in the component's root element.
       if (componentHasPath) {
         path = el.getAttribute(editableAttr);
-        decorate(el, {
-          ref: ref,
-          path: path
-        });
+        decorate(el, ref, path);
       }
     }
   }

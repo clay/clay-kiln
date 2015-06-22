@@ -3,6 +3,7 @@
 var ds = require('dollar-slice'),
   references = require('./services/references'),
   behaviors = require('./services/behaviors'),
+  decorators = require('./services/decorators'),
   dom = require('./services/dom'),
   EditorToolbar = require('./controllers/editor-toolbar'),
   pageToolbar;
@@ -20,8 +21,12 @@ behaviors.add('select', require('./behaviors/select'));
 behaviors.add('simple-list', require('./behaviors/simple-list'));
 behaviors.add('simple-list-primary', require('./behaviors/simple-list-primary'));
 behaviors.add('wysiwyg', require('./behaviors/wysiwyg'));
-behaviors.add('component-list', require('./behaviors/component-list'));
 behaviors.add('autocomplete', require('./behaviors/autocomplete'));
+
+// add default decorators
+decorators.add(require('./placeholder'));
+decorators.add(require('./focus'));
+decorators.add(require('./component-list'));
 
 // kick off controller loading when DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
