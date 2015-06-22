@@ -4,66 +4,27 @@
  */
 
 function ComponentEdit() {
-  var _ = require('lodash'),
-    dom = require('../services/dom'),
+  var dom = require('../services/dom'),
     references = require('../services/references'),
-    formCreator = require('../services/form-creator'),
-    edit = require('../services/edit'),
-    placeholder = require('../services/placeholder'),
+    decorate = require('../services/decorators'),
     editableAttr = references.editableAttribute;
 
   /**
-   * @param {Element} el
-   * @returns {boolean}
-   */
-  function hasOpenInlineForms(el) {
-    return !!dom.find(el, '.editor-inline');
-  }
-
-  /**
-   * @param {string} ref
-   * @param {Element} el
-   * @param {string} path
-   * @param {MouseEvent} e
-   */
-  function open(ref, el, path, e) {
-    // first, check to make sure any inline forms aren't open in this element's children
-    if (!hasOpenInlineForms(el)) {
-      e.stopPropagation();
-      edit.getData(ref).then(function (data) {
-        // If name, then we're going deep; Note anything with a name either modal by default or has a displayProperty.
-        if (path) {
-          data = _.get(data, path);
-        }
-
-        switch (data._schema[references.displayProperty]) {
-          case 'inline':
-            return formCreator.createInlineForm(ref, path, data, el);
-          default: // case 'modal':
-            return formCreator.createForm(ref, path, data);
-        }
-      });
-    }
-  }
-
-  /**
-   * recursively decorate nodes with click events and placeholders
+   * recursively decorate nodes with click events, placeholders, and other decorators
    * @param {Element} node
    * @param {TreeWalker} walker
    * @param {string} ref
    */
   function decorateNodes(node, walker, ref) {
-    var name = node && node.getAttribute(editableAttr); // only assign a name if node exists
+    var path = node && node.getAttribute(editableAttr); // only assign a path if node exists
 
-    if (name) {
-      // add click event that generates a form
-      node.addEventListener('click', open.bind(null, ref, node, name));
-
-      // add placeholder
-      placeholder(ref, node);
+    if (path) {
+      // this element is editable, decorate it!
+      decorate(node, ref, path);
     }
 
     if (node) {
+      // keep walking through the nodes
       decorateNodes(walker.nextNode(), walker, ref);
     }
   }
@@ -75,8 +36,8 @@ function ComponentEdit() {
   function constructor(el) {
     var ref = el.getAttribute(references.referenceAttribute),
       isComponentEditable = el.hasAttribute(editableAttr) || !!dom.find(el, '[' + editableAttr + ']'),
-      componentHasName = ref && el.getAttribute(editableAttr),
-      walker, name;
+      componentHasPath = ref && el.getAttribute(editableAttr),
+      walker, path;
 
     if (isComponentEditable) {
       walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, {
@@ -92,12 +53,10 @@ function ComponentEdit() {
       // add click events to children with [name], but NOT children inside child components
       decorateNodes(walker.nextNode(), walker, ref);
 
-      // Special case when name is in the component element.
-      if (componentHasName) {
-        name = el.getAttribute(editableAttr);
-        el.addEventListener('click', open.bind(null, ref, el, name));
-        // add placeholder
-        placeholder(ref, el);
+      // special case when editable path is in the component's root element.
+      if (componentHasPath) {
+        path = el.getAttribute(editableAttr);
+        decorate(el, ref, path);
       }
     }
   }

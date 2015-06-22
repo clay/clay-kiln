@@ -1,6 +1,5 @@
 var _ = require('lodash'),
   references = require('./references'),
-  edit = require('./edit'),
   label = require('./label'),
   dom = require('./dom'),
   getExpandedBehaviors = require('./behaviors').getExpandedBehaviors;
@@ -77,37 +76,36 @@ function addPlaceholderDom(node, obj) {
 }
 
 /**
- * generate and add placeholder, if configured
- * placeholder should be shown if:
- * - name is a field and field is blank
- * @param {string} ref
- * @param {Element} node
- * @returns {Element} node
+ * @param {Element} el
+ * @param {{ref: string, path: string, data: object}} options
+ * @returns {boolean}
  */
-function addPlaceholder(ref, node) {
-  var path = node.getAttribute(references.editableAttribute);
+function hasPlaceholder(el, options) {
+  var schema = _.get(options, 'data._schema'),
+    isPlaceholder = !!schema[references.placeholderProperty],
+    isField = !!schema[references.fieldProperty];
 
-  return edit.getData(ref).then(function (data) {
-    var schema, field, hasPlaceholder, isField;
+  return isPlaceholder && isField && isFieldEmpty(options.data);
+}
 
-    data = _.get(data, path);
-    schema = data._schema;
-    field = schema[references.fieldProperty];
-    hasPlaceholder = schema[references.placeholderProperty];
-    isField = !!field;
+/**
+ * @param {Element} el
+ * @param {{ref: string, path: string, data: object}} options
+ * @returns {Element}
+ */
+function addPlaceholder(el, options) {
+  var path = options.path,
+    schema = _.get(options, 'data._schema'),
+    behaviors = schema[references.fieldProperty];
 
-    if (hasPlaceholder && isField && isFieldEmpty(data)) {
-      return addPlaceholderDom(node, {
-        text: getPlaceholderText(path, schema),
-        height: getPlaceholderHeight(field) // todo: change to be better, remove access to this function.
-      });
-    } else {
-      return node;
-    }
+  return addPlaceholderDom(el, {
+    text: getPlaceholderText(path, schema),
+    height: getPlaceholderHeight(behaviors) // todo: change to be better, remove access to this function.
   });
 }
 
-module.exports = addPlaceholder;
+module.exports.when = hasPlaceholder;
+module.exports.handler = addPlaceholder;
 
 // exported for testing
 module.exports.getPlaceholderText = getPlaceholderText;

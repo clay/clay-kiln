@@ -1,7 +1,7 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./placeholder'),
-  edit = require('./edit');
+  references = require('./references');
 
 describe(dirname, function () {
   describe(filename, function () {
@@ -98,64 +98,68 @@ describe(dirname, function () {
       });
     });
 
-    function stubData(data) {
-      sandbox.stub(edit, 'getData').returns(Promise.resolve({
-        title: data
-      }));
-    }
-
     function stubNode() {
       var node = document.createElement('div');
 
-      node.setAttribute('data-editable', 'title');
+      node.setAttribute(references.editableAttribute, 'title');
       return node;
     }
 
-    it('adds if field and blank', function () {
-      stubData({value: '', _schema: {
-        _has: 'text',
-        _placeholder: true
-      }});
+    describe('when', function () {
+      var fn = lib[this.title];
 
-      return lib('fakeRef', stubNode()).then(function (newNode) {
+      it('returns true if field and blank', function () {
+        var stubData = {
+          value: '',
+          _schema: {
+            _has: 'text',
+            _placeholder: true
+          }
+        };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'})).to.equal(true);
+      });
+
+      it('returns false if field and not blank', function () {
+        var stubData = {
+          value: 'asdf',
+          _schema: {
+            _has: 'text',
+            _placeholder: true
+          }
+        };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'})).to.equal(false);
+      });
+
+      it('returns false if not field', function () {
+        var stubData = {
+          value: '',
+          _schema: {
+            _placeholder: true
+          }
+        };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'})).to.equal(false);
+      });
+    });
+
+    describe('handler', function () {
+      var fn = lib[this.title];
+
+      it('adds placeholder', function () {
+        var stubData = {
+          value: '',
+          _schema: {
+            _has: 'text',
+            _placeholder: true
+          }
+        },
+        newNode = fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'});
+
         expect(newNode.querySelector('.editor-placeholder').style.height).to.equal('auto');
         expect(newNode.querySelector('span.placeholder-label').textContent).to.equal('Title');
       });
     });
-
-    it('does not add if field and not blank', function () {
-      stubData({value: '123', _schema: {
-        _has: 'text',
-        _placeholder: true
-      }});
-
-      return lib('fakeRef', stubNode()).then(function (el) {
-        expect(el.querySelector('.editor-placeholder')).to.equal(null);
-        expect(el.querySelector('span.placeholder-label')).to.equal(null);
-      });
-    });
-
-    it('does not add if not field', function () {
-      stubData({value: '123', _schema: {
-        _placeholder: true
-      }});
-
-      return lib('fakeRef', stubNode()).then(function (el) {
-        expect(el.querySelector('.editor-placeholder')).to.equal(null);
-        expect(el.querySelector('span.placeholder-label')).to.equal(null);
-      });
-    });
-
-    it('does not add if no _placeholder', function () {
-      stubData({value: '123', _schema: {
-        _has: 'text'
-      }});
-
-      return lib('fakeRef', stubNode()).then(function (el) {
-        expect(el.querySelector('.editor-placeholder')).to.equal(null);
-        expect(el.querySelector('span.placeholder-label')).to.equal(null);
-      });
-    });
-
   });
 });
