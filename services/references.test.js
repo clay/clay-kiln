@@ -6,7 +6,7 @@ describe('references service', function () {
   });
 
   it('has editable attribute', function () {
-    expect(references.editableAttribute).to.equal('editable');
+    expect(references.editableAttribute).to.equal('data-editable');
   });
 
   it('has reference attribute', function () {
