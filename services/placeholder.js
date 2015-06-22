@@ -85,7 +85,7 @@ function addPlaceholderDom(node, obj) {
  * @returns {Element} node
  */
 function addPlaceholder(ref, node) {
-  var path = node.getAttribute('name');
+  var path = node.getAttribute(references.editableAttribute);
 
   return edit.getData(ref).then(function (data) {
     var schema, field, hasPlaceholder, isField;

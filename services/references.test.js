@@ -5,8 +5,8 @@ describe('references service', function () {
     expect(references.componentAttribute).to.equal('data-component');
   });
 
-  it('has name attribute', function () {
-    expect(references.nameAttribute).to.equal('name');
+  it('has editable attribute', function () {
+    expect(references.editableAttribute).to.equal('editable');
   });
 
   it('has reference attribute', function () {
