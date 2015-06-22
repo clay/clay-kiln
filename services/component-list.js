@@ -32,7 +32,7 @@ function createComponentButton(item) {
  * @returns {array} array of elements
  */
 function getButtons(possibleComponents, exclude) {
-  return _.map(possibleComponents, function (item) {
+  return _.compact(_.map(possibleComponents, function (item) {
     if (exclude && exclude.length) {
       if (!_.contains(exclude)) {
         return createComponentButton(item);
@@ -40,7 +40,7 @@ function getButtons(possibleComponents, exclude) {
     } else {
       return createComponentButton(item);
     }
-  });
+  }));
 }
 
 /**
