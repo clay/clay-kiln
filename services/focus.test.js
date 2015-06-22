@@ -1,5 +1,6 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
+  forms = require('./forms'),
   lib = require('./focus');
 
 describe(dirname, function () {
@@ -58,19 +59,26 @@ describe(dirname, function () {
     describe('handler', function () {
       var fn = lib[this.title];
 
-      // it('adds placeholder', function () {
-      //   var stubData = {
-      //     value: '',
-      //     _schema: {
-      //       _has: 'text',
-      //       _placeholder: true
-      //     }
-      //   },
-      //   newNode = fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'});
-      //
-      //   expect(newNode.querySelector('.editor-placeholder').style.height).to.equal('auto');
-      //   expect(newNode.querySelector('span.placeholder-label').textContent).to.equal('Title');
-      // });
+      it('adds click event', function () {
+        var stubData = {
+          value: '',
+          _schema: {
+            _has: 'text'
+          }
+        },
+        fakeOpen = sandbox.spy(),
+        newNode;
+
+        // stub, then run the decorator
+        sandbox.stub(forms, 'open', fakeOpen);
+        newNode = fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'});
+
+        // trigger click
+        newNode.dispatchEvent(new Event('click'));
+
+        // see if the spy was called
+        expect(fakeOpen.calledWith('fakeRef', newNode, 'title')).to.equal(true);
+      });
     });
   });
 });
