@@ -107,7 +107,7 @@ describe(dirname, function () {
     function stubNode() {
       var node = document.createElement('div');
 
-      node.setAttribute('name', 'title');
+      node.setAttribute('editable', 'title');
       return node;
     }
 
