@@ -7,27 +7,28 @@ function ComponentEdit() {
   var forms = require('../services/forms'),
     dom = require('../services/dom'),
     references = require('../services/references'),
-    placeholder = require('../services/placeholder'),
+    decorate = require('../services/decorators'),
     editableAttr = references.editableAttribute;
 
   /**
-   * recursively decorate nodes with click events and placeholders
+   * recursively decorate nodes with click events, placeholders, and other decorators
    * @param {Element} node
    * @param {TreeWalker} walker
    * @param {string} ref
    */
   function decorateNodes(node, walker, ref) {
-    var name = node && node.getAttribute(editableAttr); // only assign a name if node exists
+    var path = node && node.getAttribute(editableAttr); // only assign a path if node exists
 
-    if (name) {
-      // add click event that generates a form
-      node.addEventListener('click', forms.open.bind(null, ref, node, name));
-
-      // add placeholder
-      placeholder(ref, node);
+    if (path) {
+      // this element is editable, decorate it!
+      decorate(node, {
+        ref: ref,
+        path: path
+      });
     }
 
     if (node) {
+      // keep walking through the nodes
       decorateNodes(walker.nextNode(), walker, ref);
     }
   }
