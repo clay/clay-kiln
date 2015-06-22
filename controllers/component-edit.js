@@ -9,7 +9,8 @@ function ComponentEdit() {
     references = require('../services/references'),
     formCreator = require('../services/form-creator'),
     edit = require('../services/edit'),
-    placeholder = require('../services/placeholder');
+    placeholder = require('../services/placeholder'),
+    editableAttr = references.editableAttribute;
 
   /**
    * @param {Element} el
@@ -52,7 +53,7 @@ function ComponentEdit() {
    * @param {string} ref
    */
   function decorateNodes(node, walker, ref) {
-    var name = node && node.getAttribute('name'); // only assign a name if node exists
+    var name = node && node.getAttribute(editableAttr); // only assign a name if node exists
 
     if (name) {
       // add click event that generates a form
@@ -73,8 +74,8 @@ function ComponentEdit() {
    */
   function constructor(el) {
     var ref = el.getAttribute(references.referenceAttribute),
-      isComponentEditable = el.hasAttribute('name') || !!dom.find(el, '[name]'),
-      componentHasName = ref && el.getAttribute('name'),
+      isComponentEditable = el.hasAttribute(editableAttr) || !!dom.find(el, '[' + editableAttr + ']'),
+      componentHasName = ref && el.getAttribute(editableAttr),
       walker, name;
 
     if (isComponentEditable) {
@@ -93,7 +94,7 @@ function ComponentEdit() {
 
       // Special case when name is in the component element.
       if (componentHasName) {
-        name = el.getAttribute('name');
+        name = el.getAttribute(editableAttr);
         el.addEventListener('click', open.bind(null, ref, el, name));
         // add placeholder
         placeholder(ref, el);

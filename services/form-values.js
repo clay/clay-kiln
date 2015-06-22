@@ -1,5 +1,6 @@
 var _ = require('lodash'),
   dom = require('./dom'),
+  references = require('./references'),
   behaviors = require('./behaviors');
 
 /**
@@ -10,7 +11,7 @@ var _ = require('lodash'),
  */
 function getValues(data, el) {
   var binding,
-    name = el.getAttribute('data-field'),
+    name = el.getAttribute(references.fieldAttribute),
     view = behaviors.getBinding(name),
     path, viewData;
 
@@ -32,7 +33,7 @@ function getValues(data, el) {
 function getFormValues(form) {
   var data = {};
 
-  _.reduce(dom.findAll(form, '[data-field]'), getValues, data);
+  _.reduce(dom.findAll(form, '[' + references.fieldAttribute + ']'), getValues, data);
   // all bound fields should have a [data-field] attribute
   return data;
 }
