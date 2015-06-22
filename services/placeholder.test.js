@@ -1,6 +1,7 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
-  lib = require('./placeholder');
+  lib = require('./placeholder'),
+  references = require('./references');
 
 describe(dirname, function () {
   describe(filename, function () {
@@ -100,7 +101,7 @@ describe(dirname, function () {
     function stubNode() {
       var node = document.createElement('div');
 
-      node.setAttribute('data-editable', 'title');
+      node.setAttribute(references.editableAttribute, 'title');
       return node;
     }
 
