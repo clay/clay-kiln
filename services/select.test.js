@@ -115,10 +115,5 @@ describe(dirname, function () {
         expect(fn(stubEditableComponent())).to.equal(true);
       });
     });
-
-    describe('handler', function () {
-      var fn = lib[this.title];
-
-    });
   });
 });

@@ -140,6 +140,7 @@ module.exports = {
    * wrap elements in another element
    * @param {NodeList|Element} els
    * @param {string} wrapper
+   * @returns {Element} wrapperEl
    */
   wrapElements: function (els, wrapper) {
     var wrapperEl = document.createElement(wrapper);

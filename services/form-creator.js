@@ -185,7 +185,7 @@ function createForm(ref, path, data, rootEl) {
  * @param {Element} oldEl   Root element that is being inline edited
  */
 function createInlineForm(ref, path, data, oldEl) {
-  var innerEl, schema, newEl, isField, context, componentBar, wrapped;
+  var innerEl, schema, newEl, isField, context, wrapped;
 
   ensureValidFormData(ref, path, data);
 
