@@ -135,7 +135,7 @@ describe('dom service', function () {
         wrapper = 'span',
         result = document.createElement('span');
 
-      result.appendChild(childEl);
+      result.appendChild(childEl.cloneNode(true));
 
       expect(dom.wrapElements(els, wrapper).outerHTML).to.equal(result.outerHTML);
     });
@@ -145,8 +145,8 @@ describe('dom service', function () {
         wrapper = 'span',
         result = document.createElement('span');
 
-      result.appendChild(childEl);
-      result.appendChild(secondChildEl);
+      result.appendChild(childEl.cloneNode(true));
+      result.appendChild(secondChildEl.cloneNode(true));
 
       expect(dom.wrapElements(els, wrapper).outerHTML).to.equal(result.outerHTML);
     });

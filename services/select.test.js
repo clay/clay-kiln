@@ -15,7 +15,7 @@ describe(dirname, function () {
       sandbox.restore();
     });
 
-    function stubNode() {
+    function stubEditableElement() {
       var node = document.createElement('div');
 
       node.setAttribute('data-editable', 'content');
@@ -23,6 +23,13 @@ describe(dirname, function () {
     }
 
     function stubComponent() {
+      var node = document.createElement('div');
+
+      node.setAttribute(references.referenceAttribute, '/components/foo/id/bar');
+      return node;
+    }
+
+    function stubEditableComponent() {
       var node = document.createElement('div');
 
       node.setAttribute(references.editableAttribute, 'content');
@@ -33,11 +40,52 @@ describe(dirname, function () {
     describe('select', function () {
       var fn = lib[this.title];
 
-      it('adds .selected class', function () {
-        var el = stubNode();
+      it('adds .selected class when element is inside component', function () {
+        var el = stubEditableElement(),
+          component = stubComponent();
 
-        fn(el, {});
+        component.appendChild(el);
+
+        fn(el);
+        expect(component.classList.contains('selected')).to.equal(true);
+      });
+
+      it('adds .selected-parent class when parent component exists', function () {
+        var el = stubEditableElement(),
+          component = stubComponent(),
+          parent = stubComponent();
+
+        parent.appendChild(component);
+        component.appendChild(el);
+
+        fn(el);
+        expect(parent.classList.contains('selected-parent')).to.equal(true);
+      });
+
+      it('adds .selected class when element is component', function () {
+        var el = stubEditableComponent();
+
+        fn(el);
         expect(el.classList.contains('selected')).to.equal(true);
+      });
+
+      it('adds .selected-parent class when parent component exists and elemnent is component', function () {
+        var el = stubEditableComponent(),
+          parent = stubComponent();
+
+        parent.appendChild(el);
+
+        fn(el);
+        expect(parent.classList.contains('selected-parent')).to.equal(true);
+      });
+
+      it('throws error if element is not inside a component', function () {
+        var el = stubEditableElement(),
+          result = function () {
+            return fn(el);
+          };
+
+        expect(result).to.throw(Error);
       });
     });
 
@@ -45,11 +93,14 @@ describe(dirname, function () {
       var fn = lib[this.title];
 
       it('removed .selected class', function () {
-        var el = stubNode();
+        var el = stubEditableElement(),
+          component = stubComponent();
+
+        component.appendChild(el);
 
         lib.select(el);
         fn(); // unselect
-        expect(el.classList.contains('selected')).to.equal(false);
+        expect(component.classList.contains('selected')).to.equal(false);
       });
     });
 
@@ -57,11 +108,11 @@ describe(dirname, function () {
       var fn = lib[this.title];
 
       it('returns false if not root component element', function () {
-        expect(fn(stubNode())).to.equal(false);
+        expect(fn(stubEditableElement())).to.equal(false);
       });
 
       it('returns true if root component element', function () {
-        expect(fn(stubComponent())).to.equal(true);
+        expect(fn(stubEditableComponent())).to.equal(true);
       });
     });
 

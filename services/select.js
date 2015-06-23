@@ -16,7 +16,9 @@ function select(el) {
     attr = '[' + references.referenceAttribute + ']';
 
   el = dom.closest(el, attr);
-  parent = dom.closest(el.parentNode, attr);
+  if (el.parentNode) {
+    parent = dom.closest(el.parentNode, attr);
+  }
 
   // selected component gets .selected, parent gets .selected-parent
   el.classList.add('selected');
