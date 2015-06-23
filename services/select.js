@@ -34,6 +34,15 @@ function when(el) {
 }
 
 /**
+ * set the bar's height after images and such may have loaded
+ */
+function setHeight(el) {
+  var componentHeight = getComputedStyle(el).height;
+
+  dom.find(el, '.component-bar-title').style.width = parseInt(componentHeight) - 20 + 'px';
+}
+
+/**
  * add component bar (with click events)
  * @param {Element} el
  * @param {{ref: string, path: string, data: object}} options
@@ -41,13 +50,16 @@ function when(el) {
  */
 function handler(el, options) {
   var tpl = `
-    <aside class="component-bar">
+    <aside class="component-bar" title="${references.getComponentNameFromReference(options.ref).toUpperCase()}">
+      <span class="component-bar-title">${references.getComponentNameFromReference(options.ref)}</span>
     </aside>
-  `;
+  `,
+  componentBar = dom.create(tpl);
 
   // make sure components are relatively positioned
   el.classList.add('component-bar-wrapper');
-  el.appendChild(dom.create(tpl));
+  dom.prependChild(el, componentBar); // prepended, so parent components are behind child components
+  window.setTimeout(setHeight.bind(null, el), 500);
   return el;
 }
 
