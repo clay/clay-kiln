@@ -12,7 +12,7 @@ module.exports = function (result, args) {
 
   bindings.max = args.value;
   rivets.formatters.charsRemaining = function (max, data) {
-    var length = parseInt(striptags(data.value).length),
+    var length = data.value ? parseInt(striptags(data.value).length) : 0,
       remaining = max - length;
 
     if (remaining > 0) {
