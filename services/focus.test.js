@@ -1,6 +1,7 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   forms = require('./forms'),
+  select = require('./select'),
   lib = require('./focus');
 
 describe(dirname, function () {
@@ -9,6 +10,7 @@ describe(dirname, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
+      sandbox.stub(select);
     });
 
     afterEach(function () {

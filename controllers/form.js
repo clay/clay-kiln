@@ -59,7 +59,8 @@ module.exports = function () {
         oldEl = this.oldEl;
 
       focus.unfocus();
-      dom.replaceElement(el, oldEl);
+      dom.unwrapElements(oldEl, dom.find(oldEl, '.hidden-wrapped'));
+      oldEl.removeChild(el);
     }
   };
 

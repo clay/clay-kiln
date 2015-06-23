@@ -1,4 +1,5 @@
-var domify = require('domify');
+var domify = require('domify'),
+  _ = require('lodash');
 
 module.exports = {
   /**
@@ -132,6 +133,45 @@ module.exports = {
 
     if (parent) {
       parent.replaceChild(replacementEl, el);
+    }
+  },
+
+  /**
+   * wrap elements in another element
+   * @param {NodeList|Element} els
+   * @param {string} wrapper
+   */
+  wrapElements: function (els, wrapper) {
+    var wrapperEl = document.createElement(wrapper);
+
+    // make sure elements are in an array
+    if (els instanceof HTMLElement) {
+      els = [els];
+    } else {
+      els = Array.prototype.slice.call(els);
+    }
+
+    _.each(els, function (el) {
+      // put it into the wrapper, remove it from its parent
+      el.parentNode.removeChild(el);
+      wrapperEl.appendChild(el);
+    });
+
+    // return the wrapped elements
+    return wrapperEl;
+  },
+
+  /**
+   * unwrap elements from another element
+   * @param {Element} parent
+   * @param {Element} wrapper
+   */
+  unwrapElements: function (parent, wrapper) {
+    var el = wrapper.childNodes[0];
+
+    while (el) {
+      parent.appendChild(el);
+      el = wrapper.childNodes[0];
     }
   },
 
