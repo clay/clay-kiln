@@ -7,16 +7,19 @@ var _ = require('lodash'),
  * set focus on an Element
  * @param {Element} el
  * @param {{ref: string, path: string, data: object}} options
+ * @param {MouseEvent} e
  */
-function focus(el, options) {
+function focus(el, options, e) {
+  el.classList.add('focused');
   currentFocus = el;
-  forms.open(options.ref, el, options.path);
+  forms.open(options.ref, el, options.path, e);
 }
 
 /**
  * remove focus
  */
 function unfocus() {
+  currentFocus.classList.remove('focused'); // not currently styled, but useful
   currentFocus = null;
   forms.close();
 }

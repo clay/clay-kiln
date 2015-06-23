@@ -1,5 +1,6 @@
 module.exports = function () {
-  var dom = require('../services/dom');
+  var dom = require('../services/dom'),
+    focus = require('../services/focus');
 
   function constructor(el) {
     var modal = dom.find(el, '.editor-modal');
@@ -21,6 +22,7 @@ module.exports = function () {
 
       if (e.target === e.currentTarget) {
         // we clicked on the overlay itself
+        focus.unfocus();
         dom.removeElement(overlay);
         dom.find('html').classList.remove('noscroll');
       }

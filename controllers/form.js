@@ -2,6 +2,7 @@ module.exports = function () {
   var _ = require('lodash'),
     dom = require('../services/dom'),
     edit = require('../services/edit'),
+    focus = require('../services/focus'),
     formValues = require('../services/form-values');
 
   /**
@@ -57,6 +58,7 @@ module.exports = function () {
       var el = this.el,
         oldEl = this.oldEl;
 
+      focus.unfocus();
       dom.replaceElement(el, oldEl);
     }
   };
