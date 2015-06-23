@@ -1,0 +1,16 @@
+@import 'colors';
+@import 'typography';
+$bar-width: 30px;
+
+.component-bar-wrapper {
+  position: relative;
+}
+
+.component-bar {
+  background-color: $blue-25;
+  height: 100%;
+  left: 100%;
+  position: absolute;
+  top: 0;
+  width: $bar-width;
+}
