@@ -4,6 +4,7 @@ var dirname = __dirname.split('/').pop(),
   lib = require('./form-creator'), // static-analysis means this must be string, not ('./' + filename);
   behaviors = require('./behaviors'),
   dom = require('./dom'),
+  ds = require('dollar-slice'),
   refIsRequired = /ref\w* is required/i,
   pathIsRequired = /path is required/i,
   schemaIsRequired = /schema is required/i,
@@ -17,6 +18,7 @@ describe(dirname, function () {
     beforeEach(function () {
       el = document.createDocumentFragment();
       sandbox = sinon.sandbox.create();
+      sandbox.stub(ds);
     });
 
     afterEach(function () {
