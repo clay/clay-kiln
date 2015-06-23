@@ -66,6 +66,7 @@ function when(el) {
 
 /**
  * set the bar's height after images and such may have loaded
+ * @param {Element} el component element
  */
 function setHeight(el) {
   var componentHeight = getComputedStyle(el).height;
@@ -97,6 +98,9 @@ function handler(el, options) {
 // focus and unfocus
 module.exports.select = select;
 module.exports.unselect = unselect;
+
+// set height of component bar label
+module.exports.setHeight = setHeight;
 
 // decorators
 module.exports.when = when;
