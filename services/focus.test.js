@@ -22,6 +22,26 @@ describe(dirname, function () {
       return node;
     }
 
+    describe('focus', function () {
+      var fn = lib[this.title];
+
+      it('calls forms.open', function () {
+        sandbox.stub(forms, 'open', sandbox.spy());
+        fn(stubNode(), {});
+        expect(forms.open.callCount).to.equal(1);
+      });
+    });
+
+    describe('unfocus', function () {
+      var fn = lib[this.title];
+
+      it('calls forms.close', function () {
+        sandbox.stub(forms, 'close', sandbox.spy());
+        fn(stubNode(), {});
+        expect(forms.close.callCount).to.equal(1);
+      });
+    });
+
     describe('when', function () {
       var fn = lib[this.title];
 
