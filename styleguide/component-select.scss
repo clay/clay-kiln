@@ -17,13 +17,13 @@ $bar-width: 30px;
   width: $bar-width;
 }
 
-.component-bar.selected {
+.component-bar-wrapper.selected-parent > .component-bar {
   display: block;
+  filter: blur(1px);
 }
 
-.component-bar.selected-parent {
+.component-bar-wrapper.selected > .component-bar {
   display: block;
-  filter: blur(.75px);
 }
 
 .component-bar-title {

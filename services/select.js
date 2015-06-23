@@ -20,18 +20,36 @@ function select(el) {
 
   // selected component gets .selected, parent gets .selected-parent
   el.classList.add('selected');
-  parent.classList.add('.selected-parent');
+  if (parent) {
+    parent.classList.add('selected-parent');
+  }
   currentSelected = el;
+}
+
+function removeClasses(el, parent) {
+  if (el) {
+    el.classList.remove('selected');
+  }
+  if (parent) {
+    parent.classList.remove('selected-parent');
+  }
 }
 
 /**
  * remove selection
  */
 function unselect() {
-  var parent = dom.closest(currentSelected.parentNode, '[' + references.referenceAttribute + ']');
+  var current, parent;
 
-  currentSelected.classList.remove('selected');
-  parent.classList.remove('.selected-parent');
+  if (currentSelected) {
+    current = currentSelected;
+    parent = dom.closest(currentSelected.parentNode, '[' + references.referenceAttribute + ']');
+  } else {
+    current = dom.find('.selected');
+    parent = dom.find('.selected-parent');
+  }
+
+  removeClasses(current, parent);
   currentSelected = null;
 }
 

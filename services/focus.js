@@ -1,6 +1,7 @@
 var _ = require('lodash'),
   references = require('./references'),
   forms = require('./forms'),
+  select = require('./select'),
   currentFocus;
 
 /**
@@ -10,7 +11,8 @@ var _ = require('lodash'),
  * @param {MouseEvent} e
  */
 function focus(el, options, e) {
-  el.classList.add('focused');
+  select.unselect();
+  select.select(el);
   currentFocus = el;
   forms.open(options.ref, el, options.path, e);
 }
@@ -19,7 +21,7 @@ function focus(el, options, e) {
  * remove focus
  */
 function unfocus() {
-  currentFocus.classList.remove('focused'); // not currently styled, but useful
+  select.unselect();
   currentFocus = null;
   forms.close();
 }
