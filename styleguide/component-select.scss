@@ -7,13 +7,23 @@ $bar-width: 30px;
 }
 
 .component-bar {
-  background-color: $blue-25;
+  background-color: rgba($blue-25, .5);
   border: 1px solid $blue-50;
+  display: none;
   height: 100%;
   left: 100%;
   position: absolute;
   top: 0;
   width: $bar-width;
+}
+
+.component-bar.selected {
+  display: block;
+}
+
+.component-bar.selected-parent {
+  display: block;
+  filter: blur(.75px);
 }
 
 .component-bar-title {

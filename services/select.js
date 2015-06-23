@@ -6,13 +6,21 @@ var references = require('./references'),
   currentSelected;
 
 /**
- * set selection on an Element
- * @param {Element} el
+ * set selection on a component
+ * @param {Element} el editable element or component el
  * @param {{ref: string, path: string, data: object}} options
  * @param {MouseEvent} e
  */
-function select(el, options, e) {
+function select(el) {
+  var parent, // todo: allow n-number of parents to be selected
+    attr = '[' + references.referenceAttribute + ']';
+
+  el = dom.closest(el, attr);
+  parent = dom.closest(el.parentNode, attr);
+
+  // selected component gets .selected, parent gets .selected-parent
   el.classList.add('selected');
+  parent.classList.add('.selected-parent');
   currentSelected = el;
 }
 
@@ -20,7 +28,10 @@ function select(el, options, e) {
  * remove selection
  */
 function unselect() {
+  var parent = dom.closest(currentSelected.parentNode, '[' + references.referenceAttribute + ']');
+
   currentSelected.classList.remove('selected');
+  parent.classList.remove('.selected-parent');
   currentSelected = null;
 }
 
