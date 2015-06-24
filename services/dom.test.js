@@ -128,4 +128,38 @@ describe('dom service', function () {
       expect(dom.find(tmpEl, 'div')).to.eql(secondChildEl);
     });
   });
+
+  describe('wrapElements', function () {
+    it('wraps a single element', function () {
+      var els = childEl,
+        wrapper = 'span',
+        result = document.createElement('span');
+
+      result.appendChild(childEl.cloneNode(true));
+
+      expect(dom.wrapElements(els, wrapper).outerHTML).to.equal(result.outerHTML);
+    });
+
+    it('wraps an array of elements', function () {
+      var els = [childEl, secondChildEl],
+        wrapper = 'span',
+        result = document.createElement('span');
+
+      result.appendChild(childEl.cloneNode(true));
+      result.appendChild(secondChildEl.cloneNode(true));
+
+      expect(dom.wrapElements(els, wrapper).outerHTML).to.equal(result.outerHTML);
+    });
+
+    it('doesn\'t wrap a live node list', function () {
+      var els = el.children,
+        wrapper = 'span',
+        result = document.createElement('span');
+
+      result.appendChild(childEl);
+      result.appendChild(secondChildEl);
+
+      expect(dom.wrapElements(els, wrapper).outerHTML).to.not.equal(result.outerHTML);
+    });
+  });
 });

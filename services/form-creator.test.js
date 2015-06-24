@@ -3,6 +3,8 @@ var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./form-creator'), // static-analysis means this must be string, not ('./' + filename);
   behaviors = require('./behaviors'),
+  dom = require('./dom'),
+  ds = require('dollar-slice'),
   refIsRequired = /ref\w* is required/i,
   pathIsRequired = /path is required/i,
   schemaIsRequired = /schema is required/i,
@@ -16,6 +18,7 @@ describe(dirname, function () {
     beforeEach(function () {
       el = document.createDocumentFragment();
       sandbox = sinon.sandbox.create();
+      sandbox.stub(ds);
     });
 
     afterEach(function () {
@@ -144,7 +147,7 @@ describe(dirname, function () {
         expectNoLogging();
         fn('ref', 'name', {_schema: {}}, childEl);
 
-        expect(condense(el.firstElementChild.innerHTML)).to.equal(condense(`
+        expect(condense(dom.find(el, '.editor-inline').innerHTML)).to.equal(condense(`
         <form>
           <div class="input-container"></div>
           <div class="button-container">
@@ -164,7 +167,7 @@ describe(dirname, function () {
 
         fn('ref', 'name', singleItem, childEl);
 
-        expect(condense(el.firstElementChild.innerHTML)).to.equal(condense(`
+        expect(condense(dom.find(el, '.editor-inline').innerHTML)).to.equal(condense(`
         <form>
           <div class="input-container">
             <div class="behaviour-element"></div>

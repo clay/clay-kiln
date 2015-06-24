@@ -185,7 +185,7 @@ function createForm(ref, path, data, rootEl) {
  * @param {Element} oldEl   Root element that is being inline edited
  */
 function createInlineForm(ref, path, data, oldEl) {
-  var innerEl, schema, newEl, isField, context;
+  var innerEl, schema, newEl, isField, context, wrapped;
 
   ensureValidFormData(ref, path, data);
 
@@ -205,7 +205,16 @@ function createInlineForm(ref, path, data, oldEl) {
 
   // build up form el
   newEl = createInlineFormEl(innerEl);
-  dom.replaceElement(oldEl, newEl);
+  wrapped = dom.wrapElements(_.filter(oldEl.childNodes, function (child) {
+    if (child.nodeType === 1) {
+      return !child.classList.contains('component-bar');
+    } else {
+      return true; // always pass through text nodes
+    }
+  }), 'span');
+  wrapped.classList.add('hidden-wrapped');
+  oldEl.appendChild(wrapped);
+  oldEl.appendChild(newEl);
 
   // register + instantiate form controller
   ds.controller('form', require('../controllers/form'));

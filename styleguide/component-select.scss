@@ -1,0 +1,45 @@
+@import 'colors';
+@import 'typography';
+$bar-width: 30px;
+
+.component-bar-wrapper {
+  position: relative;
+}
+
+.component-bar {
+  background-color: rgba($blue-25, .5);
+  border: 1px solid $blue-50;
+  display: none;
+  height: 100%;
+  left: 100%;
+  position: absolute;
+  top: 0;
+  width: $bar-width;
+}
+
+.component-bar-wrapper.selected-parent > .component-bar {
+  display: block;
+  filter: blur(1px);
+}
+
+.component-bar-wrapper.selected > .component-bar {
+  display: block;
+}
+
+.component-bar-title {
+  @include label();
+
+  color: $blue;
+  display: inline-block;
+  font-size: 12px;
+  height: $bar-width;
+  letter-spacing: .5px;
+  line-height: $bar-width;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  transform: rotate(90deg);
+  transform-origin: 8px 20px;
+  white-space: nowrap;
+  width: 0;
+}

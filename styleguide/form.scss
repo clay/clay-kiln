@@ -16,6 +16,7 @@
 
 .editor > header {
   @include section-header();
+
   bottom: calc(100% + 30px);
   left: 0;
   position: absolute;
@@ -25,8 +26,8 @@
   @include clearfix();
 
   flex: 0 0 100%;
-  overflow-y: scroll;
   overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .editor .editor-section {
@@ -81,12 +82,18 @@
   @include clearfix();
 
   flex: 1 1;
+  margin: 10px 0 20px;
   min-width: 30rem;
   position: relative;
-  margin: 10px 0 20px;
 }
 
 .editor .label-inner {
   @include label();
+
   margin-right: 10px;
+}
+
+// when inline forms are opened, the other children of the parent element are hidden
+.hidden-wrapped {
+  display: none;
 }

@@ -6,6 +6,7 @@ var ds = require('dollar-slice'),
   decorators = require('./services/decorators'),
   dom = require('./services/dom'),
   EditorToolbar = require('./controllers/editor-toolbar'),
+  select = require('./services/select'),
   pageToolbar;
 
 // manually add built-in behaviors
@@ -44,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // todo: order this by leaf components? make sure not to add event handlers twice
     if (name && name !== 'editor-toolbar' && name !== 'nym2015-layout') {
+      select.handler(component, { ref: ref }); // note: not passing data or path into here
       ds.controller('component-edit', componentEdit);
       ds.get('component-edit', component);
     }

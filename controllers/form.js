@@ -2,6 +2,8 @@ module.exports = function () {
   var _ = require('lodash'),
     dom = require('../services/dom'),
     edit = require('../services/edit'),
+    focus = require('../services/focus'),
+    select = require('../services/select'),
     formValues = require('../services/form-values');
 
   /**
@@ -22,6 +24,9 @@ module.exports = function () {
     // if this is an inline form, add an event handler that will close the form when you click out of it
     if (oldEl) {
       dom.find('html').addEventListener('click', outsideClickhandler);
+
+      // also set the height of the component bar
+      select.setHeight(oldEl);
     }
 
     this.el = el;
@@ -57,7 +62,9 @@ module.exports = function () {
       var el = this.el,
         oldEl = this.oldEl;
 
-      dom.replaceElement(el, oldEl);
+      focus.unfocus();
+      dom.unwrapElements(oldEl, dom.find(oldEl, '.hidden-wrapped'));
+      oldEl.removeChild(el);
     }
   };
 

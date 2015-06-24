@@ -1,6 +1,7 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   forms = require('./forms'),
+  select = require('./select'),
   lib = require('./focus');
 
 describe(dirname, function () {
@@ -9,6 +10,7 @@ describe(dirname, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
+      sandbox.stub(select);
     });
 
     afterEach(function () {
@@ -21,6 +23,26 @@ describe(dirname, function () {
       node.setAttribute('data-editable', 'content');
       return node;
     }
+
+    describe('focus', function () {
+      var fn = lib[this.title];
+
+      it('calls forms.open', function () {
+        sandbox.stub(forms, 'open', sandbox.spy());
+        fn(stubNode(), {});
+        expect(forms.open.callCount).to.equal(1);
+      });
+    });
+
+    describe('unfocus', function () {
+      var fn = lib[this.title];
+
+      it('calls forms.close', function () {
+        sandbox.stub(forms, 'close', sandbox.spy());
+        fn(stubNode(), {});
+        expect(forms.close.callCount).to.equal(1);
+      });
+    });
 
     describe('when', function () {
       var fn = lib[this.title];
