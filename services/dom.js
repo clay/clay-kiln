@@ -170,6 +170,10 @@ module.exports = {
   unwrapElements: function (parent, wrapper) {
     var el = wrapper.childNodes[0];
 
+    // ok, so this looks weird, right?
+    // turns out, appending nodes to another node will remove them
+    // from the live NodeList, so we can keep iterating over the
+    // first item in that list and grab all of them. Nice!
     while (el) {
       parent.appendChild(el);
       el = wrapper.childNodes[0];
