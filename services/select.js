@@ -92,7 +92,7 @@ function handler(el, options) {
   el.classList.add('component-bar-wrapper');
   dom.prependChild(el, componentBar); // prepended, so parent components are behind child components
   // don't set the component bar height until images &c are loaded
-  document.addEventListener('load', setHeight.bind(null, el));
+  window.addEventListener('load', setHeight.bind(null, el));
   return el;
 }
 
