@@ -31,7 +31,6 @@ module.exports = function () {
 
     this.ref = ref;
     this.path = path;
-    this.oldEl = oldEl;
     this.form = dom.find(el, 'form');
   }
 
@@ -58,10 +57,7 @@ module.exports = function () {
     },
 
     closeForm: function () {
-      var oldEl = this.oldEl;
-
       focus.unfocus();
-      dom.unwrapElements(oldEl, dom.find(oldEl, '.hidden-wrapped'));
     }
   };
 
