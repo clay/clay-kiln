@@ -46,7 +46,7 @@ function when(el, options) {
  */
 function handler(el, options) {
   el.addEventListener('click', function (e) {
-    if (!currentFocus || el !== currentFocus) {
+    if (el !== currentFocus) {
       focus(el, options, e);
     } else {
       e.stopPropagation();
