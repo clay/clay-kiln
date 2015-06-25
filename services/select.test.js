@@ -115,5 +115,23 @@ describe(dirname, function () {
         expect(fn(stubEditableComponent())).to.equal(true);
       });
     });
+
+    describe('handler', function () {
+      var fn = lib[this.title];
+
+      it('creates a component bar as the component\'s first child element', function () {
+        var el = stubComponent();
+
+        sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
+        expect(fn(el, {ref: 'fakeRef'}).childNodes[0].classList.contains('component-bar')).to.equal(true);
+      });
+
+      it('adds the .component-bar-wrapper class to the component', function () {
+        var el = stubComponent();
+
+        sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
+        expect(fn(el, {ref: 'fakeRef'}).classList.contains('component-bar-wrapper')).to.equal(true);
+      });
+    });
   });
 });
