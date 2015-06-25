@@ -1,6 +1,7 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   references = require('./references'),
+  forms = require('./forms'),
   lib = require('./select');
 
 describe(dirname, function () {
@@ -136,6 +137,7 @@ describe(dirname, function () {
       it('will select parent component if parent bar is clicked', function () {
         var el = stubComponent();
 
+        el.classList.add('selected-parent');
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
         fn(el, {ref: 'fakeRef'});
 
@@ -147,6 +149,38 @@ describe(dirname, function () {
 
         // the component should now be selected
         expect(el.classList.contains('selected')).to.equal(true);
+      });
+
+      it('shouldn\'t open meta form if parent bar is clicked', function () {
+        var el = stubComponent();
+
+        el.classList.add('selected-parent');
+        sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
+        sandbox.stub(forms, 'open', sandbox.spy().withArgs('fakeName', document.body));
+        fn(el, {ref: 'fakeRef'});
+
+        // trigger a click on the component bar
+        el.querySelector('.component-bar').dispatchEvent(new Event('click'));
+
+        // the form should not have been opened
+        expect(forms.open.called).to.equal(false);
+      });
+
+      it('will open meta form if selected bar is clicked', function () {
+        var el = stubComponent();
+
+        el.classList.add('selected');
+        sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
+        sandbox.stub(forms, 'open', sandbox.spy().withArgs('fakeName', document.body));
+        fn(el, {ref: 'fakeRef'});
+
+        // trigger a click on the component bar
+        el.querySelector('.component-bar').dispatchEvent(new Event('click'));
+
+        // the component should still be selected
+        expect(el.classList.contains('selected')).to.equal(true);
+        // the form should be open
+        expect(forms.open.calledOnce).to.equal(true);
       });
     });
   });
