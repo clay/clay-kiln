@@ -35,14 +35,13 @@ describe(dirname, function () {
       sandbox.mock(console).expects('error').never();
     }
 
-    function expectSingleItemBehavior(display) {
+    function expectSingleItemBehavior() {
       var itemEl = document.createElement('div');
 
       itemEl.setAttribute('class', 'behaviour-element');
 
       sandbox.mock(behaviors).expects('run').withArgs({
         data: { _schema: { _has: ['text'] }, value: 'hi' },
-        display: display,
         path: 'name.thing'
       }).once().returns(itemEl);
     }
@@ -93,7 +92,7 @@ describe(dirname, function () {
 
       it('can show item in template', function () {
         expectNoLogging();
-        expectSingleItemBehavior('modal');
+        expectSingleItemBehavior();
 
         fn('ref', 'name', singleItem, el);
 

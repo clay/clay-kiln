@@ -142,7 +142,7 @@ function expandFields(context) {
     .map(function (value, name) {
       var path = context.path ? context.path + '.' + name : name;
 
-      return createField({data: data[name], path: path, display: context.display});
+      return createField({data: data[name], path: path});
     })
     .reduce(appendElementClones, document.createDocumentFragment());
 }
@@ -162,8 +162,7 @@ function createForm(ref, path, data, rootEl) {
   // iterate through first level of the schema, creating forms and fields
   el = expandFields({
     data: data,
-    path: path,
-    display: data._schema[references.displayProperty] || 'modal'
+    path: path
   });
 
   // build up form el
