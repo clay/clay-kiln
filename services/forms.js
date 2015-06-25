@@ -29,16 +29,18 @@ function open(ref, el, path, e) {
     }
 
     return edit.getData(ref).then(function (data) {
-      // If name, then we're going deep; Note anything with a name either modal by default or has a displayProperty.
       if (path) {
         data = _.get(data, path);
-      }
-
-      switch (data._schema[references.displayProperty]) {
-        case 'inline':
+        if (data._schema[references.displayProperty] === 'inline') {
+          // inline forms have a path and _display: inline
           return formCreator.createInlineForm(ref, path, data, el);
-        default: // case 'modal':
-          return formCreator.createForm(ref, path, data);
+        } else {
+          // modal forms have a path and are the default
+          formCreator.createForm(ref, path, data);
+        }
+      } else {
+        // meta forms don't have a path, since they're operating on the whole component
+        return formCreator.createMetaForm(ref, data);
       }
     });
   }

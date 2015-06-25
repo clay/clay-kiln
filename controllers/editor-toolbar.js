@@ -9,7 +9,7 @@ var EditorToolbar,
   dom = require('../services/dom'),
   db = require('../services/db'),
   references = require('../services/references'),
-  formCreator = require('../services/form-creator'),
+  forms = require('../services/forms'),
   edit = require('../services/edit'),
   events = require('../services/events');
 
@@ -20,17 +20,6 @@ function publish() {
   edit.publishPage()
     .then(console.log)
     .catch(console.error);
-}
-
-/**
- * Open modal for editing metadata
- * @param {string} ref
- * @param {string} path
- */
-function editMetadata(ref, path) {
-  edit.getData(ref).then(function (data) {
-    formCreator.createForm(ref, path, data);
-  }).catch(console.error);
 }
 
 /**
@@ -100,11 +89,10 @@ EditorToolbar.prototype = {
    * On edit metadata button
    */
   onEditMetadata: function () {
-    var primaryComponent = dom.find('.main .primary [' + references.componentAttribute + ']'),
-      path = primaryComponent.getAttribute('data-component'),
+    var primaryComponent = dom.find('.main .primary [' + references.referenceAttribute + ']'),
       ref = primaryComponent.getAttribute(references.referenceAttribute);
 
-    editMetadata(ref, path);
+    forms.open(ref, document.body);
   },
 
   /**
