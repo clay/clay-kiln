@@ -24,7 +24,10 @@ function hasOpenInlineForms(el) {
 function open(ref, el, path, e) {
   // first, check to make sure any inline forms aren't open in this element's children
   if (!hasOpenInlineForms(el)) {
-    e.stopPropagation();
+    if (e) {
+      e.stopPropagation();
+    }
+
     return edit.getData(ref).then(function (data) {
       // If name, then we're going deep; Note anything with a name either modal by default or has a displayProperty.
       if (path) {
