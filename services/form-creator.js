@@ -189,15 +189,32 @@ function createForm(ref, path, data, rootEl) {
  * @param {Element} [rootEl=document.body]
  */
 function createMetaForm(ref, data, rootEl) {
-  var path = references.getComponentNameFromReference(ref);
+  var path = references.getComponentNameFromReference(ref),
+    el;
 
   // filter out non-meta top-level nodes
   data = _.omit(data, function (node) {
     return node._schema && node._schema[references.displayProperty] !== 'meta';
   });
 
-  // then call createForm with the filtered data (and path)
-  createForm(ref, path, data, rootEl);
+  rootEl = rootEl || document.body;
+
+  // iterate through first level of the schema, creating forms and fields
+  el = expandFields({
+    data: data,
+    path: path
+  });
+
+  // build up form el
+  el = createModalEl(createModalFormEl(_.startCase(references.getComponentNameFromReference(ref)) + ' Settings', el));
+  // append it to the body
+  rootEl.appendChild(el);
+
+  // register + instantiate controllers
+  ds.controller('form', require('../controllers/form'));
+  ds.controller('modal', require('../controllers/modal'));
+  ds.get('form', el, ref, path);
+  ds.get('modal', el);
 }
 
 /**

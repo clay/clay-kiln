@@ -169,7 +169,7 @@ describe(dirname, function () {
         expect(condense(el.firstElementChild.innerHTML)).to.equal(condense(`
         <div class="editor-modal">
           <section class="editor">
-            <header>Name</header>
+            <header>Name Settings</header>
             <form>
               <div class="input-container">
                 <div class="behaviour-element"></div>
