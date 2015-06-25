@@ -49,9 +49,13 @@ function open(ref, el, path, e) {
  * @param {Element} [el] optional element to replace (for inline forms)
  */
 function close() {
-  // var form = dom.find('.editor') || dom.find('.editor-inline');
+  var formContainer = dom.find('.editor-modal-overlay') || dom.find('.editor-inline');
+
   // todo: when we have autosave, this is a point where it should save
 
+  if (formContainer) {
+    dom.removeElement(formContainer);
+  }
 }
 
 exports.open = open;

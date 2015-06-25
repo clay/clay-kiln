@@ -81,5 +81,42 @@ describe(dirname, function () {
         return fn('fakeRef', stubNode(), 'title').then(checkForms);
       });
     });
+
+    describe('close', function () {
+      var fn = lib[this.title];
+
+      it('closes inline forms', function () {
+        var el = stubNode(),
+          formContainer = document.createElement('div');
+
+        formContainer.classList.add('editor-inline');
+        el.appendChild(formContainer);
+        document.body.appendChild(el);
+
+        fn();
+        expect(el.childNodes.length).to.equal(0);
+      });
+
+      it('closes modal forms', function () {
+        var el = stubNode(),
+          formContainer = document.createElement('div');
+
+        formContainer.classList.add('editor-modal-overlay');
+        el.appendChild(formContainer);
+        document.body.appendChild(el);
+
+        fn();
+        expect(el.childNodes.length).to.equal(0);
+      });
+
+      it('doesn\'t break when no forms are open', function () {
+        var el = stubNode();
+
+        document.body.appendChild(el);
+
+        fn();
+        expect(el.childNodes.length).to.equal(0);
+      });
+    });
   });
 });

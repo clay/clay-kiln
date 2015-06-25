@@ -29,7 +29,6 @@ module.exports = function () {
       select.setHeight(oldEl);
     }
 
-    this.el = el;
     this.ref = ref;
     this.path = path;
     this.oldEl = oldEl;
@@ -59,12 +58,10 @@ module.exports = function () {
     },
 
     closeForm: function () {
-      var el = this.el,
-        oldEl = this.oldEl;
+      var oldEl = this.oldEl;
 
       focus.unfocus();
       dom.unwrapElements(oldEl, dom.find(oldEl, '.hidden-wrapped'));
-      oldEl.removeChild(el);
     }
   };
 
