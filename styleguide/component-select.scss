@@ -9,6 +9,7 @@ $bar-width: 30px;
 .component-bar {
   background-color: rgba($blue-25, .5);
   border: 1px solid $blue-50;
+  cursor: pointer;
   display: none;
   height: 100%;
   left: 100%;
