@@ -45,6 +45,18 @@ function open(ref, el, path, e) {
 }
 
 /**
+ * if it's an inline form, replace it with the original elements
+ * @param {Element} el form container, possibly inline
+ */
+function replaceInlineForm(el) {
+  var parent = el.parentNode;
+
+  if (el.classList.contains('editor-inline')) {
+    dom.unwrapElements(parent, dom.find(parent, '.hidden-wrapped'));
+  }
+}
+
+/**
  * close the open form
  * @param {Element} [el] optional element to replace (for inline forms)
  */
@@ -54,6 +66,7 @@ function close() {
   // todo: when we have autosave, this is a point where it should save
 
   if (formContainer) {
+    replaceInlineForm(formContainer);
     dom.removeElement(formContainer);
   }
 }
