@@ -5,25 +5,25 @@ var _ = require('lodash'),
   currentFocus; // eslint-disable-line
 
 /**
- * set focus on an Element
- * @param {Element} el
- * @param {{ref: string, path: string, data: object}} options
- * @param {MouseEvent} e
- */
-function focus(el, options, e) {
-  select.unselect();
-  select.select(el);
-  currentFocus = el;
-  forms.open(options.ref, el, options.path, e);
-}
-
-/**
  * remove focus
  */
 function unfocus() {
   select.unselect();
   currentFocus = null;
   forms.close();
+}
+
+/**
+ * set focus on an Element
+ * @param {Element} el
+ * @param {{ref: string, path: string, data: object}} options
+ * @param {MouseEvent} e
+ */
+function focus(el, options, e) {
+  unfocus(); // unfocus the potentialy-opened current form first
+  select.select(el);
+  currentFocus = el;
+  forms.open(options.ref, el, options.path, e);
 }
 
 /**

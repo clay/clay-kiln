@@ -24,7 +24,10 @@ function hasOpenInlineForms(el) {
 function open(ref, el, path, e) {
   // first, check to make sure any inline forms aren't open in this element's children
   if (!hasOpenInlineForms(el)) {
-    e.stopPropagation();
+    if (e) {
+      e.stopPropagation();
+    }
+
     return edit.getData(ref).then(function (data) {
       // If name, then we're going deep; Note anything with a name either modal by default or has a displayProperty.
       if (path) {
@@ -46,9 +49,13 @@ function open(ref, el, path, e) {
  * @param {Element} [el] optional element to replace (for inline forms)
  */
 function close() {
-  // var form = dom.find('.editor') || dom.find('.editor-inline');
+  var formContainer = dom.find('.editor-modal-overlay') || dom.find('.editor-inline');
+
   // todo: when we have autosave, this is a point where it should save
 
+  if (formContainer) {
+    dom.removeElement(formContainer);
+  }
 }
 
 exports.open = open;
