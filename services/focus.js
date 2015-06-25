@@ -45,7 +45,13 @@ function when(el, options) {
  * @returns {Element}
  */
 function handler(el, options) {
-  el.addEventListener('click', focus.bind(null, el, options));
+  el.addEventListener('click', function (e) {
+    if (el !== currentFocus) {
+      focus(el, options, e);
+    } else {
+      e.stopPropagation();
+    }
+  });
   return el;
 }
 

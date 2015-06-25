@@ -87,9 +87,12 @@ describe(dirname, function () {
 
       it('closes inline forms', function () {
         var el = stubNode(),
-          formContainer = document.createElement('div');
+          formContainer = document.createElement('div'),
+          wrappedNodes = document.createElement('span');
 
         formContainer.classList.add('editor-inline');
+        wrappedNodes.classList.add('hidden-wrapped');
+        el.appendChild(wrappedNodes);
         el.appendChild(formContainer);
         document.body.appendChild(el);
 

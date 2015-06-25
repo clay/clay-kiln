@@ -178,6 +178,8 @@ module.exports = {
       parent.appendChild(el);
       el = wrapper.childNodes[0];
     }
+
+    parent.removeChild(wrapper);
   },
 
   create: domify // create elements from strings!

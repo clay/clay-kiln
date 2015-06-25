@@ -3,6 +3,7 @@
 
 var references = require('./references'),
   dom = require('./dom'),
+  focus = require('./focus'),
   currentSelected;
 
 /**
@@ -87,6 +88,17 @@ function handler(el, options) {
     </aside>
   `,
   componentBar = dom.create(tpl);
+
+  // add events to the component bar
+  componentBar.addEventListener('click', function (e) {
+    e.stopPropagation(); // this will prevent the unfocus from firing afterwards
+    focus.unfocus(); // because we want to fire it now!
+
+    if (!el.classList.contains('selected')) {
+      unselect();
+      select(el);
+    }
+  });
 
   // make sure components are relatively positioned
   el.classList.add('component-bar-wrapper');
