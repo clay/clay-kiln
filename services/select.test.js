@@ -132,6 +132,22 @@ describe(dirname, function () {
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
         expect(fn(el, {ref: 'fakeRef'}).classList.contains('component-bar-wrapper')).to.equal(true);
       });
+
+      it('will select parent component if parent bar is clicked', function () {
+        var el = stubComponent();
+
+        sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
+        fn(el, {ref: 'fakeRef'});
+
+        // the component shouldn't be selected yet
+        expect(el.classList.contains('selected')).to.equal(false);
+
+        // trigger a click on the component bar
+        el.querySelector('.component-bar').dispatchEvent(new Event('click'));
+
+        // the component should now be selected
+        expect(el.classList.contains('selected')).to.equal(true);
+      });
     });
   });
 });

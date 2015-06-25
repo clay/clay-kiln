@@ -88,6 +88,14 @@ function handler(el, options) {
   `,
   componentBar = dom.create(tpl);
 
+  // add events to the component bar
+  componentBar.addEventListener('click', function () {
+    if (!el.classList.contains('selected')) {
+      unselect();
+      select(el);
+    }
+  });
+
   // make sure components are relatively positioned
   el.classList.add('component-bar-wrapper');
   dom.prependChild(el, componentBar); // prepended, so parent components are behind child components
