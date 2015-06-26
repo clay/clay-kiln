@@ -46,13 +46,13 @@ describe(dirname, function () {
       }).once().returns(itemEl);
     }
 
-    function expectMetaItemBehavior() {
+    function expectSettingsItemBehavior() {
       var itemEl = document.createElement('div');
 
       itemEl.setAttribute('class', 'behaviour-element');
 
       sandbox.mock(behaviors).expects('run').withArgs({
-        data: { _schema: { _display: 'meta', _has: ['text'] }, value: 'hi' },
+        data: { _schema: { _display: 'settings', _has: ['text'] }, value: 'hi' },
         path: 'name.thing'
       }).once().returns(itemEl);
     }
@@ -126,16 +126,16 @@ describe(dirname, function () {
       });
     });
 
-    describe('createMetaForm', function () {
+    describe('createSettingsForm', function () {
       var fn = lib[this.title];
 
-      it('filters out non-meta items', function () {
-        var metaItems = {
+      it('filters out non-settings items', function () {
+        var settingsItems = {
           thing: {
             value: 'hi',
             _schema: {
               _has: ['text'],
-              _display: 'meta'
+              _display: 'settings'
             }
           },
           thing2: {
@@ -149,7 +149,7 @@ describe(dirname, function () {
               value: 'hi',
               _schema: {
                 _has: ['text'],
-                _display: 'meta'
+                _display: 'settings'
               }
             },
             thing2: {
@@ -162,9 +162,9 @@ describe(dirname, function () {
         };
 
         expectNoLogging();
-        expectMetaItemBehavior();
+        expectSettingsItemBehavior();
 
-        fn('/components/name/id/foo', metaItems, el);
+        fn('/components/name/id/foo', settingsItems, el);
 
         expect(condense(el.firstElementChild.innerHTML)).to.equal(condense(`
         <div class="editor-modal">

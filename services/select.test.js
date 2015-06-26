@@ -151,7 +151,7 @@ describe(dirname, function () {
         expect(el.classList.contains('selected')).to.equal(true);
       });
 
-      it('shouldn\'t open meta form if parent bar is clicked', function () {
+      it('shouldn\'t open settings form if parent bar is clicked', function () {
         var el = stubComponent();
 
         el.classList.add('selected-parent');
@@ -166,7 +166,7 @@ describe(dirname, function () {
         expect(forms.open.called).to.equal(false);
       });
 
-      it('will open meta form if selected bar is clicked', function () {
+      it('will open settings form if selected bar is clicked', function () {
         var el = stubComponent();
 
         el.classList.add('selected');
