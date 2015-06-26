@@ -3,7 +3,7 @@ module.exports = function () {
     focus = require('../services/focus');
 
   function constructor() {
-    // set noscroll on the html when a modal opens
+    // set noscroll on the html when an overlay opens
     dom.find('html').classList.add('noscroll');
   }
 
