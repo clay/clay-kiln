@@ -95,7 +95,7 @@ function handler(el, options) {
     e.stopPropagation(); // this will prevent the unfocus from firing afterwards
 
     if (el.classList.contains('selected')) {
-      // clicking on a selected bar opens its meta form
+      // clicking on a selected bar opens its settings form
       // note: nothing gets focused
       focus.unfocus();
       forms.open(options.ref, document.body);

@@ -145,7 +145,7 @@ function expandFields(context) {
       if (data[name]) {
         return createField({data: data[name], path: path});
       } else {
-        return null; // only create fields if they exist in the data. this is used to filter the meta form
+        return null; // only create fields if they exist in the data. this is used to filter the settings form
       }
     })
     .compact() // remove nulls
@@ -183,18 +183,18 @@ function createForm(ref, path, data, rootEl) {
 }
 
 /**
- * piggybacks on createForm, used to create meta forms
+ * create settings form. similar to createForm()
  * @param {string} ref
  * @param {object} data
  * @param {Element} [rootEl=document.body]
  */
-function createMetaForm(ref, data, rootEl) {
+function createSettingsForm(ref, data, rootEl) {
   var path = references.getComponentNameFromReference(ref),
     el;
 
-  // filter out non-meta top-level nodes
+  // filter out non-settings top-level nodes
   data = _.omit(data, function (node) {
-    return node._schema && node._schema[references.displayProperty] !== 'meta';
+    return node._schema && node._schema[references.displayProperty] !== 'settings';
   });
 
   rootEl = rootEl || document.body;
@@ -262,6 +262,6 @@ function createInlineForm(ref, path, data, oldEl) {
 
 module.exports = {
   createForm: createForm,
-  createMetaForm: createMetaForm,
+  createSettingsForm: createSettingsForm,
   createInlineForm: createInlineForm
 };

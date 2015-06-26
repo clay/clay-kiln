@@ -60,7 +60,7 @@ EditorToolbar = function (el) {
   events.add(el, {
     '.close click': 'onClose',
     '.new click': 'onNewPage',
-    '.meta click': 'onEditMetadata',
+    '.settings click': 'onEditSettings',
     '.publish click': 'onPublish'
   }, this);
 };
@@ -86,9 +86,9 @@ EditorToolbar.prototype = {
   },
 
   /**
-   * On edit metadata button
+   * On edit settings button
    */
-  onEditMetadata: function () {
+  onEditSettings: function () {
     var primaryComponent = dom.find('.main .primary [' + references.referenceAttribute + ']'),
       ref = primaryComponent.getAttribute(references.referenceAttribute);
 

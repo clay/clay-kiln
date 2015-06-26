@@ -50,7 +50,7 @@ module.exports = function () {
       e.preventDefault();
 
       if (path === references.getComponentNameFromReference(ref)) {
-        // we're at the top level of the component, e.g. in a meta form
+        // we're at the top level of the component, e.g. in a settings form
         data = formValues(ref, form);
       } else {
         // only things relative to path have changed

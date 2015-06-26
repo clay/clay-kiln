@@ -1,7 +1,7 @@
 {%- if state.locals.isEditMode -%}
   <section data-component="editor-toolbar" class="editor-toolbar" ref="{{_ref}}">
     <button class="close">Close</button>
-    <button class="meta">Edit Story Settings</button>
+    <button class="settings">Edit Story Settings</button>
     <button class="new">New Page</button>
     <button class="publish">Publish</button>
   </section>
