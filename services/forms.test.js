@@ -65,7 +65,7 @@ describe(dirname, function () {
         return fn('fakeRef', stubNode(), 'title').then(checkForms);
       });
 
-      it('opens modal forms', function () {
+      it('opens overlay forms', function () {
         var checkForms = function () {
           expect(formCreator.createInlineForm.callCount).to.equal(0);
           expect(formCreator.createForm.callCount).to.equal(1);
@@ -74,7 +74,7 @@ describe(dirname, function () {
         stubData({
           value: '123',
           _schema: {
-            _display: 'modal'
+            _display: 'overlay'
           }
         });
 
@@ -100,11 +100,11 @@ describe(dirname, function () {
         expect(el.childNodes.length).to.equal(0);
       });
 
-      it('closes modal forms', function () {
+      it('closes overlay forms', function () {
         var el = stubNode(),
           formContainer = document.createElement('div');
 
-        formContainer.classList.add('editor-modal-overlay');
+        formContainer.classList.add('editor-overlay-background');
         el.appendChild(formContainer);
         document.body.appendChild(el);
 

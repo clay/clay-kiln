@@ -41,18 +41,18 @@ function ensureValidFormData(ref, path, data) {
 
 // form element creation
 
-function createModalEl(innerEl) {
+function createOverlayEl(innerEl) {
   var el = dom.create(`
-    <div class="editor-modal-overlay">
-      <div class="editor-modal"></div>
+    <div class="editor-overlay-background">
+      <div class="editor-overlay"></div>
     </div>
   `);
 
-  dom.find(el, '.editor-modal').appendChild(innerEl);
+  dom.find(el, '.editor-overlay').appendChild(innerEl);
   return el;
 }
 
-function createModalFormEl(formLabel, innerEl) {
+function createOverlayFormEl(formLabel, innerEl) {
   var el = dom.create(`
     <section class="editor">
       <header>${formLabel}</header>
@@ -156,7 +156,7 @@ function expandFields(context) {
  * @param {string} ref  Place we'll be saving to
  * @param {string} path  What path within the data is being shown/modified
  * @param {object} data  The data itself (starting from path)
- * @param {Element} [rootEl=document.body]   Root element to temporarily insert the modal
+ * @param {Element} [rootEl=document.body]   Root element to temporarily insert the overlay
  */
 function createForm(ref, path, data, rootEl) {
   var el;
@@ -171,15 +171,15 @@ function createForm(ref, path, data, rootEl) {
   });
 
   // build up form el
-  el = createModalEl(createModalFormEl(label(path, data._schema), el));
+  el = createOverlayEl(createOverlayFormEl(label(path, data._schema), el));
   // append it to the body
   rootEl.appendChild(el);
 
   // register + instantiate controllers
   ds.controller('form', require('../controllers/form'));
-  ds.controller('modal', require('../controllers/modal'));
+  ds.controller('overlay', require('../controllers/overlay'));
   ds.get('form', el, ref, path);
-  ds.get('modal', el);
+  ds.get('overlay', el);
 }
 
 /**
@@ -206,15 +206,15 @@ function createSettingsForm(ref, data, rootEl) {
   });
 
   // build up form el
-  el = createModalEl(createModalFormEl(_.startCase(references.getComponentNameFromReference(ref)) + ' Settings', el));
+  el = createOverlayEl(createOverlayFormEl(_.startCase(references.getComponentNameFromReference(ref)) + ' Settings', el));
   // append it to the body
   rootEl.appendChild(el);
 
   // register + instantiate controllers
   ds.controller('form', require('../controllers/form'));
-  ds.controller('modal', require('../controllers/modal'));
+  ds.controller('overlay', require('../controllers/overlay'));
   ds.get('form', el, ref, path);
-  ds.get('modal', el);
+  ds.get('overlay', el);
 }
 
 /**

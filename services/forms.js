@@ -35,7 +35,7 @@ function open(ref, el, path, e) {
           // inline forms have a path and _display: inline
           return formCreator.createInlineForm(ref, path, data, el);
         } else {
-          // modal forms have a path and are the default
+          // overlay forms have a path and are the default
           formCreator.createForm(ref, path, data);
         }
       } else {
@@ -63,7 +63,7 @@ function replaceInlineForm(el) {
  * @param {Element} [el] optional element to replace (for inline forms)
  */
 function close() {
-  var formContainer = dom.find('.editor-modal-overlay') || dom.find('.editor-inline');
+  var formContainer = dom.find('.editor-overlay-background') || dom.find('.editor-inline');
 
   // todo: when we have autosave, this is a point where it should save
 

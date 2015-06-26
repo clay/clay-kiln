@@ -1,6 +1,6 @@
 @import 'colors';
 
-.editor-modal-overlay {
+.editor-overlay-background {
   background-color: $shadow-80;
   display: block;
   height: 100%;
@@ -11,7 +11,7 @@
   width: 100%;
 }
 
-.editor-modal {
+.editor-overlay {
   background-color: #fff;
   border-radius: 4px;
   margin: 60px auto 30px;
@@ -31,7 +31,7 @@
   }
 }
 
-/* don't scroll the page when modal is open */
+/* don't scroll the page when overlay is open */
 .noscroll {
   height: 100%;
 }

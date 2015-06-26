@@ -86,7 +86,7 @@ describe(dirname, function () {
         fn('ref', 'name', {_schema: {}}, el);
 
         expect(condense(el.firstElementChild.innerHTML)).to.equal(condense(`
-        <div class="editor-modal">
+        <div class="editor-overlay">
           <section class="editor">
             <header>Name</header>
             <form>
@@ -108,7 +108,7 @@ describe(dirname, function () {
         fn('ref', 'name', singleItem, el);
 
         expect(condense(el.firstElementChild.innerHTML)).to.equal(condense(`
-        <div class="editor-modal">
+        <div class="editor-overlay">
           <section class="editor">
             <header>Name</header>
             <form>
@@ -167,7 +167,7 @@ describe(dirname, function () {
         fn('/components/name/id/foo', settingsItems, el);
 
         expect(condense(el.firstElementChild.innerHTML)).to.equal(condense(`
-        <div class="editor-modal">
+        <div class="editor-overlay">
           <section class="editor">
             <header>Name Settings</header>
             <form>
