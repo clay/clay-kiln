@@ -142,8 +142,13 @@ function expandFields(context) {
     .map(function (value, name) {
       var path = context.path ? context.path + '.' + name : name;
 
-      return createField({data: data[name], path: path, display: context.display});
+      if (data[name]) {
+        return createField({data: data[name], path: path});
+      } else {
+        return null; // only create fields if they exist in the data. this is used to filter the meta form
+      }
     })
+    .compact() // remove nulls
     .reduce(appendElementClones, document.createDocumentFragment());
 }
 
@@ -162,12 +167,46 @@ function createForm(ref, path, data, rootEl) {
   // iterate through first level of the schema, creating forms and fields
   el = expandFields({
     data: data,
-    path: path,
-    display: data._schema[references.displayProperty] || 'modal'
+    path: path
   });
 
   // build up form el
   el = createModalEl(createModalFormEl(label(path, data._schema), el));
+  // append it to the body
+  rootEl.appendChild(el);
+
+  // register + instantiate controllers
+  ds.controller('form', require('../controllers/form'));
+  ds.controller('modal', require('../controllers/modal'));
+  ds.get('form', el, ref, path);
+  ds.get('modal', el);
+}
+
+/**
+ * piggybacks on createForm, used to create meta forms
+ * @param {string} ref
+ * @param {object} data
+ * @param {Element} [rootEl=document.body]
+ */
+function createMetaForm(ref, data, rootEl) {
+  var path = references.getComponentNameFromReference(ref),
+    el;
+
+  // filter out non-meta top-level nodes
+  data = _.omit(data, function (node) {
+    return node._schema && node._schema[references.displayProperty] !== 'meta';
+  });
+
+  rootEl = rootEl || document.body;
+
+  // iterate through first level of the schema, creating forms and fields
+  el = expandFields({
+    data: data,
+    path: path
+  });
+
+  // build up form el
+  el = createModalEl(createModalFormEl(_.startCase(references.getComponentNameFromReference(ref)) + ' Settings', el));
   // append it to the body
   rootEl.appendChild(el);
 
@@ -223,5 +262,6 @@ function createInlineForm(ref, path, data, oldEl) {
 
 module.exports = {
   createForm: createForm,
+  createMetaForm: createMetaForm,
   createInlineForm: createInlineForm
 };

@@ -144,8 +144,11 @@ function update(ref, data, path) {
       } else {
         return getDataOnly(ref).then(function (oldData) {
           // if path is specified, set newData into the proper place
-          if (path) {
+          if (path !== references.getComponentNameFromReference(ref)) {
             data = _.set(oldData, path, data);
+          } else {
+            // otherwise, shallowly copy over the new data
+            data = _.defaults(data, oldData);
           }
           delete data._ref;
 

@@ -4,6 +4,7 @@ module.exports = function () {
     edit = require('../services/edit'),
     focus = require('../services/focus'),
     select = require('../services/select'),
+    references = require('../services/references'),
     formValues = require('../services/form-values');
 
   /**
@@ -48,8 +49,13 @@ module.exports = function () {
 
       e.preventDefault();
 
-      // only things relative to path have changed
-      data = _.get(formValues(form), path);
+      if (path === references.getComponentNameFromReference(ref)) {
+        // we're at the top level of the component, e.g. in a meta form
+        data = formValues(ref, form);
+      } else {
+        // only things relative to path have changed
+        data = _.get(formValues(ref, form), path);
+      }
 
       if (form.checkValidity()) {
         edit.update(ref, data, path);

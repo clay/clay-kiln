@@ -7,6 +7,7 @@ var _ = require('lodash'),
  * get values from inputs, lists, etc
  * @param  {{}} data
  * @param  {Element} el
+ * @this ref
  * @return {{}}
  */
 function getValues(data, el) {
@@ -17,7 +18,7 @@ function getValues(data, el) {
 
   if (view && view.models && view.bindings) {
     binding = _.find(view.bindings, function (value) { return value.el === el; });
-    path = view.models.path;
+    path = view.models.path.replace(references.getComponentNameFromReference(this) + '.', ''); // chop off component name from meta fields
     // clear out the _rv's and getters and setters
     viewData = _.cloneDeep(binding.observer.value());
     _.set(data, path, viewData);
@@ -27,13 +28,14 @@ function getValues(data, el) {
 }
 
 /**
+ * @param {string} ref
  * @param {Element} form
  * @returns {object}
  */
-function getFormValues(form) {
+function getFormValues(ref, form) {
   var data = {};
 
-  _.reduce(dom.findAll(form, '[' + references.fieldAttribute + ']'), getValues, data);
+  _.reduce(dom.findAll(form, '[' + references.fieldAttribute + ']'), getValues.bind(ref), data);
   // all bound fields should have a [data-field] attribute
   return data;
 }

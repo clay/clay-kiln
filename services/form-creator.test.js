@@ -35,14 +35,24 @@ describe(dirname, function () {
       sandbox.mock(console).expects('error').never();
     }
 
-    function expectSingleItemBehavior(display) {
+    function expectSingleItemBehavior() {
       var itemEl = document.createElement('div');
 
       itemEl.setAttribute('class', 'behaviour-element');
 
       sandbox.mock(behaviors).expects('run').withArgs({
         data: { _schema: { _has: ['text'] }, value: 'hi' },
-        display: display,
+        path: 'name.thing'
+      }).once().returns(itemEl);
+    }
+
+    function expectMetaItemBehavior() {
+      var itemEl = document.createElement('div');
+
+      itemEl.setAttribute('class', 'behaviour-element');
+
+      sandbox.mock(behaviors).expects('run').withArgs({
+        data: { _schema: { _display: 'meta', _has: ['text'] }, value: 'hi' },
         path: 'name.thing'
       }).once().returns(itemEl);
     }
@@ -93,7 +103,7 @@ describe(dirname, function () {
 
       it('can show item in template', function () {
         expectNoLogging();
-        expectSingleItemBehavior('modal');
+        expectSingleItemBehavior();
 
         fn('ref', 'name', singleItem, el);
 
@@ -101,6 +111,65 @@ describe(dirname, function () {
         <div class="editor-modal">
           <section class="editor">
             <header>Name</header>
+            <form>
+              <div class="input-container">
+                <div class="behaviour-element"></div>
+              </div>
+              <div class="button-container">
+                <button type="submit" class="save">Save</button>
+              </div>
+            </form>
+            </section>
+          </div>`));
+
+        sandbox.verify();
+      });
+    });
+
+    describe('createMetaForm', function () {
+      var fn = lib[this.title];
+
+      it('filters out non-meta items', function () {
+        var metaItems = {
+          thing: {
+            value: 'hi',
+            _schema: {
+              _has: ['text'],
+              _display: 'meta'
+            }
+          },
+          thing2: {
+            value: 'bye',
+            _schema: {
+              _has: ['text']
+            }
+          },
+          _schema: {
+            thing: {
+              value: 'hi',
+              _schema: {
+                _has: ['text'],
+                _display: 'meta'
+              }
+            },
+            thing2: {
+              value: 'bye',
+              _schema: {
+                _has: ['text']
+              }
+            }
+          }
+        };
+
+        expectNoLogging();
+        expectMetaItemBehavior();
+
+        fn('/components/name/id/foo', metaItems, el);
+
+        expect(condense(el.firstElementChild.innerHTML)).to.equal(condense(`
+        <div class="editor-modal">
+          <section class="editor">
+            <header>Name Settings</header>
             <form>
               <div class="input-container">
                 <div class="behaviour-element"></div>

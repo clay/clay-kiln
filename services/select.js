@@ -4,6 +4,7 @@
 var references = require('./references'),
   dom = require('./dom'),
   focus = require('./focus'),
+  forms = require('./forms'),
   currentSelected;
 
 /**
@@ -92,9 +93,15 @@ function handler(el, options) {
   // add events to the component bar
   componentBar.addEventListener('click', function (e) {
     e.stopPropagation(); // this will prevent the unfocus from firing afterwards
-    focus.unfocus(); // because we want to fire it now!
 
-    if (!el.classList.contains('selected')) {
+    if (el.classList.contains('selected')) {
+      // clicking on a selected bar opens its meta form
+      // note: nothing gets focused
+      focus.unfocus();
+      forms.open(options.ref, document.body);
+    } else if (el.classList.contains('selected-parent')) {
+      // clicking on a parent bar selects it
+      focus.unfocus();
       unselect();
       select(el);
     }
