@@ -39,8 +39,8 @@ function open(ref, el, path, e) {
           formCreator.createForm(ref, path, data);
         }
       } else {
-        // meta forms don't have a path, since they're operating on the whole component
-        return formCreator.createMetaForm(ref, data);
+        // settings forms don't have a path, since they're operating on the whole component
+        return formCreator.createSettingsForm(ref, data);
       }
     });
   }
