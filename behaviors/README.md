@@ -7,6 +7,8 @@ behaviors/
   my-behavior.scss - styles, can also be straight css
 ```
 
+## Defined in the schema
+
 Behaviors are added to fields in your `schema.yaml`. They are an array of objects, with a `fn` property and any number of arguments:
 
 ```yaml
@@ -21,7 +23,9 @@ my-field:
       maxLength: 80
 ```
 
-When the form is created, each behavior is called *in order*. The function signature for a behavior looks like this:
+## Called for each field
+
+When the form is created, each behavior is called *in order*. The function for a behavior looks like this:
 
 ```js
 module.exports = function (result, args) {
@@ -46,7 +50,7 @@ module.exports = function (result, args) {
   bindings.required = args.required;
 
   var tpl = `
-      <label>{ label }</label> 
+      <label>{ label }</label>
       <input type="text" rv-required="required" rv-value="data" />`,
     textField = dom.create(tpl); // dom.create() makes html elements from strings
 
@@ -62,7 +66,7 @@ module.exports = function (result, args) {
 
 Use the `rivets` instance that is passed in if you want to extend `rivets` with custom formatters, bindings, etc. ([Find out more](http://rivetsjs.com/docs/guide/#binders))
 
-## Defining behaviors in the schema
+## How to define behaviors in the schema
 
 While you can write out all behaviors as an array of objects, there's syntactical sugar to make it more concise. Here are examples, in increasing order of complexity:
 
