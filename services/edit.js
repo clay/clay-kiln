@@ -213,8 +213,9 @@ function publishPage() {
   return getUriDestination().then(function (pageReference) {
     var path = pathOnly(pageReference);
 
-    return getDataOnly(path).then(function (pageData) {
-      return db.putToReference(path + '@published', pageData);
+    return getDataOnly(path).then(function (data) {
+      delete data._ref;
+      return db.putToReference(path + '@published', data);
     });
   });
 }
