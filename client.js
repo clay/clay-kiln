@@ -45,8 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ref = component.getAttribute(references.referenceAttribute);
     name = references.getComponentNameFromReference(ref);
 
-    // todo: order this by leaf components? make sure not to add event handlers twice
-    if (name && name !== 'editor-toolbar' && name !== 'nym2015-layout') {
+    if (name && name !== 'editor-toolbar') {
       select.handler(component, { ref: ref }); // note: not passing data or path into here
       ds.controller('component-edit', componentEdit);
       ds.get('component-edit', component);
