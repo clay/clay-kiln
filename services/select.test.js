@@ -182,6 +182,22 @@ describe(dirname, function () {
         // the form should be open
         expect(forms.open.calledOnce).to.equal(true);
       });
+
+      it('will select a component when component is clicked', function () {
+        var el = stubComponent();
+
+        sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
+        fn(el, {ref: 'fakeRef'});
+
+        // the component shouldn't be selected yet
+        expect(el.classList.contains('selected')).to.equal(false);
+
+        // trigger a click on the component
+        el.dispatchEvent(new Event('click'));
+
+        // the component should now be selected
+        expect(el.classList.contains('selected')).to.equal(true);
+      });
     });
   });
 });
