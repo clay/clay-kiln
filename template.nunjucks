@@ -1,9 +1,24 @@
 {%- if state.locals.isEditMode -%}
   <section data-component="editor-toolbar" class="editor-toolbar" ref="{{_ref}}">
-    <button class="close">Close</button>
-    <button class="settings">Edit Story Settings</button>
-    <button class="new">New Page</button>
-    <button class="publish">Publish</button>
+    <div class="editor-toolbar-inner">
+      <button class="close">
+        <span class="mobile-button-text">╳</span>
+        <span class="non-mobile-button-text">Close</span>
+      </button>
+      <button class="settings">
+        <span class="mobile-button-text">Settings</span>
+        <span class="non-mobile-button-text">Story Settings</span>
+      </button>
+      <button class="new">
+        <span class="mobile-button-text">＋</span>
+        <span class="non-mobile-button-text">New Page</span>
+      </button>
+      <span class="toolbar-spacer"></span>
+      <button class="publish">
+        <span class="mobile-button-text">Publish</span>
+        <span class="non-mobile-button-text">Publish Now</span>
+      </button>
+    </div>
   </section>
 
   {# compiled styles #}

@@ -41,6 +41,7 @@
   background-color: $green;
   border: 1px solid $green;
   color: #fff;
+  font-weight: bold;
 }
 
 @mixin button-primary-2 {
@@ -53,6 +54,7 @@
   background-color: $black-50;
   border: 1px solid $black-50;
   color: $green;
+  font-weight: bold;
 }
 
 @mixin button-secondary-2 {
@@ -71,6 +73,7 @@
   background-color: $red;
   border: 1px solid $red;
   color: #fff;
+  font-weight: bold;Ç
 }
 
 // icon buttons
