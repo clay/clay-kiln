@@ -124,6 +124,8 @@ function handler(el, options) {
     e.stopPropagation();
 
     window.setTimeout(function () {
+      // check to make sure the component is still selected
+      // e.g. the user didn't click the parent components' bar
       if (el.classList.contains('selected')) {
         unselect();
       }
