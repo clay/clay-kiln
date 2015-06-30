@@ -14,7 +14,10 @@
         <span class="non-mobile-button-text">New Page</span>
       </button>
       <span class="toolbar-spacer"></span>
-      <button class="publish">Publish</button>
+      <button class="publish">
+        <span class="mobile-button-text">Publish</span>
+        <span class="non-mobile-button-text">Publish Now</span>
+      </button>
     </div>
   </section>
 
