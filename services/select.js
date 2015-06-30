@@ -107,6 +107,26 @@ function handler(el, options) {
     }
   });
 
+  // add event to the component itself
+  el.addEventListener('click', function (e) {
+    e.stopPropagation();
+
+    if (!el.classList.contains('selected')) {
+      unselect();
+      select(el);
+    }
+  });
+
+  el.addEventListener('mouseleave', function (e) {
+    e.stopPropagation();
+
+    window.setTimeout(function () {
+      if (el.classList.contains('selected')) {
+        unselect();
+      }
+    }, 500);
+  });
+
   // make sure components are relatively positioned
   el.classList.add('component-bar-wrapper');
   dom.prependChild(el, componentBar); // prepended, so parent components are behind child components

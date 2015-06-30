@@ -37,7 +37,9 @@ document.addEventListener('DOMContentLoaded', function () {
     l = components.length,
     component, ref, name;
 
-  // iterate through all components on the page, instantiate component-edit on them if they aren't editor components
+  // iterate through all components on the page
+  // instantiate component-edit on them if they aren't editor components
+  // call select.handler on them to add component-bars
   for (; i < l; i++) {
     component = components[i];
     ref = component.getAttribute(references.referenceAttribute);
