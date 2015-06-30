@@ -19,43 +19,39 @@ describe(dirname, function () {
       var fn = lib[this.title],
         mockName = 'foo.bar';
 
-      it('uses _placeholder string if it exists', function () {
-        expect(fn(mockName, {_placeholder: 'Baz'})).to.equal('Baz');
+      it('does not support _placeholder: {string}', function () {
+        // we used to support _placeholder: 'some string of text'
+        // but we don't anymore.
+        // if you want to specify placeholder text, put it in the `text` property
+        // e.g. _placeholder: { text: 'some string of text' }
+        expect(fn(mockName, {_placeholder: 'Bar'})).to.equal('Foo » Bar');
       });
 
-      it('falls back to calling label service', function () {
+      it('uses placeholder text if it exists', function () {
+        expect(fn(mockName, {_placeholder: {text: 'Baz'}})).to.equal('Baz');
+      });
+
+      it('falls back to label if no placeholder text', function () {
         expect(fn(mockName, {_placeholder: 'true'})).to.equal('Foo » Bar');
+        expect(fn(mockName, {_placeholder: true})).to.equal('Foo » Bar');
       });
     });
 
     describe('getPlaceholderHeight', function () {
       var fn = lib[this.title];
 
-      it('gets height of vertical-list', function () {
-        expect(fn([{
-          fn: 'text',
-          required: true
-        }, {
-          fn: 'vertical-list'
-        }])).to.equal('600px');
+      it('gets height when set explicitly', function () {
+        expect(fn({_placeholder: {height: '500px'}})).to.equal('500px');
       });
 
-      it('gets height of component', function () {
-        expect(fn([{
-          fn: 'component'
-        }, {
-          fn: 'dragdrop-reorder'
-        }])).to.equal('300px');
+      it('gets auto height when set explicitly', function () {
+        expect(fn({_placeholder: {height: 'auto'}})).to.equal('auto');
       });
 
-      it('gets default height', function () {
-        expect(fn([{
-          fn: 'text',
-          required: true
-        }, {
-          fn: 'soft-maxlength',
-          value: 80
-        }])).to.equal('auto');
+      it('falls back to 100px height', function () {
+        expect(fn({_placeholder: {text: 'This is some text'}})).to.equal('100px');
+        expect(fn({_placeholder: true})).to.equal('100px');
+        expect(fn({_placeholder: 'true'})).to.equal('100px');
       });
     });
 
@@ -157,7 +153,7 @@ describe(dirname, function () {
         },
         newNode = fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'});
 
-        expect(newNode.querySelector('.editor-placeholder').style.height).to.equal('auto');
+        expect(newNode.querySelector('.editor-placeholder').style.height).to.equal('100px');
         expect(newNode.querySelector('span.placeholder-label').textContent).to.equal('Title');
       });
     });
