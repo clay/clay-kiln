@@ -118,20 +118,6 @@ function handler(el, options) {
     }
   });
 
-  // when the user moves the mouse away, it should be unselected
-  // note: we're delaying this by 500ms to allow the user to click the parent's bar
-  el.addEventListener('mouseleave', function (e) {
-    e.stopPropagation();
-
-    window.setTimeout(function () {
-      // check to make sure the component is still selected
-      // e.g. the user didn't click the parent components' bar
-      if (el.classList.contains('selected')) {
-        unselect();
-      }
-    }, 500);
-  });
-
   // make sure components are relatively positioned
   el.classList.add('component-bar-wrapper');
   dom.prependChild(el, componentBar); // prepended, so parent components are behind child components
