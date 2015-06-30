@@ -77,6 +77,42 @@ function setHeight(el) {
 }
 
 /**
+ * handle clicks on the component bar
+ * @param {Element} el
+ * @param {object} options
+ * @param {MouseEvent} e
+ */
+function componentBarClickHandler(el, options, e) {
+  e.stopPropagation(); // this will prevent the unfocus from firing afterwards
+
+  if (el.classList.contains('selected')) {
+    // clicking on a selected bar opens its settings form
+    // note: nothing gets focused
+    focus.unfocus();
+    forms.open(options.ref, document.body);
+  } else if (el.classList.contains('selected-parent')) {
+    // clicking on a parent bar selects it
+    focus.unfocus();
+    unselect();
+    select(el);
+  }
+}
+
+/**
+ * handle clicks on the component itself
+ * @param {Element} el
+ * @param {MouseEvent} e
+ */
+function componentClickHandler(el, e) {
+  e.stopPropagation();
+
+  if (!el.classList.contains('selected')) {
+    unselect();
+    select(el);
+  }
+}
+
+/**
  * add component bar (with click events)
  * @param {Element} el
  * @param {{ref: string, path: string, data: object}} options
@@ -91,32 +127,11 @@ function handler(el, options) {
   componentBar = dom.create(tpl);
 
   // add events to the component bar
-  componentBar.addEventListener('click', function (e) {
-    e.stopPropagation(); // this will prevent the unfocus from firing afterwards
-
-    if (el.classList.contains('selected')) {
-      // clicking on a selected bar opens its settings form
-      // note: nothing gets focused
-      focus.unfocus();
-      forms.open(options.ref, document.body);
-    } else if (el.classList.contains('selected-parent')) {
-      // clicking on a parent bar selects it
-      focus.unfocus();
-      unselect();
-      select(el);
-    }
-  });
+  componentBar.addEventListener('click', componentBarClickHandler.bind(null, el, options));
 
   // add events to the component itself
   // when the component is clicked, it should be selected
-  el.addEventListener('click', function (e) {
-    e.stopPropagation();
-
-    if (!el.classList.contains('selected')) {
-      unselect();
-      select(el);
-    }
-  });
+  el.addEventListener('click', componentClickHandler.bind(null, el));
 
   // make sure components are relatively positioned
   el.classList.add('component-bar-wrapper');
