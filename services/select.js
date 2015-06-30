@@ -107,7 +107,8 @@ function handler(el, options) {
     }
   });
 
-  // add event to the component itself
+  // add events to the component itself
+  // when the component is clicked, it should be selected
   el.addEventListener('click', function (e) {
     e.stopPropagation();
 
@@ -117,6 +118,8 @@ function handler(el, options) {
     }
   });
 
+  // when the user moves the mouse away, it should be unselected
+  // note: we're delaying this by 500ms to allow the user to click the parent's bar
   el.addEventListener('mouseleave', function (e) {
     e.stopPropagation();
 
