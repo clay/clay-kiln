@@ -1,6 +1,9 @@
 @import 'colors';
+@import 'layers';
 
 .editor-overlay-background {
+  @include overlay-layer();
+
   background-color: $shadow-80;
   display: block;
   height: 100%;
