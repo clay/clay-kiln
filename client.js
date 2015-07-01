@@ -7,6 +7,7 @@ var ds = require('dollar-slice'),
   dom = require('./services/dom'),
   EditorToolbar = require('./controllers/editor-toolbar'),
   select = require('./services/select'),
+  edit = require('./services/edit'),
   pageToolbar;
 
 // manually add built-in behaviors
@@ -55,6 +56,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // because eslint complains if we don't use the new thing we've created.  We will add to this later.
   pageToolbar = new EditorToolbar(dom.find('[' + references.componentAttribute + '="editor-toolbar"]'));
   console.log('toolbar initialized: ', pageToolbar);
+
+  // Start watching after the local cache has been populated.
+  edit.startSync();
 });
 
 // expose behavior adding

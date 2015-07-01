@@ -195,4 +195,97 @@ describe('edit service', function () {
       });
     });
   });
+
+  // Wrapping the sync related tests as they share vars.
+  describe('', function () {
+    var ref = 'some-ref',
+      data = {some: 'data'},
+      data2 = {some: 'other data'};
+
+    describe('setLocalStore', function () {
+      var fn = lib[this.title];
+
+      it('adds ref and data to the local store', function () {
+        lib.unsetLocalStore(ref); // Make sure data is not already in the model before each test.
+        fn(ref, data);
+        expect(lib.getLocalStore(ref)).to.equal(data);
+      });
+
+    });
+
+    describe('unsetLocalStore', function () {
+      var fn = lib[this.title];
+
+      it('removes ref and data from the local store', function () {
+        // Add data
+        lib.setLocalStore(ref, data);
+        // Unset
+        fn(ref);
+        expect(lib.getLocalStore(ref)).to.equal(undefined);
+      });
+
+    });
+
+    describe('syncChanges', function () {
+      var fn = lib[this.title];
+
+      it('syncs to server if new ref is added', function () {
+        var spy = sandbox.spy(db, 'putToReference'),
+          changes = [{ name: ref, type: 'add', object: {} }];
+
+        changes[0].object[ref] = data;
+
+        fn(changes);
+        expect(spy.calledOnce).to.equal(true);
+        expect(spy.calledWith(ref, data)).to.equal(true);
+
+      });
+
+      it('syncs to server if data is updated', function () {
+        var spy = sandbox.spy(db, 'putToReference'),
+          changes = [{ name: ref, type: 'update', object: {}, oldValue: data }];
+
+        changes[0].object[ref] = data2;
+
+        fn(changes);
+        expect(spy.calledOnce).to.equal(true);
+        expect(spy.calledWith(ref, data2)).to.equal(true);
+      });
+
+      it('does not sync to server if new data is the same as the old data', function () {
+        var spy = sandbox.spy(db, 'putToReference'),
+          changes = [{ name: ref, type: 'update', object: {}, oldValue: data }];
+
+        changes[0].object[ref] = data;
+        fn(changes);
+        expect(spy.called).to.equal(false);
+      });
+
+      it('does not sync to server if ref is unset/deleted', function () {
+        var spy = sandbox.spy(db, 'putToReference'),
+          changes = [{ name: ref, type: 'delete', object: {}, oldValue: data }];
+
+        fn(changes);
+        expect(spy.called).to.equal(false);
+      });
+
+      it('syncs multiple changes', function () {
+        var spy = sandbox.spy(db, 'putToReference'),
+          changes = [
+            { name: 'some-ref', type: 'add', object: {'some-ref': data} },
+            { name: 'some-ref', oldValue: data, type: 'update', object: {'some-ref': data2} }
+          ];
+
+        fn(changes);
+        expect(spy.calledTwice).to.equal(true);
+      });
+
+    });
+
+
+  });
+
+
+
+
 });

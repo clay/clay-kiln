@@ -5,7 +5,9 @@ var _ = require('lodash'),
   // store the component data in memory
   refData = {},
   // store the component schemas in memory
-  refSchema = {};
+  refSchema = {},
+  // local key-value store to sync with server (like refData, key is ref, value is component data)
+  localStore = {};
 
 // todo: figure out multi-user edit, since this won't pull in changes correctly if
 // multiple people are changing data in a component without page reloads
@@ -22,6 +24,32 @@ function setSchemaCache(value) {
  */
 function setDataCache(value) {
   refData = value;
+}
+
+/**
+ * Set to localStore which syncs to the server.
+ * @param {string} ref
+ * @param {object} data
+ */
+function setLocalStore(ref, data) {
+  localStore[ref] = data;
+}
+
+/**
+ *
+ * @param {string} ref
+ */
+function unsetLocalStore(ref) {
+  delete localStore[ref];
+}
+
+/**
+ *
+ * @param {String} ref
+ * @returns {Object}
+ */
+function getLocalStore(ref) {
+  return localStore[ref];
 }
 
 /**
@@ -152,11 +180,7 @@ function update(ref, data, path) {
           }
           delete data._ref;
 
-          return db.putToReference(ref, data)
-            .then(function () {
-              // todo: replace component without page reload
-              location.reload();
-            });
+          setLocalStore(ref, data);
         });
       }
     });
@@ -220,6 +244,57 @@ function publishPage() {
   });
 }
 
+/**
+ * Called by Object.observe to sync all changes with the server.
+ * @param {Array} changes     Array of objects as described below.
+ * Each item in the array is an object, e.g.:
+ * {String} changes[0].type       The type of change (add, update, or delete).
+ * {String} changes[0].name       The key of the value that changes (the ref).
+ * {Object} changes[0].object     The object being observed.
+ * {String} [changes[0].oldValue] The previous value of the key-value that changed.
+ */
+function syncChanges(changes) {
+
+  changes.forEach(function (change) {
+
+    var ref = change.name,
+      data = change.object[ref],
+      type = change.type,
+      oldData = change.oldValue;
+
+    switch (type) {
+      case 'add':
+      case 'update':
+        if (data !== oldData) { // `update` event fires even if the data is the same.
+          db.putToReference(ref, data)
+            .then(function () {
+
+              // Todo: re-render the view.
+              window.location.reload();
+
+            });
+        }
+        break;
+      case 'delete': // Todo: remove the reference from the parent?
+      default:
+        break;
+    }
+
+  });
+}
+
+/**
+ * Start observing the object to sync.
+ */
+function startSync() {
+  localStore = Object.keys(localStore).length > 0 ? localStore : _.cloneDeep(refData);
+  // Polyfill for FF.
+  if (!Object.observe) {
+    require('object.observe');
+  }
+  Object.observe(localStore, syncChanges);
+}
+
 // expose main methods
 module.exports = {
   getData: getData,
@@ -232,5 +307,10 @@ module.exports = {
   addSchemaToData: addSchemaToData,
   removeSchemaFromData: removeSchemaFromData,
   getUriDestination: getUriDestination,
-  publishPage: publishPage
+  publishPage: publishPage,
+  startSync: _.once(startSync),
+  setLocalStore: setLocalStore,
+  unsetLocalStore: unsetLocalStore,
+  getLocalStore: getLocalStore, // exposed for unit tests only
+  syncChanges: syncChanges // exposed for unit tests only
 };
