@@ -56,3 +56,9 @@ document.addEventListener('DOMContentLoaded', function () {
   pageToolbar = new EditorToolbar(dom.find('[' + references.componentAttribute + '="editor-toolbar"]'));
   console.log('toolbar initialized: ', pageToolbar);
 });
+
+// expose behavior adding
+module.exports.addBehavior = behaviors.add;
+
+// and expose decorator adding, while we're at it
+module.exports.addDecorator = decorators.add;
