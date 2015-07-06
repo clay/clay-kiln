@@ -15,7 +15,6 @@ module.exports = function () {
     close: function (e) {
       if (e.target === e.currentTarget) {
         // we clicked on the overlay itself
-        console.log('overlay');
         focus.unfocus();
         dom.find('html').classList.remove('noscroll');
       }

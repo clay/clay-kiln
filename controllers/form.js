@@ -39,7 +39,6 @@ module.exports = function () {
     },
 
     closeForm: function (e) {
-      console.log('close');
       e.preventDefault();
       focus.unfocus();
     }
