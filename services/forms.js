@@ -67,13 +67,11 @@ function replaceInlineForm(el) {
 }
 
 /**
- * Close and save the open form
- * @param {Element} [el] optional element to replace (for inline forms)
+ * Save the currently open form.
+ * @param {Element} form
  */
-function close() {
-  var data, ref, path,
-    formContainer = dom.find('.editor-overlay-background') || dom.find('.editor-inline'), // inline and overlay forms have different containers.
-    form = formContainer && dom.find(formContainer, 'form');
+function save(form) {
+  var data, ref, path;
 
   // Save the form data prior to closing.
   if (form) {
@@ -93,12 +91,25 @@ function close() {
         .then(function () {
           // Todo: re-render with updated HTML.
           window.location.reload();
-          replaceInlineForm(formContainer);
-          dom.removeElement(formContainer);
         });
     }
   }
+}
+
+/**
+ * Close and save the open form.
+ * @param {Element} [el] optional element to replace (for inline forms)
+ */
+function close() {
+  var formContainer = dom.find('.editor-overlay-background') || dom.find('.editor-inline'), // inline and overlay forms have different containers.
+    form = formContainer && dom.find(formContainer, 'form');
+
+  save(form);
   currentForm = {};
+  if (formContainer) {
+    replaceInlineForm(formContainer);
+    dom.removeElement(formContainer);
+  }
 }
 
 exports.open = open;

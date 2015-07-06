@@ -100,6 +100,24 @@ describe(dirname, function () {
         expect(el.childNodes.length).to.equal(0);
       });
 
+      it('saves the currently open inline form', function () {
+        var el = stubNode(),
+          formContainer = document.createElement('div'),
+          wrappedNodes = document.createElement('span'),
+          form = document.createElement('form'),
+          spy = sandbox.spy(edit, 'update');
+
+        formContainer.classList.add('editor-inline');
+        wrappedNodes.classList.add('hidden-wrapped');
+        formContainer.appendChild(form);
+        el.appendChild(wrappedNodes);
+        el.appendChild(formContainer);
+        document.body.appendChild(el);
+
+        fn();
+        expect(spy.calledOnce).to.equal(true);
+      });
+
       it('closes overlay forms', function () {
         var el = stubNode(),
           formContainer = document.createElement('div');
@@ -110,6 +128,21 @@ describe(dirname, function () {
 
         fn();
         expect(el.childNodes.length).to.equal(0);
+      });
+
+      it('saves overlay forms', function () {
+        var el = stubNode(),
+          formContainer = document.createElement('div'),
+          form = document.createElement('form'),
+          spy = sandbox.spy(edit, 'update');
+
+        formContainer.classList.add('editor-overlay-background');
+        formContainer.appendChild(form);
+        el.appendChild(formContainer);
+        document.body.appendChild(el);
+
+        fn();
+        expect(spy.calledOnce).to.equal(true);
       });
 
       it('doesn\'t break when no forms are open', function () {
