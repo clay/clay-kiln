@@ -219,9 +219,7 @@ describe(dirname, function () {
         expect(condense(dom.find(el, '.editor-inline').innerHTML)).to.equal(condense(`
         <form>
           <div class="input-container"></div>
-          <div class="button-container">
-            <button type="submit" class="save">Save</button>
-          </div>
+          <div class="button-container"></div>
          </form>`));
 
         sandbox.verify();
@@ -241,9 +239,7 @@ describe(dirname, function () {
           <div class="input-container">
             <div class="behaviour-element"></div>
           </div>
-          <div class="button-container">
-            <button type="submit" class="save">Save</button>
-          </div>
+          <div class="button-container"></div>
          </form>`));
 
         sandbox.verify();
