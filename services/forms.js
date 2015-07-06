@@ -2,7 +2,9 @@ var _ = require('lodash'),
   dom = require('./dom'),
   references = require('./references'),
   formCreator = require('./form-creator'),
-  edit = require('./edit');
+  edit = require('./edit'),
+  formValues = require('./form-values'),
+  currentForm = {}; // Store form currently open.
 
 /**
  * don't open the form if the current element already has an inline form open
@@ -28,6 +30,11 @@ function open(ref, el, path, e) {
       e.stopPropagation();
       e.preventDefault();
     }
+
+    currentForm = {
+      ref: ref,
+      path: path
+    };
 
     return edit.getData(ref).then(function (data) {
       if (path) {
@@ -60,18 +67,38 @@ function replaceInlineForm(el) {
 }
 
 /**
- * close the open form
+ * Close and save the open form
  * @param {Element} [el] optional element to replace (for inline forms)
  */
 function close() {
-  var formContainer = dom.find('.editor-overlay-background') || dom.find('.editor-inline');
+  var data, ref, path,
+    formContainer = dom.find('.editor-overlay-background') || dom.find('.editor-inline'), // inline and overlay forms have different containers.
+    form = formContainer && dom.find(formContainer, 'form');
 
-  // todo: when we have autosave, this is a point where it should save
+  // Save the form data prior to closing.
+  if (form) {
+    ref = currentForm.ref;
+    path = currentForm.path;
 
-  if (formContainer) {
-    replaceInlineForm(formContainer);
-    dom.removeElement(formContainer);
+    if (path === references.getComponentNameFromReference(ref)) {
+      // we're at the top level of the component, e.g. in a settings form
+      data = formValues(ref, form);
+    } else {
+      // only things relative to path have changed
+      data = _.get(formValues(ref, form), path);
+    }
+
+    if (form.checkValidity()) {
+      edit.update(ref, data, path)
+        .then(function () {
+          // Todo: re-render with updated HTML.
+          window.location.reload();
+          replaceInlineForm(formContainer);
+          dom.removeElement(formContainer);
+        });
+    }
   }
+  currentForm = {};
 }
 
 exports.open = open;
