@@ -1,6 +1,6 @@
 {
   "name": "@nymdev/byline-editor",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Editor tools for Byline",
   "browser": "client.js",
   "style": [
