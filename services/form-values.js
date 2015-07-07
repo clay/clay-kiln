@@ -40,4 +40,4 @@ function getFormValues(ref, form) {
   return data;
 }
 
-module.exports = getFormValues;
+module.exports.get = getFormValues;

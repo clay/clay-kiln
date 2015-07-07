@@ -2,6 +2,7 @@ var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   edit = require('./edit'),
   formCreator = require('./form-creator'),
+  formValues = require('./form-values'),
   lib = require('./forms');
 
 describe(dirname, function () {
@@ -85,6 +86,14 @@ describe(dirname, function () {
     describe('close', function () {
       var fn = lib[this.title];
 
+      beforeEach(function () {
+        sandbox.stub(formCreator, 'createInlineForm', sandbox.spy());
+        sandbox.stub(formCreator, 'createForm', sandbox.spy());
+
+        // Disable reload
+        sandbox.stub(lib, 'reload').returns({});
+      });
+
       it('closes inline forms', function () {
         var el = stubNode(),
           formContainer = document.createElement('div'),
@@ -101,21 +110,70 @@ describe(dirname, function () {
       });
 
       it('saves the currently open inline form', function () {
-        var el = stubNode(),
-          formContainer = document.createElement('div'),
-          wrappedNodes = document.createElement('span'),
-          form = document.createElement('form'),
-          spy = sandbox.spy(edit, 'update');
+        var spyEdit = sandbox.spy(edit, 'update');
 
-        formContainer.classList.add('editor-inline');
-        wrappedNodes.classList.add('hidden-wrapped');
-        formContainer.appendChild(form);
-        el.appendChild(wrappedNodes);
-        el.appendChild(formContainer);
-        document.body.appendChild(el);
+        stubData({
+          value: '123',
+          _schema: {
+            _display: 'inline'
+          }
+        });
 
-        fn();
-        expect(spy.calledOnce).to.equal(true);
+        // open the form to make sure currentForm object is populated.
+        return lib.open('fakeRef', stubNode(), 'title').then(function () {
+          // Add a form element
+          var el = stubNode(),
+            formContainer = document.createElement('div'),
+            form = document.createElement('form'),
+            wrappedNodes = document.createElement('span');
+
+          formContainer.classList.add('editor-inline');
+          wrappedNodes.classList.add('hidden-wrapped');
+          el.appendChild(wrappedNodes);
+          formContainer.appendChild(form);
+          el.appendChild(formContainer);
+          document.body.appendChild(el);
+
+          // Close
+          lib.close();
+          expect(spyEdit.calledOnce).to.equal(true);
+        });
+      });
+
+      it('does not save if the data did not change', function () {
+
+        var spyEdit = sandbox.spy(edit, 'update');
+
+        stubData({
+          value: '123',
+          _schema: {
+            _display: 'inline'
+          }
+        });
+
+        // Make form have same data as server.
+        sandbox.stub(formValues, 'get').returns({title: '123'});
+
+        // open the form to make sure currentForm object is populated.
+        return lib.open('fakeRef', stubNode(), 'title').then(function () {
+          // Add a form element
+          var el = stubNode(),
+            formContainer = document.createElement('div'),
+            form = document.createElement('form'),
+            wrappedNodes = document.createElement('span');
+
+          formContainer.classList.add('editor-inline');
+          wrappedNodes.classList.add('hidden-wrapped');
+          el.appendChild(wrappedNodes);
+          formContainer.appendChild(form);
+          el.appendChild(formContainer);
+          document.body.appendChild(el);
+
+          // Close
+          lib.close();
+          expect(spyEdit.calledOnce).to.equal(false);
+        });
+
       });
 
       it('closes overlay forms', function () {
@@ -131,18 +189,30 @@ describe(dirname, function () {
       });
 
       it('saves overlay forms', function () {
-        var el = stubNode(),
-          formContainer = document.createElement('div'),
-          form = document.createElement('form'),
-          spy = sandbox.spy(edit, 'update');
+        var spyEdit = sandbox.spy(edit, 'update');
 
-        formContainer.classList.add('editor-overlay-background');
-        formContainer.appendChild(form);
-        el.appendChild(formContainer);
-        document.body.appendChild(el);
+        stubData({
+          value: '123',
+          _schema: {
+            _display: 'inline'
+          }
+        });
+        // open the form to make sure currentForm object is populated.
+        return lib.open('fakeRef', stubNode(), 'title').then(function () {
+          // Add a form element
+          var el = stubNode(),
+            formContainer = document.createElement('div'),
+            form = document.createElement('form');
 
-        fn();
-        expect(spy.calledOnce).to.equal(true);
+          formContainer.classList.add('editor-overlay-background');
+          formContainer.appendChild(form);
+          el.appendChild(formContainer);
+          document.body.appendChild(el);
+
+          // Close
+          lib.close();
+          expect(spyEdit.calledOnce).to.equal(true);
+        });
       });
 
       it('doesn\'t break when no forms are open', function () {
