@@ -6,6 +6,10 @@ module.exports = function (result, args) {
 
   // add some stuff to the bindings
   bindings.required = args.required;
+  bindings.pattern = args.pattern;
+  bindings.minLength = args.minLength;
+  bindings.maxLength = args.maxLength;
+  bindings.placeholder = args.placeholder;
 
   textField = dom.create(`
       <label class="input-label"><span class="label-inner">{ label }</span>
