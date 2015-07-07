@@ -23,6 +23,19 @@
   }
 }
 
+// when the editor toolbar is on the screen, push the page content down
+body {
+  padding-top: 50px;
+
+  @media screen and (min-width: 600px) {
+    padding-top: 60px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    padding-top: 70px;
+  }
+}
+
 .editor-toolbar-inner {
   align-items: center;
   display: flex;
