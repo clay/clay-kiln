@@ -29,6 +29,7 @@ function isTopLevel(ref, path) {
 
 /**
  * Find the form container.
+ * @returns {Element}
  */
 function findFormContainer() {
   return dom.find(overlaySelector) || dom.find(inlineSelector);
@@ -36,6 +37,10 @@ function findFormContainer() {
 
 /**
  * Get the current form's data.
+ * @param {Element} form
+ * @param {string} ref
+ * @param {string} path
+ * @returns {Object}
  */
 function getFormData(form, ref, path) {
   var data = formValues.get(ref, form);
