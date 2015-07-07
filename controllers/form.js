@@ -27,7 +27,7 @@ module.exports = function () {
       dom.find('html').addEventListener('click', outsideClickhandler);
 
       // also set the height of the component bar
-      select.setHeight(oldEl);
+      select.setHeight(dom.closest(oldEl, '[' + references.referenceAttribute + ']'));
     }
 
     this.ref = ref;
