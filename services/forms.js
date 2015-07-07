@@ -26,6 +26,7 @@ function open(ref, el, path, e) {
   if (!hasOpenInlineForms(el)) {
     if (e) {
       e.stopPropagation();
+      e.preventDefault();
     }
 
     return edit.getData(ref).then(function (data) {
