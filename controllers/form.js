@@ -1,8 +1,10 @@
 module.exports = function () {
   var _ = require('lodash'),
     dom = require('../services/dom'),
+    edit = require('../services/edit'),
     focus = require('../services/focus'),
-    select = require('../services/select');
+    select = require('../services/select'),
+    references = require('../services/references');
 
   /**
    * constructor
