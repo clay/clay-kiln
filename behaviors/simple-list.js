@@ -8,7 +8,7 @@ module.exports = function (result, args) {
     el = dom.create(`
       <section data-field="${result.bindings.name}" class="simple-list" rv-simplelist="data">
         <span tabindex="0" rv-each-item="data" class="simple-list-item" rv-class-selected="item.selected" rv-on-click="selectItem" rv-on-keydown="keyactions">{ item.text }</span>
-        <input class="simple-list-add" rv-on-click="unselectAll" />
+        <input class="simple-list-add" rv-on-click="unselectAll" placeholder="Start typing here&hellip;" />
       </section>`);
 
   /**
