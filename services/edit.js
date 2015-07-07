@@ -152,11 +152,7 @@ function update(ref, data, path) {
           }
           delete data._ref;
 
-          return db.putToReference(ref, data)
-            .then(function () {
-              // todo: replace component without page reload
-              location.reload();
-            });
+          return db.putToReference(ref, data);
         });
       }
     });

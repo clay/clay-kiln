@@ -1,11 +1,9 @@
 module.exports = function () {
   var _ = require('lodash'),
     dom = require('../services/dom'),
-    edit = require('../services/edit'),
     focus = require('../services/focus'),
     select = require('../services/select'),
-    references = require('../services/references'),
-    formValues = require('../services/form-values');
+    references = require('../services/references');
 
   /**
    * constructor
@@ -37,32 +35,12 @@ module.exports = function () {
 
   constructor.prototype = {
     events: {
-      submit: 'saveData',
+      submit: 'closeForm',
       close: 'closeForm'
     },
 
-    saveData: function (e) {
-      var data,
-        form = this.form,
-        ref = this.ref,
-        path = this.path;
-
+    closeForm: function (e) {
       e.preventDefault();
-
-      if (path === references.getComponentNameFromReference(ref)) {
-        // we're at the top level of the component, e.g. in a settings form
-        data = formValues(ref, form);
-      } else {
-        // only things relative to path have changed
-        data = _.get(formValues(ref, form), path);
-      }
-
-      if (form.checkValidity()) {
-        edit.update(ref, data, path);
-      }
-    },
-
-    closeForm: function () {
       focus.unfocus();
     }
   };
