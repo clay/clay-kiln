@@ -112,6 +112,23 @@ function componentClickHandler(el, e) {
   }
 }
 
+function addIframeOverlays(el) {
+  var iframes = dom.findAll(el, 'iframe'),
+    i = 0,
+    l = iframes.length,
+    newDiv;
+
+  for (; i < l; i++) {
+    if (!iframes[i].classList.contains('iframe-overlay')) {
+      newDiv = document.createElement('div');
+      newDiv.style.cssText = getComputedStyle(iframes[i]).cssText;
+      newDiv.style.position = 'absolute';
+      dom.insertAfter(iframes[i], newDiv);
+      iframes[i].classList.add('iframe-overlay');
+    }
+  }
+}
+
 /**
  * add component bar (with click events)
  * @param {Element} el
@@ -138,6 +155,8 @@ function handler(el, options) {
   dom.prependChild(el, componentBar); // prepended, so parent components are behind child components
   // don't set the component bar height until images &c are loaded
   window.addEventListener('load', setHeight.bind(null, el));
+  // add an iframe-overlay to iframes so we can click on components with them
+  addIframeOverlays(el);
   return el;
 }
 
