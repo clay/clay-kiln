@@ -50,11 +50,12 @@ module.exports = function () {
 
   constructor.prototype = {
     events: {
-      'click': 'click'
+      'click': 'close'
     },
 
-    click: function (e) {
+    close: function (e) {
       if (e.target === e.currentTarget) {
+        // we clicked on the overlay itself
         focus.unfocus();
       }
     }
