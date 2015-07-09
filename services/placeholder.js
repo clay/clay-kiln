@@ -54,7 +54,7 @@ function isFieldEmpty(data) {
  */
 function addPlaceholderDom(node, obj) {
   var placeholder = dom.create(`
-    <div class="editor-placeholder" style="height: ${obj.height};">
+    <div class="editor-placeholder" style="min-height: ${obj.height};">
       <span class="placeholder-label">${obj.text}</span>
     </div>
   `);
