@@ -14,7 +14,7 @@ describe(dirname, function () {
       // Disable reload
       sandbox.stub(lib, 'reload').returns({});
       // Close any forms that may have been opened.
-      return lib.close().catch(function(){});
+      return lib.close();
     });
 
     afterEach(function () {
@@ -114,6 +114,7 @@ describe(dirname, function () {
           expect(formCreator.createInlineForm.callCount).to.equal(0);
           expect(formCreator.createForm.callCount).to.equal(1);
         };
+
         // First open an overlay form.
         stubData({
           value: '123',
