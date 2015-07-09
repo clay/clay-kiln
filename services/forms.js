@@ -9,12 +9,11 @@ var _ = require('lodash'),
   overlaySelector = '.editor-overlay-background';
 
 /**
- * don't open the form if the current element already has an inline form open
- * @param {Element} el  The editable element
+ * Check if a form is currently open. Only one form can be open at a time.
  * @returns {boolean}
  */
-function hasOpenInlineForms(el) {
-  return !!dom.find(el, '.editor-inline');
+function formIsOpen() {
+  return !!currentForm.ref;
 }
 
 /**
@@ -52,36 +51,24 @@ function getFormData(form, ref, path) {
 }
 
 /**
+ * Store the data from the server to compare for changes.
+ * @param {string} ref
+ * @param {string} path
+ * @param {object} data
+ */
+function storeServerData(ref, path, data) {
+  var dataOnly = edit.removeSchemaFromData(_.cloneDeep(data));
+
+  currentForm.serverData = isTopLevel(ref, path) ? dataOnly : _.get(dataOnly, path);
+}
+
+/**
  * Check if the local data is different than the data on the server.
  * @param {object} data   Edited data.
  * @returns {boolean}
  */
 function dataChanged(data) {
   return !_.isEqual(data, currentForm.serverData);
-}
-
-/**
- * Reload page. Disabled during unit tests.
- */
-function reload() {
-  window.location.reload();
-}
-
-/**
- * Save the current form.
- * @param {Element} form
- * @param {string} ref
- * @param {string} path
- * @param {object} data
- */
-function save(form, ref, path, data) {
-  if (form && form.checkValidity()) {
-    edit.update(ref, data, path)
-      .then(function () {
-        // Todo: re-render with updated HTML.
-        module.exports.reload();
-      });
-  }
 }
 
 /**
@@ -97,15 +84,22 @@ function replaceInlineForm(el) {
 }
 
 /**
- * Store the data from the server to compare for changes.
- * @param {string} ref
- * @param {string} path
- * @param {object} data
+ * Remove the form element and clear the currentForm object.
+ * @param {Element} container
  */
-function storeServerData(ref, path, data) {
-  var dataOnly = edit.removeSchemaFromData(_.cloneDeep(data));
+function removeCurrentForm(container) {
+  if (container) {
+    replaceInlineForm(container);
+    dom.removeElement(container);
+  }
+  currentForm = {};
+}
 
-  currentForm.serverData = isTopLevel(ref, path) ? dataOnly : _.get(dataOnly, path);
+/**
+ * Reload page. Disabled during unit tests.
+ */
+function reload() {
+  window.location.reload();
 }
 
 /**
@@ -117,8 +111,7 @@ function storeServerData(ref, path, data) {
  * @return {Promise|undefined}
  */
 function open(ref, el, path, e) {
-  // first, check to make sure any inline forms aren't open in this element's children
-  if (!hasOpenInlineForms(el)) {
+  if (!formIsOpen()) {
     if (e) {
       e.stopPropagation();
       e.preventDefault();
@@ -148,23 +141,35 @@ function open(ref, el, path, e) {
 
 /**
  * Close and save the open form.
+ * @returns {Promise}
  */
 function close() {
-  var ref = currentForm.ref,
-    path = currentForm.path,
-    container = findFormContainer(),
-    form = container && dom.find(container, 'form'),
-    data = form && getFormData(form, ref, path);
+  return Promise.resolve((function () {
+    var ref, path, container, form, data;
 
+    if (formIsOpen()) {
+      ref = currentForm.ref;
+      path = currentForm.path;
+      container = findFormContainer();
+      form = container && dom.find(container, 'form');
+      data = form && getFormData(form, ref, path);
 
-  if (dataChanged(data)) {
-    save(form, ref, path, data);
-  }
-  if (container) {
-    replaceInlineForm(container);
-    dom.removeElement(container);
-  }
-  currentForm = {};
+      if (dataChanged(data)) {
+        return edit.update(ref, data, path)
+          .then(function () {
+            removeCurrentForm(container);
+            // Todo: don't reload the entire page.
+            module.exports.reload();
+          })
+          .catch(function () {
+            console.warn('Did not save.');
+          });
+      } else {
+        // Nothing changed, so do not reload.
+        removeCurrentForm(container);
+      }
+    }
+  }()));
 }
 
 exports.open = open;
