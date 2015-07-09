@@ -80,7 +80,7 @@ EditorToolbar.prototype = {
    * On new page button
    */
   onNewPage: function () {
-    var layoutName = dom.find('[data-layout]');
+    var layoutName = dom.find('[data-layout]').getAttribute('data-layout');
 
     createPage(layoutName);
   },
