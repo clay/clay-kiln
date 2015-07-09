@@ -153,7 +153,7 @@ describe(dirname, function () {
         },
         newNode = fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'});
 
-        expect(newNode.querySelector('.editor-placeholder').style.height).to.equal('100px');
+        expect(newNode.querySelector('.editor-placeholder').style.minHeight).to.equal('100px');
         expect(newNode.querySelector('span.placeholder-label').textContent).to.equal('Title');
       });
     });
