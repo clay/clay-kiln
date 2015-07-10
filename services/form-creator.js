@@ -19,19 +19,14 @@ function isMetadata(value, key) {
 }
 
 /**
- * Schema and path are required for all forms
+ * ref, data, and data._schema are required for all forms
  * NOTE: Since exceptions are throw if the data is bad, no need to return anything unless we're _modifying_ the data.
  * @param {string} ref
- * @param {string} path
  * @param {object} data
  */
-function ensureValidFormData(ref, path, data) {
-
-
+function ensureValidFormData(ref, data) {
   if (!_.isString(ref) || _.isEmpty(ref)) {
     throw new Error('Reference is required to create a form!');
-  } else if (!_.isString(path) || _.isEmpty(path)) {
-    throw new Error('Path is required to create a form!');
   } else if (!_.isObject(data)) {
     throw new Error('Data is required to create a form!');
   } else if (!_.isObject(data._schema)) {
@@ -127,16 +122,15 @@ function createField(context) {
 /**
  * Iterate through this level of the schema, creating more fields
  *
- * @param {{display: string, path: string, data: object}} context
+ * @param {object} data
  * @returns {Element}
  */
-function expandFields(context) {
-  var data = context.data;
-
-  return _(data._schema)
+function expandFields(data) {
+  return _(data)
     .omit(isMetadata)
     .pick(_.isObject)
     .map(function (value, name) {
+      console.log(value, name)
       var path = context.path ? context.path + '.' + name : name;
 
       if (data[name]) {
@@ -151,66 +145,27 @@ function expandFields(context) {
 
 /**
  * @param {string} ref  Place we'll be saving to
- * @param {string} path  What path within the data is being shown/modified
  * @param {object} data  The data itself (starting from path)
  * @param {Element} [rootEl=document.body]   Root element to temporarily insert the overlay
  */
-function createForm(ref, path, data, rootEl) {
+function createForm(ref, data, rootEl) {
   var el;
 
-  ensureValidFormData(ref, path, data);
+  ensureValidFormData(ref, data);
   rootEl = rootEl || document.body;
 
-  // iterate through first level of the schema, creating forms and fields
-  el = expandFields({
-    data: data,
-    path: path
-  });
+  // iterate through the data, creating fields
+  el = expandFields(data);
 
   // build up form el
-  el = createOverlayEl(createOverlayFormEl(label(path, data._schema), el));
+  el = createOverlayEl(createOverlayFormEl(label(data._schema._name, data._schema), el));
   // append it to the body
   rootEl.appendChild(el);
 
   // register + instantiate controllers
   ds.controller('form', require('../controllers/form'));
   ds.controller('overlay', require('../controllers/overlay'));
-  ds.get('form', el, ref, path);
-  ds.get('overlay', el);
-}
-
-/**
- * create settings form. similar to createForm()
- * @param {string} ref
- * @param {object} data
- * @param {Element} [rootEl=document.body]
- */
-function createSettingsForm(ref, data, rootEl) {
-  var path = references.getComponentNameFromReference(ref),
-    el;
-
-  // filter out non-settings top-level nodes
-  data = _.omit(data, function (node) {
-    return node._schema && node._schema[references.displayProperty] !== 'settings';
-  });
-
-  rootEl = rootEl || document.body;
-
-  // iterate through first level of the schema, creating forms and fields
-  el = expandFields({
-    data: data,
-    path: path
-  });
-
-  // build up form el
-  el = createOverlayEl(createOverlayFormEl(_.startCase(references.getComponentNameFromReference(ref)) + ' Settings', el));
-  // append it to the body
-  rootEl.appendChild(el);
-
-  // register + instantiate controllers
-  ds.controller('form', require('../controllers/form'));
-  ds.controller('overlay', require('../controllers/overlay'));
-  ds.get('form', el, ref, path);
+  ds.get('form', el, ref, data._schema._name);
   ds.get('overlay', el);
 }
 
@@ -259,6 +214,5 @@ function createInlineForm(ref, path, data, oldEl) {
 
 module.exports = {
   createForm: createForm,
-  createSettingsForm: createSettingsForm,
   createInlineForm: createInlineForm
 };
