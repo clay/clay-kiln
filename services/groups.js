@@ -48,5 +48,25 @@ function getSettingsGroup(componentData) {
   }, []);
 }
 
+function get(ref, data, path) {
+  var field = _.get(data, path),
+    group = data[references.groupsProperty] && _.get(data[references.groupsProperty], path);
+
+
+  if (field) {
+    // simply return the field
+    return [{
+      field: path,
+      data: field
+    }];
+  } else if (group) {
+    // return the expanded group
+    return expandFields(_.get(data[references.groupsProperty], path).fields, data);
+  } else {
+    throw new Error('No group or field found at "' + path + '"');
+  }
+}
+
 module.exports.expandFields = expandFields;
 module.exports.getSettingsGroup = getSettingsGroup;
+module.exports.get = get;
