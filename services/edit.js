@@ -76,6 +76,8 @@ function addSchemaToData(schema, data) {
           _schema: schemaPart,
           value: value
         };
+        // add _name to the schema, so fields know what they're called
+        list[key]._schema._name = key;
       } else {
         addSchemaToData(schemaPart, value);
       }

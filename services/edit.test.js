@@ -38,7 +38,7 @@ describe('edit service', function () {
       sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({some: {more: 'things'}}));
       sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({some: {more: {_things: 'to know'}}}));
       return fn('foo').then(function (data) {
-        return expect(data.some.more._schema).to.deep.equal({_things: 'to know'});
+        return expect(data.some.more._schema).to.deep.equal({_things: 'to know', _name: 'more'});
       });
     });
   });
@@ -79,23 +79,66 @@ describe('edit service', function () {
     var fn = lib[this.title];
 
     it('number to object with schema', function () {
-      expect(fn({ num: {}}, { num: 123 })).to.deep.equal({ num: { _schema: {}, value: 123 }, _schema: { num: {} } });
+      expect(fn({
+        num: {}
+      }, {
+        num: 123
+      })).to.deep.equal({
+        num: {
+          _schema: {
+            _name: 'num'
+          },
+          value: 123
+        },
+        _schema: {
+          num: { _name: 'num' }
+        }
+      });
     });
 
     it('text to object with schema', function () {
-      expect(fn({ num: {}}, { num: '123' })).to.deep.equal({ num: { _schema: {}, value: '123' }, _schema: { num: {} } });
+      expect(fn({
+        num: {}
+      }, {
+        num: '123'
+      })).to.deep.equal({
+        num: {
+          _schema: {
+            _name: 'num'
+          },
+          value: '123'
+        },
+        _schema: {
+          num: { _name: 'num' }
+        }
+      });
     });
 
     it('undefined without schema', function () {
-      expect(fn({}, { num: undefined })).to.deep.equal({ num: undefined, _schema: {} });
+      expect(fn({}, {
+        num: undefined
+      })).to.deep.equal({
+        num: undefined,
+        _schema: {}
+      });
     });
 
     it('number without schema', function () {
-      expect(fn({}, { num: 123 })).to.deep.equal({ num: 123, _schema: {} });
+      expect(fn({}, {
+        num: 123
+      })).to.deep.equal({
+        num: 123,
+        _schema: {}
+      });
     });
 
     it('text without schema', function () {
-      expect(fn({}, { num: '123' })).to.deep.equal({ num: '123', _schema: {} });
+      expect(fn({}, {
+        num: '123'
+      })).to.deep.equal({
+        num: '123',
+        _schema: {}
+      });
     });
   });
 
