@@ -17,16 +17,6 @@ function formIsOpen() {
 }
 
 /**
- * Check if data is top level of the component. e.g. Top level when in a settings form
- * @param {string} ref
- * @param {string} path
- * @returns {boolean}
- */
-function isTopLevel(ref, path) {
-  return path === references.getComponentNameFromReference(ref);
-}
-
-/**
  * Find the form container.
  * @returns {Element}
  */
@@ -42,24 +32,18 @@ function findFormContainer() {
  * @returns {Object}
  */
 function getFormData(form, ref, path) {
-  var data = formValues.get(ref, form);
-
-  if (!isTopLevel(ref, path)) {
-    data = _.get(data, path);
-  }
-  return data;
+  return _.get(formValues.get(ref, form), path);
 }
 
 /**
  * Store the data from the server to compare for changes.
- * @param {string} ref
  * @param {string} path
  * @param {object} data
  */
-function storeServerData(ref, path, data) {
+function storeServerData(path, data) {
   var dataOnly = edit.removeSchemaFromData(_.cloneDeep(data));
 
-  currentForm.serverData = isTopLevel(ref, path) ? dataOnly : _.get(dataOnly, path);
+  currentForm.serverData = _.get(dataOnly, path);
 }
 
 /**
@@ -121,7 +105,7 @@ function open(ref, el, path, e) {
       path: path
     };
     return edit.getData(ref).then(function (data) {
-      storeServerData(ref, path, data);
+      storeServerData(path, data);
       if (path) {
         data = _.get(data, path);
         if (data._schema[references.displayProperty] === 'inline') {
