@@ -123,11 +123,10 @@ function validate() {
 /**
  * update data for a component.
  * @param  {string}   ref
- * @param {{}} data  (relative to path)
- * @param {string} [path] part of the schema (for partial updates)
+ * @param {object} data
  * @returns {Promise}
  */
-function update(ref, data, path) {
+function update(ref, data) {
   // as soon as we're trying to change data, clear the cache because it'll only tell us what we want to hear: that there
   // have been no changes
   refSchema = {};
@@ -145,13 +144,8 @@ function update(ref, data, path) {
         throw new Error(validationErrors);
       } else {
         return getDataOnly(ref).then(function (oldData) {
-          // if path is specified, set newData into the proper place
-          if (path !== references.getComponentNameFromReference(ref)) {
-            data = _.set(oldData, path, data);
-          } else {
-            // otherwise, shallowly copy over the new data
-            data = _.defaults(data, oldData);
-          }
+          // shallowly copy over the new data
+          data = _.defaults(data, oldData);
           delete data._ref;
 
           return db.putToReference(ref, data);

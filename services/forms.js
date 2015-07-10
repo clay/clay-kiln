@@ -4,27 +4,10 @@ var _ = require('lodash'),
   formCreator = require('./form-creator'),
   edit = require('./edit'),
   formValues = require('./form-values'),
-  currentForm = {}, // Store form currently open, as only one form can be open at a time.
+  groups = require('./groups'),
   inlineSelector = '.editor-inline',
-  overlaySelector = '.editor-overlay-background';
-
-/**
- * Check if a form is currently open. Only one form can be open at a time.
- * @returns {boolean}
- */
-function formIsOpen() {
-  return !!currentForm.ref;
-}
-
-/**
- * Check if data is top level of the component. e.g. Top level when in a settings form
- * @param {string} ref
- * @param {string} path
- * @returns {boolean}
- */
-function isTopLevel(ref, path) {
-  return path === references.getComponentNameFromReference(ref);
-}
+  overlaySelector = '.editor-overlay-background',
+  isFormOpen = false;
 
 /**
  * Find the form container.
@@ -35,40 +18,16 @@ function findFormContainer() {
 }
 
 /**
- * Get the current form's data.
- * @param {Element} form
- * @param {string} ref
- * @param {string} path
- * @returns {Object}
- */
-function getFormData(form, ref, path) {
-  var data = formValues.get(ref, form);
-
-  if (!isTopLevel(ref, path)) {
-    data = _.get(data, path);
-  }
-  return data;
-}
-
-/**
- * Store the data from the server to compare for changes.
- * @param {string} ref
- * @param {string} path
- * @param {object} data
- */
-function storeServerData(ref, path, data) {
-  var dataOnly = edit.removeSchemaFromData(_.cloneDeep(data));
-
-  currentForm.serverData = isTopLevel(ref, path) ? dataOnly : _.get(dataOnly, path);
-}
-
-/**
  * Check if the local data is different than the data on the server.
+ * @param {string} ref
  * @param {object} data   Edited data.
- * @returns {boolean}
+ * @returns {Promise}
  */
-function dataChanged(data) {
-  return !_.isEqual(data, currentForm.serverData);
+function dataChanged(ref, data) {
+  return edit.getData(ref).then(function (oldData) {
+    oldData = edit.removeSchemaFromData(oldData);
+    return !_.isEqual(data, oldData);
+  });
 }
 
 /**
@@ -84,7 +43,7 @@ function replaceInlineForm(el) {
 }
 
 /**
- * Remove the form element and clear the currentForm object.
+ * Remove the form element
  * @param {Element} container
  */
 function removeCurrentForm(container) {
@@ -92,7 +51,6 @@ function removeCurrentForm(container) {
     replaceInlineForm(container);
     dom.removeElement(container);
   }
-  currentForm = {};
 }
 
 /**
@@ -106,34 +64,27 @@ function reload() {
  * Open a form.
  * @param {string} ref
  * @param {Element} el    The element that has `data-editable`, not always the parent of the form.
- * @param {string} path
+ * @param {string} [path]
  * @param {MouseEvent} [e]
  * @return {Promise|undefined}
  */
 function open(ref, el, path, e) {
-  if (!formIsOpen()) {
+  if (!isFormOpen) {
     if (e) {
       e.stopPropagation();
       e.preventDefault();
     }
-    currentForm = {
-      ref: ref,
-      path: path
-    };
+
+    // set isFormOpen
+    isFormOpen = true;
+
     return edit.getData(ref).then(function (data) {
-      storeServerData(ref, path, data);
-      if (path) {
-        data = _.get(data, path);
-        if (data._schema[references.displayProperty] === 'inline') {
-          // inline forms have a path and _display: inline
-          return formCreator.createInlineForm(ref, path, data, el);
-        } else {
-          // overlay forms have a path and are the default
-          formCreator.createForm(ref, path, data);
-        }
+      data = groups.get(ref, data, path); // note: if path is undefined, it'll open the settings form
+
+      if (data._schema[references.displayProperty] === 'inline') {
+        return formCreator.createInlineForm(ref, data, el);
       } else {
-        // settings forms don't have a path, since they're operating on the whole component
-        return formCreator.createSettingsForm(ref, data);
+        return formCreator.createForm(ref, data);
       }
     });
   }
@@ -144,18 +95,19 @@ function open(ref, el, path, e) {
  * @returns {Promise}
  */
 function close() {
-  return Promise.resolve((function () {
-    var ref, path, container, form, data;
+  var ref, container, form, data;
 
-    if (formIsOpen()) {
-      ref = currentForm.ref;
-      path = currentForm.path;
-      container = findFormContainer();
-      form = container && dom.find(container, 'form');
-      data = form && getFormData(form, ref, path);
+  if (isFormOpen) {
+    container = findFormContainer();
+    form = container && dom.find(container, 'form');
+    data = form && formValues.get(ref, form);
 
-      if (dataChanged(data)) {
-        return edit.update(ref, data, path)
+    // set isFormOpen
+    isFormOpen = false;
+
+    return dataChanged(ref, data).then(function (hasChanged) {
+      if (hasChanged) {
+        return edit.update(ref, data)
           .then(function () {
             removeCurrentForm(container);
             // Todo: don't reload the entire page.
@@ -168,8 +120,10 @@ function close() {
         // Nothing changed, so do not reload.
         removeCurrentForm(container);
       }
-    }
-  }()));
+    });
+  } else {
+    return Promise.resolve();
+  }
 }
 
 exports.open = open;

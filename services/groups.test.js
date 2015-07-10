@@ -1,5 +1,6 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
+  _ = require('lodash'),
   lib = require('./groups'),
   references = require('./references');
 
@@ -130,7 +131,8 @@ describe(dirname, function () {
 
       it('gets a group of fields', function () {
         expect(fn('fakeRef', stubData, 'foobar')).to.eql({
-          fields: [fooData, barData]
+          value: [fooData, barData],
+          _schema: groupData
         });
       });
 
@@ -138,8 +140,8 @@ describe(dirname, function () {
         sandbox.stub(references, 'getComponentNameFromReference').withArgs('fakeRef').returns('fake');
 
         expect(fn('fakeRef', stubData)).to.eql({
-          fields: [fooData],
-          _label: 'Fake Settings'
+          value: [fooData],
+          _schema: { _display: 'settings', _label: 'Fake Settings'}
         });
       });
     });

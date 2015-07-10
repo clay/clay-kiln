@@ -42,9 +42,17 @@ function getSettingsFields(data) {
   }, []);
 }
 
+/**
+ * get fields from a component's data
+ * @param {string} ref
+ * @param {object} data
+ * @param {string} [path]
+ * @returns {object}
+ */
 function get(ref, data, path) {
   var field = _.get(data, path),
-    group = data[references.groupsProperty] && _.get(data[references.groupsProperty], path);
+    group = data[references.groupsProperty] && _.get(data[references.groupsProperty], path),
+    expanded;
 
 
   if (field) {
@@ -52,13 +60,20 @@ function get(ref, data, path) {
     return field;
   } else if (group) {
     // return the expanded group
-    group.fields = expandFields(group.fields, data);
-    return group;
+    expanded = expandFields(group.fields, data);
+    return {
+      value: expanded,
+      _schema: group
+    };
   } else if (!path) {
     // return the settings group
+    expanded = getSettingsFields(data);
     return {
-      fields: getSettingsFields(data),
-      _label: _.startCase(references.getComponentNameFromReference(ref)) + ' Settings'
+      value: expanded,
+      _schema: {
+        _display: 'settings',
+        _label: _.startCase(references.getComponentNameFromReference(ref)) + ' Settings'
+      }
     };
   } else {
     // this isn't a field or a group, and they expect something at this path
