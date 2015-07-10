@@ -1,6 +1,7 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
-  lib = require('./groups');
+  lib = require('./groups'),
+  references = require('./references');
 
 describe(dirname, function () {
   describe(filename, function () {
@@ -19,7 +20,7 @@ describe(dirname, function () {
           componentData = {
             foo: {
               value: 'foo',
-              _schema: { _has: 'text' }
+              _schema: { _has: 'text', _name: 'foo' }
             },
             _groups: {
               one: { fields: fields }
@@ -34,11 +35,11 @@ describe(dirname, function () {
         var fields = ['foo', 'bar'],
           fooData = {
             value: 'foo',
-            _schema: { _has: 'text' }
+            _schema: { _has: 'text', _name: 'foo' }
           },
           barData = {
             value: 'bar',
-            _schema: { _has: 'text' }
+            _schema: { _has: 'text', _name: 'foo' }
           },
           componentData = {
             foo: fooData,
@@ -48,17 +49,11 @@ describe(dirname, function () {
             }
           };
 
-        expect(fn(fields, componentData)).to.eql([{
-          field: 'foo',
-          data: fooData
-        }, {
-          field: 'bar',
-          data: barData
-        }]);
+        expect(fn(fields, componentData)).to.eql([fooData, barData]);
       });
     });
 
-    describe('getSettingsGroup', function () {
+    describe('getSettingsFields', function () {
       var fn = lib[this.title];
 
       it('returns empty array if no fields', function () {
@@ -87,10 +82,65 @@ describe(dirname, function () {
         expect(fn({
           foo: fooData,
           bar: barData
-        })).to.eql([{
-          field: 'foo',
-          data: fooData
-        }]);
+        })).to.eql([fooData]);
+      });
+    });
+
+    describe('get', function () {
+      var fn = lib[this.title],
+        fooData = {
+          value: 'foo',
+          _schema: { _display: 'settings' }
+        },
+        barData = {
+          value: 'bar',
+          _schema: { _display: 'overlay' }
+        },
+        groupData = {
+          fields: ['foo', 'bar']
+        },
+        stubData = {
+          foo: fooData,
+          bar: barData,
+          _groups: {
+            foobar: groupData
+          }
+        },
+        sandbox;
+
+      beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+      });
+
+      afterEach(function () {
+        sandbox.restore();
+      });
+
+      it('throws an error if field or group not found', function () {
+        var result = function () {
+          return fn('fakeRef', stubData, 'fakePath');
+        };
+
+        expect(result).to.throw(Error);
+      });
+
+      it('gets a single field', function () {
+        expect(fn('fakeRef', stubData, 'foo')).to.eql(fooData);
+      });
+
+      it('gets a group of fields', function () {
+        expect(fn('fakeRef', stubData, 'foobar')).to.eql({
+          fields: [fooData, barData]
+        });
+      });
+
+      it('gets the settings group if no path is specified', function () {
+        sandbox.stub(references, 'getComponentNameFromReference').withArgs('fakeRef').returns('fake');
+
+        expect(fn('fakeRef', stubData)).to.eql({
+          fields: [fooData],
+          _label: 'Fake Settings'
+        });
       });
     });
   });
