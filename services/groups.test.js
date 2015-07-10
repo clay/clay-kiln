@@ -46,15 +46,51 @@ describe(dirname, function () {
             _groups: {
               one: { fields: fields }
             }
+          };
+
+        expect(fn(fields, componentData)).to.eql([{
+          field: 'foo',
+          data: fooData
+        }, {
+          field: 'bar',
+          data: barData
+        }]);
+      });
+    });
+
+    describe('getSettingsGroup', function () {
+      var fn = lib[this.title];
+
+      it('returns empty array if no fields', function () {
+        expect(fn({})).to.eql([]);
+      });
+
+      it('returns empty array if no settings fields', function () {
+        expect(fn({
+          foo: {
+            value: 'foo',
+            _schema: { _display: 'overlay' }
+          }
+        })).to.eql([]);
+      });
+
+      it('returns array of settings fields', function () {
+        var fooData = {
+            value: 'foo',
+            _schema: { _display: 'settings' }
           },
-          expanded = fn(fields, componentData);
+          barData = {
+            value: 'bar',
+            _schema: { _display: 'overlay' }
+          };
 
-        // order should be preserved
-        expect(expanded[0].field).to.equal('foo');
-        expect(expanded[0].data).to.equal(fooData);
-
-        expect(expanded[1].field).to.equal('bar');
-        expect(expanded[1].data).to.equal(barData);
+        expect(fn({
+          foo: fooData,
+          bar: barData
+        })).to.eql([{
+          field: 'foo',
+          data: fooData
+        }]);
       });
     });
   });
