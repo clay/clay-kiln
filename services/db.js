@@ -78,7 +78,7 @@ function expectJSONResult(target) {
 function expectHTMLResult(ref) {
   var result, parent, statusCodeGroup;
 
-  return function (error, target) {
+  return function (target, error) {
     if (error) {
       throw error;
     } else {

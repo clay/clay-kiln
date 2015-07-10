@@ -1,12 +1,11 @@
 'use strict'; // eslint-disable-line
 // note: use strict above is applied to the whole browserified doc
-var ds = require('dollar-slice'),
-  references = require('./services/references'),
+var references = require('./services/references'),
   behaviors = require('./services/behaviors'),
   decorators = require('./services/decorators'),
   dom = require('./services/dom'),
   EditorToolbar = require('./controllers/editor-toolbar'),
-  select = require('./services/select'),
+  render = require('./services/render'),
   pageToolbar;
 
 // manually add built-in behaviors
@@ -31,8 +30,7 @@ decorators.add(require('./decorators/component-list'));
 
 // kick off controller loading when DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
-  var componentEdit = require('./controllers/component-edit'),
-    components = document.querySelectorAll('[' + references.referenceAttribute + ']'),
+  var components = document.querySelectorAll('[' + references.referenceAttribute + ']'),
     i = 0,
     l = components.length,
     component, ref, name;
@@ -46,9 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
     name = references.getComponentNameFromReference(ref);
 
     if (name && name !== 'editor-toolbar') {
-      select.handler(component, { ref: ref }); // note: not passing data or path into here
-      ds.controller('component-edit', componentEdit);
-      ds.get('component-edit', component);
+      render.addComponentHandlers(component, ref);
     }
   }
 

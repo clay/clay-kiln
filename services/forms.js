@@ -3,6 +3,7 @@ var _ = require('lodash'),
   references = require('./references'),
   formCreator = require('./form-creator'),
   edit = require('./edit'),
+  render = require('./render'),
   formValues = require('./form-values'),
   groups = require('./groups'),
   inlineSelector = '.editor-inline',
@@ -82,13 +83,6 @@ function removeCurrentForm(container) {
 }
 
 /**
- * Reload page. Disabled during unit tests.
- */
-function reload() {
-  window.location.reload();
-}
-
-/**
  * Open a form.
  * @param {string} ref
  * @param {Element} el    The element that has `data-editable`, not always the parent of the form.
@@ -143,8 +137,7 @@ function close() {
       return edit.update(ref, data)
         .then(function () {
           removeCurrentForm(container);
-          // Todo: don't reload the entire page.
-          module.exports.reload();
+          return render.reloadComponent(ref);
         })
         .catch(function () {
           console.warn('Did not save.');
@@ -161,4 +154,3 @@ function close() {
 
 exports.open = open;
 exports.close = close;
-exports.reload = reload; // For unit tests.
