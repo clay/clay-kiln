@@ -1,9 +1,10 @@
 var dom = require('./dom');
 
 describe('dom service', function () {
-  var el, childEl, secondChildEl;
+  var el, childEl, secondChildEl, sandbox;
 
   beforeEach(function () {
+    sandbox = sinon.sandbox.create();
     // create el
     el = document.createElement('section');
     el.classList.add('parent-el');
@@ -19,6 +20,10 @@ describe('dom service', function () {
     secondChildEl = document.createElement('div');
     secondChildEl.classList.add('second-child-el');
     el.appendChild(secondChildEl);
+  });
+
+  afterEach(function () {
+    sandbox.restore();
   });
 
   describe('find()', function () {
@@ -160,6 +165,31 @@ describe('dom service', function () {
       result.appendChild(secondChildEl);
 
       expect(dom.wrapElements(els, wrapper).outerHTML).to.not.equal(result.outerHTML);
+    });
+  });
+
+  describe('onRemove', function () {
+    it('runs a function only the first time the element is removed from the dom', function (done) {
+      var fn = sandbox.spy(function () {}),
+        div = document.createElement('div');
+
+      function addAndRemoveWithObserver() {
+        document.body.appendChild(div);
+        dom.onRemove(div, fn);
+        document.body.removeChild(div);
+      }
+      function addAndRemoveWithoutObserver() {
+        document.body.appendChild(div);
+        document.body.removeChild(div);
+      }
+      function check() {
+        expect(fn.callCount).to.equal(1);
+        done();
+      }
+
+      addAndRemoveWithObserver(); // fn should run the first time.
+      window.setTimeout(addAndRemoveWithoutObserver, 0); // fn should not run the second time because the observer was removed.
+      window.setTimeout(check, 0);
     });
   });
 });

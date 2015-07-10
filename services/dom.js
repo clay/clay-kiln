@@ -182,5 +182,24 @@ module.exports = {
     parent.removeChild(wrapper);
   },
 
+  /**
+   * Run a function when an element is removed from the DOM.
+   * Note: Observer is removed after the function is run once.
+   * @param {Element} el    Element to observe.
+   * @param {Function} fn   Function to execute when element is removed.
+   */
+  onRemove: function (el, fn) {
+    var observer = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        if (_.contains(mutation.removedNodes, el)) {
+          fn();
+          observer.disconnect();
+        }
+      });
+    });
+
+    observer.observe(el.parentNode, {childList: true});
+  },
+
   create: domify // create elements from strings!
 };
