@@ -51,7 +51,7 @@ function getSettingsFields(data) {
  */
 function get(ref, data, path) {
   var field = _.get(data, path),
-    group = data[references.groupsProperty] && _.get(data[references.groupsProperty], path),
+    group = data._schema && data._schema[references.groupsProperty] && _.get(data._schema[references.groupsProperty], path),
     expanded;
 
 

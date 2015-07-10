@@ -1,5 +1,6 @@
 var _ = require('lodash'),
   edit = require('./edit'),
+  groups = require('./groups'),
   decorators = []; // default decorators are added in client.js
 
 /**
@@ -20,8 +21,8 @@ function decorate(el, ref, path) {
   }
 
   return edit.getData(ref).then(function (data) {
-    // add the data for this specific field
-    options.data = _.get(data, path);
+    // add the data for this specific field or group
+    options.data = groups.get(ref, data, path);
     // iterate through all the decorators, calling the ones that need to run
     return _.map(decorators, function (decorator) {
       if (decorator.when(el, options)) {

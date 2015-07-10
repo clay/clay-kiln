@@ -23,8 +23,10 @@ describe(dirname, function () {
               value: 'foo',
               _schema: { _has: 'text', _name: 'foo' }
             },
-            _groups: {
-              one: { fields: fields }
+            _schema: {
+              _groups: {
+                one: { fields: fields }
+              }
             }
           },
           result = function () { return fn(fields, componentData); };
@@ -45,8 +47,10 @@ describe(dirname, function () {
           componentData = {
             foo: fooData,
             bar: barData,
-            _groups: {
-              one: { fields: fields }
+            _schema: {
+              _groups: {
+                one: { fields: fields }
+              }
             }
           };
 
@@ -103,8 +107,10 @@ describe(dirname, function () {
         stubData = {
           foo: fooData,
           bar: barData,
-          _groups: {
-            foobar: groupData
+          _schema: {
+            _groups: {
+              foobar: groupData
+            }
           }
         },
         sandbox;
