@@ -183,20 +183,30 @@ module.exports = {
   },
 
   /**
-   * Run a function when an element is removed from the DOM.
-   * Note: Observer is removed after the function is run once.
-   * @param {Element} el    Element to observe.
-   * @param {Function} fn   Function to execute when element is removed.
+   * Create a remove node handler that runs fn and removes the observer.
+   * @param {Element} el
+   * @param {Function} fn
+   * @returns {Function}
    */
-  onRemove: function (el, fn) {
-    var observer = new MutationObserver(function (mutations) {
+  createRemoveNodeHandler: function (el, fn) {
+    return function (mutations, observer) {
       mutations.forEach(function (mutation) {
         if (_.contains(mutation.removedNodes, el)) {
           fn();
           observer.disconnect();
         }
       });
-    });
+    };
+  },
+
+  /**
+   * Run a function when an element is removed from the DOM.
+   * Note: Observer is removed after the function is run once.
+   * @param {Element} el    Element to observe.
+   * @param {Function} fn   Function to execute when element is removed.
+   */
+  onRemove: function (el, fn) {
+    var observer = new MutationObserver(this.createRemoveNodeHandler(el, fn));
 
     observer.observe(el.parentNode, {childList: true});
   },

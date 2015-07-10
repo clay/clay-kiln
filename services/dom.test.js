@@ -168,28 +168,17 @@ describe('dom service', function () {
     });
   });
 
-  describe('onRemove', function () {
-    it('runs a function only the first time the element is removed from the dom', function (done) {
-      var fn = sandbox.spy(function () {}),
-        div = document.createElement('div');
+  describe('createRemoveNodeHandler', function () {
+    it('runs a function when the element is a removed node and then disconnects the observer', function () {
+      var mockMutationObserver = {disconnect: sandbox.spy(function () {})},
+        mockMutations = [{removedNodes: [el]}],
+        fn = sandbox.spy(function () {}),
+        removeNodeHandler = dom.createRemoveNodeHandler(el, fn);
 
-      function addAndRemoveWithObserver() {
-        document.body.appendChild(div);
-        dom.onRemove(div, fn);
-        document.body.removeChild(div);
-      }
-      function addAndRemoveWithoutObserver() {
-        document.body.appendChild(div);
-        document.body.removeChild(div);
-      }
-      function check() {
-        expect(fn.callCount).to.equal(1);
-        done();
-      }
+      removeNodeHandler(mockMutations, mockMutationObserver);
 
-      addAndRemoveWithObserver(); // fn should run the first time.
-      window.setTimeout(addAndRemoveWithoutObserver, 0); // fn should not run the second time because the observer was removed.
-      window.setTimeout(check, 0);
+      expect(fn.callCount).to.equal(1);
+      expect(mockMutationObserver.disconnect.callCount).to.equal(1);
     });
   });
 });
