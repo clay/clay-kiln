@@ -1,7 +1,7 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
-  forms = require('./forms'),
-  select = require('./select'),
+  forms = require('../services/forms'),
+  select = require('../services/select'),
   lib = require('./focus');
 
 describe(dirname, function () {

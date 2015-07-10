@@ -6,7 +6,8 @@ files = [
   'test/setup.js',
   'controllers/*.js',
   'behaviors/*.js',
-  'services/*.js'
+  'services/*.js',
+  'decorators/*.js'
 ];
 
 settings = {
@@ -38,7 +39,8 @@ settings = {
   preprocessors: {
     'controllers/**/*.js': ['browserify'],
     'behaviors/**/*.js': ['browserify'],
-    'services/**/*.js': ['browserify']
+    'services/**/*.js': ['browserify'],
+    'decorators/**/*.js': ['browserify']
   },
   plugins: [
     'karma-coverage',

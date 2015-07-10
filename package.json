@@ -11,7 +11,7 @@
   ],
   "template": "template.nunjucks",
   "scripts": {
-    "test": "eslint client.js behaviors controllers services && karma start"
+    "test": "eslint client.js behaviors controllers services decorators && karma start"
   },
   "repository": {
     "type": "git",

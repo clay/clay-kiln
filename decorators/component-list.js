@@ -1,6 +1,6 @@
 var _ = require('lodash'),
-  references = require('./references'),
-  dom = require('./dom');
+  references = require('../services/references'),
+  dom = require('../services/dom');
 
 /**
  * click handler for adding a component

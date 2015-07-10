@@ -1,7 +1,7 @@
 var _ = require('lodash'),
-  references = require('./references'),
-  forms = require('./forms'),
-  select = require('./select'),
+  references = require('../services/references'),
+  forms = require('../services/forms'),
+  select = require('../services/select'),
   currentFocus; // eslint-disable-line
 
 /**
