@@ -63,7 +63,7 @@ function get(ref, data, path) {
     expanded = expandFields(group.fields, data);
     return {
       value: expanded,
-      _schema: group
+      _schema: _.assign({ _name: path }, group)
     };
   } else if (!path) {
     // return the settings group
@@ -72,7 +72,8 @@ function get(ref, data, path) {
       value: expanded,
       _schema: {
         _display: 'settings',
-        _label: _.startCase(references.getComponentNameFromReference(ref)) + ' Settings'
+        _label: _.startCase(references.getComponentNameFromReference(ref)) + ' Settings',
+        _name: 'settings'
       }
     };
   } else {

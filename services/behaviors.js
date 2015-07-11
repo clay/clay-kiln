@@ -73,13 +73,16 @@ function getExpandedBehaviors(behaviors) {
 
 /**
  * run behaviors for a field, in order
- * @param  {{data: {_schema: {_has: [object]}}, path: string}} context
+ * @param {object} context
+ * @param {*} context.value
+ * @param {object} context._schema
  * @return {Element}
  */
 function run(context) {
   var result,
-    contextLabel = label(context.path, context.data._schema),
-    behaviors = getExpandedBehaviors(context.data._schema[references.fieldProperty]);
+    contextName = _.get(context, '_schema._name'),
+    contextLabel = label(contextName, context._schema),
+    behaviors = getExpandedBehaviors(context._schema[references.fieldProperty]);
 
   // apply behaviours to create new context containing form element
   result = _(behaviors)
@@ -91,13 +94,13 @@ function run(context) {
       return behaviorsHash[name](currentContext, behavior.args);
     }, {
       el: document.createDocumentFragment(),
-      bindings: _.assign({ label: contextLabel, name: context.path }, context),
+      bindings: { label: contextLabel, name: contextName, data: context },
       rivets: rivets,
-      path: context.path
+      path: contextName
     });
 
   // use the rivets instance that was passed through the behaviors, since it may have formatters/etc added to it
-  bindingsHash[context.path] = result.rivets.bind(result.el, result.bindings); // compile and bind templates, persist them to bindingsHash
+  bindingsHash[contextName] = result.rivets.bind(result.el, result.bindings); // compile and bind templates, persist them to bindingsHash
   return result.el;
 }
 

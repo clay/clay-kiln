@@ -100,7 +100,8 @@ function close() {
   if (isFormOpen) {
     container = findFormContainer();
     form = container && dom.find(container, 'form');
-    data = form && formValues.get(ref, form);
+    ref = form && form.getAttribute('data-form-ref');
+    data = form && formValues.get(form);
 
     // set isFormOpen
     isFormOpen = false;
