@@ -55,10 +55,6 @@ function setCurrentData(data) {
  * @returns {boolean}
  */
 function dataChanged(data) {
-  console.log(data)
-  console.log(currentForm.data)
-  console.log(!_.isEqual(data, currentForm.data))
-  return false;
   return !_.isEqual(data, currentForm.data);
 }
 
@@ -155,6 +151,8 @@ function close() {
         });
     } else {
       // Nothing changed, so do not reload.
+      // but still remove currentForm values
+      currentForm = {};
       removeCurrentForm(container);
       return Promise.resolve();
     }

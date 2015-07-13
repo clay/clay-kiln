@@ -4,6 +4,24 @@ var _ = require('lodash'),
   behaviors = require('./behaviors');
 
 /**
+ * recursively remove any metadata that behaviors use
+ * metadata is added as _<property> in the bindings
+ * @param {*} value
+ * @returns {*}
+ */
+function removeBehaviorMeta(value) {
+  if (_.isArray(value)) {
+    return _.map(value, removeBehaviorMeta);
+  } else if (_.isObject(value)) {
+    return _.omit(value, function (val, key) {
+      return _.contains(key, '_');
+    });
+  } else {
+    return value;
+  }
+}
+
+/**
  * get values from inputs, lists, etc
  * @param  {{}} data
  * @param  {Element} el
@@ -19,6 +37,8 @@ function getValues(data, el) {
     binding = _.find(view.bindings, function (value) { return value.el === el; });
     // clear out the _rv's and getters and setters
     viewData = _.cloneDeep(binding.observer.value());
+    // remove any behavior metadata from the bindings
+    viewData = removeBehaviorMeta(viewData);
     data[name] = viewData;
   }
 
