@@ -162,7 +162,8 @@ describe(dirname, function () {
           value: '123',
           _schema: {
             _name: 'title',
-            _display: 'inline'
+            _display: 'inline',
+            _has: 'text'
           }
         });
         return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen);
@@ -185,7 +186,8 @@ describe(dirname, function () {
           value: '123',
           _schema: {
             _name: 'title',
-            _display: 'inline'
+            _display: 'inline',
+            _has: 'text'
           }
         });
         return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen);
@@ -205,7 +207,9 @@ describe(dirname, function () {
         stubData({
           value: '123',
           _schema: {
-            _display: 'overlay'
+            _display: 'overlay',
+            _name: 'title',
+            _has: 'text'
           }
         });
         return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen);
@@ -227,7 +231,9 @@ describe(dirname, function () {
         stubData({
           value: '123',
           _schema: {
-            _display: 'overlay'
+            _display: 'overlay',
+            _name: 'title',
+            _has: 'text'
           }
         });
         return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen);
