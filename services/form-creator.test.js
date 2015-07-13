@@ -6,9 +6,9 @@ var dirname = __dirname.split('/').pop(),
   dom = require('./dom'),
   ds = require('dollar-slice'),
   refIsRequired = /ref\w* is required/i,
-  pathIsRequired = /path is required/i,
-  schemaIsRequired = /schema is required/i,
-  singleItem = {thing: {value: 'hi', _schema: {_has: ['text']}}, _schema: {thing: {_has: ['text']}}};
+  dataIsRequired = /data is required/i,
+  nameIsRequired = /_name is required/i,
+  singleItem = {value: 'hi', _schema: {_name: 'thing', _has: ['text']}};
 
 describe(dirname, function () {
   describe(filename, function () {
@@ -40,21 +40,7 @@ describe(dirname, function () {
 
       itemEl.setAttribute('class', 'behaviour-element');
 
-      sandbox.mock(behaviors).expects('run').withArgs({
-        data: { _schema: { _has: ['text'] }, value: 'hi' },
-        path: 'name.thing'
-      }).once().returns(itemEl);
-    }
-
-    function expectSettingsItemBehavior() {
-      var itemEl = document.createElement('div');
-
-      itemEl.setAttribute('class', 'behaviour-element');
-
-      sandbox.mock(behaviors).expects('run').withArgs({
-        data: { _schema: { _display: 'settings', _has: ['text'] }, value: 'hi' },
-        path: 'name.thing'
-      }).once().returns(itemEl);
+      sandbox.mock(behaviors).expects('run').withArgs(singleItem).once().returns(itemEl);
     }
 
     describe('createForm', function () {
@@ -63,113 +49,34 @@ describe(dirname, function () {
       it('reference is required', function () {
         expectNoLogging();
         expect(function () {
-          fn('', '', {}, el);
+          fn('', {}, el);
         }).to.throw(refIsRequired);
       });
 
-      it('path is required', function () {
+      it('data is required', function () {
         expectNoLogging();
         expect(function () {
-          fn('some ref', '', {}, el);
-        }).to.throw(pathIsRequired);
+          fn('ref', null, el);
+        }).to.throw(dataIsRequired);
       });
 
-      it('schema is required', function () {
+      it('_name is required', function () {
         expectNoLogging();
         expect(function () {
-          fn('some name', 'some data', {}, el);
-        }).to.throw(schemaIsRequired);
-      });
-
-      it('can show basic template', function () {
-        expectNoLogging();
-        fn('ref', 'name', {_schema: {}}, el);
-
-        expect(condense(el.firstElementChild.innerHTML)).to.equal(condense(`
-        <div class="editor-overlay">
-          <section class="editor">
-            <header>Name</header>
-            <form>
-              <div class="input-container"></div>
-              <div class="button-container">
-                <button type="submit" class="save">Save</button>
-              </div>
-            </form>
-            </section>
-          </div>`));
-
-        sandbox.verify();
+          fn('ref', {_schema: {}}, el);
+        }).to.throw(nameIsRequired);
       });
 
       it('can show item in template', function () {
         expectNoLogging();
         expectSingleItemBehavior();
 
-        fn('ref', 'name', singleItem, el);
+        fn('ref', singleItem, el);
 
         expect(condense(el.firstElementChild.innerHTML)).to.equal(condense(`
         <div class="editor-overlay">
           <section class="editor">
-            <header>Name</header>
-            <form>
-              <div class="input-container">
-                <div class="behaviour-element"></div>
-              </div>
-              <div class="button-container">
-                <button type="submit" class="save">Save</button>
-              </div>
-            </form>
-            </section>
-          </div>`));
-
-        sandbox.verify();
-      });
-    });
-
-    describe('createSettingsForm', function () {
-      var fn = lib[this.title];
-
-      it('filters out non-settings items', function () {
-        var settingsItems = {
-          thing: {
-            value: 'hi',
-            _schema: {
-              _has: ['text'],
-              _display: 'settings'
-            }
-          },
-          thing2: {
-            value: 'bye',
-            _schema: {
-              _has: ['text']
-            }
-          },
-          _schema: {
-            thing: {
-              value: 'hi',
-              _schema: {
-                _has: ['text'],
-                _display: 'settings'
-              }
-            },
-            thing2: {
-              value: 'bye',
-              _schema: {
-                _has: ['text']
-              }
-            }
-          }
-        };
-
-        expectNoLogging();
-        expectSettingsItemBehavior();
-
-        fn('/components/name/id/foo', settingsItems, el);
-
-        expect(condense(el.firstElementChild.innerHTML)).to.equal(condense(`
-        <div class="editor-overlay">
-          <section class="editor">
-            <header>Name Settings</header>
+            <header>Thing</header>
             <form>
               <div class="input-container">
                 <div class="behaviour-element"></div>
@@ -191,37 +98,15 @@ describe(dirname, function () {
       it('ref is required', function () {
         expectNoLogging();
         expect(function () {
-          fn('', '', {}, el);
+          fn('', {}, el);
         }).to.throw(refIsRequired);
       });
 
       it('name is required', function () {
         expectNoLogging();
         expect(function () {
-          fn('some ref', '', {}, el);
-        }).to.throw(pathIsRequired);
-      });
-
-      it('schema is required', function () {
-        expectNoLogging();
-        expect(function () {
-          fn('some ref', 'some name', {}, el);
-        }).to.throw(schemaIsRequired);
-      });
-
-      it('can show basic template', function () {
-        var childEl = document.createElement('div');
-
-        el.appendChild(childEl);
-        expectNoLogging();
-        fn('ref', 'name', {_schema: {}}, childEl);
-
-        expect(condense(dom.find(el, '.editor-inline').innerHTML)).to.equal(condense(`
-        <form>
-          <div class="input-container"></div>
-         </form>`));
-
-        sandbox.verify();
+          fn('some ref', { _schema: {} }, el);
+        }).to.throw(nameIsRequired);
       });
 
       it('can show item in template', function () {
@@ -231,7 +116,7 @@ describe(dirname, function () {
         expectNoLogging();
         expectSingleItemBehavior('inline');
 
-        fn('ref', 'name', singleItem, childEl);
+        fn('ref', singleItem, childEl);
 
         expect(condense(dom.find(el, '.editor-inline').innerHTML)).to.equal(condense(`
         <form>

@@ -18,6 +18,8 @@ function ensureValidFormData(ref, data) {
     throw new Error('Data is required to create a form!');
   } else if (!_.isObject(data._schema)) {
     throw new Error('Schema is required to create a form!');
+  } else if (!_.get(data, '_schema._name')) {
+    throw new Error('_name is required to create a form!');
   }
 }
 
@@ -80,19 +82,10 @@ function appendElementClones(el, value) {
 
 /**
  * @param {object} data
- * @param {*} [data.value]
- * @param {object} data._schema
- * @return {Element | undefined}
+ * @return {Element}
  */
 function createField(data) {
-  var schema = data._schema,
-    el;
-
-  if (schema[references.fieldProperty]) {
-    return behaviors.run(data);
-  }
-
-  return el;
+  return behaviors.run(data);
 }
 
 /**
@@ -115,29 +108,31 @@ function expandFields(data) {
  * @param {Element} [rootEl=document.body]   Root element to temporarily insert the overlay
  */
 function createForm(ref, data, rootEl) {
-  var el;
+  var el, schema, name;
 
   ensureValidFormData(ref, data);
   rootEl = rootEl || document.body;
+  schema = data._schema;
+  name = schema._name; // we're already checking to make sure these exist
 
   // iterate through the data, creating fields
-  if (_.isArray(data.value) && data.value[0]._schema) {
-    // this is a group of fields
-    el = expandFields(data);
-  } else {
+  if (schema[references.fieldProperty]) {
     // this is a single field
     el = createField(data);
+  } else {
+    // this is a group of fields
+    el = expandFields(data);
   }
 
   // build up form el
-  el = createOverlayEl(createOverlayFormEl(label(_.get(data, '_schema._name'), data._schema), el));
+  el = createOverlayEl(createOverlayFormEl(label(name, schema), el));
   // append it to the body
   rootEl.appendChild(el);
 
   // register + instantiate controllers
   ds.controller('form', require('../controllers/form'));
   ds.controller('overlay', require('../controllers/overlay'));
-  ds.get('form', el, ref, _.get(data, '_schema._name'));
+  ds.get('form', el, ref, name);
   ds.get('overlay', el);
 }
 
@@ -147,17 +142,19 @@ function createForm(ref, data, rootEl) {
  * @param {Element} oldEl   Root element that is being inline edited
  */
 function createInlineForm(ref, data, oldEl) {
-  var innerEl, newEl, wrapped;
+  var schema, name, innerEl, newEl, wrapped;
 
   ensureValidFormData(ref, data);
+  schema = data._schema;
+  name = schema._name;
 
   // iterate through the data, creating fields
-  if (_.isArray(data.value) && data.value[0]._schema) {
-    // this is a group of fields
-    innerEl = expandFields(data);
-  } else {
+  if (schema[references.fieldProperty]) {
     // this is a single field
     innerEl = createField(data);
+  } else {
+    // this is a group of fields
+    innerEl = expandFields(data);
   }
 
   // build up form el
@@ -175,7 +172,7 @@ function createInlineForm(ref, data, oldEl) {
 
   // register + instantiate form controller
   ds.controller('form', require('../controllers/form'));
-  ds.get('form', newEl, ref, _.get(data, '_schema._name'), oldEl);
+  ds.get('form', newEl, ref, name, oldEl);
 }
 
 module.exports = {
