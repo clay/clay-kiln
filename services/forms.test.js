@@ -161,6 +161,7 @@ describe(dirname, function () {
         stubData({
           value: '123',
           _schema: {
+            _name: 'title',
             _display: 'inline'
           }
         });
@@ -183,6 +184,7 @@ describe(dirname, function () {
         stubData({
           value: '123',
           _schema: {
+            _name: 'title',
             _display: 'inline'
           }
         });

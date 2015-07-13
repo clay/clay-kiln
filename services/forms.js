@@ -32,18 +32,7 @@ function findFormContainer() {
  * @returns {boolean}
  */
 function dataChanged(data) {
-  return !_.isEqual(data, currentForm.serverData);
-}
-
-/**
- * Store the data from the server to compare for changes.
- * @param {string} path
- * @param {object} data
- */
-function storeServerData(path, data) {
-  var dataOnly = edit.removeSchemaFromData(_.cloneDeep(data));
-
-  currentForm.serverData = _.get(dataOnly, path);
+  return !_.isEqual(data, currentForm.data);
 }
 
 /**
@@ -93,7 +82,11 @@ function open(ref, el, path, e) {
 
     return edit.getData(ref).then(function (data) {
       // set current form data
-      storeServerData(path, data); // note: passing full component data into this
+      currentForm = {
+        ref: ref,
+        path: path,
+        data: edit.removeSchemaFromData(data)
+      };
 
       // then get a subset of the data, for the specific field / group
       data = groups.get(ref, data, path); // note: if path is undefined, it'll open the settings form
@@ -109,7 +102,7 @@ function open(ref, el, path, e) {
 
 /**
  * Close and save the open form.
- * @returns {Promise|undefined}
+ * @returns {Promise}
  */
 function close() {
   var ref, container, form, data;
@@ -120,10 +113,10 @@ function close() {
     ref = currentForm.ref;
     data = form && formValues.get(form);
 
-    // remove currentForm values
-    currentForm = {};
-
     if (dataChanged(data)) {
+      // remove currentForm values
+      currentForm = {};
+
       return edit.update(ref, data)
         .then(function () {
           removeCurrentForm(container);
@@ -136,6 +129,7 @@ function close() {
     } else {
       // Nothing changed, so do not reload.
       removeCurrentForm(container);
+      return Promise.resolve();
     }
   }
 }
