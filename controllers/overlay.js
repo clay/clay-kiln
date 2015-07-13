@@ -1,6 +1,6 @@
 module.exports = function () {
   var dom = require('../services/dom'),
-    focus = require('../services/focus'),
+    focus = require('../decorators/focus'),
     noScrollClass = 'noscroll';
 
   /**

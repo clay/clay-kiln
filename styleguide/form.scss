@@ -30,30 +30,6 @@
   overflow-y: scroll;
 }
 
-.editor .editor-section {
-  margin-left: -20px;
-  padding: 0 20px;
-  width: calc(100% + 40px);
-}
-
-.editor .editor-section + .editor-section {
-  border-top: 1px dashed $grey;
-  margin-top: 5px;
-}
-
-.editor .editor-section:last-of-type {
-  margin-bottom: 20px;
-}
-
-.editor .editor-section > h2 {
-  @include subsection-header();
-}
-
-.editor .editor-section-body {
-  display: flex;
-  flex-flow: row wrap;
-}
-
 .editor .button-container {
   align-content: space-around;
   align-items: center;

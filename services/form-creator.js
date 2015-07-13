@@ -5,37 +5,21 @@ var _ = require('lodash'),
   behaviors = require('./behaviors'),
   dom = require('./dom');
 
-// field creation
-
 /**
- * True if key/value pair is metadata
- *
- * @param {*} value
- * @param {string} key
- * @returns {boolean}
- */
-function isMetadata(value, key) {
-  return key[0] === '_';
-}
-
-/**
- * Schema and path are required for all forms
+ * ref, data, and data._schema are required for all forms
  * NOTE: Since exceptions are throw if the data is bad, no need to return anything unless we're _modifying_ the data.
  * @param {string} ref
- * @param {string} path
  * @param {object} data
  */
-function ensureValidFormData(ref, path, data) {
-
-
+function ensureValidFormData(ref, data) {
   if (!_.isString(ref) || _.isEmpty(ref)) {
     throw new Error('Reference is required to create a form!');
-  } else if (!_.isString(path) || _.isEmpty(path)) {
-    throw new Error('Path is required to create a form!');
   } else if (!_.isObject(data)) {
     throw new Error('Data is required to create a form!');
   } else if (!_.isObject(data._schema)) {
     throw new Error('Schema is required to create a form!');
+  } else if (!_.get(data, '_schema._name')) {
+    throw new Error('_name is required to create a form!');
   }
 }
 
@@ -97,146 +81,80 @@ function appendElementClones(el, value) {
 }
 
 /**
- * create fields recursively
- * @param  {{path: string, display: string, data: object}} context
- * @return {Element | undefined}
+ * @param {object} data
+ * @return {Element}
  */
-function createField(context) {
-  var schema = context.data._schema,
-    el, finalEl;
-
-  if (schema[references.fieldProperty]) {
-    return behaviors.run(context);
-  }
-
-  // iterate through this level of the schema, creating more fields
-  el = expandFields(context); // eslint-disable-line
-
-  // once we're done iterating, put those in a section
-  finalEl = dom.create(`
-    <section class="editor-section">
-      <h2 class="editor-section-head">${label(context.path, schema)}</h2>
-      <div class="editor-section-body">
-    </section>
-  `);
-  dom.find(finalEl, '.editor-section-body').appendChild(el);
-
-  return finalEl;
+function createField(data) {
+  return behaviors.run(data);
 }
 
 /**
  * Iterate through this level of the schema, creating more fields
  *
- * @param {{display: string, path: string, data: object}} context
+ * @param {object} data
  * @returns {Element}
  */
-function expandFields(context) {
-  var data = context.data;
-
-  return _(data._schema)
-    .omit(isMetadata)
-    .pick(_.isObject)
-    .map(function (value, name) {
-      var path = context.path ? context.path + '.' + name : name;
-
-      if (data[name]) {
-        return createField({data: data[name], path: path});
-      } else {
-        return null; // only create fields if they exist in the data. this is used to filter the settings form
-      }
+function expandFields(data) {
+  return _(data.value)
+    .map(function (field) {
+      return createField(field);
     })
-    .compact() // remove nulls
     .reduce(appendElementClones, document.createDocumentFragment());
 }
 
 /**
  * @param {string} ref  Place we'll be saving to
- * @param {string} path  What path within the data is being shown/modified
  * @param {object} data  The data itself (starting from path)
  * @param {Element} [rootEl=document.body]   Root element to temporarily insert the overlay
  */
-function createForm(ref, path, data, rootEl) {
-  var el;
+function createForm(ref, data, rootEl) {
+  var el, schema, name;
 
-  ensureValidFormData(ref, path, data);
+  ensureValidFormData(ref, data);
   rootEl = rootEl || document.body;
+  schema = data._schema;
+  name = schema._name; // we're already checking to make sure these exist
 
-  // iterate through first level of the schema, creating forms and fields
-  el = expandFields({
-    data: data,
-    path: path
-  });
+  // iterate through the data, creating fields
+  if (schema[references.fieldProperty]) {
+    // this is a single field
+    el = createField(data);
+  } else {
+    // this is a group of fields
+    el = expandFields(data);
+  }
 
   // build up form el
-  el = createOverlayEl(createOverlayFormEl(label(path, data._schema), el));
+  el = createOverlayEl(createOverlayFormEl(label(name, schema), el));
   // append it to the body
   rootEl.appendChild(el);
 
   // register + instantiate controllers
   ds.controller('form', require('../controllers/form'));
   ds.controller('overlay', require('../controllers/overlay'));
-  ds.get('form', el, ref, path);
-  ds.get('overlay', el);
-}
-
-/**
- * create settings form. similar to createForm()
- * @param {string} ref
- * @param {object} data
- * @param {Element} [rootEl=document.body]
- */
-function createSettingsForm(ref, data, rootEl) {
-  var path = references.getComponentNameFromReference(ref),
-    el;
-
-  // filter out non-settings top-level nodes
-  data = _.omit(data, function (node) {
-    return node._schema && node._schema[references.displayProperty] !== 'settings';
-  });
-
-  rootEl = rootEl || document.body;
-
-  // iterate through first level of the schema, creating forms and fields
-  el = expandFields({
-    data: data,
-    path: path
-  });
-
-  // build up form el
-  el = createOverlayEl(createOverlayFormEl(_.startCase(references.getComponentNameFromReference(ref)) + ' Settings', el));
-  // append it to the body
-  rootEl.appendChild(el);
-
-  // register + instantiate controllers
-  ds.controller('form', require('../controllers/form'));
-  ds.controller('overlay', require('../controllers/overlay'));
-  ds.get('form', el, ref, path);
+  ds.get('form', el, ref, name);
   ds.get('overlay', el);
 }
 
 /**
  * @param {string} ref  Place we'll be saving to
- * @param {string} path  What path within the data is being shown/modified
  * @param {object} data  The data itself (starting from path)
  * @param {Element} oldEl   Root element that is being inline edited
  */
-function createInlineForm(ref, path, data, oldEl) {
-  var innerEl, schema, newEl, isField, context, wrapped;
+function createInlineForm(ref, data, oldEl) {
+  var schema, name, innerEl, newEl, wrapped;
 
-  ensureValidFormData(ref, path, data);
-
+  ensureValidFormData(ref, data);
   schema = data._schema;
-  isField = !!schema[references.fieldProperty];
-  context = {
-    data: data,
-    path: path,
-    display: 'inline'
-  };
+  name = schema._name;
 
-  if (isField) {
-    innerEl = createField(context);
+  // iterate through the data, creating fields
+  if (schema[references.fieldProperty]) {
+    // this is a single field
+    innerEl = createField(data);
   } else {
-    innerEl = expandFields(context);
+    // this is a group of fields
+    innerEl = expandFields(data);
   }
 
   // build up form el
@@ -254,11 +172,10 @@ function createInlineForm(ref, path, data, oldEl) {
 
   // register + instantiate form controller
   ds.controller('form', require('../controllers/form'));
-  ds.get('form', newEl, ref, path, oldEl);
+  ds.get('form', newEl, ref, name, oldEl);
 }
 
 module.exports = {
   createForm: createForm,
-  createSettingsForm: createSettingsForm,
   createInlineForm: createInlineForm
 };

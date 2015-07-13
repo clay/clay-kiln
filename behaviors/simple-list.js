@@ -7,7 +7,7 @@ module.exports = function (result, args) {
     max = args.max,
     el = dom.create(`
       <section data-field="${result.bindings.name}" class="simple-list" rv-simplelist="data">
-        <span tabindex="0" rv-each-item="data" class="simple-list-item" rv-class-selected="item.selected" rv-on-click="selectItem" rv-on-keydown="keyactions">{ item.text }</span>
+        <span tabindex="0" rv-each-item="data" class="simple-list-item" rv-class-selected="item._selected" rv-on-click="selectItem" rv-on-keydown="keyactions">{ item.text }</span>
         <input class="simple-list-add" rv-on-click="unselectAll" placeholder="Start typing here&hellip;" />
       </section>`);
 
@@ -18,7 +18,7 @@ module.exports = function (result, args) {
    */
   function unselectAll(items) {
     return items.map(function (item) {
-      item.selected = false;
+      item._selected = false;
       return item;
     });
   }
@@ -32,7 +32,7 @@ module.exports = function (result, args) {
       data = bindings.data;
 
     unselectAll(data);
-    item.selected = true;
+    item._selected = true;
   }
 
   /**
@@ -133,7 +133,7 @@ module.exports = function (result, args) {
 
         if (!addEl.value || !addEl.value.length) {
           e.preventDefault(); // prevent triggering the browser's back button
-          _.last(data).selected = true;
+          _.last(data)._selected = true;
           observer.setValue(data);
           _.last(items).focus(); // focus on the last item
         }

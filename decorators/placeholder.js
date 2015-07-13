@@ -1,7 +1,7 @@
 var _ = require('lodash'),
-  references = require('./references'),
-  label = require('./label'),
-  dom = require('./dom');
+  references = require('../services/references'),
+  label = require('../services/label'),
+  dom = require('../services/dom');
 
 /**
  * get placeholder text

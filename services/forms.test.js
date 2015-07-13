@@ -5,6 +5,10 @@ var dirname = __dirname.split('/').pop(),
   formValues = require('./form-values'),
   lib = require('./forms');
 
+function resolver() {
+  return Promise.resolve();
+}
+
 describe(dirname, function () {
   describe(filename, function () {
     var sandbox;
@@ -13,8 +17,7 @@ describe(dirname, function () {
       sandbox = sinon.sandbox.create();
       // Disable reload
       sandbox.stub(lib, 'reload').returns({});
-      // Close any forms that may have been opened.
-      return lib.close();
+      lib.close();
     });
 
     afterEach(function () {
@@ -73,8 +76,8 @@ describe(dirname, function () {
       var fn = lib[this.title];
 
       beforeEach(function () {
-        sandbox.stub(formCreator, 'createInlineForm', sandbox.spy());
-        sandbox.stub(formCreator, 'createForm', sandbox.spy());
+        sandbox.stub(formCreator, 'createInlineForm', resolver);
+        sandbox.stub(formCreator, 'createForm', resolver);
       });
 
       it('does not open a second form if a form is already open', function () {
@@ -91,7 +94,7 @@ describe(dirname, function () {
             _display: 'inline'
           }
         });
-        return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen);
+        return fn('fakeRef', stubNode(), 'title').then(afterFormIsOpen);
       });
 
       it('opens inline forms', function () {
@@ -106,7 +109,7 @@ describe(dirname, function () {
             _display: 'inline'
           }
         });
-        return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen);
+        return fn('fakeRef', stubNode(), 'title').then(afterFormIsOpen);
       });
 
       it('opens overlay forms', function () {
@@ -127,13 +130,12 @@ describe(dirname, function () {
     });
 
     describe('close', function () {
-      var fn = lib[this.title],
-        spyEditUpdate;
+      var fn = lib[this.title];
 
       beforeEach(function () {
-        spyEditUpdate = sandbox.spy(edit, 'update');
-        sandbox.stub(formCreator, 'createInlineForm', sandbox.spy());
-        sandbox.stub(formCreator, 'createForm', sandbox.spy());
+        sandbox.stub(edit, 'update', resolver);
+        sandbox.stub(formCreator, 'createInlineForm', resolver);
+        sandbox.stub(formCreator, 'createForm', resolver);
       });
 
       it('does not remove or save when no forms are open', function () {
@@ -142,7 +144,7 @@ describe(dirname, function () {
         document.body.appendChild(el);
         fn();
         expect(el.childNodes.length).to.equal(0);
-        expect(spyEditUpdate.callCount).to.equal(0);
+        expect(edit.update.callCount).to.equal(0);
       });
 
       it('removes and saves inline forms when the data has changed', function () {
@@ -150,7 +152,7 @@ describe(dirname, function () {
 
         function afterFormIsClosed() {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
-          expect(spyEditUpdate.calledOnce).to.equal(true); // data was saved.
+          expect(edit.update.calledOnce).to.equal(true); // data was saved.
         }
         function afterFormIsOpen() {
           return fn().then(afterFormIsClosed);
@@ -159,7 +161,9 @@ describe(dirname, function () {
         stubData({
           value: '123',
           _schema: {
-            _display: 'inline'
+            _name: 'title',
+            _display: 'inline',
+            _has: 'text'
           }
         });
         return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen);
@@ -170,7 +174,7 @@ describe(dirname, function () {
 
         function afterFormIsClosed() {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
-          expect(spyEditUpdate.callCount).to.equal(0); // data was not saved.
+          expect(edit.update.callCount).to.equal(0); // data was not saved.
         }
         function afterFormIsOpen() {
           return fn().then(afterFormIsClosed);
@@ -181,7 +185,9 @@ describe(dirname, function () {
         stubData({
           value: '123',
           _schema: {
-            _display: 'inline'
+            _name: 'title',
+            _display: 'inline',
+            _has: 'text'
           }
         });
         return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen);
@@ -192,7 +198,7 @@ describe(dirname, function () {
 
         function afterFormIsClosed() {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
-          expect(spyEditUpdate.calledOnce).to.equal(true); // data was saved.
+          expect(edit.update.calledOnce).to.equal(true); // data was saved.
         }
         function afterFormIsOpen() {
           return fn().then(afterFormIsClosed);
@@ -201,7 +207,9 @@ describe(dirname, function () {
         stubData({
           value: '123',
           _schema: {
-            _display: 'overlay'
+            _display: 'overlay',
+            _name: 'title',
+            _has: 'text'
           }
         });
         return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen);
@@ -212,7 +220,7 @@ describe(dirname, function () {
 
         function afterFormIsClosed() {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
-          expect(spyEditUpdate.callCount).to.equal(0); // data was not saved.
+          expect(edit.update.callCount).to.equal(0); // data was not saved.
         }
         function afterFormIsOpen() {
           return fn().then(afterFormIsClosed);
@@ -223,7 +231,9 @@ describe(dirname, function () {
         stubData({
           value: '123',
           _schema: {
-            _display: 'overlay'
+            _display: 'overlay',
+            _name: 'title',
+            _has: 'text'
           }
         });
         return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen);

@@ -3,7 +3,7 @@
 
 var references = require('./references'),
   dom = require('./dom'),
-  focus = require('./focus'),
+  focus = require('../decorators/focus'),
   forms = require('./forms'),
   currentSelected;
 

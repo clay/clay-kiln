@@ -4,17 +4,19 @@ var _ = require('lodash'),
   formCreator = require('./form-creator'),
   edit = require('./edit'),
   formValues = require('./form-values'),
-  currentForm = {}, // Store form currently open, as only one form can be open at a time.
+  groups = require('./groups'),
   inlineSelector = '.editor-inline',
-  overlaySelector = '.editor-overlay-background';
+  overlaySelector = '.editor-overlay-background',
+  currentForm = {};
 
 /**
  * Check if a form is currently open. Only one form can be open at a time.
  * @returns {boolean}
  */
-function formIsOpen() {
+function isFormOpen() {
   return !!currentForm.ref;
 }
+
 
 /**
  * Find the form container.
@@ -25,25 +27,26 @@ function findFormContainer() {
 }
 
 /**
- * Get the current form's data.
- * @param {Element} form
- * @param {string} ref
- * @param {string} path
- * @returns {Object}
- */
-function getFormData(form, ref, path) {
-  return _.get(formValues.get(ref, form), path);
-}
-
-/**
- * Store the data from the server to compare for changes.
- * @param {string} path
+ * set data for a field / group into currentData=
  * @param {object} data
  */
-function storeServerData(path, data) {
-  var dataOnly = edit.removeSchemaFromData(_.cloneDeep(data));
+function setCurrentData(data) {
+  var schema = data._schema;
 
-  currentForm.serverData = _.get(dataOnly, path);
+  currentForm.data = {};
+
+  if (schema && schema[references.fieldProperty]) {
+    // this is a single field
+    currentForm.data[schema._name] = edit.removeSchemaFromData(_.cloneDeep(data));
+  } else {
+    // this is a group of fields
+    _.map(data.value, function (field) {
+      var name = _.get(field, '_schema._name'),
+        value = field.hasOwnProperty('value') ? field.value : field;
+
+      currentForm.data[name] = value;
+    });
+  }
 }
 
 /**
@@ -52,7 +55,7 @@ function storeServerData(path, data) {
  * @returns {boolean}
  */
 function dataChanged(data) {
-  return !_.isEqual(data, currentForm.serverData);
+  return !_.isEqual(data, currentForm.data);
 }
 
 /**
@@ -68,7 +71,7 @@ function replaceInlineForm(el) {
 }
 
 /**
- * Remove the form element and clear the currentForm object.
+ * Remove the form element
  * @param {Element} container
  */
 function removeCurrentForm(container) {
@@ -76,7 +79,6 @@ function removeCurrentForm(container) {
     replaceInlineForm(container);
     dom.removeElement(container);
   }
-  currentForm = {};
 }
 
 /**
@@ -90,34 +92,32 @@ function reload() {
  * Open a form.
  * @param {string} ref
  * @param {Element} el    The element that has `data-editable`, not always the parent of the form.
- * @param {string} path
+ * @param {string} [path]
  * @param {MouseEvent} [e]
  * @return {Promise|undefined}
  */
 function open(ref, el, path, e) {
-  if (!formIsOpen()) {
+  if (!isFormOpen()) {
     if (e) {
       e.stopPropagation();
       e.preventDefault();
     }
-    currentForm = {
-      ref: ref,
-      path: path
-    };
+
     return edit.getData(ref).then(function (data) {
-      storeServerData(path, data);
-      if (path) {
-        data = _.get(data, path);
-        if (data._schema[references.displayProperty] === 'inline') {
-          // inline forms have a path and _display: inline
-          return formCreator.createInlineForm(ref, path, data, el);
-        } else {
-          // overlay forms have a path and are the default
-          formCreator.createForm(ref, path, data);
-        }
+      // set current form data
+      currentForm = {
+        ref: ref,
+        path: path
+      };
+
+      // then get a subset of the data, for the specific field / group
+      data = groups.get(ref, data, path); // note: if path is undefined, it'll open the settings form
+      setCurrentData(data); // set that data into the currentForm
+
+      if (data._schema[references.displayProperty] === 'inline') {
+        return formCreator.createInlineForm(ref, data, el);
       } else {
-        // settings forms don't have a path, since they're operating on the whole component
-        return formCreator.createSettingsForm(ref, data);
+        return formCreator.createForm(ref, data);
       }
     });
   }
@@ -125,35 +125,38 @@ function open(ref, el, path, e) {
 
 /**
  * Close and save the open form.
- * @returns {Promise}
+ * @returns {Promise|undefined}
  */
 function close() {
-  return Promise.resolve((function () {
-    var ref, path, container, form, data;
+  var container, form, ref, data;
 
-    if (formIsOpen()) {
-      ref = currentForm.ref;
-      path = currentForm.path;
-      container = findFormContainer();
-      form = container && dom.find(container, 'form');
-      data = form && getFormData(form, ref, path);
+  if (isFormOpen()) {
+    container = findFormContainer();
+    form = container && dom.find(container, 'form');
+    ref = currentForm.ref;
+    data = form && formValues.get(form);
 
-      if (dataChanged(data)) {
-        return edit.update(ref, data, path)
-          .then(function () {
-            removeCurrentForm(container);
-            // Todo: don't reload the entire page.
-            module.exports.reload();
-          })
-          .catch(function () {
-            console.warn('Did not save.');
-          });
-      } else {
-        // Nothing changed, so do not reload.
-        removeCurrentForm(container);
-      }
+    if (dataChanged(data)) {
+      // remove currentForm values
+      currentForm = {};
+
+      return edit.update(ref, data)
+        .then(function () {
+          removeCurrentForm(container);
+          // Todo: don't reload the entire page.
+          module.exports.reload();
+        })
+        .catch(function () {
+          console.warn('Did not save.');
+        });
+    } else {
+      // Nothing changed, so do not reload.
+      // but still remove currentForm values
+      currentForm = {};
+      removeCurrentForm(container);
+      return Promise.resolve();
     }
-  }()));
+  }
 }
 
 exports.open = open;

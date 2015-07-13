@@ -25,9 +25,9 @@ behaviors.add('wysiwyg', require('./behaviors/wysiwyg'));
 behaviors.add('autocomplete', require('./behaviors/autocomplete'));
 
 // add default decorators
-decorators.add(require('./services/placeholder'));
-decorators.add(require('./services/focus'));
-decorators.add(require('./services/component-list'));
+decorators.add(require('./decorators/placeholder'));
+decorators.add(require('./decorators/focus'));
+decorators.add(require('./decorators/component-list'));
 
 // kick off controller loading when DOM is ready
 document.addEventListener('DOMContentLoaded', function () {

@@ -22,7 +22,7 @@ describe(dirname, function () {
         var result;
 
         addTestBehaviors();
-        result = fn({data: {_schema: {_has: 'testBehavior'}}, name: 'name', path: 'name'});
+        result = fn({_schema: {_name: 'name', _has: 'testBehavior'}});
         expect(result.firstElementChild.outerHTML).to.equal(singleElement);
       });
 
@@ -30,7 +30,7 @@ describe(dirname, function () {
         var result;
 
         addTestBehaviors();
-        result = fn({data: {_schema: {_has: ['testBehavior']}}, name: 'name', path: 'name'});
+        result = fn({_schema: {_name: 'name', _has: ['testBehavior']}});
         expect(result.firstElementChild.outerHTML).to.equal(singleElement);
       });
 
@@ -38,7 +38,7 @@ describe(dirname, function () {
         var result;
 
         addTestBehaviors();
-        result = fn({data: {_schema: {_has: [{ fn: 'testBehavior'}]}}, name: 'name', path: 'name'});
+        result = fn({_schema: {_name: 'name', _has: [{ fn: 'testBehavior'}]}});
         expect(result.firstElementChild.outerHTML).to.equal(singleElement);
       });
 
@@ -46,7 +46,7 @@ describe(dirname, function () {
         var result;
 
         addTestBehaviors();
-        result = fn({data: {_schema: {_has: [{ fn: 'testBehavior'}, { fn: 'testBehavior' }]}}, name: 'name', path: 'name'});
+        result = fn({_schema: {_name: 'name', _has: [{ fn: 'testBehavior'}, { fn: 'testBehavior' }]}});
         expect(result.firstElementChild.outerHTML).to.equal(singleElement);
         expect(result.firstElementChild.nextElementSibling.outerHTML).to.equal(singleElement);
       });
