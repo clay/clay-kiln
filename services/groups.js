@@ -54,9 +54,9 @@ function get(ref, data, path) {
     group = data._schema && data._schema[references.groupsProperty] && _.get(data._schema[references.groupsProperty], path),
     expanded;
 
-
   if (field) {
     // simply return the field
+    _.set(field, '_schema._name', path);
     return field;
   } else if (group) {
     // return the expanded group

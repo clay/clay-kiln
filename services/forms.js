@@ -27,11 +27,38 @@ function findFormContainer() {
 }
 
 /**
+ * set data for a field / group into currentData=
+ * @param {object} data
+ */
+function setCurrentData(data) {
+  var schema = data._schema;
+
+  currentForm.data = {};
+
+  if (schema && schema[references.fieldProperty]) {
+    // this is a single field
+    currentForm.data[schema._name] = edit.removeSchemaFromData(_.cloneDeep(data));
+  } else {
+    // this is a group of fields
+    _.map(data.value, function (field) {
+      var name = _.get(field, '_schema._name'),
+        value = field.hasOwnProperty('value') ? field.value : field;
+
+      currentForm.data[name] = value;
+    });
+  }
+}
+
+/**
  * Check if the local data is different than the data on the server.
  * @param {object} data   Edited data.
  * @returns {boolean}
  */
 function dataChanged(data) {
+  console.log(data)
+  console.log(currentForm.data)
+  console.log(!_.isEqual(data, currentForm.data))
+  return false;
   return !_.isEqual(data, currentForm.data);
 }
 
@@ -84,12 +111,12 @@ function open(ref, el, path, e) {
       // set current form data
       currentForm = {
         ref: ref,
-        path: path,
-        data: edit.removeSchemaFromData(data)
+        path: path
       };
 
       // then get a subset of the data, for the specific field / group
       data = groups.get(ref, data, path); // note: if path is undefined, it'll open the settings form
+      setCurrentData(data); // set that data into the currentForm
 
       if (data._schema[references.displayProperty] === 'inline') {
         return formCreator.createInlineForm(ref, data, el);
@@ -105,7 +132,7 @@ function open(ref, el, path, e) {
  * @returns {Promise}
  */
 function close() {
-  var ref, container, form, data;
+  var container, form, ref, data;
 
   if (isFormOpen()) {
     container = findFormContainer();
