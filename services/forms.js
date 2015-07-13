@@ -7,7 +7,16 @@ var _ = require('lodash'),
   groups = require('./groups'),
   inlineSelector = '.editor-inline',
   overlaySelector = '.editor-overlay-background',
-  isFormOpen = false;
+  currentForm = {};
+
+/**
+ * Check if a form is currently open. Only one form can be open at a time.
+ * @returns {boolean}
+ */
+function isFormOpen() {
+  return !!currentForm.ref;
+}
+
 
 /**
  * Find the form container.
@@ -19,15 +28,22 @@ function findFormContainer() {
 
 /**
  * Check if the local data is different than the data on the server.
- * @param {string} ref
  * @param {object} data   Edited data.
- * @returns {Promise}
+ * @returns {boolean}
  */
-function dataChanged(ref, data) {
-  return edit.getData(ref).then(function (oldData) {
-    oldData = edit.removeSchemaFromData(oldData);
-    return !_.isEqual(data, oldData);
-  });
+function dataChanged(data) {
+  return !_.isEqual(data, currentForm.serverData);
+}
+
+/**
+ * Store the data from the server to compare for changes.
+ * @param {string} path
+ * @param {object} data
+ */
+function storeServerData(path, data) {
+  var dataOnly = edit.removeSchemaFromData(_.cloneDeep(data));
+
+  currentForm.serverData = _.get(dataOnly, path);
 }
 
 /**
@@ -69,16 +85,17 @@ function reload() {
  * @return {Promise|undefined}
  */
 function open(ref, el, path, e) {
-  if (!isFormOpen) {
+  if (!isFormOpen()) {
     if (e) {
       e.stopPropagation();
       e.preventDefault();
     }
 
-    // set isFormOpen
-    isFormOpen = true;
-
     return edit.getData(ref).then(function (data) {
+      // set current form data
+      storeServerData(path, data); // note: passing full component data into this
+
+      // then get a subset of the data, for the specific field / group
       data = groups.get(ref, data, path); // note: if path is undefined, it'll open the settings form
 
       if (data._schema[references.displayProperty] === 'inline') {
@@ -92,38 +109,34 @@ function open(ref, el, path, e) {
 
 /**
  * Close and save the open form.
- * @returns {Promise}
+ * @returns {Promise|undefined}
  */
 function close() {
   var ref, container, form, data;
 
-  if (isFormOpen) {
+  if (isFormOpen()) {
     container = findFormContainer();
     form = container && dom.find(container, 'form');
-    ref = form && form.getAttribute('data-form-ref');
+    ref = currentForm.ref;
     data = form && formValues.get(form);
 
-    // set isFormOpen
-    isFormOpen = false;
+    // remove currentForm values
+    currentForm = {};
 
-    return dataChanged(ref, data).then(function (hasChanged) {
-      if (hasChanged) {
-        return edit.update(ref, data)
-          .then(function () {
-            removeCurrentForm(container);
-            // Todo: don't reload the entire page.
-            module.exports.reload();
-          })
-          .catch(function () {
-            console.warn('Did not save.');
-          });
-      } else {
-        // Nothing changed, so do not reload.
-        removeCurrentForm(container);
-      }
-    });
-  } else {
-    return Promise.resolve();
+    if (dataChanged(data)) {
+      return edit.update(ref, data)
+        .then(function () {
+          removeCurrentForm(container);
+          // Todo: don't reload the entire page.
+          module.exports.reload();
+        })
+        .catch(function () {
+          console.warn('Did not save.');
+        });
+    } else {
+      // Nothing changed, so do not reload.
+      removeCurrentForm(container);
+    }
   }
 }
 
