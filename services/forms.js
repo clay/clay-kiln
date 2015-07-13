@@ -125,7 +125,7 @@ function open(ref, el, path, e) {
 
 /**
  * Close and save the open form.
- * @returns {Promise}
+ * @returns {Promise|undefined}
  */
 function close() {
   var container, form, ref, data;
