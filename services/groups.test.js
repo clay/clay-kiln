@@ -1,6 +1,5 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
-  _ = require('lodash'),
   lib = require('./groups'),
   references = require('./references');
 
@@ -95,14 +94,15 @@ describe(dirname, function () {
       var fn = lib[this.title],
         fooData = {
           value: 'foo',
-          _schema: { _display: 'settings' }
+          _schema: { _name: 'foo', _display: 'settings' }
         },
         barData = {
           value: 'bar',
-          _schema: { _display: 'overlay' }
+          _schema: { _name: 'bar', _display: 'overlay' }
         },
         groupData = {
-          fields: ['foo', 'bar']
+          fields: ['foo', 'bar'],
+          _name: 'foobar'
         },
         stubData = {
           foo: fooData,
@@ -147,7 +147,7 @@ describe(dirname, function () {
 
         expect(fn('fakeRef', stubData)).to.eql({
           value: [fooData],
-          _schema: { _display: 'settings', _label: 'Fake Settings'}
+          _schema: { _display: 'settings', _label: 'Fake Settings', _name: 'settings' }
         });
       });
     });
