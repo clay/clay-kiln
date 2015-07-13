@@ -1,9 +1,10 @@
 var dom = require('./dom');
 
 describe('dom service', function () {
-  var el, childEl, secondChildEl;
+  var el, childEl, secondChildEl, sandbox;
 
   beforeEach(function () {
+    sandbox = sinon.sandbox.create();
     // create el
     el = document.createElement('section');
     el.classList.add('parent-el');
@@ -19,6 +20,10 @@ describe('dom service', function () {
     secondChildEl = document.createElement('div');
     secondChildEl.classList.add('second-child-el');
     el.appendChild(secondChildEl);
+  });
+
+  afterEach(function () {
+    sandbox.restore();
   });
 
   describe('find()', function () {
@@ -160,6 +165,20 @@ describe('dom service', function () {
       result.appendChild(secondChildEl);
 
       expect(dom.wrapElements(els, wrapper).outerHTML).to.not.equal(result.outerHTML);
+    });
+  });
+
+  describe('createRemoveNodeHandler', function () {
+    it('runs a function when the element is a removed node and then disconnects the observer', function () {
+      var mockMutationObserver = {disconnect: sandbox.spy(function () {})},
+        mockMutations = [{removedNodes: [el]}],
+        fn = sandbox.spy(function () {}),
+        removeNodeHandler = dom.createRemoveNodeHandler(el, fn);
+
+      removeNodeHandler(mockMutations, mockMutationObserver);
+
+      expect(fn.callCount).to.equal(1);
+      expect(mockMutationObserver.disconnect.callCount).to.equal(1);
     });
   });
 });

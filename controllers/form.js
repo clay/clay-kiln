@@ -23,6 +23,10 @@ module.exports = function () {
     // if this is an inline form, add an event handler that will close the form when you click out of it
     if (oldEl) {
       dom.find('html').addEventListener('click', outsideClickhandler);
+      // Make sure the event handler on html does not persist after the form is removed.
+      dom.onRemove(el, function () {
+        dom.find('html').removeEventListener('click', outsideClickhandler);
+      });
 
       // also set the height of the component bar
       select.setHeight(dom.closest(oldEl, '[' + references.referenceAttribute + ']'));
