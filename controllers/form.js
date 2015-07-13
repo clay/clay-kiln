@@ -31,7 +31,6 @@ module.exports = function () {
     this.ref = ref;
     this.path = path;
     this.form = dom.find(el, 'form');
-    this.form.setAttribute('data-form-ref', ref);
   }
 
   constructor.prototype = {
