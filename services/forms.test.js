@@ -1,6 +1,7 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   edit = require('./edit'),
+  render = require('./render'),
   formCreator = require('./form-creator'),
   formValues = require('./form-values'),
   lib = require('./forms');
@@ -15,8 +16,7 @@ describe(dirname, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      // Disable reload
-      sandbox.stub(lib, 'reload').returns({});
+      // Close any forms that may have been opened.
       lib.close();
     });
 
@@ -130,12 +130,14 @@ describe(dirname, function () {
     });
 
     describe('close', function () {
-      var fn = lib[this.title];
+      var fn = lib[this.title],
+        spyReloadComponent;
 
       beforeEach(function () {
         sandbox.stub(edit, 'update', resolver);
         sandbox.stub(formCreator, 'createInlineForm', resolver);
         sandbox.stub(formCreator, 'createForm', resolver);
+        spyReloadComponent = sandbox.spy(render, 'reloadComponent');
       });
 
       it('does not remove or save when no forms are open', function () {
@@ -145,6 +147,7 @@ describe(dirname, function () {
         fn();
         expect(el.childNodes.length).to.equal(0);
         expect(edit.update.callCount).to.equal(0);
+        expect(spyReloadComponent.callCount).to.equal(0);
       });
 
       it('removes and saves inline forms when the data has changed', function () {
@@ -153,6 +156,7 @@ describe(dirname, function () {
         function afterFormIsClosed() {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
           expect(edit.update.calledOnce).to.equal(true); // data was saved.
+          expect(spyReloadComponent.calledOnce).to.equal(true); // el was reloaded.
         }
         function afterFormIsOpen() {
           return fn().then(afterFormIsClosed);
@@ -175,6 +179,7 @@ describe(dirname, function () {
         function afterFormIsClosed() {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
           expect(edit.update.callCount).to.equal(0); // data was not saved.
+          expect(spyReloadComponent.callCount).to.equal(0); // el was not reloaded.
         }
         function afterFormIsOpen() {
           return fn().then(afterFormIsClosed);
@@ -199,6 +204,7 @@ describe(dirname, function () {
         function afterFormIsClosed() {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
           expect(edit.update.calledOnce).to.equal(true); // data was saved.
+          expect(spyReloadComponent.calledOnce).to.equal(true); // el was reloaded.
         }
         function afterFormIsOpen() {
           return fn().then(afterFormIsClosed);
@@ -221,6 +227,7 @@ describe(dirname, function () {
         function afterFormIsClosed() {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
           expect(edit.update.callCount).to.equal(0); // data was not saved.
+          expect(spyReloadComponent.callCount).to.equal(0); // el was not reloaded.
         }
         function afterFormIsOpen() {
           return fn().then(afterFormIsClosed);
