@@ -55,10 +55,16 @@ module.exports = function (result, args) {
    * @param  {{item: {}, data: []}} bindings
    */
   function selectNext(e, index, bindings) {
-    if (index < bindings.data.length) {
+    var input = dom.find(el, '.simple-list-add');
+
+    if (index < bindings.data.length - 1) {
       e.preventDefault(); // kill that tab!
       selectItem({ item: bindings.data[index + 1], data: bindings.data });
       e.target.nextSibling.focus();
+    } else {
+      // we currently have the last item selected, so focus the input
+      input.dispatchEvent(new Event('click'));
+      input.focus();
     }
   }
 
