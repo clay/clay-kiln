@@ -122,9 +122,12 @@ module.exports = function (result, args) {
         if (e) {
           e.preventDefault();
         }
-        addEl.value = ''; // remove it from the add-item field
-        data.push(newText); // put it into the data
-        observer.setValue(data);
+
+        if (addEl.value.length) {
+          addEl.value = ''; // remove it from the add-item field
+          data.push(newText); // put it into the data
+          observer.setValue(data);
+        }
       }
 
       // select the last item when you backspace from the add-items field

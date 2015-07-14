@@ -1,0 +1,4 @@
+input::-webkit-calendar-picker-indicator {
+  display: none; // hide the autocomplete datalist picker in chrome
+  // note: it doesn't appear in firefox by default
+}
