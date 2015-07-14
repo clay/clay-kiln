@@ -143,8 +143,8 @@ module.exports = function (result, args) {
         if (!addEl.value || !addEl.value.length) {
           e.preventDefault(); // prevent triggering the browser's back button
           _.last(data)._selected = true;
-          observer.setValue(data);
           _.last(items).focus(); // focus on the last item
+          observer.setValue(data);
         }
       }
 
