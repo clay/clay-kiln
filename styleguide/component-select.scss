@@ -44,3 +44,8 @@ $bar-width: 30px;
   white-space: nowrap;
   width: 0;
 }
+
+// all editable elements should have some kind of ux showing they can be edited
+[data-editable] {
+  cursor: pointer;
+}
