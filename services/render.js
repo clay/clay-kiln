@@ -35,6 +35,5 @@ function reloadComponent(ref) {
     });
 }
 
-exports = module.exports;
 exports.addComponentHandlers = addComponentHandlers;
 exports.reloadComponent = reloadComponent;
