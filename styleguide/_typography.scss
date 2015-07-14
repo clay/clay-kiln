@@ -4,13 +4,17 @@
 
 @mixin body-copy {
   color: $black;
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: inherit;
   font-size: 16px;
   line-height: 19px;
 
   &::selection {
     background-color: $blue-50;
   }
+}
+
+@mixin overlay-copy {
+  font-family: Helvetica, Arial, sans-serif;
 }
 
 @mixin section-header {

@@ -5,7 +5,8 @@ var _ = require('lodash'),
   dom = require('./dom'),
   ds = require('dollar-slice'),
   references = require('./references'),
-  select = require('./select');
+  select = require('./select'),
+  edit = require('./edit');
 
 /**
  * Adds event handlers to the component element.
@@ -32,6 +33,10 @@ function reloadComponent(ref) {
         dom.replaceElement(el, updatedEl);
         addComponentHandlers(updatedEl, ref);
       });
+
+      // clear the schema and data cache
+      edit.setSchemaCache({});
+      edit.setDataCache({});
     });
 }
 
