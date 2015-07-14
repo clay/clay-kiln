@@ -183,7 +183,7 @@ describe(dirname, function () {
         expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'titlegroup'})).to.equal(false);
       });
 
-      it('throws error if group with ifEmpty pointing to something that is not a field', function () {
+      it('returns false if group with ifEmpty points to something that is not a field', function () {
         var otherField = {
             value: '',
             _schema: {
@@ -200,12 +200,9 @@ describe(dirname, function () {
               },
               _name: 'titlegroup'
             }
-          },
-          result = function () {
-            return fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'});
           };
 
-        expect(result).to.throw(Error);
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'})).to.equal(false);
       });
     });
 

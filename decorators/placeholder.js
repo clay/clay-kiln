@@ -65,11 +65,7 @@ function getFieldFromGroup(name, value) {
     return name === currentField;
   });
 
-  if (possibleField) {
-    return possibleField;
-  } else {
-    throw new Error('Cannot find field "' + name + '" in group!');
-  }
+  return possibleField;
 }
 
 /**
@@ -81,9 +77,9 @@ function getFieldFromGroup(name, value) {
 function isGroupEmpty(data) {
   var fieldName = _.get(data, '_schema._placeholder.ifEmpty'),
     field = getFieldFromGroup(fieldName, data.value),
-    isField = field._schema && !!field._schema[references.fieldProperty];
+    isField = _.has(field, '_schema.' + references.fieldProperty);
 
-  return fieldName && isField && isFieldEmpty(field);
+  return !!fieldName && isField && isFieldEmpty(field);
 }
 
 /**
@@ -111,19 +107,12 @@ function addPlaceholderDom(node, obj) {
 function hasPlaceholder(el, options) {
   var schema = _.get(options, 'data._schema'),
     isPlaceholder = !!schema[references.placeholderProperty],
-    isField = !!schema[references.fieldProperty],
-    isGroup = !!schema.fields;
+    isField = !!schema[references.fieldProperty];
 
-  if (isField) {
-    // if it's a field, make sure it has a placeholder and is empty
-    return isPlaceholder && isFieldEmpty(options.data);
-  } else if (isGroup) {
-    // if it's a group, make sure the group has a placeholder and points to an empty field
-    return isPlaceholder && isGroupEmpty(options.data);
-  } else {
-    // if it's neither, don't add a placeholder
-    return false;
-  }
+  // if it has a placeholder...
+  // if it's a field, make sure it's empty
+  // if it's a group, make sure it points to an empty field
+  return isPlaceholder && isField ? isFieldEmpty(options.data) : isGroupEmpty(options.data);
 }
 
 /**
