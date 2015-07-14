@@ -17,8 +17,8 @@
 .editor > header {
   @include section-header();
 
-  bottom: calc(100% + 30px);
-  left: 0;
+  bottom: calc(100% + 38px);
+  left: -32px;
   position: absolute;
 }
 
@@ -31,15 +31,13 @@
 }
 
 .editor .button-container {
-  align-content: space-around;
-  align-items: center;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-end;
+  position: absolute;
+  top: calc(100% + 60px);
+  left: -32px;
 }
 
 .editor .button-container .save {
-  @include button-small();
+  @include button-large();
   @include button-primary-1();
 }
 
@@ -50,14 +48,13 @@
   align-items: stretch;
   display: flex;
   flex-flow: row wrap;
-  justify-content: center;
 }
 
 /* labels are containers that refer to inputs, textareas, or whatever else */
 .editor .input-label {
   @include clearfix();
 
-  flex: 1 1;
+  flex: 0 0 100%;
   margin: 10px 0 20px;
   min-width: 30rem;
   position: relative;
