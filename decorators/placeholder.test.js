@@ -138,6 +138,53 @@ describe(dirname, function () {
 
         expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'})).to.equal(false);
       });
+
+      it('returns true if group with ifEmpty pointing to a field', function () {
+        var title = {
+            value: '',
+            _schema: {
+              _has: 'text',
+              _name: 'title'
+            }
+          },
+          stubData = {
+            value: [title],
+            _schema: {
+              fields: ['title'],
+              _placeholder: {
+                ifEmpty: 'title'
+              },
+              _name: 'titlegroup'
+            }
+          };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'titlegroup'})).to.equal(true);
+      });
+
+      it('throws error if group with ifEmpty pointing to something that is not a field', function () {
+        var otherField = {
+            value: '',
+            _schema: {
+              _has: 'text',
+              _name: 'otherField'
+            }
+          },
+          stubData = {
+            value: [otherField],
+            _schema: {
+              fields: ['title'],
+              _placeholder: {
+                ifEmpty: 'title'
+              },
+              _name: 'titlegroup'
+            }
+          },
+          result = function () {
+            return fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'});
+          };
+
+        expect(result).to.throw(Error);
+      });
     });
 
     describe('handler', function () {
