@@ -7,24 +7,27 @@ $bar-width: 30px;
 }
 
 .component-bar {
-  background-color: rgba($blue-25, .5);
-  border: 1px solid $blue-50;
-  cursor: pointer;
-  display: none;
+  background-color: $blue-25;
   height: 100%;
   left: 100%;
+  opacity: 0;
   position: absolute;
+  text-transform: uppercase;
   top: 0;
+  transition: opacity .15s ease-in-out;
   width: $bar-width;
 }
 
 .component-bar-wrapper.selected-parent > .component-bar {
-  display: block;
-  filter: blur(1px);
+  background-color: rgb(163, 212, 228);
+  cursor: pointer;
+  opacity: 1;
+  transform: translate(4px, 1px);
 }
 
 .component-bar-wrapper.selected > .component-bar {
-  display: block;
+  cursor: pointer;
+  opacity: 1;
 }
 
 .component-bar-title {
