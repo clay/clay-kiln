@@ -32,6 +32,11 @@ function getPlaceholderHeight(schema) {
   return placeholder && placeholder.height || '100px';
 }
 
+/**
+ * test to see if a field is empty
+ * @param {object} data
+ * @returns {boolean}
+ */
 function isFieldEmpty(data) {
   // note: 0, false, etc are valid bits of data for numbers, booleans, etc so they shouldn't be masked
   var value;
@@ -44,6 +49,37 @@ function isFieldEmpty(data) {
   }
 
   return !_.isBoolean(value) && !_.isNumber(value) && _.isEmpty(value);
+}
+
+/**
+ * given an array of fields, find the field that matches a certain name
+ * @param {string} name
+ * @param {array} value
+ * @throws {Error} if no field found (this is a programmer error)
+ * @returns {object}
+ */
+function getFieldFromGroup(name, value) {
+  var possibleField = _.find(value, function (field) {
+    var currentField = _.get(field, '_schema._name');
+
+    return name === currentField;
+  });
+
+  return possibleField;
+}
+
+/**
+ * determine if a group is empty
+ * by looking at the field denoted by the `ifEmpty` property (in the placeholder object)
+ * @param {obejct} data
+ * @returns {boolean}
+ */
+function isGroupEmpty(data) {
+  var fieldName = _.get(data, '_schema._placeholder.ifEmpty'),
+    field = getFieldFromGroup(fieldName, data.value),
+    isField = _.has(field, '_schema.' + references.fieldProperty);
+
+  return !!fieldName && isField && isFieldEmpty(field);
 }
 
 /**
@@ -73,7 +109,10 @@ function hasPlaceholder(el, options) {
     isPlaceholder = !!schema[references.placeholderProperty],
     isField = !!schema[references.fieldProperty];
 
-  return isPlaceholder && isField && isFieldEmpty(options.data);
+  // if it has a placeholder...
+  // if it's a field, make sure it's empty
+  // if it's a group, make sure it points to an empty field
+  return isPlaceholder && isField ? isFieldEmpty(options.data) : isGroupEmpty(options.data);
 }
 
 /**

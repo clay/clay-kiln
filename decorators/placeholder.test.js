@@ -138,6 +138,72 @@ describe(dirname, function () {
 
         expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'})).to.equal(false);
       });
+
+      it('returns true if group with ifEmpty pointing to an empty field', function () {
+        var title = {
+            value: '',
+            _schema: {
+              _has: 'text',
+              _name: 'title'
+            }
+          },
+          stubData = {
+            value: [title],
+            _schema: {
+              fields: ['title'],
+              _placeholder: {
+                ifEmpty: 'title'
+              },
+              _name: 'titlegroup'
+            }
+          };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'titlegroup'})).to.equal(true);
+      });
+
+      it('returns false if group with ifEmpty pointing to a non-empty field', function () {
+        var title = {
+            value: 'abcd',
+            _schema: {
+              _has: 'text',
+              _name: 'title'
+            }
+          },
+          stubData = {
+            value: [title],
+            _schema: {
+              fields: ['title'],
+              _placeholder: {
+                ifEmpty: 'title'
+              },
+              _name: 'titlegroup'
+            }
+          };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'titlegroup'})).to.equal(false);
+      });
+
+      it('returns false if group with ifEmpty points to something that is not a field', function () {
+        var otherField = {
+            value: '',
+            _schema: {
+              _has: 'text',
+              _name: 'otherField'
+            }
+          },
+          stubData = {
+            value: [otherField],
+            _schema: {
+              fields: ['title'],
+              _placeholder: {
+                ifEmpty: 'title'
+              },
+              _name: 'titlegroup'
+            }
+          };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'})).to.equal(false);
+      });
     });
 
     describe('handler', function () {
