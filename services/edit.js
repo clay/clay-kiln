@@ -147,7 +147,8 @@ function update(ref, data) {
           // shallowly copy over the new data
           data = _.defaults(data, oldData);
           delete data._ref;
-
+          // Clear cache for this ref.
+          delete refData[ref];
           return db.putToReference(ref, data);
         });
       }
