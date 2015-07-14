@@ -139,7 +139,7 @@ describe(dirname, function () {
         expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'})).to.equal(false);
       });
 
-      it('returns true if group with ifEmpty pointing to a field', function () {
+      it('returns true if group with ifEmpty pointing to an empty field', function () {
         var title = {
             value: '',
             _schema: {
@@ -159,6 +159,28 @@ describe(dirname, function () {
           };
 
         expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'titlegroup'})).to.equal(true);
+      });
+
+      it('returns false if group with ifEmpty pointing to a non-empty field', function () {
+        var title = {
+            value: 'abcd',
+            _schema: {
+              _has: 'text',
+              _name: 'title'
+            }
+          },
+          stubData = {
+            value: [title],
+            _schema: {
+              fields: ['title'],
+              _placeholder: {
+                ifEmpty: 'title'
+              },
+              _name: 'titlegroup'
+            }
+          };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'titlegroup'})).to.equal(false);
       });
 
       it('throws error if group with ifEmpty pointing to something that is not a field', function () {

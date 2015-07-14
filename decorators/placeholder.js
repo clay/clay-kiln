@@ -115,10 +115,13 @@ function hasPlaceholder(el, options) {
     isGroup = !!schema.fields;
 
   if (isField) {
+    // if it's a field, make sure it has a placeholder and is empty
     return isPlaceholder && isFieldEmpty(options.data);
   } else if (isGroup) {
+    // if it's a group, make sure the group has a placeholder and points to an empty field
     return isPlaceholder && isGroupEmpty(options.data);
   } else {
+    // if it's neither, don't add a placeholder
     return false;
   }
 }
