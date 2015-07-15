@@ -16,7 +16,7 @@ module.exports = function (result, args) {
   bindings.placeholder = args.placeholder || '';
 
   textArea = dom.create(`
-    <label class="input-label"><span class="label-inner">{ label }</span>
+    <label class="input-label">
       <textarea class="editor-textarea" data-field="${bindings.name}" rv-required="required" rv-placeholder="placeholder" rv-value="data.value"></textarea>
     </label>
   `);

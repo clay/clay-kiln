@@ -23,6 +23,7 @@ behaviors.add('simple-list-primary', require('./behaviors/simple-list-primary'))
 behaviors.add('wysiwyg', require('./behaviors/wysiwyg'));
 behaviors.add('autocomplete', require('./behaviors/autocomplete'));
 behaviors.add('drop-image', require('./behaviors/drop-image'));
+behaviors.add('label', require('./behaviors/label'));
 
 // add default decorators
 decorators.add(require('./decorators/placeholder'));

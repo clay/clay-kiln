@@ -16,7 +16,7 @@ module.exports = function (result, args) {
   bindings.placeholder = args.placeholder || '';
 
   urlField = dom.create(`
-    <label class="input-label"><span class="label-inner">{ label }</span>
+    <label class="input-label">
       <input data-field="${bindings.name}" type="url" rv-required="required" rv-placeholder="placeholder" rv-value="data.value" />
     </label>
   `);

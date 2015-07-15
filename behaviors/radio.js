@@ -25,7 +25,7 @@ module.exports = function (result, args) {
     field;
 
   field = dom.create(`
-    <span class="input-label"><span class="label-inner">{ label }</span></span>
+    <span class="input-label">
     <ul class="editor-radios">
       ${ createOptions(name, options) }
     </ul>
