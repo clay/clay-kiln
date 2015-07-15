@@ -88,7 +88,7 @@ function expectHTMLResult(ref) {
         parent.innerHTML = target.responseText;
         result = dom.getFirstChildElement(parent);
         // The element with `data-ref` is not always the parent, e.g. article.
-        refEl = dom.find(parent, '[data-ref=""]');
+        refEl = dom.find(parent, '[' + references.referenceAttribute + '=""]');
         refEl.setAttribute(references.referenceAttribute, ref);
         return result;
       } else {
