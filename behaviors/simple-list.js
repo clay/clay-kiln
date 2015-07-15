@@ -55,10 +55,18 @@ module.exports = function (result, args) {
    * @param  {{item: {}, data: []}} bindings
    */
   function selectNext(e, index, bindings) {
-    if (index < bindings.data.length) {
+    var input = dom.find(el, '.simple-list-add');
+
+    if (index < bindings.data.length - 1) {
       e.preventDefault(); // kill that tab!
       selectItem({ item: bindings.data[index + 1], data: bindings.data });
       e.target.nextSibling.focus();
+    } else {
+      // we currently have the last item selected, so focus the input
+      e.preventDefault();
+      e.stopPropagation(); // stop the current event first
+      input.dispatchEvent(new Event('click'));
+      input.focus();
     }
   }
 
@@ -137,8 +145,8 @@ module.exports = function (result, args) {
         if (!addEl.value || !addEl.value.length) {
           e.preventDefault(); // prevent triggering the browser's back button
           _.last(data)._selected = true;
-          observer.setValue(data);
           _.last(items).focus(); // focus on the last item
+          observer.setValue(data);
         }
       }
 
