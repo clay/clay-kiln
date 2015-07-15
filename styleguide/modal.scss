@@ -1,5 +1,6 @@
 @import 'colors';
 @import 'layers';
+@import 'typography';
 
 .editor-overlay-background {
   @include overlay-layer();
@@ -15,6 +16,8 @@
 }
 
 .editor-overlay {
+  @include overlay-copy();
+
   background-color: #fff;
   border-radius: 4px;
   margin: 60px auto 30px;
