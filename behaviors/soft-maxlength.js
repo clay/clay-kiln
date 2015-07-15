@@ -1,3 +1,9 @@
+/*
+Soft Maxlength arguments
+
+value {number} maximum number of characters allowed
+ */
+
 var striptags = require('striptags'),
   dom = require('../services/dom');
 

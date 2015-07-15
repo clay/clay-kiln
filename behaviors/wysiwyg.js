@@ -1,3 +1,11 @@
+/*
+WYSIWYG arguments
+
+multiline {boolean} allow or disallow multi-paragraph selection
+buttons {array} array of button names (strings) for tooltip
+placeholder {string} placeholder that will display in the input
+ */
+
 var keycode = require('keycode'),
   MediumEditor = require('medium-editor'),
   MediumButton = require('../services/medium-button'),

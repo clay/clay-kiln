@@ -1,3 +1,7 @@
+/*
+Drop Image has no arguments!
+ */
+
 // add dragdrop events to field
 module.exports = function (result) {
   var el = result.el;

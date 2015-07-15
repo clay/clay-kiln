@@ -1,3 +1,9 @@
+/*
+Radio arguments
+
+options {array} array of strings
+ */
+
 var _ = require('lodash'),
   dom = require('../services/dom');
 
@@ -17,9 +23,6 @@ module.exports = function (result, args) {
     name = bindings.name,
     options = args.options,
     field;
-
-  // add some stuff to the bindings
-  bindings.required = !!args.required;
 
   field = dom.create(`
     <span class="input-label"><span class="label-inner">{ label }</span></span>

@@ -1,3 +1,9 @@
+/*
+Autocomplete arguments
+
+api {string} api to point to
+ */
+
 var dom = require('../services/dom'),
   db = require('../services/db'),
   cid = require('../services/cid');

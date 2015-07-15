@@ -1,3 +1,13 @@
+/*
+Text arguments
+
+required {boolean} set input required (blocking)
+pattern {regex} required input pattern (blocking)
+minLength {number} minimum number of characters required (blocking)
+maxLength {number} maximum number of characters allowed (blocking)
+placeholder {string} placeholder that will display in the input
+ */
+
 var dom = require('../services/dom');
 
 module.exports = function (result, args) {
