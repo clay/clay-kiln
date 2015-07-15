@@ -63,6 +63,8 @@ module.exports = function (result, args) {
       e.target.nextSibling.focus();
     } else {
       // we currently have the last item selected, so focus the input
+      e.preventDefault();
+      e.stopPropagation(); // stop the current event first
       input.dispatchEvent(new Event('click'));
       input.focus();
     }
