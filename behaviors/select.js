@@ -19,7 +19,7 @@ module.exports = function (result, args) {
     field;
 
   field = dom.create(`
-    <label class="input-label"><span class="label-inner">{ label }</span>
+    <label class="input-label">
       <select class="editor-select" data-field="${bindings.name}" rv-value="data.value">
         ${ createOptions(options) }
       </select>

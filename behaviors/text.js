@@ -22,7 +22,7 @@ module.exports = function (result, args) {
   bindings.placeholder = args.placeholder;
 
   textField = dom.create(`
-      <label class="input-label"><span class="label-inner">{ label }</span>
+      <label class="input-label">
         <input class="input-text" data-field="${bindings.name}" type="text" rv-required="required" rv-pattern="pattern" rv-minLength="minLength" rv-maxLength="maxLength" rv-placeholder="placeholder" rv-value="data.value | custom" />
       </label>
     `);

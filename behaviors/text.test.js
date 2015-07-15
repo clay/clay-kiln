@@ -5,10 +5,6 @@ var fixture = require('../test/fixtures/behavior'),
 fixture.bindings.data = 'foobar';
 
 describe('text behavior', function () {
-  it('has .label-inner', function () {
-    expect(text(fixture, {}).el.querySelector('.label-inner')).to.not.equal(undefined);
-  });
-
   it('has input', function () {
     expect(text(fixture, {}).el.querySelector('input')).to.not.equal(undefined);
   });
