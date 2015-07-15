@@ -76,19 +76,20 @@ function expectJSONResult(target) {
  * @returns {function}
  */
 function expectHTMLResult(ref) {
-  var result, parent, statusCodeGroup;
+  var result, refEl, parent, statusCodeGroup;
 
   return function (target, error) {
     if (error) {
       throw error;
     } else {
       statusCodeGroup = target.status.toString()[0];
-
       if (statusCodeGroup === '2') {
         parent = document.createElement('div');
         parent.innerHTML = target.responseText;
         result = dom.getFirstChildElement(parent);
-        result.setAttribute(references.referenceAttribute, ref);
+        // The element with `data-ref` is not always the parent, e.g. article.
+        refEl = dom.find(parent, '[data-ref=""]');
+        refEl.setAttribute(references.referenceAttribute, ref);
         return result;
       } else {
         return target;

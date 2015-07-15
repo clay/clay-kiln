@@ -32,24 +32,7 @@ decorators.add(require('./decorators/component-list'));
 
 // kick off controller loading when DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
-  var components = document.querySelectorAll('[' + references.referenceAttribute + ']'),
-    i = 0,
-    l = components.length,
-    component, ref, name;
-
-  // iterate through all components on the page
-  // instantiate component-edit on them if they aren't editor components
-  // call select.handler on them to add component-bars
-  for (; i < l; i++) {
-    component = components[i];
-    ref = component.getAttribute(references.referenceAttribute);
-    name = references.getComponentNameFromReference(ref);
-
-    if (name && name !== 'editor-toolbar') {
-      render.addComponentHandlers(component, ref);
-    }
-  }
-
+  render.addComponentsHandlers(document);
   // because eslint complains if we don't use the new thing we've created.  We will add to this later.
   pageToolbar = new EditorToolbar(dom.find('[' + references.componentAttribute + '="editor-toolbar"]'));
   console.log('toolbar initialized: ', pageToolbar);
