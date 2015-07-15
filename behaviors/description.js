@@ -1,3 +1,9 @@
+/*
+Description arguments
+
+value {string} the actual description
+ */
+
 var dom = require('../services/dom');
 
 module.exports = function (result, args) {

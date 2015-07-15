@@ -1,3 +1,11 @@
+/*
+Simple List arguments
+
+min {number} minimum number of items required
+max {number} maximum number of items allowed
+
+ */
+
 var _ = require('lodash'),
   keycode = require('keycode'),
   dom = require('../services/dom');

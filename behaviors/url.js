@@ -1,3 +1,10 @@
+/*
+Url arguments
+
+required {boolean} set input required (blocking)
+placeholder {string} placeholder that will display in the input
+ */
+
 var dom = require('../services/dom');
 
 module.exports = function (result, args) {

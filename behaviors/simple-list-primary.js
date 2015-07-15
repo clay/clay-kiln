@@ -1,3 +1,10 @@
+/*
+Simple List Primary arguments
+
+propertyName {string} name of the property that is considered "primary"
+badge {string} string to put in the badge. defaults to property name
+ */
+
 var _ = require('lodash'),
   dom = require('../services/dom');
 

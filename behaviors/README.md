@@ -95,3 +95,16 @@ has_transcluded_functions:
       twitter:
         _has: text
 ```
+
+## How to define arguments for your behavior
+
+It's best practice to write a comment at the top of your `<behavior>.js` file describing the arguments it accepts. This acts as a sort of API document for developers writing schemas against this behavior. Here's an example:
+
+```js
+/*
+  Arguments for the autocomplete behavior:
+
+  api {string} points to the api that will be used for autocomplete
+  deleteIfEmpty {boolean} if true, this will call DELETE against the api when you delete an item
+ */
+```
