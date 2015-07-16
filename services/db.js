@@ -76,7 +76,7 @@ function expectJSONResult(target) {
  * @returns {function}
  */
 function expectHTMLResult(ref) {
-  var result, refEl, parent, statusCodeGroup;
+  var container, componentEl, statusCodeGroup;
 
   return function (target, error) {
     if (error) {
@@ -84,13 +84,12 @@ function expectHTMLResult(ref) {
     } else {
       statusCodeGroup = target.status.toString()[0];
       if (statusCodeGroup === '2') {
-        parent = document.createElement('div');
-        parent.innerHTML = target.responseText;
-        result = dom.getFirstChildElement(parent);
-        // The element with `data-ref` is not always the parent, e.g. article.
-        refEl = dom.find(parent, '[' + references.referenceAttribute + '=""]');
-        refEl.setAttribute(references.referenceAttribute, ref);
-        return result;
+        container = document.createElement('div');
+        container.innerHTML = target.responseText;
+        // The first element in a component always has the referenceAttribute.
+        componentEl = dom.getFirstChildElement(container);
+        componentEl.setAttribute(references.referenceAttribute, ref);
+        return componentEl;
       } else {
         return target;
       }

@@ -34,30 +34,12 @@ function addComponentsHandlers(el) {
 }
 
 /**
- * Get the first element that has the data-ref attribute.
- * The first element in a component does not always have the data-ref attribute. e.g. `<article>` is within `<main>`
- * @param {string} ref
- * @returns {Function} which takes and returns an Element.
- */
-function getRefEl(ref) {
-  return function (el) {
-    var isRefEl = el.getAttribute(references.referenceAttribute) === ref;
-
-    if (!isRefEl) {
-      el = dom.find(el, '[' + references.referenceAttribute + '="' + ref + '"]');
-    }
-    return el;
-  };
-}
-
-/**
  * Reload component with latest HTML from the server.
  * @param {string} ref
  * @returns {Promise}
  */
 function reloadComponent(ref) {
   return db.getComponentHTMLFromReference(ref)
-    .then(getRefEl(ref))
     .then(function (updatedEl) {
       var els = dom.findAll('[' + references.referenceAttribute + '="' + ref + '"]');
 
