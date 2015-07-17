@@ -38,7 +38,7 @@ describe('edit service', function () {
       sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({some: {more: 'things'}}));
       sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({some: {more: {_things: 'to know'}}}));
       return fn('foo').then(function (data) {
-        return expect(data.some.more._schema).to.deep.equal({_things: 'to know', _name: 'more'});
+        return expect(data.some.more._schema).to.deep.equal({_things: 'to know'});
       });
     });
   });
@@ -85,13 +85,11 @@ describe('edit service', function () {
         num: 123
       })).to.deep.equal({
         num: {
-          _schema: {
-            _name: 'num'
-          },
+          _schema: {},
           value: 123
         },
         _schema: {
-          num: { _name: 'num' }
+          num: {}
         }
       });
     });
@@ -103,13 +101,11 @@ describe('edit service', function () {
         num: '123'
       })).to.deep.equal({
         num: {
-          _schema: {
-            _name: 'num'
-          },
+          _schema: {},
           value: '123'
         },
         _schema: {
-          num: { _name: 'num' }
+          num: {}
         }
       });
     });
@@ -120,6 +116,16 @@ describe('edit service', function () {
       })).to.deep.equal({
         num: undefined,
         _schema: {}
+      });
+    });
+
+    it('missing property (different than undefined) with schema', function () {
+      var schema = {num: {}},
+        data = {};
+
+      expect(fn(schema, data)).to.deep.equal({
+        num: {_schema: {}, value: undefined},
+        _schema: {num: {}}
       });
     });
 
@@ -139,6 +145,16 @@ describe('edit service', function () {
         num: '123',
         _schema: {}
       });
+    });
+
+    it('ignores keywords', function () {
+      var schema = {
+          _groups: {num: {fields: []}}
+        },
+        data = {},
+        result = {_schema: schema};
+
+      expect(fn(schema, data)).to.deep.equal(result);
     });
   });
 
@@ -163,6 +179,64 @@ describe('edit service', function () {
 
     it('text without schema', function () {
       expect(fn({ num: '123' })).to.deep.equal({ num: '123' } );
+    });
+  });
+
+  describe('addGroupFieldsToData', function () {
+    var fn = lib[this.title];
+
+    it('accepts no groups', function () {
+      var schema = {a: {}},
+        data = {a: {}};
+
+      expect(fn(data, schema)).to.deep.equal(data);
+    });
+
+    it('does nothing when given no groups', function () {
+      var schema = {a: {}, _groups: {}},
+        data = {a: {}};
+
+      expect(fn(data, schema)).to.deep.equal(data);
+    });
+
+    it('creates single group', function () {
+      var schema = {a: {}, _groups: {b: {fields: ['a']}}},
+        data = {a: {}},
+        result = {a: {}, b: {value: [{}], _schema: {_name: 'b', fields: ['a']}}};
+
+      expect(fn(data, schema)).to.deep.equal(result);
+    });
+
+    it('ignores non-object groups properties', function () {
+      var schema = {a: {}, _groups: {b: {fields: ['a']}, _c: 'hey'}},
+        data = {a: {}},
+        result = {a: {}, b: {value: [{}], _schema: {_name: 'b', fields: ['a']}}};
+
+      expect(fn(data, schema)).to.deep.equal(result);
+    });
+  });
+
+  describe('removeGroupFieldsFromData', function () {
+    var fn = lib[this.title];
+
+    it('accepts if there are no groups', function () {
+      var schema = {a: {}},
+        data = {a: {}};
+
+      // explicitly return original object reference if no groups
+      expect(fn(data, schema)).to.equal(data);
+    });
+
+    it('removes single group', function () {
+      var schema = {a: {}, _groups: {b: {fields: ['a']}}},
+        data = {a: {}, b: {value: [{}], _schema: {_name: 'b', fields: ['a']}}},
+        result = {a: {}};
+
+      // not edited in-place
+      expect(fn(data, schema)).to.not.equal(data);
+
+      // groups are removed
+      expect(fn(data, schema)).to.deep.equal(result);
     });
   });
 

@@ -5,7 +5,8 @@ var _ = require('lodash'),
   // store the component data in memory
   refData = {},
   // store the component schemas in memory
-  refSchema = {};
+  refSchema = {},
+  keywords = ['_groups'];
 
 // todo: figure out multi-user edit, since this won't pull in changes correctly if
 // multiple people are changing data in a component without page reloads
@@ -22,6 +23,15 @@ function setSchemaCache(value) {
  */
 function setDataCache(value) {
   refData = value;
+}
+
+/**
+ * True if value has a property called fields.
+ * @param {*} value
+ * @returns {boolean}
+ */
+function hasFields(value) {
+  return value && !!value.fields;
 }
 
 /**
@@ -67,29 +77,92 @@ function getSchema(ref) {
  * @returns {object}
  */
 function addSchemaToData(schema, data) {
-  _.each(data, function (value, key, list) {
-    var schemaPart = schema[key];
+  _.each(schema, function (schemaPart, key) {
+    var propertyExists = _.has(data, key),
+      value = data[key];
 
-    if (_.isObject(schemaPart)) {
-      if (!_.isObject(value)) {
-        list[key] = {
+    if (_.isObject(schemaPart) && !_.contains(keywords, key)) {
+      // if the key doesn't exist (value not just undefined, but the key as well) or value is any non-object
+      if (!propertyExists || !_.isObject(value)) {
+        data[key] = {
           _schema: schemaPart,
           value: value
         };
-        // add _name to the schema, so fields know what they're called
-        list[key]._schema._name = key;
       } else {
         addSchemaToData(schemaPart, value);
       }
     }
   });
+
   data._schema = schema;
   return data;
 }
 
+/**
+ * Add _name property to each field definition on the first-level of a schema.
+ *
+ * Note: In-place edit of schema object
+ *
+ * @param {object} schema
+ */
+function addNameToFieldsOfSchema(schema) {
+  _.each(schema, function (definition, name) {
+    if (!_.contains(keywords, name) && _.isObject(definition)) {
+      definition._name = name;
+    }
+  });
+}
+
+/**
+ * Groups combine multiple fields together.  Works directly on data object given.
+ *
+ * Note: we're not assuming that schema is attached to data as an attempt to avoid future issues if we refactor later.
+ *
+ * @param {object} data
+ * @param {object} schema
+ * @returns {object} data with group fields
+ */
+function addGroupFieldsToData(data, schema) {
+  // only groups that have fields are valid (avoid the if statement)
+  var groupFields,
+    groups = _.pick(schema[references.groupsProperty], hasFields);
+
+  groupFields = _.transform(groups, function (obj, group, name) {
+    obj[name] = {
+      value: _.map(group.fields, function (fieldName) {
+        return data[fieldName];
+      }),
+      _schema: _.assign({ _name: name }, group)
+    };
+  });
+
+  return _.assign(groupFields, data);
+}
+
+/**
+ * Note: we're not assuming that schema is attached to data as an attempt to avoid future issues if we refactor later.
+ *
+ * @param {object} data
+ * @param {object} schema
+ * @returns {object} data without group fields
+ */
+function removeGroupFieldsFromData(data, schema) {
+  var groups = schema[references.groupsProperty],
+    groupKeys = groups && Object.keys(schema[references.groupsProperty]);
+
+  // if we did work, return clone with groups removed; otherwise
+  //  return original -- because groups might be rare, avoid unneeded work.
+  return groupKeys && _.omit(data, groupKeys) || data;
+}
+
 function getData(ref) {
   return Promise.all([getSchema(ref), getDataOnly(ref)]).then(function (res) {
-    return addSchemaToData(res[0], res[1]);
+    var schema = res[0],
+      data = addSchemaToData(schema, res[1]);
+
+    addNameToFieldsOfSchema(schema);
+    data = addGroupFieldsToData(data, schema);
+    return data;
   });
 }
 
@@ -138,7 +211,11 @@ function update(ref, data) {
   // get the schema and validate data
   return getSchema(ref)
     .then(function (schema) {
-      var validationErrors = validate(data, schema);
+      var validationErrors;
+
+      data = removeGroupFieldsFromData(data, schema);
+
+      validationErrors = validate(data, schema);
 
       if (validationErrors.length) {
         throw new Error(validationErrors);
@@ -213,17 +290,19 @@ function publishPage() {
   });
 }
 
-// expose main methods
+// expose main methods (alphabetical)
 module.exports = {
+  addSchemaToData: addSchemaToData,
+  addGroupFieldsToData: addGroupFieldsToData,
   getData: getData,
   getDataOnly: getDataOnly,
   getSchema: getSchema,
-  validate: validate,
-  update: update,
+  getUriDestination: getUriDestination,
+  removeSchemaFromData: removeSchemaFromData,
+  removeGroupFieldsFromData: removeGroupFieldsFromData,
+  publishPage: publishPage,
   setSchemaCache: setSchemaCache,
   setDataCache: setDataCache,
-  addSchemaToData: addSchemaToData,
-  removeSchemaFromData: removeSchemaFromData,
-  getUriDestination: getUriDestination,
-  publishPage: publishPage
+  update: update,
+  validate: validate
 };

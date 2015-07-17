@@ -1,7 +1,9 @@
-/*
-Autocomplete arguments
-
-api {string} api to point to
+/**
+ * Autocomplete arguments
+ *
+ * api {string} api to point to
+ *
+ * @module
  */
 
 var dom = require('../services/dom'),
