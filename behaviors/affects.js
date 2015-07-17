@@ -2,12 +2,12 @@ var _ = require('lodash'),
   dom = require('../services/dom'),
   references = require('../services/references');
 
-module.exports = function (target, args) {
+module.exports = function (result, args) {
   if (args.selector) {
-    target.bindings.data.value = _.map(document.querySelectorAll(args.selector), function (el) {
+    result.bindings.data.value = _.map(document.querySelectorAll(args.selector), function (el) {
       return el.getAttribute(references.referenceAttribute);
     });
-    target.el.appendChild(dom.create(`<input type="hidden" class="input-text" data-field="${target.bindings.name}" rv-value="data.value" />`));
+    result.el.appendChild(dom.create(`<input type="hidden" class="input-text" data-field="${result.bindings.name}" rv-value="data.value" />`));
   }
-  return target;
+  return result;
 };
