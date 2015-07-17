@@ -22,8 +22,8 @@
   </section>
 
   {# compiled styles #}
-  <link rel="stylesheet" href="/css/@nymdev/byline-editor.css">
+  <link rel="stylesheet" href="/css/byline-editor.css">
 
   {# compiled scripts #}
-  <script src="/js/@nymdev/byline-editor.js"></script>
+  <script src="/js/byline-editor.js"></script>
 {% endif %}

@@ -2,9 +2,11 @@ var _ = require('lodash'),
   references = require('./references');
 
 /**
- * expand fields array
+ * Given an array of fields, get an array of matching data.
+ *
  * @param {array} fields
  * @param {object} data
+ * @throws if not given an array
  * @returns {array} expanded
  */
 function expandFields(fields, data) {
@@ -43,41 +45,39 @@ function getSettingsFields(data) {
 }
 
 /**
- * get fields from a component's data
+ * Get the settings group (a specially named group)
+ * @param ref
+ * @param data
+ * @returns {{value: array, _schema: {_display: string, _label: string, _name: string}}}
+ */
+function getSettingsGroup(ref, data) {
+  return {
+    value: getSettingsFields(data),
+    _schema: {
+      _display: 'settings',
+      _label: _.startCase(references.getComponentNameFromReference(ref)) + ' Settings',
+      _name: 'settings'
+    }
+  };
+}
+
+/**
+ * Get fields from a component's data
+ *
  * @param {string} ref
  * @param {object} data
  * @param {string} [path]
+ * @throws Error when path is not empty, and also does not match a group or field
  * @returns {object}
  */
 function get(ref, data, path) {
-  var field = _.get(data, path),
-    group = data._schema && data._schema[references.groupsProperty] && _.get(data._schema[references.groupsProperty], path),
-    expanded;
+  var field = data[path];
 
   if (field) {
-    // simply return the field
-    _.set(field, '_schema._name', path);
     return field;
-  } else if (group) {
-    // return the expanded group
-    expanded = expandFields(group.fields, data);
-    return {
-      value: expanded,
-      _schema: _.assign({ _name: path }, group)
-    };
   } else if (!path) {
-    // return the settings group
-    expanded = getSettingsFields(data);
-    return {
-      value: expanded,
-      _schema: {
-        _display: 'settings',
-        _label: _.startCase(references.getComponentNameFromReference(ref)) + ' Settings',
-        _name: 'settings'
-      }
-    };
+    return getSettingsGroup(ref, data);
   } else {
-    // this isn't a field or a group, and they expect something at this path
     throw new Error('No group or field found at "' + path + '"');
   }
 }

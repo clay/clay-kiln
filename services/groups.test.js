@@ -15,7 +15,12 @@ describe(dirname, function () {
         expect(result).to.throw(Error);
       });
 
-      it('throws an error if field doesn\'t exist in the data', function () {
+      /**
+       * By this point, all schema values should be converted into { value, _schema } form, so there is
+       * no excuse for a mismatch, therefore this is a programmer error.  Even undefined should be
+       * { value: undefined, _schema: {...} }
+       */
+      it('Does not throw an error if field doesn\'t exist in the data', function () {
         var fields = ['foo', 'bar'],
           componentData = {
             foo: {
@@ -27,10 +32,9 @@ describe(dirname, function () {
                 one: { fields: fields }
               }
             }
-          },
-          result = function () { return fn(fields, componentData); };
+          };
 
-        expect(result).to.throw(Error);
+        expect(function () { return fn(fields, componentData); }).to.throw(Error);
       });
 
       it('expands fields', function () {
@@ -131,15 +135,8 @@ describe(dirname, function () {
         expect(result).to.throw(Error);
       });
 
-      it('gets a single field', function () {
+      it('gets a field', function () {
         expect(fn('fakeRef', stubData, 'foo')).to.eql(fooData);
-      });
-
-      it('gets a group of fields', function () {
-        expect(fn('fakeRef', stubData, 'foobar')).to.eql({
-          value: [fooData, barData],
-          _schema: groupData
-        });
       });
 
       it('gets the settings group if no path is specified', function () {
