@@ -76,20 +76,20 @@ function expectJSONResult(target) {
  * @returns {function}
  */
 function expectHTMLResult(ref) {
-  var result, parent, statusCodeGroup;
+  var container, componentEl, statusCodeGroup;
 
   return function (target, error) {
     if (error) {
       throw error;
     } else {
       statusCodeGroup = target.status.toString()[0];
-
       if (statusCodeGroup === '2') {
-        parent = document.createElement('div');
-        parent.innerHTML = target.responseText;
-        result = dom.getFirstChildElement(parent);
-        result.setAttribute(references.referenceAttribute, ref);
-        return result;
+        container = document.createElement('div');
+        container.innerHTML = target.responseText;
+        // The first element in a component always has the referenceAttribute.
+        componentEl = dom.getFirstChildElement(container);
+        componentEl.setAttribute(references.referenceAttribute, ref);
+        return componentEl;
       } else {
         return target;
       }
