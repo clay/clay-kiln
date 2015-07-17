@@ -52,10 +52,19 @@ function removeQuerystring() {
  * @property {Element} el
  */
 EditorToolbar = function (el) {
+  var status = el.querySelector('.status');
 
   // grab the first component in the primary area
   this.main = dom.find('.main .primary [' + references.componentAttribute + ']');
   this.el = el;
+
+  // Are we saving?
+  document.addEventListener(events.references.editing, function () {
+    status.innerText = 'Saving...';
+  }, false);
+  document.addEventListener(events.references.saved, function () {
+    status.innerText = 'Saved.';
+  }, false);
 
   events.add(el, {
     '.close click': 'onClose',

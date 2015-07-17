@@ -30,5 +30,22 @@ module.exports = {
         }
       }
     }
+  },
+
+  /**
+   * Dispatch a custom event.
+   * @param {Event|string} event
+   * @param {Element|null} [el=document]
+   */
+  dispatch: function (event, el) {
+    event = typeof event === 'string' ? new Event(event) : event;
+    el = el || document;
+    el.dispatchEvent(event);
+  },
+
+  // Shared event names.
+  references: {
+    editing: 'editing',
+    saved: 'saved'
   }
 };

@@ -1,5 +1,6 @@
 var _ = require('lodash'),
   dom = require('./dom'),
+  events = require('./events'),
   references = require('./references'),
   formCreator = require('./form-creator'),
   edit = require('./edit'),
@@ -108,6 +109,9 @@ function open(ref, el, path, e) {
       data = groups.get(ref, data, path); // note: if path is undefined, it'll open the settings form
       setCurrentData(data); // set that data into the currentForm
 
+      // Status as editing.
+      events.dispatch(events.references.editing);
+
       if (data._schema[references.displayProperty] === 'inline') {
         return formCreator.createInlineForm(ref, data, el);
       } else {
@@ -139,6 +143,9 @@ function close() {
           removeCurrentForm(container);
           return render.reloadComponent(ref);
         })
+        .then(function () {
+          events.dispatch(events.references.saved); // Status as saved.
+        })
         .catch(function () {
           console.warn('Did not save.');
         });
@@ -147,6 +154,7 @@ function close() {
       // but still remove currentForm values
       currentForm = {};
       removeCurrentForm(container);
+      events.dispatch(events.references.saved); // Status as saved.
       return Promise.resolve();
     }
   }

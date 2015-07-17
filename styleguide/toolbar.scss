@@ -1,4 +1,5 @@
 @import 'colors';
+@import 'typography';
 @import 'buttons';
 @import 'layers';
 
@@ -64,6 +65,11 @@ body {
 
 .toolbar-spacer {
   flex: 1 1 auto;
+}
+
+.editor-toolbar-inner > .status {
+  @include body-copy();
+  color: $blue-75;
 }
 
 .mobile-button-text {
