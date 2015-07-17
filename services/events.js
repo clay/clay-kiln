@@ -35,7 +35,7 @@ module.exports = {
   /**
    * Dispatch a custom event.
    * @param {Event|string} event
-   * @param {Element|null} [el=document]
+   * @param {Element} [el=document]
    */
   dispatch: function (event, el) {
     event = typeof event === 'string' ? new Event(event) : event;
