@@ -1,6 +1,7 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   edit = require('./edit'),
+  references = require('./references'),
   render = require('./render'),
   formCreator = require('./form-creator'),
   formValues = require('./form-values'),
@@ -101,6 +102,7 @@ describe(dirname, function () {
         function afterFormIsOpen() {
           expect(formCreator.createInlineForm.callCount).to.equal(1);
           expect(formCreator.createForm.callCount).to.equal(0);
+          expect(document.body.classList.contains(references.editingStatus)).to.equal(true); // editing status updated.
         }
         // First open a form.
         stubData({
@@ -116,6 +118,7 @@ describe(dirname, function () {
         var checkForms = function () {
           expect(formCreator.createInlineForm.callCount).to.equal(0);
           expect(formCreator.createForm.callCount).to.equal(1);
+          expect(document.body.classList.contains(references.editingStatus)).to.equal(true); // editing status updated.
         };
 
         // First open an overlay form.
@@ -157,6 +160,7 @@ describe(dirname, function () {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
           expect(edit.update.calledOnce).to.equal(true); // data was saved.
           expect(spyReloadComponent.calledOnce).to.equal(true); // el was reloaded.
+          expect(document.body.classList.contains(references.editingStatus)).to.equal(false); // editing status updated.
         }
         function afterFormIsOpen() {
           return fn().then(afterFormIsClosed);
@@ -180,6 +184,7 @@ describe(dirname, function () {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
           expect(edit.update.callCount).to.equal(0); // data was not saved.
           expect(spyReloadComponent.callCount).to.equal(0); // el was not reloaded.
+          expect(document.body.classList.contains(references.editingStatus)).to.equal(false); // editing status updated.
         }
         function afterFormIsOpen() {
           return fn().then(afterFormIsClosed);
@@ -205,6 +210,7 @@ describe(dirname, function () {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
           expect(edit.update.calledOnce).to.equal(true); // data was saved.
           expect(spyReloadComponent.calledOnce).to.equal(true); // el was reloaded.
+          expect(document.body.classList.contains(references.editingStatus)).to.equal(false); // editing status updated.
         }
         function afterFormIsOpen() {
           return fn().then(afterFormIsClosed);
@@ -228,6 +234,7 @@ describe(dirname, function () {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
           expect(edit.update.callCount).to.equal(0); // data was not saved.
           expect(spyReloadComponent.callCount).to.equal(0); // el was not reloaded.
+          expect(document.body.classList.contains(references.editingStatus)).to.equal(false); // editing status updated.
         }
         function afterFormIsOpen() {
           return fn().then(afterFormIsClosed);

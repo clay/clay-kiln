@@ -1,4 +1,5 @@
 @import 'colors';
+@import 'typography';
 @import 'buttons';
 @import 'layers';
 
@@ -64,6 +65,16 @@ body {
 
 .toolbar-spacer {
   flex: 1 1 auto;
+}
+
+// Status of saving controlled by class on body.
+.editor-toolbar-inner > .status:before {
+  @include body-copy();
+  color: $blue-75;
+  content: 'Saved.';
+}
+.editing .editor-toolbar-inner > .status:before {
+  content: 'Saving...';
 }
 
 .mobile-button-text {

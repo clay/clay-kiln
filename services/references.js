@@ -12,6 +12,9 @@ module.exports = {
   componentListProperty: '_componentList',
   groupsProperty: '_groups',
 
+  // Status
+  editingStatus: 'editing',
+
   // utility methods
 
   /**

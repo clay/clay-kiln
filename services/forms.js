@@ -83,6 +83,21 @@ function removeCurrentForm(container) {
 }
 
 /**
+ * Add the editing class to the document body.
+ * @param {boolean} isEditing
+ */
+function setEditingStatus(isEditing) {
+  var classList = document.body.classList,
+    editingStatusClass = references.editingStatus;
+
+  if (isEditing) {
+    classList.add(editingStatusClass);
+  } else {
+    classList.remove(editingStatusClass);
+  }
+}
+
+/**
  * Open a form.
  * @param {string} ref
  * @param {Element} el    The element that has `data-editable`, not always the parent of the form.
@@ -107,6 +122,8 @@ function open(ref, el, path, e) {
       // then get a subset of the data, for the specific field / group
       data = groups.get(ref, data, path); // note: if path is undefined, it'll open the settings form
       setCurrentData(data); // set that data into the currentForm
+
+      setEditingStatus(true); // Status as editing.
 
       if (data._schema[references.displayProperty] === 'inline') {
         return formCreator.createInlineForm(ref, data, el);
@@ -139,6 +156,9 @@ function close() {
           removeCurrentForm(container);
           return render.reloadComponent(ref);
         })
+        .then(function () {
+          setEditingStatus(false); // Status as saved.
+        })
         .catch(function () {
           console.warn('Did not save.');
         });
@@ -147,6 +167,7 @@ function close() {
       // but still remove currentForm values
       currentForm = {};
       removeCurrentForm(container);
+      setEditingStatus(false); // Status as saved.
       return Promise.resolve();
     }
   }
