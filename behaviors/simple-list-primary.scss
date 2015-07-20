@@ -9,19 +9,20 @@
 
   .badge {
     background-color: #fff;
-    border: 2px solid $green;
-    border-radius: 9px;
+    border: .2rem solid $green;
+    border-radius: 1rem;
     display: block;
-    font-size: 9px;
+    font-size: .9rem;
     font-weight: 700;
-    line-height: 10px;
-    padding: 2px;
+    height: 2rem;
+    line-height: 1.2rem;
+    padding: .2rem;
     position: absolute;
-    right: -6px;
-    top: -9px;
+    right: -.6rem;
+    top: -.9rem;
   }
 }
 
 .simple-list-item.selected.primary {
-  border: 2px solid $blue;
+  border: .2rem solid $blue;
 }
