@@ -46,8 +46,8 @@ function getSettingsFields(data) {
 
 /**
  * Get the settings group (a specially named group)
- * @param ref
- * @param data
+ * @param {string} ref
+ * @param {object} data
  * @returns {{value: array, _schema: {_display: string, _label: string, _name: string}}}
  */
 function getSettingsGroup(ref, data) {
