@@ -25,6 +25,7 @@ behaviors.add('wysiwyg', require('./behaviors/wysiwyg'));
 behaviors.add('autocomplete', require('./behaviors/autocomplete'));
 behaviors.add('drop-image', require('./behaviors/drop-image'));
 behaviors.add('label', require('./behaviors/label'));
+behaviors.add('segmented-button', require('./behaviors/segmented-button'));
 
 // add default decorators
 decorators.add(require('./decorators/placeholder'));

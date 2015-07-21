@@ -1,0 +1,49 @@
+@import '../styleguide/colors';
+@import '../styleguide/mixins';
+
+.segmented-button {
+  @include clearfix();
+
+  margin: 1rem 0;
+}
+
+.segmented-button input[type=radio] {
+  display: none;
+}
+
+// labels
+
+.segmented-button label {
+  background-color: #fff;
+  border: .1rem solid $blue-50;
+  cursor: pointer;
+  display: block;
+  float: left;
+  margin: 0;
+  padding: .4rem .8rem;
+}
+
+// rounded borders on first and last button
+$btnradius: .4rem;
+
+.segmented-button label:nth-of-type(1) {
+  border-top-left-radius: $btnradius;
+  border-bottom-left-radius: $btnradius;
+}
+
+.segmented-button label:nth-last-of-type(1) {
+  border-top-right-radius: $btnradius;
+  border-bottom-right-radius: $btnradius;
+}
+
+// label (when button is selected)
+
+.segmented-button input:checked + label {
+  background-color: $blue-25;
+}
+
+// icons
+.segmented-button img {
+  height: auto;
+  width: 3.4rem;
+}
