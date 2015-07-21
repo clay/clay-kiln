@@ -1,54 +1,113 @@
 @import 'colors';
 @import 'typography';
-$bar-width: 30px;
+// Using px because the gap needs to be px so that it does not disappear, and can only add with same units.
+$bar-height: 26px;
+$bar-parent-height: 20px;
+$bar-bd-height: 3px;
+$bar-gap: 1px;
+$bar-label-width: 76px;
+$bar-bg-color: rgba(23,130,169,0.95);
+$bar-parent-bg-color: rgba(139,191,211,0.95);
 
+// Wrapper around parent and child.
 .component-bar-wrapper {
   position: relative;
 }
 
+// Selected parent's bar hidden for now.
+.component-bar-wrapper.selected-parent > .component-bar {
+  opacity: 0;
+}
+
+// Selected bar
+.component-bar-wrapper.selected > .component-bar {
+  opacity: 1;
+}
+
+// Bar on a selected component
 .component-bar {
   @include overlay-copy();
 
-  background-color: $blue-25;
-  height: 100%;
-  left: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: flex-end;
+  height: $bar-height;
+  left: 0;
   opacity: 0;
   position: absolute;
-  text-transform: uppercase;
-  top: 0;
+  top: -$bar-height;
   transition: opacity .15s ease-in-out;
-  width: $bar-width;
+  width: 100%;
 }
 
-.component-bar-wrapper.selected-parent > .component-bar {
-  background-color: rgb(163, 212, 228);
-  cursor: pointer;
-  opacity: 1;
-  transform: translate(4px, 1px);
-}
-
-.component-bar-wrapper.selected > .component-bar {
-  cursor: pointer;
-  opacity: 1;
-}
-
-.component-bar-title {
+// Bar items
+.component-bar > span {
   @include label();
 
-  color: $blue;
-  display: inline-block;
-  font-size: 12px;
-  height: $bar-width;
+  background: $bar-bg-color;
+  color: #fff;
+  flex-basis: $bar-height;
+  flex-grow: 0;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  display: block;
   letter-spacing: .5px;
-  line-height: $bar-width;
+  line-height: $bar-height;
+  margin: 0 $bar-gap 0 0;
   overflow: hidden;
+  text-align: center;
   text-overflow: ellipsis;
-  text-transform: uppercase;
-  transform: rotate(90deg);
-  transform-origin: 8px 20px;
+  text-transform: capitalize;
   white-space: nowrap;
-  width: 0;
 }
+
+// Selected label
+.component-bar > .label {
+  flex-basis: $bar-label-width;
+  order: 1;
+  padding-left: .5rem;
+  text-align: left;
+  width: $bar-label-width;
+}
+
+// Parent's label
+.component-bar > .parent.label {
+  background: $bar-parent-bg-color;
+  left: 0;
+  line-height: $bar-parent-height;
+  height: $bar-parent-height;
+  position: absolute;
+  top: -$bar-gap - $bar-parent-height;
+}
+
+// Actions
+.component-bar > span svg {
+  margin: 4px;
+}
+.component-bar > .drag {
+  cursor: grab;
+  margin-left: -$bar-height - $bar-gap;
+  order: 0;
+}
+.component-bar > .settings {
+  order: 2;
+}
+.component-bar > .delete {
+  order: 3;
+}
+// Fill remaining space.
+.component-bar > .fill {
+  align-self: flex-end;
+  height: $bar-bd-height;
+  flex-basis: auto;
+  flex-grow: 1;
+  margin-left: -$bar-gap;
+  order: 5;
+}
+
+
 
 // all editable elements should have some kind of ux showing they can be edited
 [data-editable] {

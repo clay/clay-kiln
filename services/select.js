@@ -73,7 +73,7 @@ function when(el) {
 function setHeight(el) {
   var componentHeight = getComputedStyle(el).height;
 
-  dom.find(el, '.component-bar-title').style.width = parseInt(componentHeight) - 20 + 'px';
+  //dom.find(el, '.component-bar-title').style.width = parseInt(componentHeight) - 20 + 'px';
 }
 
 /**
@@ -137,8 +137,13 @@ function addIframeOverlays(el) {
  */
 function handler(el, options) {
   var tpl = `
-    <aside class="component-bar" title="${references.getComponentNameFromReference(options.ref).toUpperCase()}">
-      <span class="component-bar-title">${references.getComponentNameFromReference(options.ref)}</span>
+    <aside class="component-bar">
+      <span class="parent label" title="PARENT LABEL">Parent Label</span>
+      <span class="label" title="${references.getComponentNameFromReference(options.ref).toUpperCase()}">${references.getComponentNameFromReference(options.ref)}</span>
+      <span class="settings"><svg width="16px" height="16px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><title>Settings</title><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill="#000000"><g transform="translate(6.499495, 8.699495) rotate(-315.000000) translate(-6.499495, -8.699495) translate(2.999495, -1.800505)"><path d="M1,3.25 L7,3.25 L7,15.25 L1,15.25 L1,3.25 Z M2.25,4.24321761 L3,4.24321761 L3,14.2432176 L2.25,14.2432176 L2.25,4.24321761 Z M5,4.24321761 L5.75,4.24321761 L5.75,14.2432176 L5,14.2432176 L5,4.24321761 Z"></path><polygon points="4 16 7 20 1 20 "></polygon><rect x="1" y="5.68434189e-14" width="6" height="2.5"></rect></g></g></g></svg></span>
+      <span class="drag"><svg width="10px" height="19px" viewBox="0 0 10 19" xmlns="http://www.w3.org/2000/svg"><title>Drag</title><path d="M3.015625,9 L3.015625,5 L0,5 L5,0 L10,5 L7.015625,5 L7.015625,14 L10,14 L5,19 L0,14 L3.015625,14 L3.015625,10 L3,10 L3,9 L3.015625,9 Z M3.015625,9 L3.015625,10 L7,10 L7,9 L3.015625,9 Z"></path></svg></span>
+      <span class="delete"><svg width="14px" height="17px" viewBox="0 0 14 17" xmlns="http://www.w3.org/2000/svg"><title>Delete</title><path d="M2,17 L12,17 L12,4 L2,4 L2,17 Z M4,6.00554435 L5,6.00554435 L5,15 L4,15 L4,6.00554435 Z M6.5,6.00554435 L7.5,6.00554435 L7.5,15 L6.5,15 L6.5,6.00554435 Z M9,6.00554435 L10,6.00554435 L10,15 L9,15 L9,6.00554435 Z"></path><path d="M14,3 L0,3 L1.3125,1 L12.6875,1 L14,3"></path><path d="M5,0 L9,0 L9,1 L5,1 L5,0 Z"></path></svg></span>
+      <span class="fill"></span>
     </aside>
   `,
   componentBar = dom.create(tpl);
