@@ -83,7 +83,7 @@ function createEditor(field, buttons) {
   });
 }
 
-function addParagraph(el) {
+function addComponent(el) {
   var currentField = el.getAttribute(references.fieldAttribute),
     currentComponent = dom.closest(el, '[' + references.referenceAttribute + ']'),
     currentComponentRef = currentComponent.getAttribute(references.referenceAttribute),
@@ -121,9 +121,22 @@ function addParagraph(el) {
   });
 }
 
+function handleComponentCreation(el) {
+  var caretPos = select(el); // get text after the cursor, if any
+
+  // if there's stuff after the caret, get it
+  if (caretPos.start < el.innerText.length - 2) {
+    console.log(el.innerText.substr(caretPos.start));
+    return false; // don't do anything if you're not at the end
+  } else {
+    addComponent(el);
+  }
+}
+
 module.exports = function (result, args) {
   var rivets = result.rivets,
     buttons = args.buttons,
+    newComponentOnEnter = args.newComponentOnEnter,
     textInput = dom.find(result.el, 'input') || dom.find(result.el, 'textarea'),
     field = dom.create(`<div class="wysiwyg-input" data-field="${result.bindings.name}" rv-wysiwyg="data.value"></div>`);
 
@@ -158,22 +171,14 @@ module.exports = function (result, args) {
       });
 
       editor.subscribe('editableKeydownEnter', function (e, editable) {
-        var caretPos, textAfterCaret;
-
         e.preventDefault(); // stop it from creating new paragraphs
 
-        // get text after the cursor, if any
-        caretPos = select(editable);
-        // if there's stuff after the caret, get it
-        if (caretPos.start < editable.innerText.length - 2) {
-          textAfterCaret = editable.innerText.substr(caretPos.start);
-          return false; // don't do anything if you're not at the end
+        if (newComponentOnEnter) {
+          handleComponentCreation(editable);
         } else {
-          addParagraph(el);
+          // close the form?
+          focus.unfocus();
         }
-        // find the current field we're in
-        // create a new component with that text
-        // focus on the field in the new component
       });
     }
   };
