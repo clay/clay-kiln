@@ -6,10 +6,16 @@ buttons {array} array of button names (strings) for tooltip
 placeholder {string} placeholder that will display in the input
  */
 
-var keycode = require('keycode'),
+var _ = require('lodash'),
+  select = require('selection-range'),
   MediumEditor = require('medium-editor'),
   MediumButton = require('../services/medium-button'),
-  dom = require('../services/dom');
+  dom = require('../services/dom'),
+  db = require('../services/db'),
+  render = require('../services/render'),
+  focus = require('../decorators/focus'),
+  references = require('../services/references'),
+  edit = require('../services/edit');
 
 /**
  * toggle the tiered toolbar
@@ -36,10 +42,9 @@ function toggleTieredToolbar(html) {
  * create new medium editor
  * @param {Element} field
  * @param {array} buttons
- * @param {object|false} placeholder
  * @returns {Element}
  */
-function createEditor(field, buttons, placeholder) {
+function createEditor(field, buttons) {
   return new MediumEditor(field, {
     toolbar: {
       // buttons that go in the toolbar
@@ -67,8 +72,8 @@ function createEditor(field, buttons, placeholder) {
     imageDragging: false, // disallow dragging inline images
     targetBlank: true,
     allowMultiParagraphSelection: false,
-    disableReturn: false,
-    placeholder: placeholder,
+    disableReturn: true,
+    placeholder: false, // the placeholder isn't native
     extensions: {
       tieredToolbar: new MediumButton({
         label: '&hellip;',
@@ -78,11 +83,47 @@ function createEditor(field, buttons, placeholder) {
   });
 }
 
+function addParagraph(el) {
+  var currentField = el.getAttribute(references.fieldAttribute),
+    currentComponent = dom.closest(el, '[' + references.referenceAttribute + ']'),
+    currentComponentRef = currentComponent.getAttribute(references.referenceAttribute),
+    currentComponentName = references.getComponentNameFromReference(currentComponentRef);
+
+  // create a new component
+  return db.postToReference('/components/' + currentComponentName + '/instances', {}).then(function (res) {
+    var ref = res._ref;
+
+    // get the html of that new component
+    return db.getComponentHTMLFromReference(ref).then(function (newEl) {
+      // add the handlers for the new component
+      render.addComponentsHandlers(newEl);
+      // then add it after the current one
+      dom.insertAfter(currentComponent, newEl);
+      // then focus() the new field that's the same as the current field
+      focus.focus(newEl, { ref: ref, path: currentField }).then(function () {
+        dom.find('[data-ref="' + ref + '"] [data-field]').focus();
+      });
+
+      return ref;
+    });
+  }).then(function (ref) { // update the parent component's component list
+    var parentComponent = dom.closest(currentComponent.parentNode, '[' + references.referenceAttribute + ']'),
+      parentRef = parentComponent.getAttribute(references.referenceAttribute),
+      parentField = dom.closest(currentComponent.parentNode, '[' + references.editableAttribute + ']').getAttribute(references.editableAttribute);
+
+    return edit.getDataOnly(parentRef).then(function (parentData) {
+      var index = _.indexOf(parentData[parentField], { _ref: currentComponentRef }, true);
+
+      parentData[parentField].splice(index, 0, { _ref: ref }); // splice the new component into the array after the current one
+
+      return db.putToReference(parentRef, parentData);
+    });
+  });
+}
+
 module.exports = function (result, args) {
   var rivets = result.rivets,
     buttons = args.buttons,
-    // add placeholder text if it's passed through, else remove the placeholder
-    placeholder = args.placeholder ? { text: args.placeholder } : false,
     textInput = dom.find(result.el, 'input') || dom.find(result.el, 'textarea'),
     field = dom.create(`<div class="wysiwyg-input" data-field="${result.bindings.name}" rv-wysiwyg="data.value"></div>`);
 
@@ -99,8 +140,8 @@ module.exports = function (result, args) {
     bind: function (el) {
       // this is called when the binder initializes
       var observer = this.observer,
-        data = observer.value(),
-        editor = createEditor(field, buttons, placeholder);
+        data = observer.value() || '', // don't print 'undefined' if there's no data
+        editor = createEditor(field, buttons);
 
       // put the initial data into the editor
       el.innerHTML = data;
@@ -116,15 +157,23 @@ module.exports = function (result, args) {
         observer.setValue(editable.innerHTML);
       });
 
-      // submit form on enter keydown
-      el.addEventListener('keydown', function (e) {
-        var key = keycode(e);
+      editor.subscribe('editableKeydownEnter', function (e, editable) {
+        var caretPos, textAfterCaret;
 
-        if (key === 'enter' || key === 'return') {
-          e.preventDefault();
-          e.stopPropagation();
-          alert('enter pressed!');
+        e.preventDefault(); // stop it from creating new paragraphs
+
+        // get text after the cursor, if any
+        caretPos = select(editable);
+        // if there's stuff after the caret, get it
+        if (caretPos.start < editable.innerText.length - 2) {
+          textAfterCaret = editable.innerText.substr(caretPos.start);
+          return false; // don't do anything if you're not at the end
+        } else {
+          addParagraph(el);
         }
+        // find the current field we're in
+        // create a new component with that text
+        // focus on the field in the new component
       });
     }
   };

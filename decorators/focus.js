@@ -18,12 +18,13 @@ function unfocus() {
  * @param {Element} el
  * @param {{ref: string, path: string, data: object}} options
  * @param {MouseEvent} e
+ * @returns {Promise|undefined}
  */
 function focus(el, options, e) {
   unfocus(); // unfocus the potentialy-opened current form first
   select.select(el);
   currentFocus = el;
-  forms.open(options.ref, el, options.path, e);
+  return forms.open(options.ref, el, options.path, e);
 }
 
 /**
