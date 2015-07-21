@@ -170,6 +170,11 @@ module.exports = function (result, args) {
         observer.setValue(editable.innerHTML);
       });
 
+      // persist editor data to data model on paste
+      editor.subscribe('editablePaste', function (e, editable) {
+        observer.setValue(editable.innerHTML);
+      });
+
       editor.subscribe('editableKeydownEnter', function (e, editable) {
         e.preventDefault(); // stop it from creating new paragraphs
 
