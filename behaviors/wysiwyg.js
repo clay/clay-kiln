@@ -11,14 +11,80 @@ var keycode = require('keycode'),
   MediumButton = require('../services/medium-button'),
   dom = require('../services/dom');
 
+/**
+ * toggle the tiered toolbar
+ * this is the action for the tieredToolbar extension
+ * @param {Element} html
+ * @returns {Element}
+ */
+function toggleTieredToolbar(html) {
+  // note: this element doesn't exist before it's instantiated, so we need to grab it afterwards
+  var toolbar = dom.find('.medium-editor-toolbar'),
+    toolbarClasses = toolbar.classList;
+
+  if (toolbarClasses.contains('show-none')) {
+    toolbarClasses.remove('show-none');
+  } else if (toolbarClasses.contains('show-all')) {
+    toolbarClasses.add('show-none');
+  } else {
+    toolbarClasses.add('show-all');
+  }
+  return html;
+}
+
+/**
+ * create new medium editor
+ * @param {Element} field
+ * @param {array} buttons
+ * @param {object|false} placeholder
+ * @returns {Element}
+ */
+function createEditor(field, buttons, placeholder) {
+  return new MediumEditor(field, {
+    toolbar: {
+      // buttons that go in the toolbar
+      buttons: buttons,
+      standardizeSelectionStart: true
+    },
+    delay: 200, // wait a bit for the toolbar and link previews to display
+    paste: {
+      forcePlainText: false,
+      cleanPastedHTML: true, // clean html from sources like google docs
+      cleanTags: [ // remove these tags when pasting
+        'meta',
+        'script',
+        'style',
+        'img',
+        'object',
+        'iframe'
+      ],
+      cleanReplacements: [
+        [/<h[2-9]>/ig, '<h1>'],
+        [/<\/h[2-9]>/ig, '</h1>'] // force all headers to the same level
+      ]
+    },
+    autoLink: true, // create links automatically when urls are entered
+    imageDragging: false, // disallow dragging inline images
+    targetBlank: true,
+    allowMultiParagraphSelection: false,
+    disableReturn: false,
+    placeholder: placeholder,
+    extensions: {
+      tieredToolbar: new MediumButton({
+        label: '&hellip;',
+        action: toggleTieredToolbar
+      })
+    }
+  });
+}
+
 module.exports = function (result, args) {
   var rivets = result.rivets,
-    isMultiline = !!args.multiline,
     buttons = args.buttons,
     // add placeholder text if it's passed through, else remove the placeholder
     placeholder = args.placeholder ? { text: args.placeholder } : false,
     textInput = dom.find(result.el, 'input') || dom.find(result.el, 'textarea'),
-    wysiwygField = dom.create(`<div class="wysiwyg-input" data-field="${result.bindings.name}" rv-wysiwyg="data.value"></div>`);
+    field = dom.create(`<div class="wysiwyg-input" data-field="${result.bindings.name}" rv-wysiwyg="data.value"></div>`);
 
   // if more than 5 buttons, put the rest on the second tier
   if (buttons.length > 5) {
@@ -26,44 +92,7 @@ module.exports = function (result, args) {
   }
 
   // put the rich text field after the input
-  dom.replaceElement(textInput, wysiwygField);
-
-  // init medium-editor
-  function createEditor() {
-    return new MediumEditor(wysiwygField, {
-      toolbar: {
-        // buttons that go in the toolbar
-        buttons: buttons,
-        standardizeSelectionStart: true
-      },
-      paste: { forcePlainText: true }, // todo: clean pasted content
-      autoLink: true, // create links automatically when urls are entered
-      imageDragging: false, // disallow dragging inline images
-      targetBlank: true,
-      allowMultiParagraphSelection: isMultiline,
-      disableReturn: !isMultiline,
-      placeholder: placeholder,
-      extensions: {
-        tieredToolbar: new MediumButton({
-          label: '&hellip;',
-          action: function (html) {
-            // note: this element doesn't exist before it's instantiated, so we need to grab it afterwards
-            var toolbar = dom.find('.medium-editor-toolbar'),
-              toolbarClasses = toolbar.classList;
-
-            if (toolbarClasses.contains('show-none')) {
-              toolbarClasses.remove('show-none');
-            } else if (toolbarClasses.contains('show-all')) {
-              toolbarClasses.add('show-none');
-            } else {
-              toolbarClasses.add('show-all');
-            }
-            return html;
-          }
-        })
-      }
-    });
-  }
+  dom.replaceElement(textInput, field);
 
   rivets.binders.wysiwyg = {
     publish: true,
@@ -71,7 +100,7 @@ module.exports = function (result, args) {
       // this is called when the binder initializes
       var observer = this.observer,
         data = observer.value(),
-        editor = createEditor();
+        editor = createEditor(field, buttons, placeholder);
 
       // put the initial data into the editor
       el.innerHTML = data;
@@ -91,9 +120,10 @@ module.exports = function (result, args) {
       el.addEventListener('keydown', function (e) {
         var key = keycode(e);
 
-        if (!isMultiline && (key === 'enter' || key === 'return')) {
+        if (key === 'enter' || key === 'return') {
           e.preventDefault();
-          dom.find(dom.closest(el, 'form'), '.save').dispatchEvent(new Event('click', { bubbles: true, cancelable: true }));
+          e.stopPropagation();
+          alert('enter pressed!');
         }
       });
     }
