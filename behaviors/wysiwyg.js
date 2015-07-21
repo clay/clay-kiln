@@ -49,7 +49,8 @@ function createEditor(field, buttons) {
     toolbar: {
       // buttons that go in the toolbar
       buttons: buttons,
-      standardizeSelectionStart: true
+      standardizeSelectionStart: true,
+      allowMultiParagraphSelection: false
     },
     delay: 200, // wait a bit for the toolbar and link previews to display
     paste: {
@@ -71,7 +72,6 @@ function createEditor(field, buttons) {
     autoLink: true, // create links automatically when urls are entered
     imageDragging: false, // disallow dragging inline images
     targetBlank: true,
-    allowMultiParagraphSelection: false,
     disableReturn: true,
     placeholder: false, // the placeholder isn't native
     extensions: {

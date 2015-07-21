@@ -7,10 +7,6 @@
   font-family: inherit;
   font-size: 16px;
   line-height: 19px;
-
-  &::selection {
-    background-color: $blue-50;
-  }
 }
 
 @mixin overlay-copy {
