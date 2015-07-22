@@ -2,6 +2,7 @@ var _ = require('lodash'),
   references = require('../services/references'),
   forms = require('../services/forms'),
   select = require('../services/select'),
+  dom = require('../services/dom'),
   currentFocus; // eslint-disable-line
 
 /**
@@ -24,7 +25,10 @@ function focus(el, options, e) {
   unfocus(); // unfocus the potentialy-opened current form first
   select.select(el);
   currentFocus = el;
-  return forms.open(options.ref, el, options.path, e);
+  return forms.open(options.ref, el, options.path, e).then(function () {
+    // focus on the first field in the form we just created
+    dom.find('[data-field]').focus();
+  });
 }
 
 /**
