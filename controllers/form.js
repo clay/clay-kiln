@@ -5,6 +5,10 @@ module.exports = function () {
     select = require('../services/select'),
     references = require('../services/references');
 
+  function wasTooltipClicked(e) {
+    return _.get(e, 'target.classList') && e.target.classList.contains('medium-editor-action');
+  }
+
   /**
    * constructor
    * @param  {Element} el
@@ -14,7 +18,7 @@ module.exports = function () {
    */
   function constructor(el, ref, path, oldEl) {
     function outsideClickhandler(e) {
-      if (!_.contains(e.path, el)) {
+      if (!_.contains(e.path, el) && !wasTooltipClicked(e)) {
         el.dispatchEvent(new CustomEvent('close'));
         this.removeEventListener('click', outsideClickhandler); // note: this references <html>
       }
