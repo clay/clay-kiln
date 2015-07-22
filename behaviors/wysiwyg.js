@@ -134,12 +134,17 @@ function handleComponentCreation(el) {
   }
 }
 
+function isStyled(styled) {
+  return styled ? ' styled' : ''; // note the preeeding space!
+}
+
 module.exports = function (result, args) {
   var rivets = result.rivets,
     buttons = args.buttons,
+    styled = args.styled,
     newComponentOnEnter = args.newComponentOnEnter,
     textInput = dom.find(result.el, 'input') || dom.find(result.el, 'textarea'),
-    field = dom.create(`<p class="wysiwyg-input" data-field="${result.bindings.name}" rv-wysiwyg="data.value"></p>`);
+    field = dom.create(`<p class="wysiwyg-input${ isStyled(styled) }" data-field="${result.bindings.name}" rv-wysiwyg="data.value"></p>`);
 
   // if more than 5 buttons, put the rest on the second tier
   if (buttons.length > 5) {

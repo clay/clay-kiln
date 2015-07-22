@@ -3,9 +3,12 @@
 @import '../node_modules/medium-editor/src/sass/medium-editor';
 
 .wysiwyg-input {
-  @include input();
-
+  outline: none;
   white-space: normal;
+}
+
+.wysiwyg-input.styled {
+  @include input();
 }
 
 .wysiwyg-input p {
