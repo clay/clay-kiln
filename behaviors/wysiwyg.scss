@@ -9,6 +9,8 @@
 
 .wysiwyg-input.styled {
   @include input();
+
+  white-space: normal;
 }
 
 .wysiwyg-input p {
