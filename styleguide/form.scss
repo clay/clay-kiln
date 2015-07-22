@@ -60,6 +60,10 @@
   position: relative;
 }
 
+.editor-inline .input-label {
+  margin: 0;
+}
+
 .editor .label-inner {
   @include label();
 

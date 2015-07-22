@@ -3,6 +3,11 @@
 @import '../node_modules/medium-editor/src/sass/medium-editor';
 
 .wysiwyg-input {
+  outline: none;
+  white-space: normal;
+}
+
+.wysiwyg-input.styled {
   @include input();
 
   white-space: normal;

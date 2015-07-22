@@ -27,10 +27,17 @@ describe(dirname, function () {
     describe('focus', function () {
       var fn = lib[this.title];
 
+      function returnPromise() {
+        return Promise.resolve();
+      }
+
       it('calls forms.open', function () {
-        sandbox.stub(forms, 'open', sandbox.spy());
-        fn(stubNode(), {});
-        expect(forms.open.callCount).to.equal(1);
+        var afterOpen = function () {
+          expect(forms.open.callCount).to.equal(1);
+        };
+
+        sandbox.stub(forms, 'open', sandbox.spy(returnPromise));
+        return fn(stubNode(), {}).then(afterOpen);
       });
     });
 
@@ -88,7 +95,7 @@ describe(dirname, function () {
             _has: 'text'
           }
         },
-        fakeOpen = sandbox.spy(),
+        fakeOpen = sandbox.spy(function () { return Promise.resolve(); }),
         newNode;
 
         // stub, then run the decorator
