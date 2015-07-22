@@ -54,8 +54,8 @@ function createEditor(field, buttons) {
     },
     delay: 200, // wait a bit for the toolbar and link previews to display
     paste: {
-      forcePlainText: false,
-      cleanPastedHTML: true, // clean html from sources like google docs
+      forcePlainText: true,
+      cleanPastedHTML: false, // clean html from sources like google docs
       cleanTags: [ // remove these tags when pasting
         'meta',
         'script',
@@ -168,15 +168,11 @@ module.exports = function (result, args) {
 
       // persist editor data to data model on input
       editor.subscribe('editableInput', function (e, editable) {
-        console.log('input')
-        console.log(editable.innerHTML)
         observer.setValue(editable.innerHTML);
       });
 
       // persist editor data to data model on paste
       editor.subscribe('editablePaste', function (e, editable) {
-        console.log('paste')
-        console.log(editable.innerHTML)
         observer.setValue(editable.innerHTML);
       });
 
