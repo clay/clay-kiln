@@ -26,8 +26,12 @@ function focus(el, options, e) {
   select.select(el);
   currentFocus = el;
   return forms.open(options.ref, el, options.path, e).then(function () {
+    var firstField = dom.find('[data-field]');
+
     // focus on the first field in the form we just created
-    dom.find('[data-field]').focus();
+    if (firstField) {
+      firstField.focus();
+    }
   });
 }
 
