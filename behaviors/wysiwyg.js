@@ -112,10 +112,9 @@ function addComponent(el) {
       parentField = dom.closest(currentComponent.parentNode, '[' + references.editableAttribute + ']').getAttribute(references.editableAttribute);
 
     return edit.getDataOnly(parentRef).then(function (parentData) {
-      var index = _.indexOf(parentData[parentField], { _ref: currentComponentRef }, true);
+      var index = _.findIndex(parentData[parentField], { _ref: currentComponentRef });
 
       parentData[parentField].splice(index, 0, { _ref: ref }); // splice the new component into the array after the current one
-
       return db.putToReference(parentRef, parentData);
     });
   });
@@ -138,7 +137,7 @@ module.exports = function (result, args) {
     buttons = args.buttons,
     newComponentOnEnter = args.newComponentOnEnter,
     textInput = dom.find(result.el, 'input') || dom.find(result.el, 'textarea'),
-    field = dom.create(`<div class="wysiwyg-input" data-field="${result.bindings.name}" rv-wysiwyg="data.value"></div>`);
+    field = dom.create(`<p class="wysiwyg-input" data-field="${result.bindings.name}" rv-wysiwyg="data.value"></p>`);
 
   // if more than 5 buttons, put the rest on the second tier
   if (buttons.length > 5) {
@@ -172,6 +171,7 @@ module.exports = function (result, args) {
 
       // persist editor data to data model on paste
       editor.subscribe('editablePaste', function (e, editable) {
+        console.log(editable)
         observer.setValue(editable.innerHTML);
       });
 
