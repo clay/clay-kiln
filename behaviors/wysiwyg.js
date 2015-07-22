@@ -66,7 +66,9 @@ function createEditor(field, buttons) {
       ],
       cleanReplacements: [
         [/<h[2-9]>/ig, '<h1>'],
-        [/<\/h[2-9]>/ig, '</h1>'] // force all headers to the same level
+        [/<\/h[2-9]>/ig, '</h1>'], // force all headers to the same level
+        [/<p>/ig, ''], // get rid of <p> tags
+        [/<\/p>/ig, '']
       ]
     },
     autoLink: true, // create links automatically when urls are entered
@@ -112,7 +114,7 @@ function addComponent(el) {
       parentField = dom.closest(currentComponent.parentNode, '[' + references.editableAttribute + ']').getAttribute(references.editableAttribute);
 
     return edit.getDataOnly(parentRef).then(function (parentData) {
-      var index = _.findIndex(parentData[parentField], { _ref: currentComponentRef });
+      var index = _.findIndex(parentData[parentField], { _ref: currentComponentRef }) + 1;
 
       parentData[parentField].splice(index, 0, { _ref: ref }); // splice the new component into the array after the current one
       return db.putToReference(parentRef, parentData);
@@ -166,12 +168,15 @@ module.exports = function (result, args) {
 
       // persist editor data to data model on input
       editor.subscribe('editableInput', function (e, editable) {
+        console.log('input')
+        console.log(editable.innerHTML)
         observer.setValue(editable.innerHTML);
       });
 
       // persist editor data to data model on paste
       editor.subscribe('editablePaste', function (e, editable) {
-        console.log(editable)
+        console.log('paste')
+        console.log(editable.innerHTML)
         observer.setValue(editable.innerHTML);
       });
 
