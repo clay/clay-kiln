@@ -176,6 +176,45 @@ function appendToPrev(html, prev) {
 }
 
 /**
+ * remove current component from parent
+ * @param {object} current
+ * @param {object} parent
+ * @returns {Function}
+ */
+function removeCurrentFromParent(current, parent) {
+  return edit.getDataOnly(parent.ref).then(function (parentData) {
+    var index = _.findIndex(parentData[parent.field], { _ref: current.ref });
+
+    parentData[parent.field].splice(index, 1); // splice the current component out of the parent
+    dom.removeElement(current.component); // remove component el
+    return db.putToReference(parent.ref, parentData);
+  });
+}
+
+function reloadPreviousComponent(prev) {
+  return db.getComponentHTMLFromReference(prev.ref)
+    .then(function (updatedEl) {
+      render.addComponentsHandlers(updatedEl);
+      dom.replaceElement(prev.component, updatedEl);
+      return updatedEl;
+    });
+}
+
+/**
+ * focus on the previous component's field
+ * @param {object} parent
+ * @param  {object} prev
+ * @returns {Function}
+ */
+function focusPreviousComponent(parent, prev) {
+  return reloadPreviousComponent(prev).then(function (newEl) {
+    return focus.focus(newEl, { ref: prev.ref, path: prev.field }).then(function () {
+      dom.find('[data-ref="' + prev.ref + '"] [data-field]').focus();
+    });
+  });
+}
+
+/**
  * remove current component, append text to previous component (of the same name)
  * @param {Element} el
  * @returns {Promise|undefined}
@@ -190,9 +229,8 @@ function removeComponent(el) {
       // there's a previous component with the same name!
       // get the contents of the current field, and append them to the previous component
       return appendToPrev(getFieldContents(el), prev)
-        .then(db.deleteReference(current.ref))
-        .then(removeCurrentFromParent)
-        .then(focusPreviousComponent);
+        .then(removeCurrentFromParent(current, parent))
+        .then(focusPreviousComponent(parent, prev));
     }
   });
 
@@ -241,12 +279,14 @@ function addComponent(el) {
  * remove current component if we're at the beginning of the field
  * and there's a previous component to append it to
  * @param {Element} el
+ * @param {KeyboardEvent} e
  * @returns {undefined|Promise}
  */
-function handleComponentDeletion(el) {
+function handleComponentDeletion(el, e) {
   var caretPos = select(el);
 
   if (caretPos.start === 0) {
+    e.preventDefault(); // stop page reload
     return removeComponent(el);
   }
 }
@@ -318,7 +358,7 @@ module.exports = function (result, args) {
 
       editor.subscribe('editableKeydownDelete', function (e, editable) {
         if (enableKeyboardExtras) {
-          handleComponentDeletion(editable);
+          handleComponentDeletion(editable, e);
         }
       });
 
