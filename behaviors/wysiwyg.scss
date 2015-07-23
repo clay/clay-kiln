@@ -3,6 +3,7 @@
 @import '../node_modules/medium-editor/src/sass/medium-editor';
 
 .wysiwyg-input {
+  cursor: text;
   outline: none;
   white-space: normal;
 }

@@ -74,11 +74,11 @@ module.exports = {
       throw new Error('Please specify a selector to match against!');
     }
 
-    while (cursor && !cursor.matches('body') && !cursor.matches(parentSelector)) {
+    while (cursor && !cursor.matches('html') && !cursor.matches(parentSelector)) {
       cursor = cursor.parentNode;
     }
 
-    if (!cursor || cursor.matches('body')) {
+    if (!cursor || cursor.matches('html')) {
       return null;
     } else {
       return cursor;

@@ -1,9 +1,9 @@
 /*
 WYSIWYG arguments
 
-multiline {boolean} allow or disallow multi-paragraph selection
+enableKeyboardExtras {boolean} enable creating new components on enter, and appending text to previous components on delete, etc
 buttons {array} array of button names (strings) for tooltip
-placeholder {string} placeholder that will display in the input
+styled {boolean} apply input styles to contenteditable element
  */
 
 var _ = require('lodash'),
@@ -15,7 +15,8 @@ var _ = require('lodash'),
   render = require('../services/render'),
   focus = require('../decorators/focus'),
   references = require('../services/references'),
-  edit = require('../services/edit');
+  edit = require('../services/edit'),
+  refAttr = references.referenceAttribute;
 
 /**
  * toggle the tiered toolbar
@@ -85,52 +86,236 @@ function createEditor(field, buttons) {
   });
 }
 
+/**
+ * get elements and data for the current component
+ * @param {Element} el
+ * @returns {object}
+ */
+function getCurrent(el) {
+  var currentComponent = dom.closest(el, '[' + refAttr + ']'),
+    currentComponentRef = currentComponent.getAttribute(refAttr);
+
+  return {
+    field: el.getAttribute(references.fieldAttribute),
+    component: currentComponent,
+    ref: currentComponentRef,
+    name: references.getComponentNameFromReference(currentComponentRef)
+  };
+}
+
+/**
+ * get elements and data for the parent component
+ * @param {Element} el of the current component
+ * @returns {object}
+ */
+function getParent(el) {
+  var parentNode = el.parentNode,
+    parentComponent = dom.closest(parentNode, '[' + refAttr + ']'),
+    parentComponentRef = parentComponent.getAttribute(refAttr);
+
+  return {
+    field: dom.closest(parentNode, '[' + references.editableAttribute + ']').getAttribute(references.editableAttribute),
+    component: parentComponent,
+    ref: parentComponentRef,
+    name: references.getComponentNameFromReference(parentComponentRef)
+  };
+}
+
+/**
+ * get previous component in list, if any
+ * @param {object} current
+ * @param {object} parent
+ * @returns {Promise} with {_ref: previous ref} or undefined
+ */
+function getPrev(current, parent) {
+  return edit.getDataOnly(parent.ref).then(function (parentData) {
+    var index = _.findIndex(parentData[parent.field], { _ref: current.ref }),
+      before = _.take(parentData[parent.field], index),
+      prev = _.findLast(before, function (component) {
+        return references.getComponentNameFromReference(component._ref) === current.name;
+      });
+
+    if (prev) {
+      return {
+        field: current.field,
+        component: dom.find(parent.component, '[' + refAttr + '="' + prev._ref + '"]'),
+        ref: prev._ref,
+        name: current.name
+      };
+    }
+  });
+}
+
+/**
+ * get the contents of a wysiwyg field
+ * note: if we want to remove / parse / sanitize contents when doing operations,
+ * this is the place we should do it
+ * @param {Element} el
+ * @returns {string}
+ */
+function getFieldContents(el) {
+  return el.innerHTML;
+}
+
+/**
+ * append text/html to previous component's field
+ * @param {string} html
+ * @param {object} prev
+ * @returns {Promise}
+ */
+function appendToPrev(html, prev) {
+  // note: get fresh data from the server
+  return db.getComponentJSONFromReference(prev.ref).then(function (prevData) {
+    var prevFieldData = _.get(prevData, prev.field);
+
+    // add current field's html to the end of the previous field
+    prevFieldData += html;
+    // then put it back into the previous component's data
+    _.set(prevData, prev.field, prevFieldData);
+    return db.putToReference(prev.ref, prevData);
+  });
+}
+
+/**
+ * remove current component from parent
+ * @param {object} current
+ * @param {object} parent
+ * @returns {Function}
+ */
+function removeCurrentFromParent(current, parent) {
+  return function () {
+    return db.getComponentJSONFromReference(parent.ref).then(function (parentData) {
+      var index = _.findIndex(parentData[parent.field], { _ref: current.ref });
+
+      parentData[parent.field].splice(index, 1); // splice the current component out of the parent
+      dom.removeElement(current.component); // remove component el
+      return db.putToReference(parent.ref, parentData);
+    });
+  };
+}
+
+/**
+ * reload previous component
+ * note: this differs from the reload / render function in that it only reloads
+ * a single instance of that component on the page
+ * @param {object} prev
+ * @returns {Function}
+ */
+function reloadPreviousComponent(prev) {
+  return function () {
+    return db.getComponentHTMLFromReference(prev.ref)
+      .then(function (updatedEl) {
+        render.addComponentsHandlers(updatedEl);
+        dom.replaceElement(prev.component, updatedEl);
+        return updatedEl;
+      });
+  };
+}
+
+/**
+ * focus on the previous component's field
+ * @param {object} parent
+ * @param  {object} prev
+ * @returns {Function}
+ */
+function focusPreviousComponent(parent, prev) {
+  return function (newEl) {
+    return focus.focus(newEl, { ref: prev.ref, path: prev.field }).then(function () {
+      dom.find('[data-ref="' + prev.ref + '"] [data-field]').focus();
+    });
+  };
+}
+
+/**
+ * remove current component, append text to previous component (of the same name)
+ * @param {Element} el
+ * @returns {Promise|undefined}
+ */
+function removeComponent(el) {
+  var current = getCurrent(el),
+    parent = getParent(current.component);
+
+  // find the previous component, if any
+  return getPrev(current, parent).then(function (prev) {
+    if (prev) {
+      // there's a previous component with the same name!
+      // get the contents of the current field, and append them to the previous component
+      return appendToPrev(getFieldContents(el), prev)
+        .then(removeCurrentFromParent(current, parent))
+        .then(reloadPreviousComponent(prev))
+        .then(focusPreviousComponent(parent, prev));
+    }
+  });
+}
+
+/**
+ * add component after current component
+ * @param {Element} el
+ * @returns {Promise}
+ */
 function addComponent(el) {
-  var currentField = el.getAttribute(references.fieldAttribute),
-    currentComponent = dom.closest(el, '[' + references.referenceAttribute + ']'),
-    currentComponentRef = currentComponent.getAttribute(references.referenceAttribute),
-    currentComponentName = references.getComponentNameFromReference(currentComponentRef);
+  var current = getCurrent(el);
 
   // create a new component
-  return db.postToReference('/components/' + currentComponentName + '/instances', {}).then(function (res) {
-    var ref = res._ref;
+  return db.postToReference('/components/' + current.name + '/instances', {}).then(function (res) {
+    var newRef = res._ref;
 
     // get the html of that new component
-    return db.getComponentHTMLFromReference(ref).then(function (newEl) {
+    return db.getComponentHTMLFromReference(newRef).then(function (newEl) {
       // add the handlers for the new component
       render.addComponentsHandlers(newEl);
       // then add it after the current one
-      dom.insertAfter(currentComponent, newEl);
+      dom.insertAfter(current.component, newEl);
       // then focus() the new field that's the same as the current field
-      focus.focus(newEl, { ref: ref, path: currentField }).then(function () {
-        dom.find('[data-ref="' + ref + '"] [data-field]').focus();
+      focus.focus(newEl, { ref: newRef, path: current.field }).then(function () {
+        dom.find('[data-ref="' + newRef + '"] [data-field]').focus();
       });
 
-      return ref;
+      return newRef;
     });
   }).then(function (ref) { // update the parent component's component list
-    var parentComponent = dom.closest(currentComponent.parentNode, '[' + references.referenceAttribute + ']'),
-      parentRef = parentComponent.getAttribute(references.referenceAttribute),
-      parentField = dom.closest(currentComponent.parentNode, '[' + references.editableAttribute + ']').getAttribute(references.editableAttribute);
+    var parent = getParent(current.component);
 
-    return edit.getDataOnly(parentRef).then(function (parentData) {
-      var index = _.findIndex(parentData[parentField], { _ref: currentComponentRef }) + 1;
+    return edit.getDataOnly(parent.ref).then(function (parentData) {
+      var index = _.findIndex(parentData[parent.field], { _ref: current.ref }) + 1;
 
-      parentData[parentField].splice(index, 0, { _ref: ref }); // splice the new component into the array after the current one
-      return db.putToReference(parentRef, parentData);
+      parentData[parent.field].splice(index, 0, { _ref: ref }); // splice the new component into the array after the current one
+      return db.putToReference(parent.ref, parentData);
     });
   });
 }
 
+/**
+ * remove current component if we're at the beginning of the field
+ * and there's a previous component to append it to
+ * @param {Element} el
+ * @param {KeyboardEvent} e
+ * @returns {undefined|Promise}
+ */
+function handleComponentDeletion(el, e) {
+  var caretPos = select(el);
+
+  if (caretPos.start === 0) {
+    e.preventDefault(); // stop page reload
+    return removeComponent(el);
+  }
+}
+
+/**
+ * create new component if we're at the end of the field
+ * @param {Element} el
+ * @returns {false|Promise}
+ */
 function handleComponentCreation(el) {
   var caretPos = select(el); // get text after the cursor, if any
 
   // if there's stuff after the caret, get it
   if (caretPos.start < el.innerText.length - 2) {
     console.log(el.innerText.substr(caretPos.start));
+    // todo: split paragraphs, add new component with text after caret
     return false; // don't do anything if you're not at the end
   } else {
-    addComponent(el);
+    return addComponent(el);
   }
 }
 
@@ -142,7 +327,7 @@ module.exports = function (result, args) {
   var rivets = result.rivets,
     buttons = args.buttons,
     styled = args.styled,
-    newComponentOnEnter = args.newComponentOnEnter,
+    enableKeyboardExtras = args.enableKeyboardExtras,
     textInput = dom.find(result.el, 'input') || dom.find(result.el, 'textarea'),
     field = dom.create(`<p class="wysiwyg-input${ isStyled(styled) }" data-field="${result.bindings.name}" rv-wysiwyg="data.value"></p>`);
 
@@ -181,10 +366,16 @@ module.exports = function (result, args) {
         observer.setValue(editable.innerHTML);
       });
 
+      editor.subscribe('editableKeydownDelete', function (e, editable) {
+        if (enableKeyboardExtras) {
+          handleComponentDeletion(editable, e);
+        }
+      });
+
       editor.subscribe('editableKeydownEnter', function (e, editable) {
         e.preventDefault(); // stop it from creating new paragraphs
 
-        if (newComponentOnEnter) {
+        if (enableKeyboardExtras) {
           handleComponentCreation(editable);
         } else {
           // close the form?
