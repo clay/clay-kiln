@@ -211,34 +211,15 @@ function getOverlapCount(blockA) {
   return count;
 }
 
-function documentToString(el) {
-  var parent = document.createElement('DIV');
-
-  parent.appendChild(el.cloneNode(true));
-  return parent.innerHTML;
-}
-
-function addPropertiedBlocksToElement(el, model) {
-  var start, end, propertiedBlocks;
-
-  propertiedBlocks = _.pick(model.blocks, function (block, blockName) {
-    return blockTypes[blockName].set === propertied;
-  });
-
-  _.forOwn(propertiedBlocks, function (blocksOfType, blockType) {
-    var i, list;
-
-    for (i = 0; i < blocksOfType.length; i++) {
-      start = blocksOfType[i].start;
-      end = blocksOfType[i].end;
-      list = getTextNodeTargets(el, start, end);
-
-      _.each(list, splitTextNode.bind(null, blockType, el));
-    }
-  });
-}
-
-function splitTextNode(blockType, rootEl, item) {
+/**
+ * Split a text node into pieces
+ *
+ * @param blockType
+ * @param rootEl
+ * @param blockAttributes
+ * @param item
+ */
+function splitTextNode(blockType, rootEl, blockAttributes, item) {
   var startTextNode,
     textNode = item.node,
     tagName = blockTypes[blockType].name,
@@ -251,6 +232,9 @@ function splitTextNode(blockType, rootEl, item) {
     middleText = text.substr(startPos, endPos - startPos),
     endText = text.substr(endPos);
 
+  _.each(blockAttributes, function (value, key) {
+    blockEl.setAttribute(key, value);
+  });
   blockEl.appendChild(dom.create(middleText));
   parentNode.insertBefore(blockEl, textNode);
 
@@ -294,6 +278,27 @@ function getTextNodeTargets(el, start, end) {
   return list;
 }
 
+function addPropertiedBlocksToElement(el, model) {
+  var start, end, propertiedBlocks;
+
+  propertiedBlocks = _.pick(model.blocks, function (block, blockName) {
+    return blockTypes[blockName].set === propertied;
+  });
+
+  _.forOwn(propertiedBlocks, function (blocksOfType, blockType) {
+    var i, list, block;
+
+    for (i = 0; i < blocksOfType.length; i++) {
+      block = blocksOfType[i];
+      start = block.start;
+      end = block.end;
+      list = getTextNodeTargets(el, start, end);
+
+      _.each(list, splitTextNode.bind(null, blockType, el, _.omit(block, 'start', 'end')));
+    }
+  });
+}
+
 function addContinuousBlocksToElement(el, model) {
   var start, end, continuousBlocks;
 
@@ -309,7 +314,7 @@ function addContinuousBlocksToElement(el, model) {
       end = blocksOfType[i + 1];
       list = getTextNodeTargets(el, start, end);
 
-      _.each(list, splitTextNode.bind(null, blockType, el));
+      _.each(list, splitTextNode.bind(null, blockType, el, {}));
     }
   });
 }

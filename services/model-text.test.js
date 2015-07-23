@@ -149,6 +149,15 @@ describe('model-text service', function () {
       expect(documentToString(fn(model))).to.equal(result);
     });
 
+    it('converts propertied blocks', function () {
+      var model = {
+        text: 'Hello there person!',
+        blocks: { link: [{ start: 6, end: 18, alt: 'Good day!' }] }
+      }, result = 'Hello <a alt="Good day!">there person</a>!';
+
+      expect(documentToString(fn(model))).to.equal(result);
+    });
+
     it('nests when continuous blocks applied within propertied blocks', function () {
       var model = {
         text: 'Hello there person!',
