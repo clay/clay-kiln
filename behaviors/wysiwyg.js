@@ -182,22 +182,26 @@ function appendToPrev(html, prev) {
  * @returns {Function}
  */
 function removeCurrentFromParent(current, parent) {
-  return edit.getDataOnly(parent.ref).then(function (parentData) {
-    var index = _.findIndex(parentData[parent.field], { _ref: current.ref });
+  return function () {
+    return db.getComponentJSONFromReference(parent.ref).then(function (parentData) {
+      var index = _.findIndex(parentData[parent.field], { _ref: current.ref });
 
-    parentData[parent.field].splice(index, 1); // splice the current component out of the parent
-    dom.removeElement(current.component); // remove component el
-    return db.putToReference(parent.ref, parentData);
-  });
+      parentData[parent.field].splice(index, 1); // splice the current component out of the parent
+      dom.removeElement(current.component); // remove component el
+      return db.putToReference(parent.ref, parentData);
+    });
+  };
 }
 
 function reloadPreviousComponent(prev) {
-  return db.getComponentHTMLFromReference(prev.ref)
-    .then(function (updatedEl) {
-      render.addComponentsHandlers(updatedEl);
-      dom.replaceElement(prev.component, updatedEl);
-      return updatedEl;
-    });
+  return function () {
+    return db.getComponentHTMLFromReference(prev.ref)
+      .then(function (updatedEl) {
+        render.addComponentsHandlers(updatedEl);
+        dom.replaceElement(prev.component, updatedEl);
+        return updatedEl;
+      });
+  };
 }
 
 /**
@@ -207,11 +211,11 @@ function reloadPreviousComponent(prev) {
  * @returns {Function}
  */
 function focusPreviousComponent(parent, prev) {
-  return reloadPreviousComponent(prev).then(function (newEl) {
+  return function (newEl) {
     return focus.focus(newEl, { ref: prev.ref, path: prev.field }).then(function () {
       dom.find('[data-ref="' + prev.ref + '"] [data-field]').focus();
     });
-  });
+  };
 }
 
 /**
@@ -230,6 +234,7 @@ function removeComponent(el) {
       // get the contents of the current field, and append them to the previous component
       return appendToPrev(getFieldContents(el), prev)
         .then(removeCurrentFromParent(current, parent))
+        .then(reloadPreviousComponent(prev))
         .then(focusPreviousComponent(parent, prev));
     }
   });
