@@ -238,9 +238,6 @@ function removeComponent(el) {
         .then(focusPreviousComponent(parent, prev));
     }
   });
-
-  // if there's a previous component (with the same name),
-  // kick off the process of removing the current component
 }
 
 /**
