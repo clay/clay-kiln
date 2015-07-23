@@ -193,6 +193,13 @@ function removeCurrentFromParent(current, parent) {
   };
 }
 
+/**
+ * reload previous component
+ * note: this differs from the reload / render function in that it only reloads
+ * a single instance of that component on the page
+ * @param {object} prev
+ * @returns {Function}
+ */
 function reloadPreviousComponent(prev) {
   return function () {
     return db.getComponentHTMLFromReference(prev.ref)
