@@ -62,7 +62,7 @@ module.exports = {
   },
 
   /**
-   * get closest parent element that matches selector
+   * get closest element that matches selector starting with the element itself and traversing up through parents.
    * @param  {Element} node
    * @param  {string} parentSelector
    * @return {Element|null}
