@@ -42,6 +42,16 @@ describe('model-text service', function () {
       expect(fn(el)).to.deep.equal(result);
     });
 
+    it('finds text even with whitespace', function () {
+      var el = dom.create('<b>Hello </b>there <b>person</b> <b>there!</b>'),
+        result = {
+          text: 'Hello there person there!',
+          blocks: { bold: [ 0, 6, 12, 18, 19, 25 ] }
+        };
+
+      expect(fn(el)).to.deep.equal(result);
+    });
+
     it('ignores scripts', function () {
       var el = dom.create('Hello <script>jfkdslajfkdsal</script>there <b>person</b>!'),
         result = {
@@ -183,6 +193,116 @@ describe('model-text service', function () {
       }, result = '<b>Hello </b><a><b>there </b>person</a>!';
 
       expect(documentToString(fn(model))).to.equal(result);
+    });
+  });
+
+  describe('split', function () {
+    var fn = lib[this.title];
+
+    it('splits text', function () {
+      var num = 8,
+        el = dom.create('Hello there person!'),
+        result,
+        before = '',
+        after = '';
+
+      result = fn(lib.fromElement(el), num);
+
+      result = _.map(result, function (model) {
+        return documentToString(lib.toElement(model));
+      });
+
+      expect(result).to.deep.equal([before, after]);
+    });
+
+    it('splits continuous blocks to each side', function () {
+      var num = 8,
+        el = dom.create('<b>Hello </b>there <b>person</b>!'),
+        model = lib.fromElement(el),
+        result,
+        expectedResult = [ '<b>Hello </b>th', 'ere <b>person</b>!' ];
+
+      result = fn(lib.fromElement(el), num);
+
+      result = _.map(result, function (modelResult) { return documentToString(lib.toElement(modelResult)); });
+      expect(result).to.deep.equal(expectedResult);
+    });
+
+    it('splits continuous blocks at middle', function () {
+      var num = 8,
+        el = dom.create('Hello <b>there </b>person!'),
+        result,
+        expectedResult = [ 'Hello <b>th</b>', '<b>ere </b>person!' ];
+
+      result = fn(lib.fromElement(el), num);
+
+      result = _.map(result, function (modelResult) { return documentToString(lib.toElement(modelResult)); });
+      expect(result).to.deep.equal(expectedResult);
+    });
+
+    it('splits continuous blocks to each side and middle', function () {
+      var num = 8,
+        el = dom.create('<b>Hello</b> <b>there</b> <b>person</b>!'),
+        result,
+        expectedResult = [ '<b>Hello</b> <b>th</b>', '<b>ere</b> <b>person</b>!' ];
+
+      result = fn(lib.fromElement(el), num);
+
+      result = _.map(result, function (modelResult) { return documentToString(lib.toElement(modelResult)); });
+      expect(result).to.deep.equal(expectedResult);
+    });
+
+    it('splits propertied blocks to each side', function () {
+      var num = 8,
+        el = dom.create('<a>Hello </a>there <a>person</a>!'),
+        result,
+        expectedResult = [ '<a>Hello </a>th', 'ere <a>person</a>!' ];
+
+      result = fn(lib.fromElement(el), num);
+
+      result = _.map(result, function (modelResult) { return documentToString(lib.toElement(modelResult)); });
+      expect(result).to.deep.equal(expectedResult);
+    });
+
+    it('removes propertied blocks at middle', function () {
+      var num = 8,
+        el = dom.create('Hello <a>there </a>person!'),
+        result,
+        expectedResult = [ 'Hello th', 'ere person!' ];
+
+      result = fn(lib.fromElement(el), num);
+
+      result = _.map(result, function (modelResult) { return documentToString(lib.toElement(modelResult)); });
+      expect(result).to.deep.equal(expectedResult);
+    });
+
+    it('splits propertied blocks to each side and removes middle', function () {
+      var num = 8,
+        el = dom.create('<a>Hello</a> <a>there</a> <a>person</a>!'),
+        result,
+        expectedResult = [ '<a>Hello</a> th', 'ere <a>person</a>!' ];
+
+      result = fn(lib.fromElement(el), num);
+
+      result = _.map(result, function (modelResult) { return documentToString(lib.toElement(modelResult)); });
+      expect(result).to.deep.equal(expectedResult);
+    });
+  });
+
+  describe('concat', function () {
+    var fn = lib[this.title];
+
+    it('concats', function () {
+      var result,
+        before = lib.fromElement(dom.create('Hello <b>th</b>')),
+        after = lib.fromElement(dom.create('<b>ere</b> person!')),
+        expectedResult = 'Hello <b>there</b> person!';
+
+      result = fn(before, after);
+
+
+
+      expect(documentToString(lib.toElement(result))).to.deep.equal(expectedResult);
     });
   });
 });

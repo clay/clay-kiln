@@ -278,12 +278,16 @@ function getTextNodeTargets(el, start, end) {
   return list;
 }
 
+function getBlocksOfType(blocks, type) {
+  return _.pick(blocks, function (block, blockName) {
+    return blockTypes[blockName].set === type;
+  });
+}
+
 function addPropertiedBlocksToElement(el, model) {
   var start, end, propertiedBlocks;
 
-  propertiedBlocks = _.pick(model.blocks, function (block, blockName) {
-    return blockTypes[blockName].set === propertied;
-  });
+  propertiedBlocks = getBlocksOfType(model.blocks, propertied);
 
   _.forOwn(propertiedBlocks, function (blocksOfType, blockType) {
     var i, list, block;
@@ -302,9 +306,7 @@ function addPropertiedBlocksToElement(el, model) {
 function addContinuousBlocksToElement(el, model) {
   var start, end, continuousBlocks;
 
-  continuousBlocks = _.pick(model.blocks, function (block, blockName) {
-    return blockTypes[blockName].set === continuous;
-  });
+  continuousBlocks = getBlocksOfType(model.blocks, continuous);
 
   _.forOwn(continuousBlocks, function (blocksOfType, blockType) {
     var i, list;
@@ -340,11 +342,128 @@ function toElement(model) {
   return el;
 }
 
+/**
+ * These cannot be split, so ones that fall on the border are removed.
+ *
+ * @param {object} model
+ * @param {object} before
+ * @param {object} after
+ * @param {number} num
+ */
+function splitPropertiedBlocks(model, before, after, num) {
+  _.each(getBlocksOfType(model.blocks, propertied), function (blocks, blockType) {
+    var clonedBlock,
+      beforeBlocks = [],
+      afterBlocks = [];
+
+    _.each(blocks, function (block) {
+      if (block.start < num && block.end < num) {
+        beforeBlocks.push(_.clone(block));
+      } else if (block.start > num && block.end > num) {
+        clonedBlock = _.clone(block);
+        clonedBlock.start = block.start - num;
+        clonedBlock.end = block.end - num;
+        afterBlocks.push(clonedBlock);
+      } else {
+        // not remembered
+      }
+    });
+
+    if (beforeBlocks.length > 0) {
+      before.blocks[blockType] = beforeBlocks;
+    }
+    if (afterBlocks.length > 0) {
+      after.blocks[blockType] = afterBlocks;
+    }
+  });
+}
+
+/**
+ * These are allowed to be split.
+ *
+ * @param {object} model
+ * @param {object} before
+ * @param {object} after
+ * @param {number} num
+ */
+function splitContinuousBlocks(model, before, after, num) {
+  _.each(getBlocksOfType(model.blocks, continuous), function (blocks, blockType) {
+    var index,
+      beforeBlocks,
+      afterBlocks;
+
+    index = search.getBinarySortedInsertPosition(blocks, num);
+    if (index % 2 === 1) {
+      beforeBlocks = _.take(blocks, index - 1);
+      beforeBlocks.push(blocks[index - 1], num);
+      afterBlocks = [0, blocks[index] - num];
+      afterBlocks.push.apply(afterBlocks, _.map(_.drop(blocks, index + 1), function (value) { return value - num; }));
+    } else {
+      beforeBlocks = _.take(blocks, index);
+      afterBlocks = _.map(_.drop(blocks, index), function (value) { return value - num; });
+    }
+
+    before.blocks[blockType] = beforeBlocks;
+    after.blocks[blockType] = afterBlocks;
+  });
+}
+
+function split(model, num) {
+  var before = {
+      text: model.text.substr(0, num),
+      blocks: {}
+    },
+    after = {
+      text: model.text.substr(num),
+      blocks: {}
+    };
+
+  splitPropertiedBlocks(model, before, after, num);
+  splitContinuousBlocks(model, before, after, num);
+
+  return [before, after];
+}
+
+function concatPropertiedBlocks(before, after, model) {
+  var num = before.text.length,
+    mergedBlocks = _.map(_.cloneDeep(getBlocksOfType(after.blocks, propertied)), function (block) {
+      block.start += num;
+      block.end += num;
+    });
+
+  _.each(getBlocksOfType(before.blocks, propertied), function (blocks, blockType) {
+    if (mergedBlocks[blockType]) {
+      mergedBlocks[blockType] = blocks.concat(mergedBlocks[blockType]);
+    } else {
+      mergedBlocks[blockType] = blocks;
+    }
+  });
+
+  _.assign(model.blocks, mergedBlocks);
+}
+
+function concatContinuousBlocks(before, after, model) {
+  _.each(getBlocksOfType(model.blocks, continuous), function (blocks, blockType) {
+
+  });
+}
+
+function concat(before, after) {
+  var model = {
+    text: before.text + after.text,
+    blocks: {}
+  };
+
+  console.log(model);
+  concatPropertiedBlocks(before, after, model);
+  concatContinuousBlocks(before, after, model);
+
+  return model;
+}
+
 module.exports.fromElement = fromElement;
 module.exports.toElement = toElement;
-//module.exports.toHTML = toHTML;
-//module.exports.fromHTML = fromHTML;
-//module.exports.split = split;
-//module.exports.concat = concat;
+module.exports.split = split;
+module.exports.concat = concat;
 //module.exports.format = format;
 //module.exports.blocks = blocks;
