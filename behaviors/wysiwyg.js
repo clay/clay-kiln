@@ -85,14 +85,62 @@ function createEditor(field, buttons) {
   });
 }
 
+/**
+ * get elements and data for the current component
+ * @param {Element} el
+ * @returns {object}
+ */
+function getCurrent(el) {
+  var currentComponent = dom.closest(el, '[' + references.referenceAttribute + ']'),
+    currentComponentRef = currentComponent.getAttribute(references.referenceAttribute);
+
+  return {
+    field: el.getAttribute(references.fieldAttribute),
+    component: currentComponent,
+    ref: currentComponentRef,
+    name: references.getComponentNameFromReference(currentComponentRef)
+  };
+}
+
+/**
+ * get elements and data for the parent component
+ * @param {Element} el of the current component
+ * @returns {object}
+ */
+function getParent(el) {
+  var parentNode = el.parentNode,
+    parentComponent = dom.closest(parentNode, '[' + references.referenceAttribute + ']'),
+    parentComponentRef = parentComponent.getAttribute(references.referenceAttribute);
+
+  return {
+    field: dom.closest(parentNode, '[' + references.editableAttribute + ']').getAttribute(references.editableAttribute),
+    component: parentComponent,
+    ref: parentComponentRef,
+    name: references.getComponentNameFromReference(parentComponentRef)
+  };
+}
+
+/**
+ * remove current component, append text to previous component (of the same type)
+ * @param {Element} el
+ * @returns {Promise}
+ */
+// function removeComponent(el) {
+//   var current = getCurrent(el);
+//
+//
+// }
+
+/**
+ * add component after current component
+ * @param {Element} el
+ * @returns {Promise}
+ */
 function addComponent(el) {
-  var currentField = el.getAttribute(references.fieldAttribute),
-    currentComponent = dom.closest(el, '[' + references.referenceAttribute + ']'),
-    currentComponentRef = currentComponent.getAttribute(references.referenceAttribute),
-    currentComponentName = references.getComponentNameFromReference(currentComponentRef);
+  var current = getCurrent(el);
 
   // create a new component
-  return db.postToReference('/components/' + currentComponentName + '/instances', {}).then(function (res) {
+  return db.postToReference('/components/' + current.ame + '/instances', {}).then(function (res) {
     var ref = res._ref;
 
     // get the html of that new component
@@ -100,37 +148,55 @@ function addComponent(el) {
       // add the handlers for the new component
       render.addComponentsHandlers(newEl);
       // then add it after the current one
-      dom.insertAfter(currentComponent, newEl);
+      dom.insertAfter(current.component, newEl);
       // then focus() the new field that's the same as the current field
-      focus.focus(newEl, { ref: ref, path: currentField }).then(function () {
+      focus.focus(newEl, { ref: ref, path: current.field }).then(function () {
         dom.find('[data-ref="' + ref + '"] [data-field]').focus();
       });
 
       return ref;
     });
   }).then(function (ref) { // update the parent component's component list
-    var parentComponent = dom.closest(currentComponent.parentNode, '[' + references.referenceAttribute + ']'),
-      parentRef = parentComponent.getAttribute(references.referenceAttribute),
-      parentField = dom.closest(currentComponent.parentNode, '[' + references.editableAttribute + ']').getAttribute(references.editableAttribute);
+    var parent = getParent(current.component);
 
-    return edit.getDataOnly(parentRef).then(function (parentData) {
-      var index = _.findIndex(parentData[parentField], { _ref: currentComponentRef }) + 1;
+    return edit.getDataOnly(parent.ref).then(function (parentData) {
+      var index = _.findIndex(parentData[parent.field], { _ref: current.ref }) + 1;
 
-      parentData[parentField].splice(index, 0, { _ref: ref }); // splice the new component into the array after the current one
-      return db.putToReference(parentRef, parentData);
+      parentData[parent.field].splice(index, 0, { _ref: ref }); // splice the new component into the array after the current one
+      return db.putToReference(parent.ref, parentData);
     });
   });
 }
 
+/**
+ * remove current component if we're at the beginning of the field
+ * and there's a previous component to append it to
+ * @param {Element} el
+ * @returns {undefined|Promise}
+ */
+function handleComponentDeletion(el) {
+  var caretPos = select(el);
+
+  if (caretPos.start === 0) {
+    return removeComponent(el);
+  }
+}
+
+/**
+ * create new component if we're at the end of the field
+ * @param {Element} el
+ * @returns {false|Promise}
+ */
 function handleComponentCreation(el) {
   var caretPos = select(el); // get text after the cursor, if any
 
   // if there's stuff after the caret, get it
   if (caretPos.start < el.innerText.length - 2) {
     console.log(el.innerText.substr(caretPos.start));
+    // todo: split paragraphs, add new component with text after caret
     return false; // don't do anything if you're not at the end
   } else {
-    addComponent(el);
+    return addComponent(el);
   }
 }
 
@@ -179,6 +245,12 @@ module.exports = function (result, args) {
       // persist editor data to data model on paste
       editor.subscribe('editablePaste', function (e, editable) {
         observer.setValue(editable.innerHTML);
+      });
+
+      editor.subscribe('editableKeydownDelete', function (e, editable) {
+        if (enableKeyboardExtras) {
+          handleComponentDeletion(editable);
+        }
       });
 
       editor.subscribe('editableKeydownEnter', function (e, editable) {
