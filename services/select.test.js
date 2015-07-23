@@ -134,21 +134,26 @@ describe(dirname, function () {
         expect(fn(el, {ref: 'fakeRef'}).classList.contains('component-bar-wrapper')).to.equal(true);
       });
 
-      it('will select parent component if parent bar is clicked', function () {
-        var el = stubComponent();
+      it('will select the parent component if parent label in the component bar is clicked', function () {
+        var parent = stubComponent(),
+          el = stubComponent(),
+          options = {ref: 'fakeRef', data: {x: 1}, path: 'fakePath'};
 
-        el.classList.add('selected-parent');
+        el.setAttribute(references.referenceAttribute, options.ref);
+        parent.setAttribute(references.referenceAttribute, 'parentRef');
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
-        fn(el, {ref: 'fakeRef'});
+        fn(el, options);
 
-        // the component shouldn't be selected yet
-        expect(el.classList.contains('selected')).to.equal(false);
+        // the parent should not be selected yet
+        expect(parent.classList.contains('selected')).to.equal(false);
+
+        console.log(el);
 
         // trigger a click on the component bar
-        el.querySelector('.component-bar').dispatchEvent(new Event('click'));
+        el.querySelector('.component-bar .parent.label').dispatchEvent(new Event('click'));
 
-        // the component should now be selected
-        expect(el.classList.contains('selected')).to.equal(true);
+        // the parent should now be selected
+        expect(parent.classList.contains('selected')).to.equal(true);
       });
 
       it('shouldn\'t open settings form if parent bar is clicked', function () {
