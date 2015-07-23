@@ -120,6 +120,12 @@ function getParent(el) {
   };
 }
 
+/**
+ * get previous component in list, if any
+ * @param {object} current
+ * @param {object} parent
+ * @returns {Promise} with {_ref: previous ref} or undefined
+ */
 function getPrev(current, parent) {
   return edit.getDataOnly(parent.ref).then(function (parentData) {
     var index = _.findIndex(parentData[parent.field], { _ref: current.ref }),
@@ -128,24 +134,62 @@ function getPrev(current, parent) {
         return references.getComponentNameFromReference(component._ref) === current.name;
       });
 
-    console.log(before);
-    console.log(prev);
+    if (prev) {
+      return {
+        field: current.field,
+        component: dom.find(parent.component, '[' + references.referenceAttribute + '="' + prev._ref + '"]'),
+        ref: prev._ref,
+        name: current.name
+      };
+    }
+  });
+}
 
-    return prev;
+/**
+ * get the contents of a wysiwyg field
+ * note: if we want to remove / parse / sanitize contents when doing operations,
+ * this is the place we should do it
+ * @param {Element} el
+ * @returns {string}
+ */
+function getFieldContents(el) {
+  return el.innerHTML;
+}
+
+function appendToPrev(html, prev) {
+  return edit.getDataOnly(prev.ref).then(function (prevData) {
+    console.log(prevData)
+    var prevFieldData = _.get(prevData, prev.field + '.value');
+
+    // add current field's html to the end of the previous field
+    prevFieldData += html;
+    // then put it back into the previous component's data
+    _.set(prevData, prev.field + '.value', prevFieldData);
+    console.log(prevData)
+    // return db.putToReference(prev.ref, prevData);
   });
 }
 
 /**
  * remove current component, append text to previous component (of the same name)
  * @param {Element} el
- * @returns {Promise}
+ * @returns {Promise|undefined}
  */
 function removeComponent(el) {
   var current = getCurrent(el),
     parent = getParent(current.component);
 
-  // find the previous component (with the same name), if any
-  return getPrev(current, parent);
+  // find the previous component, if any
+  return getPrev(current, parent).then(function (prev) {
+    if (prev) {
+      // there's a previous component with the same name!
+      // get the contents of the current field, and append them to the previous component
+      return appendToPrev(getFieldContents(el), prev)
+        .then(deleteCurrentComponent)
+        .then(removeCurrentFromParent)
+        .then(focusPreviousComponent);
+    }
+  });
 
   // if there's a previous component (with the same name),
   // kick off the process of removing the current component
@@ -161,17 +205,17 @@ function addComponent(el) {
 
   // create a new component
   return db.postToReference('/components/' + current.ame + '/instances', {}).then(function (res) {
-    var ref = res._ref;
+    var newRef = res._ref;
 
     // get the html of that new component
-    return db.getComponentHTMLFromReference(ref).then(function (newEl) {
+    return db.getComponentHTMLFromReference(newRef).then(function (newEl) {
       // add the handlers for the new component
       render.addComponentsHandlers(newEl);
       // then add it after the current one
       dom.insertAfter(current.component, newEl);
       // then focus() the new field that's the same as the current field
-      focus.focus(newEl, { ref: ref, path: current.field }).then(function () {
-        dom.find('[data-ref="' + ref + '"] [data-field]').focus();
+      focus.focus(newEl, { ref: newRef, path: current.field }).then(function () {
+        dom.find('[data-ref="' + newRef + '"] [data-field]').focus();
       });
 
       return ref;
@@ -180,6 +224,7 @@ function addComponent(el) {
     var parent = getParent(current.component);
 
     return edit.getDataOnly(parent.ref).then(function (parentData) {
+      console.log(parentData)
       var index = _.findIndex(parentData[parent.field], { _ref: current.ref }) + 1;
 
       parentData[parent.field].splice(index, 0, { _ref: ref }); // splice the new component into the array after the current one
