@@ -3,6 +3,7 @@
 
 var references = require('./references'),
   dom = require('./dom'),
+  edit = require('./edit'),
   focus = require('../decorators/focus'),
   forms = require('./forms'),
   groups = require('./groups'),
@@ -15,8 +16,7 @@ var references = require('./references'),
  */
 function getComponentEl(el) {
   var attr = references.referenceAttribute,
-    attrSelector = '[' + attr + ']',
-    componentEl = el.hasAttribute(attr) ? el : dom.closest(el, attrSelector);
+    componentEl = dom.closest(el, '[' + attr + ']');
 
   return componentEl;
 }
@@ -30,6 +30,21 @@ function getParentEl(componentEl) {
   var parent = componentEl.parentNode && getComponentEl(componentEl.parentNode);
 
   return parent;
+}
+
+/**
+ * Check if the component is inside a component list.
+ * @param {Element} componentEl
+ * @param {object} parentSchema
+ * @returns {boolean}
+ */
+function isComponentList(componentEl, parentSchema) {
+  var attr = references.editableAttribute,
+    parent = componentEl.parentNode,
+    field = parent && dom.closest(parent, '[' + attr + ']'),
+    path = field && field.getAttribute(attr);
+
+  return !!(path && parentSchema[path] && parentSchema[path]._componentList);
 }
 
 /**
@@ -172,15 +187,56 @@ function addParentLabel(componentBar, parentEl) {
 }
 
 /**
- * Add options that depend on the parent (e.g. parent label).
+ * Add drag within a component list.
+ * @param {Element} componentBar
+ * @param {Element} parentEl
+ */
+function addDragOption(componentBar, parentEl) {
+  var el = dom.create(`<span class="drag" title="Drag"></span>`);
+
+  el.addEventListener('click', function (e) {
+    // Todo: add dragula.
+    console.log('You clicked on the drag.', parentEl, e);
+  });
+  componentBar.appendChild(el);
+}
+
+/**
+ * Add delete within a component list.
+ * @param {Element} componentBar
+ * @param {Element} parentEl
+ */
+function addDeleteOption(componentBar, parentEl) {
+  var el = dom.create(`<span class="delete" title="Delete"></span>`);
+
+  el.addEventListener('click', function (e) {
+    // Todo: delete from component list.
+    console.log('You clicked on delete.', parentEl, e);
+  });
+  componentBar.appendChild(el);
+}
+
+/**
+ * Add options that depend on the parent (e.g. parent label and parent being a component list).
  * @param {Element} componentBar
  * @param {Element} componentEl   An element that has a ref.
+ * @returns {Promise|undefined}
  */
 function addParentOptions(componentBar, componentEl) {
-  var parentEl = getParentEl(componentEl);
+  var parentEl = getParentEl(componentEl),
+    ref;
 
   if (parentEl) {
+    ref = parentEl.getAttribute(references.referenceAttribute);
     addParentLabel(componentBar, parentEl);
+    return edit.getSchema(ref)
+      .then(function (parentSchema) {
+        if (isComponentList(componentEl, parentSchema)) {
+          // Options only available if you are within a component list.
+          addDragOption(componentBar, parentEl);
+          addDeleteOption(componentBar, parentEl);
+        }
+      });
   }
 }
 
