@@ -1,20 +1,24 @@
 @import 'colors';
 @import 'typography';
 // Using px because the gap needs to be px so that it does not disappear, and can only add with same units.
-$bar-height: 26px;
+$bar-height: 26px; // drag, settings, delete, etc are square so width = height.
 $bar-parent-height: 20px;
 $bar-bd-height: 3px;
 $bar-gap: 1px;
 $bar-label-width: 76px;
 $bar-bg-color: rgba(23,130,169,0.95);
 $bar-parent-bg-color: rgba(139,191,211,0.95);
+$bar-settings-icon: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4IiB2aWV3Qm94PSIwIDAgMTYgMTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHRpdGxlPlNldHRpbmdzPC90aXRsZT48ZyBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48ZyBmaWxsPSIjMDAwMDAwIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2LjQ5OTQ5NSwgOC42OTk0OTUpIHJvdGF0ZSgtMzE1LjAwMDAwMCkgdHJhbnNsYXRlKC02LjQ5OTQ5NSwgLTguNjk5NDk1KSB0cmFuc2xhdGUoMi45OTk0OTUsIC0xLjgwMDUwNSkiPjxwYXRoIGQ9Ik0xLDMuMjUgTDcsMy4yNSBMNywxNS4yNSBMMSwxNS4yNSBMMSwzLjI1IFogTTIuMjUsNC4yNDMyMTc2MSBMMyw0LjI0MzIxNzYxIEwzLDE0LjI0MzIxNzYgTDIuMjUsMTQuMjQzMjE3NiBMMi4yNSw0LjI0MzIxNzYxIFogTTUsNC4yNDMyMTc2MSBMNS43NSw0LjI0MzIxNzYxIEw1Ljc1LDE0LjI0MzIxNzYgTDUsMTQuMjQzMjE3NiBMNSw0LjI0MzIxNzYxIFoiPjwvcGF0aD48cG9seWdvbiBwb2ludHM9IjQgMTYgNyAyMCAxIDIwICI+PC9wb2x5Z29uPjxyZWN0IHg9IjEiIHk9IjUuNjg0MzQxODllLTE0IiB3aWR0aD0iNiIgaGVpZ2h0PSIyLjUiPjwvcmVjdD48L2c+PC9nPjwvZz48L3N2Zz4=");
+$bar-drag-icon: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTBweCIgaGVpZ2h0PSIxOXB4IiB2aWV3Qm94PSIwIDAgMTAgMTkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHRpdGxlPkRyYWc8L3RpdGxlPjxwYXRoIGQ9Ik0zLjAxNTYyNSw5IEwzLjAxNTYyNSw1IEwwLDUgTDUsMCBMMTAsNSBMNy4wMTU2MjUsNSBMNy4wMTU2MjUsMTQgTDEwLDE0IEw1LDE5IEwwLDE0IEwzLjAxNTYyNSwxNCBMMy4wMTU2MjUsMTAgTDMsMTAgTDMsOSBMMy4wMTU2MjUsOSBaIE0zLjAxNTYyNSw5IEwzLjAxNTYyNSwxMCBMNywxMCBMNyw5IEwzLjAxNTYyNSw5IFoiPjwvcGF0aD48L3N2Zz4=");
+$bar-delete-icon: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTRweCIgaGVpZ2h0PSIxN3B4IiB2aWV3Qm94PSIwIDAgMTQgMTciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHRpdGxlPkRlbGV0ZTwvdGl0bGU+PHBhdGggZD0iTTIsMTcgTDEyLDE3IEwxMiw0IEwyLDQgTDIsMTcgWiBNNCw2LjAwNTU0NDM1IEw1LDYuMDA1NTQ0MzUgTDUsMTUgTDQsMTUgTDQsNi4wMDU1NDQzNSBaIE02LjUsNi4wMDU1NDQzNSBMNy41LDYuMDA1NTQ0MzUgTDcuNSwxNSBMNi41LDE1IEw2LjUsNi4wMDU1NDQzNSBaIE05LDYuMDA1NTQ0MzUgTDEwLDYuMDA1NTQ0MzUgTDEwLDE1IEw5LDE1IEw5LDYuMDA1NTQ0MzUgWiI+PC9wYXRoPjxwYXRoIGQ9Ik0xNCwzIEwwLDMgTDEuMzEyNSwxIEwxMi42ODc1LDEgTDE0LDMiPjwvcGF0aD48cGF0aCBkPSJNNSwwIEw5LDAgTDksMSBMNSwxIEw1LDAgWiI+PC9wYXRoPjwvc3ZnPg==");
+
 
 // Wrapper around parent and child.
 .component-bar-wrapper {
   position: relative;
 }
 
-// Selected parent's bar hidden for now.
+// Parent's bar hidden for now.
 .component-bar-wrapper.selected-parent > .component-bar {
   opacity: 0;
 }
@@ -28,12 +32,12 @@ $bar-parent-bg-color: rgba(139,191,211,0.95);
 .component-bar {
   @include overlay-copy();
 
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
   align-items: stretch;
   align-content: flex-end;
+  display: flex;
+  flex-flow: row nowrap;
   height: $bar-height;
+  justify-content: flex-start;
   left: 0;
   opacity: 0;
   position: absolute;
@@ -46,14 +50,13 @@ $bar-parent-bg-color: rgba(139,191,211,0.95);
 .component-bar > span {
   @include label();
 
-  background: $bar-bg-color;
+  background: $bar-bg-color no-repeat center;
   color: #fff;
+  display: block;
   flex-basis: $bar-height;
   flex-grow: 0;
   font-family: Arial, sans-serif;
   font-size: 11px;
-  display: block;
-  letter-spacing: .5px;
   line-height: $bar-height;
   margin: 0 $bar-gap 0 0;
   overflow: hidden;
@@ -65,6 +68,7 @@ $bar-parent-bg-color: rgba(139,191,211,0.95);
 
 // Selected label
 .component-bar > .label {
+  cursor: default;
   flex-basis: $bar-label-width;
   order: 1;
   padding-left: .5rem;
@@ -75,39 +79,40 @@ $bar-parent-bg-color: rgba(139,191,211,0.95);
 // Parent's label
 .component-bar > .parent.label {
   background: $bar-parent-bg-color;
+  cursor: pointer;
+  height: $bar-parent-height;
   left: 0;
   line-height: $bar-parent-height;
-  height: $bar-parent-height;
   position: absolute;
   top: -$bar-gap - $bar-parent-height;
 }
 
 // Actions
-.component-bar > span svg {
-  margin: 4px;
-}
 .component-bar > .drag {
+  background-image: $bar-drag-icon;
   cursor: grab;
   margin-left: -$bar-height - $bar-gap;
   order: 0;
 }
 .component-bar > .settings {
+  background-image: $bar-settings-icon;
+  cursor: pointer;
   order: 2;
 }
 .component-bar > .delete {
+  background-image: $bar-delete-icon;
+  cursor: pointer;
   order: 3;
 }
 // Fill remaining space.
 .component-bar > .fill {
   align-self: flex-end;
-  height: $bar-bd-height;
   flex-basis: auto;
   flex-grow: 1;
+  height: $bar-bd-height;
   margin-left: -$bar-gap;
   order: 5;
 }
-
-
 
 // all editable elements should have some kind of ux showing they can be edited
 [data-editable] {

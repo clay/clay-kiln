@@ -3,9 +3,35 @@
 
 var references = require('./references'),
   dom = require('./dom'),
+  edit = require('./edit'),
   focus = require('../decorators/focus'),
   forms = require('./forms'),
+  groups = require('./groups'),
   currentSelected;
+
+/**
+ * Get the closest component element from the DOM. Checks self and then parents.
+ * @param {Element} el    Any element within a component.
+ * @returns {Element}
+ */
+function getComponentEl(el) {
+  var attr = references.referenceAttribute,
+    attrSelector = '[' + attr + ']',
+    componentEl = el.hasAttribute(attr) ? el : dom.closest(el, attrSelector);
+
+  return componentEl;
+}
+
+/**
+ * Get the closest parent component of the component from the DOM.
+ * @param {Element} componentEl  A component element
+ * @returns {Element}
+ */
+function getParentEl(componentEl) {
+  var parent = componentEl.parentNode && getComponentEl(componentEl.parentNode);
+
+  return parent;
+}
 
 /**
  * set selection on a component
@@ -14,20 +40,15 @@ var references = require('./references'),
  * @param {MouseEvent} e
  */
 function select(el) {
-  var parent, // todo: allow n-number of parents to be selected
-    attr = '[' + references.referenceAttribute + ']';
-
-  el = dom.closest(el, attr);
-  if (el.parentNode) {
-    parent = dom.closest(el.parentNode, attr);
-  }
+  var component = getComponentEl(el),
+    parent = getParentEl(component);
 
   // selected component gets .selected, parent gets .selected-parent
-  el.classList.add('selected');
+  component.classList.add('selected');
   if (parent) {
     parent.classList.add('selected-parent');
   }
-  currentSelected = el;
+  currentSelected = component;
 }
 
 function removeClasses(el, parent) {
@@ -67,38 +88,6 @@ function when(el) {
 }
 
 /**
- * set the bar's height after images and such may have loaded
- * @param {Element} el component element
- */
-function setHeight(el) {
-  var componentHeight = getComputedStyle(el).height;
-
-  //dom.find(el, '.component-bar-title').style.width = parseInt(componentHeight) - 20 + 'px';
-}
-
-/**
- * handle clicks on the component bar
- * @param {Element} el
- * @param {object} options
- * @param {MouseEvent} e
- */
-function componentBarClickHandler(el, options, e) {
-  e.stopPropagation(); // this will prevent the unfocus from firing afterwards
-
-  if (el.classList.contains('selected')) {
-    // clicking on a selected bar opens its settings form
-    // note: nothing gets focused
-    focus.unfocus();
-    forms.open(options.ref, document.body);
-  } else if (el.classList.contains('selected-parent')) {
-    // clicking on a parent bar selects it
-    focus.unfocus();
-    unselect();
-    select(el);
-  }
-}
-
-/**
  * handle clicks on the component itself
  * @param {Element} el
  * @param {MouseEvent} e
@@ -130,47 +119,160 @@ function addIframeOverlays(el) {
 }
 
 /**
- * add component bar (with click events)
+ * Check if the component is a component list.
+ * @param {object} schema
+ * @returns {boolean}
+ */
+function isComponentList(schema) {
+  return !!schema[references.componentListProperty];
+}
+
+/**
+ * Add the settings option to the component bar.
+ * @param {Element} componentBar
+ * @param {object} data
+ * @param {string} ref
+ */
+function addSettingsOption(componentBar, data, ref) {
+  var el,
+    hasSettings = groups.getSettingsFields(data).length > 0;
+
+  if (hasSettings) {
+    el = dom.create(`<span class="settings" title="Settings"></span>`);
+    el.addEventListener('click', function (e) {
+      e.stopPropagation();
+      // Open the settings overlay.
+      focus.unfocus();
+      forms.open(ref, document.body);
+    });
+    componentBar.appendChild(el);
+  }
+}
+
+/**
+ * Scroll user to the component. "Weeee!" or "What the?"
  * @param {Element} el
- * @param {{ref: string, path: string, data: object}} options
+ */
+function scrollToComponent(el) {
+  var toolBarHeight = 70,
+    componentBarHeight = 30;
+
+  window.scrollTo(0, window.scrollY + el.getBoundingClientRect().top - toolBarHeight - componentBarHeight);
+}
+
+/**
+ * Add the parent's label to the component bar.
+ * @param {Element} componentBar
+ * @param {Element} parentEl
+ */
+function addParentLabel(componentBar, parentEl) {
+  var ref = parentEl.getAttribute(references.referenceAttribute),
+    label = references.getComponentNameFromReference(ref),
+    el = dom.create(`<span class="parent label" title="Parent: ${label.toUpperCase()}">${label}</span>`);
+
+  el.addEventListener('click', function (e) {
+    e.stopPropagation();
+    // Select the parent.
+    focus.unfocus();
+    unselect();
+    select(parentEl);
+    scrollToComponent(parentEl);
+  });
+  componentBar.appendChild(el);
+}
+
+/**
+ * Add drag within a component list.
+ * @param {Element} componentBar
+ * @param {Element} parentEl
+ */
+function addDragOption(componentBar, parentEl) {
+  var el = dom.create(`<span class="drag" title="Drag"></span>`);
+
+  el.addEventListener('click', function (e) {
+    // Todo: add dragula.
+    console.log('You clicked on the drag.', parentEl, e);
+  });
+  componentBar.appendChild(el);
+}
+
+/**
+ * Add delete within a component list.
+ * @param {Element} componentBar
+ * @param {Element} parentEl
+ */
+function addDeleteOption(componentBar, parentEl) {
+  var el = dom.create(`<span class="delete" title="Delete"></span>`);
+
+  el.addEventListener('click', function (e) {
+    // Todo: delete from component list.
+    console.log('You clicked on delete.', parentEl, e);
+  });
+  componentBar.appendChild(el);
+}
+
+/**
+ * Add options that depend on the parent (e.g. parent label and parent being a component list).
+ * @param {Element} componentBar
+ * @param {Element} componentEl   An element that has a ref.
+ * @returns {Promise|undefined}
+ */
+function addParentOptions(componentBar, componentEl) {
+  var parentEl = getParentEl(componentEl),
+    ref;
+
+  if (parentEl) {
+    ref = parentEl.getAttribute(references.referenceAttribute);
+    addParentLabel(componentBar, parentEl);
+    return edit.getSchema(ref)
+      .then(function (schema) {
+        if (isComponentList(schema)) {
+          // Options only available if you are within a component list.
+          addDragOption(componentBar, parentEl);
+          addDeleteOption(componentBar, parentEl);
+        }
+      });
+  }
+}
+
+/**
+ * add component bar (with click events)
+ * @param {Element} componentEl   An element that has a ref.
+ * @param {object} options
+ * @param {string} options.ref
+ * @param {string} options.path
+ * @param {object} options.data
  * @returns {Element}
  */
-function handler(el, options) {
-  var tpl = `
+function handler(componentEl, options) {
+  var name = references.getComponentNameFromReference(options.ref),
+    tpl = `
     <aside class="component-bar">
-      <span class="parent label" title="PARENT LABEL">Parent Label</span>
-      <span class="label" title="${references.getComponentNameFromReference(options.ref).toUpperCase()}">${references.getComponentNameFromReference(options.ref)}</span>
-      <span class="settings"><svg width="16px" height="16px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><title>Settings</title><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill="#000000"><g transform="translate(6.499495, 8.699495) rotate(-315.000000) translate(-6.499495, -8.699495) translate(2.999495, -1.800505)"><path d="M1,3.25 L7,3.25 L7,15.25 L1,15.25 L1,3.25 Z M2.25,4.24321761 L3,4.24321761 L3,14.2432176 L2.25,14.2432176 L2.25,4.24321761 Z M5,4.24321761 L5.75,4.24321761 L5.75,14.2432176 L5,14.2432176 L5,4.24321761 Z"></path><polygon points="4 16 7 20 1 20 "></polygon><rect x="1" y="5.68434189e-14" width="6" height="2.5"></rect></g></g></g></svg></span>
-      <span class="drag"><svg width="10px" height="19px" viewBox="0 0 10 19" xmlns="http://www.w3.org/2000/svg"><title>Drag</title><path d="M3.015625,9 L3.015625,5 L0,5 L5,0 L10,5 L7.015625,5 L7.015625,14 L10,14 L5,19 L0,14 L3.015625,14 L3.015625,10 L3,10 L3,9 L3.015625,9 Z M3.015625,9 L3.015625,10 L7,10 L7,9 L3.015625,9 Z"></path></svg></span>
-      <span class="delete"><svg width="14px" height="17px" viewBox="0 0 14 17" xmlns="http://www.w3.org/2000/svg"><title>Delete</title><path d="M2,17 L12,17 L12,4 L2,4 L2,17 Z M4,6.00554435 L5,6.00554435 L5,15 L4,15 L4,6.00554435 Z M6.5,6.00554435 L7.5,6.00554435 L7.5,15 L6.5,15 L6.5,6.00554435 Z M9,6.00554435 L10,6.00554435 L10,15 L9,15 L9,6.00554435 Z"></path><path d="M14,3 L0,3 L1.3125,1 L12.6875,1 L14,3"></path><path d="M5,0 L9,0 L9,1 L5,1 L5,0 Z"></path></svg></span>
+      <span class="label" title="${name.toUpperCase()}">${name}</span>
       <span class="fill"></span>
     </aside>
-  `,
-  componentBar = dom.create(tpl);
+    `,
+    componentBar = dom.create(tpl);
 
-  // add events to the component bar
-  componentBar.addEventListener('click', componentBarClickHandler.bind(null, el, options));
+  // Add options to the component bar.
+  addSettingsOption(componentBar, options.data, options.ref);
+  addParentOptions(componentBar, componentEl);
 
   // add events to the component itself
   // when the component is clicked, it should be selected
-  el.addEventListener('click', componentClickHandler.bind(null, el));
+  componentEl.addEventListener('click', componentClickHandler.bind(null, componentEl));
 
   // make sure components are relatively positioned
-  el.classList.add('component-bar-wrapper');
-  dom.prependChild(el, componentBar); // prepended, so parent components are behind child components
-  // don't set the component bar height until images &c are loaded
-  window.addEventListener('load', setHeight.bind(null, el));
+  componentEl.classList.add('component-bar-wrapper');
+  dom.prependChild(componentEl, componentBar); // prepended, so parent components are behind child components
   // add an iframe-overlay to iframes so we can click on components with them
-  addIframeOverlays(el);
-  return el;
+  addIframeOverlays(componentEl);
+  return componentEl;
 }
 
 // focus and unfocus
 module.exports.select = select;
 module.exports.unselect = unselect;
-
-// set height of component bar label
-module.exports.setHeight = setHeight;
 
 // decorators
 module.exports.when = when;
