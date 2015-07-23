@@ -1,9 +1,9 @@
 /*
 WYSIWYG arguments
 
-multiline {boolean} allow or disallow multi-paragraph selection
+enableKeyboardExtras {boolean} enable creating new components on enter, and appending text to previous components on delete, etc
 buttons {array} array of button names (strings) for tooltip
-placeholder {string} placeholder that will display in the input
+styled {boolean} apply input styles to contenteditable element
  */
 
 var _ = require('lodash'),
@@ -142,7 +142,7 @@ module.exports = function (result, args) {
   var rivets = result.rivets,
     buttons = args.buttons,
     styled = args.styled,
-    newComponentOnEnter = args.newComponentOnEnter,
+    enableKeyboardExtras = args.enableKeyboardExtras,
     textInput = dom.find(result.el, 'input') || dom.find(result.el, 'textarea'),
     field = dom.create(`<p class="wysiwyg-input${ isStyled(styled) }" data-field="${result.bindings.name}" rv-wysiwyg="data.value"></p>`);
 
@@ -184,7 +184,7 @@ module.exports = function (result, args) {
       editor.subscribe('editableKeydownEnter', function (e, editable) {
         e.preventDefault(); // stop it from creating new paragraphs
 
-        if (newComponentOnEnter) {
+        if (enableKeyboardExtras) {
           handleComponentCreation(editable);
         } else {
           // close the form?
