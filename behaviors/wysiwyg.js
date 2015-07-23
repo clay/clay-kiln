@@ -156,17 +156,22 @@ function getFieldContents(el) {
   return el.innerHTML;
 }
 
+/**
+ * append text/html to previous component's field
+ * @param {string} html
+ * @param {object} prev
+ * @returns {Promise}
+ */
 function appendToPrev(html, prev) {
-  return edit.getDataOnly(prev.ref).then(function (prevData) {
-    console.log(prevData)
-    var prevFieldData = _.get(prevData, prev.field + '.value');
+  // note: get fresh data from the server
+  return db.getComponentJSONFromReference(prev.ref).then(function (prevData) {
+    var prevFieldData = _.get(prevData, prev.field);
 
     // add current field's html to the end of the previous field
     prevFieldData += html;
     // then put it back into the previous component's data
-    _.set(prevData, prev.field + '.value', prevFieldData);
-    console.log(prevData)
-    // return db.putToReference(prev.ref, prevData);
+    _.set(prevData, prev.field, prevFieldData);
+    return db.putToReference(prev.ref, prevData);
   });
 }
 
@@ -185,7 +190,7 @@ function removeComponent(el) {
       // there's a previous component with the same name!
       // get the contents of the current field, and append them to the previous component
       return appendToPrev(getFieldContents(el), prev)
-        .then(deleteCurrentComponent)
+        .then(db.deleteReference(current.ref))
         .then(removeCurrentFromParent)
         .then(focusPreviousComponent);
     }
@@ -204,7 +209,7 @@ function addComponent(el) {
   var current = getCurrent(el);
 
   // create a new component
-  return db.postToReference('/components/' + current.ame + '/instances', {}).then(function (res) {
+  return db.postToReference('/components/' + current.name + '/instances', {}).then(function (res) {
     var newRef = res._ref;
 
     // get the html of that new component
@@ -218,13 +223,12 @@ function addComponent(el) {
         dom.find('[data-ref="' + newRef + '"] [data-field]').focus();
       });
 
-      return ref;
+      return newRef;
     });
   }).then(function (ref) { // update the parent component's component list
     var parent = getParent(current.component);
 
     return edit.getDataOnly(parent.ref).then(function (parentData) {
-      console.log(parentData)
       var index = _.findIndex(parentData[parent.field], { _ref: current.ref }) + 1;
 
       parentData[parent.field].splice(index, 0, { _ref: ref }); // splice the new component into the array after the current one

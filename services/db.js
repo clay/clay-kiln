@@ -141,6 +141,18 @@ module.exports = {
     return send(options).then(expectJSONResult);
   },
 
+  deleteReference: function (ref) {
+    var options = {
+      method: 'DELETE',
+      url: ref,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8'
+      }
+    };
+
+    return send(options);
+  },
+
   // for testing
   send: send
 };
