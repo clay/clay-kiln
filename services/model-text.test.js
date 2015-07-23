@@ -1,4 +1,5 @@
-var lib = require('./model-text'),
+var _ = require('lodash'),
+  lib = require('./model-text'),
   dom = require('./dom');
 
 //defaults for chai
@@ -14,7 +15,10 @@ describe('model-text service', function () {
    * @returns {string}
    */
   function documentToString(el) {
+    var parent = document.createElement('DIV');
 
+    parent.appendChild(el.cloneNode(true));
+    return parent.innerHTML;
   }
 
   beforeEach(function () {
@@ -102,8 +106,6 @@ describe('model-text service', function () {
           }
         };
 
-      console.log(require('util').inspect(fn(el), {depth: 5}));
-
       expect(fn(el)).to.deep.equal(result);
     });
   });
@@ -111,28 +113,67 @@ describe('model-text service', function () {
   describe('toElement', function () {
     var fn = lib[this.title];
 
+    it('converts continuous blocks', function () {
+      var model = {
+        text: 'Hello there person!',
+        blocks: { bold: [ 0, 6, 12, 18 ] }
+      }, result = '<b>Hello </b>there <b>person</b>!';
+
+      expect(documentToString(fn(model))).to.equal(result);
+    });
+
     it('nests when continuous blocks are already in order', function () {
-      expect(documentToString(fn())).to.equal(' ');
+      var model = {
+        text: 'Hello there person!',
+        blocks: { bold: [ 6, 18 ], italic: [ 12, 18 ] }
+      }, result = 'Hello <b>there <i>person</i></b>!';
+
+      expect(documentToString(fn(model))).to.equal(result);
     });
 
     it('nests when continuous blocks are not already in order', function () {
-      expect(documentToString(fn())).to.equal(' ');
+      var model = {
+        text: 'Hello there person!',
+        blocks: { bold: [ 12, 18 ], italic: [ 6, 18 ] }
+      }, result = 'Hello <i>there </i><b><i>person</i></b>!';
+
+      expect(documentToString(fn(model))).to.equal(result);
     });
 
-    it('overlaps when continuous blocks are already in order', function () {
-      expect(documentToString(fn())).to.equal(' ');
+    it('overlaps when continuous blocks regardless of order', function () {
+      var model = {
+        text: 'Hello there person!',
+        blocks: { bold: [ 0, 12 ], italic: [ 6, 18 ] }
+      }, result = '<b>Hello <i>there </i></b><i>person</i>!';
+
+      expect(documentToString(fn(model))).to.equal(result);
     });
 
-    it('overlaps when continuous blocks are not already in order', function () {
-      expect(documentToString(fn())).to.equal(' ');
+    it('nests when continuous blocks applied within propertied blocks', function () {
+      var model = {
+        text: 'Hello there person!',
+        blocks: { bold: [ 6, 12 ], link: [{ start: 0, end: 18 }] }
+      }, result = '<a>Hello <b>there </b>person</a>!';
+
+      expect(documentToString(fn(model))).to.equal(result);
     });
 
-    it('nests when continuous blocks applied to propertied blocks', function () {
-      expect(documentToString(fn())).to.equal(' ');
+    it('nests when continuous blocks applied outside propertied blocks', function () {
+      var model = {
+        text: 'Hello there person!',
+        blocks: { bold: [ 0, 18 ], link: [{ start: 6, end: 12 }] }
+      }, result = '<b>Hello </b><a><b>there </b></a><b>person</b>!';
+
+      expect(documentToString(fn(model))).to.equal(result);
     });
 
     it('overlaps when continuous blocks applied to propertied blocks', function () {
-      expect(documentToString(fn())).to.equal(' ');
+      var model = {
+        text: 'Hello there person!',
+        blocks: { bold: [ 0, 12 ], link: [{ start: 6, end: 18 }] }
+      }, result = '<b>Hello </b><a><b>there </b>person</a>!';
+
+      expect(documentToString(fn(model))).to.equal(result);
     });
   });
 });

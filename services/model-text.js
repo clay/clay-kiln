@@ -1,14 +1,16 @@
+'use strict';
 
 
-
-var tags,
+var tagTypes, blockTypes,
   _ = require('lodash'),
+  dom = require('./dom'),
+  search = require('./search'),
   nodeFilter = NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT;
 
 function knownTagsOnly(node) {
   var name = node.nodeName;
 
-  return !!tags[name] || node.nodeType === Node.TEXT_NODE;
+  return !!tagTypes[name] || node.nodeType === Node.TEXT_NODE;
 }
 
 /**
@@ -43,7 +45,7 @@ function continuous(model, node) {
     text = getContentText(node),
     end = start + text.length,
     nodeName = node.nodeName,
-    tagBlockName = tags[nodeName].name,
+    tagBlockName = tagTypes[nodeName].name,
     block = model.blocks[tagBlockName];
 
   if (!block) {
@@ -54,15 +56,11 @@ function continuous(model, node) {
   blockLen = block.length;
   lastBlockEndIndex = blockLen - 1;
   if (blockLen >= 2 && block[lastBlockEndIndex] >= start) {
-    console.log('continuous', block[blockLen - 2], block[lastBlockEndIndex], start, end);
     //if continuation of last block
     block[lastBlockEndIndex] = Math.max(block[lastBlockEndIndex], end);
-    console.log('result', block);
   } else {
     //new block
-    console.log('new block', start, end);
     block.push(start, end);
-    console.log('result', block);
   }
 }
 
@@ -73,7 +71,7 @@ function propertied(model, node) {
     properties = _.transform(node.attributes, function (props, attr) { props[attr.name] = attr.value; }, {}),
     obj = _.assign({ start: start, end: end}, properties),
     nodeName = node.nodeName,
-    tagBlockName = tags[nodeName].name,
+    tagBlockName = tagTypes[nodeName].name,
     block = model.blocks[tagBlockName];
 
   if (!block) {
@@ -88,15 +86,33 @@ function classed(model, node) {
 
 }
 
-tags = {
+/**
+ * The types of tags that we know about.
+ *
+ * Used to filter TreeWalkers.
+ *
+ * @enum
+ */
+tagTypes = {
   B: { set: continuous, name: 'bold' },
   I: { set: continuous, name: 'italic' },
   U: { set: continuous, name: 'underline' },
   EM: { set: continuous, name: 'emphasis' },
   STRONG: { set: continuous, name: 'strong' },
   A: { set: propertied, name: 'link' },
-  SPAN: { set: classed, name: '' }
+  SPAN: { set: classed, name: 'inline' }
 };
+
+/**
+ * Inversion of tagTypes, referenced by the tag name.
+ *
+ * Used to construct elements from models.
+ *
+ * @enum
+ */
+blockTypes = _.transform(tagTypes, function (obj, tag, name) {
+  obj[tag.name] = { set: tag.set, name: name };
+}, {});
 
 /**
  *
@@ -127,7 +143,7 @@ function fromElement(el) {
         model.text += node.nodeValue;
         break;
       default:
-        tags[name].set(model, node);
+        tagTypes[name].set(model, node);
         break;
     }
   }
@@ -146,8 +162,22 @@ function fromElement(el) {
  * @returns {number}
  */
 function getBinarySortedInsertPosition(block, num) {
-  var cursor = 0,
-    blockLen = block.length;
+  var  cursor,
+    blockLen = block.length,
+    high = blockLen,
+    low = 0;
+
+  while (low < high) {
+    cursor = Math.floor((high + low) / 2);
+
+    if (block[cursor] === num) {
+      return cursor;
+    } else if (block[cursor] < num) {
+      high = cursor + 1;
+    } else {
+      low = cursor - 1;
+    }
+  }
 
   return cursor;
 }
@@ -158,36 +188,149 @@ function getBinarySortedInsertPosition(block, num) {
  * NOTE: blocks are assumed to be in ascending order.
  *
  * @param {[number]} blockA
- * @param {[number]} blockB
  * @returns {number}
+ *
+ * @example getOverlapCount(model.blocks.bold, model.blocks.italics, model.blocks.underline);
  */
-function getOverlapCount(blockA, blockB) {
-  var i, insertA, insertB,
+function getOverlapCount(blockA) {
+  var i, j, insertA, insertB, blockB,
+    otherBlocks = _.rest(arguments),
     count = 0;
 
-  for (i = 0; i < blockB.length; i = i + 2) {
-    insertA = getBinarySortedInsertPosition(blockA, blockB[i]);
-    insertB = getBinarySortedInsertPosition(blockA, blockB[i + 1]);
-    if (insertA !== insertB) {
-      count++;
+  for (i = 0; i < otherBlocks.length; i++) {
+    blockB = otherBlocks[i];
+    for (j = 0; j < blockB.length; j = j + 2) {
+      insertA = search.getBinarySortedInsertPosition(blockA, blockB[j]);
+      insertB = search.getBinarySortedInsertPosition(blockA, blockB[j + 1]);
+      if (insertA !== insertB) {
+        count++;
+      }
     }
   }
 
   return count;
 }
 
+function documentToString(el) {
+  var parent = document.createElement('DIV');
+
+  parent.appendChild(el.cloneNode(true));
+  return parent.innerHTML;
+}
+
+function addPropertiedBlocksToElement(el, model) {
+  var start, end, propertiedBlocks;
+
+  propertiedBlocks = _.pick(model.blocks, function (block, blockName) {
+    return blockTypes[blockName].set === propertied;
+  });
+
+  _.forOwn(propertiedBlocks, function (blocksOfType, blockType) {
+    var i, list;
+
+    for (i = 0; i < blocksOfType.length; i++) {
+      start = blocksOfType[i].start;
+      end = blocksOfType[i].end;
+      list = getTextNodeTargets(el, start, end);
+
+      _.each(list, splitTextNode.bind(null, blockType, el));
+    }
+  });
+}
+
+function splitTextNode(blockType, rootEl, item) {
+  var startTextNode,
+    textNode = item.node,
+    tagName = blockTypes[blockType].name,
+    blockEl = document.createElement(tagName),
+    parentNode = textNode.parentNode || rootEl, // no parent means el is a document/document fragment
+    text = textNode.nodeValue,
+    startPos = item.start || 0,
+    endPos = item.end || text.length,
+    startText = text.substr(0, startPos),
+    middleText = text.substr(startPos, endPos - startPos),
+    endText = text.substr(endPos);
+
+  blockEl.appendChild(dom.create(middleText));
+  parentNode.insertBefore(blockEl, textNode);
+
+  if (startText.length > 0) {
+    startTextNode = dom.create(startText);
+    parentNode.insertBefore(startTextNode, blockEl);
+  }
+
+  if (endText.length > 0) {
+    textNode.nodeValue = endText;
+  } else {
+    parentNode.removeChild(textNode);
+  }
+}
+
+function getTextNodeTargets(el, start, end) {
+  var walker,
+    str = '',
+    list;
+
+  // walk to start of this text
+  walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, contentTextOnly, false);
+  walker.nextNode();
+
+  while (str.length + walker.currentNode.nodeValue.length < start) {
+    str += walker.currentNode.nodeValue;
+    walker.nextNode();
+  }
+
+  // walk to end of text, remembering the text nodes
+  list = [{node: walker.currentNode, start: start - str.length}];
+  str += walker.currentNode.nodeValue;
+
+  while (str.length < end) {
+    walker.nextNode();
+    str += walker.currentNode.nodeValue;
+    list.push({node: walker.currentNode});
+  }
+
+  list[list.length - 1].end = walker.currentNode.nodeValue.length - (str.length - end);
+  return list;
+}
+
+function addContinuousBlocksToElement(el, model) {
+  var start, end, continuousBlocks;
+
+  continuousBlocks = _.pick(model.blocks, function (block, blockName) {
+    return blockTypes[blockName].set === continuous;
+  });
+
+  _.forOwn(continuousBlocks, function (blocksOfType, blockType) {
+    var i, list;
+
+    for (i = 0; i < blocksOfType.length; i = i + 2) {
+      start = blocksOfType[i];
+      end = blocksOfType[i + 1];
+      list = getTextNodeTargets(el, start, end);
+
+      _.each(list, splitTextNode.bind(null, blockType, el));
+    }
+  });
+}
+
+function normalizeElementAsDocument(el) {
+  var parent;
+
+  if (el.nodeType !== Node.DOCUMENT_FRAGMENT_NODE) {
+    parent = document.createDocumentFragment();
+    parent.appendChild(el);
+    el = parent;
+  }
+
+  return el;
+}
+
 function toElement(model) {
-  var classedBlocks, propertiedBlocks, continuousBlocks,
-    el = document.createDocumentFragment();
+  var el = normalizeElementAsDocument(dom.create(model.text));
 
-  // apply classed; assumption: must not overlap, so just apply without worry
-  classedBlocks = _.pick(model.blocks, function (block, blockName) { return tags[blockName].set === classed; });
-
-  // apply propertied; assumption: must not overlap, so just apply without worry
-  propertiedBlocks = _.pick(model.blocks, function (block, blockName) { return tags[blockName].set === propertied; });
-
-  // apply continuous; these can overlap
-  continuousBlocks = _.pick(model.blocks, function (block, blockName) { return tags[blockName].set === continuous; });
+  addPropertiedBlocksToElement(el, model);
+  addContinuousBlocksToElement(el, model);
 
   return el;
 }
