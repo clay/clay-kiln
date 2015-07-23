@@ -3,7 +3,6 @@
 
 var references = require('./references'),
   dom = require('./dom'),
-  edit = require('./edit'),
   focus = require('../decorators/focus'),
   forms = require('./forms'),
   groups = require('./groups'),
@@ -119,15 +118,6 @@ function addIframeOverlays(el) {
 }
 
 /**
- * Check if the component is a component list.
- * @param {object} schema
- * @returns {boolean}
- */
-function isComponentList(schema) {
-  return !!schema[references.componentListProperty];
-}
-
-/**
  * Add the settings option to the component bar.
  * @param {Element} componentBar
  * @param {object} data
@@ -182,56 +172,15 @@ function addParentLabel(componentBar, parentEl) {
 }
 
 /**
- * Add drag within a component list.
- * @param {Element} componentBar
- * @param {Element} parentEl
- */
-function addDragOption(componentBar, parentEl) {
-  var el = dom.create(`<span class="drag" title="Drag"></span>`);
-
-  el.addEventListener('click', function (e) {
-    // Todo: add dragula.
-    console.log('You clicked on the drag.', parentEl, e);
-  });
-  componentBar.appendChild(el);
-}
-
-/**
- * Add delete within a component list.
- * @param {Element} componentBar
- * @param {Element} parentEl
- */
-function addDeleteOption(componentBar, parentEl) {
-  var el = dom.create(`<span class="delete" title="Delete"></span>`);
-
-  el.addEventListener('click', function (e) {
-    // Todo: delete from component list.
-    console.log('You clicked on delete.', parentEl, e);
-  });
-  componentBar.appendChild(el);
-}
-
-/**
- * Add options that depend on the parent (e.g. parent label and parent being a component list).
+ * Add options that depend on the parent (e.g. parent label).
  * @param {Element} componentBar
  * @param {Element} componentEl   An element that has a ref.
- * @returns {Promise|undefined}
  */
 function addParentOptions(componentBar, componentEl) {
-  var parentEl = getParentEl(componentEl),
-    ref;
+  var parentEl = getParentEl(componentEl);
 
   if (parentEl) {
-    ref = parentEl.getAttribute(references.referenceAttribute);
     addParentLabel(componentBar, parentEl);
-    return edit.getSchema(ref)
-      .then(function (schema) {
-        if (isComponentList(schema)) {
-          // Options only available if you are within a component list.
-          addDragOption(componentBar, parentEl);
-          addDeleteOption(componentBar, parentEl);
-        }
-      });
   }
 }
 

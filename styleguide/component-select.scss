@@ -13,7 +13,7 @@ $bar-drag-icon: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTBweCIgaGVpZ2h0P
 $bar-delete-icon: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTRweCIgaGVpZ2h0PSIxN3B4IiB2aWV3Qm94PSIwIDAgMTQgMTciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHRpdGxlPkRlbGV0ZTwvdGl0bGU+PHBhdGggZD0iTTIsMTcgTDEyLDE3IEwxMiw0IEwyLDQgTDIsMTcgWiBNNCw2LjAwNTU0NDM1IEw1LDYuMDA1NTQ0MzUgTDUsMTUgTDQsMTUgTDQsNi4wMDU1NDQzNSBaIE02LjUsNi4wMDU1NDQzNSBMNy41LDYuMDA1NTQ0MzUgTDcuNSwxNSBMNi41LDE1IEw2LjUsNi4wMDU1NDQzNSBaIE05LDYuMDA1NTQ0MzUgTDEwLDYuMDA1NTQ0MzUgTDEwLDE1IEw5LDE1IEw5LDYuMDA1NTQ0MzUgWiI+PC9wYXRoPjxwYXRoIGQ9Ik0xNCwzIEwwLDMgTDEuMzEyNSwxIEwxMi42ODc1LDEgTDE0LDMiPjwvcGF0aD48cGF0aCBkPSJNNSwwIEw5LDAgTDksMSBMNSwxIEw1LDAgWiI+PC9wYXRoPjwvc3ZnPg==");
 
 
-// Wrapper around parent and child.
+// Wrapper around parent and component.
 .component-bar-wrapper {
   position: relative;
 }
@@ -88,16 +88,16 @@ $bar-delete-icon: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTRweCIgaGVpZ2h
 }
 
 // Actions
+.component-bar > .settings {
+  background-image: $bar-settings-icon;
+  cursor: pointer;
+  order: 2;
+}
 .component-bar > .drag {
   background-image: $bar-drag-icon;
   cursor: grab;
   margin-left: -$bar-height - $bar-gap;
   order: 0;
-}
-.component-bar > .settings {
-  background-image: $bar-settings-icon;
-  cursor: pointer;
-  order: 2;
 }
 .component-bar > .delete {
   background-image: $bar-delete-icon;
