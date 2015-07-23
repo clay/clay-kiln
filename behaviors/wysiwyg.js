@@ -120,16 +120,36 @@ function getParent(el) {
   };
 }
 
+function getPrev(current, parent) {
+  return edit.getDataOnly(parent.ref).then(function (parentData) {
+    var index = _.findIndex(parentData[parent.field], { _ref: current.ref }),
+      before = _.take(parentData[parent.field], index),
+      prev = _.findLast(before, function (component) {
+        return references.getComponentNameFromReference(component._ref) === current.name;
+      });
+
+    console.log(before);
+    console.log(prev);
+
+    return prev;
+  });
+}
+
 /**
- * remove current component, append text to previous component (of the same type)
+ * remove current component, append text to previous component (of the same name)
  * @param {Element} el
  * @returns {Promise}
  */
-// function removeComponent(el) {
-//   var current = getCurrent(el);
-//
-//
-// }
+function removeComponent(el) {
+  var current = getCurrent(el),
+    parent = getParent(current.component);
+
+  // find the previous component (with the same name), if any
+  return getPrev(current, parent);
+
+  // if there's a previous component (with the same name),
+  // kick off the process of removing the current component
+}
 
 /**
  * add component after current component
