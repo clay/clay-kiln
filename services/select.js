@@ -5,7 +5,32 @@ var references = require('./references'),
   dom = require('./dom'),
   focus = require('../decorators/focus'),
   forms = require('./forms'),
+  groups = require('./groups'),
   currentSelected;
+
+/**
+ * Get the closest component element from the DOM. Checks self and then parents.
+ * @param {Element} el    Any element within a component.
+ * @returns {Element}
+ */
+function getComponentEl(el) {
+  var attr = references.referenceAttribute,
+    attrSelector = '[' + attr + ']',
+    componentEl = el.hasAttribute(attr) ? el : dom.closest(el, attrSelector);
+
+  return componentEl;
+}
+
+/**
+ * Get the closest parent component of the component from the DOM.
+ * @param {Element} componentEl  A component element
+ * @returns {Element}
+ */
+function getParentEl(componentEl) {
+  var parent = componentEl.parentNode && getComponentEl(componentEl.parentNode);
+
+  return parent;
+}
 
 /**
  * set selection on a component
@@ -14,20 +39,15 @@ var references = require('./references'),
  * @param {MouseEvent} e
  */
 function select(el) {
-  var parent, // todo: allow n-number of parents to be selected
-    attr = '[' + references.referenceAttribute + ']';
-
-  el = dom.closest(el, attr);
-  if (el.parentNode) {
-    parent = dom.closest(el.parentNode, attr);
-  }
+  var component = getComponentEl(el),
+    parent = getParentEl(component);
 
   // selected component gets .selected, parent gets .selected-parent
-  el.classList.add('selected');
+  component.classList.add('selected');
   if (parent) {
     parent.classList.add('selected-parent');
   }
-  currentSelected = el;
+  currentSelected = component;
 }
 
 function removeClasses(el, parent) {
@@ -67,38 +87,6 @@ function when(el) {
 }
 
 /**
- * set the bar's height after images and such may have loaded
- * @param {Element} el component element
- */
-function setHeight(el) {
-  var componentHeight = getComputedStyle(el).height;
-
-  dom.find(el, '.component-bar-title').style.width = parseInt(componentHeight) - 20 + 'px';
-}
-
-/**
- * handle clicks on the component bar
- * @param {Element} el
- * @param {object} options
- * @param {MouseEvent} e
- */
-function componentBarClickHandler(el, options, e) {
-  e.stopPropagation(); // this will prevent the unfocus from firing afterwards
-
-  if (el.classList.contains('selected')) {
-    // clicking on a selected bar opens its settings form
-    // note: nothing gets focused
-    focus.unfocus();
-    forms.open(options.ref, document.body);
-  } else if (el.classList.contains('selected-parent')) {
-    // clicking on a parent bar selects it
-    focus.unfocus();
-    unselect();
-    select(el);
-  }
-}
-
-/**
  * handle clicks on the component itself
  * @param {Element} el
  * @param {MouseEvent} e
@@ -130,42 +118,110 @@ function addIframeOverlays(el) {
 }
 
 /**
- * add component bar (with click events)
+ * Add the settings option to the component bar.
+ * @param {Element} componentBar
+ * @param {object} data
+ * @param {string} ref
+ */
+function addSettingsOption(componentBar, data, ref) {
+  var el,
+    hasSettings = groups.getSettingsFields(data).length > 0;
+
+  if (hasSettings) {
+    el = dom.create(`<span class="settings" title="Settings"></span>`);
+    el.addEventListener('click', function (e) {
+      e.stopPropagation();
+      // Open the settings overlay.
+      focus.unfocus();
+      forms.open(ref, document.body);
+    });
+    componentBar.appendChild(el);
+  }
+}
+
+/**
+ * Scroll user to the component. "Weeee!" or "What the?"
  * @param {Element} el
- * @param {{ref: string, path: string, data: object}} options
+ */
+function scrollToComponent(el) {
+  var toolBarHeight = 70,
+    componentBarHeight = 30;
+
+  window.scrollTo(0, window.scrollY + el.getBoundingClientRect().top - toolBarHeight - componentBarHeight);
+}
+
+/**
+ * Add the parent's label to the component bar.
+ * @param {Element} componentBar
+ * @param {Element} parentEl
+ */
+function addParentLabel(componentBar, parentEl) {
+  var ref = parentEl.getAttribute(references.referenceAttribute),
+    label = references.getComponentNameFromReference(ref),
+    el = dom.create(`<span class="parent label" title="Parent: ${label.toUpperCase()}">${label}</span>`);
+
+  el.addEventListener('click', function (e) {
+    e.stopPropagation();
+    // Select the parent.
+    focus.unfocus();
+    unselect();
+    select(parentEl);
+    scrollToComponent(parentEl);
+  });
+  componentBar.appendChild(el);
+}
+
+/**
+ * Add options that depend on the parent (e.g. parent label).
+ * @param {Element} componentBar
+ * @param {Element} componentEl   An element that has a ref.
+ */
+function addParentOptions(componentBar, componentEl) {
+  var parentEl = getParentEl(componentEl);
+
+  if (parentEl) {
+    addParentLabel(componentBar, parentEl);
+  }
+}
+
+/**
+ * add component bar (with click events)
+ * @param {Element} componentEl   An element that has a ref.
+ * @param {object} options
+ * @param {string} options.ref
+ * @param {string} options.path
+ * @param {object} options.data
  * @returns {Element}
  */
-function handler(el, options) {
-  var tpl = `
-    <aside class="component-bar" title="${references.getComponentNameFromReference(options.ref).toUpperCase()}">
-      <span class="component-bar-title">${references.getComponentNameFromReference(options.ref)}</span>
+function handler(componentEl, options) {
+  var name = references.getComponentNameFromReference(options.ref),
+    tpl = `
+    <aside class="component-bar">
+      <span class="label" title="${name.toUpperCase()}">${name}</span>
+      <span class="fill"></span>
     </aside>
-  `,
-  componentBar = dom.create(tpl);
+    `,
+    componentBar = dom.create(tpl);
 
-  // add events to the component bar
-  componentBar.addEventListener('click', componentBarClickHandler.bind(null, el, options));
+  // Add options to the component bar.
+  addSettingsOption(componentBar, options.data, options.ref);
+  addParentOptions(componentBar, componentEl);
 
   // add events to the component itself
   // when the component is clicked, it should be selected
-  el.addEventListener('click', componentClickHandler.bind(null, el));
+  componentEl.addEventListener('click', componentClickHandler.bind(null, componentEl));
 
   // make sure components are relatively positioned
-  el.classList.add('component-bar-wrapper');
-  dom.prependChild(el, componentBar); // prepended, so parent components are behind child components
-  // don't set the component bar height until images &c are loaded
-  window.addEventListener('load', setHeight.bind(null, el));
+  componentEl.classList.add('component-bar-wrapper');
+  dom.prependChild(componentEl, componentBar); // prepended, so parent components are behind child components
   // add an iframe-overlay to iframes so we can click on components with them
-  addIframeOverlays(el);
-  return el;
+  addIframeOverlays(componentEl);
+  return componentEl;
 }
 
 // focus and unfocus
 module.exports.select = select;
 module.exports.unselect = unselect;
-
-// set height of component bar label
-module.exports.setHeight = setHeight;
 
 // decorators
 module.exports.when = when;

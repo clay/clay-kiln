@@ -1,9 +1,7 @@
 module.exports = function () {
   var _ = require('lodash'),
     dom = require('../services/dom'),
-    focus = require('../decorators/focus'),
-    select = require('../services/select'),
-    references = require('../services/references');
+    focus = require('../decorators/focus');
 
   function wasTooltipClicked(e) {
     return _.get(e, 'target.classList') && e.target.classList.contains('medium-editor-action');
@@ -31,9 +29,6 @@ module.exports = function () {
       dom.onRemove(el, function () {
         dom.find('html').removeEventListener('click', outsideClickhandler);
       });
-
-      // also set the height of the component bar
-      select.setHeight(dom.closest(oldEl, '[' + references.referenceAttribute + ']'));
     }
 
     this.ref = ref;

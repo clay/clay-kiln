@@ -1,6 +1,7 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   references = require('./references'),
+  groups = require('./groups'),
   forms = require('./forms'),
   lib = require('./select');
 
@@ -134,48 +135,62 @@ describe(dirname, function () {
         expect(fn(el, {ref: 'fakeRef'}).classList.contains('component-bar-wrapper')).to.equal(true);
       });
 
-      it('will select parent component if parent bar is clicked', function () {
-        var el = stubComponent();
+      it('will select the parent component if parent label in the component bar is clicked', function () {
+        var el = stubComponent(),
+          parent = stubComponent(),
+          options = {ref: 'fakeRef', data: {}, path: 'fakePath'};
 
-        el.classList.add('selected-parent');
+        // Setup: Create a parent component and selected child component.
+        el.setAttribute(references.referenceAttribute, options.ref);
+        parent.setAttribute(references.referenceAttribute, 'parentRef');
+        parent.appendChild(el);
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
-        fn(el, {ref: 'fakeRef'});
+        fn(el, options);
+        expect(parent.classList.contains('selected')).to.equal(false); // Parent is not selected.
 
-        // the component shouldn't be selected yet
-        expect(el.classList.contains('selected')).to.equal(false);
+        // Trigger click on parent label in the component's bar.
+        el.querySelector('.component-bar .parent.label').dispatchEvent(new Event('click'));
 
-        // trigger a click on the component bar
-        el.querySelector('.component-bar').dispatchEvent(new Event('click'));
-
-        // the component should now be selected
-        expect(el.classList.contains('selected')).to.equal(true);
+        expect(parent.classList.contains('selected')).to.equal(true); // Parent is selected.
+        expect(el.classList.contains('selected')).to.equal(false); // Child is not selected.
       });
 
-      it('shouldn\'t open settings form if parent bar is clicked', function () {
-        var el = stubComponent();
+      it('adds the settings button if the component has settings', function () {
+        var el = stubComponent(),
+          options = {ref: 'fakeRef', data: {}, path: 'fakePath'};
 
-        el.classList.add('selected-parent');
+        // Setup: getSettingsFields returns an array, so we assume there are settings
+        sandbox.stub(groups, 'getSettingsFields').returns([1]);
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
-        sandbox.stub(forms, 'open', sandbox.spy().withArgs('fakeName', document.body));
-        fn(el, {ref: 'fakeRef'});
+        fn(el, options);
 
-        // trigger a click on the component bar
-        el.querySelector('.component-bar').dispatchEvent(new Event('click'));
-
-        // the form should not have been opened
-        expect(forms.open.called).to.equal(false);
+        expect(el.querySelector('.component-bar .settings')).to.not.equal(null); // Settings button was added.
       });
 
-      it('will open settings form if selected bar is clicked', function () {
-        var el = stubComponent();
+      it('does not add the settings button if the component has no settings', function () {
+        var el = stubComponent(),
+          options = {ref: 'fakeRef', data: {}, path: 'fakePath'};
+
+        // Setup: getSettingsFields returns an empty array, so we assume there are no settings
+        sandbox.stub(groups, 'getSettingsFields').returns([]);
+        sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
+        fn(el, options);
+
+        expect(el.querySelector('.component-bar .settings')).to.equal(null); // Settings button was not added.
+      });
+
+      it('will open settings form if settings button is clicked', function () {
+        var el = stubComponent(),
+          options = {ref: 'fakeRef', data: {}, path: 'fakePath'};
 
         el.classList.add('selected');
+        sandbox.stub(groups, 'getSettingsFields').returns([1]);
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
         sandbox.stub(forms, 'open', sandbox.spy().withArgs('fakeName', document.body));
-        fn(el, {ref: 'fakeRef'});
+        fn(el, options);
 
-        // trigger a click on the component bar
-        el.querySelector('.component-bar').dispatchEvent(new Event('click'));
+        // Trigger a click on the settings button
+        el.querySelector('.component-bar .settings').dispatchEvent(new Event('click'));
 
         // the component should still be selected
         expect(el.classList.contains('selected')).to.equal(true);

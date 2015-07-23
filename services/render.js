@@ -4,21 +4,32 @@ var _ = require('lodash'),
   db = require('./db'),
   dom = require('./dom'),
   ds = require('dollar-slice'),
+  edit = require('./edit'),
   references = require('./references'),
   select = require('./select');
 
 /**
  * Adds event handlers to a component element.
  * @param {Element} el    The component element.
+ * @returns {Promise|undefined}
  */
 function addComponentHandlers(el) {
   var ref = el instanceof Element && el.getAttribute(references.referenceAttribute),
     name = ref && references.getComponentNameFromReference(ref);
 
   if (name && name !== 'editor-toolbar') {
-    select.handler(el, { ref: ref }); // note: not passing data or path into here
-    ds.controller(componentEditName, componentEdit);
-    ds.get(componentEditName, el);
+    return edit.getData(ref)
+      .then(function (data) {
+        var options = {
+          ref: ref,
+          path: el.getAttribute(references.editableAttribute),
+          data: data
+        };
+
+        select.handler(el, options);
+        ds.controller(componentEditName, componentEdit);
+        ds.get(componentEditName, el);
+      });
   }
 }
 
