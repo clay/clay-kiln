@@ -216,12 +216,18 @@ function reloadPreviousComponent(prev) {
  * focus on the previous component's field
  * @param {object} parent
  * @param  {object} prev
+ * @param {number} textLength
  * @returns {Function}
  */
-function focusPreviousComponent(parent, prev) {
+function focusPreviousComponent(parent, prev, textLength) {
   return function (newEl) {
     return focus.focus(newEl, { ref: prev.ref, path: prev.field }).then(function () {
-      dom.find('[data-ref="' + prev.ref + '"] [data-field]').focus();
+      var prevField = dom.find('[data-ref="' + prev.ref + '"] [data-field]');
+
+      // focus on the new wysiwyg field
+      prevField.focus();
+      // set caret right before the new text we added
+      select(prevField, { start: prevField.innerText.length - textLength });
     });
   };
 }
@@ -233,7 +239,8 @@ function focusPreviousComponent(parent, prev) {
  */
 function removeComponent(el) {
   var current = getCurrent(el),
-    parent = getParent(current.component);
+    parent = getParent(current.component),
+    textLength = el.innerText.length;
 
   // find the previous component, if any
   return getPrev(current, parent).then(function (prev) {
@@ -243,7 +250,7 @@ function removeComponent(el) {
       return appendToPrev(getFieldContents(el), prev)
         .then(removeCurrentFromParent(current, parent))
         .then(reloadPreviousComponent(prev))
-        .then(focusPreviousComponent(parent, prev));
+        .then(focusPreviousComponent(parent, prev, textLength));
     }
   });
 }
