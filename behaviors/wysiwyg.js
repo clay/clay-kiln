@@ -15,7 +15,8 @@ var _ = require('lodash'),
   render = require('../services/render'),
   focus = require('../decorators/focus'),
   references = require('../services/references'),
-  edit = require('../services/edit');
+  edit = require('../services/edit'),
+  refAttr = references.referenceAttribute;
 
 /**
  * toggle the tiered toolbar
@@ -91,8 +92,8 @@ function createEditor(field, buttons) {
  * @returns {object}
  */
 function getCurrent(el) {
-  var currentComponent = dom.closest(el, '[' + references.referenceAttribute + ']'),
-    currentComponentRef = currentComponent.getAttribute(references.referenceAttribute);
+  var currentComponent = dom.closest(el, '[' + refAttr + ']'),
+    currentComponentRef = currentComponent.getAttribute(refAttr);
 
   return {
     field: el.getAttribute(references.fieldAttribute),
@@ -109,8 +110,8 @@ function getCurrent(el) {
  */
 function getParent(el) {
   var parentNode = el.parentNode,
-    parentComponent = dom.closest(parentNode, '[' + references.referenceAttribute + ']'),
-    parentComponentRef = parentComponent.getAttribute(references.referenceAttribute);
+    parentComponent = dom.closest(parentNode, '[' + refAttr + ']'),
+    parentComponentRef = parentComponent.getAttribute(refAttr);
 
   return {
     field: dom.closest(parentNode, '[' + references.editableAttribute + ']').getAttribute(references.editableAttribute),
@@ -137,7 +138,7 @@ function getPrev(current, parent) {
     if (prev) {
       return {
         field: current.field,
-        component: dom.find(parent.component, '[' + references.referenceAttribute + '="' + prev._ref + '"]'),
+        component: dom.find(parent.component, '[' + refAttr + '="' + prev._ref + '"]'),
         ref: prev._ref,
         name: current.name
       };
