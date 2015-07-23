@@ -1,7 +1,7 @@
 var dom = require('./dom');
 
 describe('dom service', function () {
-  var el, childEl, secondChildEl, sandbox;
+  var el, childEl, secondChildEl, headEl, sandbox;
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
@@ -20,6 +20,10 @@ describe('dom service', function () {
     secondChildEl = document.createElement('div');
     secondChildEl.classList.add('second-child-el');
     el.appendChild(secondChildEl);
+
+    // create el in head
+    headEl = document.createElement('title');
+    document.querySelector('head').appendChild(headEl);
   });
 
   afterEach(function () {
@@ -74,8 +78,12 @@ describe('dom service', function () {
       expect(dom.closest(childEl, 'section')).to.eql(el);
     });
 
-    it('returns null if no parent matches', function () {
+    it('returns null if no parent matches in body', function () {
       expect(dom.closest(childEl, '.something.that.doesnt.match')).to.eql(null);
+    });
+
+    it('returns null if no parent matches in head', function () {
+      expect(dom.closest(headEl, '.something.that.doesnt.match')).to.eql(null);
     });
 
     it('throws error if no selector passed in as second arg', function () {
