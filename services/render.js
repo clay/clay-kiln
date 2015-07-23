@@ -36,12 +36,12 @@ function addComponentHandlers(el) {
 /**
  * Add handlers to all of the element and all of its children that are components.
  * @param {Element} el
- * @returns {Promise}
  */
 function addComponentsHandlers(el) {
   var childComponents = dom.findAll(el, '[' + references.referenceAttribute + ']');
 
-  return Promise.all([addComponentHandlers(el)].concat(_.map(childComponents, addComponentHandlers)));
+  addComponentHandlers(el);
+  _.each(childComponents, addComponentHandlers);
 }
 
 /**
@@ -54,16 +54,14 @@ function reloadComponent(ref) {
     .then(function (updatedEl) {
       var els = dom.findAll('[' + references.referenceAttribute + '="' + ref + '"]');
 
-      return Promise.all(_.map(els, function (el) {
+      _.each(els, function (el) {
         // Clone node in case the component is used more than once on the page.
         var clonedEl = updatedEl.cloneNode(true);
 
         // Add handlers prior to loading into the dom so that 'load' event fires for behaviors i.e. in `select`.
-        return addComponentsHandlers(clonedEl)
-          .then(function () {
-            dom.replaceElement(el, clonedEl);
-          });
-      }));
+        addComponentsHandlers(clonedEl);
+        dom.replaceElement(el, clonedEl);
+      });
     });
 }
 
