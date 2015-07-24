@@ -8,9 +8,6 @@ $bar-gap: 1px;
 $bar-label-width: 76px;
 $bar-bg-color: rgba(23,130,169,.95);
 $bar-parent-bg-color: rgba(139,191,211,.95);
-$bar-settings-icon: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4IiB2aWV3Qm94PSIwIDAgMTYgMTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PGcgZmlsbD0iI2ZmZiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNi40OTk0OTUsIDguNjk5NDk1KSByb3RhdGUoLTMxNS4wMDAwMDApIHRyYW5zbGF0ZSgtNi40OTk0OTUsIC04LjY5OTQ5NSkgdHJhbnNsYXRlKDIuOTk5NDk1LCAtMS44MDA1MDUpIj48cGF0aCBkPSJNMSwzLjI1IEw3LDMuMjUgTDcsMTUuMjUgTDEsMTUuMjUgTDEsMy4yNSBaIE0yLjI1LDQuMjQzMjE3NjEgTDMsNC4yNDMyMTc2MSBMMywxNC4yNDMyMTc2IEwyLjI1LDE0LjI0MzIxNzYgTDIuMjUsNC4yNDMyMTc2MSBaIE01LDQuMjQzMjE3NjEgTDUuNzUsNC4yNDMyMTc2MSBMNS43NSwxNC4yNDMyMTc2IEw1LDE0LjI0MzIxNzYgTDUsNC4yNDMyMTc2MSBaIj48L3BhdGg+PHBvbHlnb24gcG9pbnRzPSI0IDE2IDcgMjAgMSAyMCAiPjwvcG9seWdvbj48cmVjdCB4PSIxIiB5PSI1LjY4NDM0MTg5ZS0xNCIgd2lkdGg9IjYiIGhlaWdodD0iMi41Ij48L3JlY3Q+PC9nPjwvZz48L3N2Zz4=');
-$bar-drag-icon: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTBweCIgaGVpZ2h0PSIxOXB4IiB2aWV3Qm94PSIwIDAgMTAgMTkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTMuMDE1NjI1LDkgTDMuMDE1NjI1LDUgTDAsNSBMNSwwIEwxMCw1IEw3LjAxNTYyNSw1IEw3LjAxNTYyNSwxNCBMMTAsMTQgTDUsMTkgTDAsMTQgTDMuMDE1NjI1LDE0IEwzLjAxNTYyNSwxMCBMMywxMCBMMyw5IEwzLjAxNTYyNSw5IFogTTMuMDE1NjI1LDkgTDMuMDE1NjI1LDEwIEw3LDEwIEw3LDkgTDMuMDE1NjI1LDkgWiI+PC9wYXRoPjwvc3ZnPg==');
-$bar-delete-icon: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTRweCIgaGVpZ2h0PSIxN3B4IiB2aWV3Qm94PSIwIDAgMTQgMTciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZmlsbD0iI2ZmZiI+PHBhdGggZD0iTTIsMTcgTDEyLDE3IEwxMiw0IEwyLDQgTDIsMTcgWiBNNCw2LjAwNTU0NDM1IEw1LDYuMDA1NTQ0MzUgTDUsMTUgTDQsMTUgTDQsNi4wMDU1NDQzNSBaIE02LjUsNi4wMDU1NDQzNSBMNy41LDYuMDA1NTQ0MzUgTDcuNSwxNSBMNi41LDE1IEw2LjUsNi4wMDU1NDQzNSBaIE05LDYuMDA1NTQ0MzUgTDEwLDYuMDA1NTQ0MzUgTDEwLDE1IEw5LDE1IEw5LDYuMDA1NTQ0MzUgWiI+PC9wYXRoPjxwYXRoIGQ9Ik0xNCwzIEwwLDMgTDEuMzEyNSwxIEwxMi42ODc1LDEgTDE0LDMiPjwvcGF0aD48cGF0aCBkPSJNNSwwIEw5LDAgTDksMSBMNSwxIEw1LDAgWiI+PC9wYXRoPjwvc3ZnPg==');
 
 
 // Wrapper around parent and component.
@@ -26,7 +23,7 @@ $bar-delete-icon: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTRweCIgaGVpZ2h
 
 // Selected bar
 .component-bar-wrapper.selected > .component-bar {
-  display: block;
+  display: flex;
   opacity: 1;
 }
 
@@ -37,7 +34,6 @@ $bar-delete-icon: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTRweCIgaGVpZ2h
   align-content: flex-end;
   align-items: stretch;
   display: none;
-  display: flex;
   flex-flow: row nowrap;
   height: $bar-height;
   justify-content: flex-start;
@@ -53,13 +49,14 @@ $bar-delete-icon: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTRweCIgaGVpZ2h
 .component-bar > span {
   @include label();
 
-  background: $bar-bg-color no-repeat center;
+  background: $bar-bg-color;
   color: #fff;
   display: block;
   flex-basis: $bar-height;
   flex-grow: 0;
   font-family: Arial, sans-serif;
   font-size: 11px;
+  height: $bar-height;
   line-height: $bar-height;
   margin: 0 $bar-gap 0 0;
   overflow: hidden;
@@ -91,19 +88,19 @@ $bar-delete-icon: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTRweCIgaGVpZ2h
 }
 
 // Actions
+.component-bar > span img {
+  margin: .4rem;
+}
 .component-bar > .settings {
-  background-image: $bar-settings-icon;
   cursor: pointer;
   order: 2;
 }
 .component-bar > .drag {
-  background-image: $bar-drag-icon;
   cursor: grab;
   margin-left: -$bar-height - $bar-gap;
   order: 0;
 }
 .component-bar > .delete {
-  background-image: $bar-delete-icon;
   cursor: pointer;
   order: 3;
 }

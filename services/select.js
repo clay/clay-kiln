@@ -143,7 +143,7 @@ function addSettingsOption(componentBar, data, ref) {
     hasSettings = groups.getSettingsFields(data).length > 0;
 
   if (hasSettings) {
-    el = dom.create(`<span class="settings" title="Settings"></span>`);
+    el = dom.create(`<span class="settings"><img src="/media/components/byline-editor/component-bar-settings.svg" alt="Settings"></span>`);
     el.addEventListener('click', function (e) {
       e.stopPropagation();
       // Open the settings overlay.
@@ -192,7 +192,7 @@ function addParentLabel(componentBar, parentEl) {
  * @param {Element} parentEl
  */
 function addDragOption(componentBar, parentEl) {
-  var el = dom.create(`<span class="drag" title="Drag"></span>`);
+  var el = dom.create(`<span class="drag"><img src="/media/components/byline-editor/component-bar-drag.svg" alt="Drag"></span>`);
 
   el.addEventListener('click', function (e) {
     // Todo: add dragula.
@@ -207,7 +207,7 @@ function addDragOption(componentBar, parentEl) {
  * @param {Element} parentEl
  */
 function addDeleteOption(componentBar, parentEl) {
-  var el = dom.create(`<span class="delete" title="Delete"></span>`);
+  var el = dom.create(`<span class="delete"><img src="/media/components/byline-editor/component-bar-delete.svg" alt="Delete"></span>`);
 
   el.addEventListener('click', function (e) {
     // Todo: delete from component list.
