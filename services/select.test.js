@@ -2,6 +2,7 @@ var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   references = require('./references'),
   groups = require('./groups'),
+  edit = require('./edit'),
   forms = require('./forms'),
   lib = require('./select');
 
@@ -212,6 +213,51 @@ describe(dirname, function () {
 
         // the component should now be selected
         expect(el.classList.contains('selected')).to.equal(true);
+      });
+
+      it('adds the drag and delete buttons if the component is within a component list', function (done) {
+        var el = stubComponent(),
+          componentList = stubEditableComponent(),
+          options = {ref: 'fakeRef', data: {}, path: 'fakePath'},
+          componentListSchema = {content: {}};
+
+        // Setup: there is a component within a component list
+        componentListSchema.content[references.componentListProperty] = []; // isComponentList
+        sandbox.stub(edit, 'getSchema').returns(Promise.resolve(componentListSchema));
+        sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
+        componentList.appendChild(el); // el is within component list.
+
+        // Add component bar.
+        fn(el, options);
+
+        // Problem is that addParentOptions returns a promise, but the handler returns an element synchronously.
+        // Todo: get all the data in one pass or better way to get the closest field?
+        window.setTimeout(function () {
+          expect(el.querySelector('.component-bar .drag')).to.not.equal(null); // Has drag.
+          expect(el.querySelector('.component-bar .delete')).to.not.equal(null); // Has delete.
+          done();
+        }, 0);
+      });
+
+      it('does not add the drag and delete buttons if the component is not within a component list', function (done) {
+        var el = stubComponent(),
+          componentList = stubEditableComponent(),
+          options = {ref: 'fakeRef', data: {}, path: 'fakePath'},
+          componentListSchema = {content: {}};
+
+        // Setup: there is a component within a component list
+        sandbox.stub(edit, 'getSchema').returns(Promise.resolve(componentListSchema)); // is not aComponentList
+        sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
+        componentList.appendChild(el); // el is within component list.
+
+        // Add component bar.
+        fn(el, options);
+
+        window.setTimeout(function () {
+          expect(el.querySelector('.component-bar .drag')).to.equal(null); // Has drag.
+          expect(el.querySelector('.component-bar .delete')).to.equal(null); // Has delete.
+          done();
+        }, 0);
       });
     });
   });
