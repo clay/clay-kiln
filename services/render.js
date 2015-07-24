@@ -9,11 +9,11 @@ var _ = require('lodash'),
   select = require('./select');
 
 /**
- * Adds event handlers to a component element.
+ * Gets data and adds selector to a component element.
  * @param {Element} el    The component element.
  * @returns {Promise|undefined}
  */
-function addComponentHandlers(el) {
+function addComponentSelectors(el) {
   var ref = el instanceof Element && el.getAttribute(references.referenceAttribute),
     name = ref && references.getComponentNameFromReference(ref);
 
@@ -27,8 +27,7 @@ function addComponentHandlers(el) {
         };
 
         select.handler(el, options);
-        ds.controller(componentEditName, componentEdit);
-        ds.get(componentEditName, el);
+        return el;
       });
   }
 }
@@ -38,10 +37,19 @@ function addComponentHandlers(el) {
  * @param {Element} el
  */
 function addComponentsHandlers(el) {
-  var childComponents = dom.findAll(el, '[' + references.referenceAttribute + ']');
+  var components = [el].concat([].slice.call(dom.findAll(el, '[' + references.referenceAttribute + ']')));
 
-  addComponentHandlers(el);
-  _.each(childComponents, addComponentHandlers);
+  // first, get the data and add the selectors.
+  Promise.all(components.map(addComponentSelectors))
+    .then(function (els) {
+      // second, add the controller and decorators. This ensures that all selectors are added before the behaviors.
+      els.forEach(function (componentEl) {
+        if (componentEl) {
+          ds.controller(componentEditName, componentEdit);
+          ds.get(componentEditName, componentEl);
+        }
+      });
+    });
 }
 
 /**
