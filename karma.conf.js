@@ -71,7 +71,7 @@ module.exports = function (karma) {
       chromeMac: {
         base: 'BrowserStack',
         browser: 'chrome',
-        browser_version: '39.0',
+        browser_version: '43.0',
         os: 'OS X',
         os_version: 'Yosemite'
       },
