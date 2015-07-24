@@ -24,7 +24,7 @@
   },
   "rules": {
     // possible errors
-    "no-extra-parens": 1,
+    "no-extra-parens": [1,"functions"],
     "valid-jsdoc": [1, {
       "requireReturn": false,
       "requireParamDescription": false,

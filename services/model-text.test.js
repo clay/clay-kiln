@@ -2,7 +2,7 @@ var _ = require('lodash'),
   lib = require('./model-text'),
   dom = require('./dom');
 
-//defaults for chai
+// defaults for chai
 chai.config.showDiff = true;
 chai.config.truncateThreshold = 0;
 
@@ -37,6 +37,16 @@ describe('model-text service', function () {
         result = {
           text: 'Hello there person!',
           blocks: { bold: [ 6, 18 ], italic: [ 12, 18 ] }
+        };
+
+      expect(fn(el)).to.deep.equal(result);
+    });
+
+    it('finds full text', function () {
+      var el = dom.create('<i>Hello <b>there person</b>!</i>'),
+        result = {
+          text: 'Hello there person!',
+          blocks: { bold: [ 6, 18 ], italic: [ 0, 19 ] }
         };
 
       expect(fn(el)).to.deep.equal(result);
@@ -132,6 +142,15 @@ describe('model-text service', function () {
       expect(documentToString(fn(model))).to.equal(result);
     });
 
+    it('nests when different continuous blocks are on the same space', function () {
+      var model = {
+        text: 'Hello there person!',
+        blocks: { bold: [ 6, 11 ], italic: [ 6, 11 ] }
+      }, result = 'Hello <b><i>there</i></b> person!';
+
+      expect(documentToString(fn(model))).to.equal(result);
+    });
+
     it('nests when continuous blocks are already in order', function () {
       var model = {
         text: 'Hello there person!',
@@ -145,7 +164,7 @@ describe('model-text service', function () {
       var model = {
         text: 'Hello there person!',
         blocks: { bold: [ 12, 18 ], italic: [ 6, 18 ] }
-      }, result = 'Hello <i>there </i><b><i>person</i></b>!';
+      }, result = 'Hello <i>there <b>person</b></i>!';
 
       expect(documentToString(fn(model))).to.equal(result);
     });
@@ -203,22 +222,17 @@ describe('model-text service', function () {
       var num = 8,
         el = dom.create('Hello there person!'),
         result,
-        before = '',
-        after = '';
+        expectedResult = ['Hello th', 'ere person!'];
 
       result = fn(lib.fromElement(el), num);
 
-      result = _.map(result, function (model) {
-        return documentToString(lib.toElement(model));
-      });
-
-      expect(result).to.deep.equal([before, after]);
+      result = _.map(result, function (model) { return documentToString(lib.toElement(model)); });
+      expect(result).to.deep.equal(expectedResult);
     });
 
     it('splits continuous blocks to each side', function () {
       var num = 8,
         el = dom.create('<b>Hello </b>there <b>person</b>!'),
-        model = lib.fromElement(el),
         result,
         expectedResult = [ '<b>Hello </b>th', 'ere <b>person</b>!' ];
 
@@ -292,7 +306,7 @@ describe('model-text service', function () {
   describe('concat', function () {
     var fn = lib[this.title];
 
-    it('concats', function () {
+    it('concats continuous', function () {
       var result,
         before = lib.fromElement(dom.create('Hello <b>th</b>')),
         after = lib.fromElement(dom.create('<b>ere</b> person!')),
@@ -300,7 +314,27 @@ describe('model-text service', function () {
 
       result = fn(before, after);
 
+      expect(documentToString(lib.toElement(result))).to.deep.equal(expectedResult);
+    });
 
+    it('concats nested continuous', function () {
+      var result,
+        before = lib.fromElement(dom.create('Hello <b><i>th</i></b>')),
+        after = lib.fromElement(dom.create('<b><i>ere</i></b> person!')),
+        expectedResult = 'Hello <b><i>there</i></b> person!';
+
+      result = fn(before, after);
+
+      expect(documentToString(lib.toElement(result))).to.deep.equal(expectedResult);
+    });
+
+    it('concats nested continuous (complex)', function () {
+      var result,
+        before = lib.fromElement(dom.create('<i>Hello <b>t</b>h</i>')),
+        after = lib.fromElement(dom.create('<b><i>ere</i></b> person!')),
+        expectedResult = '<i>Hello <b>t</b>h<b>ere</b></i> person!';
+
+      result = fn(before, after);
 
       expect(documentToString(lib.toElement(result))).to.deep.equal(expectedResult);
     });
