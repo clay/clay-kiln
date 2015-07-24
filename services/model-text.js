@@ -4,19 +4,11 @@ var tagTypes, blockTypes,
   nodeFilter = NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT;
 
 /**
- * @param {Node} node
- * @returns {boolean}
- */
-function knownTagsOnly(node) {
-  var name = node.nodeName;
-
-  return !!tagTypes[name] || node.nodeType === Node.TEXT_NODE;
-}
-
-/**
  * Script and style tags count as text nodes.  We don't want them.
  *
- * @param {Node} node
+ * Assumes parameter is a Text element (inherits from Node, not Element);
+ *
+ * @param {Text} node
  * @returns {boolean}
  */
 function contentTextOnly(node) {
@@ -26,6 +18,16 @@ function contentTextOnly(node) {
     isStyle = isElement && parent.nodeName === 'STYLE';
 
   return !(isScript || isStyle);
+}
+
+/**
+ * @param {Node} node
+ * @returns {boolean}
+ */
+function knownTagsOnly(node) {
+  var name = node.nodeName;
+
+  return !!tagTypes[name] || (node.nodeType === Node.TEXT_NODE && contentTextOnly(node));
 }
 
 /**
@@ -56,20 +58,36 @@ function continuous(model, node) {
     tagBlockName = tagTypes[nodeName].name,
     block = model.blocks[tagBlockName];
 
-  if (!block) {
-    block = [];
-    model.blocks[tagBlockName] = block;
-  }
+  // tags of zero length are not allowed
+  if (start !== end) {
 
-  blockLen = block.length;
-  lastBlockEndIndex = blockLen - 1;
-  if (blockLen >= 2 && block[lastBlockEndIndex] >= start) {
-    // if continuation of last block
-    block[lastBlockEndIndex] = Math.max(block[lastBlockEndIndex], end);
-  } else {
-    // new block
-    block.push(start, end);
+    if (!block) {
+      block = [];
+      model.blocks[tagBlockName] = block;
+    }
+
+    blockLen = block.length;
+    lastBlockEndIndex = blockLen - 1;
+    if (blockLen >= 2 && block[lastBlockEndIndex] >= start) {
+      // if continuation of last block
+      block[lastBlockEndIndex] = Math.max(block[lastBlockEndIndex], end);
+    } else {
+      // new block
+      block.push(start, end);
+    }
+
   }
+}
+
+/**
+ * @param {Element} el
+ * @returns {object}
+ */
+function getAttributes(el) {
+  return _.reduce(el.attributes, function (props, attr) {
+    props[attr.name] = attr.value;
+    return props;
+  }, {});
 }
 
 /**
@@ -80,18 +98,22 @@ function propertied(model, node) {
   var start = model.text.length,
     text = getContentText(node),
     end = start + text.length,
-    properties = _.transform(node.attributes, function (props, attr) { props[attr.name] = attr.value; }, {}),
+    properties = getAttributes(node),
     obj = _.assign({ start: start, end: end}, properties),
     nodeName = node.nodeName,
     tagBlockName = tagTypes[nodeName].name,
     block = model.blocks[tagBlockName];
 
-  if (!block) {
-    block = [];
-    model.blocks[tagBlockName] = block;
-  }
+  // tags of zero length are not allowed
+  if (start !== end) {
 
-  block.push(obj);
+    if (!block) {
+      block = [];
+      model.blocks[tagBlockName] = block;
+    }
+
+    block.push(obj);
+  }
 }
 
 /**

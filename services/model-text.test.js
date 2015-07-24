@@ -115,12 +115,46 @@ describe('model-text service', function () {
     });
 
     it('does not merge propertied blocks (i.e., links in links)', function () {
+      var el = dom.create('Hello <a href="outer place">there <a href="place" alt="hey">person</a> over there</a>!'),
+        result = {
+          text: 'Hello there person over there!',
+          blocks: {
+            link: [
+              { start: 6, end: 12, href: 'outer place' },
+              { start: 12, end: 18, href: 'place', alt: 'hey' }
+            ]
+          }
+        };
+
+      expect(fn(el)).to.deep.equal(result);
+    });
+
+    it('removes empty continuous blocks (does not add block name either)', function () {
+      var el = dom.create('Hello <b></b>there person!'),
+        result = {
+          text: 'Hello there person!',
+          blocks: {}
+        };
+
+      expect(fn(el)).to.deep.equal(result);
+    });
+
+    it('removes empty propertied blocks (does not add block name either)', function () {
+      var el = dom.create('Hello <a href="place"></a>there person!'),
+        result = {
+          text: 'Hello there person!',
+          blocks: {}
+        };
+
+      expect(fn(el)).to.deep.equal(result);
+    });
+
+    it('removes empty propertied blocks caused by nesting', function () {
       var el = dom.create('Hello <a href="outer place"><a href="place" alt="hey">there</a> person</a>!'),
         result = {
           text: 'Hello there person!',
           blocks: {
             link: [
-              { start: 6, end: 6, href: 'outer place' },
               { start: 6, end: 11, href: 'place', alt: 'hey' }
             ]
           }
