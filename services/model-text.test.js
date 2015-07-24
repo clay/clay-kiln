@@ -316,7 +316,7 @@ describe('model-text service', function () {
       var num = 8,
         el = dom.create('Hello <a>there </a>person!'),
         result,
-        expectedResult = [ 'Hello th', 'ere person!' ];
+        expectedResult = [ 'Hello <a>th</a>', '<a>ere </a>person!' ];
 
       result = fn(lib.fromElement(el), num);
 
@@ -328,7 +328,7 @@ describe('model-text service', function () {
       var num = 8,
         el = dom.create('<a>Hello</a> <a>there</a> <a>person</a>!'),
         result,
-        expectedResult = [ '<a>Hello</a> th', 'ere <a>person</a>!' ];
+        expectedResult = [ '<a>Hello</a> <a>th</a>', '<a>ere</a> <a>person</a>!' ];
 
       result = fn(lib.fromElement(el), num);
 

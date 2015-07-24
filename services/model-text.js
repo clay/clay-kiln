@@ -453,7 +453,13 @@ function splitPropertiedBlocks(model, before, after, num) {
         clonedBlock.end = block.end - num;
         afterBlocks.push(clonedBlock);
       } else {
-        // not remembered
+        clonedBlock = _.clone(block);
+        clonedBlock.end = num;
+        beforeBlocks.push(clonedBlock);
+        clonedBlock = _.clone(block);
+        clonedBlock.start = 0;
+        clonedBlock.end = block.end - num;
+        afterBlocks.push(clonedBlock);
       }
     });
 
