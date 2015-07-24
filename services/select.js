@@ -44,7 +44,7 @@ function isComponentList(componentEl, parentSchema) {
     field = parent && dom.closest(parent, '[' + attr + ']'),
     path = field && field.getAttribute(attr);
 
-  return !!(path && parentSchema[path] && parentSchema[path]._componentList);
+  return !!(path && parentSchema[path] && parentSchema[path][references.componentListProperty]);
 }
 
 /**
