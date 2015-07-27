@@ -64,11 +64,9 @@ function addComponentsHandlers(el) {
   return Promise.all(findComponents(el).map(addComponentSelector))
     .then(function (els) {
       // Then, add controllers/decorators after all selectors have be added.
-      return Promise.all(els.filter(function isDefined(x) { return !!x; }).map(function (componentEl) {
+      return Promise.all(els.map(function (componentEl) {
         return ds.get(componentEditName, componentEl); // async because gets data for editable fields.
       }));
-    }).then(function (x) {
-      console.log(x);
     });
 }
 
