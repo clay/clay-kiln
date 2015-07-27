@@ -80,13 +80,12 @@ function addComponentsHandlers(el) {
 function reloadComponent(ref) {
   return db.getComponentHTMLFromReference(ref)
     .then(function (el) {
-      var currentEls = dom.findAll('[' + references.referenceAttribute + '="' + ref + '"]'),
-        currentEl = currentEls[0];
+      var currentEls = dom.findAll('[' + references.referenceAttribute + '="' + ref + '"]');
 
       if (currentEls.length > 1) {
         window.location.reload(); // Edge case of the ref used more than once on the page.
       }
-      dom.replaceElement(currentEl, el);
+      dom.replaceElement(currentEls[0], el);
       return addComponentsHandlers(el);
     });
 }
