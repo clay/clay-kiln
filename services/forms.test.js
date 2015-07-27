@@ -133,14 +133,13 @@ describe(dirname, function () {
     });
 
     describe('close', function () {
-      var fn = lib[this.title],
-        spyReloadComponent;
+      var fn = lib[this.title];
 
       beforeEach(function () {
         sandbox.stub(edit, 'update', resolver);
         sandbox.stub(formCreator, 'createInlineForm', resolver);
         sandbox.stub(formCreator, 'createForm', resolver);
-        spyReloadComponent = sandbox.spy(render, 'reloadComponent');
+        sandbox.stub(render, 'reloadComponent', resolver);
       });
 
       it('does not remove or save when no forms are open', function () {
@@ -150,7 +149,7 @@ describe(dirname, function () {
         fn();
         expect(el.childNodes.length).to.equal(0);
         expect(edit.update.callCount).to.equal(0);
-        expect(spyReloadComponent.callCount).to.equal(0);
+        expect(render.reloadComponent.callCount).to.equal(0);
       });
 
       it('removes and saves inline forms when the data has changed', function () {
@@ -159,7 +158,7 @@ describe(dirname, function () {
         function afterFormIsClosed() {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
           expect(edit.update.calledOnce).to.equal(true); // data was saved.
-          expect(spyReloadComponent.calledOnce).to.equal(true); // el was reloaded.
+          expect(render.reloadComponent.calledOnce).to.equal(true); // el was reloaded.
           expect(document.body.classList.contains(references.editingStatus)).to.equal(false); // editing status updated.
         }
         function afterFormIsOpen() {
@@ -183,7 +182,7 @@ describe(dirname, function () {
         function afterFormIsClosed() {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
           expect(edit.update.callCount).to.equal(0); // data was not saved.
-          expect(spyReloadComponent.callCount).to.equal(0); // el was not reloaded.
+          expect(render.reloadComponent.callCount).to.equal(0); // el was not reloaded.
           expect(document.body.classList.contains(references.editingStatus)).to.equal(false); // editing status updated.
         }
         function afterFormIsOpen() {
@@ -209,7 +208,7 @@ describe(dirname, function () {
         function afterFormIsClosed() {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
           expect(edit.update.calledOnce).to.equal(true); // data was saved.
-          expect(spyReloadComponent.calledOnce).to.equal(true); // el was reloaded.
+          expect(render.reloadComponent.calledOnce).to.equal(true); // el was reloaded.
           expect(document.body.classList.contains(references.editingStatus)).to.equal(false); // editing status updated.
         }
         function afterFormIsOpen() {
@@ -233,7 +232,7 @@ describe(dirname, function () {
         function afterFormIsClosed() {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
           expect(edit.update.callCount).to.equal(0); // data was not saved.
-          expect(spyReloadComponent.callCount).to.equal(0); // el was not reloaded.
+          expect(render.reloadComponent.callCount).to.equal(0); // el was not reloaded.
           expect(document.body.classList.contains(references.editingStatus)).to.equal(false); // editing status updated.
         }
         function afterFormIsOpen() {
