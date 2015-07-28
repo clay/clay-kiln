@@ -7,7 +7,6 @@
 
 var EditorToolbar,
   dom = require('../services/dom'),
-  db = require('../services/db'),
   references = require('../services/references'),
   forms = require('../services/forms'),
   edit = require('../services/edit'),
@@ -24,19 +23,15 @@ function publish() {
 
 /**
  * Create a new page with the same layout as the current page.
- * @param {string} layoutName
+ * currently, this just clones the current page
+ * (cloning special "new" instances of the page-specific components)
+ * e.g. /components/article/instances/new
+ * @returns {Promise}
  */
-function createPage(layoutName) {
+function createPage() {
   // todo: allow users to choose their layout / components
 
-  var articlePage = {
-    layout: '/components/' + layoutName + '/instances/article',
-    main: '/components/story'
-  };
-
-  db.postToReference('/pages', articlePage).then(function (res) {
-    location.href = res[references.referenceProperty] + '.html?edit=true';
-  }).catch(console.error);
+  return edit.createPage();
 }
 
 /**
@@ -79,11 +74,7 @@ EditorToolbar.prototype = {
   /**
    * On new page button
    */
-  onNewPage: function () {
-    var layoutName = dom.find('[data-layout]').getAttribute('data-layout');
-
-    createPage(layoutName);
-  },
+  onNewPage: createPage,
 
   /**
    * On edit settings button

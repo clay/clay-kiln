@@ -290,6 +290,21 @@ function publishPage() {
   });
 }
 
+/**
+ * create a new page, cloning the current page
+ * @returns {Promise}
+ */
+function createPage() {
+  var path = '/pages/new';
+
+  return getDataOnly(path).then(function (data) {
+    delete data._ref;
+    return db.postToReference('/pages', data).then(function (res) {
+      location.href = res[references.referenceProperty] + '.html?edit=true';
+    }).catch(console.error);
+  });
+}
+
 // expose main methods (alphabetical)
 module.exports = {
   addSchemaToData: addSchemaToData,
@@ -301,6 +316,7 @@ module.exports = {
   removeSchemaFromData: removeSchemaFromData,
   removeGroupFieldsFromData: removeGroupFieldsFromData,
   publishPage: publishPage,
+  createPage: createPage,
   setSchemaCache: setSchemaCache,
   setDataCache: setDataCache,
   update: update,
