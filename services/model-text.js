@@ -1,4 +1,4 @@
-var tagTypes, blockTypes,
+var tagTypes, blockTypes, sameAs,
   _ = require('lodash'),
   dom = require('./dom'),
   nodeFilter = NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT;
@@ -46,20 +46,48 @@ function getContentText(el) {
 }
 
 /**
+ * @param {Element} el
+ * @returns {object}
+ */
+function getAttributes(el) {
+  return _.reduce(el.attributes, function (props, attr) {
+    props[attr.name] = attr.value;
+    return props;
+  }, {});
+}
+
+/**
+ * @param {Node} node
+ * @returns {string}
+ */
+function getNodeName(node) {
+  var nodeName = node.nodeName;
+
+  if (sameAs[nodeName]) {
+    nodeName = sameAs[nodeName];
+  }
+
+  return nodeName;
+}
+
+/**
+ * Continuous tags can be merged and separated very easily, because we assume they have no attributes like ids or
+ * classes.
+ *
  * @param {{text: string, blocks: object}} model
  * @param {Node} node
  */
 function continuous(model, node) {
-  var blockLen, lastBlockEndIndex,
+  var block, blockLen, lastBlockEndIndex, tagBlockName, nodeName,
     start = model.text.length,
     text = getContentText(node),
-    end = start + text.length,
-    nodeName = node.nodeName,
-    tagBlockName = tagTypes[nodeName].name,
-    block = model.blocks[tagBlockName];
+    end = start + text.length;
 
   // tags of zero length are not allowed
   if (start !== end) {
+    nodeName = getNodeName(node);
+    tagBlockName = tagTypes[nodeName].name;
+    block = model.blocks[tagBlockName];
 
     if (!block) {
       block = [];
@@ -80,32 +108,24 @@ function continuous(model, node) {
 }
 
 /**
- * @param {Element} el
- * @returns {object}
- */
-function getAttributes(el) {
-  return _.reduce(el.attributes, function (props, attr) {
-    props[attr.name] = attr.value;
-    return props;
-  }, {});
-}
-
-/**
+ * Propertied tags cannot be merged together safely without a lot of work and assumptions.
+ *
  * @param {{text: string, blocks: object}} model
  * @param {Node} node
  */
 function propertied(model, node) {
-  var start = model.text.length,
+  var properties, obj, nodeName, tagBlockName, block,
+    start = model.text.length,
     text = getContentText(node),
-    end = start + text.length,
-    properties = getAttributes(node),
-    obj = _.assign({ start: start, end: end}, properties),
-    nodeName = node.nodeName,
-    tagBlockName = tagTypes[nodeName].name,
-    block = model.blocks[tagBlockName];
+    end = start + text.length;
 
   // tags of zero length are not allowed
   if (start !== end) {
+    properties = getAttributes(node);
+    obj = _.assign({ start: start, end: end}, properties);
+    nodeName = node.nodeName;
+    tagBlockName = tagTypes[nodeName].name;
+    block = model.blocks[tagBlockName];
 
     if (!block) {
       block = [];
@@ -117,9 +137,29 @@ function propertied(model, node) {
 }
 
 /**
+ * Singled tags can only ever exist once at a particular position in a paragraph (<br><br> becomes <br>), and
+ * they never have any content or properties.
+ *
+ * They can probably be represented as an array like [1, 2, 3] that becomes "a<br>b<br>c<br>" on the text "abc", since
+ * doubles can be removed by just checking for uniqueness and then sorting.
+ */
+function singled() {
+  // implemented later
+}
+
+/**
  * The types of tags that we know about.
  *
  * Used to filter TreeWalkers.
+ *
+ * It's good to list all allowed tags even if some other list (like sameAs) eliminates them for the sake of
+ * maintainability.  If a tag is of a certain type, it's good to have it classified as "continuous" to avoid
+ * weird decision-making in the future when the other lists change.  Assume the lists are independent and apply to
+ * different features.
+ *
+ * The other reason to have this list be inclusive is that we use this list to filter DOM Nodes, which means if it's not
+ * on this list then _it will never been seen_, which isn't the intention when you're trying to convert from one type to
+ * another.
  *
  * @enum
  */
@@ -129,8 +169,25 @@ tagTypes = {
   U: { set: continuous, name: 'underline' },
   EM: { set: continuous, name: 'emphasis' },
   STRONG: { set: continuous, name: 'strong' },
+  PRE: { set: continuous, name: 'pre'},
+  DEL: { set: continuous, name: 'del' },
+  H1: { set: continuous, name: 'h1' },
+  H2: { set: continuous, name: 'h2' },
+  H3: { set: continuous, name: 'h3' },
+  H4: { set: continuous, name: 'h4' },
+  H5: { set: continuous, name: 'h5' },
+  H6: { set: continuous, name: 'h6' },
   A: { set: propertied, name: 'link' },
-  SPAN: { set: propertied, name: 'span' }
+  SPAN: { set: propertied, name: 'span' },
+  BLOCKQUOTE: { set: propertied, name: 'block quote' },
+  Q: { set: propertied, name: 'quote' },
+  CITE: { set: propertied, name: 'cite' },
+  CODE: { set: propertied, name: 'code' },
+  BR: { set: singled, name: 'soft return' }
+  // HR - not allowed within a paragraph
+  // P - not allowed within a paragraph
+  // IMG - not allowed within a paragraph
+  // STRIKE - deprecated in HTML5
 };
 
 /**
@@ -143,6 +200,25 @@ tagTypes = {
 blockTypes = _.transform(tagTypes, function (obj, tag, name) {
   obj[tag.name] = { set: tag.set, name: name };
 }, {});
+
+/**
+ * If any of these are seen, they're the same as another type that we know.
+ *
+ * Expect this list to change often, so don't write code that relies on specific values.
+ *
+ * @enum
+ */
+sameAs = {
+  'B': 'STRONG',
+  'U': 'EM',
+  'I': 'EM',
+  'H1': 'H2',
+  'H3': 'H2',
+  'H4': 'H2',
+  'H5': 'H2',
+  'H6': 'H2',
+  'STRIKE': 'DEL'
+};
 
 /**
  * @param {Node} el
@@ -182,7 +258,6 @@ function fromElement(el) {
 
   while (walker.nextNode()) {
     node = walker.currentNode;
-    name = node.nodeName;
     type = node.nodeType;
 
     switch (type) {
@@ -190,6 +265,7 @@ function fromElement(el) {
         model.text += node.nodeValue;
         break;
       default:
+        name = getNodeName(node);
         tagTypes[name].set(model, node);
         break;
     }

@@ -33,70 +33,80 @@ describe('model-text service', function () {
     var fn = lib[this.title];
 
     it('finds text', function () {
-      var el = dom.create('Hello <b>there <i>person</i></b>!'),
+      var el = dom.create('Hello <strong>there <em>person</em></strong>!'),
         result = {
           text: 'Hello there person!',
-          blocks: { bold: [ 6, 18 ], italic: [ 12, 18 ] }
+          blocks: { strong: [ 6, 18 ], emphasis: [ 12, 18 ] }
         };
 
       expect(fn(el)).to.deep.equal(result);
     });
 
     it('finds full text', function () {
-      var el = dom.create('<i>Hello <b>there person</b>!</i>'),
+      var el = dom.create('<em>Hello <strong>there person</strong>!</em>'),
         result = {
           text: 'Hello there person!',
-          blocks: { bold: [ 6, 18 ], italic: [ 0, 19 ] }
+          blocks: { strong: [ 6, 18 ], emphasis: [ 0, 19 ] }
         };
 
       expect(fn(el)).to.deep.equal(result);
     });
 
     it('finds text even with whitespace', function () {
-      var el = dom.create('<b>Hello </b>there <b>person</b> <b>there!</b>'),
+      var el = dom.create('<strong>Hello </strong>there <strong>person</strong> <strong>there!</strong>'),
         result = {
           text: 'Hello there person there!',
-          blocks: { bold: [ 0, 6, 12, 18, 19, 25 ] }
+          blocks: { strong: [ 0, 6, 12, 18, 19, 25 ] }
+        };
+
+      expect(fn(el)).to.deep.equal(result);
+    });
+
+    it('converts bold to strong and italics and underlines to emphasis', function () {
+      var el = dom.create('<i>Hello</i> <b>there</b> <u>person!</u>'),
+        result = {
+          text: 'Hello there person!',
+          blocks: { emphasis: [ 0, 5, 12, 19 ], strong: [ 6, 11 ] }
         };
 
       expect(fn(el)).to.deep.equal(result);
     });
 
     it('ignores scripts', function () {
-      var el = dom.create('Hello <script>jfkdslajfkdsal</script>there <b>person</b>!'),
+      var el = dom.create('Hello <script>jfkdslajfkdsal</script>there <strong>person</strong>!'),
         result = {
           text: 'Hello there person!',
-          blocks: { bold: [ 12, 18 ] }
+          blocks: { strong: [ 12, 18 ] }
         };
 
       expect(fn(el)).to.deep.equal(result);
     });
 
     it('merges nested continuous blocks (i.e., bold in bold)', function () {
-      var el = dom.create('Hello <b>there <b>person</b></b>!'),
+      var el = dom.create('Hello <strong>there <strong>person</strong></strong>!'),
         result = {
           text: 'Hello there person!',
-          blocks: { bold: [ 6, 18 ] }
+          blocks: { strong: [ 6, 18 ] }
         };
 
       expect(fn(el)).to.deep.equal(result);
     });
 
     it('merges congruent continuous blocks (i.e., bold in bold)', function () {
-      var el = dom.create('Hello <b>there </b><b>person</b>!'),
+      var el = dom.create('Hello <strong>there </strong><strong>person</strong>!'),
         result = {
           text: 'Hello there person!',
-          blocks: { bold: [ 6, 18 ] }
+          blocks: { strong: [ 6, 18 ] }
         };
 
       expect(fn(el)).to.deep.equal(result);
     });
 
     it('merges nested congruent continuous blocks (i.e., bold in italics in bold)', function () {
-      var el = dom.create('Hello <b>the<i>re </i></b><i><b>person</b></i>!'),
+      var el = dom.create('Hello <strong>the<em>re </em></strong><em><strong>person</strong></em>!'),
         result = {
           text: 'Hello there person!',
-          blocks: { bold: [ 6, 18 ], italic: [ 9, 18 ] }
+          blocks: { strong: [ 6, 18 ], emphasis: [ 9, 18 ] }
         };
 
       expect(fn(el)).to.deep.equal(result);
@@ -108,7 +118,7 @@ describe('model-text service', function () {
           text: 'Hello there person!',
           blocks: {
             link: [ { start: 6, end: 11, href: 'place', alt: 'hey' } ],
-            underline: [ 12, 18 ] }
+            emphasis: [ 12, 18 ] }
         };
 
       expect(fn(el)).to.deep.equal(result);
@@ -130,7 +140,7 @@ describe('model-text service', function () {
     });
 
     it('removes empty continuous blocks (does not add block name either)', function () {
-      var el = dom.create('Hello <b></b>there person!'),
+      var el = dom.create('Hello <strong></strong>there person!'),
         result = {
           text: 'Hello there person!',
           blocks: {}
@@ -170,8 +180,8 @@ describe('model-text service', function () {
     it('converts continuous blocks', function () {
       var model = {
         text: 'Hello there person!',
-        blocks: { bold: [ 0, 6, 12, 18 ] }
-      }, result = '<b>Hello </b>there <b>person</b>!';
+        blocks: { strong: [ 0, 6, 12, 18 ] }
+      }, result = '<strong>Hello </strong>there <strong>person</strong>!';
 
       expect(documentToString(fn(model))).to.equal(result);
     });
@@ -179,8 +189,8 @@ describe('model-text service', function () {
     it('nests when different continuous blocks are on the same space', function () {
       var model = {
         text: 'Hello there person!',
-        blocks: { bold: [ 6, 11 ], italic: [ 6, 11 ] }
-      }, result = 'Hello <b><i>there</i></b> person!';
+        blocks: { strong: [ 6, 11 ], emphasis: [ 6, 11 ] }
+      }, result = 'Hello <strong><em>there</em></strong> person!';
 
       expect(documentToString(fn(model))).to.equal(result);
     });
@@ -188,8 +198,8 @@ describe('model-text service', function () {
     it('nests when continuous blocks are already in order', function () {
       var model = {
         text: 'Hello there person!',
-        blocks: { bold: [ 6, 18 ], italic: [ 12, 18 ] }
-      }, result = 'Hello <b>there <i>person</i></b>!';
+        blocks: { strong: [ 6, 18 ], emphasis: [ 12, 18 ] }
+      }, result = 'Hello <strong>there <em>person</em></strong>!';
 
       expect(documentToString(fn(model))).to.equal(result);
     });
@@ -197,8 +207,8 @@ describe('model-text service', function () {
     it('nests when continuous blocks are not already in order', function () {
       var model = {
         text: 'Hello there person!',
-        blocks: { bold: [ 12, 18 ], italic: [ 6, 18 ] }
-      }, result = 'Hello <i>there <b>person</b></i>!';
+        blocks: { strong: [ 12, 18 ], emphasis: [ 6, 18 ] }
+      }, result = 'Hello <em>there <strong>person</strong></em>!';
 
       expect(documentToString(fn(model))).to.equal(result);
     });
@@ -206,8 +216,8 @@ describe('model-text service', function () {
     it('overlaps when continuous blocks regardless of order', function () {
       var model = {
         text: 'Hello there person!',
-        blocks: { bold: [ 0, 12 ], italic: [ 6, 18 ] }
-      }, result = '<b>Hello <i>there </i></b><i>person</i>!';
+        blocks: { strong: [ 0, 12 ], emphasis: [ 6, 18 ] }
+      }, result = '<strong>Hello <em>there </em></strong><em>person</em>!';
 
       expect(documentToString(fn(model))).to.equal(result);
     });
@@ -224,8 +234,8 @@ describe('model-text service', function () {
     it('nests when continuous blocks applied within propertied blocks', function () {
       var model = {
         text: 'Hello there person!',
-        blocks: { bold: [ 6, 12 ], link: [{ start: 0, end: 18 }] }
-      }, result = '<a>Hello <b>there </b>person</a>!';
+        blocks: { strong: [ 6, 12 ], link: [{ start: 0, end: 18 }] }
+      }, result = '<a>Hello <strong>there </strong>person</a>!';
 
       expect(documentToString(fn(model))).to.equal(result);
     });
@@ -233,8 +243,8 @@ describe('model-text service', function () {
     it('nests when continuous blocks applied outside propertied blocks', function () {
       var model = {
         text: 'Hello there person!',
-        blocks: { bold: [ 0, 18 ], link: [{ start: 6, end: 12 }] }
-      }, result = '<b>Hello </b><a><b>there </b></a><b>person</b>!';
+        blocks: { strong: [ 0, 18 ], link: [{ start: 6, end: 12 }] }
+      }, result = '<strong>Hello </strong><a><strong>there </strong></a><strong>person</strong>!';
 
       expect(documentToString(fn(model))).to.equal(result);
     });
@@ -242,8 +252,8 @@ describe('model-text service', function () {
     it('overlaps when continuous blocks applied to propertied blocks', function () {
       var model = {
         text: 'Hello there person!',
-        blocks: { bold: [ 0, 12 ], link: [{ start: 6, end: 18 }] }
-      }, result = '<b>Hello </b><a><b>there </b>person</a>!';
+        blocks: { strong: [ 0, 12 ], link: [{ start: 6, end: 18 }] }
+      }, result = '<strong>Hello </strong><a><strong>there </strong>person</a>!';
 
       expect(documentToString(fn(model))).to.equal(result);
     });
@@ -266,9 +276,9 @@ describe('model-text service', function () {
 
     it('splits continuous blocks to each side', function () {
       var num = 8,
-        el = dom.create('<b>Hello </b>there <b>person</b>!'),
+        el = dom.create('<strong>Hello </strong>there <strong>person</strong>!'),
         result,
-        expectedResult = [ '<b>Hello </b>th', 'ere <b>person</b>!' ];
+        expectedResult = [ '<strong>Hello </strong>th', 'ere <strong>person</strong>!' ];
 
       result = fn(lib.fromElement(el), num);
 
@@ -278,9 +288,9 @@ describe('model-text service', function () {
 
     it('splits continuous blocks at middle', function () {
       var num = 8,
-        el = dom.create('Hello <b>there </b>person!'),
+        el = dom.create('Hello <strong>there </strong>person!'),
         result,
-        expectedResult = [ 'Hello <b>th</b>', '<b>ere </b>person!' ];
+        expectedResult = [ 'Hello <strong>th</strong>', '<strong>ere </strong>person!' ];
 
       result = fn(lib.fromElement(el), num);
 
@@ -290,9 +300,9 @@ describe('model-text service', function () {
 
     it('splits continuous blocks to each side and middle', function () {
       var num = 8,
-        el = dom.create('<b>Hello</b> <b>there</b> <b>person</b>!'),
+        el = dom.create('<strong>Hello</strong> <strong>there</strong> <strong>person</strong>!'),
         result,
-        expectedResult = [ '<b>Hello</b> <b>th</b>', '<b>ere</b> <b>person</b>!' ];
+        expectedResult = [ '<strong>Hello</strong> <strong>th</strong>', '<strong>ere</strong> <strong>person</strong>!' ];
 
       result = fn(lib.fromElement(el), num);
 
@@ -342,9 +352,9 @@ describe('model-text service', function () {
 
     it('concats continuous', function () {
       var result,
-        before = lib.fromElement(dom.create('Hello <b>th</b>')),
-        after = lib.fromElement(dom.create('<b>ere</b> person!')),
-        expectedResult = 'Hello <b>there</b> person!';
+        before = lib.fromElement(dom.create('Hello <strong>th</strong>')),
+        after = lib.fromElement(dom.create('<strong>ere</strong> person!')),
+        expectedResult = 'Hello <strong>there</strong> person!';
 
       result = fn(before, after);
 
@@ -353,9 +363,9 @@ describe('model-text service', function () {
 
     it('concats nested continuous', function () {
       var result,
-        before = lib.fromElement(dom.create('Hello <b><i>th</i></b>')),
-        after = lib.fromElement(dom.create('<b><i>ere</i></b> person!')),
-        expectedResult = 'Hello <b><i>there</i></b> person!';
+        before = lib.fromElement(dom.create('Hello <strong><em>th</em></strong>')),
+        after = lib.fromElement(dom.create('<strong><em>ere</em></strong> person!')),
+        expectedResult = 'Hello <strong><em>there</em></strong> person!';
 
       result = fn(before, after);
 
@@ -364,9 +374,9 @@ describe('model-text service', function () {
 
     it('concats nested continuous (complex)', function () {
       var result,
-        before = lib.fromElement(dom.create('<i>Hello <b>t</b>h</i>')),
-        after = lib.fromElement(dom.create('<b><i>ere</i></b> person!')),
-        expectedResult = '<i>Hello <b>t</b>h<b>ere</b></i> person!';
+        before = lib.fromElement(dom.create('<em>Hello <strong>t</strong>h</em>')),
+        after = lib.fromElement(dom.create('<strong><em>ere</em></strong> person!')),
+        expectedResult = '<em>Hello <strong>t</strong>h<strong>ere</strong></em> person!';
 
       result = fn(before, after);
 
