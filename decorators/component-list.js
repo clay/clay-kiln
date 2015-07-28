@@ -1,6 +1,8 @@
 var _ = require('lodash'),
   references = require('../services/references'),
-  dom = require('../services/dom');
+  dom = require('../services/dom'),
+  edit = require('../services/edit'),
+  dragula = require('dragula');
 
 /**
  * click handler for adding a component
@@ -79,6 +81,70 @@ function createPane(args) {
 }
 
 /**
+ * Save the order of the items as found in the DOM.
+ * @param {Element} el
+ * @param {{ref: string, path: string, data: object}} options
+ * @returns {Promise}
+ */
+function updateOrder(el, options) {
+  var newOrder = [],
+    refAttr = references.referenceAttribute,
+    refProp = references.referenceProperty,
+    currentRefs = options.data.map(function (item) { return item[refProp]; });
+
+  _.each(el.querySelectorAll('[' + refAttr + ']'), function (item) {
+    var ref = item.getAttribute(refAttr),
+      val = {};
+
+    if (_.contains(currentRefs, ref)) {
+      val[refProp] = ref;
+      newOrder.push(val);
+    }
+  });
+  // Save.
+  return edit.getDataOnly(options.ref)
+    .then(function (componentData) {
+      componentData[options.path] = newOrder;
+      return edit.update(options.ref, componentData);
+    });
+}
+
+/**
+ * Add dragula.
+ * @param {Element} el
+ * @param {{ref: string, path: string, data: object}} options
+ */
+function addDragula(el, options) {
+  var dropAreaClass = 'dragula-drop-area',
+    dragItemClass = 'dragula-item',
+    dragItemUnsavedClass = 'dragula-not-saved',
+    drag = dragula({
+      moves: function (selectedItem, container, handle) {
+        return handle.classList.contains('drag');
+      }
+    });
+
+  drag.containers.push(el);
+  drag.on('drag', function (selectedItem, container) {
+    selectedItem.classList.add(dragItemClass);
+    container.classList.add(dropAreaClass);
+  });
+  drag.on('cancel', function (selectedItem, container) {
+    selectedItem.classList.remove(dragItemClass);
+    container.classList.remove(dropAreaClass);
+  });
+  drag.on('drop', function (selectedItem, container) {
+    selectedItem.classList.add(dragItemUnsavedClass);
+    selectedItem.classList.remove(dragItemClass);
+    container.classList.remove(dropAreaClass);
+    updateOrder(el, options).then(function () {
+      // Order saved.
+      selectedItem.classList.remove(dragItemUnsavedClass);
+    });
+  });
+}
+
+/**
  * match when schema says it's a component list
  * @param {Element} el
  * @param {{ref: string, path: string, data: object}} options
@@ -117,6 +183,8 @@ function handler(el, options) {
 
   // add the pane to the end of the component list
   el.appendChild(pane);
+
+  addDragula(el, options);
 
   return el;
 }

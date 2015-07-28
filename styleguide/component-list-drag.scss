@@ -1,0 +1,12 @@
+.dragula-drop-area {
+  background: rgba(39, 186, 215, 0.08) !important;
+  transition: background-color 300ms linear;
+}
+.dragula-item {
+  background: rgba(215, 215, 39, 0.17) !important;
+  transition: background-color 300ms linear;
+}
+.dragula-not-saved {
+  background: rgba(215, 39, 39, 0.41) !important;
+  transition: background-color 300ms linear;
+}
