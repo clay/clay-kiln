@@ -252,11 +252,11 @@ function getUriDestination(location) {
 }
 
 /**
- * @param {string} uri
- * @returns {string}
+ * @param {string} uri e.g. localhost.dev.nymag.biz/pages/U7V8okzAAAA=.html
+ * @returns {string} e.g. localhost.dev.nymag.biz/pages/U7V8okzAAAA=
  */
 function removeExtension(uri) {
-  return uri.split('.')[0];
+  return _.initial(uri.split('.')).join('');
 }
 
 /**
@@ -280,7 +280,12 @@ function pathOnly(uri) {
  * @returns {Promise.string}
  */
 function publishPage() {
-  return getUriDestination().then(function (pageReference) {
+  var uri = dom.uri(),
+    barePageIndex = uri.indexOf('/pages/'),
+    isBarePage = barePageIndex > -1,
+    pageRefPromise = isBarePage ? Promise.resolve(uri.substring(barePageIndex)) : getUriDestination();
+
+  return pageRefPromise.then(function (pageReference) {
     var path = pathOnly(pageReference);
 
     return getDataOnly(path).then(function (data) {
