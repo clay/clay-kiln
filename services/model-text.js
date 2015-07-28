@@ -142,11 +142,8 @@ function propertied(model, node) {
  *
  * They can probably be represented as an array like [1, 2, 3] that becomes "a<br>b<br>c<br>" on the text "abc", since
  * doubles can be removed by just checking for uniqueness and then sorting.
- *
- * @param {{text: string, blocks: object}} model
- * @param {Node} node
  */
-function singled(model, node) {
+function singled() {
   // implemented later
 }
 
