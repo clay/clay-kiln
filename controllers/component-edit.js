@@ -14,30 +14,32 @@ function ComponentEdit() {
    * @param {Element} node
    * @param {TreeWalker} walker
    * @param {string} ref
+   * @param {array} promises    hold onto promises so that they can be returned.
    */
-  function decorateNodes(node, walker, ref) {
+  function decorateNodes(node, walker, ref, promises) {
     var path = node && node.getAttribute(editableAttr); // only assign a path if node exists
 
     if (path) {
       // this element is editable, decorate it!
-      decorate(node, ref, path);
+      promises.push(decorate(node, ref, path));
     }
 
     if (node) {
       // keep walking through the nodes
-      decorateNodes(walker.nextNode(), walker, ref);
+      decorateNodes(walker.nextNode(), walker, ref, promises);
     }
   }
 
   /**
    * @constructs
    * @param {Element} el
+   * @returns {Promise}
    */
   function constructor(el) {
     var ref = el.getAttribute(references.referenceAttribute),
       isComponentEditable = el.hasAttribute(editableAttr) || !!dom.find(el, '[' + editableAttr + ']'),
       componentHasPath = ref && el.getAttribute(editableAttr),
-      walker, path;
+      walker, path, promises = [];
 
     if (isComponentEditable) {
       walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, {
@@ -51,14 +53,15 @@ function ComponentEdit() {
       });
 
       // add click events to children with [name], but NOT children inside child components
-      decorateNodes(walker.nextNode(), walker, ref);
+      decorateNodes(walker.nextNode(), walker, ref, promises);
 
       // special case when editable path is in the component's root element.
       if (componentHasPath) {
         path = el.getAttribute(editableAttr);
-        decorate(el, ref, path);
+        promises.push(decorate(el, ref, path));
       }
     }
+    return Promise.all(promises);
   }
 
   constructor.prototype = {
