@@ -305,6 +305,27 @@ function createPage() {
   });
 }
 
+/**
+ * Remove a component from a list.
+ * @param {Element} el          The component to be removed.
+ * @param {string} ref          The ref of the component to be removed.
+ * @param {string} parentField
+ * @param {string} parentRef
+ * @returns {Promise}
+ */
+function removeFromParentList(el, ref, parentField, parentRef) {
+  return db.getComponentJSONFromReference(parentRef).then(function (parentData) {
+    var index,
+      val = {};
+
+    val[references.referenceProperty] = ref;
+    index = _.findIndex(parentData[parentField], val);
+    parentData[parentField].splice(index, 1); // remove component from parent data
+    dom.removeElement(el); // remove component from DOM
+    return db.putToReference(parent.ref, parentData);
+  });
+}
+
 // expose main methods (alphabetical)
 module.exports = {
   addSchemaToData: addSchemaToData,
@@ -320,5 +341,6 @@ module.exports = {
   setSchemaCache: setSchemaCache,
   setDataCache: setDataCache,
   update: update,
-  validate: validate
+  validate: validate,
+  removeFromParentList: removeFromParentList
 };

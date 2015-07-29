@@ -184,13 +184,7 @@ function appendToPrev(html, prev) {
  */
 function removeCurrentFromParent(current, parent) {
   return function () {
-    return db.getComponentJSONFromReference(parent.ref).then(function (parentData) {
-      var index = _.findIndex(parentData[parent.field], { _ref: current.ref });
-
-      parentData[parent.field].splice(index, 1); // splice the current component out of the parent
-      dom.removeElement(current.component); // remove component el
-      return db.putToReference(parent.ref, parentData);
-    });
+    return edit.removeFromParentList(current.component, current.ref, parent.field, parent.ref);
   };
 }
 
