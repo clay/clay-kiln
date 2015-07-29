@@ -317,7 +317,7 @@ function handleComponentCreation(el) {
   var caretPos = select(el); // get text after the cursor, if any
 
   // if there's stuff after the caret, get it
-  if (caretPos.start < el.innerText.length - 2) {
+  if (caretPos.start < el.textContent.length - 1) {
     console.log(el.innerText.substr(caretPos.start));
     // todo: split paragraphs, add new component with text after caret
     return false; // don't do anything if you're not at the end
@@ -328,6 +328,21 @@ function handleComponentCreation(el) {
 
 function isStyled(styled) {
   return styled ? ' styled' : ''; // note the preeeding space!
+}
+
+function addLineBreak() {
+  // el.appendChild(document.createElement('br'));
+  var selection = window.getSelection(),
+    range = selection.getRangeAt(0),
+    br = document.createElement('br');
+
+  range.deleteContents();
+  range.insertNode(br);
+  range.setStartAfter(br);
+  range.setEndAfter(br);
+  range.collapse(false);
+  selection.removeAllRanges();
+  selection.addRange(range);
 }
 
 module.exports = function (result, args) {
@@ -380,9 +395,11 @@ module.exports = function (result, args) {
       });
 
       editor.subscribe('editableKeydownEnter', function (e, editable) {
-        e.preventDefault(); // stop it from creating new paragraphs
-
-        if (enableKeyboardExtras) {
+        if (enableKeyboardExtras && e.shiftKey) {
+          // shift+enter was pressed. add a line break
+          addLineBreak();
+        } else if (enableKeyboardExtras) {
+          // enter was pressed. create a new component if certain conditions are met
           handleComponentCreation(editable);
         } else {
           // close the form?
