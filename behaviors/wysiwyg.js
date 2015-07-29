@@ -184,7 +184,7 @@ function appendToPrev(html, prev) {
  */
 function removeCurrentFromParent(current, parent) {
   return function () {
-    return edit.removeFromParentList(current.component, current.ref, parent.field, parent.ref);
+    return edit.removeFromParentList({el: current.component, ref: current.ref, parentField: parent.field, parentRef: parent.ref});
   };
 }
 

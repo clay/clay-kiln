@@ -206,7 +206,7 @@ function addDeleteOption(componentBar, opts) {
   var option = dom.create(`<span class="delete"><img src="/media/components/byline-editor/component-bar-delete.svg" alt="Delete"></span>`);
 
   option.addEventListener('click', function () {
-    return edit.removeFromParentList(opts.el, opts.ref, opts.parentField, opts.parentRef)
+    return edit.removeFromParentList(opts)
       .then(forms.close);
   });
   componentBar.appendChild(option);

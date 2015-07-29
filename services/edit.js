@@ -307,22 +307,23 @@ function createPage() {
 
 /**
  * Remove a component from a list.
- * @param {Element} el          The component to be removed.
- * @param {string} ref          The ref of the component to be removed.
- * @param {string} parentField
- * @param {string} parentRef
+ * @param {object}  opts
+ * @param {Element} opts.el          The component to be removed.
+ * @param {string}  opts.ref         The ref of the component to be removed.
+ * @param {string}  opts.parentField
+ * @param {string}  opts.parentRef
  * @returns {Promise}
  */
-function removeFromParentList(el, ref, parentField, parentRef) {
-  return db.getComponentJSONFromReference(parentRef).then(function (parentData) {
+function removeFromParentList(opts) {
+  return db.getComponentJSONFromReference(opts.parentRef).then(function (parentData) {
     var index,
       val = {};
 
-    val[references.referenceProperty] = ref;
-    index = _.findIndex(parentData[parentField], val);
-    parentData[parentField].splice(index, 1); // remove component from parent data
-    dom.removeElement(el); // remove component from DOM
-    return db.putToReference(parent.ref, parentData);
+    val[references.referenceProperty] = opts.ref;
+    index = _.findIndex(parentData[opts.parentField], val);
+    parentData[opts.parentField].splice(index, 1); // remove component from parent data
+    dom.removeElement(opts.el); // remove component from DOM
+    return db.putToReference(opts.parentRef, parentData);
   });
 }
 
