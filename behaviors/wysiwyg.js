@@ -227,7 +227,7 @@ function focusPreviousComponent(parent, prev, textLength) {
       // focus on the new wysiwyg field
       prevField.focus();
       // set caret right before the new text we added
-      select(prevField, { start: prevField.innerText.length - textLength });
+      select(prevField, { start: prevField.textContent.length - textLength });
     });
   };
 }
