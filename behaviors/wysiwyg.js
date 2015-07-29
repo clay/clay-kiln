@@ -384,6 +384,10 @@ module.exports = function (result, args) {
         var textmodel = model.fromElement(dom.create(editable.innerHTML)),
           fragment = model.toElement(textmodel);
 
+        // note: we're using the model-text service to clean up and standardize html
+        // this is in addition to the cleanup that medium-editor does by default,
+        // as well as the options we specified in the cleanTags / cleanReplacements paste config
+
         dom.clearChildren(editable); // clear the current children
         editable.appendChild(fragment); // add the cleaned dom fragment
         observer.setValue(editable.innerHTML);
