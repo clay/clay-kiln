@@ -331,11 +331,12 @@ function isStyled(styled) {
 }
 
 function addLineBreak() {
-  // el.appendChild(document.createElement('br'));
   var selection = window.getSelection(),
     range = selection.getRangeAt(0),
     br = document.createElement('br');
 
+  // woah, crazy stuff!
+  // this creates a range, inserts the <br> tag, then sets the caret after it
   range.deleteContents();
   range.insertNode(br);
   range.setStartAfter(br);
