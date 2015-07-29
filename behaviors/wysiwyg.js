@@ -16,6 +16,7 @@ var _ = require('lodash'),
   focus = require('../decorators/focus'),
   references = require('../services/references'),
   edit = require('../services/edit'),
+  model = require('../services/model-text'),
   refAttr = references.referenceAttribute;
 
 /**
@@ -55,8 +56,8 @@ function createEditor(field, buttons) {
     },
     delay: 200, // wait a bit for the toolbar and link previews to display
     paste: {
-      forcePlainText: true,
-      cleanPastedHTML: false, // clean html from sources like google docs
+      forcePlainText: false,
+      cleanPastedHTML: true, // clean html from sources like google docs
       cleanTags: [ // remove these tags when pasting
         'meta',
         'script',
@@ -66,9 +67,9 @@ function createEditor(field, buttons) {
         'iframe'
       ],
       cleanReplacements: [
-        [/<h[2-9]>/ig, '<h1>'],
-        [/<\/h[2-9]>/ig, '</h1>'], // force all headers to the same level
-        [/<p>/ig, ''], // get rid of <p> tags
+        [/<h[1-9]>/ig, '<h2>'],
+        [/<\/h[1-9]>/ig, '</h2>'], // force all headers to the same level
+        [/<p(.*?)>/ig, ''], // get rid of <p> tags
         [/<\/p>/ig, '']
       ]
     },
@@ -380,6 +381,15 @@ module.exports = function (result, args) {
 
       // persist editor data to data model on paste
       editor.subscribe('editablePaste', function (e, editable) {
+        var textmodel = model.fromElement(dom.create(editable.innerHTML)),
+          fragment = model.toElement(textmodel);
+
+        // note: we're using the model-text service to clean up and standardize html
+        // this is in addition to the cleanup that medium-editor does by default,
+        // as well as the options we specified in the cleanTags / cleanReplacements paste config
+
+        dom.clearChildren(editable); // clear the current children
+        editable.appendChild(fragment); // add the cleaned dom fragment
         observer.setValue(editable.innerHTML);
       });
 
