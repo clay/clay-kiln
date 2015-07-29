@@ -256,7 +256,13 @@ function getUriDestination(location) {
  * @returns {string} e.g. localhost.dev.nymag.biz/pages/U7V8okzAAAA=
  */
 function removeExtension(uri) {
-  return _.initial(uri.split('.')).join('');
+  var splitUri = uri.split('.');
+
+  if (splitUri.length > 1) {
+    return _.initial(uri.split('.')).join('');
+  } else {
+    return uri;
+  }
 }
 
 /**
