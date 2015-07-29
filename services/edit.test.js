@@ -311,5 +311,14 @@ describe('edit service', function () {
         expect(result).to.equal(data);
       });
     });
+
+    it('publishes bare page', function () {
+      var data = expectPublish('place.com/pages/thing.html', '/pages/thing');
+
+      return fn().then(function (result) {
+        sandbox.verify();
+        expect(result).to.equal(data);
+      });
+    });
   });
 });
