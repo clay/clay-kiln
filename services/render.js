@@ -80,11 +80,15 @@ function reloadComponent(ref) {
     .then(function (el) {
       var currentEls = dom.findAll('[' + references.referenceAttribute + '="' + ref + '"]');
 
-      if (currentEls.length > 1) {
-        window.location.reload(); // Edge case of the ref used more than once on the page.
+      switch (currentEls.length) {
+        case 0: // Element was already removed from the DOM.
+          break;
+        case 1: // Normal case.
+          dom.replaceElement(currentEls[0], el);
+          return addComponentsHandlers(el);
+        default: // Edge case (ref used multiple times on one page).
+          window.location.reload();
       }
-      dom.replaceElement(currentEls[0], el);
-      return addComponentsHandlers(el);
     });
 }
 

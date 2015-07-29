@@ -33,18 +33,18 @@ function getParentEl(componentEl) {
 }
 
 /**
- * Check if the component is inside a component list.
+ * Get the parent field if it is a component list.
  * @param {Element} componentEl
  * @param {object} parentSchema
- * @returns {boolean}
+ * @returns {string|undefined}
  */
-function isComponentList(componentEl, parentSchema) {
+function getParentComponentListField(componentEl, parentSchema) {
   var attr = references.editableAttribute,
     parent = componentEl.parentNode,
     field = parent && dom.closest(parent, '[' + attr + ']'),
     path = field && field.getAttribute(attr);
 
-  return !!(path && parentSchema[path] && parentSchema[path][references.componentListProperty]);
+  return path && parentSchema[path] && parentSchema[path][references.componentListProperty] && path;
 }
 
 /**
@@ -198,39 +198,41 @@ function addDragOption(componentBar) {
 }
 
 /**
- * Add delete within a component list.
+ * Add delete option within a component list.
  * @param {Element} componentBar
- * @param {Element} parentEl
+ * @param {object} opts           Options required to remove component from parent list.
  */
-function addDeleteOption(componentBar, parentEl) {
-  var el = dom.create(`<span class="delete"><img src="/media/components/byline-editor/component-bar-delete.svg" alt="Delete"></span>`);
+function addDeleteOption(componentBar, opts) {
+  var option = dom.create(`<span class="delete"><img src="/media/components/byline-editor/component-bar-delete.svg" alt="Delete"></span>`);
 
-  el.addEventListener('click', function (e) {
-    // Todo: delete from component list.
-    console.log('You clicked on delete.', parentEl, e);
+  option.addEventListener('click', function () {
+    return edit.removeFromParentList(opts)
+      .then(forms.close);
   });
-  componentBar.appendChild(el);
+  componentBar.appendChild(option);
 }
 
 /**
  * Add options that depend on the parent (e.g. parent label and parent being a component list).
  * @param {Element} componentBar
- * @param {Element} componentEl   An element that has a ref.
+ * @param {Element} el            The component element.
+ * @param {Element} ref           The ref of the component.
  * @returns {Promise|undefined}
  */
-function addParentOptions(componentBar, componentEl) {
-  var parentEl = getParentEl(componentEl),
-    ref;
+function addParentOptions(componentBar, el, ref) {
+  var parentEl = getParentEl(el),
+    parentRef;
 
   if (parentEl) {
-    ref = parentEl.getAttribute(references.referenceAttribute);
+    parentRef = parentEl.getAttribute(references.referenceAttribute);
     addParentLabel(componentBar, parentEl);
-    return edit.getSchema(ref)
+    return edit.getSchema(parentRef)
       .then(function (parentSchema) {
-        if (isComponentList(componentEl, parentSchema)) {
-          // Options only available if you are within a component list.
-          addDragOption(componentBar, parentEl);
-          addDeleteOption(componentBar, parentEl);
+        var componentListField = getParentComponentListField(el, parentSchema);
+
+        if (componentListField) {
+          addDragOption(componentBar);
+          addDeleteOption(componentBar, {el: el, ref: ref, parentField: componentListField, parentRef: parentRef});
         }
       });
   }
@@ -257,7 +259,7 @@ function handler(componentEl, options) {
 
   // Add options to the component bar.
   addSettingsOption(componentBar, options.data, options.ref);
-  addParentOptions(componentBar, componentEl);
+  addParentOptions(componentBar, componentEl, options.ref);
 
   // add events to the component itself
   // when the component is clicked, it should be selected

@@ -321,4 +321,28 @@ describe('edit service', function () {
       });
     });
   });
+
+  describe('removeFromParentList', function () {
+    var fn = lib[this.title];
+
+    beforeEach(function () {
+      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({a: [{_ref: 'b'}, {_ref: 'c'}]}));
+      sandbox.stub(db, 'putToReference').returns(Promise.resolve({}));
+      sandbox.stub(dom, 'removeElement');
+    });
+
+    it('removes the item from the data', function () {
+      return fn({el: {}, ref: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
+        expect(db.putToReference.calledWith('d', {a: [{_ref: 'c'}]})).to.equal(true);
+      });
+    });
+
+    it('removes the item from the DOM', function () {
+      var domEl = document.createElement('div');
+
+      return fn({el: domEl, ref: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
+        expect(dom.removeElement.calledWith(domEl)).to.equal(true);
+      });
+    });
+  });
 });

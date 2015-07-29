@@ -147,7 +147,7 @@ function close() {
     ref = currentForm.ref;
     data = form && formValues.get(form);
 
-    if (dataChanged(data)) {
+    if (data && dataChanged(data)) { // data is null if the component was removed.
       // remove currentForm values
       currentForm = {};
 
@@ -163,7 +163,7 @@ function close() {
           console.warn('Did not save.');
         });
     } else {
-      // Nothing changed, so do not reload.
+      // Nothing changed or the component was removed, so do not reload.
       // but still remove currentForm values
       currentForm = {};
       removeCurrentForm(container);

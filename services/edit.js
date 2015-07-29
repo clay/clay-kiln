@@ -316,6 +316,28 @@ function createPage() {
   });
 }
 
+/**
+ * Remove a component from a list.
+ * @param {object}  opts
+ * @param {Element} opts.el          The component to be removed.
+ * @param {string}  opts.ref         The ref of the component to be removed.
+ * @param {string}  opts.parentField
+ * @param {string}  opts.parentRef
+ * @returns {Promise}
+ */
+function removeFromParentList(opts) {
+  return db.getComponentJSONFromReference(opts.parentRef).then(function (parentData) {
+    var index,
+      val = {};
+
+    val[references.referenceProperty] = opts.ref;
+    index = _.findIndex(parentData[opts.parentField], val);
+    parentData[opts.parentField].splice(index, 1); // remove component from parent data
+    dom.removeElement(opts.el); // remove component from DOM
+    return db.putToReference(opts.parentRef, parentData);
+  });
+}
+
 // expose main methods (alphabetical)
 module.exports = {
   addSchemaToData: addSchemaToData,
@@ -331,5 +353,6 @@ module.exports = {
   setSchemaCache: setSchemaCache,
   setDataCache: setDataCache,
   update: update,
-  validate: validate
+  validate: validate,
+  removeFromParentList: removeFromParentList
 };
