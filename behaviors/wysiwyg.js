@@ -221,7 +221,7 @@ function focusPreviousComponent(parent, prev, textLength) {
       // focus on the new wysiwyg field
       prevField.focus();
       // set caret right before the new text we added
-      select(prevField, { start: prevField.innerText.length - textLength });
+      select(prevField, { start: prevField.textContent.length - textLength });
     });
   };
 }
@@ -311,7 +311,7 @@ function handleComponentCreation(el) {
   var caretPos = select(el); // get text after the cursor, if any
 
   // if there's stuff after the caret, get it
-  if (caretPos.start < el.innerText.length - 2) {
+  if (caretPos.start < el.textContent.length - 1) {
     console.log(el.innerText.substr(caretPos.start));
     // todo: split paragraphs, add new component with text after caret
     return false; // don't do anything if you're not at the end
@@ -322,6 +322,22 @@ function handleComponentCreation(el) {
 
 function isStyled(styled) {
   return styled ? ' styled' : ''; // note the preeeding space!
+}
+
+function addLineBreak() {
+  var selection = window.getSelection(),
+    range = selection.getRangeAt(0),
+    br = document.createElement('br');
+
+  // woah, crazy stuff!
+  // this creates a range, inserts the <br> tag, then sets the caret after it
+  range.deleteContents();
+  range.insertNode(br);
+  range.setStartAfter(br);
+  range.setEndAfter(br);
+  range.collapse(false);
+  selection.removeAllRanges();
+  selection.addRange(range);
 }
 
 module.exports = function (result, args) {
@@ -374,9 +390,11 @@ module.exports = function (result, args) {
       });
 
       editor.subscribe('editableKeydownEnter', function (e, editable) {
-        e.preventDefault(); // stop it from creating new paragraphs
-
-        if (enableKeyboardExtras) {
+        if (enableKeyboardExtras && e.shiftKey) {
+          // shift+enter was pressed. add a line break
+          addLineBreak();
+        } else if (enableKeyboardExtras) {
+          // enter was pressed. create a new component if certain conditions are met
           handleComponentCreation(editable);
         } else {
           // close the form?
