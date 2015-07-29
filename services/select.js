@@ -189,15 +189,11 @@ function addParentLabel(componentBar, parentEl) {
 /**
  * Add drag within a component list.
  * @param {Element} componentBar
- * @param {Element} parentEl
  */
-function addDragOption(componentBar, parentEl) {
-  var el = dom.create(`<span class="drag"><img src="/media/components/byline-editor/component-bar-drag.svg" alt="Drag"></span>`);
+function addDragOption(componentBar) {
+  // `drag` class is applied to both `span` and `img` to simplify dragula logic.
+  var el = dom.create(`<span class="drag"><img src="/media/components/byline-editor/component-bar-drag.svg" alt="Drag" class="drag"></span>`);
 
-  el.addEventListener('click', function (e) {
-    // Todo: add dragula.
-    console.log('You clicked on the drag.', parentEl, e);
-  });
   componentBar.appendChild(el);
 }
 
