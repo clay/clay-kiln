@@ -32,6 +32,8 @@ function focus(el, options, e) {
     if (firstField) {
       firstField.focus();
     }
+
+    return firstField;
   });
 }
 
