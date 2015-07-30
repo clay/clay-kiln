@@ -23,6 +23,11 @@ module.exports = function (result, args) {
     return itemEl;
   });
 
+  /**
+   * unset all items
+   * @param {array} items
+   * @returns {array}
+   */
   function unsetAll(items) {
     return items.map(function (item) {
       item[prop] = false;
@@ -30,6 +35,10 @@ module.exports = function (result, args) {
     });
   }
 
+  /**
+   * toggle primary
+   * @param {object} bindings
+   */
   function togglePrimary(bindings) {
     var item = bindings.item,
       data = bindings.data,
@@ -43,6 +52,11 @@ module.exports = function (result, args) {
 
   // double clicking unsets all items and sets the current item as primary,
   // using whatever property name you passed through as an argument
+  /**
+   * toggle primary
+   * @param {MouseEvent} e
+   * @param {object} bindings
+   */
   result.bindings.togglePrimary = function (e, bindings) {
     togglePrimary(bindings);
   };
