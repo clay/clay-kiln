@@ -1,0 +1,40 @@
+.descriptive-dropdown {
+  position: absolute;
+  max-width: 40rem;
+  background-color: white;
+  right: 0;
+  top: 0;
+
+  header {
+    button {
+      float: right;
+    }
+  }
+
+  ol, ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    &:first-of-type {
+      border-top: #f4f4f4 1px solid;
+    }
+    border-bottom: #f4f4f4 1px solid;
+    list-style-type: none;
+    margin: 0;
+    padding: 2rem;
+
+    .name {
+      display: inline-block;
+      width: 100%;
+      margin: 0.2rem;
+    }
+
+    .description {
+      display: inline-block;
+      width: 32rem;
+      margin: 0.2rem 0.2rem 0.2rem 1rem;
+    }
+  }
+}
