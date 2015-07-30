@@ -190,24 +190,6 @@ function removeCurrentFromParent(current, parent) {
 }
 
 /**
- * reload previous component
- * note: this differs from the reload / render function in that it only reloads
- * a single instance of that component on the page
- * @param {object} prev
- * @returns {Function}
- */
-function reloadPreviousComponent(prev) {
-  return function () {
-    return db.getComponentHTMLFromReference(prev.ref)
-      .then(function (updatedEl) {
-        render.addComponentsHandlers(updatedEl);
-        dom.replaceElement(prev.component, updatedEl);
-        return updatedEl;
-      });
-  };
-}
-
-/**
  * focus on the previous component's field
  * @param {object} parent
  * @param  {object} prev
@@ -215,14 +197,17 @@ function reloadPreviousComponent(prev) {
  * @returns {Function}
  */
 function focusPreviousComponent(parent, prev, textLength) {
-  return function (newEl) {
-    return focus.focus(newEl, { ref: prev.ref, path: prev.field }).then(function () {
-      var prevField = dom.find('[data-ref="' + prev.ref + '"] [data-field]');
+  return function () {
+    var newEl = dom.find(parent.component, '[' + references.referenceAttribute + '="' + prev.ref + '"]');
 
-      // focus on the new wysiwyg field
-      prevField.focus();
+    edit.setDataCache({});
+    return focus.focus(newEl, { ref: prev.ref, path: prev.field }).then(function (prevField) {
+      // var prevField = dom.find('[data-ref="' + prev.ref + '"] [data-field]');
+      //
+      // // focus on the new wysiwyg field
+      // prevField.focus();
       // set caret right before the new text we added
-      select(prevField, { start: prevField.textContent.length - textLength });
+      select(prevField, { start: prevField.textContent.length - (textLength + 1) });
     });
   };
 }
@@ -244,7 +229,7 @@ function removeComponent(el) {
       // get the contents of the current field, and append them to the previous component
       return appendToPrev(getFieldContents(el), prev)
         .then(removeCurrentFromParent(current, parent))
-        .then(reloadPreviousComponent(prev))
+        .then(render.reloadComponent.bind(null, prev.ref))
         .then(focusPreviousComponent(parent, prev, textLength));
     }
   });
