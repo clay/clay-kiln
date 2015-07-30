@@ -253,13 +253,20 @@ function removeComponent(el) {
 /**
  * add component after current component
  * @param {Element} el
+ * @param {string} [text]
  * @returns {Promise}
  */
-function addComponent(el) {
-  var current = getCurrent(el);
+function addComponent(el, text) {
+  var current = getCurrent(el),
+    newData = {};
+
+  // if we're passing data in, set it into the object
+  if (text) {
+    newData[current.field] = text;
+  }
 
   // create a new component
-  return db.postToReference('/components/' + current.name + '/instances', {}).then(function (res) {
+  return db.postToReference('/components/' + current.name + '/instances', newData).then(function (res) {
     var newRef = res._ref;
 
     // get the html of that new component
@@ -288,6 +295,36 @@ function addComponent(el) {
 }
 
 /**
+ * split text in a component, creating a new component
+ * @param {Element} el
+ * @param {object} caret
+ * @param {object} observer used to update the current component
+ * @returns {Promise}
+ */
+function splitComponent(el, caret, observer) {
+  var textmodel = model.fromElement(dom.create(el.innerHTML.replace(/&nbsp;/g, ' '))),
+    // note: we're removing any nonbreaking spaces BEFORE parsing the text
+    splitText = model.split(textmodel, caret.start),
+    oldText = splitText[0],
+    newText = splitText[1],
+    oldFragment = model.toElement(oldText),
+    newFragment = model.toElement(newText),
+    throwawayDiv = document.createElement('div');
+
+  // to get the innerHTML of the document fragment,
+  // we first need to append it to a throwaway div.
+  // this is not awesome, but is the "best practice"
+  throwawayDiv.appendChild(newFragment);
+
+  // now that we have the split elements, put the old one back in and then create the new one
+  dom.clearChildren(el); // clear the current children
+  el.appendChild(oldFragment); // add the cleaned dom fragment
+  observer.setValue(el.innerHTML); // update the current field
+  // this is saved automatically when it's unfocused
+  return addComponent(el, throwawayDiv.innerHTML);
+}
+
+/**
  * remove current component if we're at the beginning of the field
  * and there's a previous component to append it to
  * @param {Element} el
@@ -306,16 +343,15 @@ function handleComponentDeletion(el, e) {
 /**
  * create new component if we're at the end of the field
  * @param {Element} el
+ * @param {object} observer
  * @returns {false|Promise}
  */
-function handleComponentCreation(el) {
+function handleComponentCreation(el, observer) {
   var caretPos = select(el); // get text after the cursor, if any
 
   // if there's stuff after the caret, get it
   if (caretPos.start < el.textContent.length - 1) {
-    console.log(el.innerText.substr(caretPos.start));
-    // todo: split paragraphs, add new component with text after caret
-    return false; // don't do anything if you're not at the end
+    return splitComponent(el, caretPos, observer);
   } else {
     return addComponent(el);
   }
@@ -405,7 +441,7 @@ module.exports = function (result, args) {
           addLineBreak();
         } else if (enableKeyboardExtras) {
           // enter was pressed. create a new component if certain conditions are met
-          handleComponentCreation(editable);
+          handleComponentCreation(editable, observer);
         } else {
           // close the form?
           focus.unfocus();
