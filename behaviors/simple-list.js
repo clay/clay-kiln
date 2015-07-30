@@ -89,7 +89,7 @@ module.exports = function (result, args) {
 
     e.preventDefault(); // prevent triggering the browser's back button
     bindings.data.splice(index, 1); // remove item from the list
-    console.log(index)
+
     if (index > 0) {
       prevSibling.focus();
       prevSibling.dispatchEvent(new Event('click'));
@@ -132,8 +132,7 @@ module.exports = function (result, args) {
     publish: true,
     bind: function (boundEl) {
       // this is called when the binder initializes
-      var items = dom.findAll(boundEl, '.simple-list-item'),
-        addEl = dom.find(boundEl, '.simple-list-add'),
+      var addEl = dom.find(boundEl, '.simple-list-add'),
         observer = this.observer;
 
       // add new item from the add-items field
