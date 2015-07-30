@@ -15,7 +15,7 @@ module.exports = function (result, args) {
 
   // add doubleclick event to all list items
   _.forEach(itemEls, function (itemEl) {
-    itemEl.setAttribute('rv-on-dblclick', 'setPrimary');
+    itemEl.setAttribute('rv-on-dblclick', 'togglePrimary');
     itemEl.setAttribute('rv-class-primary', 'item.' + prop);
 
     // add primary badge
@@ -23,6 +23,11 @@ module.exports = function (result, args) {
     return itemEl;
   });
 
+  /**
+   * unset all items
+   * @param {array} items
+   * @returns {array}
+   */
   function unsetAll(items) {
     return items.map(function (item) {
       item[prop] = false;
@@ -30,18 +35,30 @@ module.exports = function (result, args) {
     });
   }
 
-  function setPrimary(bindings) {
+  /**
+   * toggle primary
+   * @param {object} bindings
+   */
+  function togglePrimary(bindings) {
     var item = bindings.item,
-      data = bindings.data;
+      data = bindings.data,
+      isPrimary = item[prop]; // get this before unsetting everything
 
     unsetAll(data);
-    item[prop] = true;
+    if (!isPrimary) {
+      item[prop] = true;
+    }
   }
 
   // double clicking unsets all items and sets the current item as primary,
   // using whatever property name you passed through as an argument
-  result.bindings.setPrimary = function (e, bindings) {
-    setPrimary(bindings);
+  /**
+   * toggle primary
+   * @param {MouseEvent} e
+   * @param {object} bindings
+   */
+  result.bindings.togglePrimary = function (e, bindings) {
+    togglePrimary(bindings);
   };
 
   return result;

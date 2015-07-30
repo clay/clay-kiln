@@ -69,11 +69,13 @@ $bar-parent-bg-color: rgba(139,191,211,.95);
 // Selected label
 .component-bar > .label {
   cursor: default;
-  flex-basis: $bar-label-width;
+  flex-basis: auto;
+  max-width: calc(100% - 2.8rem);
+  min-width: $bar-label-width;
   order: 1;
-  padding-left: .5rem;
+  padding: 0 .5rem;
   text-align: left;
-  width: $bar-label-width;
+  width: auto;
 }
 
 // Parent's label

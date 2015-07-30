@@ -50,7 +50,7 @@ module.exports = function (result, args) {
    * @param  {{item: {}, data: []}} bindings
    */
   function selectPrevious(e, index, bindings) {
-    if (index > 0) {
+    if (index > 0 && e.target.previousSibling) {
       selectItem({ item: bindings.data[index - 1], data: bindings.data });
       e.target.previousSibling.focus();
     }
@@ -85,8 +85,15 @@ module.exports = function (result, args) {
    * @param  {{item: {}, data: []}} bindings
    */
   function deleteItem(e, index, bindings) {
+    var prevSibling = e.target.previousSibling;
+
     e.preventDefault(); // prevent triggering the browser's back button
     bindings.data.splice(index, 1); // remove item from the list
+
+    if (index > 0) {
+      prevSibling.focus();
+      prevSibling.dispatchEvent(new Event('click'));
+    }
   }
 
   /*
@@ -125,8 +132,7 @@ module.exports = function (result, args) {
     publish: true,
     bind: function (boundEl) {
       // this is called when the binder initializes
-      var items = dom.findAll(boundEl, '.simple-list-item'),
-        addEl = dom.find(boundEl, '.simple-list-add'),
+      var addEl = dom.find(boundEl, '.simple-list-add'),
         observer = this.observer;
 
       // add new item from the add-items field
@@ -148,12 +154,13 @@ module.exports = function (result, args) {
 
       // select the last item when you backspace from the add-items field
       function selectLastItem(e) {
-        var data = observer.value();
+        var data = observer.value(),
+          newItems = dom.findAll(boundEl, '.simple-list-item');
 
         if (!addEl.value || !addEl.value.length) {
           e.preventDefault(); // prevent triggering the browser's back button
           _.last(data)._selected = true;
-          _.last(items).focus(); // focus on the last item
+          _.last(newItems).focus(); // focus on the last item
           observer.setValue(data);
         }
       }
