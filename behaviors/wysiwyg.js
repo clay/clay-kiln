@@ -211,10 +211,6 @@ function focusPreviousComponent(parent, prev, textLength) {
 
     edit.setDataCache({});
     return focus.focus(newEl, { ref: prev.ref, path: prev.field }).then(function (prevField) {
-      // var prevField = dom.find('[data-ref="' + prev.ref + '"] [data-field]');
-      //
-      // // focus on the new wysiwyg field
-      // prevField.focus();
       // set caret right before the new text we added
       select(prevField, { start: prevField.textContent.length - (textLength + 1) });
     });
