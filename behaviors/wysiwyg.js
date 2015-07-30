@@ -165,14 +165,23 @@ function getFieldContents(el) {
  * @returns {Promise}
  */
 function appendToPrev(html, prev) {
-  // note: get fresh data from the server
+// note: get fresh data from the server
   return db.getComponentJSONFromReference(prev.ref).then(function (prevData) {
-    var prevFieldData = _.get(prevData, prev.field);
+    var prevFieldData = _.get(prevData, prev.field),
+      throwawayDiv = document.createElement('div'),
+      textmodel, fragment, cleanedString;
 
     // add current field's html to the end of the previous field
     prevFieldData += html;
+
+    // pass the full thing through text-model to clean it and merge tags
+    textmodel = model.fromElement(dom.create(prevFieldData));
+    fragment = model.toElement(textmodel);
+    throwawayDiv.appendChild(fragment);
+    cleanedString = throwawayDiv.innerHTML;
+
     // then put it back into the previous component's data
-    _.set(prevData, prev.field, prevFieldData);
+    _.set(prevData, prev.field, cleanedString);
     return db.putToReference(prev.ref, prevData);
   });
 }
