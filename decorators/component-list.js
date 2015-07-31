@@ -2,45 +2,62 @@ var _ = require('lodash'),
   references = require('../services/references'),
   dom = require('../services/dom'),
   edit = require('../services/edit'),
+  render = require('../services/render'),
   dragula = require('dragula');
 
 /**
- * click handler for adding a component
- * @param {event} e
+ * Create click handler for adding a component
+ * @param {Element} pane
+ * @param {{ref: string, path: string}} field
+ * @param {string} name
+ * @returns {Promise}
  */
-function addComponent(e) {
-  var componentName = e.target.getAttribute('data-component-name');
+function addComponent(pane, field, name) {
+  return function (e) {
+    e.stopPropagation();
+    return edit.createComponent(name)
+      .then(function (res) {
+        var newRef = res._ref;
 
-  e.stopPropagation();
-  console.log('adding component: ' + componentName); // todo: actually add the component and render it
+        return edit.addToParentList({ref: newRef, parentField: field.path, parentRef: field.ref})
+          .then(function (newEl) {
+            dom.insertBefore(pane, newEl);
+            return render.addComponentsHandlers(newEl);
+          });
+      });
+  };
 }
 
 /**
  * create a new button for each component
+ * @param {Element} pane
+ * @param {{ref: string, path: string}} field
  * @param {string} item name
  * @returns {element} buttonEl
  */
-function createComponentButton(item) {
+function createComponentButton(pane, field, item) {
   var buttonEl = dom.create(`<button class="add-component" data-component-name="${item}">${item}</button>`);
 
-  buttonEl.addEventListener('click', addComponent);
+  buttonEl.addEventListener('click', addComponent(pane, field, item));
   return buttonEl;
 }
 
 /**
  * map through components, filtering out excluded
+ * @param {Element} pane
+ * @param {{ref: string, path: string}} field
  * @param {array} possibleComponents
  * @param {array} [exclude] array of components to exclude
  * @returns {array} array of elements
  */
-function getButtons(possibleComponents, exclude) {
+function getButtons(pane, field, possibleComponents, exclude) {
   return _.compact(_.map(possibleComponents, function (item) {
     if (exclude && exclude.length) {
       if (!_.contains(exclude)) {
-        return createComponentButton(item);
+        return createComponentButton(pane, field, item);
       }
     } else {
-      return createComponentButton(item);
+      return createComponentButton(pane, field, item);
     }
   }));
 }
@@ -67,9 +84,9 @@ function createPane(args) {
 
   // figure out what components should be available for adding
   if (include && include.length) {
-    buttons = getButtons(include, exclude);
+    buttons = getButtons(pane, args.field, include, exclude);
   } else {
-    buttons = getButtons(allComponents, exclude);
+    buttons = getButtons(pane, args.field, allComponents, exclude);
   }
 
   // put add components buttons into the pane
@@ -168,6 +185,8 @@ function handler(el, options) {
 
   // if _componentList: true, make the args an object
   args = _.isObject(args) ? args : {};
+
+  args.field = _.omit(options, 'data'); // add button needs ref and path.
 
   // create the pane
   pane = createPane(args);

@@ -11,11 +11,12 @@ function hasCurrentFocus() {
 
 /**
  * remove focus
+ * @returns {Promise}
  */
 function unfocus() {
   select.unselect();
   currentFocus = null;
-  forms.close();
+  return forms.close();
 }
 
 /**
@@ -23,22 +24,24 @@ function unfocus() {
  * @param {Element} el
  * @param {{ref: string, path: string, data: object}} options
  * @param {MouseEvent} e
- * @returns {Promise|undefined}
+ * @returns {Promise}
  */
 function focus(el, options, e) {
-  unfocus(); // unfocus the potentialy-opened current form first
-  select.select(el);
-  currentFocus = el;
-  return forms.open(options.ref, el, options.path, e).then(function () {
-    var firstField = dom.find('[data-field]');
+  return unfocus() // unfocus the potentialy-opened current form first
+    .then(function () {
+      select.select(el);
+      currentFocus = el;
+      return forms.open(options.ref, el, options.path, e).then(function () {
+        var firstField = dom.find('[data-field]');
 
-    // focus on the first field in the form we just created
-    if (firstField) {
-      firstField.focus();
-    }
+        // focus on the first field in the form we just created
+        if (firstField) {
+          firstField.focus();
+        }
 
-    return firstField;
-  });
+        return firstField;
+      });
+    });
 }
 
 /**
@@ -62,7 +65,7 @@ function when(el, options) {
 function handler(el, options) {
   el.addEventListener('click', function (e) {
     if (el !== currentFocus) {
-      focus(el, options, e);
+      exports.focus(el, options, e);
     } else {
       e.stopPropagation();
     }

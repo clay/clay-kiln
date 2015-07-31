@@ -317,6 +317,16 @@ function createPage() {
 }
 
 /**
+ * Create a new component.
+ * @param {string} name     The name of the component.
+ * @param {object} [data]   Data to save.
+ * @returns {Promise}
+ */
+function createComponent(name, data) {
+  return db.postToReference('/components/' + name + '/instances', data || {});
+}
+
+/**
  * Remove a component from a list.
  * @param {object}  opts
  * @param {Element} opts.el          The component to be removed.
@@ -334,7 +344,38 @@ function removeFromParentList(opts) {
     index = _.findIndex(parentData[opts.parentField], val);
     parentData[opts.parentField].splice(index, 1); // remove component from parent data
     dom.removeElement(opts.el); // remove component from DOM
-    return db.putToReference(opts.parentRef, parentData);
+    return update(opts.parentRef, parentData);
+  });
+}
+
+/**
+ * Add a component to the parent list data. If prevRef is not provided, adds to the end of the list.
+ * @param {object} opts
+ * @param {string} opts.ref
+ * @param {string} [opts.prevRef]     The ref of the item to insert after.
+ * @param {string} opts.parentField
+ * @param {string} opts.parentRef
+ * @returns {Promise} Promise resolves to new component Element.
+ */
+function addToParentList(opts) {
+  return getDataOnly(opts.parentRef).then(function (parentData) {
+    var prevIndex,
+      prevItem = {},
+      item = {},
+      refProp = references.referenceProperty;
+
+    item[refProp] = opts.ref;
+    if (opts.prevRef) {
+      // Add to specific position in the list.
+      prevItem[refProp] = opts.prevRef;
+      prevIndex = _.findIndex(parentData[opts.parentField], prevItem);
+      parentData[opts.parentField].splice(prevIndex + 1, 0, item);
+    } else {
+      // Add to end of list.
+      parentData[opts.parentField].push(item);
+    }
+    return db.putToReference(opts.parentRef, parentData)
+      .then(db.getComponentHTMLFromReference.bind(null, opts.ref));
   });
 }
 
@@ -354,5 +395,7 @@ module.exports = {
   setDataCache: setDataCache,
   update: update,
   validate: validate,
-  removeFromParentList: removeFromParentList
+  removeFromParentList: removeFromParentList,
+  addToParentList: addToParentList,
+  createComponent: createComponent
 };

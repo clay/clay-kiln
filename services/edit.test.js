@@ -345,4 +345,53 @@ describe('edit service', function () {
       });
     });
   });
+
+  describe('addToParentList', function () {
+    var fn = lib[this.title];
+
+    beforeEach(function () {
+      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({a: [{_ref: 'b'}, {_ref: 'c'}]}));
+      sandbox.stub(db, 'putToReference').returns(Promise.resolve({}));
+      sandbox.stub(db, 'getComponentHTMLFromReference').returns(document.createElement('div'));
+      sandbox.stub(dom, 'removeElement');
+    });
+
+    it('adds the item to the list data', function () {
+      return fn({ref: 'newRef', prevRef: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
+        expect(db.putToReference.calledWith('d', {a: [{_ref: 'b'}, {_ref: 'newRef'}, {_ref: 'c'}], _ref: 'd'})).to.equal(true);
+      });
+    });
+
+    it('adds the item to the end of the list data', function () {
+      return fn({ref: 'newRef', prevRef: null, parentField: 'a', parentRef: 'd'}).then(function () {
+        expect(db.putToReference.calledWith('d', {a: [{_ref: 'b'}, {_ref: 'c'}, {_ref: 'newRef'}], _ref: 'd'})).to.equal(true);
+      });
+    });
+
+    it('returns a new element', function () {
+      return fn({ref: 'newRef', prevRef: 'b', parentField: 'a', parentRef: 'd'}).then(function (el) {
+        expect(el instanceof Element).to.equal(true);
+      });
+    });
+  });
+
+  describe('createComponent', function () {
+    var fn = lib[this.title];
+
+    beforeEach(function () {
+      sandbox.stub(db, 'postToReference').returns(Promise.resolve({}));
+    });
+
+    it('creates a component with data', function () {
+      return fn('fakeName', {fake: 'data'}).then(function () {
+        expect(db.postToReference.calledWith('/components/fakeName/instances', {fake: 'data'})).to.equal(true);
+      });
+    });
+
+    it('creates a component without data', function () {
+      return fn('fakeName').then(function () {
+        expect(db.postToReference .calledWith('/components/fakeName/instances', {})).to.equal(true);
+      });
+    });
+  });
 });

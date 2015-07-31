@@ -182,7 +182,7 @@ function appendToPrev(html, prev) {
 
     // then put it back into the previous component's data
     _.set(prevData, prev.field, cleanedString);
-    return db.putToReference(prev.ref, prevData);
+    return edit.update(prev.ref, prevData);
   });
 }
 
@@ -209,7 +209,6 @@ function focusPreviousComponent(parent, prev, textLength) {
   return function () {
     var newEl = dom.find(parent.component, '[' + references.referenceAttribute + '="' + prev.ref + '"]');
 
-    edit.setDataCache({});
     return focus.focus(newEl, { ref: prev.ref, path: prev.field }).then(function (prevField) {
       // set caret right before the new text we added
       select(prevField, { start: prevField.textContent.length - (textLength + 1) });
@@ -248,6 +247,7 @@ function removeComponent(el) {
  */
 function addComponent(el, text) {
   var current = getCurrent(el),
+    parent = getParent(current.component),
     newData = {};
 
   // if we're passing data in, set it into the object
@@ -255,33 +255,22 @@ function addComponent(el, text) {
     newData[current.field] = text;
   }
 
-  // create a new component
-  return db.postToReference('/components/' + current.name + '/instances', newData).then(function (res) {
-    var newRef = res._ref;
+  return edit.createComponent(current.name, newData)
+    .then(function (res) {
+      var newRef = res._ref;
 
-    // get the html of that new component
-    return db.getComponentHTMLFromReference(newRef).then(function (newEl) {
-      // add the handlers for the new component
-      render.addComponentsHandlers(newEl);
-      // then add it after the current one
-      dom.insertAfter(current.component, newEl);
-      // then focus() the new field that's the same as the current field
-      focus.focus(newEl, { ref: newRef, path: current.field }).then(function () {
-        dom.find('[data-ref="' + newRef + '"] [data-field]').focus();
-      });
-
-      return newRef;
+      return edit.addToParentList({ref: newRef, prevRef: current.ref, parentField: parent.field, parentRef: parent.ref})
+        .then(function (newEl) {
+          dom.insertAfter(current.component, newEl);
+          return render.addComponentsHandlers(newEl)
+            .then(function () {
+              // focus on the same field in the new component
+              focus.focus(newEl, { ref: newRef, path: current.field }).then(function () {
+                return newRef;
+              });
+            });
+        });
     });
-  }).then(function (ref) { // update the parent component's component list
-    var parent = getParent(current.component);
-
-    return edit.getDataOnly(parent.ref).then(function (parentData) {
-      var index = _.findIndex(parentData[parent.field], { _ref: current.ref }) + 1;
-
-      parentData[parent.field].splice(index, 0, { _ref: ref }); // splice the new component into the array after the current one
-      return db.putToReference(parent.ref, parentData);
-    });
-  });
 }
 
 /**

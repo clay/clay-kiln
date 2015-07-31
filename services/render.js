@@ -21,7 +21,7 @@ function isComponent(el) {
 
 /**
  * Returns an array of elements that are components from an el and its children.
- * @param {Element} el
+ * @param {Element} el  Note: element must exist in the DOM so that querySelectorAll works.
  * @returns {array}
  */
 function findComponents(el) {

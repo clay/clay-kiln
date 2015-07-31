@@ -90,23 +90,22 @@ describe(dirname, function () {
 
       it('adds click event', function () {
         var stubData = {
-          value: '',
-          _schema: {
-            _has: 'text'
-          }
-        },
-        fakeOpen = sandbox.spy(function () { return Promise.resolve(); }),
-        newNode;
+            value: '',
+            _schema: {
+              _has: 'text'
+            }
+          },
+          options = {data: stubData, ref: 'fakeRef', path: 'title'},
+          newNode;
 
-        // stub, then run the decorator
-        sandbox.stub(forms, 'open', fakeOpen);
-        newNode = fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'});
+        sandbox.stub(lib, 'focus').returns(Promise.resolve({}));
+        newNode = fn(stubNode(), options);
 
         // trigger click
         newNode.dispatchEvent(new Event('click'));
 
-        // see if the spy was called
-        expect(fakeOpen.calledWith('fakeRef', newNode, 'title')).to.equal(true);
+        // see if focus was called
+        expect(lib.focus.calledWith(newNode, options)).to.equal(true);
       });
     });
   });
