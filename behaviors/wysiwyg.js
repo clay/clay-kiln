@@ -255,22 +255,23 @@ function addComponent(el, text) {
     newData[current.field] = text;
   }
 
-  // create a new component
-  return edit.createComponent(current.name, newData).then(function (res) {
-    var newRef = res._ref;
+  return edit.createComponent(current.name, newData)
+    .then(function (res) {
+      var newRef = res._ref;
 
-    return edit.addToParentList({ref: newRef, prevRef: current.ref, parentField: parent.field, parentRef: parent.ref}).then(function (newEl) {
-      // add new component to the DOM
-      dom.insertAfter(current.component, newEl);
-      return render.addComponentsHandlers(newEl).then(function () {
-          // focus on the same field in the new component
-          focus.focus(newEl, { ref: newRef, path: current.field }).then(function () {
-            dom.find(newEl, '[data-field]').focus();
-          });
-          return newRef;
+      return edit.addToParentList({ref: newRef, prevRef: current.ref, parentField: parent.field, parentRef: parent.ref})
+        .then(function (newEl) {
+          dom.insertAfter(current.component, newEl);
+          return render.addComponentsHandlers(newEl)
+            .then(function () {
+              // focus on the same field in the new component
+              focus.focus(newEl, { ref: newRef, path: current.field }).then(function () {
+                dom.find(newEl, '[data-field]').focus();
+              });
+              return newRef;
+            });
         });
     });
-  });
 }
 
 /**

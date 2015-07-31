@@ -349,13 +349,13 @@ function removeFromParentList(opts) {
 }
 
 /**
- * Add a component to the parent list data.
- * @param {object}  opts
- * @param {string}  opts.ref            Ref of the item to insert.
- * @param {string}  opts.prevRef        Ref to insert the item after.
- * @param {string}  opts.parentField
- * @param {string}  opts.parentRef
- * @returns {Promise}                   Resolves to new component Element.
+ * Add a component to the parent list data. If prevRef is not provided, adds to the end of the list.
+ * @param {object} opts
+ * @param {string} opts.ref
+ * @param {string} [opts.prevRef]     The ref of the item to insert after.
+ * @param {string} opts.parentField
+ * @param {string} opts.parentRef
+ * @returns {Promise} Promise resolves to new component Element.
  */
 function addToParentList(opts) {
   return getDataOnly(opts.parentRef).then(function (parentData) {
@@ -365,13 +365,17 @@ function addToParentList(opts) {
       refProp = references.referenceProperty;
 
     item[refProp] = opts.ref;
-    prevItem[refProp] = opts.prevRef;
-    prevIndex = _.findIndex(parentData[opts.parentField], prevItem);
-    parentData[opts.parentField].splice(prevIndex + 1, 0, item);
+    if (opts.prevRef) {
+      // Add to specific position in the list.
+      prevItem[refProp] = opts.prevRef;
+      prevIndex = _.findIndex(parentData[opts.parentField], prevItem);
+      parentData[opts.parentField].splice(prevIndex + 1, 0, item);
+    } else {
+      // Add to end of list.
+      parentData[opts.parentField].push(item);
+    }
     return db.putToReference(opts.parentRef, parentData)
-      .then(function () {
-        return db.getComponentHTMLFromReference(opts.ref);
-      });
+      .then(db.getComponentHTMLFromReference.bind(null, opts.ref));
   });
 }
 
