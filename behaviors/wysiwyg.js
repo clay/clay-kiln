@@ -266,9 +266,8 @@ function addComponent(el, text) {
             .then(function () {
               // focus on the same field in the new component
               focus.focus(newEl, { ref: newRef, path: current.field }).then(function () {
-                dom.find(newEl, '[data-field]').focus();
+                return newRef;
               });
-              return newRef;
             });
         });
     });

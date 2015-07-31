@@ -136,7 +136,7 @@ function open(ref, el, path, e) {
 
 /**
  * Close and save the open form.
- * @returns {Promise|undefined}
+ * @returns {Promise}
  */
 function close() {
   var container, form, ref, data;
@@ -168,9 +168,9 @@ function close() {
       currentForm = {};
       removeCurrentForm(container);
       setEditingStatus(false); // Status as saved.
-      return Promise.resolve();
     }
   }
+  return Promise.resolve();
 }
 
 exports.open = open;
