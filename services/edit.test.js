@@ -389,8 +389,11 @@ describe('edit service', function () {
     });
 
     it('creates a component without data', function () {
+      var bootstrapJson = {a: 1};
+
+      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve(bootstrapJson));
       return fn('fakeName').then(function () {
-        expect(db.postToReference .calledWith('/components/fakeName/instances', {})).to.equal(true);
+        expect(db.postToReference .calledWith('/components/fakeName/instances', bootstrapJson)).to.equal(true);
       });
     });
   });

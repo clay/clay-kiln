@@ -323,7 +323,17 @@ function createPage() {
  * @returns {Promise}
  */
 function createComponent(name, data) {
-  return db.postToReference('/components/' + name + '/instances', data || {});
+  var base = '/components/' + name,
+    instance = base + '/instances';
+
+  if (data) {
+    return db.postToReference(instance, data);
+  } else {
+    return db.getComponentJSONFromReference(base) // create component with base JSON from bootstrap.
+      .then(function (baseJson) {
+        return db.postToReference(instance, baseJson);
+      });
+  }
 }
 
 /**
