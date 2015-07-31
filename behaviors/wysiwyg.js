@@ -247,6 +247,7 @@ function removeComponent(el) {
  */
 function addComponent(el, text) {
   var current = getCurrent(el),
+    parent = getParent(current.component),
     newData = {};
 
   // if we're passing data in, set it into the object
@@ -255,30 +256,19 @@ function addComponent(el, text) {
   }
 
   // create a new component
-  return db.postToReference('/components/' + current.name + '/instances', newData).then(function (res) {
+  return edit.createComponent(current.name, newData).then(function (res) {
     var newRef = res._ref;
 
-    // get the html of that new component
-    return db.getComponentHTMLFromReference(newRef).then(function (newEl) {
-      // add the handlers for the new component
-      render.addComponentsHandlers(newEl);
-      // then add it after the current one
+    return edit.addToParentList({ref: newRef, prevRef: current.ref, parentField: parent.field, parentRef: parent.ref}).then(function (newEl) {
+      // add new component to the DOM
       dom.insertAfter(current.component, newEl);
-      // then focus() the new field that's the same as the current field
-      focus.focus(newEl, { ref: newRef, path: current.field }).then(function () {
-        dom.find('[data-ref="' + newRef + '"] [data-field]').focus();
-      });
-
-      return newRef;
-    });
-  }).then(function (ref) { // update the parent component's component list
-    var parent = getParent(current.component);
-
-    return edit.getDataOnly(parent.ref).then(function (parentData) {
-      var index = _.findIndex(parentData[parent.field], { _ref: current.ref }) + 1;
-
-      parentData[parent.field].splice(index, 0, { _ref: ref }); // splice the new component into the array after the current one
-      return db.putToReference(parent.ref, parentData);
+      return render.addComponentsHandlers(newEl).then(function () {
+          // focus on the same field in the new component
+          focus.focus(newEl, { ref: newRef, path: current.field }).then(function () {
+            dom.find(newEl, '[data-field]').focus();
+          });
+          return newRef;
+        });
     });
   });
 }

@@ -317,6 +317,16 @@ function createPage() {
 }
 
 /**
+ * Create a new component.
+ * @param {string} name     The name of the component.
+ * @param {object} [data]   Data to save.
+ * @returns {Promise}
+ */
+function createComponent(name, data) {
+  return db.postToReference('/components/' + name + '/instances', data || {});
+}
+
+/**
  * Remove a component from a list.
  * @param {object}  opts
  * @param {Element} opts.el          The component to be removed.
@@ -338,6 +348,33 @@ function removeFromParentList(opts) {
   });
 }
 
+/**
+ * Add a component to the parent list data.
+ * @param {object}  opts
+ * @param {string}  opts.ref            Ref of the item to insert.
+ * @param {string}  opts.prevRef        Ref to insert the item after.
+ * @param {string}  opts.parentField
+ * @param {string}  opts.parentRef
+ * @returns {Promise}                   Resolves to new component Element.
+ */
+function addToParentList(opts) {
+  return getDataOnly(opts.parentRef).then(function (parentData) {
+    var prevIndex,
+      prevItem = {},
+      item = {},
+      refProp = references.referenceProperty;
+
+    item[refProp] = opts.ref;
+    prevItem[refProp] = opts.prevRef;
+    prevIndex = _.findIndex(parentData[opts.parentField], prevItem);
+    parentData[opts.parentField].splice(prevIndex + 1, 0, item);
+    return db.putToReference(opts.parentRef, parentData)
+      .then(function () {
+        return db.getComponentHTMLFromReference(opts.ref);
+      });
+  });
+}
+
 // expose main methods (alphabetical)
 module.exports = {
   addSchemaToData: addSchemaToData,
@@ -354,5 +391,7 @@ module.exports = {
   setDataCache: setDataCache,
   update: update,
   validate: validate,
-  removeFromParentList: removeFromParentList
+  removeFromParentList: removeFromParentList,
+  addToParentList: addToParentList,
+  createComponent: createComponent
 };
