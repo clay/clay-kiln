@@ -8,24 +8,31 @@ label = 'Ban TKs';
 description = 'TKs are not allowed';
 
 function addError(component, fieldName, errors) {
-  var index, preview,
-    label = component.schema[fieldName]._label,
+  var index,
+    schema = component._schema,
+    componentLabel = schema[fieldName]._label,
     value = component[fieldName].value,
     error = {
       ref: component._ref,
       fieldName: fieldName
     };
 
-  if (label) {
-    error.label = label;
+  if (componentLabel) {
+    error.label = componentLabel;
   }
 
   if (_.isString(value)) {
     index = value.indexOf(tkText);
 
-    if (index > 10) {
-
+    if (index > 20) {
+      value = '...' + value.substr(index - 15);
     }
+
+    if (value.length > index + 16) {
+      value = value.substr(0, index + 13) + '...';
+    }
+
+    error.value = value;
   }
 
   errors.push(error);

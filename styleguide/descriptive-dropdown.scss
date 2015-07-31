@@ -36,5 +36,13 @@
       width: 32rem;
       margin: 0.2rem 0.2rem 0.2rem 1rem;
     }
+
+    .error-component-name {
+      font-weight: bold;
+
+      &:after {
+        content: ': '
+      }
+    }
   }
 }

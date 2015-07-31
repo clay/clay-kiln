@@ -26,12 +26,21 @@ function create(items) {
       itemList = dom.find(itemEl, 'ul');
 
     _.each(item.errors, function (error) {
-      var componentName = references.getComponentNameFromReference(error.ref);
-      itemList.append(dom.create(`
+      var componentName = references.getComponentNameFromReference(error.ref),
+        label, value, errorEl, errorPropertyList;
+
+      errorEl = dom.create(`
         <li>
-          <span class="error-ref">${componentName}</span>
-          <span class="error-field-name">${error.fieldName}</span>
-        </li>`));
+          <span class="error-component-name">${componentName}</span>
+        </li>`);
+      errorPropertyList = dom.find(errorEl, 'li') || errorEl;
+
+      if (error.value) {
+        errorPropertyList.appendChild(dom.create(`<span class="error-value">${error.value}</span>`));
+      } else if (error.label) {
+        errorPropertyList.appendChild(dom.create(`<span class="error-label">${error.label}</span>`));
+      }
+      dom.prependChild(itemList, errorEl);
     });
 
     list.appendChild(itemEl);
