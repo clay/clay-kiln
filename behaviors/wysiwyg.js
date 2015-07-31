@@ -182,7 +182,7 @@ function appendToPrev(html, prev) {
 
     // then put it back into the previous component's data
     _.set(prevData, prev.field, cleanedString);
-    return db.putToReference(prev.ref, prevData);
+    return edit.update(prev.ref, prevData);
   });
 }
 
@@ -209,7 +209,6 @@ function focusPreviousComponent(parent, prev, textLength) {
   return function () {
     var newEl = dom.find(parent.component, '[' + references.referenceAttribute + '="' + prev.ref + '"]');
 
-    edit.setDataCache({});
     return focus.focus(newEl, { ref: prev.ref, path: prev.field }).then(function (prevField) {
       // set caret right before the new text we added
       select(prevField, { start: prevField.textContent.length - (textLength + 1) });
