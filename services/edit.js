@@ -344,7 +344,7 @@ function removeFromParentList(opts) {
     index = _.findIndex(parentData[opts.parentField], val);
     parentData[opts.parentField].splice(index, 1); // remove component from parent data
     dom.removeElement(opts.el); // remove component from DOM
-    return db.putToReference(opts.parentRef, parentData);
+    return update(opts.parentRef, parentData);
   });
 }
 
