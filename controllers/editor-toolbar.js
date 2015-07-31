@@ -58,6 +58,10 @@ EditorToolbar = function (el) {
     '.settings click': 'onEditSettings',
     '.publish click': 'onPublish'
   }, this);
+
+  window.addEventListener('beforeunload', function (e) {
+    e.returnValue = 'Are you sure you want to leave this page? Your data may not be saved.';
+  });
 };
 
 /**
