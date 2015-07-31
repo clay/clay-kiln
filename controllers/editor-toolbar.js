@@ -10,6 +10,7 @@ var EditorToolbar,
   references = require('../services/references'),
   forms = require('../services/forms'),
   edit = require('../services/edit'),
+  focus = require('../decorators/focus'),
   events = require('../services/events');
 
 /**
@@ -58,6 +59,12 @@ EditorToolbar = function (el) {
     '.settings click': 'onEditSettings',
     '.publish click': 'onPublish'
   }, this);
+
+  window.addEventListener('beforeunload', function (e) {
+    if (focus.hasCurrentFocus()) {
+      e.returnValue = 'Are you sure you want to leave this page? Your data may not be saved.';
+    }
+  });
 };
 
 /**
