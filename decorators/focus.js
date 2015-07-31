@@ -5,6 +5,10 @@ var _ = require('lodash'),
   dom = require('../services/dom'),
   currentFocus; // eslint-disable-line
 
+function hasCurrentFocus() {
+  return !!currentFocus;
+}
+
 /**
  * remove focus
  */
@@ -67,6 +71,7 @@ function handler(el, options) {
 }
 
 // focus and unfocus
+module.exports.hasCurrentFocus = hasCurrentFocus;
 module.exports.focus = focus;
 module.exports.unfocus = unfocus;
 
