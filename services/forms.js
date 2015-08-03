@@ -28,6 +28,26 @@ function findFormContainer() {
 }
 
 /**
+ * Removes everything except the value.
+ * @param {object} data
+ * @returns {*}
+ */
+function cloneValueOnly(data) {
+  return _.cloneDeep(data && data.value);
+}
+
+/**
+ * Tests if the field has an affects field.
+ * @param {object} field
+ * @returns {boolean}
+ */
+function hasAffects(field) {
+  var behaviors = _.get(field, '_schema._has');
+
+  return !!(behaviors && _.find(behaviors, {fn: 'affects'}));
+}
+
+/**
  * set data for a field / group into currentData=
  * @param {object} data
  */
@@ -38,10 +58,10 @@ function setCurrentData(data) {
 
   if (schema && schema[references.fieldProperty]) {
     // this is a single field
-    currentForm.data[schema._name] = edit.removeSchemaFromData(_.cloneDeep(data));
+    currentForm.data[schema._name] = cloneValueOnly(data);
   } else {
     // this is a group of fields
-    _.map(data.value, function (field) {
+    _.reject(data.value, hasAffects).map(function (field) {
       var name = _.get(field, '_schema._name'),
         value = field.hasOwnProperty('value') ? field.value : field;
 
@@ -56,7 +76,7 @@ function setCurrentData(data) {
  * @returns {boolean}
  */
 function dataChanged(data) {
-  return !_.isEqual(data, currentForm.data);
+  return !_.isMatch(data, currentForm.data); // data may have "affects" fields so not _.isEqual.
 }
 
 /**
