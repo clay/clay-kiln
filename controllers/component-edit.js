@@ -31,6 +31,13 @@ function ComponentEdit() {
     }
   }
 
+  function isComponentEditable(el) {
+    return el.hasAttribute(editableAttr) ||
+      el.hasAttribute(placeholderAttr) ||
+      !!dom.find(el, '[' + editableAttr + ']') ||
+      !!dom.find(el, '[' + placeholderAttr + ']');
+  }
+
   /**
    * @constructs
    * @param {Element} el
@@ -38,11 +45,10 @@ function ComponentEdit() {
    */
   function constructor(el) {
     var ref = el.getAttribute(references.referenceAttribute),
-      isComponentEditable = el.hasAttribute(editableAttr) || !!dom.find(el, '[' + editableAttr + ']') || !!dom.find(el, '[' + placeholderAttr + ']'),
       componentHasPath = ref && (el.getAttribute(editableAttr) || el.getAttribute(placeholderAttr)),
       walker, path, promises = [];
 
-    if (isComponentEditable) {
+    if (isComponentEditable(el)) {
       walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, {
         acceptNode: function (currentNode) {
           if (!currentNode.hasAttribute(references.referenceAttribute)) {
