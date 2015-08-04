@@ -7,7 +7,8 @@ function ComponentEdit() {
   var dom = require('../services/dom'),
     references = require('../services/references'),
     decorate = require('../services/decorators'),
-    editableAttr = references.editableAttribute;
+    editableAttr = references.editableAttribute,
+    placeholderAttr = references.placeholderAttribute;
 
   /**
    * recursively decorate nodes with click events, placeholders, and other decorators
@@ -17,7 +18,7 @@ function ComponentEdit() {
    * @param {array} promises    hold onto promises so that they can be returned.
    */
   function decorateNodes(node, walker, ref, promises) {
-    var path = node && node.getAttribute(editableAttr); // only assign a path if node exists
+    var path = node && (node.getAttribute(editableAttr) || node.getAttribute(placeholderAttr)); // only assign a path if node exists
 
     if (path) {
       // this element is editable, decorate it!
