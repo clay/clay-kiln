@@ -1,4 +1,5 @@
 var _ = require('lodash'),
+  behaviors = require('./behaviors'),
   dom = require('./dom'),
   references = require('./references'),
   formCreator = require('./form-creator'),
@@ -8,7 +9,7 @@ var _ = require('lodash'),
   groups = require('./groups'),
   inlineSelector = '.editor-inline',
   overlaySelector = '.editor-overlay-background',
-  currentForm = {};
+  currentForm = {}; // used to track if changes have been made.
 
 /**
  * Check if a form is currently open. Only one form can be open at a time.
@@ -17,7 +18,6 @@ var _ = require('lodash'),
 function isFormOpen() {
   return !!currentForm.ref;
 }
-
 
 /**
  * Find the form container.
@@ -28,26 +28,39 @@ function findFormContainer() {
 }
 
 /**
- * set data for a field / group into currentData=
+ * Tests if the field has an affects behavior.
+ * @param {object} field
+ * @returns {boolean}
+ */
+function hasAffects(field) {
+  var props = _.get(field, '_schema.' + references.fieldProperty),
+    bs = props && behaviors.getExpandedBehaviors(props);
+
+  return !!_.find(bs, references.behaviorKey, 'affects');
+}
+
+/**
+ * Saves the value of the field to the currentForm data.
+ * @param {object} field
+ */
+function setCurrentFormFieldValue(field) {
+  var name = _.get(field, '_schema._name'),
+    value = field.hasOwnProperty('value') ? field.value : field;
+
+  currentForm.data[name] = value;
+}
+
+/**
+ * set data for a field / group into currentForm
  * @param {object} data
  */
 function setCurrentData(data) {
-  var schema = data._schema;
+  var fields,
+    isSingleField = !!_.get(data, '_schema.' + references.fieldProperty);
 
-  currentForm.data = {};
-
-  if (schema && schema[references.fieldProperty]) {
-    // this is a single field
-    currentForm.data[schema._name] = edit.removeSchemaFromData(_.cloneDeep(data));
-  } else {
-    // this is a group of fields
-    _.map(data.value, function (field) {
-      var name = _.get(field, '_schema._name'),
-        value = field.hasOwnProperty('value') ? field.value : field;
-
-      currentForm.data[name] = value;
-    });
-  }
+  currentForm.data = {}; // clear form.
+  fields = isSingleField ? [data] : data.value; // ensure fields is an array.
+  _.reject(fields, hasAffects).forEach(setCurrentFormFieldValue); // ignore "affects" fields and set current.
 }
 
 /**
@@ -56,7 +69,7 @@ function setCurrentData(data) {
  * @returns {boolean}
  */
 function dataChanged(data) {
-  return !_.isEqual(data, currentForm.data);
+  return !_.isMatch(data, currentForm.data); // data may have "affects" fields so not _.isEqual.
 }
 
 /**
