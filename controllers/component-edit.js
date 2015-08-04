@@ -11,6 +11,15 @@ function ComponentEdit() {
     placeholderAttr = references.placeholderAttribute;
 
   /**
+   * get a path to decorate
+   * @param {Element} el
+   * @returns {string|undefined}
+   */
+  function getDecoratorPath(el) {
+    return el && (el.getAttribute(editableAttr) || el.getAttribute(placeholderAttr));
+  }
+
+  /**
    * recursively decorate nodes with click events, placeholders, and other decorators
    * @param {Element} node
    * @param {TreeWalker} walker
@@ -18,7 +27,7 @@ function ComponentEdit() {
    * @param {array} promises    hold onto promises so that they can be returned.
    */
   function decorateNodes(node, walker, ref, promises) {
-    var path = node && (node.getAttribute(editableAttr) || node.getAttribute(placeholderAttr)); // only assign a path if node exists
+    var path = getDecoratorPath(node); // only assign a path if node exists
 
     if (path) {
       // this element is editable, decorate it!
@@ -45,7 +54,7 @@ function ComponentEdit() {
    */
   function constructor(el) {
     var ref = el.getAttribute(references.referenceAttribute),
-      componentHasPath = ref && (el.getAttribute(editableAttr) || el.getAttribute(placeholderAttr)),
+      componentHasPath = ref && !!getDecoratorPath(el),
       walker, path, promises = [];
 
     if (isComponentEditable(el)) {
@@ -64,7 +73,7 @@ function ComponentEdit() {
 
       // special case when editable path is in the component's root element.
       if (componentHasPath) {
-        path = el.getAttribute(editableAttr) || el.getAttribute(placeholderAttr);
+        path = getDecoratorPath(el);
         promises.push(decorate(el, ref, path));
       }
     }
