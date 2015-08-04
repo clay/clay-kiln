@@ -83,6 +83,19 @@ describe(dirname, function () {
 
         expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'content'})).to.equal(false);
       });
+
+      it('returns false if el isn\'t editable', function () {
+        var stubData = {
+            _schema: {
+              has: 'text'
+            }
+          },
+          node = document.createElement('div');
+
+        node.setAttribute('data-placeholder', 'content');
+
+        expect(fn(node, {data: stubData, ref: 'fakeRef', path: 'content'})).to.equal(false);
+      });
     });
 
     describe('handler', function () {
