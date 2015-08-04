@@ -38,8 +38,8 @@ function ComponentEdit() {
    */
   function constructor(el) {
     var ref = el.getAttribute(references.referenceAttribute),
-      isComponentEditable = el.hasAttribute(editableAttr) || !!dom.find(el, '[' + editableAttr + ']'),
-      componentHasPath = ref && el.getAttribute(editableAttr),
+      isComponentEditable = el.hasAttribute(editableAttr) || !!dom.find(el, '[' + editableAttr + ']') || !!dom.find(el, '[' + placeholderAttr + ']'),
+      componentHasPath = ref && (el.getAttribute(editableAttr) || el.getAttribute(placeholderAttr)),
       walker, path, promises = [];
 
     if (isComponentEditable) {
@@ -58,7 +58,7 @@ function ComponentEdit() {
 
       // special case when editable path is in the component's root element.
       if (componentHasPath) {
-        path = el.getAttribute(editableAttr);
+        path = el.getAttribute(editableAttr) || el.getAttribute(placeholderAttr);
         promises.push(decorate(el, ref, path));
       }
     }
