@@ -29,6 +29,10 @@ describe('references service', function () {
     expect(references.displayProperty).to.equal('_display');
   });
 
+  it('has placeholder attribute', function () {
+    expect(references.placeholderAttribute).to.equal('data-placeholder');
+  });
+
   it('has placeholder property', function () {
     expect(references.placeholderProperty).to.equal('_placeholder');
   });

@@ -7,7 +7,17 @@ function ComponentEdit() {
   var dom = require('../services/dom'),
     references = require('../services/references'),
     decorate = require('../services/decorators'),
-    editableAttr = references.editableAttribute;
+    editableAttr = references.editableAttribute,
+    placeholderAttr = references.placeholderAttribute;
+
+  /**
+   * get a path to decorate
+   * @param {Element} el
+   * @returns {string|undefined}
+   */
+  function getDecoratorPath(el) {
+    return el && (el.getAttribute(editableAttr) || el.getAttribute(placeholderAttr));
+  }
 
   /**
    * recursively decorate nodes with click events, placeholders, and other decorators
@@ -17,7 +27,7 @@ function ComponentEdit() {
    * @param {array} promises    hold onto promises so that they can be returned.
    */
   function decorateNodes(node, walker, ref, promises) {
-    var path = node && node.getAttribute(editableAttr); // only assign a path if node exists
+    var path = getDecoratorPath(node); // only assign a path if node exists
 
     if (path) {
       // this element is editable, decorate it!
@@ -31,17 +41,28 @@ function ComponentEdit() {
   }
 
   /**
+   * find out if component is editable or contains editable children
+   * @param  {Element}  el component element
+   * @return {Boolean}
+   */
+  function isComponentEditable(el) {
+    return el.hasAttribute(editableAttr) ||
+      el.hasAttribute(placeholderAttr) ||
+      !!dom.find(el, '[' + editableAttr + ']') ||
+      !!dom.find(el, '[' + placeholderAttr + ']');
+  }
+
+  /**
    * @constructs
    * @param {Element} el
    * @returns {Promise}
    */
   function constructor(el) {
     var ref = el.getAttribute(references.referenceAttribute),
-      isComponentEditable = el.hasAttribute(editableAttr) || !!dom.find(el, '[' + editableAttr + ']'),
-      componentHasPath = ref && el.getAttribute(editableAttr),
+      componentHasPath = ref && !!getDecoratorPath(el),
       walker, path, promises = [];
 
-    if (isComponentEditable) {
+    if (isComponentEditable(el)) {
       walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, {
         acceptNode: function (currentNode) {
           if (!currentNode.hasAttribute(references.referenceAttribute)) {
@@ -57,7 +78,7 @@ function ComponentEdit() {
 
       // special case when editable path is in the component's root element.
       if (componentHasPath) {
-        path = el.getAttribute(editableAttr);
+        path = getDecoratorPath(el);
         promises.push(decorate(el, ref, path));
       }
     }

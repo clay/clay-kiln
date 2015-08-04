@@ -2,6 +2,7 @@ var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   forms = require('../services/forms'),
   select = require('../services/select'),
+  references = require('../services/references'),
   lib = require('./focus');
 
 describe(dirname, function () {
@@ -20,7 +21,7 @@ describe(dirname, function () {
     function stubNode() {
       var node = document.createElement('div');
 
-      node.setAttribute('data-editable', 'content');
+      node.setAttribute(references.editableAttribute, 'content');
       return node;
     }
 
@@ -82,6 +83,19 @@ describe(dirname, function () {
         };
 
         expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'content'})).to.equal(false);
+      });
+
+      it('returns false if el isn\'t editable', function () {
+        var stubData = {
+            _schema: {
+              has: 'text'
+            }
+          },
+          node = document.createElement('div');
+
+        node.setAttribute(references.placeholderAttribute, 'content');
+
+        expect(fn(node, {data: stubData, ref: 'fakeRef', path: 'content'})).to.equal(false);
       });
     });
 
