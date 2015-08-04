@@ -1,11 +1,49 @@
-.dragula-drop-area {
-  background: rgba(39, 186, 215, 0.08) !important;
-  transition: background-color 300ms linear;
+/* mirror is the element added while you are dragging. */
+.gu-mirror {
+  margin: 10px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  transition: opacity 0.4s ease-in-out;
+  cursor: move;
+  cursor: grab;
+  position: fixed !important;
+  margin: 0 !important;
+  z-index: 9999 !important;
 }
-.dragula-item {
-  background: rgba(215, 215, 39, 0.17) !important;
-  transition: background-color 300ms linear;
+.gu-hide {
+  display: none !important;
 }
+.gu-unselectable {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+.gu-transit {
+  opacity: 0.2;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+  filter: alpha(opacity=20);
+}
+.gu-mirror {
+  opacity: 0.8;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+  filter: alpha(opacity=80);
+}
+
+/* Custom classes triggered by events (drag, cancel, drop) */
+.dragula-drop-area {}
+/* Widen the drop area. */
+.dragula-drop-area:before {
+  position: absolute;
+  top: 0;
+  left: -30px;
+  width: 30px;
+  content: '';
+  bottom: 0;
+}
+/* The item while it is being dragged. */
+.dragula-item {}
+/* Indicate that the re-ordering has not been saved. */
 .dragula-not-saved {
   background: rgba(215, 39, 39, 0.41) !important;
   transition: background-color 300ms linear;
