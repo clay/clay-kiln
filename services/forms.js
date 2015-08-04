@@ -1,4 +1,5 @@
 var _ = require('lodash'),
+  behaviors = require('./behaviors'),
   dom = require('./dom'),
   references = require('./references'),
   formCreator = require('./form-creator'),
@@ -33,10 +34,9 @@ function findFormContainer() {
  */
 function hasAffects(field) {
   var props = _.get(field, '_schema.' + references.fieldProperty),
-    behaviorKey = references.behaviorKey,
-    affects = 'affects';
+    bs = props && behaviors.getExpandedBehaviors(props);
 
-  return props && (props[behaviorKey] === affects || !!_.find(props, behaviorKey, affects));
+  return !!_.find(bs, references.behaviorKey, 'affects');
 }
 
 /**
