@@ -40,6 +40,11 @@ function ComponentEdit() {
     }
   }
 
+  /**
+   * find out if component is editable or contains editable children
+   * @param  {Element}  el component element
+   * @return {Boolean}
+   */
   function isComponentEditable(el) {
     return el.hasAttribute(editableAttr) ||
       el.hasAttribute(placeholderAttr) ||
