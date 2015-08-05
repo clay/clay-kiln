@@ -10,7 +10,7 @@ var references = require('./services/references'),
 
 // manually add built-in behaviors
 // since browserify's require() uses static analysis
-behaviors.add('affects', require('./behaviors/affects'));
+behaviors.add('component-ref', require('./behaviors/component-ref'));
 behaviors.add('text', require('./behaviors/text'));
 behaviors.add('soft-maxlength', require('./behaviors/soft-maxlength'));
 behaviors.add('radio', require('./behaviors/radio'));
