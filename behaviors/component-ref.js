@@ -1,3 +1,11 @@
+/*
+Component Ref is used to append hidden fields that allow component instances
+to affect other component instances, e.g. article affecting the page title
+
+Component-Ref arguments
+
+selector {string} a query selector that matches the components you want to grab
+ */
 var _ = require('lodash'),
   dom = require('../services/dom'),
   references = require('../services/references');
