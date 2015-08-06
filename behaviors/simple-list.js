@@ -8,7 +8,8 @@ max {number} maximum number of items allowed
 
 var _ = require('lodash'),
   keycode = require('keycode'),
-  dom = require('../services/dom');
+  dom = require('../services/dom'),
+  focus = require('../decorators/focus');
 
 module.exports = function (result, args) {
   var min = args.min,
@@ -149,6 +150,9 @@ module.exports = function (result, args) {
           addEl.value = ''; // remove it from the add-item field
           data.push(newText); // put it into the data
           observer.setValue(data);
+        } else {
+          // close the form
+          focus.unfocus();
         }
       }
 
