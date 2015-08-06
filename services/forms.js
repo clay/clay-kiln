@@ -59,6 +59,7 @@ function setCurrentData(data) {
     isSingleField = !!_.get(data, '_schema.' + references.fieldProperty);
 
   currentForm.data = {}; // clear form.
+  data = _.cloneDeep(data); // clone so that no one else changes it.
   fields = isSingleField ? [data] : data.value; // ensure fields is an array.
   _.reject(fields, hasAffects).forEach(setCurrentFormFieldValue); // ignore "affects" fields and set current.
 }
