@@ -175,7 +175,7 @@ module.exports = function (result, args) {
 
         if (key === 'enter' || key === 'tab') {
           addItem(e);
-        } else if (key === 'delete' || key === 'backspace') {
+        } else if (key === 'delete' || key === 'backspace' || key === 'left') {
           selectLastItem(e);
         }
       }
