@@ -1,4 +1,4 @@
-{%- if state.locals.isEditMode -%}
+{%- if locals.edit -%}
   <section data-component="editor-toolbar" class="editor-toolbar" ref="{{_ref}}">
     <div class="editor-toolbar-inner">
       <button class="close">
