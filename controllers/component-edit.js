@@ -5,6 +5,7 @@
 
 function ComponentEdit() {
   var dom = require('../services/dom'),
+    events = require('../services/events'),
     references = require('../services/references'),
     decorate = require('../services/decorators'),
     editableAttr = references.editableAttribute,
@@ -82,19 +83,24 @@ function ComponentEdit() {
         promises.push(decorate(el, ref, path));
       }
     }
+
+    events.add(el, {
+      'a click': 'killLinks'
+    }, this);
+
     return Promise.all(promises);
   }
 
   constructor.prototype = {
-    events: {
-      'a click': 'killLinks'
-    },
 
     killLinks: function (e) {
       // prevent all links in this component from being clicked
       // allows us to attach click handlers to open things like tags, author, sources (lists of links)
       // users can still right-click + open in new tab on links they want to actually go to
-      dom.preventDefault(e);
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
     }
   };
   return constructor;
