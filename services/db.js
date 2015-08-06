@@ -112,7 +112,10 @@ module.exports = {
   },
 
   getComponentHTMLFromReference: function (ref) {
-    return send(ref + '.html').then(expectHTMLResult(ref));
+    var ext = '.html',
+      siteParam = '?site=press'; // Hard-coding site name until we decide how to handle site in templates.
+
+    return send(ref + ext + siteParam).then(expectHTMLResult(ref));
   },
 
   putToReference: function (ref, data) {
