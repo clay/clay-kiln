@@ -311,7 +311,7 @@ function createPage() {
   return getDataOnly(path).then(function (data) {
     delete data._ref;
     return db.postToReference('/pages', data).then(function (res) {
-      location.href = res[references.referenceProperty] + '.html?edit=true';
+      location.href = res[references.referenceProperty] + '.html?site=press&edit=true';
     }).catch(console.error);
   });
 }
