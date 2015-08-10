@@ -4,7 +4,8 @@ var lib = require('./edit'),
   dom = require('./dom');
 
 describe('edit service', function () {
-  var sandbox;
+  var sandbox,
+    prefix = 'place.com/';
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
@@ -242,8 +243,7 @@ describe('edit service', function () {
   });
 
   describe('getUriDestination', function () {
-    var fn = lib[this.title],
-      prefix = 'place.com/';
+    var fn = lib[this.title];
 
     beforeEach(function () {
       site.set({
@@ -290,6 +290,12 @@ describe('edit service', function () {
   describe('publishPage', function () {
     var fn = lib[this.title];
 
+    beforeEach(function () {
+      site.set({
+        prefix: prefix
+      });
+    });
+
     function expectPublish(uri, pageRef) {
       var data = pageRef,
         putData = {};
@@ -297,13 +303,13 @@ describe('edit service', function () {
       sandbox.stub(dom, 'uri').returns(uri);
       sandbox.stub(db, 'getTextFromReference').returns(Promise.resolve(data));
       sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve(putData));
-      sandbox.mock(db).expects('putToReference').withArgs('/pages/thing@published').returns(Promise.resolve(putData));
+      sandbox.mock(db).expects('putToReference').withArgs(prefix + 'pages/thing@published').returns(Promise.resolve(putData));
 
       return putData;
     }
 
     it('publishes page with version', function () {
-      var data = expectPublish('place.com/thing@thing.html', 'place.com/pages/thing@otherthing');
+      var data = expectPublish(prefix + 'thing@thing.html', prefix + 'pages/thing@otherthing');
 
       return fn().then(function (result) {
         sandbox.verify();
@@ -312,7 +318,7 @@ describe('edit service', function () {
     });
 
     it('publishes page without version', function () {
-      var data = expectPublish('place.com/thing.html', 'place.com/pages/thing');
+      var data = expectPublish(prefix + 'thing.html', prefix + 'pages/thing');
 
       return fn().then(function (result) {
         sandbox.verify();
@@ -321,7 +327,7 @@ describe('edit service', function () {
     });
 
     it('publishes bare page', function () {
-      var data = expectPublish('place.com/pages/thing.html', 'place.com/pages/thing');
+      var data = expectPublish(prefix + 'pages/thing.html', prefix + 'pages/thing');
 
       return fn().then(function (result) {
         sandbox.verify();
