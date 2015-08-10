@@ -1,5 +1,6 @@
 var lib = require('./edit'),
   db = require('./db'),
+  site = require('./site'),
   dom = require('./dom');
 
 describe('edit service', function () {
@@ -241,22 +242,29 @@ describe('edit service', function () {
   });
 
   describe('getUriDestination', function () {
-    var fn = lib[this.title];
+    var fn = lib[this.title],
+      prefix = 'place.com/';
+
+    beforeEach(function () {
+      site.set({
+        prefix: prefix
+      });
+    });
 
     it('gets page from string', function () {
-      var data = '/pages/thing';
+      var data = prefix + 'pages/thing';
 
       sandbox.stub(db, 'getTextFromReference').returns(Promise.resolve(data));
 
-      return fn('place.com/thing/thing').then(function (result) {
+      return fn(prefix + 'thing/thing').then(function (result) {
         expect(result).to.equal(data);
       });
     });
 
     it('gets page from location', function () {
-      var data = '/pages/thing';
+      var data = prefix + 'pages/thing';
 
-      sandbox.stub(dom, 'uri').returns('place.com/thing/thing');
+      sandbox.stub(dom, 'uri').returns(prefix + 'thing/thing');
       sandbox.stub(db, 'getTextFromReference').returns(Promise.resolve(data));
 
       return fn().then(function (result) {
@@ -265,13 +273,13 @@ describe('edit service', function () {
     });
 
     it('gets page from redirect uri', function () {
-      var redirect = '/uris/cGxhY2UuY29tL3RoaW5nL3RoaW5n',
-        data = '/pages/thing',
+      var redirect = prefix + 'uris/cGxhY2UuY29tL3RoaW5nL3RoaW5n',
+        data = prefix + 'pages/thing',
         stub = sandbox.stub(db, 'getTextFromReference');
 
       stub.withArgs(redirect).returns(Promise.resolve(data));
       stub.returns(Promise.resolve(redirect));
-      sandbox.stub(dom, 'uri').returns('place.com/thing/thing');
+      sandbox.stub(dom, 'uri').returns(prefix + 'thing/thing');
 
       return fn().then(function (result) {
         expect(result).to.equal(data);
@@ -295,7 +303,7 @@ describe('edit service', function () {
     }
 
     it('publishes page with version', function () {
-      var data = expectPublish('place.com/thing@thing.html', '/pages/thing@otherthing');
+      var data = expectPublish('place.com/thing@thing.html', 'place.com/pages/thing@otherthing');
 
       return fn().then(function (result) {
         sandbox.verify();
@@ -304,7 +312,7 @@ describe('edit service', function () {
     });
 
     it('publishes page without version', function () {
-      var data = expectPublish('place.com/thing.html', '/pages/thing');
+      var data = expectPublish('place.com/thing.html', 'place.com/pages/thing');
 
       return fn().then(function (result) {
         sandbox.verify();
@@ -313,7 +321,7 @@ describe('edit service', function () {
     });
 
     it('publishes bare page', function () {
-      var data = expectPublish('place.com/pages/thing.html', '/pages/thing');
+      var data = expectPublish('place.com/pages/thing.html', 'place.com/pages/thing');
 
       return fn().then(function (result) {
         sandbox.verify();

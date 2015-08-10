@@ -11,4 +11,11 @@ if (editorEl) {
   data.prefix = data.host + ':' + data.port + data.path;
 }
 
-module.exports = data;
+module.exports.get = function (prop) {
+  return data[prop];
+};
+
+// for testing
+module.exports.set = function (obj) {
+  data = obj;
+};
