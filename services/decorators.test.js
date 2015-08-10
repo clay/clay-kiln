@@ -2,6 +2,7 @@ var _ = require('lodash'),
   dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./decorators'),
+  references = require('./references'),
   edit = require('./edit');
 
 describe(dirname, function () {
@@ -20,7 +21,7 @@ describe(dirname, function () {
     function stubNode() {
       var node = document.createElement('div');
 
-      node.setAttribute('data-editable', 'title');
+      node.setAttribute(references.editableAttribute, 'title');
       return node;
     }
 
