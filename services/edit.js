@@ -2,6 +2,7 @@ var _ = require('lodash'),
   dom = require('./dom'),
   db = require('./db'),
   references = require('./references'),
+  site = require('./site'),
   // store the component data in memory
   refData = {},
   // store the component schemas in memory
@@ -247,7 +248,7 @@ function getUriDestination(location) {
       }
     });
   } else {
-    return getUriDestination('/uris/' + btoa(dom.uri()));
+    return getUriDestination(site.prefix + '/uris/' + btoa(dom.uri()));
   }
 }
 
