@@ -1,5 +1,4 @@
 module.exports = {
-  componentAttribute: 'data-component', // deprecated: indicates element is the container of a component
   editableAttribute: 'data-editable', // indicates el is editable when clicked. value is path to data
   placeholderAttribute: 'data-placeholder', // indicates el should have placeholder, but is NOT editable when clicked
   fieldAttribute: 'data-field', // indicates el is a field in an open form. value is path to data

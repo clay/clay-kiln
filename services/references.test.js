@@ -1,10 +1,6 @@
 var references = require('./references');
 
 describe('references service', function () {
-  it('has component attribute', function () {
-    expect(references.componentAttribute).to.equal('data-component');
-  });
-
   it('has editable attribute', function () {
     expect(references.editableAttribute).to.equal('data-editable');
   });
