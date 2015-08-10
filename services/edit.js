@@ -2,6 +2,7 @@ var _ = require('lodash'),
   dom = require('./dom'),
   db = require('./db'),
   references = require('./references'),
+  site = require('./site'),
   // store the component data in memory
   refData = {},
   // store the component schemas in memory
@@ -240,14 +241,14 @@ function update(ref, data) {
 function getUriDestination(location) {
   if (_.isString(location)) {
     return db.getTextFromReference(location).then(function (result) {
-      if (result.match(/^\/uris\//)) {
-        getUriDestination(result);
+      if (_.contains(result, site.get('prefix') + 'uris/')) {
+        return getUriDestination(result);
       } else {
         return result;
       }
     });
   } else {
-    return getUriDestination('/uris/' + btoa(dom.uri()));
+    return getUriDestination(site.prefix + '/uris/' + btoa(dom.uri()));
   }
 }
 
@@ -256,13 +257,7 @@ function getUriDestination(location) {
  * @returns {string} e.g. localhost.dev.nymag.biz/pages/U7V8okzAAAA=
  */
 function removeExtension(uri) {
-  var splitUri = uri.split('.');
-
-  if (splitUri.length > 1) {
-    return _.initial(uri.split('.')).join('');
-  } else {
-    return uri;
-  }
+  return uri.replace(/\.(html|json)$/i, '');
 }
 
 /**
@@ -287,16 +282,16 @@ function pathOnly(uri) {
  */
 function publishPage() {
   var uri = dom.uri(),
-    barePageIndex = uri.indexOf('/pages/'),
+    barePageIndex = uri.indexOf('pages/'),
     isBarePage = barePageIndex > -1,
-    pageRefPromise = isBarePage ? Promise.resolve(uri.substring(barePageIndex)) : getUriDestination();
+    pageRefPromise = isBarePage ? Promise.resolve(site.get('prefix') + uri.substring(barePageIndex)) : getUriDestination();
 
   return pageRefPromise.then(function (pageReference) {
-    var path = pathOnly(pageReference);
+    var pageUri = pathOnly(pageReference);
 
-    return getDataOnly(path).then(function (data) {
+    return getDataOnly(pageUri).then(function (data) {
       delete data._ref;
-      return db.putToReference(path + '@published', data);
+      return db.putToReference(pageUri + '@published', data);
     });
   });
 }
@@ -306,11 +301,11 @@ function publishPage() {
  * @returns {Promise}
  */
 function createPage() {
-  var path = '/pages/new';
+  var newPageUri = site.get('prefix') + 'pages/new';
 
-  return getDataOnly(path).then(function (data) {
+  return getDataOnly(newPageUri).then(function (data) {
     delete data._ref;
-    return db.postToReference('/pages', data).then(function (res) {
+    return db.postToReference(site.get('prefix') + 'pages', data).then(function (res) {
       location.href = res[references.referenceProperty] + '.html?site=press&edit=true';
     }).catch(console.error);
   });
@@ -323,7 +318,7 @@ function createPage() {
  * @returns {Promise}
  */
 function createComponent(name, data) {
-  var base = '/components/' + name,
+  var base = site.get('prefix') + 'components/' + name,
     instance = base + '/instances';
 
   if (data) {

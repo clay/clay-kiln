@@ -2,12 +2,14 @@
  * Autocomplete arguments
  *
  * api {string} api to point to
+ * list {string} list (in the current site) to point to
  *
  * @module
  */
 
 var dom = require('../services/dom'),
   db = require('../services/db'),
+  site = require('../services/site'),
   cid = require('../services/cid');
 
 /**
@@ -55,9 +57,25 @@ function handleDevErrors(api, existingInput) {
 
 }
 
-module.exports = function (result, args) {
+/**
+ * get api from either the api or list args
+ * @param {object} args
+ * @param {string} [args.api]
+ * @param {string} [args.list]
+ * @returns {string|null}
+ */
+function getApi(args) {
+  if (args.api) {
+    return args.api;
+  } else if (args.list) {
+    return site.get('prefix') + 'lists/' + args.list;
+  } else {
+    return null;
+  }
+}
 
-  var api = args.api,
+module.exports = function (result, args) {
+  var api = getApi(args),
     existingInput = dom.find(result.el, 'input[type="text"], input:not([type])'), // input without type is still text
     datalistId = 'autocomplete-' + cid(),
     datalist;

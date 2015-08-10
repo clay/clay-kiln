@@ -1,12 +1,13 @@
 var fixture = require('../test/fixtures/behavior'),
   autocomplete = require('./autocomplete'),
   db = require('../services/db'),
+  site = require('../services/site'),
   dom = require('../services/dom');
 
 describe('autocomplete behavior', function () {
 
   var sandbox,
-    fakeApi = '/lists/authors',
+    fakeListArg = 'authors',
     fakeList = [
       'Amy Koran',
       'Zena Strother',
@@ -31,8 +32,9 @@ describe('autocomplete behavior', function () {
     fakeInput = document.createElement('input');
 
   beforeEach(function () {
-
     sandbox = sinon.sandbox.create();
+
+    site.set({prefix: 'place.com/'});
 
     // Autocomplete expects an input element, so resets fixture.el and adds input element each time.
     dom.clearChildren(fixture.el);
@@ -54,7 +56,7 @@ describe('autocomplete behavior', function () {
   it('throws error if no input', function () {
     dom.clearChildren(fixture.el); // Remove input that was added by beforeEach.
     function noInput() {
-      return autocomplete(fixture, {api: fakeApi});
+      return autocomplete(fixture, {list: fakeListArg});
     }
     expect(noInput).to.throw(/Autocomplete requires a text input./);
   });
@@ -62,8 +64,8 @@ describe('autocomplete behavior', function () {
   it('assigns an unique id to each datalist', function () {
     var firstId, secondId;
 
-    firstId = autocomplete(fixture, {api: fakeApi}).el.querySelectorAll('datalist')[0].id;
-    secondId = autocomplete(fixture, {api: fakeApi}).el.querySelectorAll('datalist')[1].id;
+    firstId = autocomplete(fixture, {list: fakeListArg}).el.querySelectorAll('datalist')[0].id;
+    secondId = autocomplete(fixture, {list: fakeListArg}).el.querySelectorAll('datalist')[1].id;
 
     expect(firstId).to.not.equal(secondId);
   });
@@ -71,7 +73,7 @@ describe('autocomplete behavior', function () {
   it('gets options from API on focus', function () {
 
     var stubDb = sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve(fakeList)),
-      resultEl = autocomplete(fixture, {api: fakeApi}).el; // Run behavior and get the resulting element.
+      resultEl = autocomplete(fixture, {list: fakeListArg}).el; // Run behavior and get the resulting element.
 
     resultEl.querySelector('input').dispatchEvent(new Event('focus')); // Trigger focus event.
     expect(stubDb.called).to.equal(true);
