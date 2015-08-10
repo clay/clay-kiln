@@ -57,6 +57,10 @@ describe('references service', function () {
     it('gets name from html ref', function () {
       expect(references.getComponentNameFromReference('/components/base.html')).to.equal('base');
     });
+
+    it('gets name from full uri', function () {
+      expect(references.getComponentNameFromReference('nymag.com/press/components/base/instances/foobarbaz@published')).to.equal('base');
+    });
   });
 
   describe('getInstanceIdFromReference()', function () {
