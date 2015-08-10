@@ -282,7 +282,7 @@ function pathOnly(uri) {
  */
 function publishPage() {
   var uri = dom.uri(),
-    barePageIndex = uri.indexOf('pages/'),
+    barePageIndex = uri.indexOf('/pages/'),
     isBarePage = barePageIndex > -1,
     pageRefPromise = isBarePage ? Promise.resolve(site.get('prefix') + uri.substring(barePageIndex)) : getUriDestination();
 
@@ -301,11 +301,11 @@ function publishPage() {
  * @returns {Promise}
  */
 function createPage() {
-  var newPageUri = site.get('prefix') + 'pages/new';
+  var newPageUri = site.get('prefix') + '/pages/new';
 
   return getDataOnly(newPageUri).then(function (data) {
     delete data._ref;
-    return db.postToReference(site.get('prefix') + 'pages', data).then(function (res) {
+    return db.postToReference(site.get('prefix') + '/pages', data).then(function (res) {
       location.href = res[references.referenceProperty] + '.html?site=press&edit=true';
     }).catch(console.error);
   });
@@ -318,7 +318,7 @@ function createPage() {
  * @returns {Promise}
  */
 function createComponent(name, data) {
-  var base = site.get('prefix') + 'components/' + name,
+  var base = site.get('prefix') + '/components/' + name,
     instance = base + '/instances';
 
   if (data) {
@@ -379,6 +379,7 @@ function addToParentList(opts) {
       // Add to end of list.
       parentData[opts.parentField].push(item);
     }
+    parentData = removeSchemaFromData(parentData);
     return db.putToReference(opts.parentRef, parentData)
       .then(db.getComponentHTMLFromReference.bind(null, opts.ref));
   });
