@@ -1,6 +1,7 @@
 var _ = require('lodash'),
   dom = require('./dom'),
-  references = require('./references');
+  references = require('./references'),
+  site = require('./site');
 
 function send(options) {
   return new Promise(function (resolve, reject) {
@@ -99,7 +100,7 @@ function expectHTMLResult(ref) {
 
 module.exports = {
   getSchemaFromReference: function (ref) {
-    return send('/components/' + references.getComponentNameFromReference(ref) + '/schema')
+    return send(site.prefix + '/components/' + references.getComponentNameFromReference(ref) + '/schema')
       .then(expectJSONResult);
   },
 
