@@ -306,7 +306,7 @@ function createPage() {
   return getDataOnly(newPageUri).then(function (data) {
     delete data._ref;
     return db.postToReference(site.get('prefix') + '/pages', data).then(function (res) {
-      location.href = res[references.referenceProperty] + '.html?site=press&edit=true';
+      location.href = res[references.referenceProperty] + '.html?edit=true';
     }).catch(console.error);
   });
 }
