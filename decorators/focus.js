@@ -36,7 +36,7 @@ function focus(el, options, e) {
 
         // focus on the first field in the form we just created
         if (firstField) {
-          firstField.focus();
+          firstField.focus(); // todo: make sure this actually focuses on an input/wysiwyg, e.g. simple-list
         }
 
         return firstField;
