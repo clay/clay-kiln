@@ -68,7 +68,7 @@ function getApi(args) {
   if (args.api) {
     return args.api;
   } else if (args.list) {
-    return site.get('prefix') + 'lists/' + args.list;
+    return site.get('prefix') + '/lists/' + args.list;
   } else {
     return null;
   }

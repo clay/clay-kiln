@@ -5,7 +5,7 @@ var lib = require('./edit'),
 
 describe('edit service', function () {
   var sandbox,
-    prefix = 'place.com/';
+    prefix = 'place.com';
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
@@ -252,19 +252,19 @@ describe('edit service', function () {
     });
 
     it('gets page from string', function () {
-      var data = prefix + 'pages/thing';
+      var data = prefix + '/pages/thing';
 
       sandbox.stub(db, 'getTextFromReference').returns(Promise.resolve(data));
 
-      return fn(prefix + 'thing/thing').then(function (result) {
+      return fn(prefix + '/thing/thing').then(function (result) {
         expect(result).to.equal(data);
       });
     });
 
     it('gets page from location', function () {
-      var data = prefix + 'pages/thing';
+      var data = prefix + '/pages/thing';
 
-      sandbox.stub(dom, 'uri').returns(prefix + 'thing/thing');
+      sandbox.stub(dom, 'uri').returns(prefix + '/thing/thing');
       sandbox.stub(db, 'getTextFromReference').returns(Promise.resolve(data));
 
       return fn().then(function (result) {
@@ -273,13 +273,13 @@ describe('edit service', function () {
     });
 
     it('gets page from redirect uri', function () {
-      var redirect = prefix + 'uris/cGxhY2UuY29tL3RoaW5nL3RoaW5n',
-        data = prefix + 'pages/thing',
+      var redirect = prefix + '/uris/cGxhY2UuY29tL3RoaW5nL3RoaW5n',
+        data = prefix + '/pages/thing',
         stub = sandbox.stub(db, 'getTextFromReference');
 
       stub.withArgs(redirect).returns(Promise.resolve(data));
       stub.returns(Promise.resolve(redirect));
-      sandbox.stub(dom, 'uri').returns(prefix + 'thing/thing');
+      sandbox.stub(dom, 'uri').returns(prefix + '/thing/thing');
 
       return fn().then(function (result) {
         expect(result).to.equal(data);
@@ -303,13 +303,13 @@ describe('edit service', function () {
       sandbox.stub(dom, 'uri').returns(uri);
       sandbox.stub(db, 'getTextFromReference').returns(Promise.resolve(data));
       sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve(putData));
-      sandbox.mock(db).expects('putToReference').withArgs(prefix + 'pages/thing@published').returns(Promise.resolve(putData));
+      sandbox.mock(db).expects('putToReference').withArgs(prefix + '/pages/thing@published').returns(Promise.resolve(putData));
 
       return putData;
     }
 
     it('publishes page with version', function () {
-      var data = expectPublish(prefix + 'thing@thing.html', prefix + 'pages/thing@otherthing');
+      var data = expectPublish(prefix + '/thing@thing.html', prefix + '/pages/thing@otherthing');
 
       return fn().then(function (result) {
         sandbox.verify();
@@ -318,7 +318,7 @@ describe('edit service', function () {
     });
 
     it('publishes page without version', function () {
-      var data = expectPublish(prefix + 'thing.html', prefix + 'pages/thing');
+      var data = expectPublish(prefix + '/thing.html', prefix + '/pages/thing');
 
       return fn().then(function (result) {
         sandbox.verify();
@@ -327,7 +327,7 @@ describe('edit service', function () {
     });
 
     it('publishes bare page', function () {
-      var data = expectPublish(prefix + 'pages/thing.html', prefix + 'pages/thing');
+      var data = expectPublish(prefix + '/pages/thing.html', prefix + '/pages/thing');
 
       return fn().then(function (result) {
         sandbox.verify();
@@ -398,7 +398,7 @@ describe('edit service', function () {
 
     it('creates a component with data', function () {
       return fn('fakeName', {fake: 'data'}).then(function () {
-        expect(db.postToReference.calledWith(prefix + 'components/fakeName/instances', {fake: 'data'})).to.equal(true);
+        expect(db.postToReference.calledWith(prefix + '/components/fakeName/instances', {fake: 'data'})).to.equal(true);
       });
     });
 
@@ -407,7 +407,7 @@ describe('edit service', function () {
 
       sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve(bootstrapJson));
       return fn('fakeName').then(function () {
-        expect(db.postToReference .calledWith(prefix + 'components/fakeName/instances', bootstrapJson)).to.equal(true);
+        expect(db.postToReference .calledWith(prefix + '/components/fakeName/instances', bootstrapJson)).to.equal(true);
       });
     });
   });

@@ -241,7 +241,7 @@ function update(ref, data) {
 function getUriDestination(location) {
   if (_.isString(location)) {
     return db.getTextFromReference(location).then(function (result) {
-      if (_.contains(result, site.get('prefix') + 'uris/')) {
+      if (_.contains(result, site.get('prefix') + '/uris/')) {
         return getUriDestination(result);
       } else {
         return result;
