@@ -1,6 +1,7 @@
 'use strict'; // eslint-disable-line
 // note: use strict above is applied to the whole browserified doc
-var references = require('./services/references'),
+var nodeUrl = require('url'),
+  references = require('./services/references'),
   behaviors = require('./services/behaviors'),
   decorators = require('./services/decorators'),
   dom = require('./services/dom'),
@@ -35,10 +36,14 @@ decorators.add(require('./decorators/component-list'));
 
 // kick off controller loading when DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
-  render.addComponentsHandlers(document);
-  // because eslint complains if we don't use the new thing we've created.  We will add to this later.
-  pageToolbar = new EditorToolbar(dom.find('[' + references.componentAttribute + '="editor-toolbar"]'));
-  console.log('toolbar initialized: ', pageToolbar);
+  var parsed = nodeUrl.parse(location.href, true, true);
+
+  if (parsed.query.edit) {
+    render.addComponentsHandlers(document);
+    // because eslint complains if we don't use the new thing we've created.  We will add to this later.
+    pageToolbar = new EditorToolbar(dom.find('[' + references.referenceAttribute + '="*/editor-toolbar/*"]'));
+    console.log('toolbar initialized: ', pageToolbar);
+  }
 });
 
 // expose behavior adding
