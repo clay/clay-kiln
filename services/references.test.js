@@ -1,16 +1,12 @@
 var references = require('./references');
 
 describe('references service', function () {
-  it('has component attribute', function () {
-    expect(references.componentAttribute).to.equal('data-component');
-  });
-
   it('has editable attribute', function () {
     expect(references.editableAttribute).to.equal('data-editable');
   });
 
   it('has reference attribute', function () {
-    expect(references.referenceAttribute).to.equal('data-ref');
+    expect(references.referenceAttribute).to.equal('data-uri');
   });
 
   it('has reference property', function () {
@@ -60,6 +56,10 @@ describe('references service', function () {
 
     it('gets name from html ref', function () {
       expect(references.getComponentNameFromReference('/components/base.html')).to.equal('base');
+    });
+
+    it('gets name from full uri', function () {
+      expect(references.getComponentNameFromReference('nymag.com/press/components/base/instances/foobarbaz@published')).to.equal('base');
     });
   });
 

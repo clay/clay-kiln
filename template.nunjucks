@@ -7,7 +7,7 @@
       </button>
       <button class="settings">
         <span class="mobile-button-text">Settings</span>
-        <span class="non-mobile-button-text">Story Settings</span>
+        <span class="non-mobile-button-text">Article Settings</span>
       </button>
       <button class="new">
         <span class="mobile-button-text">＋</span>

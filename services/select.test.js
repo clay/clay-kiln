@@ -21,7 +21,7 @@ describe(dirname, function () {
     function stubEditableElement() {
       var node = document.createElement('div');
 
-      node.setAttribute('data-editable', 'content');
+      node.setAttribute(references.editableAttribute, 'content');
       return node;
     }
 
