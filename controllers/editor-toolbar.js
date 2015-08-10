@@ -50,7 +50,7 @@ function removeQuerystring() {
 EditorToolbar = function (el) {
 
   // grab the first component in the primary area
-  this.main = dom.find('.main .primary [' + references.componentAttribute + ']');
+  this.main = dom.find('.main .primary [' + references.referenceAttribute + ']');
   this.el = el;
 
   events.add(el, {
