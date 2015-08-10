@@ -9,6 +9,7 @@ if (editorEl) {
   data.path = editorEl.getAttribute('data-site-path');
   data.port = location.port;
   data.prefix = data.host + ':' + data.port + data.path;
+  data.protocol = location.protocol;
 }
 
 module.exports.get = function (prop) {
