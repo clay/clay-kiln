@@ -87,7 +87,7 @@ EditorToolbar.prototype = {
    * On edit settings button
    */
   onEditSettings: function () {
-    var primaryComponent = dom.find('.main .primary [' + references.referenceAttribute + ']'),
+    var primaryComponent = this.main,
       ref = primaryComponent.getAttribute(references.referenceAttribute);
 
     forms.open(ref, document.body);
