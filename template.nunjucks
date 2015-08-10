@@ -1,5 +1,5 @@
 {%- if locals.edit -%}
-  <section class="editor-toolbar" data-uri="{{ _ref or _self }}">
+  <section class="editor-toolbar" data-uri="{{ _ref or _self }}" data-site-host="{{ site.host }}" data-site-path="{{ site.path}}">
     <div class="editor-toolbar-inner">
       <button class="close">
         <span class="mobile-button-text">╳</span>
