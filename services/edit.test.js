@@ -398,7 +398,7 @@ describe('edit service', function () {
 
     it('creates a component with data', function () {
       return fn('fakeName', {fake: 'data'}).then(function () {
-        expect(db.postToReference.calledWith('/components/fakeName/instances', {fake: 'data'})).to.equal(true);
+        expect(db.postToReference.calledWith(prefix + 'components/fakeName/instances', {fake: 'data'})).to.equal(true);
       });
     });
 
@@ -407,7 +407,7 @@ describe('edit service', function () {
 
       sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve(bootstrapJson));
       return fn('fakeName').then(function () {
-        expect(db.postToReference .calledWith('/components/fakeName/instances', bootstrapJson)).to.equal(true);
+        expect(db.postToReference .calledWith(prefix + 'components/fakeName/instances', bootstrapJson)).to.equal(true);
       });
     });
   });
