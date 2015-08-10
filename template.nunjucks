@@ -1,5 +1,5 @@
 {%- if locals.edit -%}
-  <section data-component="editor-toolbar" class="editor-toolbar" ref="{{_ref}}">
+  <section class="editor-toolbar" data-uri="{{ _ref or _self }}">
     <div class="editor-toolbar-inner">
       <button class="close">
         <span class="mobile-button-text">╳</span>
@@ -21,10 +21,4 @@
       </button>
     </div>
   </section>
-
-  {# compiled styles #}
-  <link rel="stylesheet" href="/css/byline-editor.css">
-
-  {# compiled scripts #}
-  <script src="/js/byline-editor.js"></script>
 {% endif %}
