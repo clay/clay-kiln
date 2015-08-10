@@ -6,7 +6,7 @@ describe('references service', function () {
   });
 
   it('has reference attribute', function () {
-    expect(references.referenceAttribute).to.equal('data-ref');
+    expect(references.referenceAttribute).to.equal('data-uri');
   });
 
   it('has reference property', function () {
