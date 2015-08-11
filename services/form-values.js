@@ -39,6 +39,11 @@ function getValues(data, el) {
     viewData = _.cloneDeep(binding.observer.value());
     // remove any behavior metadata from the bindings
     viewData = removeBehaviorMeta(viewData);
+    // if the data is a string, trim it!
+    if (_.isString(viewData)) {
+      viewData = viewData.replace(/(\u00a0|&nbsp;)/g, ' '); // remove &nbsp;
+      viewData = viewData.trim();
+    }
     data[name] = viewData;
   }
 
