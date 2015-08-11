@@ -3,8 +3,12 @@ module.exports = function () {
     dom = require('../services/dom'),
     focus = require('../decorators/focus');
 
+  function isTooltip(el) {
+    return el.classList.contains('medium-editor-toolbar-anchor-preview-inner') || el.classList.contains('medium-editor-action');
+  }
+
   function wasTooltipClicked(e) {
-    return _.get(e, 'target.classList') && e.target.classList.contains('medium-editor-action');
+    return _.get(e, 'target.classList') && isTooltip(e.target);
   }
 
   /**
