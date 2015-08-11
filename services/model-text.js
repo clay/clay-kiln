@@ -1,6 +1,7 @@
 var tagTypes, blockTypes, sameAs,
   _ = require('lodash'),
   dom = require('./dom'),
+  he = require('he'),
   nodeFilter = NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT;
 
 /**
@@ -262,7 +263,7 @@ function fromElement(el) {
 
     switch (type) {
       case Node.TEXT_NODE:
-        model.text += node.nodeValue;
+        model.text += he.decode(node.nodeValue);
         break;
       default:
         name = getNodeName(node);
