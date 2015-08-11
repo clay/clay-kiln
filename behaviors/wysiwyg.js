@@ -314,7 +314,7 @@ function splitComponent(el, caret, observer) {
 function handleComponentDeletion(el, e) {
   var caretPos = select(el);
 
-  if (caretPos.start === 0) {
+  if (caretPos.start === 0 && caretPos.end === 0) {
     e.preventDefault(); // stop page reload
     return removeComponent(el);
   }
