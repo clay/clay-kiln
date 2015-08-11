@@ -96,6 +96,7 @@ module.exports = function (result, args) {
     db.getComponentJSONFromReference(api)
       .then(formatOptions)
       .then(function (optionsEl) {
+        dom.clearChildren(datalist);
         datalist.appendChild(optionsEl);
       });
   });
