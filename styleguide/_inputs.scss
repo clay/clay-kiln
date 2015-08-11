@@ -9,12 +9,11 @@
   box-shadow: inset 2px 1px 6px 0 $shadow-30;
   cursor: text;
   display: inline-block;
-  line-height: 24px;
   margin: 0;
   margin-top: 5px;
   min-height: 20px;
   outline: none;
-  padding: 6px 10px;
+  padding: 10px;
   position: relative;
   white-space: pre; // prevents &nbsp;, which messes with character counts
   width: 100%;
