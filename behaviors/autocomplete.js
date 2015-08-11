@@ -10,7 +10,8 @@
 var dom = require('../services/dom'),
   db = require('../services/db'),
   site = require('../services/site'),
-  cid = require('../services/cid');
+  cid = require('../services/cid'),
+  getInput = require('../services/get-input');
 
 /**
  * Converts array of strings to option elements.
@@ -76,7 +77,7 @@ function getApi(args) {
 
 module.exports = function (result, args) {
   var api = getApi(args),
-    existingInput = dom.find(result.el, 'input[type="text"], input:not([type])'), // input without type is still text
+    existingInput = getInput(result.el),
     datalistId = 'autocomplete-' + cid(),
     datalist;
 
