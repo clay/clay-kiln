@@ -363,7 +363,7 @@ function removeFromParentList(opts) {
  * @returns {Promise} Promise resolves to new component Element.
  */
 function addToParentList(opts) {
-  return getDataOnly(opts.parentRef).then(function (parentData) {
+  return db.getComponentJSONFromReference(opts.parentRef).then(function (parentData) {
     var prevIndex,
       prevItem = {},
       item = {},
