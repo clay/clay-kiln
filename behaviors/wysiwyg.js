@@ -17,6 +17,7 @@ var _ = require('lodash'),
   references = require('../services/references'),
   edit = require('../services/edit'),
   model = require('../services/model-text'),
+  getInput = require('../services/get-input'),
   refAttr = references.referenceAttribute;
 
 /**
@@ -361,7 +362,7 @@ module.exports = function (result, args) {
     buttons = args.buttons,
     styled = args.styled,
     enableKeyboardExtras = args.enableKeyboardExtras,
-    textInput = dom.find(result.el, 'input') || dom.find(result.el, 'textarea'),
+    textInput = getInput(result.el),
     field = dom.create(`<p class="wysiwyg-input${ isStyled(styled) }" data-field="${result.bindings.name}" rv-wysiwyg="data.value"></p>`);
 
   // if more than 5 buttons, put the rest on the second tier
