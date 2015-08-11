@@ -388,9 +388,15 @@ module.exports = function (result, args) {
       el.innerHTML = data;
 
       // apply custom styling to buttons
-      italicBtn.innerHTML = '<em>I</em>';
-      strikeBtn.innerHTML = '<s>M</s>';
-      linkBtn.innerHTML = `<img src="/media/components/byline-editor/link-icon.svg" />`;
+      if (italicBtn) {
+        italicBtn.innerHTML = '<em>I</em>';
+      }
+      if (strikeBtn) {
+        strikeBtn.innerHTML = '<s>M</s>';
+      }
+      if (linkBtn) {
+        linkBtn.innerHTML = `<img src="/media/components/byline-editor/link-icon.svg" />`;
+      }
 
       // hide the tier2 buttons when closing the toolbar
       editor.subscribe('hideToolbar', function () {

@@ -225,6 +225,10 @@ $wysiwyg-dropshadow: 0 0 6px $shadow-50;
 .medium-editor-action-bold b {
   padding-left: .2rem;
 }
+.medium-editor-action-italic i,
+.medium-editor-action-italic em {
+  font-weight: normal !important;
+}
 .medium-editor-action-strikethrough s {
   padding-left: .1rem;
 }
