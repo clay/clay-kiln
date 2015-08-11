@@ -296,6 +296,10 @@ function publishPage() {
   });
 }
 
+function getNewPageUrl(ref) {
+  return site.addProtocol(site.addPort(ref + '.html?edit=true'));
+}
+
 /**
  * create a new page, cloning the current page
  * @returns {Promise}
@@ -306,7 +310,7 @@ function createPage() {
   return getDataOnly(newPageUri).then(function (data) {
     delete data._ref;
     return db.postToReference(site.get('prefix') + '/pages', data).then(function (res) {
-      location.href = res[references.referenceProperty] + '.html?edit=true';
+      location.href = getNewPageUrl(res[references.referenceProperty]);
     }).catch(console.error);
   });
 }
