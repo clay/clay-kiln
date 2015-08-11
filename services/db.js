@@ -4,43 +4,12 @@ var _ = require('lodash'),
   site = require('./site');
 
 /**
- * add protocol to uris that need it
- * @param {string} uri
- * @returns {string}
- */
-function addProtocol(uri) {
-  var hasProtocol = uri.indexOf(site.get('protocol')) === 0;
-
-  if (!hasProtocol) {
-    return site.get('protocol') + '//' + uri;
-  } else {
-    return uri;
-  }
-}
-
-/**
- * add port to uris that need it
- * note: if the current port is 80, it doesn't need it
- * @param {string} uri
- * @returns {string}
- */
-function addPort(uri) {
-  var hasPort = site.get('port') !== '80' && uri.indexOf(site.get('port')) !== -1;
-
-  if (!hasPort) {
-    return uri.replace(site.get('host'), site.get('host') + ':' + site.get('port'));
-  } else {
-    return uri;
-  }
-}
-
-/**
  * add port and protocol to uris
  * @param  {string} uri
  * @return {string} uri with port and protocol added, if applicable
  */
 function createUrl(uri) {
-  return addProtocol(addPort(uri));
+  return site.addProtocol(site.addPort(uri));
 }
 
 function send(options) {
