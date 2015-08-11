@@ -99,7 +99,6 @@ function ComponentEdit() {
       // users can still right-click + open in new tab on links they want to actually go to
       if (e) {
         e.preventDefault();
-        e.stopPropagation();
       }
     }
   };
