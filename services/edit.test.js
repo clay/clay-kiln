@@ -372,13 +372,13 @@ describe('edit service', function () {
 
     it('adds the item to the list data', function () {
       return fn({ref: 'newRef', prevRef: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
-        expect(db.putToReference.calledWith('d', {a: [{_ref: 'b'}, {_ref: 'newRef'}, {_ref: 'c'}], _ref: 'd'})).to.equal(true);
+        expect(db.putToReference.calledWith('d', {a: [{_ref: 'b'}, {_ref: 'newRef'}, {_ref: 'c'}]})).to.equal(true);
       });
     });
 
     it('adds the item to the end of the list data', function () {
       return fn({ref: 'newRef', prevRef: null, parentField: 'a', parentRef: 'd'}).then(function () {
-        expect(db.putToReference.calledWith('d', {a: [{_ref: 'b'}, {_ref: 'c'}, {_ref: 'newRef'}], _ref: 'd'})).to.equal(true);
+        expect(db.putToReference.calledWith('d', {a: [{_ref: 'b'}, {_ref: 'c'}, {_ref: 'newRef'}]})).to.equal(true);
       });
     });
 

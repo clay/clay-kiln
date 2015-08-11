@@ -130,7 +130,7 @@ function getParent(el) {
  * @returns {Promise} with {_ref: previous ref} or undefined
  */
 function getPrev(current, parent) {
-  return edit.getDataOnly(parent.ref).then(function (parentData) {
+  return db.getComponentJSONFromReference(parent.ref).then(function (parentData) {
     var index = _.findIndex(parentData[parent.field], { _ref: current.ref }),
       before = _.take(parentData[parent.field], index),
       prev = _.findLast(before, function (component) {
@@ -212,7 +212,7 @@ function focusPreviousComponent(parent, prev, textLength) {
 
     return focus.focus(newEl, { ref: prev.ref, path: prev.field }).then(function (prevField) {
       // set caret right before the new text we added
-      select(prevField, { start: prevField.textContent.length - (textLength + 1) });
+      select(prevField, { start: prevField.textContent.length - textLength });
     });
   };
 }
@@ -225,7 +225,7 @@ function focusPreviousComponent(parent, prev, textLength) {
 function removeComponent(el) {
   var current = getCurrent(el),
     parent = getParent(current.component),
-    textLength = el.innerText.length;
+    textLength = el.textContent.length;
 
   // find the previous component, if any
   return getPrev(current, parent).then(function (prev) {
@@ -314,7 +314,7 @@ function splitComponent(el, caret, observer) {
 function handleComponentDeletion(el, e) {
   var caretPos = select(el);
 
-  if (caretPos.start === 0) {
+  if (caretPos.start === 0 && caretPos.end === 0) {
     e.preventDefault(); // stop page reload
     return removeComponent(el);
   }
