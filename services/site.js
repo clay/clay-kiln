@@ -27,7 +27,7 @@ function addProtocol(uri) {
  * @returns {string}
  */
 function addPort(uri) {
-  var hasPort = data.port !== '80' && uri.indexOf(data.port) !== -1;
+  var hasPort = data.port === '80' || uri.indexOf(':' + data.port) !== -1;
 
   if (!hasPort) {
     return uri.replace(data.host, data.host + ':' + data.port);

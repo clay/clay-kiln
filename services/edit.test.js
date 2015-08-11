@@ -343,6 +343,8 @@ describe('edit service', function () {
       sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({a: [{_ref: 'b'}, {_ref: 'c'}]}));
       sandbox.stub(db, 'putToReference').returns(Promise.resolve({}));
       sandbox.stub(dom, 'removeElement');
+      sandbox.stub(site, 'addProtocol').returns('place.com/b');
+      sandbox.stub(site, 'addPort').returns('place.com/b');
     });
 
     it('removes the item from the data', function () {
