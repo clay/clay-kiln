@@ -212,7 +212,7 @@ function focusPreviousComponent(parent, prev, textLength) {
 
     return focus.focus(newEl, { ref: prev.ref, path: prev.field }).then(function (prevField) {
       // set caret right before the new text we added
-      select(prevField, { start: prevField.textContent.length - (textLength + 1) });
+      select(prevField, { start: prevField.textContent.length - textLength });
     });
   };
 }
