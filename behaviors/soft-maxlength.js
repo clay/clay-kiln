@@ -47,6 +47,13 @@ function setStyles(remaining, span, input) {
   }
 }
 
+function cleanValue(value) {
+  var clean = striptags(value);
+
+  clean = clean.replace(/(\u00a0|&nbsp;|&#160;)/ig, ' '); // remove &nbsp;
+  return clean;
+}
+
 module.exports = function (result, args) {
   var el = result.el,
     bindings = result.bindings,
@@ -58,7 +65,7 @@ module.exports = function (result, args) {
 
   bindings.max = args.value;
   rivets.formatters.charsRemaining = function (max, value) {
-    var length = striptags(value).length,
+    var length = cleanValue(value).length,
       remaining = max - length,
       input = getInput(el); // needs to happen after wysiwyg is instantiated
 
