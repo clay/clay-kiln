@@ -5,7 +5,47 @@ value {number} maximum number of characters allowed
  */
 
 var striptags = require('striptags'),
-  dom = require('../services/dom');
+  dom = require('../services/dom'),
+  getInput = require('../services/get-input');
+
+/**
+ * toggle classes on elements
+ * @param {boolean} isTooLong
+ * @param {Element} span
+ * @param {Element} input
+ */
+function toggleClass(isTooLong, span, input) {
+  if (isTooLong) {
+    span.classList.add('too-long');
+    input.classList.add('input-too-long');
+  } else {
+    span.classList.remove('too-long');
+    input.classList.remove('input-too-long');
+  }
+}
+
+/**
+ * set styles depending on the remaining length
+ * @param {number} remaining
+ * @param {Element} span of the soft-maxlength
+ * @param {Element} input
+ * @returns {string} to display in the span
+ */
+function setStyles(remaining, span, input) {
+  if (remaining > 0) {
+    toggleClass(false, span, input);
+    return 'Remaining: ' + remaining;
+  } else if (remaining === 0) {
+    toggleClass(false, span, input);
+    return 'At the character limit';
+  } else if (remaining === -1) {
+    toggleClass(true, span, input);
+    return -remaining + ' character over the limit';
+  } else {
+    toggleClass(true, span, input);
+    return -remaining + ' characters over the limit';
+  }
+}
 
 module.exports = function (result, args) {
   var el = result.el,
@@ -19,21 +59,10 @@ module.exports = function (result, args) {
   bindings.max = args.value;
   rivets.formatters.charsRemaining = function (max, value) {
     var length = striptags(value).length,
-      remaining = max - length;
+      remaining = max - length,
+      input = getInput(el); // needs to happen after wysiwyg is instantiated
 
-    if (remaining > 0) {
-      span.classList.remove('too-long');
-      return 'Remaining: ' + remaining;
-    } else if (remaining === 0) {
-      span.classList.remove('too-long');
-      return 'At the character limit';
-    } else if (remaining === -1) {
-      span.classList.add('too-long');
-      return -remaining + ' character over the limit';
-    } else {
-      span.classList.add('too-long');
-      return -remaining + ' characters over the limit';
-    }
+    return setStyles(remaining, span, input);
   };
 
   el.appendChild(span);
