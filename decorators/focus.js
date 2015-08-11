@@ -3,6 +3,7 @@ var _ = require('lodash'),
   forms = require('../services/forms'),
   select = require('../services/select'),
   dom = require('../services/dom'),
+  getInput = require('../services/get-input'),
   currentFocus; // eslint-disable-line
 
 function hasCurrentFocus() {
@@ -32,11 +33,19 @@ function focus(el, options, e) {
       select.select(el);
       currentFocus = el;
       return forms.open(options.ref, el, options.path, e).then(function () {
-        var firstField = dom.find('[' + references.fieldAttribute + ']');
+        var firstField = dom.find('[' + references.fieldAttribute + ']'),
+          firstFieldInput;
 
         // focus on the first field in the form we just created
-        if (firstField) {
-          firstField.focus(); // todo: make sure this actually focuses on an input/wysiwyg, e.g. simple-list
+        if (firstField && getInput.isInput(firstField)) {
+          // first field is itself an input
+          firstField.focus();
+        } else if (firstField) {
+          firstFieldInput = getInput(firstField);
+          // first field is a list or something, that contains an input as a child
+          if (firstFieldInput) {
+            firstFieldInput.focus();
+          }
         }
 
         return firstField;
