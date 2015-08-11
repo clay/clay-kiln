@@ -379,10 +379,24 @@ module.exports = function (result, args) {
       // this is called when the binder initializes
       var observer = this.observer,
         data = observer.value() || '', // don't print 'undefined' if there's no data
-        editor = createEditor(field, buttons);
+        editor = createEditor(field, buttons),
+        italicBtn = dom.find('.medium-editor-action-italic'),
+        strikeBtn = dom.find('.medium-editor-action-strikethrough'),
+        linkBtn = dom.find('.medium-editor-action-anchor');
 
       // put the initial data into the editor
       el.innerHTML = data;
+
+      // apply custom styling to buttons
+      if (italicBtn) {
+        italicBtn.innerHTML = '<em>I</em>';
+      }
+      if (strikeBtn) {
+        strikeBtn.innerHTML = '<s>M</s>';
+      }
+      if (linkBtn) {
+        linkBtn.innerHTML = `<img src="/media/components/byline-editor/link-icon.svg" />`;
+      }
 
       // hide the tier2 buttons when closing the toolbar
       editor.subscribe('hideToolbar', function () {

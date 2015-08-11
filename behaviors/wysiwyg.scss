@@ -31,7 +31,7 @@ $wysiwyg-color: $black;
 $wysiwyg-bgcolor: #fff;
 $wysiwyg-selected-bgcolor: $blue-25;
 $wysiwyg-button-size: 32px;
-$wysiwyg-border-color: $black-25;
+$wysiwyg-border-color: $grey;
 $wysiwyg-border-radius: 4px;
 $wysiwyg-boxshadow: 0 0 6px 0 $shadow-50;
 $wysiwyg-dropshadow: 0 0 6px $shadow-50;
@@ -102,6 +102,10 @@ $wysiwyg-dropshadow: 0 0 6px $shadow-50;
     background: transparent;
     color: $wysiwyg-color;
     height: $wysiwyg-button-size;
+  }
+  .medium-editor-toolbar-input:placeholder {
+    color: $black-50;
+    font-family: Helvetica, Arial, sans-serif;
   }
 
   a {
@@ -212,4 +216,23 @@ $wysiwyg-dropshadow: 0 0 6px $shadow-50;
 }
 .medium-toolbar-arrow-under.show-none:after {
   animation: medium-editor-animate-arrow 200ms backwards linear;
+}
+
+// toolbar buttons
+.medium-editor-toolbar li button {
+  font-size: 1.8rem;
+}
+.medium-editor-action-bold b {
+  padding-left: .2rem;
+}
+.medium-editor-action-italic i,
+.medium-editor-action-italic em {
+  font-weight: normal !important;
+}
+.medium-editor-action-strikethrough s {
+  padding-left: .1rem;
+}
+.medium-editor-action-anchor img {
+  margin: .7rem;
+  width: 1.8rem;
 }
