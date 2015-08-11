@@ -74,7 +74,7 @@ function createEditor(field, buttons) {
         [/<\/p>/ig, '']
       ]
     },
-    autoLink: true, // create links automatically when urls are entered
+    autoLink: false, // create links automatically when urls are entered
     imageDragging: false, // disallow dragging inline images
     targetBlank: true,
     disableReturn: true,
