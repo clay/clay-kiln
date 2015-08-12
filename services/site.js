@@ -1,6 +1,6 @@
 var dom = require('./dom'),
   references = require('./references'),
-  editorEl = dom.find('[' + references.referenceAttribute + '*="/components/byline-editor"]'),
+  editorEl = dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"]'),
   data = {};
 
 /**
