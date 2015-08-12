@@ -1,16 +1,16 @@
-# kiln
+# clay-kiln
 
-[![Coverage Status](https://coveralls.io/repos/nymag/kiln/badge.svg?t=cuxfVU)](https://coveralls.io/r/nymag/kiln)
+[![Coverage Status](https://coveralls.io/repos/nymag/clay-kiln/badge.svg?t=cuxfVU)](https://coveralls.io/r/nymag/clay-kiln)
 
 Editing tools for Clay
 
 ## Folder Structure Overview
 
-* [Behaviors](https://github.com/nymag/kiln/tree/master/behaviors) - contains `js` and `scss` that are composed when opening forms
-* [Controllers](https://github.com/nymag/kiln/tree/master/controllers) - `dollar-slice` controllers that are instantiated for components, forms, and overlays. _These are slowly being phased out as their functionality is moved into generic services._
-* [Services](https://github.com/nymag/kiln/tree/master/services) - `js` services, including editing, database access, and form creation
-* [Decorators](https://github.com/nymag/kiln/tree/master/decorators) - `js` decorators that run on editable elements (in components) when the page is loaded
-* [Styleguide](https://github.com/nymag/kiln/tree/master/styleguide) - `scss` styles that are reused amongst behaviors, forms, etc
+* [Behaviors](https://github.com/nymag/clay-kiln/tree/master/behaviors) - contains `js` and `scss` that are composed when opening forms
+* [Controllers](https://github.com/nymag/clay-kiln/tree/master/controllers) - `dollar-slice` controllers that are instantiated for components, forms, and overlays. _These are slowly being phased out as their functionality is moved into generic services._
+* [Services](https://github.com/nymag/clay-kiln/tree/master/services) - `js` services, including editing, database access, and form creation
+* [Decorators](https://github.com/nymag/clay-kiln/tree/master/decorators) - `js` decorators that run on editable elements (in components) when the page is loaded
+* [Styleguide](https://github.com/nymag/clay-kiln/tree/master/styleguide) - `scss` styles that are reused amongst behaviors, forms, etc
 
 ## Client.js
 

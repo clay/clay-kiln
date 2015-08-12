@@ -5,7 +5,7 @@ var nodeUrl = require('url'),
   behaviors = require('./services/behaviors'),
   decorators = require('./services/decorators'),
   dom = require('./services/dom'),
-  EditorToolbar = require('./controllers/editor-toolbar'),
+  EditorToolbar = require('./controllers/kiln-toolbar'),
   render = require('./services/render'),
   pageToolbar;
 
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (parsed.query.edit) {
     render.addComponentsHandlers(document);
     // because eslint complains if we don't use the new thing we've created.  We will add to this later.
-    pageToolbar = new EditorToolbar(dom.find('[' + references.referenceAttribute + '*="/components/byline-editor"]'));
+    pageToolbar = new EditorToolbar(dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"]'));
     console.log('toolbar initialized: ', pageToolbar);
   }
 });

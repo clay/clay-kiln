@@ -1,7 +1,7 @@
 {
-  "name": "@nymdev/byline-editor",
+  "name": "@nymdev/clay-kiln",
   "version": "0.8.2",
-  "description": "Editor tools for Byline",
+  "description": "Editor tools for Clay",
   "browser": "client.js",
   "style": [
     "styleguide/*.scss",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nymag/byline-editor.git"
+    "url": "https://github.com/nymag/clay-kiln.git"
   },
   "keywords": [
     "byline",
@@ -25,9 +25,9 @@
   "author": "New York Media",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nymag/byline-editor/issues"
+    "url": "https://github.com/nymag/clay-kiln/issues"
   },
-  "homepage": "https://github.com/nymag/byline-editor",
+  "homepage": "https://github.com/nymag/clay-kiln",
   "dependencies": {
     "dollar-slice": "^2.1.0",
     "domify": "^1.3.3",
