@@ -1,6 +1,6 @@
 {%- if locals.edit -%}
-  <section class="editor-toolbar" data-uri="{{ _ref or _self }}" data-site-host="{{ site.host }}" data-site-path="{{ site.path}}">
-    <div class="editor-toolbar-inner">
+  <section class="kiln-toolbar" data-uri="{{ _ref or _self }}" data-site-host="{{ site.host }}" data-site-path="{{ site.path}}">
+    <div class="kiln-toolbar-inner">
       <button class="close">
         <span class="mobile-button-text">╳</span>
         <span class="non-mobile-button-text">Close</span>

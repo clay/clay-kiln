@@ -3,7 +3,7 @@
 @import 'buttons';
 @import 'layers';
 
-.editor-toolbar {
+.kiln-toolbar {
   @include toolbar-layer();
 
   background-color: #fff;
@@ -37,7 +37,7 @@ body {
   }
 }
 
-.editor-toolbar-inner {
+.kiln-toolbar-inner {
   align-items: center;
   display: flex;
   left: 0;
@@ -49,7 +49,7 @@ body {
   height: 100%;
 }
 
-.editor-toolbar-inner > button:not(.publish) {
+.kiln-toolbar-inner > button:not(.publish) {
   @include button-small();
   @include button-secondary-2();
 
@@ -68,12 +68,12 @@ body {
 }
 
 // Status of saving controlled by class on body.
-.editor-toolbar-inner > .status:before {
+.kiln-toolbar-inner > .status:before {
   @include body-copy();
   color: $blue-75;
   content: 'Saved.';
 }
-.editing .editor-toolbar-inner > .status:before {
+.editing .kiln-toolbar-inner > .status:before {
   content: 'Saving...';
 }
 

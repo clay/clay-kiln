@@ -1,7 +1,7 @@
 @import 'colors';
 @import 'typography';
 
-.editor-placeholder {
+.kiln-placeholder {
   background-color: $light-grey;
   border: 2px dashed $black-25;
   padding: 10px;
@@ -11,6 +11,6 @@
   width: 100%;
 }
 
-.editor-placeholder .placeholder-label {
+.kiln-placeholder .placeholder-label {
   @include body-copy();
 }
