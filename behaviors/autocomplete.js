@@ -93,7 +93,7 @@ module.exports = function (result, args) {
 
   // Todo: once lists become large, this will need to be optimized; perhaps using the 'input' event.
   existingInput.addEventListener('focus', function () {
-    db.getComponentJSONFromReference(api)
+    db.get(api)
       .then(formatOptions)
       .then(function (optionsEl) {
         dom.clearChildren(datalist);

@@ -130,7 +130,7 @@ function getParent(el) {
  * @returns {Promise} with {_ref: previous ref} or undefined
  */
 function getPrev(current, parent) {
-  return db.getComponentJSONFromReference(parent.ref).then(function (parentData) {
+  return db.get(parent.ref).then(function (parentData) {
     var index = _.findIndex(parentData[parent.field], { _ref: current.ref }),
       before = _.take(parentData[parent.field], index),
       prev = _.findLast(before, function (component) {
@@ -167,7 +167,7 @@ function getFieldContents(el) {
  */
 function appendToPrev(html, prev) {
 // note: get fresh data from the server
-  return db.getComponentJSONFromReference(prev.ref).then(function (prevData) {
+  return db.get(prev.ref).then(function (prevData) {
     var prevFieldData = _.get(prevData, prev.field),
       throwawayDiv = document.createElement('div'),
       textmodel, fragment, cleanedString;

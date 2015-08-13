@@ -33,6 +33,7 @@ describe('autocomplete behavior', function () {
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
+    sandbox.stub(db);
 
     site.set({prefix: 'place.com/'});
 
@@ -71,13 +72,12 @@ describe('autocomplete behavior', function () {
   });
 
   it('gets options from API on focus', function () {
+    var resultEl = autocomplete(fixture, {list: fakeListArg}).el; // Run behavior and get the resulting element.
 
-    var stubDb = sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve(fakeList)),
-      resultEl = autocomplete(fixture, {list: fakeListArg}).el; // Run behavior and get the resulting element.
+    db.get.returns(Promise.resolve(fakeList));
 
     resultEl.querySelector('input').dispatchEvent(new Event('focus')); // Trigger focus event.
-    expect(stubDb.called).to.equal(true);
-
+    expect(db.get.called).to.equal(true);
   });
 
   it('formats values into option elements', function () {

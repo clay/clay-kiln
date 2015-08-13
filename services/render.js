@@ -76,7 +76,7 @@ function addComponentsHandlers(el) {
  * @returns {Promise}
  */
 function reloadComponent(ref) {
-  return db.getComponentHTMLFromReference(ref)
+  return db.getHTML(ref)
     .then(function (el) {
       var currentEls = dom.findAll('[' + references.referenceAttribute + '="' + ref + '"]');
 

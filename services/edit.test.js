@@ -9,6 +9,9 @@ describe('edit service', function () {
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
+    sandbox.stub(db);
+    sandbox.stub(dom);
+    sandbox.stub(site);
     lib.setDataCache({});
     lib.setSchemaCache({});
   });
@@ -21,24 +24,24 @@ describe('edit service', function () {
     var fn = lib[this.title];
 
     it('returns data with schema', function () {
-      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({some: 'data'}));
-      sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({some: 'schema'}));
+      db.get.returns(Promise.resolve({some: 'data'}));
+      db.getSchema.returns(Promise.resolve({some: 'schema'}));
       return fn('foo').then(function (data) {
         expect(data).to.include.keys('_schema');
       });
     });
 
     it('returns data with self-reference', function () {
-      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({some: 'data'}));
-      sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({some: 'schema'}));
+      db.get.returns(Promise.resolve({some: 'data'}));
+      db.getSchema.returns(Promise.resolve({some: 'schema'}));
       return fn('foo').then(function (data) {
         expect(data).to.include.keys('_ref');
       });
     });
 
     it('gets deep data with deep schema', function () {
-      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({some: {more: 'things'}}));
-      sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({some: {more: {_things: 'to know'}}}));
+      db.get.returns(Promise.resolve({some: {more: 'things'}}));
+      db.getSchema.returns(Promise.resolve({some: {more: {_things: 'to know'}}}));
       return fn('foo').then(function (data) {
         return expect(data.some.more._schema).to.deep.equal({_things: 'to know'});
       });
@@ -49,16 +52,16 @@ describe('edit service', function () {
     var fn = lib[this.title];
 
     it('does not have schema', function () {
-      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({foo: 'bar'}));
-      sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({foo: 'bar'}));
+      db.get.returns(Promise.resolve({foo: 'bar'}));
+      db.getSchema.returns(Promise.resolve({foo: 'bar'}));
       return fn('foo').then(function (data) {
         expect(data).to.not.include.keys('_schema');
       });
     });
 
     it('returns self-reference', function () {
-      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({foo: 'bar'}));
-      sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({foo: 'bar'}));
+      db.get.returns(Promise.resolve({foo: 'bar'}));
+      db.getSchema.returns(Promise.resolve({foo: 'bar'}));
       return fn('foo').then(function (data) {
         expect(data).to.include.keys('_ref');
       });
@@ -69,8 +72,8 @@ describe('edit service', function () {
     var fn = lib[this.title];
 
     it('gets schema', function () {
-      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({foo: 'bar'}));
-      sandbox.stub(db, 'getSchemaFromReference').returns(Promise.resolve({foo: 'bar'}));
+      db.get.returns(Promise.resolve({foo: 'bar'}));
+      db.getSchema.returns(Promise.resolve({foo: 'bar'}));
       return fn('foo').then(function (data) {
         expect(data).to.deep.equal({foo: 'bar'});
       });
@@ -254,7 +257,8 @@ describe('edit service', function () {
     it('gets page from string', function () {
       var data = prefix + '/pages/thing';
 
-      sandbox.stub(db, 'getTextFromReference').returns(Promise.resolve(data));
+      db.getText.returns(Promise.resolve(data));
+      dom.uri.throws();
 
       return fn(prefix + '/thing/thing').then(function (result) {
         expect(result).to.equal(data);
@@ -264,8 +268,8 @@ describe('edit service', function () {
     it('gets page from location', function () {
       var data = prefix + '/pages/thing';
 
-      sandbox.stub(dom, 'uri').returns(prefix + '/thing/thing');
-      sandbox.stub(db, 'getTextFromReference').returns(Promise.resolve(data));
+      db.getText.returns(Promise.resolve(data));
+      dom.uri.returns(prefix + '/thing/thing');
 
       return fn().then(function (result) {
         expect(result).to.equal(data);
@@ -274,12 +278,11 @@ describe('edit service', function () {
 
     it('gets page from redirect uri', function () {
       var redirect = prefix + '/uris/cGxhY2UuY29tL3RoaW5nL3RoaW5n',
-        data = prefix + '/pages/thing',
-        stub = sandbox.stub(db, 'getTextFromReference');
+        data = prefix + '/pages/thing';
 
-      stub.withArgs(redirect).returns(Promise.resolve(data));
-      stub.returns(Promise.resolve(redirect));
-      sandbox.stub(dom, 'uri').returns(prefix + '/thing/thing');
+      db.getText.withArgs(redirect).returns(Promise.resolve(data));
+      db.getText.returns(Promise.resolve(redirect));
+      dom.uri.returns(prefix + '/thing/thing');
 
       return fn().then(function (result) {
         expect(result).to.equal(data);
@@ -297,40 +300,37 @@ describe('edit service', function () {
     });
 
     function expectPublish(uri, pageRef) {
-      var data = pageRef,
+      var data = prefix + pageRef,
         putData = {};
 
-      sandbox.stub(dom, 'uri').returns(uri);
-      sandbox.stub(db, 'getTextFromReference').returns(Promise.resolve(data));
-      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve(putData));
-      sandbox.mock(db).expects('putToReference').withArgs(prefix + '/pages/thing@published').returns(Promise.resolve(putData));
+      dom.uri.returns(prefix + uri);
+      db.getText.returns(Promise.resolve(data));
+      db.get.returns(Promise.resolve(putData));
+      db.save.withArgs(prefix + '/pages/thing@published').returns(Promise.resolve(putData));
 
       return putData;
     }
 
     it('publishes page with version', function () {
-      var data = expectPublish(prefix + '/thing@thing.html', prefix + '/pages/thing@otherthing');
+      var data = expectPublish('/thing@thing.html', '/pages/thing@otherthing');
 
       return fn().then(function (result) {
-        sandbox.verify();
         expect(result).to.equal(data);
       });
     });
 
     it('publishes page without version', function () {
-      var data = expectPublish(prefix + '/thing.html', prefix + '/pages/thing');
+      var data = expectPublish('/thing.html', '/pages/thing');
 
       return fn().then(function (result) {
-        sandbox.verify();
         expect(result).to.equal(data);
       });
     });
 
     it('publishes bare page', function () {
-      var data = expectPublish(prefix + '/pages/thing.html', prefix + '/pages/thing');
+      var data = expectPublish('/pages/thing.html', '/pages/thing');
 
       return fn().then(function (result) {
-        sandbox.verify();
         expect(result).to.equal(data);
       });
     });
@@ -340,16 +340,16 @@ describe('edit service', function () {
     var fn = lib[this.title];
 
     beforeEach(function () {
-      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({a: [{_ref: 'b'}, {_ref: 'c'}]}));
-      sandbox.stub(db, 'putToReference').returns(Promise.resolve({}));
-      sandbox.stub(dom, 'removeElement');
-      sandbox.stub(site, 'addProtocol').returns('place.com/b');
-      sandbox.stub(site, 'addPort').returns('place.com/b');
+      db.get.returns(Promise.resolve({a: [{_ref: 'b'}, {_ref: 'c'}]}));
+      db.save.returns(Promise.resolve({}));
+      db.getSchema.returns(Promise.resolve({}));
+      site.addProtocol.returns('place.com/b');
+      site.addPort.returns('place.com/b');
     });
 
     it('removes the item from the data', function () {
       return fn({el: {}, ref: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
-        expect(db.putToReference.calledWith('d', {a: [{_ref: 'c'}]})).to.equal(true);
+        expect(db.save.calledWith('d', {a: [{_ref: 'c'}]})).to.equal(true);
       });
     });
 
@@ -366,21 +366,21 @@ describe('edit service', function () {
     var fn = lib[this.title];
 
     beforeEach(function () {
-      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve({a: [{_ref: 'b'}, {_ref: 'c'}]}));
-      sandbox.stub(db, 'putToReference').returns(Promise.resolve({}));
-      sandbox.stub(db, 'getComponentHTMLFromReference').returns(document.createElement('div'));
-      sandbox.stub(dom, 'removeElement');
+      db.get.returns(Promise.resolve({a: [{_ref: 'b'}, {_ref: 'c'}]}));
+      db.save.returns(Promise.resolve({}));
+      db.getSchema.returns(Promise.resolve({}));
+      db.getHTML.returns(document.createElement('div'));
     });
 
     it('adds the item to the list data', function () {
       return fn({ref: 'newRef', prevRef: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
-        expect(db.putToReference.calledWith('d', {a: [{_ref: 'b'}, {_ref: 'newRef'}, {_ref: 'c'}]})).to.equal(true);
+        expect(db.save.calledWith('d', {a: [{_ref: 'b'}, {_ref: 'newRef'}, {_ref: 'c'}]})).to.equal(true);
       });
     });
 
     it('adds the item to the end of the list data', function () {
       return fn({ref: 'newRef', prevRef: null, parentField: 'a', parentRef: 'd'}).then(function () {
-        expect(db.putToReference.calledWith('d', {a: [{_ref: 'b'}, {_ref: 'c'}, {_ref: 'newRef'}]})).to.equal(true);
+        expect(db.save.calledWith('d', {a: [{_ref: 'b'}, {_ref: 'c'}, {_ref: 'newRef'}]})).to.equal(true);
       });
     });
 
@@ -395,21 +395,22 @@ describe('edit service', function () {
     var fn = lib[this.title];
 
     beforeEach(function () {
-      sandbox.stub(db, 'postToReference').returns(Promise.resolve({}));
+      site.get.withArgs('prefix').returns(prefix);
+      db.create.returns(Promise.resolve({}));
     });
 
     it('creates a component with data', function () {
       return fn('fakeName', {fake: 'data'}).then(function () {
-        expect(db.postToReference.calledWith(prefix + '/components/fakeName/instances', {fake: 'data'})).to.equal(true);
+        expect(db.create.calledWith(prefix + '/components/fakeName/instances', {fake: 'data'})).to.equal(true);
       });
     });
 
     it('creates a component without data', function () {
       var bootstrapJson = {a: 1};
 
-      sandbox.stub(db, 'getComponentJSONFromReference').returns(Promise.resolve(bootstrapJson));
+      db.get.returns(Promise.resolve(bootstrapJson));
       return fn('fakeName').then(function () {
-        expect(db.postToReference .calledWith(prefix + '/components/fakeName/instances', bootstrapJson)).to.equal(true);
+        expect(db.create .calledWith(prefix + '/components/fakeName/instances', bootstrapJson)).to.equal(true);
       });
     });
   });
