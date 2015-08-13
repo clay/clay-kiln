@@ -48,6 +48,7 @@ function normalizePath(path) {
 if (editorEl) {
   data.host = editorEl.getAttribute('data-site-host');
   data.path = normalizePath(editorEl.getAttribute('data-site-path'));
+  data.assetPath = editorEl.getAttribute('data-site-assetpath');
   data.port = location.port;
   data.prefix = data.host + ':' + data.port + data.path;
   data.protocol = location.protocol;

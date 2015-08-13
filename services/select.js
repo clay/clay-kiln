@@ -7,6 +7,7 @@ var references = require('./references'),
   focus = require('../decorators/focus'),
   forms = require('./forms'),
   groups = require('./groups'),
+  site = require('./site'),
   currentSelected;
 
 /**
@@ -192,7 +193,7 @@ function addParentLabel(componentBar, parentEl) {
  */
 function addDragOption(componentBar) {
   // `drag` class is applied to both `span` and `img` to simplify dragula logic.
-  var el = dom.create(`<span class="drag"><img src="/media/components/clay-kiln/component-bar-drag.svg" alt="Drag" class="drag"></span>`);
+  var el = dom.create(`<span class="drag"><img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-drag.svg" alt="Drag" class="drag"></span>`);
 
   componentBar.appendChild(el);
 }
@@ -203,7 +204,7 @@ function addDragOption(componentBar) {
  * @param {object} opts           Options required to remove component from parent list.
  */
 function addDeleteOption(componentBar, opts) {
-  var option = dom.create(`<span class="delete"><img src="/media/components/clay-kiln/component-bar-delete.svg" alt="Delete"></span>`);
+  var option = dom.create(`<span class="delete"><img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-delete.svg" alt="Delete"></span>`);
 
   option.addEventListener('click', function () {
     return edit.removeFromParentList(opts)
