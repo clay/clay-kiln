@@ -1,7 +1,7 @@
 var lib = require('./edit'),
-  db = require('./db'),
-  site = require('./site'),
-  dom = require('./dom');
+  db = require('./../db'),
+  site = require('./../site'),
+  dom = require('./../dom');
 
 describe('edit service', function () {
   var sandbox,
