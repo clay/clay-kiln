@@ -144,7 +144,7 @@ function addSettingsOption(componentBar, data, ref) {
     hasSettings = groups.getSettingsFields(data).length > 0;
 
   if (hasSettings) {
-    el = dom.create(`<span class="settings"><img src="/media/components/clay-kiln/component-bar-settings.svg" alt="Settings"></span>`);
+    el = dom.create(`<span class="settings"><img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-settings.svg" alt="Settings"></span>`);
     el.addEventListener('click', function (e) {
       e.stopPropagation();
       // Open the settings overlay.
