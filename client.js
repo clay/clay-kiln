@@ -6,8 +6,7 @@ var nodeUrl = require('url'),
   decorators = require('./services/decorators'),
   dom = require('./services/dom'),
   EditorToolbar = require('./controllers/kiln-toolbar'),
-  render = require('./services/render'),
-  pageToolbar;
+  render = require('./services/render');
 
 // manually add built-in behaviors
 // since browserify's require() uses static analysis
