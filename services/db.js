@@ -46,7 +46,7 @@ function createUrl(uri) {
 function addJsonHeader(obj) {
   _.assign(obj, {
     headers: {
-    'Content-Type': 'application/json; charset=UTF-8'
+      'Content-Type': 'application/json; charset=UTF-8'
     }
   });
 

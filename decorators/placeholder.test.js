@@ -211,13 +211,13 @@ describe(dirname, function () {
 
       it('adds placeholder', function () {
         var stubData = {
-          value: '',
-          _schema: {
-            _has: 'text',
-            _placeholder: true
-          }
-        },
-        newNode = fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'});
+            value: '',
+            _schema: {
+              _has: 'text',
+              _placeholder: true
+            }
+          },
+          newNode = fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'});
 
         expect(newNode.querySelector('.kiln-placeholder').style.minHeight).to.equal('100px');
         expect(newNode.querySelector('span.placeholder-label').textContent).to.equal('Title');

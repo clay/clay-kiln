@@ -38,7 +38,7 @@ describe(dirname, function () {
         var result;
 
         addTestBehaviors();
-        result = fn({_schema: {_name: 'name', _has: [{ fn: 'testBehavior'}]}});
+        result = fn({_schema: {_name: 'name', _has: [{fn: 'testBehavior'}]}});
         expect(result.firstElementChild.outerHTML).to.equal(singleElement);
       });
 
@@ -46,7 +46,7 @@ describe(dirname, function () {
         var result;
 
         addTestBehaviors();
-        result = fn({_schema: {_name: 'name', _has: [{ fn: 'testBehavior'}, { fn: 'testBehavior' }]}});
+        result = fn({_schema: {_name: 'name', _has: [{fn: 'testBehavior'}, {fn: 'testBehavior'}]}});
         expect(result.firstElementChild.outerHTML).to.equal(singleElement);
         expect(result.firstElementChild.nextElementSibling.outerHTML).to.equal(singleElement);
       });
@@ -63,9 +63,9 @@ describe(dirname, function () {
       });
 
       it('gets a behavior defined as an object', function () {
-        expect(fn({ fn: 'foo', baz: 'qux' })).to.eql([{
+        expect(fn({fn: 'foo', baz: 'qux'})).to.eql([{
           fn: 'foo',
-          args: { baz: 'qux' }
+          args: {baz: 'qux'}
         }]);
       });
 
@@ -85,12 +85,13 @@ describe(dirname, function () {
         }, {
           fn: 'bar',
           baz: 'qux'
-        }])).to.eql([{
+        }]))
+          .to.eql([{
             fn: 'foo',
             args: {}
           }, {
             fn: 'bar',
-            args: { baz: 'qux' }
+            args: {baz: 'qux'}
           }]);
       });
 
@@ -98,12 +99,13 @@ describe(dirname, function () {
         expect(fn(['foo', {
           fn: 'bar',
           baz: 'qux'
-        }])).to.eql([{
+        }]))
+          .to.eql([{
             fn: 'foo',
             args: {}
           }, {
             fn: 'bar',
-            args: { baz: 'qux' }
+            args: {baz: 'qux'}
           }]);
       });
     });
