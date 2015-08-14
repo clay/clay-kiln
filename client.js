@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
     render.addComponentsHandlers(document);
     // because eslint complains if we don't use the new thing we've created.  We will add to this later.
     pageToolbar = new EditorToolbar(dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"]'));
-    console.log('toolbar initialized: ', pageToolbar);
   }
 });
 
