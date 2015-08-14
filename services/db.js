@@ -108,6 +108,14 @@ function expectTextResult(target) {
   }
 }
 
+function getJSON(responseText) {
+  if (responseText.length) {
+    return JSON.parse(responseText);
+  } else {
+    return {};
+  }
+}
+
 /**
  * Translate the response into what we expect
  * @param {Element} target
@@ -117,7 +125,7 @@ function expectJSONResult(target) {
   var statusCodeGroup = target.status.toString()[0];
 
   if (statusCodeGroup === '2') {
-    return JSON.parse(target.responseText);
+    return getJSON(target.responseText);
   } else if (statusCodeGroup === '4' || statusCodeGroup === '5') {
     throw new Error(target.status);
   } else {

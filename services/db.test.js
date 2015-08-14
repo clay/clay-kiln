@@ -111,6 +111,14 @@ describe('db service', function () {
       });
     });
 
+    it('accepts empty data', function () {
+      respond('');
+
+      return fn('foo').then(function (data) {
+        expect(data).to.deep.equal({});
+      });
+    });
+
     it('throws on bad data', function (done) {
       var data = 'jkfdlsa';
 
