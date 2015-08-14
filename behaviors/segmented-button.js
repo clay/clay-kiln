@@ -5,11 +5,12 @@ options {array} which buttons to have.
   each is an object with [icon] {string}, [text] {string}, and value {string}
  */
 
-var dom = require('../services/dom');
+var dom = require('../services/dom'),
+  site = require('../services/site');
 
 function getLabel(id, option) {
   if (option.icon) {
-    return `<label for="${id}"><img src="${ option.icon }" alt="${ option.text || option.value }" /></label>`;
+    return `<label for="${id}"><img src="${site.get('assetPath') + option.icon }" alt="${ option.text || option.value }" /></label>`;
   } else {
     return `<label for="${id}">${ option.text || option.value }</label>`;
   }
