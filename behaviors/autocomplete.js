@@ -16,7 +16,7 @@ var _ = require('lodash'),
   textProp = 'text';
 
 function flattenText(items) {
-  var hasTextProp = _.isString(_.pluck(_.find(items, textProp), textProp));
+  var hasTextProp = _.isString(_.first(_.pluck(items, textProp)));
 
   return hasTextProp ? _.pluck(items, textProp) : items;
 }
