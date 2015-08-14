@@ -1,4 +1,5 @@
-var dom = require('./dom'),
+var path = require('path'),
+  dom = require('./dom'),
   references = require('./references'),
   editorEl = dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"]'),
   data = {};
@@ -6,7 +7,6 @@ var dom = require('./dom'),
 /**
  * add protocol to uris that need it
  * @param {string} uri
- * @param {object} site
  * @returns {string}
  */
 function addProtocol(uri) {
@@ -36,9 +36,14 @@ function addPort(uri) {
   }
 }
 
-function normalizePath(path) {
-  if (path.length > 1) {
-    return path;
+/**
+ *
+ * @param {string} str
+ * @returns {*}
+ */
+function normalizePath(str) {
+  if (str.length > 1) {
+    return str;
   } else {
     return ''; // because routes start with slashes, and we want to avoid foo.com//route
   }
@@ -50,7 +55,7 @@ if (editorEl) {
   data.path = normalizePath(editorEl.getAttribute('data-site-path'));
   data.assetPath = editorEl.getAttribute('data-site-assetpath');
   data.port = location.port;
-  data.prefix = data.host + ':' + data.port + data.path;
+  data.prefix = path.join(data.host, data.path);
   data.protocol = location.protocol;
 }
 

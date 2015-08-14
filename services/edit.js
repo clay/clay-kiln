@@ -7,6 +7,8 @@ var _ = require('lodash'),
   refData = {},
   // store the component schemas in memory
   refSchema = {},
+  pagesRoute = '/pages/',
+  urisRoute = '/uris/',
   keywords = ['_groups'];
 
 // todo: figure out multi-user edit, since this won't pull in changes correctly if
@@ -45,7 +47,7 @@ function getDataOnly(ref) {
     // clone because other people are modifying data, and we don't want to change the cache.
     return Promise.resolve(_.cloneDeep(refData[ref]));
   } else {
-    return db.getComponentJSONFromReference(ref)
+    return db.get(ref)
       .then(function (data) {
         // be nice, remember where this data is from
         data[references.referenceProperty] = ref;
@@ -64,7 +66,7 @@ function getSchema(ref) {
   if (refSchema[ref]) {
     return Promise.resolve(refSchema[ref]);
   } else {
-    return db.getSchemaFromReference(ref)
+    return db.getSchema(ref)
       .then(function (schema) {
         refSchema[ref] = schema;
         return schema;
@@ -227,7 +229,7 @@ function update(ref, data) {
           delete data._ref;
           // Clear cache for this ref.
           delete refData[ref];
-          return db.putToReference(ref, data);
+          return db.save(ref, data);
         });
       }
     });
@@ -236,19 +238,22 @@ function update(ref, data) {
 /**
  * Get page reference from current location
  * @param {string} [location]
- * @returns {Promise.string}
+ * @returns {Promise}
  */
 function getUriDestination(location) {
+  var prefix;
+
   if (_.isString(location)) {
-    return db.getTextFromReference(location).then(function (result) {
-      if (_.contains(result, site.get('prefix') + '/uris/')) {
-        return getUriDestination(result);
-      } else {
-        return result;
+    return db.getText(location).then(function (result) {
+      if (_.contains(result, urisRoute)) {
+        result = getUriDestination(result);
       }
+
+      return result;
     });
   } else {
-    return getUriDestination(site.prefix + '/uris/' + btoa(dom.uri()));
+    prefix = site.get('prefix');
+    return getUriDestination(prefix + urisRoute + btoa(dom.uri()));
   }
 }
 
@@ -282,22 +287,27 @@ function pathOnly(uri) {
  */
 function publishPage() {
   var uri = dom.uri(),
-    barePageIndex = uri.indexOf('/pages/'),
-    isBarePage = barePageIndex > -1,
-    pageRefPromise = isBarePage ? Promise.resolve(site.get('prefix') + uri.substring(barePageIndex)) : getUriDestination();
+    isBarePage = uri.indexOf(pagesRoute) > -1,
+    pageRefPromise = isBarePage ? Promise.resolve(uri) : getUriDestination();
 
   return pageRefPromise.then(function (pageReference) {
     var pageUri = pathOnly(pageReference);
 
     return getDataOnly(pageUri).then(function (data) {
       delete data._ref;
-      return db.putToReference(pageUri + '@published', data);
+      return db.save(pageUri + '@published', data);
     });
   });
 }
 
-function getNewPageUrl(ref) {
-  return site.addProtocol(site.addPort(ref + '.html?edit=true'));
+/**
+ * Get a url for the new page that was just created, including protocol and port
+ *
+ * @param {string} uri
+ * @returns {string}
+ */
+function getNewPageUrl(uri) {
+  return site.addProtocol(site.addPort(uri + '.html?edit=true'));
 }
 
 /**
@@ -305,13 +315,17 @@ function getNewPageUrl(ref) {
  * @returns {Promise}
  */
 function createPage() {
-  var newPageUri = site.get('prefix') + '/pages/new';
+  var prefix = site.get('prefix'),
+    newPageUri = prefix + pagesRoute + 'new',
+    refProp = references.referenceProperty;
 
   return getDataOnly(newPageUri).then(function (data) {
-    delete data._ref;
-    return db.postToReference(site.get('prefix') + '/pages', data).then(function (res) {
-      location.href = getNewPageUrl(res[references.referenceProperty]);
-    }).catch(console.error);
+    delete data[refProp];
+    return db.create(prefix + pagesRoute, data).then(function (res) {
+      location.href = getNewPageUrl(res[refProp]);
+    });
+  }).catch(function (error) {
+    console.log('CreatePage:', error.stack);
   });
 }
 
@@ -326,11 +340,11 @@ function createComponent(name, data) {
     instance = base + '/instances';
 
   if (data) {
-    return db.postToReference(instance, data);
+    return db.create(instance, data);
   } else {
-    return db.getComponentJSONFromReference(base) // create component with base JSON from bootstrap.
+    return db.get(base) // create component with base JSON from bootstrap.
       .then(function (baseJson) {
-        return db.postToReference(instance, baseJson);
+        return db.create(instance, baseJson);
       });
   }
 }
@@ -345,7 +359,7 @@ function createComponent(name, data) {
  * @returns {Promise}
  */
 function removeFromParentList(opts) {
-  return db.getComponentJSONFromReference(opts.parentRef).then(function (parentData) {
+  return db.get(opts.parentRef).then(function (parentData) {
     var index,
       val = {};
 
@@ -353,7 +367,9 @@ function removeFromParentList(opts) {
     index = _.findIndex(parentData[opts.parentField], val);
     parentData[opts.parentField].splice(index, 1); // remove component from parent data
     dom.removeElement(opts.el); // remove component from DOM
-    return update(opts.parentRef, parentData);
+    return update(opts.parentRef, parentData).then(function (result) {
+      return result;
+    });
   });
 }
 
@@ -367,7 +383,7 @@ function removeFromParentList(opts) {
  * @returns {Promise} Promise resolves to new component Element.
  */
 function addToParentList(opts) {
-  return db.getComponentJSONFromReference(opts.parentRef).then(function (parentData) {
+  return db.get(opts.parentRef).then(function (parentData) {
     var prevIndex,
       prevItem = {},
       item = {},
@@ -384,8 +400,8 @@ function addToParentList(opts) {
       parentData[opts.parentField].push(item);
     }
     parentData = removeSchemaFromData(parentData);
-    return db.putToReference(opts.parentRef, parentData)
-      .then(db.getComponentHTMLFromReference.bind(null, opts.ref));
+    return db.save(opts.parentRef, parentData)
+      .then(db.getHTML.bind(null, opts.ref));
   });
 }
 

@@ -1,7 +1,38 @@
 var _ = require('lodash'),
   dom = require('./dom'),
   references = require('./references'),
-  site = require('./site');
+  site = require('./site'),
+  extHtml = '.html',
+  componentRoute = '/components/',
+  schemaEndpoint = '/schema';
+
+/**
+ * True if str is a uri
+ * @param {string} str
+ * @returns {boolean}
+ */
+function isUri(str) {
+  var strLen = str.length,
+    firstSlash = str.indexOf('/'),
+    pathStart = firstSlash > -1 ? firstSlash : strLen,
+    host = str.substr(0, pathStart),
+    doubleSlash = host.indexOf('//'),
+    colon = host.indexOf(':');
+
+  return firstSlash !== 0 && doubleSlash === -1 && colon === -1;
+}
+
+/**
+ * Block non-uris
+ *
+ * @param {*} uri
+ * @throws Error if not a string and uri
+ */
+function assertUri(uri) {
+  if (!_.isString(uri) || !isUri(uri)) {
+    throw new Error('Expected uri, not ' + uri);
+  }
+}
 
 /**
  * add port and protocol to uris
@@ -12,6 +43,16 @@ function createUrl(uri) {
   return site.addProtocol(site.addPort(uri));
 }
 
+function addJsonHeader(obj) {
+  _.assign(obj, {
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8'
+    }
+  });
+
+  return obj;
+}
+
 function send(options) {
   return new Promise(function (resolve, reject) {
     var request = new XMLHttpRequest();
@@ -19,7 +60,7 @@ function send(options) {
     if (_.isString(options)) {
       options = {
         method: 'GET',
-        url: createUrl(options)
+        url: options
       };
     }
 
@@ -34,8 +75,7 @@ function send(options) {
     }
 
     request.send(options.data);
-
-    request.onreadystatechange = function (e) {
+    request.addEventListener('load', function (e) {
       var target = e.currentTarget || e.target;
 
       if (target.readyState === 4) {
@@ -45,7 +85,9 @@ function send(options) {
           reject(err);
         }
       }
-    };
+    }, false);
+    request.addEventListener('error', function (e) { reject(e); }, false);
+    request.addEventListener('abort', function (e) { reject(e); }, false);
   });
 }
 
@@ -59,6 +101,8 @@ function expectTextResult(target) {
 
   if (statusCodeGroup === '2') {
     return target.responseText;
+  } else if (statusCodeGroup === '4' || statusCodeGroup === '5') {
+    throw new Error(target.status);
   } else {
     return target;
   }
@@ -74,6 +118,8 @@ function expectJSONResult(target) {
 
   if (statusCodeGroup === '2') {
     return JSON.parse(target.responseText);
+  } else if (statusCodeGroup === '4' || statusCodeGroup === '5') {
+    throw new Error(target.status);
   } else {
     return target;
   }
@@ -81,14 +127,14 @@ function expectJSONResult(target) {
 
 /**
  * Translate the response into what we expect
- * @param {string} ref  The returned object probably won't have this because it would be referencing itself, so
+ * @param {string} uri  The returned object probably won't have this because it would be referencing itself, so
  *   we need to remember it and add it.
  * @returns {function}
  */
-function expectHTMLResult(ref) {
-  var container, componentEl, statusCodeGroup;
-
+function expectHTMLResult(uri) {
   return function (target, error) {
+    var container, componentEl, statusCodeGroup;
+
     if (error) {
       throw error;
     } else {
@@ -98,8 +144,13 @@ function expectHTMLResult(ref) {
         container.innerHTML = target.responseText;
         // The first element in a component always has the referenceAttribute.
         componentEl = dom.getFirstChildElement(container);
-        componentEl.setAttribute(references.referenceAttribute, ref);
+        if (!componentEl) {
+          throw new Error('Malformed HTML: ' + target.responseText);
+        }
+        componentEl.setAttribute(references.referenceAttribute, uri);
         return componentEl;
+      } else if (statusCodeGroup === '4' || statusCodeGroup === '5') {
+        throw new Error(target.status + ': ' + target.statusText);
       } else {
         return target;
       }
@@ -107,64 +158,101 @@ function expectHTMLResult(ref) {
   };
 }
 
-module.exports = {
-  getSchemaFromReference: function (ref) {
-    return send(site.get('prefix') + '/components/' + references.getComponentNameFromReference(ref) + '/schema')
-      .then(expectJSONResult);
-  },
+/**
+ * @param {string} uri
+ * @returns {Promise}
+ */
+function getSchema(uri) {
+  var prefix, name;
 
-  getComponentJSONFromReference: function (ref) {
-    return send(ref).then(expectJSONResult);
-  },
+  assertUri(uri);
 
-  getTextFromReference: function (ref) {
-    return send(ref).then(expectTextResult);
-  },
+  // get the prefix for _this specific uri_, regardless of others used on this page.
+  prefix = uri.substr(0, uri.indexOf(componentRoute)) + componentRoute;
+  name = references.getComponentNameFromReference(uri);
 
-  getComponentHTMLFromReference: function (ref) {
-    var ext = '.html';
+  return send(prefix + name + schemaEndpoint).then(expectJSONResult);
+}
 
-    return send(ref + ext).then(expectHTMLResult(ref));
-  },
+/**
+ * @param {string} uri
+ * @returns {Promise}
+ */
+function getObject(uri) {
+  assertUri(uri);
 
-  putToReference: function (ref, data) {
-    var options = {
-      method: 'PUT',
-      url: ref,
-      data: data,
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8'
-      }
-    };
+  return send(uri).then(expectJSONResult);
+}
 
-    return send(options);
-  },
+/**
+ * @param {string} uri
+ * @returns {Promise}
+ */
+function getText(uri) {
+  assertUri(uri);
 
-  postToReference: function (ref, data) {
-    var options = {
-      method: 'POST',
-      url: ref,
-      data: data,
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8'
-      }
-    };
+  return send(uri).then(expectTextResult);
+}
 
-    return send(options).then(expectJSONResult);
-  },
+/**
+ * @param {string} uri
+ * @returns {Promise}
+ */
+function getHTML(uri) {
+  assertUri(uri);
 
-  deleteReference: function (ref) {
-    var options = {
-      method: 'DELETE',
-      url: ref,
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8'
-      }
-    };
+  return send(uri + extHtml).then(expectHTMLResult(uri));
+}
 
-    return send(options);
-  },
+/**
+ * @param {string} uri
+ * @param {object} data
+ * @returns {Promise}
+ */
+function save(uri, data) {
+  assertUri(uri);
 
-  // for testing
-  send: send
-};
+  return send(addJsonHeader({
+    method: 'PUT',
+    url: uri,
+    data: data
+  })).then(expectJSONResult);
+}
+
+/**
+ * Create a new object.
+ *
+ * @param {string} uri
+ * @param {object} data
+ * @returns {Promise}
+ */
+function create(uri, data) {
+  assertUri(uri);
+
+  return send(addJsonHeader({
+    method: 'POST',
+    url: uri,
+    data: data
+  })).then(expectJSONResult);
+}
+
+/**
+ * @param {string} uri
+ * @returns {Promise}
+ */
+function remove(uri) {
+  assertUri(uri);
+
+  return send(addJsonHeader({
+    method: 'DELETE',
+    url: uri
+  })).then(expectJSONResult);
+}
+
+module.exports.getSchema = getSchema;
+module.exports.get = getObject;
+module.exports.getText = getText;
+module.exports.getHTML = getHTML;
+module.exports.save = save;
+module.exports.create = create;
+module.exports.remove = remove;

@@ -9,7 +9,7 @@ var dom = require('../services/dom');
 
 module.exports = function (result, args) {
   var bindings = result.bindings,
-  urlField;
+    urlField;
 
   // add some stuff to the bindings
   bindings.required = !!args.required;
