@@ -29,6 +29,7 @@ describe('autocomplete behavior', function () {
       'Gemma Osburn',
       'Shanel Holt'
     ],
+    fakeObjList = fakeList.map(function (text) { return {text: text}; }),
     fakeInput = document.createElement('input');
 
   beforeEach(function () {
@@ -82,6 +83,10 @@ describe('autocomplete behavior', function () {
 
   it('formats values into option elements', function () {
     expect(Array.prototype.slice.call(autocomplete.formatOptions(fakeList).querySelectorAll('option')).map(function (x) { return x.textContent; })).to.deep.equal(fakeList);
+  });
+
+  it('formats values into option elements (when list is an array of objects)', function () {
+    expect(Array.prototype.slice.call(autocomplete.formatOptions(fakeObjList).querySelectorAll('option')).map(function (x) { return x.textContent; })).to.deep.equal(fakeList);
   });
 
 });

@@ -7,24 +7,36 @@
  * @module
  */
 
-var dom = require('../services/dom'),
+var _ = require('lodash'),
+  dom = require('../services/dom'),
   db = require('../services/db'),
   site = require('../services/site'),
   cid = require('../services/cid'),
-  getInput = require('../services/get-input');
+  getInput = require('../services/get-input'),
+  textProp = 'text';
+
+/**
+ *
+ * @param {[string]|[{text: string}]} items
+ * @returns {[string]}
+ */
+function flattenText(items) {
+  var pluckedText = _.compact(_.pluck(items, textProp)),
+    hasTextProp = _.isString(_.first(pluckedText));
+
+  return hasTextProp ? pluckedText : items;
+}
 
 /**
  * Converts array of strings to option elements.
- * @param {array} options
+ * @param {array} items
  * @returns {Element}
  */
-function formatOptions(options) {
-
-  var optionsEl;
-
-  options = options.reduce(function (prev, curr) {
-    return prev + '<option>' + curr + '</option>';
-  }, '');
+function formatOptions(items) {
+  var optionsEl,
+    options = flattenText(items).reduce(function (prev, curr) {
+      return prev + '<option>' + curr + '</option>';
+    }, '');
 
   optionsEl = dom.create(`
     <label>
