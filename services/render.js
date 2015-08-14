@@ -50,6 +50,23 @@ function addComponentSelector(el) {
 
       select.handler(el, options);
       return el;
+    }).catch(function (e) {
+      var options;
+
+      // tried to get the schema of a component, and it 404'd
+      if (e.message === '404') {
+        options = {
+          ref: ref,
+          path: el.getAttribute(references.editableAttribute),
+          data: {}
+        };
+
+        select.handler(el, options);
+        return el;
+      } else {
+        // something weird happened.
+        return e;
+      }
     });
 }
 

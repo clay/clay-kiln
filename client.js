@@ -6,8 +6,7 @@ var nodeUrl = require('url'),
   decorators = require('./services/decorators'),
   dom = require('./services/dom'),
   EditorToolbar = require('./controllers/kiln-toolbar'),
-  render = require('./services/render'),
-  pageToolbar;
+  render = require('./services/render');
 
 // manually add built-in behaviors
 // since browserify's require() uses static analysis
@@ -40,9 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (parsed.query.edit) {
     render.addComponentsHandlers(document);
-    // because eslint complains if we don't use the new thing we've created.  We will add to this later.
-    pageToolbar = new EditorToolbar(dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"]'));
-    console.log('toolbar initialized: ', pageToolbar);
+    return new EditorToolbar(dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"]'));
   }
 });
 
