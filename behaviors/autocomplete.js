@@ -12,12 +12,13 @@ var _ = require('lodash'),
   db = require('../services/db'),
   site = require('../services/site'),
   cid = require('../services/cid'),
-  getInput = require('../services/get-input');
+  getInput = require('../services/get-input'),
+  textProp = 'text';
 
 function flattenText(items) {
-  var hasTextProp = items[0] && typeof items[0].text === 'string';
+  var hasTextProp = _.isString(_.pluck(_.find(items, textProp)));
 
-  return hasTextProp ? _.pluck(items, 'text') : items;
+  return hasTextProp ? _.pluck(items, textProp) : items;
 }
 
 /**
