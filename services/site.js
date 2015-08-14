@@ -23,7 +23,6 @@ function addProtocol(uri) {
  * add port to uris that need it
  * note: if the current port is 80, it doesn't need it
  * @param {string} uri
- * @param {object} site
  * @returns {string}
  */
 function addPort(uri) {

@@ -1,7 +1,7 @@
 var _ = require('lodash'),
   references = require('../services/references'),
   dom = require('../services/dom'),
-  edit = require('../services/edit/edit'),
+  edit = require('../services/edit'),
   render = require('../services/render'),
   dragula = require('dragula');
 

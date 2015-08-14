@@ -6,7 +6,7 @@ files = [
   'test/setup.js',
   'controllers/*.js',
   'behaviors/*.js',
-  'services/*.js',
+  'services/**/*.js',
   'decorators/*.js'
 ];
 
