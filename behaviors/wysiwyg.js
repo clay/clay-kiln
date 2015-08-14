@@ -377,6 +377,12 @@ module.exports = function (result, args) {
   // put the rich text field after the input
   dom.replaceElement(textInput, field);
 
+  function findExtension(extname) {
+    return function (ext) {
+      return ext.name === extname;
+    };
+  }
+
   rivets.binders.wysiwyg = {
     publish: true,
     bind: function (el) {
@@ -384,23 +390,23 @@ module.exports = function (result, args) {
       var observer = this.observer,
         data = observer.value() || '', // don't print 'undefined' if there's no data
         editor = createEditor(field, buttons),
-        italicBtn = dom.find('.medium-editor-action-italic'),
-        strikeBtn = dom.find('.medium-editor-action-strikethrough'),
-        linkBtn = dom.find('.medium-editor-action-anchor');
+        italicExtension = _.find(editor.extensions, findExtension('italic')),
+        strikethoughExtension = _.find(editor.extensions, findExtension('strikethrough')),
+        linkExtension = _.find(editor.extensions, findExtension('anchor'));
+
+      // apply custom styling to buttons
+      if (italicExtension) {
+        italicExtension.button.innerHTML = '<em>I</em>';
+      }
+      if (strikethoughExtension) {
+        strikethoughExtension.button.innerHTML = '<s>M</s>';
+      }
+      if (linkExtension) {
+        linkExtension.button.innerHTML = `<img src="${site.get('assetPath')}/media/components/clay-kiln/link-icon.svg" />`;
+      }
 
       // put the initial data into the editor
       el.innerHTML = data;
-
-      // apply custom styling to buttons
-      if (italicBtn) {
-        italicBtn.innerHTML = '<em>I</em>';
-      }
-      if (strikeBtn) {
-        strikeBtn.innerHTML = '<s>M</s>';
-      }
-      if (linkBtn) {
-        linkBtn.innerHTML = `<img src="${site.get('assetPath')}/media/components/clay-kiln/link-icon.svg" />`;
-      }
 
       // hide the tier2 buttons when closing the toolbar
       editor.subscribe('hideToolbar', function () {
