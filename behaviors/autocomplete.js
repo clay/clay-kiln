@@ -15,8 +15,13 @@ var _ = require('lodash'),
   getInput = require('../services/get-input'),
   textProp = 'text';
 
+/**
+ *
+ * @param {[string]|[{text: string}]} items
+ * @returns {[string]}
+ */
 function flattenText(items) {
-  var pluckedText = _.pluck(items, textProp),
+  var pluckedText = _.compact(_.pluck(items, textProp)),
     hasTextProp = _.isString(_.first(pluckedText));
 
   return hasTextProp ? pluckedText : items;
