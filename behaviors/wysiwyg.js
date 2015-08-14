@@ -377,6 +377,11 @@ module.exports = function (result, args) {
   // put the rich text field after the input
   dom.replaceElement(textInput, field);
 
+  /**
+   * match extension names when instantiating medium-editor
+   * @param {string} extname e.g. 'italic'
+   * @returns {Function}
+   */
   function findExtension(extname) {
     return function (ext) {
       return ext.name === extname;
