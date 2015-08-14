@@ -414,18 +414,24 @@ module.exports = function (result, args) {
       el.innerHTML = data;
 
       // hide the tier2 buttons when closing the toolbar
-      editor.subscribe('hideToolbar', function () {
+      editor.subscribe('hideToolbar', function onHideToolbar() {
         dom.find('.medium-editor-toolbar').classList.remove('show-all');
         dom.find('.medium-editor-toolbar').classList.remove('show-none');
       });
 
       // persist editor data to data model on input
-      editor.subscribe('editableInput', function (e, editable) {
-        observer.setValue(editable.innerHTML);
+      editor.subscribe('editableInput', function onEditableInput(e, editable) {
+        if (editable) {
+          // editable exists when you're typing into the field
+          observer.setValue(editable.innerHTML);
+        } else if (e.target) {
+          // editable doesn't exist (but e.target does) when hitting enter after entering in a link
+          observer.setValue(e.target.innerHTML);
+        }
       });
 
       // persist editor data to data model on paste
-      editor.subscribe('editablePaste', function (e, editable) {
+      editor.subscribe('editablePaste', function onEditablePaste(e, editable) {
         var textmodel = model.fromElement(dom.create(editable.innerHTML)),
           fragment = model.toElement(textmodel);
 
@@ -438,13 +444,13 @@ module.exports = function (result, args) {
         observer.setValue(editable.innerHTML);
       });
 
-      editor.subscribe('editableKeydownDelete', function (e, editable) {
+      editor.subscribe('editableKeydownDelete', function onEditableKeydownDelete(e, editable) {
         if (enableKeyboardExtras) {
           handleComponentDeletion(editable, e);
         }
       });
 
-      editor.subscribe('editableKeydownEnter', function (e, editable) {
+      editor.subscribe('editableKeydownEnter', function onEditableKeydownEnter(e, editable) {
         if (enableKeyboardExtras && e.shiftKey) {
           // shift+enter was pressed. add a line break
           addLineBreak();
