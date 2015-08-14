@@ -18,6 +18,7 @@ var _ = require('lodash'),
   edit = require('../services/edit'),
   model = require('../services/model-text'),
   getInput = require('../services/get-input'),
+  site = require('../services/site'),
   refAttr = references.referenceAttribute;
 
 /**
@@ -73,6 +74,9 @@ function createEditor(field, buttons) {
         [/<p(.*?)>/ig, ''], // get rid of <p> tags
         [/<\/p>/ig, '']
       ]
+    },
+    anchor: {
+      linkValidation: true // check for common protocols on links
     },
     autoLink: false, // create links automatically when urls are entered
     imageDragging: false, // disallow dragging inline images
@@ -395,7 +399,7 @@ module.exports = function (result, args) {
         strikeBtn.innerHTML = '<s>M</s>';
       }
       if (linkBtn) {
-        linkBtn.innerHTML = `<img src="/media/components/byline-editor/link-icon.svg" />`;
+        linkBtn.innerHTML = `<img src="${site.get('assetPath')}/media/components/clay-kiln/link-icon.svg" />`;
       }
 
       // hide the tier2 buttons when closing the toolbar
