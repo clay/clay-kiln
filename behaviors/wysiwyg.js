@@ -74,6 +74,9 @@ function createEditor(field, buttons) {
         [/<\/p>/ig, '']
       ]
     },
+    anchor: {
+      linkValidation: true // check for common protocols on links
+    },
     autoLink: false, // create links automatically when urls are entered
     imageDragging: false, // disallow dragging inline images
     targetBlank: true,
