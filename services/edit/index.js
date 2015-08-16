@@ -1,11 +1,9 @@
 var _ = require('lodash'),
   dom = require('./../dom'),
   cache = require('./cache'),
-  db = require('./../db'),
+  db = require('./db'),
   references = require('./../references'),
   site = require('./../site'),
-  groupFields = require('./group-fields'),
-  schemaFields = require('./schema-fields'),
   refProp = references.referenceProperty,
   pagesRoute = '/pages/',
   urisRoute = '/uris/',
@@ -24,7 +22,7 @@ function validate(data, schema) {
     keys = Object.keys(data),
     fields = Object.keys(schema),
     foundBannedFields = _.intersection(bannedFields, keys),
-    unknownFields = _.without(keys, fields);
+    unknownFields = _.select(keys, function (key) { return !_.contains(fields, key); });
 
   if (foundBannedFields.length) {
     errors.push(new Error('Banned fields found in data: ' + foundBannedFields.toString()));
@@ -37,48 +35,23 @@ function validate(data, schema) {
   return errors;
 }
 
-function clearDataCache() {
-  cache.getDataOnly.cache = new _.memoize.Cache();
-  cache.getData.cache = new _.memoize.Cache();
-}
-
 /**
  * update data for a component.
  * @param  {string} uri
  * @param {object} data
  * @returns {Promise}
  */
-function update(uri, data) {
-  // remove top-level self-reference
-  data = schemaFields.remove(data);
-
-  clearDataCache();
-
+function save(uri, data) {
   // get the schema and validate data
-  return cache.getSchema(uri)
-    .then(function (schema) {
-      var validationErrors;
+  return cache.getSchema(uri).then(function (schema) {
+    var validationErrors = validate(data, schema);
 
-      data = groupFields.remove(data, schema);
-
-      validationErrors = validate(data, schema);
-
-      if (validationErrors.length) {
-        throw new Error(validationErrors);
-      } else {
-        return cache.getDataOnly(uri).then(function (oldData) {
-          // shallowly copy over the new data
-          data = _.defaults(data, oldData);
-          delete data[refProp];
-
-          return db.save(uri, data);
-        });
-      }
-    }).then(function (result) {
-      clearDataCache();
-
-      return result;
-    });
+    if (validationErrors.length) {
+      throw new Error(validationErrors);
+    } else {
+      return cache.saveThrough(uri, data);
+    }
+  });
 }
 
 /**
@@ -140,8 +113,7 @@ function publishPage() {
     var pageUri = pathOnly(pageReference);
 
     return cache.getDataOnly(pageUri).then(function (data) {
-      delete data[refProp];
-      return db.save(pageUri + '@published', data);
+      return save(pageUri + '@published', data);
     });
   });
 }
@@ -165,17 +137,17 @@ function createPage() {
     newPageUri = prefix + pagesRoute + 'new';
 
   return cache.getDataOnly(newPageUri).then(function (data) {
-    delete data[refProp];
-    return db.create(prefix + pagesRoute, data).then(function (res) {
+    return cache.createThrough(prefix + pagesRoute, data).then(function (res) {
       location.href = getNewPageUrl(res[refProp]);
     });
-  }).catch(function (error) {
-    console.log('CreatePage:', error.stack);
   });
 }
 
 /**
  * Create a new component.
+ *
+ * Assumes creation is happening at current site prefix.
+ *
  * @param {string} name     The name of the component.
  * @param {object} [data]   Data to save.
  * @returns {Promise}
@@ -185,11 +157,11 @@ function createComponent(name, data) {
     instance = base + '/instances';
 
   if (data) {
-    return db.create(instance, data);
+    return cache.createThrough(instance, data);
   } else {
-    return db.get(base) // create component with base JSON from bootstrap.
+    return cache.getDataOnly(base) // create component with base JSON from bootstrap.
       .then(function (baseJson) {
-        return db.create(instance, baseJson);
+        return cache.createThrough(instance, baseJson);
       });
   }
 }
@@ -204,17 +176,16 @@ function createComponent(name, data) {
  * @returns {Promise}
  */
 function removeFromParentList(opts) {
-  return db.get(opts.parentRef).then(function (parentData) {
+  return cache.getData(opts.parentRef).then(function (parentData) {
     var index,
       val = {};
 
+    parentData = _.cloneDeep(parentData);
     val[refProp] = opts.ref;
     index = _.findIndex(parentData[opts.parentField], val);
     parentData[opts.parentField].splice(index, 1); // remove component from parent data
     dom.removeElement(opts.el); // remove component from DOM
-    return update(opts.parentRef, parentData).then(function (result) {
-      return result;
-    });
+    return save(opts.parentRef, parentData);
   });
 }
 
@@ -228,11 +199,12 @@ function removeFromParentList(opts) {
  * @returns {Promise} Promise resolves to new component Element.
  */
 function addToParentList(opts) {
-  return db.get(opts.parentRef).then(function (parentData) {
+  return cache.getData(opts.parentRef).then(function (parentData) {
     var prevIndex,
       prevItem = {},
       item = {};
 
+    parentData = _.cloneDeep(parentData);
     item[refProp] = opts.ref;
     if (opts.prevRef) {
       // Add to specific position in the list.
@@ -243,22 +215,23 @@ function addToParentList(opts) {
       // Add to end of list.
       parentData[opts.parentField].push(item);
     }
-    parentData = schemaFields.remove(parentData);
-    return db.save(opts.parentRef, parentData)
+    return save(opts.parentRef, parentData)
       .then(db.getHTML.bind(null, opts.ref));
   });
 }
 
-// expose main methods (alphabetical!)
+// expose main actions (alphabetical!)
 module.exports = {
   addToParentList: addToParentList,
   createComponent: createComponent,
   createPage: createPage,
-  getData: cache.getData,
-  getDataOnly: cache.getDataOnly,
-  getSchema: cache.getSchema,
   getUriDestination: getUriDestination,
   publishPage: publishPage,
   removeFromParentList: removeFromParentList,
-  update: update
+
+  // please stop using these
+  getData: cache.getData,
+  getDataOnly: cache.getDataOnly,
+  getSchema: cache.getSchema,
+  save: save
 };

@@ -1,13 +1,23 @@
 var lib = require('./'),
-  db = require('./../db'),
+  db = require('./db'),
   site = require('./../site'),
   dom = require('./../dom'),
   cache = require('./cache'),
+  control = require('./control'),
   sinon = require('sinon');
 
 describe('edit service', function () {
   var sandbox,
     prefix = 'place.com';
+
+  /**
+   * @param {*} data
+   * @returns {Promise}
+   */
+  function resolveReadOnly(data) {
+    data = control.setReadOnly(data);
+    return Promise.resolve(data);
+  }
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
@@ -15,6 +25,10 @@ describe('edit service', function () {
     sandbox.stub(dom);
     sandbox.stub(site);
     sandbox.stub(cache);
+
+    // not under test
+    site.get.withArgs('prefix').returns(prefix);
+    db.getHTML.returns(document.createElement('div'));
   });
 
   afterEach(function () {
@@ -23,12 +37,6 @@ describe('edit service', function () {
 
   describe('getUriDestination', function () {
     var fn = lib[this.title];
-
-    beforeEach(function () {
-      site.set({
-        prefix: prefix
-      });
-    });
 
     it('gets page from string', function () {
       var data = prefix + '/pages/thing';
@@ -69,12 +77,6 @@ describe('edit service', function () {
   describe('publishPage', function () {
     var fn = lib[this.title];
 
-    beforeEach(function () {
-      site.set({
-        prefix: prefix
-      });
-    });
-
     function expectPublish(uri, pageRef) {
       var data = prefix + pageRef,
         putData = {};
@@ -90,30 +92,36 @@ describe('edit service', function () {
     it('publishes page with version', function () {
       var data = expectPublish('/thing@thing.html', '/pages/thing@otherthing');
 
-      cache.getDataOnly.returns(Promise.resolve({}));
+      cache.getDataOnly.returns(resolveReadOnly({}));
+      cache.getSchema.returns(resolveReadOnly({}));
+      cache.saveThrough.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly({}));
 
       return fn().then(function (result) {
-        expect(result).to.equal(data);
+        expect(result).to.deep.equal(data);
       });
     });
 
     it('publishes page without version', function () {
       var data = expectPublish('/thing.html', '/pages/thing');
 
-      cache.getDataOnly.returns(Promise.resolve({}));
+      cache.getDataOnly.returns(resolveReadOnly({}));
+      cache.getSchema.returns(resolveReadOnly({}));
+      cache.saveThrough.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly({}));
 
       return fn().then(function (result) {
-        expect(result).to.equal(data);
+        expect(result).to.deep.equal(data);
       });
     });
 
     it('publishes bare page', function () {
       var data = expectPublish('/pages/thing.html', '/pages/thing');
 
-      cache.getDataOnly.returns(Promise.resolve({}));
+      cache.getDataOnly.returns(resolveReadOnly({}));
+      cache.getSchema.returns(resolveReadOnly({}));
+      cache.saveThrough.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly({}));
 
       return fn().then(function (result) {
-        expect(result).to.equal(data);
+        expect(result).to.deep.equal(data);
       });
     });
   });
@@ -122,21 +130,26 @@ describe('edit service', function () {
     var fn = lib[this.title];
 
     beforeEach(function () {
-      db.get.returns(Promise.resolve({a: [{_ref: 'b'}, {_ref: 'c'}]}));
-      db.save.returns(Promise.resolve({}));
-      db.getSchema.returns(Promise.resolve({}));
       site.addProtocol.returns('place.com/b');
       site.addPort.returns('place.com/b');
     });
 
     it('removes the item from the data', function () {
+      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}]}));
+      cache.getSchema.returns(resolveReadOnly({a: {}}));
+      cache.saveThrough.returns(resolveReadOnly({}));
+
       return fn({el: {}, ref: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
-        expect(db.save.calledWith('d', {a: [{_ref: 'c'}]})).to.equal(true);
+        expect(cache.saveThrough.calledWith('d', {a: [{_ref: 'c'}]})).to.equal(true);
       });
     });
 
     it('removes the item from the DOM', function () {
       var domEl = document.createElement('div');
+
+      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}]}));
+      cache.getSchema.returns(resolveReadOnly({a: {}}));
+      cache.saveThrough.returns(resolveReadOnly({}));
 
       return fn({el: domEl, ref: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
         expect(dom.removeElement.calledWith(domEl)).to.equal(true);
@@ -147,26 +160,31 @@ describe('edit service', function () {
   describe('addToParentList', function () {
     var fn = lib[this.title];
 
-    beforeEach(function () {
-      db.get.returns(Promise.resolve({a: [{_ref: 'b'}, {_ref: 'c'}]}));
-      db.save.returns(Promise.resolve({}));
-      db.getSchema.returns(Promise.resolve({}));
-      db.getHTML.returns(document.createElement('div'));
-    });
-
     it('adds the item to the list data', function () {
+      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}]}));
+      cache.getSchema.returns(resolveReadOnly({a: {}}));
+      cache.saveThrough(resolveReadOnly({}));
+
       return fn({ref: 'newRef', prevRef: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
-        expect(db.save.calledWith('d', {a: [{_ref: 'b'}, {_ref: 'newRef'}, {_ref: 'c'}]})).to.equal(true);
+        expect(cache.saveThrough.calledWith('d', {a: [{_ref: 'b'}, {_ref: 'newRef'}, {_ref: 'c'}]})).to.equal(true);
       });
     });
 
     it('adds the item to the end of the list data', function () {
+      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}]}));
+      cache.getSchema.returns(resolveReadOnly({a: {}}));
+      cache.saveThrough(resolveReadOnly({}));
+
       return fn({ref: 'newRef', prevRef: null, parentField: 'a', parentRef: 'd'}).then(function () {
-        expect(db.save.calledWith('d', {a: [{_ref: 'b'}, {_ref: 'c'}, {_ref: 'newRef'}]})).to.equal(true);
+        expect(cache.saveThrough.calledWith('d', {a: [{_ref: 'b'}, {_ref: 'c'}, {_ref: 'newRef'}]})).to.equal(true);
       });
     });
 
     it('returns a new element', function () {
+      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}]}));
+      cache.getSchema.returns(resolveReadOnly({a: {}}));
+      cache.saveThrough(resolveReadOnly({}));
+
       return fn({ref: 'newRef', prevRef: 'b', parentField: 'a', parentRef: 'd'}).then(function (el) {
         expect(el instanceof Element).to.equal(true);
       });
@@ -176,23 +194,22 @@ describe('edit service', function () {
   describe('createComponent', function () {
     var fn = lib[this.title];
 
-    beforeEach(function () {
-      site.get.withArgs('prefix').returns(prefix);
-      db.create.returns(Promise.resolve({}));
-    });
-
     it('creates a component with data', function () {
+      cache.createThrough.returns(resolveReadOnly({}));
+
       return fn('fakeName', {fake: 'data'}).then(function () {
-        expect(db.create.calledWith(prefix + '/components/fakeName/instances', {fake: 'data'})).to.equal(true);
+        expect(cache.createThrough.calledWith(prefix + '/components/fakeName/instances', {fake: 'data'})).to.equal(true);
       });
     });
 
     it('creates a component without data', function () {
       var bootstrapJson = {a: 1};
 
-      db.get.returns(Promise.resolve(bootstrapJson));
+      cache.createThrough.returns(resolveReadOnly({}));
+      cache.getDataOnly.returns(resolveReadOnly(bootstrapJson));
+
       return fn('fakeName').then(function () {
-        expect(db.create .calledWith(prefix + '/components/fakeName/instances', bootstrapJson)).to.equal(true);
+        expect(cache.createThrough.calledWith(prefix + '/components/fakeName/instances', bootstrapJson)).to.equal(true);
       });
     });
   });

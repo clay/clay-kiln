@@ -11,7 +11,7 @@ var _ = require('lodash'),
   MediumEditor = require('medium-editor'),
   MediumButton = require('../services/medium-button'),
   dom = require('../services/dom'),
-  db = require('../services/db'),
+  db = require('../services/edit/db'),
   render = require('../services/render'),
   focus = require('../decorators/focus'),
   references = require('../services/references'),
@@ -187,7 +187,7 @@ function appendToPrev(html, prev) {
 
     // then put it back into the previous component's data
     _.set(prevData, prev.field, cleanedString);
-    return edit.update(prev.ref, prevData);
+    return edit.save(prev.ref, prevData);
   });
 }
 

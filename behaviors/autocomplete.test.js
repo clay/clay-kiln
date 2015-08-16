@@ -1,6 +1,6 @@
 var fixture = require('../test/fixtures/behavior'),
   autocomplete = require('./autocomplete'),
-  db = require('../services/db'),
+  db = require('../services/edit/db'),
   site = require('../services/site'),
   dom = require('../services/dom');
 

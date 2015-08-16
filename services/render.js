@@ -1,6 +1,6 @@
 var componentEdit = require('../controllers/component-edit'),
   componentEditName = 'component-edit',
-  db = require('./db'),
+  db = require('./edit/db'),
   dom = require('./dom'),
   ds = require('dollar-slice'),
   edit = require('./edit'),

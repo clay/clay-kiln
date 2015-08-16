@@ -1,6 +1,6 @@
 var _ = require('lodash'),
   lib = require('./cache'),
-  db = require('./../db'),
+  db = require('./db'),
   expect = require('chai').expect,
   sinon = require('sinon');
 
@@ -31,13 +31,18 @@ describe('cache service', function () {
       });
     });
 
+    it('returns read-only data', function () {
+      db.get.returns(Promise.resolve({some: 'data'}));
+      db.getSchema.returns(Promise.resolve({some: 'schema'}));
+      return fn('foo').then(function (data) {
+        expect(Object.isFrozen(data)).to.equal(true);
+      });
+    });
+
     it('returns data with self-reference', function () {
       db.get.returns(Promise.resolve({some: 'data'}));
       db.getSchema.returns(Promise.resolve({some: 'schema'}));
       return fn('foo').then(function (data) {
-
-        console.log(data);
-
         expect(data).to.include.keys('_ref');
       });
     });
@@ -62,6 +67,14 @@ describe('cache service', function () {
       });
     });
 
+    it('returns read-only data', function () {
+      db.get.returns(Promise.resolve({foo: 'bar'}));
+      db.getSchema.returns(Promise.resolve({foo: 'bar'}));
+      return fn('foo').then(function (data) {
+        expect(Object.isFrozen(data)).to.equal(true);
+      });
+    });
+
     it('returns self-reference', function () {
       db.get.returns(Promise.resolve({foo: 'bar'}));
       db.getSchema.returns(Promise.resolve({foo: 'bar'}));
@@ -79,6 +92,141 @@ describe('cache service', function () {
       db.getSchema.returns(Promise.resolve({foo: 'bar'}));
       return fn('foo').then(function (data) {
         expect(data).to.deep.equal({foo: 'bar'});
+      });
+    });
+
+    it('returns read-only data', function () {
+      db.get.returns(Promise.resolve({foo: 'bar'}));
+      db.getSchema.returns(Promise.resolve({foo: 'bar'}));
+      return fn('foo').then(function (data) {
+        expect(Object.isFrozen(data)).to.equal(true);
+      });
+    });
+  });
+
+  describe('saveThrough', function () {
+    var fn = lib[this.title];
+
+    it('saves', function () {
+      var data = {};
+
+      db.get.returns(Promise.resolve({foo: 'bar'}));
+      db.save.returns(Promise.resolve({foo: 'bar'}));
+      db.getSchema.returns(Promise.resolve({foo: 'bar'}));
+      return fn('foo', data).then(function () {
+        expect(db.save.called).to.equal(true);
+      });
+    });
+
+    it('returns read-only', function () {
+      var data = {};
+
+      db.get.returns(Promise.resolve({foo: 'bar'}));
+      db.save.returns(Promise.resolve({foo: 'bar'}));
+      db.getSchema.returns(Promise.resolve({foo: 'bar'}));
+      return fn('foo', data).then(function (result) {
+        expect(Object.isFrozen(result)).to.equal(true);
+      });
+    });
+
+    it('remembers through getDataOnly (caches return values)', function () {
+      var data = {},
+        uri = 'foo',
+        fetched = {foo: 'bar1'},
+        returnSelf = {foo: 'bar2'},
+        schema = {foo: 'bar'};
+
+      db.get.returns(Promise.resolve(fetched));
+      db.save.returns(Promise.resolve(returnSelf));
+      db.getSchema.returns(Promise.resolve(schema));
+      return fn(uri, data).then(function () {
+        expect(lib.getDataOnly.cache.get(uri)).to.deep.equal({foo: 'bar2', _ref: uri});
+      });
+    });
+
+    it('remembers through getData(caches return values)', function () {
+      var data = {},
+        uri = 'foo',
+        fetched = {foo: 'bar1'},
+        returnSelf = {foo: 'bar2'},
+        schema = {foo: 'bar'};
+
+      db.get.returns(Promise.resolve(fetched));
+      db.save.returns(Promise.resolve(returnSelf));
+      db.getSchema.returns(Promise.resolve(schema));
+      return fn(uri, data).then(function () {
+        expect(lib.getData.cache.get(uri)).to.deep.equal({foo: 'bar2', _ref: uri, _schema: schema});
+      });
+    });
+  });
+
+  describe('createThrough', function () {
+    var fn = lib[this.title];
+
+    it('creates', function () {
+      var data = {};
+
+      db.get.returns(Promise.resolve({foo: 'bar'}));
+      db.create.returns(Promise.resolve({foo: 'bar', _ref: 'fooSelf'}));
+      db.getSchema.returns(Promise.resolve({foo: 'bar'}));
+      return fn('foo', data).then(function () {
+        expect(db.create.called).to.equal(true);
+      });
+    });
+
+    it('returns read-only', function () {
+      var data = {};
+
+      db.get.returns(Promise.resolve({foo: 'bar'}));
+      db.create.returns(Promise.resolve({foo: 'bar', _ref: 'fooSelf'}));
+      db.getSchema.returns(Promise.resolve({foo: 'bar'}));
+      return fn('foo', data).then(function (result) {
+        expect(Object.isFrozen(result)).to.equal(true);
+      });
+    });
+
+    it('throws without self reference', function (done) {
+      var data = {};
+
+      db.get.returns(Promise.resolve({foo: 'bar'}));
+      db.create.returns(Promise.resolve({foo: 'bar'}));
+      db.getSchema.returns(Promise.resolve({foo: 'bar'}));
+      return fn('foo', data).then(function (result) {
+        done('should throw: ' + result);
+      }, function () {
+        done();
+      });
+    });
+
+    it('remembers through getDataOnly (caches return values)', function () {
+      var data = {},
+        uri = 'foo',
+        selfUri = 'selfFoo',
+        fetched = {foo: 'bar1'},
+        returnSelf = {foo: 'bar2', _ref: selfUri},
+        schema = {foo: 'bar'};
+
+      db.get.returns(Promise.resolve(fetched));
+      db.create.returns(Promise.resolve(returnSelf));
+      db.getSchema.returns(Promise.resolve(schema));
+      return fn(uri, data).then(function () {
+        expect(lib.getDataOnly.cache.get(selfUri)).to.deep.equal({foo: 'bar2', _ref: selfUri});
+      });
+    });
+
+    it('remembers through getData (caches return values)', function () {
+      var data = {},
+        uri = 'foo',
+        selfUri = 'selfFoo',
+        fetched = {foo: 'bar1'},
+        returnSelf = {foo: 'bar2', _ref: selfUri},
+        schema = {foo: 'bar'};
+
+      db.get.returns(Promise.resolve(fetched));
+      db.create.returns(Promise.resolve(returnSelf));
+      db.getSchema.returns(Promise.resolve(schema));
+      return fn(uri, data).then(function () {
+        expect(lib.getData.cache.get(selfUri)).to.deep.equal({foo: 'bar2', _ref: selfUri, _schema: schema});
       });
     });
   });

@@ -136,7 +136,7 @@ describe(dirname, function () {
       var fn = lib[this.title];
 
       beforeEach(function () {
-        sandbox.stub(edit, 'update', resolver);
+        sandbox.stub(edit, 'save', resolver);
         sandbox.stub(formCreator, 'createInlineForm', resolver);
         sandbox.stub(formCreator, 'createForm', resolver);
         sandbox.stub(render, 'reloadComponent', resolver);
@@ -148,7 +148,7 @@ describe(dirname, function () {
         document.body.appendChild(el);
         fn();
         expect(el.childNodes.length).to.equal(0);
-        expect(edit.update.callCount).to.equal(0);
+        expect(edit.save.callCount).to.equal(0);
         expect(render.reloadComponent.callCount).to.equal(0);
       });
 
@@ -157,7 +157,7 @@ describe(dirname, function () {
 
         function afterFormIsClosed() {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
-          expect(edit.update.calledOnce).to.equal(true); // data was saved.
+          expect(edit.save.calledOnce).to.equal(true); // data was saved.
           expect(render.reloadComponent.calledOnce).to.equal(true); // el was reloaded.
           expect(document.body.classList.contains(references.editingStatus)).to.equal(false); // editing status updated.
         }
@@ -181,7 +181,7 @@ describe(dirname, function () {
 
         function afterFormIsClosed() {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
-          expect(edit.update.callCount).to.equal(0); // data was not saved.
+          expect(edit.save.callCount).to.equal(0); // data was not saved.
           expect(render.reloadComponent.callCount).to.equal(0); // el was not reloaded.
           expect(document.body.classList.contains(references.editingStatus)).to.equal(false); // editing status updated.
         }
@@ -207,7 +207,7 @@ describe(dirname, function () {
 
         function afterFormIsClosed() {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
-          expect(edit.update.calledOnce).to.equal(true); // data was saved.
+          expect(edit.save.calledOnce).to.equal(true); // data was saved.
           expect(render.reloadComponent.calledOnce).to.equal(true); // el was reloaded.
           expect(document.body.classList.contains(references.editingStatus)).to.equal(false); // editing status updated.
         }
@@ -231,7 +231,7 @@ describe(dirname, function () {
 
         function afterFormIsClosed() {
           expect(el.childNodes.length).to.equal(0); // form element was removed.
-          expect(edit.update.callCount).to.equal(0); // data was not saved.
+          expect(edit.save.callCount).to.equal(0); // data was not saved.
           expect(render.reloadComponent.callCount).to.equal(0); // el was not reloaded.
           expect(document.body.classList.contains(references.editingStatus)).to.equal(false); // editing status updated.
         }

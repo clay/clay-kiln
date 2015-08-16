@@ -58,7 +58,7 @@ function memoizePromise(fn) {
       } else {
         // at first, save the promise
         wrap.cache.set(key, promise);
-        fn.apply(null, _.slice(arguments)).then(function (result) {
+        fn.apply(null, _.slice(args)).then(function (result) {
           // can't let them change it or they'll affect the next person that asks
           setReadOnly(result);
 

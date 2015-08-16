@@ -1,6 +1,6 @@
 var lib = require('./db'),
   sinon = require('sinon'),
-  site = require('./site');
+  site = require('./../site');
 
 describe('db service', function () {
   var sandbox;

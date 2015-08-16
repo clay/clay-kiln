@@ -122,7 +122,7 @@ function updateOrder(el, options) {
   return edit.getDataOnly(options.ref)
     .then(function (componentData) {
       componentData[options.path] = newOrder;
-      return edit.update(options.ref, componentData);
+      return edit.save(options.ref, componentData);
     });
 }
 

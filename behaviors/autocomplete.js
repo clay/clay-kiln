@@ -7,9 +7,9 @@
  * @module
  */
 
-var _ = require('lodash'),
-  dom = require('../services/dom'),
-  db = require('../services/db'),
+var dom = require('../services/dom'),
+  db = require('../services/edit/db'),
+  _ = require('lodash'),
   site = require('../services/site'),
   cid = require('../services/cid'),
   getInput = require('../services/get-input'),

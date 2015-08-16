@@ -165,7 +165,7 @@ function close() {
       // remove currentForm values
       currentForm = {};
 
-      return edit.update(ref, data)
+      return edit.save(ref, data)
         .then(function () {
           removeCurrentForm(container);
           return render.reloadComponent(ref);

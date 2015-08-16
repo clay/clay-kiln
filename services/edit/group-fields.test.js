@@ -1,5 +1,5 @@
 var lib = require('./group-fields'),
-  db = require('./../db'),
+  db = require('./db'),
   site = require('./../site'),
   dom = require('./../dom');
 
