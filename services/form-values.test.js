@@ -3,7 +3,7 @@ var dirname = __dirname.split('/').pop(),
   _ = require('lodash'),
   rivets = require('rivets'),
   edit = require('./edit'),
-  behaviors = require('./behabehaviors'),
+  behaviors = require('./behaviors'),
   references = require('./references'),
   lib = require('./form-values');
 
