@@ -29,6 +29,24 @@ function setReadOnly(obj) {
 }
 
 /**
+ * Defer a promise.
+ *
+ * @returns {{resolve: function, reject: function, promise: Promise}}
+ */
+function defer() {
+  var deferred = {},
+    promise;
+
+  promise = new Promise(function (resolve, reject) {
+    deferred.resolve = resolve;
+    deferred.reject = reject;
+  });
+  deferred.promise = promise;
+
+  return deferred;
+}
+
+/**
  * Memoize a promise.
  *
  * Returns a fresh promise so there is no chain corruption.
@@ -40,39 +58,36 @@ function memoizePromise(fn) {
   var wrap;
 
   wrap = function () {
-    var promise,
+    var value,
+      d = defer(),
       args = _.slice(arguments),
       key = args[0];
 
-    promise = new Promise(function (resolve, reject) {
-      var value;
+    if (wrap.cache.has(key)) {
+      value = wrap.cache.get(key);
 
-      if (wrap.cache.has(key)) {
-        value = wrap.cache.get(key);
-
-        if (_.isError(value)) {
-          reject(value);
-        } else {
-          resolve(value);
-        }
+      if (_.isError(value)) {
+        d.reject(value);
       } else {
-        // at first, save the promise
-        wrap.cache.set(key, promise);
-        fn.apply(null, _.slice(args)).then(function (result) {
-          // can't let them change it or they'll affect the next person that asks
-          setReadOnly(result);
-
-          // later, save the result
-          wrap.cache.set(key, result);
-          resolve(result);
-        }, function (error) {
-          wrap.cache.set(key, error);
-          reject(error);
-        });
+        d.resolve(value);
       }
-    });
+    } else {
+      // at first, save the promise
+      wrap.cache.set(key, d.promise);
+      fn.apply(null, _.slice(arguments)).then(function (result) {
+        // prevent cache corruption
+        setReadOnly(result);
 
-    return promise;
+        // later, save the result
+        wrap.cache.set(key, result);
+        d.resolve(result);
+      }, function (error) {
+        wrap.cache.set(key, error);
+        d.reject(error);
+      });
+    }
+
+    return d.promise;
   };
   wrap.cache = new _.memoize.Cache();
 

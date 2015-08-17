@@ -1,6 +1,5 @@
 var _ = require('lodash'),
-  references = require('./../references'),
-  schemaKeywords = ['_groups'];
+  schemaKeywords = ['_ref', '_groups'];
 
 /**
  * @param {object} schema

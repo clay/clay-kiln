@@ -5,7 +5,9 @@ var dirname = __dirname.split('/').pop(),
   render = require('./render'),
   formCreator = require('./form-creator'),
   formValues = require('./form-values'),
-  lib = require('./forms');
+  lib = require('./forms'),
+  expect = require('chai').expect,
+  assert = require('chai').assert;
 
 function resolver() {
   return Promise.resolve();
@@ -17,6 +19,8 @@ describe(dirname, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
+      sandbox.stub(edit);
+
       // Close any forms that may have been opened.
       lib.close();
     });
@@ -33,7 +37,7 @@ describe(dirname, function () {
     }
 
     function stubData(data) {
-      sandbox.stub(edit, 'getData').returns(Promise.resolve({
+      edit.getData.returns(Promise.resolve({
         title: data
       }));
     }
@@ -135,8 +139,37 @@ describe(dirname, function () {
     describe('close', function () {
       var fn = lib[this.title];
 
+      function expectFormToBeRemoved(el) {
+        assert(el.childNodes.length === 0, 'Expected form to be removed');
+      }
+
+      function expectDataWasNotSaved() {
+        assert(edit.save.callCount === 0 && edit.savePartial.callCount === 0, 'Expected data to not be saved.');
+      }
+
+      function expectDataWasSavedOnce() {
+        assert(edit.save.callCount + edit.savePartial.callCount === 1, 'Expected data to be saved once.');
+      }
+
+      function expectReloadCount(num) {
+        var callCount = render.reloadComponent.callCount;
+
+        assert(callCount === num, 'Expected element to be reloaded ' + num +
+          ' times, not ' + callCount);
+      }
+
+      function expectEditingToBeDone() {
+        assert(document.body.classList.contains(references.editingStatus) === false, 'Expected editingStatus to be false');
+      }
+
+      function afterFormIsOpen(afterFormIsClosed) {
+        return function () {
+          return fn().then(afterFormIsClosed);
+        };
+      }
+
       beforeEach(function () {
-        sandbox.stub(edit, 'save', resolver);
+        edit.savePartial.returns(Promise.resolve());
         sandbox.stub(formCreator, 'createInlineForm', resolver);
         sandbox.stub(formCreator, 'createForm', resolver);
         sandbox.stub(render, 'reloadComponent', resolver);
@@ -147,109 +180,109 @@ describe(dirname, function () {
 
         document.body.appendChild(el);
         fn();
-        expect(el.childNodes.length).to.equal(0);
-        expect(edit.save.callCount).to.equal(0);
-        expect(render.reloadComponent.callCount).to.equal(0);
+        expectFormToBeRemoved(el);
+        expectDataWasNotSaved();
+        expectReloadCount(0);
       });
 
       it('removes and saves inline forms when the data has changed', function () {
-        var el = addInlineFormElement(); // Adds form element to dom.
+        var el = addInlineFormElement(), // Adds form element to dom.
+          data = {
+            value: '123',
+            _schema: {
+              _name: 'title',
+              _display: 'inline',
+              _has: 'text'
+            }
+          };
 
         function afterFormIsClosed() {
-          expect(el.childNodes.length).to.equal(0); // form element was removed.
-          expect(edit.save.calledOnce).to.equal(true); // data was saved.
-          expect(render.reloadComponent.calledOnce).to.equal(true); // el was reloaded.
-          expect(document.body.classList.contains(references.editingStatus)).to.equal(false); // editing status updated.
+          expectFormToBeRemoved(el);
+          expectDataWasSavedOnce();
+          expectReloadCount(1);
+          expectEditingToBeDone();
         }
-        function afterFormIsOpen() {
-          return fn().then(afterFormIsClosed);
-        }
-        // First open an inline form.
-        stubData({
-          value: '123',
-          _schema: {
-            _name: 'title',
-            _display: 'inline',
-            _has: 'text'
-          }
-        });
-        return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen);
+
+        stubData(data);
+        edit.toClayKilnStyle.returns(Promise.resolve(data));
+
+        return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen(afterFormIsClosed));
       });
 
       it('only removes (and does not save) inline forms when the data has not changed', function () {
-        var el = addInlineFormElement(); // Add form element to dom.
+        var el = addInlineFormElement(), // Add form element to dom.
+          data = {
+            value: '123',
+            _schema: {
+              _name: 'title',
+              _display: 'inline',
+              _has: 'text'
+            }
+          };
 
         function afterFormIsClosed() {
-          expect(el.childNodes.length).to.equal(0); // form element was removed.
-          expect(edit.save.callCount).to.equal(0); // data was not saved.
-          expect(render.reloadComponent.callCount).to.equal(0); // el was not reloaded.
-          expect(document.body.classList.contains(references.editingStatus)).to.equal(false); // editing status updated.
+          expectFormToBeRemoved(el);
+          expectDataWasNotSaved();
+          expectReloadCount(0);
+          expectEditingToBeDone();
         }
-        function afterFormIsOpen() {
-          return fn().then(afterFormIsClosed);
-        }
+
         // Make sure form data is the same as the server data.
         sandbox.stub(formValues, 'get').returns({title: '123'});
         // First open an inline form.
-        stubData({
-          value: '123',
-          _schema: {
-            _name: 'title',
-            _display: 'inline',
-            _has: 'text'
-          }
-        });
-        return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen);
+        stubData(data);
+
+        return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen(afterFormIsClosed));
       });
 
       it('removes and saves overlay forms when the data has changed', function () {
-        var el = addOverlayFormElement(); // Adds an overlay form element to dom.
+        var el = addOverlayFormElement(), // Adds an overlay form element to dom.
+          data = {
+            value: '123',
+            _schema: {
+              _display: 'overlay',
+              _name: 'title',
+              _has: 'text'
+            }
+          };
 
         function afterFormIsClosed() {
-          expect(el.childNodes.length).to.equal(0); // form element was removed.
-          expect(edit.save.calledOnce).to.equal(true); // data was saved.
-          expect(render.reloadComponent.calledOnce).to.equal(true); // el was reloaded.
-          expect(document.body.classList.contains(references.editingStatus)).to.equal(false); // editing status updated.
+          expectFormToBeRemoved(el);
+          expectDataWasSavedOnce();
+          expectReloadCount(1);
+          expectEditingToBeDone();
         }
-        function afterFormIsOpen() {
-          return fn().then(afterFormIsClosed);
-        }
-        // First open an inline form.
-        stubData({
-          value: '123',
-          _schema: {
-            _display: 'overlay',
-            _name: 'title',
-            _has: 'text'
-          }
-        });
-        return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen);
+
+        stubData(data);
+        edit.toClayKilnStyle.returns(Promise.resolve(data));
+
+        return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen(afterFormIsClosed));
       });
 
       it('only removes (and does not save) overlay forms when the data has not changed', function () {
-        var el = addOverlayFormElement(); // Adds an overlay form element to dom.
+        var el = addOverlayFormElement(), // Adds an overlay form element to dom.
+          data = {
+            value: '123',
+            _schema: {
+              _display: 'overlay',
+              _name: 'title',
+              _has: 'text'
+            }
+          };
 
         function afterFormIsClosed() {
-          expect(el.childNodes.length).to.equal(0); // form element was removed.
-          expect(edit.save.callCount).to.equal(0); // data was not saved.
-          expect(render.reloadComponent.callCount).to.equal(0); // el was not reloaded.
-          expect(document.body.classList.contains(references.editingStatus)).to.equal(false); // editing status updated.
+          expectFormToBeRemoved(el);
+          expectDataWasNotSaved();
+          expectReloadCount(0);
+          expectEditingToBeDone();
         }
-        function afterFormIsOpen() {
-          return fn().then(afterFormIsClosed);
-        }
+
         // Make sure form data is the same as the server data.
         sandbox.stub(formValues, 'get').returns({title: '123'});
         // First open an inline form.
-        stubData({
-          value: '123',
-          _schema: {
-            _display: 'overlay',
-            _name: 'title',
-            _has: 'text'
-          }
-        });
-        return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen);
+        stubData(data);
+
+        return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen(afterFormIsClosed));
       });
     });
   });

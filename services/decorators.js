@@ -21,6 +21,7 @@ function decorate(el, ref, path) {
   }
 
   return edit.getData(ref).then(function (data) {
+
     // add the data for this specific field or group
     options.data = groups.get(ref, data, path);
     // iterate through all the decorators, calling the ones that need to run

@@ -4,8 +4,7 @@ var lib = require('./group-fields'),
   dom = require('./../dom');
 
 describe('group-fields service', function () {
-  var sandbox,
-    prefix = 'place.com';
+  var sandbox;
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();

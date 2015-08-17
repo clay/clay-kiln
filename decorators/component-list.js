@@ -119,11 +119,10 @@ function updateOrder(el, options) {
     }
   });
   // Save.
-  return edit.getDataOnly(options.ref)
-    .then(function (componentData) {
-      componentData[options.path] = newOrder;
-      return edit.save(options.ref, componentData);
-    });
+  return edit.getData(options.ref).then(function (componentData) {
+    componentData[options.path] = newOrder;
+    return edit.save(componentData);
+  });
 }
 
 /**

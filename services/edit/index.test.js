@@ -19,6 +19,10 @@ describe('edit service', function () {
     return Promise.resolve(data);
   }
 
+  function expectSavedAs(expectedData) {
+    expect(cache.saveThrough.args[0][0]).to.deep.equal(expectedData, 'Expected saved value');
+  }
+
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
     sandbox.stub(db);
@@ -28,6 +32,9 @@ describe('edit service', function () {
 
     // not under test
     site.get.withArgs('prefix').returns(prefix);
+    site.addProtocol.returns('place.com/b');
+    site.addPort.returns('place.com/b');
+
     db.getHTML.returns(document.createElement('div'));
   });
 
@@ -83,8 +90,6 @@ describe('edit service', function () {
 
       dom.uri.returns(prefix + uri);
       db.getText.returns(Promise.resolve(data));
-      db.get.returns(Promise.resolve(putData));
-      db.save.withArgs(prefix + '/pages/thing@published').returns(Promise.resolve(putData));
 
       return putData;
     }
@@ -93,8 +98,7 @@ describe('edit service', function () {
       var data = expectPublish('/thing@thing.html', '/pages/thing@otherthing');
 
       cache.getDataOnly.returns(resolveReadOnly({}));
-      cache.getSchema.returns(resolveReadOnly({}));
-      cache.saveThrough.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly({}));
+      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly({}));
 
       return fn().then(function (result) {
         expect(result).to.deep.equal(data);
@@ -105,8 +109,7 @@ describe('edit service', function () {
       var data = expectPublish('/thing.html', '/pages/thing');
 
       cache.getDataOnly.returns(resolveReadOnly({}));
-      cache.getSchema.returns(resolveReadOnly({}));
-      cache.saveThrough.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly({}));
+      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly({}));
 
       return fn().then(function (result) {
         expect(result).to.deep.equal(data);
@@ -117,8 +120,7 @@ describe('edit service', function () {
       var data = expectPublish('/pages/thing.html', '/pages/thing');
 
       cache.getDataOnly.returns(resolveReadOnly({}));
-      cache.getSchema.returns(resolveReadOnly({}));
-      cache.saveThrough.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly({}));
+      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly({}));
 
       return fn().then(function (result) {
         expect(result).to.deep.equal(data);
@@ -129,26 +131,19 @@ describe('edit service', function () {
   describe('removeFromParentList', function () {
     var fn = lib[this.title];
 
-    beforeEach(function () {
-      site.addProtocol.returns('place.com/b');
-      site.addPort.returns('place.com/b');
-    });
-
     it('removes the item from the data', function () {
-      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}]}));
-      cache.getSchema.returns(resolveReadOnly({a: {}}));
+      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'}));
       cache.saveThrough.returns(resolveReadOnly({}));
 
       return fn({el: {}, ref: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
-        expect(cache.saveThrough.calledWith('d', {a: [{_ref: 'c'}]})).to.equal(true);
+        expectSavedAs({a: [{_ref: 'c'}], _schema: {a: {}}, _ref: 'd'});
       });
     });
 
     it('removes the item from the DOM', function () {
       var domEl = document.createElement('div');
 
-      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}]}));
-      cache.getSchema.returns(resolveReadOnly({a: {}}));
+      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'}));
       cache.saveThrough.returns(resolveReadOnly({}));
 
       return fn({el: domEl, ref: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
@@ -161,29 +156,26 @@ describe('edit service', function () {
     var fn = lib[this.title];
 
     it('adds the item to the list data', function () {
-      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}]}));
-      cache.getSchema.returns(resolveReadOnly({a: {}}));
-      cache.saveThrough(resolveReadOnly({}));
+      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'}));
+      cache.saveThrough.returns(resolveReadOnly({}));
 
       return fn({ref: 'newRef', prevRef: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
-        expect(cache.saveThrough.calledWith('d', {a: [{_ref: 'b'}, {_ref: 'newRef'}, {_ref: 'c'}]})).to.equal(true);
+        expectSavedAs({a: [{_ref: 'b'}, {_ref: 'newRef'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'});
       });
     });
 
     it('adds the item to the end of the list data', function () {
-      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}]}));
-      cache.getSchema.returns(resolveReadOnly({a: {}}));
-      cache.saveThrough(resolveReadOnly({}));
+      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'}));
+      cache.saveThrough.returns(resolveReadOnly({}));
 
       return fn({ref: 'newRef', prevRef: null, parentField: 'a', parentRef: 'd'}).then(function () {
-        expect(cache.saveThrough.calledWith('d', {a: [{_ref: 'b'}, {_ref: 'c'}, {_ref: 'newRef'}]})).to.equal(true);
+        expectSavedAs({a: [{_ref: 'b'}, {_ref: 'c'}, {_ref: 'newRef'}], _schema: {a: {}}, _ref: 'd'});
       });
     });
 
     it('returns a new element', function () {
-      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}]}));
-      cache.getSchema.returns(resolveReadOnly({a: {}}));
-      cache.saveThrough(resolveReadOnly({}));
+      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'}));
+      cache.saveThrough.returns(resolveReadOnly({}));
 
       return fn({ref: 'newRef', prevRef: 'b', parentField: 'a', parentRef: 'd'}).then(function (el) {
         expect(el instanceof Element).to.equal(true);

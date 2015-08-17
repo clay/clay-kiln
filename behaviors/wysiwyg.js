@@ -171,7 +171,7 @@ function getFieldContents(el) {
  */
 function appendToPrev(html, prev) {
 // note: get fresh data from the server
-  return db.get(prev.ref).then(function (prevData) {
+  return edit.getData(prev.ref).then(function (prevData) {
     var prevFieldData = _.get(prevData, prev.field),
       throwawayDiv = document.createElement('div'),
       textmodel, fragment, cleanedString;
@@ -187,7 +187,7 @@ function appendToPrev(html, prev) {
 
     // then put it back into the previous component's data
     _.set(prevData, prev.field, cleanedString);
-    return edit.save(prev.ref, prevData);
+    return edit.savePartial(prevData);
   });
 }
 

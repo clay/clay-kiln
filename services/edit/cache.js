@@ -67,7 +67,10 @@ function getDataOnly(uri) {
 /**
  * Get data for a component combined with schema.
  *
+ * NOTE: Some components are read-only and cannot be edited.
+ *
  * @param {string} uri
+ * @throws Error if uri cannot be edited because of a missing schema
  * @returns {Promise}
  */
 function getData(uri) {
@@ -89,15 +92,19 @@ function getData(uri) {
  * @returns {Promise}
  */
 function getSchema(uri) {
-  return db.getSchema(uri);
+  return db.getSchema(uri).then(function (schema) {
+    addNameToFieldsOfSchema(schema);
+    return schema;
+  });
 }
 
 /**
- * @param {string} uri
  * @param {object} data
  * @returns {Promise}
  */
-function saveThrough(uri, data) {
+function saveThrough(data) {
+  var uri = data[references.referenceProperty];
+
   return removeExtras(uri, data).then(function (data) {
     return db.save(uri, data);
   }).then(function (result) {

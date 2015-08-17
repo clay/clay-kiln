@@ -4,8 +4,7 @@ var lib = require('./schema-fields'),
   dom = require('./../dom');
 
 describe('schema-fields service', function () {
-  var sandbox,
-    prefix = 'place.com';
+  var sandbox;
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
@@ -26,7 +25,8 @@ describe('schema-fields service', function () {
         num: {}
       }, {
         num: 123
-      })).to.deep.equal({
+      }))
+        .to.deep.equal({
           num: {
             _schema: {},
             value: 123
@@ -42,7 +42,8 @@ describe('schema-fields service', function () {
         num: {}
       }, {
         num: '123'
-      })).to.deep.equal({
+      }))
+        .to.deep.equal({
           num: {
             _schema: {},
             value: '123'
@@ -56,7 +57,8 @@ describe('schema-fields service', function () {
     it('undefined without schema', function () {
       expect(fn({}, {
         num: undefined
-      })).to.deep.equal({
+      }))
+        .to.deep.equal({
           num: undefined,
           _schema: {}
         });
@@ -75,7 +77,8 @@ describe('schema-fields service', function () {
     it('number without schema', function () {
       expect(fn({}, {
         num: 123
-      })).to.deep.equal({
+      }))
+        .to.deep.equal({
           num: 123,
           _schema: {}
         });
@@ -84,7 +87,8 @@ describe('schema-fields service', function () {
     it('text without schema', function () {
       expect(fn({}, {
         num: '123'
-      })).to.deep.equal({
+      }))
+        .to.deep.equal({
           num: '123',
           _schema: {}
         });
@@ -105,23 +109,23 @@ describe('schema-fields service', function () {
     var fn = lib[this.title];
 
     it('number to object with schema', function () {
-      expect(fn({ num: { _schema: {}, value: 123 }, _schema: { num: {} } })).to.deep.equal({ num: 123 });
+      expect(fn({num: {_schema: {}, value: 123}, _schema: {num: {}}})).to.deep.equal({num: 123});
     });
 
     it('text to object with schema', function () {
-      expect(fn({ num: { _schema: {}, value: '123' }, _schema: { num: {} } })).to.deep.equal({ num: '123' } );
+      expect(fn({num: {_schema: {}, value: '123'}, _schema: {num: {}}})).to.deep.equal({num: '123'});
     });
 
     it('undefined without schema', function () {
-      expect(fn({ num: undefined })).to.deep.equal({ num: undefined });
+      expect(fn({num: undefined})).to.deep.equal({num: undefined});
     });
 
     it('number without schema', function () {
-      expect(fn({ num: 123 })).to.deep.equal({ num: 123 });
+      expect(fn({num: 123})).to.deep.equal({num: 123});
     });
 
     it('text without schema', function () {
-      expect(fn({ num: '123' })).to.deep.equal({ num: '123' } );
+      expect(fn({num: '123'})).to.deep.equal({num: '123'});
     });
   });
 });
