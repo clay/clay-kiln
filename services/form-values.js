@@ -57,6 +57,10 @@ function getValues(data, el) {
 function getFormValues(form) {
   var data = {};
 
+  if (!form || !form instanceof Element || form.tagName !== 'FORM') {
+    throw new Error('Cannot get form values from non-elements!');
+  }
+
   _.reduce(dom.findAll(form, '[' + references.fieldAttribute + ']'), getValues, data);
   // all bound fields should have a [data-field] attribute
   return data;
