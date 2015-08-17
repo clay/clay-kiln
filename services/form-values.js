@@ -41,7 +41,7 @@ function getValues(data, el) {
     viewData = removeBehaviorMeta(viewData);
     // if the data is a string, trim it!
     if (_.isString(viewData)) {
-      viewData = viewData.replace(/(\u00a0|&nbsp;)/g, ' '); // remove &nbsp;
+      viewData = viewData.replace(/(\u00a0|&nbsp;|&#160;)/g, ' '); // remove &nbsp;
       viewData = viewData.trim();
     }
     data[name] = viewData;
