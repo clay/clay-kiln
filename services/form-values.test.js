@@ -37,12 +37,17 @@ describe(dirname, function () {
     /**
      * stub field elements
      * @param {string} fieldName
+     * @param {boolean} hasValue
      * @returns {Element} node
      */
-    function stubField(fieldName) {
-      var node = document.createElement('div');
+    function stubField(fieldName, hasValue) {
+      var node = document.createElement('input'),
+        value = hasValue ? 'data.value' : 'data';
 
+      // make the node a field
       node.setAttribute(references.fieldAttribute, fieldName);
+      // make the node data-bound
+      node.setAttribute('rv-value', value);
 
       return node;
     }
@@ -116,8 +121,8 @@ describe(dirname, function () {
       });
 
       it('gets values for multiple fields', function () {
-        var field1 = stubField('foo'),
-          field2 = stubField('bar'),
+        var field1 = stubField('foo', true),
+          field2 = stubField('bar', true),
           form = stubForm([field1, field2]);
 
         behaviors.getBinding.withArgs('foo').returns(stubBinding(field1, { data: { value: 'FOO' } }));
@@ -127,7 +132,7 @@ describe(dirname, function () {
       });
 
       it('gets string value', function () {
-        var field = stubField('foo'),
+        var field = stubField('foo', true),
           form = stubForm([field]);
 
         behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: { value: 'bar' } }));
@@ -136,7 +141,7 @@ describe(dirname, function () {
       });
 
       it('gets number value', function () {
-        var field = stubField('foo'),
+        var field = stubField('foo', true),
           form = stubForm([field]);
 
         behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: { value: 1 } }));
@@ -145,7 +150,7 @@ describe(dirname, function () {
       });
 
       it('gets boolean value', function () {
-        var field = stubField('foo'),
+        var field = stubField('foo', true),
           form = stubForm([field]);
 
         behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: { value: true } }));
@@ -154,7 +159,7 @@ describe(dirname, function () {
       });
 
       it('gets array value', function () {
-        var field = stubField('foo'),
+        var field = stubField('foo', false),
           form = stubForm([field]);
 
         behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: [1,2,3] }));
@@ -163,7 +168,7 @@ describe(dirname, function () {
       });
 
       it('gets object value', function () {
-        var field = stubField('foo'),
+        var field = stubField('foo', false),
           form = stubForm([field]);
 
         behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: { prop: 'val' } }));
@@ -172,7 +177,7 @@ describe(dirname, function () {
       });
 
       it('removes binding metadata from strings', function () {
-        var field = stubField('foo'),
+        var field = stubField('foo', true),
           form = stubForm([field]);
 
         behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: { value: 'bar', _coolness: 'radical' } }));
@@ -181,7 +186,7 @@ describe(dirname, function () {
       });
 
       it('removes binding metadata from arrays', function () {
-        var field = stubField('foo'),
+        var field = stubField('foo', false),
           form = stubForm([field]);
 
         behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: [
@@ -204,7 +209,7 @@ describe(dirname, function () {
       });
 
       it('removes nonbreaking spaces from strings', function () {
-        var field = stubField('foo'),
+        var field = stubField('foo', true),
           form = stubForm([field]);
 
         behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: { value: 'b&#160;a\u00a0r&nbsp;r' } }));
@@ -213,7 +218,7 @@ describe(dirname, function () {
       });
 
       it('trims strings', function () {
-        var field = stubField('foo'),
+        var field = stubField('foo', true),
           form = stubForm([field]);
 
         behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: { value: '   b a r   ' } }));

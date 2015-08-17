@@ -21,13 +21,6 @@ function removeBehaviorMeta(value) {
   }
 }
 
-function getViewData(view) {
-  var hasValue = _.has(view, 'models.data.value'),
-    value = hasValue ? _.get(view, 'models.data.value') : _.get(view, 'models.data');
-
-  return _.cloneDeep(value); // clear out the _rv's and getters and setters
-}
-
 /**
  * get values from inputs, lists, etc
  * @param  {{}} data
@@ -37,10 +30,12 @@ function getViewData(view) {
 function getValues(data, el) {
   var name = el.getAttribute(references.fieldAttribute),
     view = behaviors.getBinding(name),
-    viewData;
+    binding, viewData;
 
-  if (view) {
-    viewData = getViewData(view);
+  if (view && view.bindings && view.bindings.length) {
+    binding = _.find(view.bindings, function (value) { return value.el === el; });
+    // clear out the _rv's and getters and setters
+    viewData = _.cloneDeep(binding.observer.value());
     // remove any behavior metadata from the view data
     viewData = removeBehaviorMeta(viewData);
     // if the data is a string, trim it!
