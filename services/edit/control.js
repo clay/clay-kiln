@@ -74,7 +74,7 @@ function memoizePromise(fn) {
     } else {
       // at first, save the promise
       wrap.cache.set(key, d.promise);
-      fn.apply(null, _.slice(arguments)).then(function (result) {
+      fn.apply(null, args).then(function (result) {
         // prevent cache corruption
         setReadOnly(result);
 
