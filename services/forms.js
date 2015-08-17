@@ -165,16 +165,14 @@ function close() {
       // remove currentForm values
       currentForm = {};
 
-      return edit.update(ref, data)
+      data[references.referenceProperty] = ref;
+      return edit.toClayKilnStyle(data, {isPartial: true})
+        .then(edit.savePartial)
         .then(function () {
           removeCurrentForm(container);
           return render.reloadComponent(ref);
-        })
-        .then(function () {
+        }).then(function () {
           setEditingStatus(false); // Status as saved.
-        })
-        .catch(function () {
-          console.warn('Did not save.');
         });
     } else {
       // Nothing changed or the component was removed, so do not reload.

@@ -106,8 +106,8 @@ function addPlaceholderDom(node, obj) {
  */
 function hasPlaceholder(el, options) {
   var schema = _.get(options, 'data._schema'),
-    isPlaceholder = !!schema[references.placeholderProperty],
-    isField = !!schema[references.fieldProperty];
+    isPlaceholder = !!schema && !!schema[references.placeholderProperty],
+    isField = !!schema && !!schema[references.fieldProperty];
 
   // if it has a placeholder...
   // if it's a field, make sure it's empty
