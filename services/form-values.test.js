@@ -2,7 +2,6 @@ var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   _ = require('lodash'),
   rivets = require('rivets'),
-  edit = require('./edit'),
   behaviors = require('./behaviors'),
   references = require('./references'),
   lib = require('./form-values');
@@ -13,7 +12,6 @@ describe(dirname, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      sandbox.stub(edit);
       sandbox.stub(behaviors);
     });
 
