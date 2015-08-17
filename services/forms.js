@@ -170,9 +170,6 @@ function close() {
 
       data[references.referenceProperty] = ref;
       return edit.toClayKilnStyle(data, {isPartial: true})
-        .then(function (d) {
-          return d;
-        })
         .then(edit.savePartial)
         .then(function () {
           removeCurrentForm(container);
