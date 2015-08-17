@@ -173,20 +173,19 @@ function appendToPrev(html, prev) {
 // note: get fresh data from the server
   return edit.getData(prev.ref).then(function (prevData) {
     var prevFieldData = _.get(prevData, prev.field),
+      prevFieldHTML = prevFieldData.value,
       throwawayDiv = document.createElement('div'),
-      textmodel, fragment, cleanedString;
+      textmodel, fragment;
 
     // add current field's html to the end of the previous field
-    prevFieldData += html;
+    prevFieldHTML += html;
 
     // pass the full thing through text-model to clean it and merge tags
-    textmodel = model.fromElement(dom.create(prevFieldData));
+    textmodel = model.fromElement(dom.create(prevFieldHTML));
     fragment = model.toElement(textmodel);
     throwawayDiv.appendChild(fragment);
-    cleanedString = throwawayDiv.innerHTML;
+    prevFieldData.value = throwawayDiv.innerHTML;
 
-    // then put it back into the previous component's data
-    _.set(prevData, prev.field, cleanedString);
     return edit.savePartial(prevData);
   });
 }

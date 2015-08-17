@@ -15,6 +15,9 @@ var _ = require('lodash'),
  * Cloning removes extra properties like _schema from standard types like Array, because we're doing a bad thing.
  *
  * This function adds them back.
+ *
+ * @param {object} data
+ * @returns {object}
  */
 function addDeviantArraySchemas(data) {
   _.each(data._schema, function (fieldDefinition, fieldName) {
@@ -129,7 +132,7 @@ function toClayKilnStyle(data, options) {
     if (options.isPartial) {
       // Remove everything with undefined values in object-like things.  They're going to save as a partial.
       _.each(data, function (obj, fieldName) {
-        if (_.isObject(obj) && obj.value === undefined) {
+        if (_.isPlainObject(obj) && obj.value === undefined) {
           delete data[fieldName];
         }
       });
