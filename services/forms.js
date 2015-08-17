@@ -59,7 +59,6 @@ function setCurrentData(data) {
     isSingleField = !!_.get(data, '_schema.' + references.fieldProperty);
 
   currentForm.data = {}; // clear form.
-  data = _.cloneDeep(data); // clone so that no one else changes it.
   fields = isSingleField ? [data] : data.value; // ensure fields is an array.
   _.reject(fields, hasAffects).forEach(setCurrentFormFieldValue); // ignore "affects" fields and set current.
 }
@@ -120,12 +119,15 @@ function setEditingStatus(isEditing) {
  * @return {Promise|undefined}
  */
 function open(ref, el, path, e) {
+  // first, check if a form is already open
   if (!isFormOpen()) {
     if (e) {
+      // if there's a click event, stop it from bubbling up or doing weird things
       e.stopPropagation();
       e.preventDefault();
     }
 
+    // grab the (possibly cached) data and create the form
     return edit.getData(ref).then(function (data) {
       // set current form data
       currentForm = {
@@ -137,8 +139,9 @@ function open(ref, el, path, e) {
       data = groups.get(ref, data, path); // note: if path is undefined, it'll open the settings form
       setCurrentData(data); // set that data into the currentForm
 
-      setEditingStatus(true); // Status as editing.
+      setEditingStatus(true); // set editing status (a class on the <body> of the page)
 
+      // determine if the form is inline, and call the relevant formCreator method
       if (data._schema[references.displayProperty] === 'inline') {
         return formCreator.createInlineForm(ref, data, el);
       } else {

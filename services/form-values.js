@@ -28,20 +28,19 @@ function removeBehaviorMeta(value) {
  * @return {{}}
  */
 function getValues(data, el) {
-  var binding,
-    name = el.getAttribute(references.fieldAttribute),
+  var name = el.getAttribute(references.fieldAttribute),
     view = behaviors.getBinding(name),
-    viewData;
+    binding, viewData;
 
-  if (view && view.models && view.bindings) {
+  if (view && view.bindings && view.bindings.length) {
     binding = _.find(view.bindings, function (value) { return value.el === el; });
     // clear out the _rv's and getters and setters
     viewData = _.cloneDeep(binding.observer.value());
-    // remove any behavior metadata from the bindings
+    // remove any behavior metadata from the view data
     viewData = removeBehaviorMeta(viewData);
     // if the data is a string, trim it!
     if (_.isString(viewData)) {
-      viewData = viewData.replace(/(\u00a0|&nbsp;)/g, ' '); // remove &nbsp;
+      viewData = viewData.replace(/(\u00a0|&nbsp;|&#160;)/g, ' '); // remove &nbsp;
       viewData = viewData.trim();
     }
     data[name] = viewData;
@@ -56,6 +55,10 @@ function getValues(data, el) {
  */
 function getFormValues(form) {
   var data = {};
+
+  if (!form || !form instanceof Element || form.tagName !== 'FORM') {
+    throw new Error('Cannot get form values from non-elements!');
+  }
 
   _.reduce(dom.findAll(form, '[' + references.fieldAttribute + ']'), getValues, data);
   // all bound fields should have a [data-field] attribute
