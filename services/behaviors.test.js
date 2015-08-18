@@ -19,36 +19,40 @@ describe(dirname, function () {
       }
 
       it('accepts shortcut notation', function () {
-        var result;
+        function test(resolved) {
+          expect(resolved.el.firstElementChild.outerHTML).to.equal(singleElement);
+        }
 
         addTestBehaviors();
-        result = fn({_schema: {_name: 'name', _has: 'testBehavior'}});
-        expect(result.el.firstElementChild.outerHTML).to.equal(singleElement);
+        fn({_schema: {_name: 'name', _has: 'testBehavior'}}).then(test);
       });
 
       it('accepts inner shortcut notation', function () {
-        var result;
+        function test(resolved) {
+          expect(resolved.el.firstElementChild.outerHTML).to.equal(singleElement);
+        }
 
         addTestBehaviors();
-        result = fn({_schema: {_name: 'name', _has: ['testBehavior']}});
-        expect(result.el.firstElementChild.outerHTML).to.equal(singleElement);
+        fn({_schema: {_name: 'name', _has: ['testBehavior']}}).then(test);
       });
 
       it('accepts normal notation', function () {
-        var result;
+        function test(resolved) {
+          expect(resolved.el.firstElementChild.outerHTML).to.equal(singleElement);
+        }
 
         addTestBehaviors();
-        result = fn({_schema: {_name: 'name', _has: [{fn: 'testBehavior'}]}});
-        expect(result.el.firstElementChild.outerHTML).to.equal(singleElement);
+        fn({_schema: {_name: 'name', _has: [{fn: 'testBehavior'}]}}).then(test);
       });
 
       it('accepts multiple behaviors', function () {
-        var result;
+        function test(resolved) {
+          expect(resolved.el.firstElementChild.outerHTML).to.equal(singleElement);
+          expect(resolved.el.firstElementChild.nextElementSibling.outerHTML).to.equal(singleElement);
+        }
 
         addTestBehaviors();
-        result = fn({_schema: {_name: 'name', _has: [{fn: 'testBehavior'}, {fn: 'testBehavior'}]}});
-        expect(result.el.firstElementChild.outerHTML).to.equal(singleElement);
-        expect(result.el.firstElementChild.nextElementSibling.outerHTML).to.equal(singleElement);
+        fn({_schema: {_name: 'name', _has: [{fn: 'testBehavior'}, {fn: 'testBehavior'}]}}).then(test);
       });
     });
 
