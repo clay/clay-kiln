@@ -367,7 +367,7 @@ module.exports = function (result, args) {
     styled = args.styled,
     enableKeyboardExtras = args.enableKeyboardExtras,
     textInput = getInput(result.el),
-    field = dom.create(`<p class="wysiwyg-input${ isStyled(styled) }" data-field="${name}" rv-wysiwyg="${name}.data.value"></p>`);
+    field = dom.create(`<p class="wysiwyg-input${ isStyled(styled) }" data-field="${name}" rv-wysiwyg="${name}.data.value" data-wysiwyg-buttons="${buttons.join(',')}"></p>`);
 
   // if more than 5 buttons, put the rest on the second tier
   if (buttons.length > 5) {
@@ -390,11 +390,13 @@ module.exports = function (result, args) {
 
   binders.wysiwyg = {
     publish: true,
+    block: false,
     bind: function (el) {
       // this is called when the binder initializes
-      var observer = this.observer,
+      var toolbarButtons = el.getAttribute('data-wysiwyg-buttons').split(','),
+        observer = this.observer,
         data = observer.value() || '', // don't print 'undefined' if there's no data
-        editor = createEditor(field, buttons),
+        editor = createEditor(el, toolbarButtons),
         italicExtension = _.find(editor.extensions, findExtension('italic')),
         strikethoughExtension = _.find(editor.extensions, findExtension('strikethrough')),
         linkExtension = _.find(editor.extensions, findExtension('anchor'));
