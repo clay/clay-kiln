@@ -3,6 +3,16 @@ var _ = require('lodash'),
   dom = require('../services/dom'),
   site = require('../services/site');
 
+/**
+ * Only run the function if the properties exist. Warn if they do not. Parameters of function are gotten properties.
+ *
+ * Does a deep0get.
+ *
+ * @param {object} obj
+ * @param {[string]} list
+ * @param {function} fn
+ * @returns {*}
+ */
 function withProperties(obj, list, fn) {
   var args = [],
     missing = _.any(list, function (prop) {
@@ -20,14 +30,30 @@ function withProperties(obj, list, fn) {
   }
 }
 
+/**
+ * Get prefix to use for media.
+ *
+ * @returns {string}
+ */
 function getMediaPrefix() {
   return site.addProtocol(site.addPort(site.get('prefix')));
 }
 
+/**
+ * Get the first list element within el.
+ *
+ * @param {Element} el  Container element.
+ * @returns {Element}
+ */
 function getFirstListElement(el) {
   return dom.find(el, 'ul,li');
 }
 
+/**
+ * Create an element to put all the data.
+ *
+ * @returns {Element}
+ */
 function createContainerElement() {
   var prefix = getMediaPrefix();
 
@@ -42,6 +68,12 @@ function createContainerElement() {
     </section>`);
 }
 
+/**
+ * Create an element to put all the data.  Can return nothing if missing data.
+ *
+ * @param {object} item
+ * @returns {Element|null}
+ */
 function createRuleElement(item) {
   return withProperties(item, ['rule.label', 'rule.description'], function (label, description) {
     return dom.create(`
@@ -53,6 +85,12 @@ function createRuleElement(item) {
   });
 }
 
+/**
+ * Create an element to put all the data.  Can return nothing if missing data.
+ *
+ * @param {object} error
+ * @returns {Element|null}
+ */
 function createErrorElement(error) {
   return withProperties(error, ['label', 'preview'], function (label, preview) {
     return dom.create(`
@@ -63,6 +101,12 @@ function createErrorElement(error) {
   });
 }
 
+/**
+ * Create a validation dropdown given some items.
+ *
+ * @param {[object]} items
+ * @returns {Element}
+ */
 function create(items) {
   var containerEl = createContainerElement(),
     list = getFirstListElement(containerEl);
@@ -91,12 +135,16 @@ function create(items) {
   return containerEl;
 }
 
+/**
+ * @param {Element} parentEl
+ * @param {[object]} errors
+ * @constructor
+ */
 function ValidationDropdown(parentEl, errors) {
   var el = create(errors);
 
   events.add(el, {
-    '.close click': 'onClose',
-    '.settings click': 'onSettings'
+    '.close click': 'onClose'
   }, this);
 
   parentEl = dom.find(parentEl, '.kiln-toolbar-inner') || parentEl;
@@ -113,14 +161,8 @@ ValidationDropdown.prototype = {
     el.parentNode.removeChild(el);
   },
 
-  onClose: function (e) {
-    console.log('onClose', e);
-
+  onClose: function () {
     this.remove();
-  },
-
-  onSettings: function (e) {
-    console.log('onSettings', e);
   }
 };
 

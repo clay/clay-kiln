@@ -12,9 +12,18 @@ $white: #ffffff;
   color: $white;
   font-family: Helvetica, Arial, sans-serif;
   position: absolute;
-  max-width: 35rem;
+  max-width: 31rem;
   right: 0;
   top: 6.1rem;
+
+  header, footer {
+    padding: 1rem;
+  }
+
+  header img {
+    margin-right: 1.3rem;
+    height: 42px;
+  }
 
   .row {
     align-content: space-around;
@@ -24,22 +33,16 @@ $white: #ffffff;
     justify-content: space-around;
   }
 
-  .row > * {
-    margin: 1rem;
-  }
-
   ol, ul {
     margin: 0;
     padding: 0;
   }
 
-
-
   li.rule {
     &:first-of-type {
-      border-top: #{($grey)} 1px solid;
+      border-top: #{($red-50)} 1px solid;
     }
-    border-bottom: #{($grey)} 1px solid;
+    border-bottom: #{($red-50)} 1px solid;
     list-style-type: none;
     margin: 0;
     padding: 2rem;
@@ -60,7 +63,7 @@ $white: #ffffff;
     }
 
     ol, ul {
-      margin-left: 2.6rem
+      margin-left: 1.9rem;
     }
   }
 
@@ -80,7 +83,7 @@ $white: #ffffff;
       }
     }
 
-    >.description {
+    >.preview {
       display: block;
       margin: 0.2rem;;
       &:before {

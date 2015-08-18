@@ -11,6 +11,12 @@ var label, description,
 label = 'Ban TKs';
 description = 'TKs are not allowed';
 
+/**
+ * @param {string} componentName
+ * @param {string} label
+ * @param {string} ref
+ * @returns {string}
+ */
 function getLabel(componentName, label, ref) {
   if (componentName) {
     return _.compact([_.startCase(componentName), label]).join(' ');
@@ -20,6 +26,11 @@ function getLabel(componentName, label, ref) {
   }
 }
 
+/**
+ * @param {string} value
+ * @param {object} data
+ * @returns {string}
+ */
 function getPreview(value, data) {
   var index;
 
@@ -41,6 +52,11 @@ function getPreview(value, data) {
   }
 }
 
+/**
+ * @param {object} component
+ * @param {string} fieldName
+ * @param {[object]} errors
+ */
 function addError(component, fieldName, errors) {
   var ref = component[refProp],
     componentName = ref && references.getComponentNameFromReference(ref),
@@ -58,6 +74,10 @@ function addError(component, fieldName, errors) {
   errors.push(error);
 }
 
+/**
+ * @param {{refs: object, components: Array}} state
+ * @returns {[object]}
+ */
 function validate(state) {
   var errors = [],
     groups = _.groupBy(state.refs, function (value, key) {

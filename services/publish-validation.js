@@ -1,30 +1,19 @@
 var _ = require('lodash'),
   dom = require('./dom'),
   edit = require('./edit'),
+  control = require('./edit/control'),
   promises = require('./promises'),
   references = require('./references'),
   refAttr = references.referenceAttribute,
   refAtrrSelector = '[' + refAttr + ']';
 
+/**
+ * True if rule is enabled.
+ * @param {object} rule
+ * @returns {boolean}
+ */
 function isRuleEnabled(rule) {
   return rule.enabled !== false;
-}
-
-function filterEmpty(result) {
-  return _.filter(result, _.identity);
-}
-
-function setReadOnly(obj) {
-  _.forOwn(obj, function (value) {
-    if (typeof value === 'object') {
-      setReadOnly(value);
-    }
-  });
-
-  if (Object.isFrozen && !Object.isFrozen(obj)) {
-    Object.freeze(obj);
-  }
-  return obj;
 }
 
 /**
@@ -58,7 +47,6 @@ function getLatestRefDataMap(refs) {
 }
 
 /**
- *
  * @param {{refs: object, components: Array}} state
  * @returns {function}
  */
@@ -77,7 +65,6 @@ function validateRule(state) {
 }
 
 /**
- *
  * @param {Array} rules
  * @returns {Promise}
  */
@@ -88,11 +75,11 @@ function validate(rules) {
   // run rules async
   return promises.join(getLatestRefDataMap(refs), components)
     .then(function (result) {
-      var state = setReadOnly({ refs: result[0], components: result[1] });
+      var state = control.setReadOnly({ refs: result[0], components: result[1] });
 
       return promises.map(_.filter(rules, isRuleEnabled), validateRule(state));
     })
-    .then(filterEmpty);
+    .then(_.compact);
 }
 
 module.exports.validate = validate;
