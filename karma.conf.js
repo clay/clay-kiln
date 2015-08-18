@@ -7,7 +7,8 @@ files = [
   'controllers/*.js',
   'behaviors/*.js',
   'services/**/*.js',
-  'decorators/*.js'
+  'decorators/*.js',
+  'publishing-rules/*.js'
 ];
 
 settings = {

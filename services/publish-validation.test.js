@@ -14,7 +14,8 @@ describe('publish-validation service', function () {
     sandbox = sinon.sandbox.create();
     sandbox.spy(dom, 'create');
     sandbox.stub(dom, 'find');
-    sandbox.stub(edit, 'getData');
+    sandbox.stub(dom, 'findAll');
+    sandbox.stub(edit);
   });
 
   afterEach(function () {
@@ -71,7 +72,7 @@ describe('publish-validation service', function () {
         data = {},
         rules = [{ validate: spy }];
 
-      dom.find.withArgs('[data-ref]').returns([dom.create('<section data-ref="' + ref + '" />')]);
+      dom.findAll.withArgs('[data-uri]').returns([dom.create('<section data-uri="' + ref + '" />')]);
       edit.getData.withArgs(ref).returns(Promise.resolve(data));
 
       return fn(rules).then(function () {

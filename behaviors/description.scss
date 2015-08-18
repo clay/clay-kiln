@@ -2,7 +2,7 @@
 @import '../styleguide/typography';
 
 .label-description {
-  @include body-copy();
+  @include normal-text();
 
   color: $black-50;
   font-size: 14px;

@@ -1,8 +1,11 @@
+console.log(require('util'));
+
 var label, description,
   tkText = 'TK',
   articleFields = ['primaryHeadline', 'teaser'],
   _ = require('lodash'),
-  references = require('../services/references');
+  references = require('../services/references'),
+  refProp = references.referenceProperty;
 
 label = 'Ban TKs';
 description = 'TKs are not allowed';
@@ -41,8 +44,11 @@ function addError(component, fieldName, errors) {
 function validate(state) {
   var errors = [],
     groups = _.groupBy(state.refs, function (value) {
-      return references.getComponentNameFromReference(value._ref);
+      return references.getComponentNameFromReference(value[refProp]);
     });
+
+  console.log('state', state);
+  console.log('groups', groups);
 
   _.each(groups.paragraph, function (component) {
     var fieldName = 'text';
@@ -72,3 +78,5 @@ function validate(state) {
 module.exports.label = label;
 module.exports.description = description;
 module.exports.validate = validate;
+
+console.log(__filename);

@@ -1,54 +1,92 @@
 var _ = require('lodash'),
   references = require('../services/references'),
   events = require('../services/events'),
-  dom = require('../services/dom');
+  dom = require('../services/dom'),
+  site = require('../services/site');
 
-function create(items) {
-  var root = dom.create(`
-      <section class="descriptive-dropdown">
-        <header>
-          <button class="close button-small">Close</button>
-          <button class="settings button-small">Settings</button>
-          <span>Please change:</span>
-        </header>
-        <ul></ul>
-        <footer></footer>
-      </section>`),
-    list = dom.find(root, 'ul');
+function withProperties(obj, list, fn) {
+  var args = [],
+    missing = _.any(list, function (prop) {
+      var value = _.get(obj, prop);
 
-  _.each(items, function (item) {
-    var itemEl = dom.create(`
-        <li>
-          <span class="name">${item.rule.label}</span>
-          <span class="description">${item.rule.description}</span>
-          <ul></ul>
-        </li>`),
-      itemList = dom.find(itemEl, 'ul');
-
-    _.each(item.errors, function (error) {
-      var componentName = references.getComponentNameFromReference(error.ref),
-        label, value, errorEl, errorPropertyList;
-
-      errorEl = dom.create(`
-        <li>
-          <span class="error-component-name">${componentName}</span>
-        </li>`);
-      errorPropertyList = dom.find(errorEl, 'li') || errorEl;
-
-      if (error.value) {
-        errorPropertyList.appendChild(dom.create(`<span class="error-value">${error.value}</span>`));
-      } else if (error.label) {
-        errorPropertyList.appendChild(dom.create(`<span class="error-label">${error.label}</span>`));
+      if (value === undefined || value === null) {
+        console.warn('Missing', prop, obj);
+        return true;
       }
-      dom.prependChild(itemList, errorEl);
+      args.push(value);
     });
 
-    list.appendChild(itemEl);
+  if (!missing) {
+    return fn.apply(null, args);
+  }
+}
+
+function getMediaPrefix() {
+  return site.addProtocol(site.addPort(site.get('prefix')));
+}
+
+function getFirstListElement(el) {
+  return dom.find(el, 'ul,li');
+}
+
+function createContainerElement() {
+  var prefix = getMediaPrefix();
+
+  return dom.create(`
+    <section class="validation-dropdown">
+      <header class="row">
+          <img src="${prefix}/media/components/clay-kiln/stop-sign-white.svg">
+          <span>This story is missing things needed to publish. Address the following and try again.</span>
+      </header>
+      <ul></ul>
+      <footer class="row"><span class="button-container"><button class="close button-small">Close</button></span></footer>
+    </section>`);
+}
+
+function createRuleElement(item) {
+  return withProperties(item, ['rule.label', 'rule.description'], function (label, description) {
+    return dom.create(`
+      <li class="rule">
+        <span class="name">${label}</span>
+        <span class="description">${description}</span>
+        <ul></ul>
+      </li>`);
+  });
+}
+
+function createErrorElement(error) {
+  return withProperties(error, ['label', 'fieldName', 'preview'], function (ref, label, preview) {
+    return dom.create(`
+      <li class="error">
+        <span class="name">${label}</span>
+        <span class="preview">${preview}</span>
+      </li>`);
+  });
+}
+
+function create(items) {
+  var containerEl = createContainerElement(),
+    list = getFirstListElement(containerEl);
+
+  _.each(items, function (item) {
+    var ruleEl = createRuleElement(item),
+      ruleList = getFirstListElement(ruleEl);
+
+    _.each(item.errors, function (error) {
+      var label, value, errorEl, errorList;
+
+      errorEl = createErrorElement(error);
+      errorList = getFirstListElement(errorEl) || errorEl;
+      label = error.label;
+      value = error.value;
+
+      dom.prependChild(ruleList, errorEl);
+    });
+
+    list.appendChild(ruleEl);
   });
 
-
-
-  return root;
+  return containerEl;
 }
 
 function ValidationDropdown(parentEl, errors) {
@@ -59,7 +97,7 @@ function ValidationDropdown(parentEl, errors) {
     '.settings click': 'onSettings'
   }, this);
 
-  parentEl = dom.find(parentEl, '.editor-toolbar-inner') || parentEl;
+  parentEl = dom.find(parentEl, '.kiln-toolbar-inner') || parentEl;
   parentEl.appendChild(el);
 
   this.el = el;

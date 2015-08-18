@@ -1,0 +1,114 @@
+@import 'colors';
+@import 'typography';
+@import 'buttons';
+@import 'layers';
+
+$white: #ffffff;
+
+.validation-dropdown {
+  @include normal-text;
+  background-color: $red;
+  border-radius: 4px;
+  color: $white;
+  font-family: Helvetica, Arial, sans-serif;
+  position: absolute;
+  max-width: 35rem;
+  right: 0;
+  top: 6.1rem;
+
+  .row {
+    align-content: space-around;
+    align-items: flex-start;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .row > * {
+    margin: 1rem;
+  }
+
+  ol, ul {
+    margin: 0;
+    padding: 0;
+  }
+
+
+
+  li.rule {
+    &:first-of-type {
+      border-top: #{($grey)} 1px solid;
+    }
+    border-bottom: #{($grey)} 1px solid;
+    list-style-type: none;
+    margin: 0;
+    padding: 2rem;
+
+    >.name {
+      display: inline;
+      font-weight: bold;
+      margin: 0.2rem;
+
+      &:after {
+        content: ': '
+      }
+    }
+
+    >.description {
+      display: inline;
+      margin: 0.2rem;
+    }
+
+    ol, ul {
+      margin-left: 2.6rem
+    }
+  }
+
+  li.error {
+    @include small-text;
+    color: $white;
+    list-style-type: disc;
+    margin: .2rem;
+    padding: 0;
+
+    >.name {
+      display: block;
+      margin: 0.2rem;
+
+      &:after {
+        content: ': '
+      }
+    }
+
+    >.description {
+      display: block;
+      margin: 0.2rem;;
+      &:before {
+        content: '"'
+      }
+      &:after {
+        content: '"'
+      }
+    }
+  }
+
+  img {
+    border: 0;
+    float: none;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin: 0;
+  }
+
+  button {
+    @include button-small;
+
+    background-color: inherit;
+    border: 1px solid #{$white};
+    color: inherit;
+    float: none;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin: 0;
+  }
+}

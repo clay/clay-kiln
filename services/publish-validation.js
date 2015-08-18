@@ -2,7 +2,9 @@ var _ = require('lodash'),
   dom = require('./dom'),
   edit = require('./edit'),
   promises = require('./promises'),
-  references = require('./references');
+  references = require('./references'),
+  refAttr = references.referenceAttribute,
+  refAtrrSelector = '[' + refAttr + ']';
 
 function isRuleEnabled(rule) {
   return rule.enabled !== false;
@@ -34,8 +36,8 @@ function setReadOnly(obj) {
  * @returns {Array}
  */
 function getLatestRefMap() {
-  return _.uniq(_.map(dom.findAll('[data-ref]'), function (el) {
-    return el.getAttribute('data-ref');
+  return _.uniq(_.map(dom.findAll(refAtrrSelector), function (el) {
+    return el.getAttribute(refAttr);
   }));
 }
 
@@ -53,7 +55,7 @@ function getComponentMap(refs) {
  */
 function getLatestRefDataMap(refs) {
   return promises.transform(refs, function (obj, ref) {
-    return edit.getData(ref).then(function (data) {
+    return edit.getData(ref).catch(function () {}).then(function (data) {
       obj[ref] = data;
     });
   }, {});

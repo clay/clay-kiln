@@ -1,6 +1,7 @@
+console.log(__filename);
+
 var label, description,
-  _ = require('lodash'),
-  references = require('../services/references');
+  _ = require('lodash');
 
 label = 'Text Max Length';
 description = 'Some fields have limits to the length of text because of layout limitations.';
@@ -45,3 +46,5 @@ function validate(state) {
 module.exports.label = label;
 module.exports.description = description;
 module.exports.validate = validate;
+
+console.log(__filename);

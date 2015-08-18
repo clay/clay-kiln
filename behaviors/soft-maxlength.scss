@@ -2,7 +2,7 @@
 @import '../styleguide/typography';
 
 .soft-maxlength {
-  @include body-copy();
+  @include normal-text();
 
   color: $black-50;
   float: right;
