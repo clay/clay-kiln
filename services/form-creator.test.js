@@ -4,7 +4,6 @@ var dirname = __dirname.split('/').pop(),
   lib = require('./form-creator'), // static-analysis means this must be string, not ('./' + filename);
   _ = require('lodash'),
   behaviors = require('./behaviors'),
-  dom = require('./dom'),
   ds = require('dollar-slice'),
   refIsRequired = /ref\w* is required/i,
   dataIsRequired = /data is required/i,
