@@ -1,14 +1,9 @@
-'use strict';
-var rivets = require('rivets'),
-  defaults = {
-    el: document.createDocumentFragment(),
-    bindings: {
-      data: null,
-      name: 'foo',
-      path: 'foo',
-      label: 'Foo'
-    },
-    rivets: rivets
-  };
+var defaults = {
+  el: document.createDocumentFragment(),
+  bindings: { label: 'Foo', name: 'foo', data: {} },
+  binders: {},
+  formatters: {},
+  name: 'foo'
+};
 
 module.exports = defaults;
