@@ -14,7 +14,7 @@ function removeBehaviorMeta(value) {
     return _.map(value, removeBehaviorMeta);
   } else if (_.isObject(value)) {
     return _.omit(value, function (val, key) {
-      return _.contains(key, '_') && key !== '_schema';
+      return key !== '_schema' && _.contains(key, '_');
     });
   } else {
     return value;
@@ -55,11 +55,14 @@ function getValues(bindings, data, el) {
  */
 function getFormValues(form) {
   var data = {},
-    bindings = formCreator.getBindings().bindings;
+    bindings;
 
   if (!form || !form instanceof Element || form.tagName !== 'FORM') {
     throw new Error('Cannot get form values from non-elements!');
   }
+
+  // get the bindings after the assertion
+  bindings = formCreator.getBindings().bindings;
 
   _.reduce(dom.findAll(form, '[' + references.fieldAttribute + ']'), getValues.bind(null, bindings), data);
   // all bound fields should have a [rv-field] attribute

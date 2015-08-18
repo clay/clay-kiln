@@ -104,6 +104,7 @@ describe(dirname, function () {
       var fn = lib[this.title];
 
       it('throws error if no form element', function () {
+        formCreator.getBindings.returns({});
         expectErrors(fn, [
           1,
           true,
@@ -117,6 +118,7 @@ describe(dirname, function () {
       });
 
       it('returns empty object if no fields', function () {
+        formCreator.getBindings.returns({});
         expect(fn(document.createElement('form'))).to.eql({});
       });
 
@@ -134,7 +136,7 @@ describe(dirname, function () {
           }
         }));
 
-        expect(fn(form)).to.eql({ foo: 'FOO', bar: 'BAR' });
+        expect(fn(form)).to.eql({ foo: { value: 'FOO' }, bar: { value: 'BAR' }});
       });
 
       it('gets string value', function () {
@@ -145,7 +147,7 @@ describe(dirname, function () {
           data: { value: 'bar' }
         }}));
 
-        expect(fn(form)).to.eql({ foo: 'bar' });
+        expect(fn(form)).to.eql({ foo: { value: 'bar' }});
       });
 
       it('gets number value', function () {
@@ -156,7 +158,7 @@ describe(dirname, function () {
           data: { value: 1 }
         }}));
 
-        expect(fn(form)).to.eql({ foo: 1 });
+        expect(fn(form)).to.eql({ foo: { value: 1 }});
       });
 
       it('gets boolean value', function () {
@@ -167,7 +169,7 @@ describe(dirname, function () {
           data: { value: true }
         }}));
 
-        expect(fn(form)).to.eql({ foo: true });
+        expect(fn(form)).to.eql({ foo: { value: true }});
       });
 
       it('gets array value', function () {
@@ -192,6 +194,17 @@ describe(dirname, function () {
         expect(fn(form)).to.eql({ foo: { prop: 'val' } });
       });
 
+      it('retains schemas in strings', function () {
+        var field = stubField('foo', true),
+          form = stubForm([field]);
+
+        formCreator.getBindings.returns(stubBinding(form, { foo: {
+          data: { value: 'bar', _schema: { _name: 'foo' }}
+        }}));
+
+        expect(fn(form)).to.eql({ foo: { value: 'bar', _schema: { _name: 'foo' }}});
+      });
+
       it('removes binding metadata from strings', function () {
         var field = stubField('foo', true),
           form = stubForm([field]);
@@ -200,7 +213,27 @@ describe(dirname, function () {
           data: { value: 'bar', _coolness: 'radical' }
         }}));
 
-        expect(fn(form)).to.eql({ foo: 'bar' });
+        expect(fn(form)).to.eql({ foo: { value: 'bar' }});
+      });
+
+      it('retains schemas in arrays', function () {
+        var field = stubField('foo', false),
+          form = stubForm([field]),
+          arrayWithSchema = [
+            {
+              name: 'Bob'
+            }, {
+              name: 'Dave'
+            }
+          ];
+
+        arrayWithSchema._schema = { _name: 'foo' };
+
+        formCreator.getBindings.returns(stubBinding(form, { foo: {
+          data: arrayWithSchema
+        }}));
+
+        expect(fn(form)).to.eql({ foo: _.cloneDeep(arrayWithSchema) });
       });
 
       it('removes binding metadata from arrays', function () {
@@ -236,7 +269,7 @@ describe(dirname, function () {
           data: { value: 'b&#160;a\u00a0r&nbsp;r' }
         }}));
 
-        expect(fn(form)).to.eql({ foo: 'b a r r' });
+        expect(fn(form)).to.eql({ foo: { value: 'b a r r' }});
       });
 
       it('trims strings', function () {
@@ -247,7 +280,7 @@ describe(dirname, function () {
           data: { value: '   b a r   ' }
         }}));
 
-        expect(fn(form)).to.eql({ foo: 'b a r' });
+        expect(fn(form)).to.eql({ foo: { value: 'b a r' }});
       });
     });
   });
