@@ -1,5 +1,4 @@
 var _ = require('lodash'),
-  behaviors = require('./behaviors'),
   dom = require('./dom'),
   references = require('./references'),
   formCreator = require('./form-creator'),
@@ -28,48 +27,12 @@ function findFormContainer() {
 }
 
 /**
- * Tests if the field has an affects behavior.
- * @param {object} field
- * @returns {boolean}
- */
-function hasAffects(field) {
-  var props = _.get(field, '_schema.' + references.fieldProperty),
-    bs = props && behaviors.getExpandedBehaviors(props);
-
-  return !!_.find(bs, references.behaviorKey, 'affects');
-}
-
-/**
- * Saves the value of the field to the currentForm data.
- * @param {object} field
- */
-function setCurrentFormFieldValue(field) {
-  var name = _.get(field, '_schema._name'),
-    value = field.hasOwnProperty('value') ? field.value : field;
-
-  currentForm.data[name] = value;
-}
-
-/**
- * set data for a field / group into currentForm
- * @param {object} data
- */
-function setCurrentData(data) {
-  var fields,
-    isSingleField = !!_.get(data, '_schema.' + references.fieldProperty);
-
-  currentForm.data = {}; // clear form.
-  fields = isSingleField ? [data] : data.value; // ensure fields is an array.
-  _.reject(fields, hasAffects).forEach(setCurrentFormFieldValue); // ignore "affects" fields and set current.
-}
-
-/**
  * Check if the local data is different than the data on the server.
  * @param {object} data   Edited data.
  * @returns {boolean}
  */
 function dataChanged(data) {
-  return !_.isMatch(data, currentForm.data); // data may have "affects" fields so not _.isEqual.
+  return !_.isMatch(data, currentForm.data);
 }
 
 /**
@@ -137,8 +100,7 @@ function open(ref, el, path, e) {
 
       // then get a subset of the data, for the specific field / group
       data = groups.get(ref, data, path); // note: if path is undefined, it'll open the settings form
-      setCurrentData(data); // set that data into the currentForm
-
+      currentForm.data = data; // set that data into the currentForm
       setEditingStatus(true); // set editing status (a class on the <body> of the page)
 
       // determine if the form is inline, and call the relevant formCreator method
@@ -169,8 +131,7 @@ function close() {
       currentForm = {};
 
       data[references.referenceProperty] = ref;
-      return edit.toClayKilnStyle(data, {isPartial: true})
-        .then(edit.savePartial)
+      return edit.savePartial(data)
         .then(function () {
           removeCurrentForm(container);
           return render.reloadComponent(ref);

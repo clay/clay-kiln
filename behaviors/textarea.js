@@ -18,7 +18,7 @@ module.exports = function (result, args) {
 
   textArea = dom.create(`
     <label class="input-label">
-      <textarea class="editor-textarea" data-field="${name}" rv-required="${name}.required" rv-placeholder="${name}.placeholder" rv-value="${name}.data.value"></textarea>
+      <textarea class="editor-textarea" rv-field="${name}" rv-required="${name}.required" rv-placeholder="${name}.placeholder" rv-value="${name}.data.value"></textarea>
     </label>
   `);
 

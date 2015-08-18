@@ -14,7 +14,7 @@ function removeBehaviorMeta(value) {
     return _.map(value, removeBehaviorMeta);
   } else if (_.isObject(value)) {
     return _.omit(value, function (val, key) {
-      return _.contains(key, '_');
+      return key !== '_schema' && _.contains(key, '_');
     });
   } else {
     return value;
@@ -23,25 +23,25 @@ function removeBehaviorMeta(value) {
 
 /**
  * get values from inputs, lists, etc
+ * @param {array} bindings
  * @param  {{}} data
  * @param  {Element} el
  * @return {{}}
  */
-function getValues(data, el) {
+function getValues(bindings, data, el) {
   var name = el.getAttribute(references.fieldAttribute),
-    view = formCreator.getBindings(),
     binding, viewData;
 
-  if (view && view.bindings && view.bindings.length) {
-    binding = _.find(view.bindings, function (value) { return value.el === el; });
+  if (bindings && bindings.length) {
+    binding = _.find(bindings, function (value) { return value.keypath === name; });
     // clear out the _rv's and getters and setters
-    viewData = _.cloneDeep(binding.observer.value());
-    // remove any behavior metadata from the view data
+    viewData = _.cloneDeep(binding.observer.value().data);
+    // // remove any behavior metadata from the view data
     viewData = removeBehaviorMeta(viewData);
-    // if the data is a string, trim it!
-    if (_.isString(viewData)) {
-      viewData = viewData.replace(/(\u00a0|&nbsp;|&#160;)/g, ' '); // remove &nbsp;
-      viewData = viewData.trim();
+    // // if the data is a string, trim it!
+    if (viewData.value && _.isString(viewData.value)) {
+      viewData.value = viewData.value.replace(/(\u00a0|&nbsp;|&#160;)/g, ' '); // remove &nbsp;
+      viewData.value = viewData.value.trim();
     }
     data[name] = viewData;
   }
@@ -54,14 +54,18 @@ function getValues(data, el) {
  * @returns {object}
  */
 function getFormValues(form) {
-  var data = {};
+  var data = {},
+    bindings;
 
   if (!form || !form instanceof Element || form.tagName !== 'FORM') {
     throw new Error('Cannot get form values from non-elements!');
   }
 
-  _.reduce(dom.findAll(form, '[' + references.fieldAttribute + ']'), getValues, data);
-  // all bound fields should have a [data-field] attribute
+  // get the bindings after the assertion
+  bindings = formCreator.getBindings().bindings;
+
+  _.reduce(dom.findAll(form, '[' + references.fieldAttribute + ']'), getValues.bind(null, bindings), data);
+  // all bound fields should have a [rv-field] attribute
   // afterwards, clear the bindings
   formCreator.clearBindings();
   return data;

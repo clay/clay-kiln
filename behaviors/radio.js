@@ -12,7 +12,7 @@ function createOptions(name, options) {
     return `
       <li class="editor-radio-item">
         <label class="option-label">${ _.startCase(option) || 'None' }
-          <input data-field="${name}" type="radio" rv-checked="${name}.data.value" value="${option}" />
+          <input rv-field="${name}" type="radio" rv-checked="${name}.data.value" value="${option}" />
         </label>
       </li>`;
   }).join('\n');

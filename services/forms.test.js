@@ -204,7 +204,6 @@ describe(dirname, function () {
         }
 
         stubData(data);
-        edit.toClayKilnStyle.returns(Promise.resolve(data));
 
         return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen(afterFormIsClosed));
       });
@@ -228,7 +227,7 @@ describe(dirname, function () {
         }
 
         // Make sure form data is the same as the server data.
-        sandbox.stub(formValues, 'get').returns({title: '123'});
+        sandbox.stub(formValues, 'get').returns(data);
         // First open an inline form.
         stubData(data);
 
@@ -254,7 +253,6 @@ describe(dirname, function () {
         }
 
         stubData(data);
-        edit.toClayKilnStyle.returns(Promise.resolve(data));
 
         return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen(afterFormIsClosed));
       });
@@ -278,7 +276,7 @@ describe(dirname, function () {
         }
 
         // Make sure form data is the same as the server data.
-        sandbox.stub(formValues, 'get').returns({title: '123'});
+        sandbox.stub(formValues, 'get').returns(data);
         // First open an inline form.
         stubData(data);
 

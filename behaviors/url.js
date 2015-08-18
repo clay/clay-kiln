@@ -18,7 +18,7 @@ module.exports = function (result, args) {
 
   urlField = dom.create(`
     <label class="input-label">
-      <input data-field="${name}" type="url" rv-required="${name}.required" rv-placeholder="${name}.placeholder" rv-value="${name}.data.value" />
+      <input rv-field="${name}" type="url" rv-required="${name}.required" rv-placeholder="${name}.placeholder" rv-value="${name}.data.value" />
     </label>
   `);
 
