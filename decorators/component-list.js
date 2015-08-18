@@ -141,6 +141,23 @@ function addDragula(el, options) {
     });
 
   drag.containers.push(el);
+  drag.on('cloned', function (mirror) {
+    // Auto-scroll when you drag to the edge of the window.
+    var buffer = 40,
+      dragging;
+
+    dragging = window.setInterval(function () {
+      var rect = mirror.getBoundingClientRect();
+
+      if (!drag.dragging) {
+        window.clearInterval(dragging);
+      } else if (rect.top < buffer) {
+        window.scrollBy(0, -buffer * 2);
+      } else if (window.innerHeight - rect.bottom < buffer) {
+        window.scrollBy(0, buffer * 2);
+      }
+    }, 250);
+  });
   drag.on('drag', function (selectedItem, container) {
     selectedItem.classList.add(dragItemClass);
     container.classList.add(dropAreaClass);
