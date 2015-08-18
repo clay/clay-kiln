@@ -9,6 +9,10 @@ describe('references service', function () {
     expect(references.referenceAttribute).to.equal('data-uri');
   });
 
+  it('has field attribute', function () {
+    expect(references.fieldAttribute).to.equal('rv-field');
+  });
+
   it('has reference property', function () {
     expect(references.referenceProperty).to.equal('_ref');
   });

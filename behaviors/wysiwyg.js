@@ -458,7 +458,7 @@ module.exports = function (result, args) {
     styled = args.styled,
     enableKeyboardExtras = args.enableKeyboardExtras,
     textInput = getInput(result.el),
-    field = dom.create(`<p class="wysiwyg-input${ isStyled(styled) }" data-field="${name}" rv-wysiwyg="${name}.data.value" data-wysiwyg-buttons="${buttons.join(',')}"></p>`);
+    field = dom.create(`<p class="wysiwyg-input${ isStyled(styled) }" rv-field="${name}" rv-wysiwyg="${name}.data.value" data-wysiwyg-buttons="${buttons.join(',')}"></p>`);
 
   // if more than 5 buttons, put the rest on the second tier
   if (buttons.length > 5) {

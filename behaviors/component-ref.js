@@ -17,7 +17,7 @@ module.exports = function (result, args) {
     result.bindings.data.value = _.map(document.querySelectorAll(args.selector), function (el) {
       return el.getAttribute(references.referenceAttribute);
     });
-    result.el.appendChild(dom.create(`<input type="hidden" class="input-text" data-field="${name}" rv-value="${name}.data.value" />`));
+    result.el.appendChild(dom.create(`<input type="hidden" class="input-text" rv-field="${name}" rv-value="${name}.data.value" />`));
   }
   return result;
 };

@@ -14,7 +14,7 @@ function removeBehaviorMeta(value) {
     return _.map(value, removeBehaviorMeta);
   } else if (_.isObject(value)) {
     return _.omit(value, function (val, key) {
-      return _.contains(key, '_');
+      return _.contains(key, '_') && key !== '_schema';
     });
   } else {
     return value;
@@ -33,15 +33,15 @@ function getValues(bindings, data, el) {
     binding, viewData;
 
   if (bindings && bindings.length) {
-    binding = _.find(bindings, function (value) { return value.el === el; });
+    binding = _.find(bindings, function (value) { return value.keypath === name; });
     // clear out the _rv's and getters and setters
-    viewData = _.cloneDeep(binding.observer.value());
-    // remove any behavior metadata from the view data
+    viewData = _.cloneDeep(binding.observer.value().data);
+    // // remove any behavior metadata from the view data
     viewData = removeBehaviorMeta(viewData);
-    // if the data is a string, trim it!
-    if (_.isString(viewData)) {
-      viewData = viewData.replace(/(\u00a0|&nbsp;|&#160;)/g, ' '); // remove &nbsp;
-      viewData = viewData.trim();
+    // // if the data is a string, trim it!
+    if (viewData.value && _.isString(viewData.value)) {
+      viewData.value = viewData.value.replace(/(\u00a0|&nbsp;|&#160;)/g, ' '); // remove &nbsp;
+      viewData.value = viewData.value.trim();
     }
     data[name] = viewData;
   }
@@ -62,7 +62,7 @@ function getFormValues(form) {
   }
 
   _.reduce(dom.findAll(form, '[' + references.fieldAttribute + ']'), getValues.bind(null, bindings), data);
-  // all bound fields should have a [data-field] attribute
+  // all bound fields should have a [rv-field] attribute
   // afterwards, clear the bindings
   formCreator.clearBindings();
   return data;

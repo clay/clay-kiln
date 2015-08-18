@@ -24,7 +24,7 @@ module.exports = function (result, args) {
 
   textField = dom.create(`
       <label class="input-label">
-        <input class="input-text" data-field="${name}" type="text" rv-required="${name}.required" rv-pattern="${name}.pattern" rv-minLength="${name}.minLength" rv-maxLength="${name}.maxLength" rv-placeholder="${name}.placeholder" rv-value="${name}.data.value" />
+        <input class="input-text" rv-field="${name}" type="text" rv-required="${name}.required" rv-pattern="${name}.pattern" rv-minLength="${name}.minLength" rv-maxLength="${name}.maxLength" rv-placeholder="${name}.placeholder" rv-value="${name}.data.value" />
       </label>
     `);
 

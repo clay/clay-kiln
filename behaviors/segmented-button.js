@@ -20,7 +20,7 @@ function createOptions(name, options) {
   return options.map(function (option, index) {
     var id = name + '-' + option.value + '-' + index;
 
-    return `<input name="${name}" data-field="${name}" type="radio" id="${id}" rv-checked="${name}.data.value" value="${option.value}" />${ getLabel(id, option) }`;
+    return `<input name="${name}" rv-field="${name}" type="radio" id="${id}" rv-checked="${name}.data.value" value="${option.value}" />${ getLabel(id, option) }`;
   }).join('\n');
 }
 

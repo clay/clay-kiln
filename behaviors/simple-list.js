@@ -14,7 +14,7 @@ var _ = require('lodash'),
 module.exports = function (result) {
   var name = result.name,
     el = dom.create(`
-      <section data-field="${name}" class="simple-list" rv-simplelist="${name}.data">
+      <section rv-field="${name}" class="simple-list" rv-simplelist="${name}.data">
         <span tabindex="0" rv-each-item="${name}.data" class="simple-list-item" rv-class-selected="item._selected" rv-on-click="${name}.selectItem" rv-on-keydown="${name}.keyactions">{ item.text }</span>
         <input class="simple-list-add" rv-on-click="${name}.unselectAll" placeholder="Start typing here&hellip;" />
       </section>`);
