@@ -361,7 +361,7 @@ function addLineBreak() {
 }
 
 module.exports = function (result, args) {
-  var rivets = result.rivets,
+  var binders = result.binders,
     buttons = args.buttons,
     styled = args.styled,
     enableKeyboardExtras = args.enableKeyboardExtras,
@@ -387,7 +387,7 @@ module.exports = function (result, args) {
     };
   }
 
-  rivets.binders.wysiwyg = {
+  binders.wysiwyg = {
     publish: true,
     bind: function (el) {
       // this is called when the binder initializes

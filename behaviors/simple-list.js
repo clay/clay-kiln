@@ -129,7 +129,7 @@ module.exports = function (result, args) {
   result.el = el;
 
   // add binder for creating new items
-  result.rivets.binders.simplelist = {
+  result.binders.simplelist = {
     publish: true,
     bind: function (boundEl) {
       // this is called when the binder initializes

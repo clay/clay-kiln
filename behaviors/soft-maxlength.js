@@ -57,14 +57,13 @@ function cleanValue(value) {
 module.exports = function (result, args) {
   var el = result.el,
     bindings = result.bindings,
-    rivets = result.rivets,
     tpl = `
       <span class="soft-maxlength">{ max | charsRemaining data.value }</span>
     `,
     span = dom.create(tpl);
 
   bindings.max = args.value;
-  rivets.formatters.charsRemaining = function (max, value) {
+  result.formatters.charsRemaining = function (max, value) {
     var length = cleanValue(value).length,
       remaining = max - length,
       input = getInput(el); // needs to happen after wysiwyg is instantiated
