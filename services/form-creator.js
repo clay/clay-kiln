@@ -108,15 +108,18 @@ function newForm() {
 }
 
 /**
+ * create a single field
  * @param {object} data
  * @return {object}
  */
 function createField(data) {
-  return behaviors.run(data);
+  var field = behaviors.run(data);
+
+  return appendElementClones(newForm(), field);
 }
 
 /**
- * Iterate through this level of the schema, creating more fields
+ * Iterate through this level of the schema, creating multiple fields
  *
  * @param {object} data
  * @returns {object}
@@ -124,7 +127,7 @@ function createField(data) {
 function expandFields(data) {
   return _(data.value)
     .map(function (field) {
-      return createField(field);
+      return behaviors.run(field);
     })
     .reduce(appendElementClones, newForm());
 }

@@ -384,6 +384,8 @@ function initWysiwygBinder(enableKeyboardExtras) {
         strikethoughExtension = _.find(editor.extensions, findExtension('strikethrough')),
         linkExtension = _.find(editor.extensions, findExtension('anchor'));
 
+      console.log(this.observer)
+
       // apply custom styling to buttons
       if (italicExtension) {
         italicExtension.button.innerHTML = '<em>I</em>';
