@@ -115,34 +115,6 @@ function savePartial(data) {
 }
 
 /**
- * @deprecated  Whatever is mixing styles should stop.
- * @param {object} data
- * @param {object} options
- * @param {boolean} options.isPartial
- * @returns {Promise}
- */
-function toClayKilnStyle(data, options) {
-  console.warn('Deprecated! Please fix whatever is using this to use ClayKiln style always.');
-  options = options || {};
-  data = _.cloneDeep(data);
-  return cache.getSchema(data[refProp]).then(function (schema) {
-    data = require('./schema-fields').add(schema, data);
-    data = require('./group-fields').add(data, schema);
-
-    if (options.isPartial) {
-      // Remove everything with undefined values in object-like things.  They're going to save as a partial.
-      _.each(data, function (obj, fieldName) {
-        if (_.isPlainObject(obj) && obj.value === undefined) {
-          delete data[fieldName];
-        }
-      });
-    }
-
-    return data;
-  });
-}
-
-/**
  * Get page reference from current location
  * @param {string} [location]
  * @returns {Promise}
@@ -364,6 +336,5 @@ module.exports = {
   // Please stop using these.  If you use these, we don't trust you.  Do you trust yourself?
   getData: getData,
   getDataOnly: getDataOnly,
-  getSchema: cache.getSchema, // No one should _ever_ be editing this, so pass them the read-only.  Kill them dead.
-  toClayKilnStyle: toClayKilnStyle
+  getSchema: cache.getSchema // No one should _ever_ be editing this, so pass them the read-only.  Kill them dead.
 };
