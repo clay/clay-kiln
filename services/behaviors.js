@@ -98,6 +98,9 @@ function run(context) {
     });
 
   return Promise.resolve(result);
+  // todo: right now we're running behaviors synchronously and then returning a promise
+  // change this to use dane's promise transform method when his stuff is merged in
+  // that'll allow us to use promises in behaviors themselves
 }
 
 exports.add = add;
