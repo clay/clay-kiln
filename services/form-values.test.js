@@ -2,7 +2,7 @@ var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   _ = require('lodash'),
   rivets = require('rivets'),
-  behaviors = require('./behaviors'),
+  formCreator = require('./form-creator'),
   references = require('./references'),
   lib = require('./form-values');
 
@@ -12,7 +12,7 @@ describe(dirname, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      sandbox.stub(behaviors);
+      sandbox.stub(formCreator);
     });
 
     afterEach(function () {
@@ -47,7 +47,7 @@ describe(dirname, function () {
       // make the node a field
       node.setAttribute(references.fieldAttribute, fieldName);
       // make the node data-bound
-      node.setAttribute('rv-value', value);
+      node.setAttribute('rv-value', fieldName + '.' + value);
 
       return node;
     }
@@ -125,8 +125,14 @@ describe(dirname, function () {
           field2 = stubField('bar', true),
           form = stubForm([field1, field2]);
 
-        behaviors.getBinding.withArgs('foo').returns(stubBinding(field1, { data: { value: 'FOO' } }));
-        behaviors.getBinding.withArgs('bar').returns(stubBinding(field2, { data: { value: 'BAR' } }));
+        formCreator.getBindings.returns(stubBinding(form, {
+          foo: {
+            data: { value: 'FOO' }
+          },
+          bar: {
+            data: { value: 'BAR' }
+          }
+        }));
 
         expect(fn(form)).to.eql({ foo: 'FOO', bar: 'BAR' });
       });
@@ -135,7 +141,9 @@ describe(dirname, function () {
         var field = stubField('foo', true),
           form = stubForm([field]);
 
-        behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: { value: 'bar' } }));
+        formCreator.getBindings.returns(stubBinding(form, { foo: {
+          data: { value: 'bar' }
+        }}));
 
         expect(fn(form)).to.eql({ foo: 'bar' });
       });
@@ -144,7 +152,9 @@ describe(dirname, function () {
         var field = stubField('foo', true),
           form = stubForm([field]);
 
-        behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: { value: 1 } }));
+        formCreator.getBindings.returns(stubBinding(form, { foo: {
+          data: { value: 1 }
+        }}));
 
         expect(fn(form)).to.eql({ foo: 1 });
       });
@@ -153,7 +163,9 @@ describe(dirname, function () {
         var field = stubField('foo', true),
           form = stubForm([field]);
 
-        behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: { value: true } }));
+        formCreator.getBindings.returns(stubBinding(form, { foo: {
+          data: { value: true }
+        }}));
 
         expect(fn(form)).to.eql({ foo: true });
       });
@@ -162,7 +174,9 @@ describe(dirname, function () {
         var field = stubField('foo', false),
           form = stubForm([field]);
 
-        behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: [1,2,3] }));
+        formCreator.getBindings.returns(stubBinding(form, { foo: {
+          data: [1,2,3]
+        }}));
 
         expect(fn(form)).to.eql({ foo: [1,2,3] });
       });
@@ -171,7 +185,9 @@ describe(dirname, function () {
         var field = stubField('foo', false),
           form = stubForm([field]);
 
-        behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: { prop: 'val' } }));
+        formCreator.getBindings.returns(stubBinding(form, { foo: {
+          data: { prop: 'val' }
+        }}));
 
         expect(fn(form)).to.eql({ foo: { prop: 'val' } });
       });
@@ -180,7 +196,9 @@ describe(dirname, function () {
         var field = stubField('foo', true),
           form = stubForm([field]);
 
-        behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: { value: 'bar', _coolness: 'radical' } }));
+        formCreator.getBindings.returns(stubBinding(form, { foo: {
+          data: { value: 'bar', _coolness: 'radical' }
+        }}));
 
         expect(fn(form)).to.eql({ foo: 'bar' });
       });
@@ -189,15 +207,17 @@ describe(dirname, function () {
         var field = stubField('foo', false),
           form = stubForm([field]);
 
-        behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: [
-          {
-            name: 'Bob',
-            _coolness: 'radical'
-          }, {
-            name: 'Dave',
-            _coolness: 'deeply uncool'
-          }
-        ]}));
+        formCreator.getBindings.returns(stubBinding(form, { foo: {
+          data: [
+            {
+              name: 'Bob',
+              _coolness: 'radical'
+            }, {
+              name: 'Dave',
+              _coolness: 'deeply uncool'
+            }
+          ]
+        }}));
 
         expect(fn(form)).to.eql({ foo: [
           {
@@ -212,7 +232,9 @@ describe(dirname, function () {
         var field = stubField('foo', true),
           form = stubForm([field]);
 
-        behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: { value: 'b&#160;a\u00a0r&nbsp;r' } }));
+        formCreator.getBindings.returns(stubBinding(form, { foo: {
+          data: { value: 'b&#160;a\u00a0r&nbsp;r' }
+        }}));
 
         expect(fn(form)).to.eql({ foo: 'b a r r' });
       });
@@ -221,7 +243,9 @@ describe(dirname, function () {
         var field = stubField('foo', true),
           form = stubForm([field]);
 
-        behaviors.getBinding.withArgs('foo').returns(stubBinding(field, { data: { value: '   b a r   ' } }));
+        formCreator.getBindings.returns(stubBinding(form, { foo: {
+          data: { value: '   b a r   ' }
+        }}));
 
         expect(fn(form)).to.eql({ foo: 'b a r' });
       });
