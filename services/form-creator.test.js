@@ -41,13 +41,13 @@ describe(dirname, function () {
 
       itemEl.setAttribute('class', 'behaviour-element');
 
-      sandbox.mock(behaviors).expects('run').withArgs(singleItem).once().returns({
+      sandbox.mock(behaviors).expects('run').withArgs(singleItem).once().returns(Promise.resolve({
         el: itemEl,
         binders: {},
         bindings: {},
         formatters: {},
         name: _.get(singleItem, '_schema._name')
-      });
+      }));
     }
 
     describe('createForm', function () {
@@ -78,24 +78,24 @@ describe(dirname, function () {
         expectNoLogging();
         expectSingleItemBehavior();
 
-        fn('ref', singleItem, el);
+        return fn('ref', singleItem, el).then(function (result) {
+          expect(condense(result.innerHTML)).to.equal(condense(`
+          <div class="editor-overlay">
+            <section class="editor">
+              <header>Thing</header>
+              <form>
+                <div class="input-container">
+                  <div class="behaviour-element"></div>
+                </div>
+                <div class="button-container">
+                  <button type="submit" class="save">Save</button>
+                </div>
+              </form>
+              </section>
+            </div>`));
 
-        expect(condense(el.firstElementChild.innerHTML)).to.equal(condense(`
-        <div class="editor-overlay">
-          <section class="editor">
-            <header>Thing</header>
-            <form>
-              <div class="input-container">
-                <div class="behaviour-element"></div>
-              </div>
-              <div class="button-container">
-                <button type="submit" class="save">Save</button>
-              </div>
-            </form>
-            </section>
-          </div>`));
-
-        sandbox.verify();
+          sandbox.verify();
+        });
       });
     });
 
@@ -123,16 +123,16 @@ describe(dirname, function () {
         expectNoLogging();
         expectSingleItemBehavior('inline');
 
-        fn('ref', singleItem, childEl);
+        return fn('ref', singleItem, childEl).then(function (result) {
+          expect(condense(result.innerHTML)).to.equal(condense(`
+          <form>
+            <div class="input-container">
+              <div class="behaviour-element"></div>
+            </div>
+           </form>`));
 
-        expect(condense(dom.find(el, '.editor-inline').innerHTML)).to.equal(condense(`
-        <form>
-          <div class="input-container">
-            <div class="behaviour-element"></div>
-          </div>
-         </form>`));
-
-        sandbox.verify();
+          sandbox.verify();
+        });
       });
     });
   });

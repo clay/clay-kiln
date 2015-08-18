@@ -190,6 +190,8 @@ function createForm(ref, data, rootEl) {
     ds.controller('overlay', require('../controllers/overlay'));
     ds.get('form', el, ref, name);
     ds.get('overlay', el);
+
+    return el;
   });
 }
 
@@ -225,6 +227,8 @@ function createInlineForm(ref, data, oldEl) {
     // register + instantiate form controller
     ds.controller('form', require('../controllers/form'));
     ds.get('form', newEl, ref, name, oldEl);
+
+    return newEl;
   });
 }
 
