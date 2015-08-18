@@ -152,8 +152,8 @@ function createForm(ref, data, rootEl) {
   }
 
   // instantiate data-binding
-  _.defaults(rivets.binders, form.binders);
-  _.defaults(rivets.formatters, form.formatters);
+  _.assign(rivets.binders, form.binders);
+  _.assign(rivets.formatters, form.formatters);
   currentBindings = rivets.bind(form.el, form.bindings);
 
   // build up form el
@@ -189,9 +189,9 @@ function createInlineForm(ref, data, oldEl) {
     form = expandFields(data);
   }
 
-  // instantiate data-binding
-  _.defaults(rivets.binders, form.binders);
-  _.defaults(rivets.formatters, form.formatters);
+  // instantiate data-binding w/ new binders and formatters
+  _.assign(rivets.binders, form.binders);
+  _.assign(rivets.formatters, form.formatters);
   currentBindings = rivets.bind(form.el, form.bindings);
 
   // build up form el
@@ -221,8 +221,16 @@ function getBindings() {
   return currentBindings;
 }
 
+/**
+ * clear current bindings
+ */
+function clearBindings() {
+  currentBindings = {};
+}
+
 module.exports = {
   createForm: createForm,
   createInlineForm: createInlineForm,
-  getBindings: getBindings
+  getBindings: getBindings,
+  clearBindings: clearBindings
 };

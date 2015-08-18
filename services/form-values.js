@@ -1,7 +1,7 @@
 var _ = require('lodash'),
   dom = require('./dom'),
   references = require('./references'),
-  behaviors = require('./behaviors');
+  formCreator = require('./form-creator');
 
 /**
  * recursively remove any metadata that behaviors use
@@ -29,7 +29,7 @@ function removeBehaviorMeta(value) {
  */
 function getValues(data, el) {
   var name = el.getAttribute(references.fieldAttribute),
-    view = behaviors.getBinding(name),
+    view = formCreator.getBindings(),
     binding, viewData;
 
   if (view && view.bindings && view.bindings.length) {
@@ -62,6 +62,8 @@ function getFormValues(form) {
 
   _.reduce(dom.findAll(form, '[' + references.fieldAttribute + ']'), getValues, data);
   // all bound fields should have a [data-field] attribute
+  // afterwards, clear the bindings
+  formCreator.clearBindings();
   return data;
 }
 
