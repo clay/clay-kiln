@@ -1,68 +1,86 @@
-console.log(require('util'));
-
 var label, description,
   tkText = 'TK',
   articleFields = ['primaryHeadline', 'teaser'],
+  paragraphField = 'text',
   _ = require('lodash'),
   references = require('../services/references'),
-  refProp = references.referenceProperty;
+  refProp = references.referenceProperty,
+  cutStart = 20,
+  cutEnd = 20;
 
 label = 'Ban TKs';
 description = 'TKs are not allowed';
 
-function addError(component, fieldName, errors) {
-  var index,
-    schema = component._schema,
-    componentLabel = schema[fieldName]._label,
-    value = component[fieldName].value,
-    error = {
-      ref: component._ref,
-      fieldName: fieldName
-    };
-
-  if (componentLabel) {
-    error.label = componentLabel;
+function getLabel(componentName, label, ref) {
+  if (componentName) {
+    return _.compact([_.startCase(componentName), label]).join(' ');
+  } else {
+    // don't change this; fix schmea
+    return ref;
   }
+}
+
+function getPreview(value, data) {
+  var index;
 
   if (_.isString(value)) {
     index = value.indexOf(tkText);
 
-    if (index > 20) {
-      value = '...' + value.substr(index - 15);
+    if (index > cutStart) {
+      value = '...' + value.substr(index - cutStart);
     }
 
-    if (value.length > index + 16) {
-      value = value.substr(0, index + 13) + '...';
+    if (value.length > index + cutEnd) {
+      value = value.substr(0, index + cutEnd) + '...';
     }
 
-    error.value = value;
+    return value;
+  } else {
+    // don't change this; fix schmea
+    return JSON.stringify(data);
   }
+}
+
+function addError(component, fieldName, errors) {
+  var ref = component[refProp],
+    componentName = ref && references.getComponentNameFromReference(ref),
+    data = component && component[fieldName],
+    schema = data._schema,
+    label = schema && schema._label,
+    value = data && data.value,
+    error = {
+      ref: ref,
+      fieldName: fieldName,
+      label: getLabel(componentName, label, ref),
+      preview: getPreview(value, data)
+    };
 
   errors.push(error);
 }
 
 function validate(state) {
   var errors = [],
-    groups = _.groupBy(state.refs, function (value) {
-      return references.getComponentNameFromReference(value[refProp]);
+    groups = _.groupBy(state.refs, function (value, key) {
+      return references.getComponentNameFromReference(key);
     });
 
-  console.log('state', state);
-  console.log('groups', groups);
-
   _.each(groups.paragraph, function (component) {
-    var fieldName = 'text';
+    var field = component[paragraphField],
+      value = field && field.value;
 
-    if (component[fieldName].value.indexOf(tkText) > -1) {
+    if (_.isString(value) && value.indexOf(tkText) > -1) {
 
-      addError(component, fieldName, errors);
+      addError(component, paragraphField, errors);
 
     }
   });
 
   _.each(groups.article, function (component) {
     _.each(articleFields, function (fieldName) {
-      if (component[fieldName].value.indexOf(tkText) > -1) {
+      var field = component[fieldName],
+        value = field && field.value;
+
+      if (_.isString(value) && value.indexOf(tkText) > -1) {
 
         addError(component, fieldName, errors);
 
@@ -78,5 +96,3 @@ function validate(state) {
 module.exports.label = label;
 module.exports.description = description;
 module.exports.validate = validate;
-
-console.log(__filename);

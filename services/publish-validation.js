@@ -14,10 +14,6 @@ function filterEmpty(result) {
   return _.filter(result, _.identity);
 }
 
-function getComponentUri(name) {
-  return '/components/' + name;
-}
-
 function setReadOnly(obj) {
   _.forOwn(obj, function (value) {
     if (typeof value === 'object') {

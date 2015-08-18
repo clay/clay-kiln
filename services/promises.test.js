@@ -15,6 +15,7 @@ describe('promises service', function () {
 
   /**
    * Return each argument each time stub function is called
+   * @returns {object}
    */
   function stubReturns() {
     var stub = sandbox.stub();
@@ -176,11 +177,12 @@ describe('promises service', function () {
         d2 = lib.defer(),
         data = ['a', 'b'],
         expectedResult = 'ab',
-        stub = stubReturns(d1.promise, d2.promise);
+        stub = stubReturns(d1.promise, d2.promise),
+        stubConcat = function (str, value) {
+          return stub().then(function () { return str + value; });
+        };
 
-      promise = fn(data, function (str, value) {
-        return stub().then(function () { return str + value; });
-      }, '').then(function (result) {
+      promise = fn(data, stubConcat, '').then(function (result) {
         expect(result).to.equal(expectedResult);
       });
 
@@ -249,7 +251,7 @@ describe('promises service', function () {
     it('catches thrown error', function (done) {
       fn(function () {
         throw new Error('hey');
-      }).then(function() {
+      }).then(function () {
         done('should have thrown');
       }).catch(function () {
         done();

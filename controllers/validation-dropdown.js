@@ -1,5 +1,4 @@
 var _ = require('lodash'),
-  references = require('../services/references'),
   events = require('../services/events'),
   dom = require('../services/dom'),
   site = require('../services/site');
@@ -55,7 +54,7 @@ function createRuleElement(item) {
 }
 
 function createErrorElement(error) {
-  return withProperties(error, ['label', 'fieldName', 'preview'], function (ref, label, preview) {
+  return withProperties(error, ['label', 'preview'], function (label, preview) {
     return dom.create(`
       <li class="error">
         <span class="name">${label}</span>
@@ -68,23 +67,26 @@ function create(items) {
   var containerEl = createContainerElement(),
     list = getFirstListElement(containerEl);
 
-  _.each(items, function (item) {
-    var ruleEl = createRuleElement(item),
-      ruleList = getFirstListElement(ruleEl);
+  if (list) {
+    _.each(items, function (item) {
+      var ruleEl = createRuleElement(item),
+        ruleList = ruleEl && getFirstListElement(ruleEl);
 
-    _.each(item.errors, function (error) {
-      var label, value, errorEl, errorList;
+      if (ruleList) {
+        _.each(item.errors, function (error) {
+          var errorEl = createErrorElement(error);
 
-      errorEl = createErrorElement(error);
-      errorList = getFirstListElement(errorEl) || errorEl;
-      label = error.label;
-      value = error.value;
+          if (errorEl) {
+            dom.prependChild(ruleList, errorEl);
+          }
+        });
+      }
 
-      dom.prependChild(ruleList, errorEl);
+      if (ruleEl) {
+        list.appendChild(ruleEl);
+      }
     });
-
-    list.appendChild(ruleEl);
-  });
+  }
 
   return containerEl;
 }

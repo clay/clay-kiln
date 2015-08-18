@@ -6,7 +6,6 @@
  */
 
 var EditorToolbar,
-  _ = require('lodash'),
   dom = require('../services/dom'),
   references = require('../services/references'),
   forms = require('../services/forms'),
@@ -24,8 +23,6 @@ var EditorToolbar,
  */
 function publish(el) {
   return validation.validate(rules).then(function (errors) {
-    console.log('validation', rules, errors);
-
     if (errors.length === 0) {
       return edit.publishPage().then(function () {
         console.log('published', arguments);

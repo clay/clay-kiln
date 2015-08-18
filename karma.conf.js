@@ -41,7 +41,8 @@ settings = {
     'controllers/**/*.js': ['browserify'],
     'behaviors/**/*.js': ['browserify'],
     'services/**/*.js': ['browserify'],
-    'decorators/**/*.js': ['browserify']
+    'decorators/**/*.js': ['browserify'],
+    'publishing-rules/**/*.js': ['browserify']
   },
   plugins: [
     'karma-coverage',

@@ -1,5 +1,4 @@
-var _ = require('lodash'),
-  lib = require('./publish-validation'),
+var lib = require('./publish-validation'),
   dom = require('./dom'),
   edit = require('./edit');
 
