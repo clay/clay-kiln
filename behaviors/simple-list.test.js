@@ -2,7 +2,7 @@ var fixture = require('../test/fixtures/behavior'),
   simpleList = require('./simple-list');
 
 // set some data
-fixture.bindings.data = [{
+fixture.bindings.foo.data = [{
   text: 'foo'
 }];
 

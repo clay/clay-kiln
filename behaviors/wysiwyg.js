@@ -361,12 +361,13 @@ function addLineBreak() {
 }
 
 module.exports = function (result, args) {
-  var binders = result.binders,
+  var name = result.name,
+    binders = result.binders,
     buttons = args.buttons,
     styled = args.styled,
     enableKeyboardExtras = args.enableKeyboardExtras,
     textInput = getInput(result.el),
-    field = dom.create(`<p class="wysiwyg-input${ isStyled(styled) }" data-field="${result.bindings.name}" rv-wysiwyg="data.value"></p>`);
+    field = dom.create(`<p class="wysiwyg-input${ isStyled(styled) }" data-field="${name}" rv-wysiwyg="${name}.data.value"></p>`);
 
   // if more than 5 buttons, put the rest on the second tier
   if (buttons.length > 5) {

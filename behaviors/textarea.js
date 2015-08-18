@@ -8,7 +8,8 @@ placeholder {string} placeholder that will display in the textarea
 var dom = require('../services/dom');
 
 module.exports = function (result, args) {
-  var bindings = result.bindings,
+  var name = result.name,
+    bindings = result.bindings,
     textArea;
 
   // add some stuff to the bindings
@@ -17,7 +18,7 @@ module.exports = function (result, args) {
 
   textArea = dom.create(`
     <label class="input-label">
-      <textarea class="editor-textarea" data-field="${bindings.name}" rv-required="required" rv-placeholder="placeholder" rv-value="data.value"></textarea>
+      <textarea class="editor-textarea" data-field="${name}" rv-required="${name}.required" rv-placeholder="${name}.placeholder" rv-value="${name}.data.value"></textarea>
     </label>
   `);
 

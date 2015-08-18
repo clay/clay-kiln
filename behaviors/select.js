@@ -14,13 +14,13 @@ function createOptions(options) {
 }
 
 module.exports = function (result, args) {
-  var bindings = result.bindings,
+  var name = result.name,
     options = args.options,
     field;
 
   field = dom.create(`
     <label class="input-label">
-      <select class="editor-select" data-field="${bindings.name}" rv-value="data.value">
+      <select class="editor-select" data-field="${name}" rv-value="${name}.data.value">
         ${ createOptions(options) }
       </select>
     </label>

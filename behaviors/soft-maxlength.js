@@ -57,8 +57,9 @@ function cleanValue(value) {
 module.exports = function (result, args) {
   var el = result.el,
     bindings = result.bindings,
+    name = result.name,
     tpl = `
-      <span class="soft-maxlength">{ max | charsRemaining data.value }</span>
+      <span class="soft-maxlength">{ ${name}.max | charsRemaining ${name}.data.value }</span>
     `,
     span = dom.create(tpl);
 

@@ -16,7 +16,7 @@ function findOuterLabelEl(el) {
 }
 
 module.exports = function (result) {
-  var label = dom.create('<span class="label-inner">{ label }</span>'),
+  var label = dom.create(`<span class="label-inner">${result.bindings.label}</span>`),
     el = findOuterLabelEl(result.el);
 
   dom.prependChild(el, label);

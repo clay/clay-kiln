@@ -15,8 +15,8 @@ module.exports = function (result, args) {
 
   // add doubleclick event to all list items
   _.forEach(itemEls, function (itemEl) {
-    itemEl.setAttribute('rv-on-dblclick', 'togglePrimary');
-    itemEl.setAttribute('rv-class-primary', 'item.' + prop);
+    itemEl.setAttribute('rv-on-dblclick', '${name}.togglePrimary');
+    itemEl.setAttribute('rv-class-primary', '${name}.item.' + prop);
 
     // add primary badge
     itemEl.appendChild(dom.create('<div class="badge">' + badge + '</div>'));

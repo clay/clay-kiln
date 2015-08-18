@@ -12,15 +12,14 @@ function createOptions(name, options) {
     return `
       <li class="editor-radio-item">
         <label class="option-label">${ _.startCase(option) || 'None' }
-          <input data-field="${name}" type="radio" rv-checked="data.value" value="${option}" />
+          <input data-field="${name}" type="radio" rv-checked="${name}.data.value" value="${option}" />
         </label>
       </li>`;
   }).join('\n');
 }
 
 module.exports = function (result, args) {
-  var bindings = result.bindings,
-    name = bindings.name,
+  var name = result.name,
     options = args.options,
     field;
 
