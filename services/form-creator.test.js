@@ -2,6 +2,7 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./form-creator'), // static-analysis means this must be string, not ('./' + filename);
+  _ = require('lodash'),
   behaviors = require('./behaviors'),
   dom = require('./dom'),
   ds = require('dollar-slice'),
@@ -40,7 +41,13 @@ describe(dirname, function () {
 
       itemEl.setAttribute('class', 'behaviour-element');
 
-      sandbox.mock(behaviors).expects('run').withArgs(singleItem).once().returns(itemEl);
+      sandbox.mock(behaviors).expects('run').withArgs(singleItem).once().returns({
+        el: itemEl,
+        binders: {},
+        bindings: {},
+        formatters: {},
+        name: _.get(singleItem, '_schema._name')
+      });
     }
 
     describe('createForm', function () {
