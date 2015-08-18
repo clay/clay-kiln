@@ -1,9 +1,11 @@
 var _ = require('lodash'),
   ds = require('dollar-slice'),
+  rivets = require('rivets'),
   references = require('./references'),
   label = require('./label'),
   behaviors = require('./behaviors'),
-  dom = require('./dom');
+  dom = require('./dom'),
+  currentBindings;
 
 /**
  * ref, data, and data._schema are required for all forms
@@ -69,37 +71,65 @@ function createInlineFormEl(innerEl) {
 // form creation
 
 /**
- * @param {Element} el
- * @param {Element} value
- * @returns {*}
+ * @param {object} form
+ * @param {object} field
+ * @returns {object}
  */
-function appendElementClones(el, value) {
-  if (value && (value.nodeType === 1 || value.nodeType === 11)) {
-    el.appendChild(value);
+function appendElementClones(form, field) {
+  var el = form.el,
+    fieldEl = field.el,
+    fieldName = field.name;
+
+  // add field bindings
+  form.bindings[fieldName] = field.bindings;
+  // add field formatters (if they don't exist)
+  _.defaults(form.formatters, field.formatters);
+  // add field binders (if they don't exist)
+  _.defaults(form.binders, field.binders);
+
+  // append field el to form
+  if (fieldEl && (fieldEl.nodeType === 1 || fieldEl.nodeType === 11)) {
+    el.appendChild(fieldEl);
   }
-  return el;
+  return form;
 }
 
 /**
+ * generate new form object
+ * @returns {object}
+ */
+function newForm() {
+  return {
+    el: document.createDocumentFragment(),
+    binders: {}, // binders like simple-list and wysiwyg modify values
+    formatters: {}, // formatters like soft-maxlength format text
+    bindings: {} // bindings is a hash of all bindings for each field + behaviors
+  };
+}
+
+/**
+ * create a single field
  * @param {object} data
- * @return {Element}
+ * @return {object}
  */
 function createField(data) {
-  return behaviors.run(data);
+  var field = behaviors.run(data);
+
+  return appendElementClones(newForm(), field);
 }
 
 /**
- * Iterate through this level of the schema, creating more fields
+ * Iterate through this level of the schema, creating multiple fields
  *
  * @param {object} data
- * @returns {Element}
+ * @returns {object}
  */
 function expandFields(data) {
   return _(data.value)
     .map(function (field) {
-      return createField(field);
+      return behaviors.run(field);
     })
-    .reduce(appendElementClones, document.createDocumentFragment());
+    .reduce(appendElementClones, newForm());
 }
 
 /**
@@ -108,7 +138,7 @@ function expandFields(data) {
  * @param {Element} [rootEl=document.body]   Root element to temporarily insert the overlay
  */
 function createForm(ref, data, rootEl) {
-  var el, schema, name;
+  var form, schema, name, el;
 
   ensureValidFormData(ref, data);
   rootEl = rootEl || document.body;
@@ -118,14 +148,19 @@ function createForm(ref, data, rootEl) {
   // iterate through the data, creating fields
   if (schema[references.fieldProperty]) {
     // this is a single field
-    el = createField(data);
+    form = createField(data);
   } else {
     // this is a group of fields
-    el = expandFields(data);
+    form = expandFields(data);
   }
 
+  // instantiate data-binding
+  _.assign(rivets.binders, form.binders);
+  _.assign(rivets.formatters, form.formatters);
+  currentBindings = rivets.bind(form.el, form.bindings);
+
   // build up form el
-  el = createOverlayEl(createOverlayFormEl(label(name, schema), el));
+  el = createOverlayEl(createOverlayFormEl(label(name, schema), form.el));
   // append it to the body
   rootEl.appendChild(el);
 
@@ -142,7 +177,7 @@ function createForm(ref, data, rootEl) {
  * @param {Element} oldEl   Root element that is being inline edited
  */
 function createInlineForm(ref, data, oldEl) {
-  var schema, name, innerEl, newEl, wrapped;
+  var schema, name, form, newEl, wrapped;
 
   ensureValidFormData(ref, data);
   schema = data._schema;
@@ -151,14 +186,19 @@ function createInlineForm(ref, data, oldEl) {
   // iterate through the data, creating fields
   if (schema[references.fieldProperty]) {
     // this is a single field
-    innerEl = createField(data);
+    form = createField(data);
   } else {
     // this is a group of fields
-    innerEl = expandFields(data);
+    form = expandFields(data);
   }
 
+  // instantiate data-binding w/ new binders and formatters
+  _.assign(rivets.binders, form.binders);
+  _.assign(rivets.formatters, form.formatters);
+  currentBindings = rivets.bind(form.el, form.bindings);
+
   // build up form el
-  newEl = createInlineFormEl(innerEl);
+  newEl = createInlineFormEl(form.el);
   wrapped = dom.wrapElements(_.filter(oldEl.childNodes, function (child) {
     if (child.nodeType === 1) {
       return !child.classList.contains('component-bar');
@@ -175,7 +215,25 @@ function createInlineForm(ref, data, oldEl) {
   ds.get('form', newEl, ref, name, oldEl);
 }
 
+/**
+ * get current bindings
+ * used in form-values to get values from the form
+ * @returns {object} currentBindings
+ */
+function getBindings() {
+  return currentBindings;
+}
+
+/**
+ * clear current bindings
+ */
+function clearBindings() {
+  currentBindings = {};
+}
+
 module.exports = {
   createForm: createForm,
-  createInlineForm: createInlineForm
+  createInlineForm: createInlineForm,
+  getBindings: getBindings,
+  clearBindings: clearBindings
 };

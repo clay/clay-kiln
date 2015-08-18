@@ -360,40 +360,26 @@ function addLineBreak() {
   selection.addRange(range);
 }
 
-module.exports = function (result, args) {
-  var rivets = result.rivets,
-    buttons = args.buttons,
-    styled = args.styled,
-    enableKeyboardExtras = args.enableKeyboardExtras,
-    textInput = getInput(result.el),
-    field = dom.create(`<p class="wysiwyg-input${ isStyled(styled) }" data-field="${result.bindings.name}" rv-wysiwyg="data.value"></p>`);
+/**
+ * match extension names when instantiating medium-editor
+ * @param {string} extname e.g. 'italic'
+ * @returns {Function}
+ */
+function findExtension(extname) {
+  return function (ext) {
+    return ext.name === extname;
+  };
+}
 
-  // if more than 5 buttons, put the rest on the second tier
-  if (buttons.length > 5) {
-    buttons.splice(5, 0, 'tieredToolbar'); // clicking this expands the toolbar with a second tier
-  }
-
-  // put the rich text field after the input
-  dom.replaceElement(textInput, field);
-
-  /**
-   * match extension names when instantiating medium-editor
-   * @param {string} extname e.g. 'italic'
-   * @returns {Function}
-   */
-  function findExtension(extname) {
-    return function (ext) {
-      return ext.name === extname;
-    };
-  }
-
-  rivets.binders.wysiwyg = {
+function initWysiwygBinder(enableKeyboardExtras) {
+  return {
     publish: true,
     bind: function (el) {
       // this is called when the binder initializes
-      var observer = this.observer,
+      var toolbarButtons = el.getAttribute('data-wysiwyg-buttons').split(','),
+        observer = this.observer,
         data = observer.value() || '', // don't print 'undefined' if there's no data
-        editor = createEditor(field, buttons),
+        editor = createEditor(el, toolbarButtons),
         italicExtension = _.find(editor.extensions, findExtension('italic')),
         strikethoughExtension = _.find(editor.extensions, findExtension('strikethrough')),
         linkExtension = _.find(editor.extensions, findExtension('anchor'));
@@ -463,6 +449,27 @@ module.exports = function (result, args) {
       });
     }
   };
+}
+
+module.exports = function (result, args) {
+  var name = result.name,
+    binders = result.binders,
+    buttons = args.buttons,
+    styled = args.styled,
+    enableKeyboardExtras = args.enableKeyboardExtras,
+    textInput = getInput(result.el),
+    field = dom.create(`<p class="wysiwyg-input${ isStyled(styled) }" data-field="${name}" rv-wysiwyg="${name}.data.value" data-wysiwyg-buttons="${buttons.join(',')}"></p>`);
+
+  // if more than 5 buttons, put the rest on the second tier
+  if (buttons.length > 5) {
+    buttons.splice(5, 0, 'tieredToolbar'); // clicking this expands the toolbar with a second tier
+  }
+
+  // put the rich text field after the input
+  dom.replaceElement(textInput, field);
+
+  // add the binder
+  binders.wysiwyg = initWysiwygBinder(enableKeyboardExtras);
 
   return result;
 };

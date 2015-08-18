@@ -20,19 +20,19 @@ function createOptions(name, options) {
   return options.map(function (option, index) {
     var id = name + '-' + option.value + '-' + index;
 
-    return `<input name="${name}" data-field="${name}" type="radio" id="${id}" rv-checked="data.value" value="${option.value}" />${ getLabel(id, option) }`;
+    return `<input name="${name}" data-field="${name}" type="radio" id="${id}" rv-checked="${name}.data.value" value="${option.value}" />${ getLabel(id, option) }`;
   }).join('\n');
 }
 
 module.exports = function (result, args) {
-  var bindings = result.bindings,
+  var name = result.name,
     options = args.options,
     field;
 
   field = dom.create(`
     <div class="input-label">
       <div class="segmented-button">
-        ${ createOptions(bindings.name, options) }
+        ${ createOptions(name, options) }
       </div>
     </div>
   `);

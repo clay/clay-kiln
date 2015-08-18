@@ -30,7 +30,7 @@ When the form is created, each behavior is called *in order*. The function for a
 ```js
 module.exports = function (result, args) {
   /*
-  result = { el, bindings, rivets }
+  result = { el, bindings, binders, formatters, name }
   args = { arguments from the schema }
    */
 
@@ -38,33 +38,28 @@ module.exports = function (result, args) {
 };
 ```
 
-There are two objects passed into the behavior. The first (`result`) contains the element, any data bindings (for templating and event handling), and the `rivets` instance. The `bindings` object by default contains the field's `name` and `data`. Add more properties to it if you want them to appear in the template:
+There are two objects passed into the behavior. The first (`result`) contains the element, data bindings (that will be added to the form's bindings object under the field name), the field name, and the field's formatters and binders. The `bindings` object by default contains the field's `name`, `label`, and `data` (including the schema). Add more properties to it if you want them to appear in the template:
 
 ```js
 module.exports = function (result, args) {
   var bindings = result.bindings,
+    name = result.name,
     el = result.el;
 
   // add bindings from the data, args, etc
-  bindings.label = _.startCase(bindings.name);
   bindings.required = args.required;
 
   var tpl = `
-      <label>{ label }</label>
-      <input type="text" rv-required="required" rv-value="data" />`,
+      <input type="text" rv-required="${name}.required" rv-value="${name}.data.value" />`,
     textField = dom.create(tpl); // dom.create() makes html elements from strings
 
-  if (el.nodeType === 1) { // a node element was passed in, we can append to it
-    el.appendChild(textField);
-  } else { // this is the first behavior, so a document fragment was passed in. just return the textField
-    el = textField;
-  }
+  el.appendChild(textField);
 
-  return {el: el, bindings: bindings, rivets: result.rivets };
+  return result;
 };
 ```
 
-Use the `rivets` instance that is passed in if you want to extend `rivets` with custom formatters, bindings, etc. ([Find out more](http://rivetsjs.com/docs/guide/#binders))
+`binders` and `formatters` are singletons that are added to the form's `rivets` instance. ([Find out more about binders and formatters](http://rivetsjs.com/docs/guide/#binders))
 
 ## How to define behaviors in the schema
 

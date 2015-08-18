@@ -12,7 +12,8 @@ var dom = require('../services/dom');
 
 module.exports = function (result, args) {
   var textField,
-    bindings = result.bindings;
+    bindings = result.bindings,
+    name = result.name;
 
   // add some stuff to the bindings
   bindings.required = args.required;
@@ -23,7 +24,7 @@ module.exports = function (result, args) {
 
   textField = dom.create(`
       <label class="input-label">
-        <input class="input-text" data-field="${bindings.name}" type="text" rv-required="required" rv-pattern="pattern" rv-minLength="minLength" rv-maxLength="maxLength" rv-placeholder="placeholder" rv-value="data.value | custom" />
+        <input class="input-text" data-field="${name}" type="text" rv-required="${name}.required" rv-pattern="${name}.pattern" rv-minLength="${name}.minLength" rv-maxLength="${name}.maxLength" rv-placeholder="${name}.placeholder" rv-value="${name}.data.value" />
       </label>
     `);
 

@@ -11,13 +11,12 @@ var _ = require('lodash'),
   dom = require('../services/dom'),
   focus = require('../decorators/focus');
 
-module.exports = function (result, args) {
-  var min = args.min,
-    max = args.max,
+module.exports = function (result) {
+  var name = result.name,
     el = dom.create(`
-      <section data-field="${result.bindings.name}" class="simple-list" rv-simplelist="data">
-        <span tabindex="0" rv-each-item="data" class="simple-list-item" rv-class-selected="item._selected" rv-on-click="selectItem" rv-on-keydown="keyactions">{ item.text }</span>
-        <input class="simple-list-add" rv-on-click="unselectAll" placeholder="Start typing here&hellip;" />
+      <section data-field="${name}" class="simple-list" rv-simplelist="${name}.data">
+        <span tabindex="0" rv-each-item="${name}.data" class="simple-list-item" rv-class-selected="item._selected" rv-on-click="${name}.selectItem" rv-on-keydown="${name}.keyactions">{ item.text }</span>
+        <input class="simple-list-add" rv-on-click="${name}.unselectAll" placeholder="Start typing here&hellip;" />
       </section>`);
 
   /**
@@ -129,7 +128,7 @@ module.exports = function (result, args) {
   result.el = el;
 
   // add binder for creating new items
-  result.rivets.binders.simplelist = {
+  result.binders.simplelist = {
     publish: true,
     bind: function (boundEl) {
       // this is called when the binder initializes
@@ -181,20 +180,6 @@ module.exports = function (result, args) {
       }
 
       addEl.addEventListener('keydown', handleItemKeyEvents);
-    },
-
-    // this is called whenever the data changes
-    routine: function (routineEl, items) {
-      var addEl = dom.find(routineEl, '.simple-list-add');
-
-      // if there's a minimum / maximum number of items allowed, toggle form validity
-      if (min && items.length < min) {
-        addEl.setCustomValidity('The minimum number of items is ' + min);
-      } else if (max && items.length > max) {
-        addEl.setCustomValidity('The maximum number of items is ' + max);
-      } else {
-        addEl.setCustomValidity('');
-      }
     }
   };
 

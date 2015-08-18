@@ -9,6 +9,7 @@ var dom = require('../services/dom');
 
 module.exports = function (result, args) {
   var bindings = result.bindings,
+    name = result.name,
     urlField;
 
   // add some stuff to the bindings
@@ -17,7 +18,7 @@ module.exports = function (result, args) {
 
   urlField = dom.create(`
     <label class="input-label">
-      <input data-field="${bindings.name}" type="url" rv-required="required" rv-placeholder="placeholder" rv-value="data.value" />
+      <input data-field="${name}" type="url" rv-required="${name}.required" rv-placeholder="${name}.placeholder" rv-value="${name}.data.value" />
     </label>
   `);
 

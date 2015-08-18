@@ -23,7 +23,7 @@ describe(dirname, function () {
 
         addTestBehaviors();
         result = fn({_schema: {_name: 'name', _has: 'testBehavior'}});
-        expect(result.firstElementChild.outerHTML).to.equal(singleElement);
+        expect(result.el.firstElementChild.outerHTML).to.equal(singleElement);
       });
 
       it('accepts inner shortcut notation', function () {
@@ -31,7 +31,7 @@ describe(dirname, function () {
 
         addTestBehaviors();
         result = fn({_schema: {_name: 'name', _has: ['testBehavior']}});
-        expect(result.firstElementChild.outerHTML).to.equal(singleElement);
+        expect(result.el.firstElementChild.outerHTML).to.equal(singleElement);
       });
 
       it('accepts normal notation', function () {
@@ -39,7 +39,7 @@ describe(dirname, function () {
 
         addTestBehaviors();
         result = fn({_schema: {_name: 'name', _has: [{fn: 'testBehavior'}]}});
-        expect(result.firstElementChild.outerHTML).to.equal(singleElement);
+        expect(result.el.firstElementChild.outerHTML).to.equal(singleElement);
       });
 
       it('accepts multiple behaviors', function () {
@@ -47,8 +47,8 @@ describe(dirname, function () {
 
         addTestBehaviors();
         result = fn({_schema: {_name: 'name', _has: [{fn: 'testBehavior'}, {fn: 'testBehavior'}]}});
-        expect(result.firstElementChild.outerHTML).to.equal(singleElement);
-        expect(result.firstElementChild.nextElementSibling.outerHTML).to.equal(singleElement);
+        expect(result.el.firstElementChild.outerHTML).to.equal(singleElement);
+        expect(result.el.firstElementChild.nextElementSibling.outerHTML).to.equal(singleElement);
       });
     });
 

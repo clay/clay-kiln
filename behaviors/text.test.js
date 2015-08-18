@@ -2,7 +2,7 @@ var fixture = require('../test/fixtures/behavior'),
   text = require('./text');
 
 // set some data
-fixture.bindings.data = 'foobar';
+fixture.bindings.foo.data = 'foobar';
 
 describe('text behavior', function () {
   it('has input', function () {
