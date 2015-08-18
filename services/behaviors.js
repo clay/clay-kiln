@@ -73,7 +73,7 @@ function getExpandedBehaviors(behaviors) {
  * @param {object} context
  * @param {*} context.value
  * @param {object} context._schema
- * @return {object}
+ * @return {Promise}
  */
 function run(context) {
   var result,
@@ -97,7 +97,7 @@ function run(context) {
       name: contextName
     });
 
-  return result;
+  return Promise.resolve(result);
 }
 
 exports.add = add;
