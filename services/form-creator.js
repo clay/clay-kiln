@@ -71,20 +71,45 @@ function createInlineFormEl(innerEl) {
 // form creation
 
 /**
- * @param {Element} el
- * @param {Element} value
- * @returns {*}
+ * @param {object} form
+ * @param {object} field
+ * @returns {object}
  */
-function appendElementClones(el, value) {
-  if (value && (value.nodeType === 1 || value.nodeType === 11)) {
-    el.appendChild(value);
+function appendElementClones(form, field) {
+  var el = form.el,
+    fieldEl = field.el,
+    fieldName = field.name;
+
+  // add field bindings
+  form.bindings[fieldName] = field.bindings;
+  // add field formatters (if they don't exist)
+  _.defaults(form.formatters, field.formatters);
+  // add field binders (if they don't exist)
+  _.defaults(form.binders, field.binders);
+
+  // append field el to form
+  if (fieldEl && (fieldEl.nodeType === 1 || fieldEl.nodeType === 11)) {
+    el.appendChild(fieldEl);
   }
-  return el;
+  return form;
+}
+
+/**
+ * generate new form object
+ * @returns {object}
+ */
+function newForm() {
+  return {
+    el: document.createDocumentFragment(),
+    binders: {}, // binders like simple-list and wysiwyg modify values
+    formatters: {}, // formatters like soft-maxlength format text
+    bindings: {} // bindings is a hash of all bindings for each field + behaviors
+  };
 }
 
 /**
  * @param {object} data
- * @return {Element}
+ * @return {object}
  */
 function createField(data) {
   return behaviors.run(data);
@@ -94,14 +119,14 @@ function createField(data) {
  * Iterate through this level of the schema, creating more fields
  *
  * @param {object} data
- * @returns {Element}
+ * @returns {object}
  */
 function expandFields(data) {
   return _(data.value)
     .map(function (field) {
       return createField(field);
     })
-    .reduce(appendElementClones, document.createDocumentFragment());
+    .reduce(appendElementClones, newForm());
 }
 
 /**
@@ -127,8 +152,8 @@ function createForm(ref, data, rootEl) {
   }
 
   // instantiate data-binding
-  _.assign(rivets.binders, form.binders);
-  _.assign(rivets.formatters, form.formatters);
+  _.defaults(rivets.binders, form.binders);
+  _.defaults(rivets.formatters, form.formatters);
   currentBindings = rivets.bind(form.el, form.bindings);
 
   // build up form el
@@ -165,8 +190,8 @@ function createInlineForm(ref, data, oldEl) {
   }
 
   // instantiate data-binding
-  _.assign(rivets.binders, form.binders);
-  _.assign(rivets.formatters, form.formatters);
+  _.defaults(rivets.binders, form.binders);
+  _.defaults(rivets.formatters, form.formatters);
   currentBindings = rivets.bind(form.el, form.bindings);
 
   // build up form el

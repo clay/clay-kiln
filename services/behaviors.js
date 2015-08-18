@@ -1,11 +1,8 @@
 var _ = require('lodash'),
-  rivets = require('rivets'),
   references = require('./references'),
   label = require('./label'),
   // hash of all behaviors
-  behaviorsHash = {},
-  // has of current bindings
-  bindingsHash = {};
+  behaviorsHash = {};
 
 /**
  * add a behavior to the hash. called by users who want to create custom behaviors
@@ -76,7 +73,7 @@ function getExpandedBehaviors(behaviors) {
  * @param {object} context
  * @param {*} context.value
  * @param {object} context._schema
- * @return {Element}
+ * @return {object}
  */
 function run(context) {
   var result,
@@ -95,20 +92,14 @@ function run(context) {
     }, {
       el: document.createDocumentFragment(),
       bindings: { label: contextLabel, name: contextName, data: context },
-      rivets: rivets,
-      path: contextName
+      binders: {},
+      formatters: {},
+      name: contextName
     });
 
-  // use the rivets instance that was passed through the behaviors, since it may have formatters/etc added to it
-  bindingsHash[contextName] = result.rivets.bind(result.el, result.bindings); // compile and bind templates, persist them to bindingsHash
-  return result.el;
-}
-
-function getBinding(name) {
-  return bindingsHash[name];
+  return result;
 }
 
 exports.add = add;
 exports.run = run;
 exports.getExpandedBehaviors = getExpandedBehaviors;
-exports.getBinding = getBinding;
