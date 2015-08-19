@@ -11,12 +11,13 @@ var _ = require('lodash'),
 module.exports = function (result, args) {
   var prop = args.propertyName,
     badge = args.badge || prop,
+    name = result.name,
     itemEls = dom.findAll(result.el, '.simple-list-item');
 
   // add doubleclick event to all list items
   _.forEach(itemEls, function (itemEl) {
-    itemEl.setAttribute('rv-on-dblclick', '${name}.togglePrimary');
-    itemEl.setAttribute('rv-class-primary', '${name}.item.' + prop);
+    itemEl.setAttribute('rv-on-dblclick', `${name}.togglePrimary`);
+    itemEl.setAttribute('rv-class-primary', 'item.' + prop);
 
     // add primary badge
     itemEl.appendChild(dom.create('<div class="badge">' + badge + '</div>'));
@@ -41,7 +42,7 @@ module.exports = function (result, args) {
    */
   function togglePrimary(bindings) {
     var item = bindings.item,
-      data = bindings.data,
+      data = bindings[name].data,
       isPrimary = item[prop]; // get this before unsetting everything
 
     unsetAll(data);
