@@ -33,12 +33,10 @@ module.exports = function (result) {
 
   /**
    * unselect all items, then select a specific item
-   * @param  {{ item: {}, data: []}} bindings
+   * @param {object} item
+   * @param  {array} data
    */
-  function selectItem(bindings) {
-    var item = bindings.item,
-      data = bindings.data;
-
+  function selectItem(item, data) {
     unselectAll(data);
     item._selected = true;
   }
@@ -47,11 +45,11 @@ module.exports = function (result) {
    * select previous item in list
    * @param  {Event} e
    * @param  {number} index
-   * @param  {{item: {}, data: []}} bindings
+   * @param  {array} data
    */
-  function selectPrevious(e, index, bindings) {
+  function selectPrevious(e, index, data) {
     if (index > 0 && e.target.previousSibling) {
-      selectItem({ item: bindings.data[index - 1], data: bindings.data });
+      selectItem(data[index - 1], data);
       e.target.previousSibling.focus();
     }
   }
@@ -60,14 +58,14 @@ module.exports = function (result) {
    * select next item in list
    * @param  {Event} e
    * @param  {number} index
-   * @param  {{item: {}, data: []}} bindings
+   * @param  {array} data
    */
-  function selectNext(e, index, bindings) {
+  function selectNext(e, index, data) {
     var input = dom.find(el, '.simple-list-add');
 
-    if (index < bindings.data.length - 1) {
+    if (index < data.length - 1) {
       e.preventDefault(); // kill that tab!
-      selectItem({ item: bindings.data[index + 1], data: bindings.data });
+      selectItem(data[index + 1], data );
       e.target.nextSibling.focus();
     } else {
       // we currently have the last item selected, so focus the input
@@ -82,13 +80,13 @@ module.exports = function (result) {
    * remove item from list
    * @param  {Event} e
    * @param  {number} index
-   * @param  {{item: {}, data: []}} bindings
+   * @param  {array} data
    */
-  function deleteItem(e, index, bindings) {
+  function deleteItem(e, index, data) {
     var prevSibling = e.target.previousSibling;
 
     e.preventDefault(); // prevent triggering the browser's back button
-    bindings.data.splice(index, 1); // remove item from the list
+    data.splice(index, 1); // remove item from the list
 
     if (index > 0) {
       prevSibling.focus();
@@ -107,21 +105,21 @@ module.exports = function (result) {
 
   // select an item (and unselect all others) when you click it
   result.bindings.selectItem = function (e, bindings) {
-    selectItem(bindings[name]);
+    selectItem(bindings.item, bindings[name].data);
   };
 
   // move between items and delete items when pressing the relevant keys (when an item is selected)
   result.bindings.keyactions = function (e, bindings) {
     var key = keycode(e),
-      field = bindings[name],
-      index = field.data.indexOf(field.item);
+      data = bindings[name].data,
+      index = data.indexOf(bindings.item);
 
     if (key === 'left') {
-      selectPrevious(e, index, field);
+      selectPrevious(e, index, data);
     } else if (key === 'tab' || key === 'right') {
-      selectNext(e, index, field);
+      selectNext(e, index, data);
     } else if (key === 'delete' || key === 'backspace') {
-      deleteItem(e, index, field);
+      deleteItem(e, index, data);
     }
   };
 
