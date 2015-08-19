@@ -3,11 +3,6 @@ var dirname = __dirname.split('/').pop(),
   fixture = require('../test/fixtures/behavior'),
   lib = require('./checkbox'); // static-analysis means this must be string, not `('./' + filename)`
 
-// set some data
-fixture.bindings.foo.data = [{
-  text: 'a'
-}];
-
 describe(dirname, function () {
   describe(filename, function () {
 
