@@ -40,8 +40,5 @@
 /* don't scroll the page when overlay is open */
 .noscroll {
   height: 100%;
-}
-.noscroll > body {
-  height: 100%;
   overflow: hidden;
 }
