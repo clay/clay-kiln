@@ -6,7 +6,7 @@ var _ = require('lodash'),
 /**
  * Only run the function if the properties exist. Warn if they do not. Parameters of function are gotten properties.
  *
- * Does a deep0get.
+ * Does a deep-get.
  *
  * @param {object} obj
  * @param {[string]} list
