@@ -2,7 +2,7 @@
 @import 'typography';
 
 @mixin input {
-  @include body-copy();
+  @include normal-text();
 
   background-color: #fff;
   border: 1px solid $black-25;

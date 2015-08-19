@@ -10,16 +10,30 @@ var EditorToolbar,
   references = require('../services/references'),
   forms = require('../services/forms'),
   edit = require('../services/edit'),
+  validation = require('../services/publish-validation'),
+  rules = require('../publishing-rules'),
+  ValidationDropdown = require('./validation-dropdown'),
   focus = require('../decorators/focus'),
   events = require('../services/events');
 
 /**
  * Publish current page.
+ * @param {Element} el
+ * @returns {Promise}
  */
-function publish() {
-  edit.publishPage()
-    .then(console.log)
-    .catch(console.error);
+function publish(el) {
+  return validation.validate(rules).then(function (errors) {
+    if (errors.length === 0) {
+      return edit.publishPage().then(function () {
+        console.log('published', arguments);
+      }).catch(function (error) {
+        console.error('publish error', error);
+      });
+    } else {
+      console.error('validation errors', errors);
+      return new ValidationDropdown(el, errors);
+    }
+  });
 }
 
 /**
@@ -97,7 +111,9 @@ EditorToolbar.prototype = {
    * On publish button
    */
   onPublish: function () {
-    publish();
+    var el = this.el;
+
+    publish(el);
   }
 };
 
