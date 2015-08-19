@@ -1,9 +1,5 @@
 /*
-Simple List arguments
-
-min {number} minimum number of items required
-max {number} maximum number of items allowed
-
+Simple List has no arguments!
  */
 
 var _ = require('lodash'),
