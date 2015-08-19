@@ -27,6 +27,18 @@ describe(dirname, function () {
         });
       }
 
+      function expectBehaviorArgs() {
+        lib.add('argBehavior', function (context, args) {
+          var el = document.createElement('div');
+
+          expect(args.test).to.equal(true);
+
+          el.setAttribute('class', 'behaviour-element');
+          context.el.appendChild(el);
+          return context;
+        });
+      }
+
       it('accepts shortcut notation', function () {
         function test(resolved) {
           expect(resolved.el.firstElementChild.outerHTML).to.equal(singleElement);
@@ -71,6 +83,25 @@ describe(dirname, function () {
 
         addTestBehaviors();
         fn({_schema: {_name: 'name', _has: 'testPromiseBehavior'}}).then(test);
+      });
+
+      it('doesn\'t run behaviors that haven\'t been added', function () {
+        function test(resolved) {
+          expect(resolved.el.firstElementChild.outerHTML).to.equal(singleElement);
+          expect(resolved.el.firstElementChild.nextElementSibling).to.equal(undefined);
+        }
+
+        addTestBehaviors();
+        fn({_schema: {_name: 'name', _has: [{fn: 'testBehavior'}, {fn: 'notAddedBehavior'}]}}).then(test);
+      });
+
+      it('passes arguments to behaviors', function () {
+        function test(resolved) {
+          expect(resolved.el.firstElementChild.outerHTML).to.equal(singleElement);
+        }
+
+        expectBehaviorArgs();
+        fn({_schema: {_name: 'name', _has: [{fn: 'argBehavior', test: true}]}}).then(test);
       });
     });
 

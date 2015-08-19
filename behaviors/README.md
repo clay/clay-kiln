@@ -61,6 +61,8 @@ module.exports = function (result, args) {
 
 `binders` and `formatters` are singletons that are added to the form's `rivets` instance. ([Find out more about binders and formatters](http://rivetsjs.com/docs/guide/#binders))
 
+Behaviors should return the first argument passed in (the `result` object), but may return a promise that resolves to that object. This is useful if your behavior needs to make api calls or do other async things.
+
 ## How to define behaviors in the schema
 
 While you can write out all behaviors as an array of objects, there's syntactical sugar to make it more concise. Here are examples, in increasing order of complexity:
