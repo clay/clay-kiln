@@ -11,7 +11,7 @@ fixture.bindings.foo.data = [{
 describe(dirname, function () {
   describe(filename, function () {
 
-    it('creates a label containing a checkbox with rivets attribute', function () {
+    it('creates a label containing a checkbox with rivets attributes', function () {
       var label = lib(fixture).el,
         input = label.querySelector('input[type="checkbox"]');
 
