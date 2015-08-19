@@ -102,25 +102,26 @@ module.exports = function (result) {
 
   // unselect all items when you click to add a new one
   result.bindings.unselectAll = function (e, bindings) {
-    unselectAll(bindings.data);
+    unselectAll(bindings[name].data);
   };
 
   // select an item (and unselect all others) when you click it
   result.bindings.selectItem = function (e, bindings) {
-    selectItem(bindings);
+    selectItem(bindings[name]);
   };
 
   // move between items and delete items when pressing the relevant keys (when an item is selected)
   result.bindings.keyactions = function (e, bindings) {
     var key = keycode(e),
-      index = bindings.data.indexOf(bindings.item);
+      field = bindings[name],
+      index = field.data.indexOf(field.item);
 
     if (key === 'left') {
-      selectPrevious(e, index, bindings);
+      selectPrevious(e, index, field);
     } else if (key === 'tab' || key === 'right') {
-      selectNext(e, index, bindings);
+      selectNext(e, index, field);
     } else if (key === 'delete' || key === 'backspace') {
-      deleteItem(e, index, bindings);
+      deleteItem(e, index, field);
     }
   };
 
