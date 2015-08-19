@@ -126,9 +126,9 @@ function createField(data) {
  * @returns {Promise}
  */
 function expandFields(data) {
-  return Promise.all(_.map(data.value), function (field) {
+  return Promise.all(_.map(data.value, function (field) {
     return behaviors.run(field);
-  }).then(function (fields) {
+  })).then(function (fields) {
     return _.reduce(fields, appendElementClones, newForm());
   });
 }
