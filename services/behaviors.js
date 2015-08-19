@@ -1,6 +1,7 @@
 var _ = require('lodash'),
   references = require('./references'),
   label = require('./label'),
+  promises = require('./promises'),
   // hash of all behaviors
   behaviorsHash = {};
 
@@ -73,31 +74,26 @@ function getExpandedBehaviors(behaviors) {
  * @param {object} context
  * @param {*} context.value
  * @param {object} context._schema
- * @return {object}
+ * @return {Promise}
  */
 function run(context) {
-  var result,
-    contextName = _.get(context, '_schema._name'),
+  var contextName = _.get(context, '_schema._name'),
     contextLabel = label(contextName, context._schema),
-    behaviors = getExpandedBehaviors(context._schema[references.fieldProperty]);
+    behaviors = getExpandedBehaviors(context._schema[references.fieldProperty]),
+    runnableBehaviors = _.filter(behaviors, omitMissingBehaviors);
 
-  // apply behaviours to create new context containing form element
-  result = _(behaviors)
-    .filter(omitMissingBehaviors)
-    .reduce(function (currentContext, behavior) {
-      // apply behaviours
-      var name = behavior[references.behaviorKey];
+  return promises.transform(runnableBehaviors, function (currentContext, behavior) {
+    // apply behaviours
+    var name = behavior[references.behaviorKey];
 
-      return behaviorsHash[name](currentContext, behavior.args);
-    }, {
-      el: document.createDocumentFragment(),
-      bindings: { label: contextLabel, name: contextName, data: context },
-      binders: {},
-      formatters: {},
-      name: contextName
-    });
-
-  return result;
+    return behaviorsHash[name](currentContext, behavior.args);
+  }, {
+    el: document.createDocumentFragment(),
+    bindings: { label: contextLabel, name: contextName, data: context },
+    binders: {},
+    formatters: {},
+    name: contextName
+  });
 }
 
 exports.add = add;

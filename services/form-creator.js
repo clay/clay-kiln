@@ -110,109 +110,126 @@ function newForm() {
 /**
  * create a single field
  * @param {object} data
- * @return {object}
+ * @return {Promise}
  */
 function createField(data) {
-  var field = behaviors.run(data);
-
-  return appendElementClones(newForm(), field);
+  return behaviors.run(data)
+    .then(function (field) {
+      return appendElementClones(newForm(), field);
+    });
 }
 
 /**
  * Iterate through this level of the schema, creating multiple fields
  *
  * @param {object} data
- * @returns {object}
+ * @returns {Promise}
  */
 function expandFields(data) {
-  return _(data.value)
-    .map(function (field) {
-      return behaviors.run(field);
-    })
-    .reduce(appendElementClones, newForm());
+  return Promise.all(_.map(data.value, function (field) {
+    return behaviors.run(field);
+  })).then(function (fields) {
+    return _.reduce(fields, appendElementClones, newForm());
+  });
+}
+
+/**
+ * create a promise that returns the created fields
+ * @param {object} data
+ * @param {object} data._schema
+ * @returns {Promise}
+ */
+function createFormPromise(data) {
+  var schema = data._schema;
+
+  // iterate through the data, creating fields
+  if (schema[references.fieldProperty]) {
+    // this is a single field
+    return createField(data);
+  } else {
+    // this is a group of fields
+    return expandFields(data);
+  }
+}
+
+/**
+ * init rivets and bind to the form
+ * @param {object} form
+ */
+function bindForm(form) {
+  // instantiate data-binding
+  _.assign(rivets.binders, form.binders);
+  _.assign(rivets.formatters, form.formatters);
+  currentBindings = rivets.bind(form.el, form.bindings);
 }
 
 /**
  * @param {string} ref  Place we'll be saving to
  * @param {object} data  The data itself (starting from path)
  * @param {Element} [rootEl=document.body]   Root element to temporarily insert the overlay
+ * @returns {Promise}
  */
 function createForm(ref, data, rootEl) {
-  var form, schema, name, el;
+  var schema, name, el;
 
   ensureValidFormData(ref, data);
   rootEl = rootEl || document.body;
   schema = data._schema;
   name = schema._name; // we're already checking to make sure these exist
 
-  // iterate through the data, creating fields
-  if (schema[references.fieldProperty]) {
-    // this is a single field
-    form = createField(data);
-  } else {
-    // this is a group of fields
-    form = expandFields(data);
-  }
+  return createFormPromise(data).then(function (form) {
+    bindForm(form);
 
-  // instantiate data-binding
-  _.assign(rivets.binders, form.binders);
-  _.assign(rivets.formatters, form.formatters);
-  currentBindings = rivets.bind(form.el, form.bindings);
+    // build up form el
+    el = createOverlayEl(createOverlayFormEl(label(name, schema), form.el));
+    // append it to the body
+    rootEl.appendChild(el);
 
-  // build up form el
-  el = createOverlayEl(createOverlayFormEl(label(name, schema), form.el));
-  // append it to the body
-  rootEl.appendChild(el);
+    // register + instantiate controllers
+    ds.controller('form', require('../controllers/form'));
+    ds.controller('overlay', require('../controllers/overlay'));
+    ds.get('form', el, ref, name);
+    ds.get('overlay', el);
 
-  // register + instantiate controllers
-  ds.controller('form', require('../controllers/form'));
-  ds.controller('overlay', require('../controllers/overlay'));
-  ds.get('form', el, ref, name);
-  ds.get('overlay', el);
+    return el;
+  });
 }
 
 /**
  * @param {string} ref  Place we'll be saving to
  * @param {object} data  The data itself (starting from path)
  * @param {Element} oldEl   Root element that is being inline edited
+ * @returns {Promise}
  */
 function createInlineForm(ref, data, oldEl) {
-  var schema, name, form, newEl, wrapped;
+  var schema, name, newEl, wrapped;
 
   ensureValidFormData(ref, data);
   schema = data._schema;
   name = schema._name;
 
-  // iterate through the data, creating fields
-  if (schema[references.fieldProperty]) {
-    // this is a single field
-    form = createField(data);
-  } else {
-    // this is a group of fields
-    form = expandFields(data);
-  }
+  return createFormPromise(data).then(function (form) {
+    bindForm(form);
 
-  // instantiate data-binding w/ new binders and formatters
-  _.assign(rivets.binders, form.binders);
-  _.assign(rivets.formatters, form.formatters);
-  currentBindings = rivets.bind(form.el, form.bindings);
+    // build up form el
+    newEl = createInlineFormEl(form.el);
+    wrapped = dom.wrapElements(_.filter(oldEl.childNodes, function (child) {
+      if (child.nodeType === 1) {
+        return !child.classList.contains('component-bar');
+      } else {
+        return true; // always pass through text nodes
+      }
+    }), 'span');
+    wrapped.classList.add('hidden-wrapped');
+    oldEl.appendChild(wrapped);
+    oldEl.appendChild(newEl);
 
-  // build up form el
-  newEl = createInlineFormEl(form.el);
-  wrapped = dom.wrapElements(_.filter(oldEl.childNodes, function (child) {
-    if (child.nodeType === 1) {
-      return !child.classList.contains('component-bar');
-    } else {
-      return true; // always pass through text nodes
-    }
-  }), 'span');
-  wrapped.classList.add('hidden-wrapped');
-  oldEl.appendChild(wrapped);
-  oldEl.appendChild(newEl);
+    // register + instantiate form controller
+    ds.controller('form', require('../controllers/form'));
+    ds.get('form', newEl, ref, name, oldEl);
 
-  // register + instantiate form controller
-  ds.controller('form', require('../controllers/form'));
-  ds.get('form', newEl, ref, name, oldEl);
+    return newEl;
+  });
 }
 
 /**
