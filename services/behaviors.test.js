@@ -6,7 +6,17 @@ var dirname = __dirname.split('/').pop(),
 describe(dirname, function () {
   describe(filename, function () {
     describe('run', function () {
-      var fn = lib[this.title];
+      var fn = lib[this.title],
+        sandbox;
+
+      beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+        sandbox.stub(console, 'warn', sandbox.spy());
+      });
+
+      afterEach(function () {
+        sandbox.restore();
+      });
 
       function addTestBehaviors() {
         lib.add('testBehavior', function (context) {
@@ -89,6 +99,7 @@ describe(dirname, function () {
         function test(resolved) {
           expect(resolved.el.firstElementChild.outerHTML).to.equal(singleElement);
           expect(resolved.el.firstElementChild.nextElementSibling).to.equal(undefined);
+          expect(console.warn.callCount).to.equal(1);
         }
 
         addTestBehaviors();
