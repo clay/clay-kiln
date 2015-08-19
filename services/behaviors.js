@@ -80,7 +80,7 @@ function run(context) {
   var contextName = _.get(context, '_schema._name'),
     contextLabel = label(contextName, context._schema),
     behaviors = getExpandedBehaviors(context._schema[references.fieldProperty]),
-    runnableBehaviors = _(behaviors).filter(omitMissingBehaviors);
+    runnableBehaviors = _.filter(behaviors, omitMissingBehaviors);
 
   return promises.transform(runnableBehaviors, function (currentContext, behavior) {
     // apply behaviours
