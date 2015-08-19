@@ -18,6 +18,7 @@ describe(dirname, function () {
         sandbox.restore();
       });
 
+      // behavior that adds an element
       function addTestBehaviors() {
         lib.add('testBehavior', function (context) {
           var el = document.createElement('div');
@@ -27,7 +28,7 @@ describe(dirname, function () {
           return context;
         });
 
-        // promise behavior
+        // promise behavior that adds an element
         lib.add('testPromiseBehavior', function (context) {
           var el = document.createElement('div');
 
@@ -37,14 +38,23 @@ describe(dirname, function () {
         });
       }
 
+      // behavior with args that does NOT add an element
       function expectBehaviorArgs() {
         lib.add('argBehavior', function (context, args) {
-          var el = document.createElement('div');
-
           expect(args.test).to.equal(true);
+          return context;
+        });
+      }
 
-          el.setAttribute('class', 'behaviour-element');
-          context.el.appendChild(el);
+      // test the context keys
+      function hasContextKeys(context) {
+        return Object.keys(context) === ['el', 'bindings', 'binders', 'formatters', 'name'];
+      }
+
+      // behavior to test context passed into it
+      function expectBehaviorContext() {
+        lib.add('contextBehavior', function (context) {
+          expect(hasContextKeys(context)).to.equal(true);
           return context;
         });
       }
@@ -108,11 +118,21 @@ describe(dirname, function () {
 
       it('passes arguments to behaviors', function () {
         function test(resolved) {
-          expect(resolved.el.firstElementChild.outerHTML).to.equal(singleElement);
+          expect(resolved.el).to.equal(document.createDocumentFragment());
         }
 
         expectBehaviorArgs();
         fn({_schema: {_name: 'name', _has: [{fn: 'argBehavior', test: true}]}}).then(test);
+      });
+
+      it('passes context through behaviors', function () {
+        function test(resolved) {
+          expect(resolved.el).to.equal(document.createDocumentFragment());
+          expect(hasContextKeys(resolved)).to.equal(true); // test to make sure context is passed out of behavior
+        }
+
+        expectBehaviorContext();
+        fn({_schema: {_name: 'name', _has: [{fn: 'contextBehavior'}]}}).then(test);
       });
     });
 
