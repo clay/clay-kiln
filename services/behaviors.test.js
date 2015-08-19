@@ -16,6 +16,15 @@ describe(dirname, function () {
           context.el.appendChild(el);
           return context;
         });
+
+        // promise behavior
+        lib.add('testPromiseBehavior', function (context) {
+          var el = document.createElement('div');
+
+          el.setAttribute('class', 'behaviour-element');
+          context.el.appendChild(el);
+          return Promise.resolve(context);
+        });
       }
 
       it('accepts shortcut notation', function () {
@@ -53,6 +62,15 @@ describe(dirname, function () {
 
         addTestBehaviors();
         fn({_schema: {_name: 'name', _has: [{fn: 'testBehavior'}, {fn: 'testBehavior'}]}}).then(test);
+      });
+
+      it('accepts behaviors that return a promise', function () {
+        function test(resolved) {
+          expect(resolved.el.firstElementChild.outerHTML).to.equal(singleElement);
+        }
+
+        addTestBehaviors();
+        fn({_schema: {_name: 'name', _has: 'testPromiseBehavior'}}).then(test);
       });
     });
 
