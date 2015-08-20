@@ -14,7 +14,8 @@ var EditorToolbar,
   rules = require('../publishing-rules'),
   ValidationDropdown = require('./validation-dropdown'),
   focus = require('../decorators/focus'),
-  events = require('../services/events');
+  events = require('../services/events'),
+  validationDropdownInstance;
 
 /**
  * Publish current page.
@@ -23,6 +24,8 @@ var EditorToolbar,
  */
 function publish(el) {
   return validation.validate(rules).then(function (errors) {
+    var container;
+
     if (errors.length === 0) {
       return edit.publishPage().then(function () {
         console.log('published', arguments);
@@ -31,7 +34,12 @@ function publish(el) {
       });
     } else {
       console.error('validation errors', errors);
-      return new ValidationDropdown(el, errors);
+      container = dom.find(el, '.kiln-toolbar-inner') || el;
+      if (!validationDropdownInstance) {
+        validationDropdownInstance = new ValidationDropdown(container, errors);
+      } else {
+        validationDropdownInstance.update(errors);
+      }
     }
   });
 }
