@@ -1,18 +1,26 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./simple-list'),
-  fixture = require('../test/fixtures/behavior'),
+  fixture = require('../test/fixtures/behavior')(),
   references = require('../services/references'),
-  data = [
-    {
-      text: 'foo'
-    }, {
-      text: 'bar'
-    }
-  ];
+  rivets = require('rivets'),
+  _ = require('lodash'),
+  dom = require('../services/dom'),
+  data = [{
+    text: 'foo'
+  }, {
+    text: 'bar'
+  }];
 
 // set some data
 fixture.bindings.data = data;
+
+function findBinding(name, view) {
+  var bindings = view.bindings,
+    binding = _.find(bindings, function (value) { return value.keypath === name; });
+
+  return binding;
+}
 
 describe(dirname, function () {
   describe(filename, function () {
@@ -25,7 +33,125 @@ describe(dirname, function () {
     });
 
     describe('bindings', function () {
-      var resultEl = lib(fixture).el
+      var result = lib(fixture),
+        el = result.el,
+        bindings = { foo: result.bindings },
+        view;
+
+      beforeEach(function () {
+        view = rivets.bind(el, bindings);
+        console.log(el)
+      });
+
+      afterEach(function () {
+        view.unbind();
+      });
+
+      it('has two items', function () {
+        expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
+        expect(el.querySelectorAll('.simple-list-item').length).to.equal(2);
+      });
+
+      it('selects on click');
+
+      it('selects previous item on left keypress');
+
+      it('selects next item on right or tab keypress');
+
+      it('deletes item on delete or backspace keypress');
+
+      it('selects previous item on delete (if a previous item exists)');
+
+      it('focuses input on delete (if no previous items exist)');
+    });
+  });
+
+  describe('simplelist binder', function () {
+    var result = lib(fixture),
+      el = result.el,
+      bindings = { foo: result.bindings },
+      addEl, view;
+
+    beforeEach(function () {
+      // _.assign(rivets.binders, result.binders);
+      console.log(el)
+      view = rivets.bind(el, bindings);
+      console.log(el)
+      addEl = dom.find(el, '.simple-list-add');
+    });
+
+    afterEach(function () {
+      view.unbind();
+    });
+
+    it('adds item on enter if text', function () {
+      expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
+
+      addEl.innerText = 'hello';
+    });
+
+    it('adds item on tab if text', function () {
+      expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
+
+      addEl.innerText = 'hello';
+    });
+
+    it('adds item on comma if text', function () {
+      expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
+
+      addEl.innerText = 'hello';
+    });
+
+    it('closes itself on enter if no text', function () {
+      expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
+
+      addEl.innerText = '';
+    });
+
+    it('closes itself on tab if no text', function () {
+      expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
+
+      addEl.innerText = '';
+    });
+
+    it('closes itself on comma if no text', function () {
+      expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
+    });
+
+    it('selects last item on delete if no text', function () {
+      expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
+
+      addEl.innerText = '';
+    });
+
+    it('selects last item on backspace if no text', function () {
+      expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
+
+      addEl.innerText = '';
+    });
+
+    it('selects last item on left if no text', function () {
+      expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
+
+      addEl.innerText = '';
+    });
+
+    it('does not select last item on delete if text', function () {
+      expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
+
+      addEl.innerText = 'hello';
+    });
+
+    it('does not select last item on backspace if text', function () {
+      expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
+
+      addEl.innerText = 'hello';
+    });
+
+    it('does not select last item on left if text', function () {
+      expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
+
+      addEl.innerText = 'hello';
     });
   });
 });

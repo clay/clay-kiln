@@ -1,9 +1,11 @@
-var defaults = {
-  el: document.createDocumentFragment(),
-  bindings: { label: 'Foo', name: 'foo', data: {} },
-  binders: {},
-  formatters: {},
-  name: 'foo'
-};
+function DefaultFixture() {
+  return {
+    el: document.createDocumentFragment(),
+    bindings: { label: 'Foo', name: 'foo', data: {} },
+    binders: {},
+    formatters: {},
+    name: 'foo'
+  };
+}
 
-module.exports = defaults;
+module.exports = DefaultFixture;

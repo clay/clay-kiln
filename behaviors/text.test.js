@@ -1,4 +1,4 @@
-var fixture = require('../test/fixtures/behavior'),
+var fixture = require('../test/fixtures/behavior')(),
   text = require('./text');
 
 // set some data
