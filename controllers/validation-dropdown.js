@@ -146,9 +146,7 @@ function update(el, items) {
   var list = getFirstListElement(el);
 
   if (list) {
-    while (list.firstElementChild) {
-      list.removeChild(list.firstElementChild);
-    }
+    dom.clearChildren(list);
 
     _.each(items, function (item) {
       var ruleEl = createRuleElement(item),
