@@ -201,7 +201,7 @@ function createPage() {
     newPageUri = prefix + pagesRoute + 'new';
 
   return cache.getDataOnly(newPageUri).then(function (data) {
-    return cache.createThrough(prefix + pagesRoute, data).then(function (res) {
+    return db.create(prefix + pagesRoute, data).then(function (res) {
       location.href = getNewPageUrl(res[refProp]);
     });
   });
