@@ -2,13 +2,13 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./simple-list'),
-  fixture = require('../test/fixtures/behavior')(),
-  references = require('../services/references'),
   data = [{
     text: 'foo'
   }, {
     text: 'bar'
-  }];
+  }],
+  fixture = require('../test/fixtures/behavior')(data),
+  references = require('../services/references');
 
 // set some data
 fixture.bindings.data = data;
