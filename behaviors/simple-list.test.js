@@ -53,14 +53,19 @@ describe(dirname, function () {
 
       it('selects on click', function () {
         var firstItem = dom.find(el, '.simple-list-item'),
+          e = document.createEvent('MouseEvent'),
           items;
 
-        firstItem.dispatchEvent(new Event('click'));
-        // note: this isn't passing the `item` in with the `bindings`?
+        function testEvent(e) {
+          firstItem.dispatchEvent(e);
+          items = findBinding('foo.data', view).observer.value();
+          expect(items[0]).to.eql({ text: 'foo', _selected: true});
+          expect(items[1]).to.eql({ text: 'bar', _selected: false});
+        }
 
-        items = findBinding('foo.data', view).observer.value();
-        expect(items[0]).to.eql({ text: 'foo', _selected: true});
-        expect(items[1]).to.eql({ text: 'bar', _selected: false});
+        e.initEvent('click', true, true);
+
+        _.defer(testEvent.bind(null, e));
       });
 
       it('selects previous item on left keypress');
