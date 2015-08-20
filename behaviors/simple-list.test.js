@@ -1,10 +1,9 @@
+/* eslint max-nested-callbacks: [1, 5] */
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./simple-list'),
   fixture = require('../test/fixtures/behavior')(),
   references = require('../services/references'),
-  rivets = require('rivets'),
-  _ = require('lodash'),
   data = [{
     text: 'foo'
   }, {
@@ -13,13 +12,6 @@ var dirname = __dirname.split('/').pop(),
 
 // set some data
 fixture.bindings.data = data;
-
-function findBinding(name, view) {
-  var bindings = view.bindings,
-    binding = _.find(bindings, function (value) { return value.keypath === name; });
-
-  return binding;
-}
 
 describe(dirname, function () {
   describe(filename, function () {
@@ -32,22 +24,30 @@ describe(dirname, function () {
     });
 
     describe('bindings', function () {
-      var result = lib(fixture),
-        el = result.el,
-        bindings = { foo: result.bindings },
-        view;
+      var bindings = lib(fixture).bindings,
+        newData = {
+          item: data[0],
+          foo: bindings
+        };
 
-      beforeEach(function () {
-        view = rivets.bind(el, bindings);
+      describe('unselectAll', function () {
+        var fn = bindings[this.title];
+
+        it('unselects all items', function () {
+          fn(null, newData);
+          expect(data[0]._selected).to.equal(false);
+          expect(data[1]._selected).to.equal(false);
+        });
       });
 
-      afterEach(function () {
-        view.unbind();
-      });
+      describe('selectItem', function () {
+        var fn = bindings[this.title];
 
-      it('has two items', function () {
-        expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
-        expect(el.querySelectorAll('.simple-list-item').length).to.equal(2);
+        it('selects an item', function () {
+          fn(null, newData);
+          expect(data[0]._selected).to.equal(true);
+          expect(data[1]._selected).to.equal(false);
+        });
       });
     });
   });
