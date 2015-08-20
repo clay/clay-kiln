@@ -1,4 +1,4 @@
-var fixture = require('../test/fixtures/behavior'),
+var fixture = require('../test/fixtures/behavior')(),
   autocomplete = require('./autocomplete'),
   db = require('../services/edit/db'),
   site = require('../services/site'),

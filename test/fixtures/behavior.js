@@ -1,11 +1,20 @@
-var defaults = {
-  el: document.createDocumentFragment(),
-  bindings: {
-    foo: { label: 'Foo', name: 'foo', data: {} }
-  },
-  binders: {},
-  formatters: {},
-  name: 'foo'
-};
+/**
+ * pass in the data you want
+ * @param {object|array} [data]
+ * @returns {object}
+ */
+function DefaultFixture(data) {
+  return {
+    el: document.createDocumentFragment(),
+    bindings: {
+      label: 'Foo',
+      name: 'foo',
+      data: data || {}
+    },
+    binders: {},
+    formatters: {},
+    name: 'foo'
+  };
+}
 
-module.exports = defaults;
+module.exports = DefaultFixture;
