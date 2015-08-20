@@ -143,14 +143,13 @@ function create(items) {
  * @param {[object]} items
  */
 function update(el, items) {
-  list = getFirstListElement(el);
-
-  debugger;
-  while (list.firstElementChild) {
-    list.removeChild(list.firstElementChild);
-  }
+  var list = getFirstListElement(el);
 
   if (list) {
+    while (list.firstElementChild) {
+      list.removeChild(list.firstElementChild);
+    }
+
     _.each(items, function (item) {
       var ruleEl = createRuleElement(item),
         ruleList = ruleEl && getFirstListElement(ruleEl);
@@ -185,12 +184,19 @@ function ValidationDropdown(containerEl, errors) {
   }, this);
 
   containerEl.appendChild(el);
+  this.containerEl = containerEl;
   this.el = el;
 }
 
 ValidationDropdown.prototype = {
 
   update: function (errors) {
+    var el = this.el;
+
+    if (!el.parentNode) {
+      this.containerEl.appendChild(el);
+    }
+
     update(this.el, errors);
   },
 
