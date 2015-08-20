@@ -3,7 +3,7 @@ var label, description,
   articleFields = ['primaryHeadline', 'teaser'],
   paragraphField = 'text',
   _ = require('lodash'),
-  dom = require('../services/dom'),
+  stripTags = require('striptags'),
   references = require('../services/references'),
   refProp = references.referenceProperty,
   cutStart = 20,
@@ -84,7 +84,7 @@ function addError(component, fieldName, errors, tkText) {
     data = component && component[fieldName],
     schema = data._schema,
     label = schema && schema._label,
-    value = data && data.value && dom.removeTags(data.value),
+    value = data && data.value && stripTags(data.value),
     error = {
       ref: ref,
       fieldName: fieldName,
@@ -107,7 +107,7 @@ function validate(state) {
 
   _.each(groups.paragraph, function (component) {
     var field = component[paragraphField],
-      value = field && field.value && dom.removeTags(field.value),
+      value = field && field.value && stripTags(field.value),
       tkText = value && findFirstText(value, searchTexts);
 
     if (tkText) {
@@ -120,7 +120,7 @@ function validate(state) {
   _.each(groups.article, function (component) {
     _.each(articleFields, function (fieldName) {
       var field = component[fieldName],
-        value = field && field.value && dom.removeTags(field.value),
+        value = field && field.value && stripTags(field.value),
         tkText = value && findFirstText(value, searchTexts);
 
       if (tkText) {

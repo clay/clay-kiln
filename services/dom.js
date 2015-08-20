@@ -211,23 +211,5 @@ module.exports = {
     observer.observe(el.parentNode, {childList: true});
   },
 
-  /**
-   * Remove HTML tags from string
-   * @param {string} str
-   * @returns {string}
-   */
-  removeTags: function (str) {
-    var start = str.indexOf('<'),
-      end = start > -1 && str.indexOf('>', start) || start;
-
-    while (start > -1 && end > -1) {
-      str = str.substring(0, start) + str.substring(end + 1);
-      start = str.indexOf('<');
-      end = start > -1 && str.indexOf('>') || start;
-    }
-
-    return str;
-  },
-
   create: domify // create elements from strings!
 };

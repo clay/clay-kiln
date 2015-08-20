@@ -189,12 +189,4 @@ describe('dom service', function () {
       expect(mockMutationObserver.disconnect.callCount).to.equal(1);
     });
   });
-
-  describe('removeTags', function () {
-    var fn = dom[this.title];
-
-    it('removes tags', function () {
-      expect(fn('a<>c<d>e<f>g</h>')).to.equal('aceg');
-    });
-  });
 });
