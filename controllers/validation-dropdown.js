@@ -63,6 +63,9 @@ function createContainerElement() {
           <img src="${prefix}/media/components/clay-kiln/stop-sign-white.svg">
           <span>This story is missing things needed to publish. Address the following and try again.</span>
       </header>
+      <div class="carot">
+        <img src="${prefix}/media/components/clay-kiln/carot-red.svg">
+      </div>
       <ul></ul>
       <footer class="row"><span class="button-container"><button class="close button-small">Close</button></span></footer>
     </section>`);
