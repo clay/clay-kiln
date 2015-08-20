@@ -139,24 +139,64 @@ function create(items) {
 }
 
 /**
- * @param {Element} parentEl
+ * @param {Element} el
+ * @param {[object]} items
+ */
+function update(el, items) {
+  var list = getFirstListElement(el);
+
+  if (list) {
+    dom.clearChildren(list);
+
+    _.each(items, function (item) {
+      var ruleEl = createRuleElement(item),
+        ruleList = ruleEl && getFirstListElement(ruleEl);
+
+      if (ruleList) {
+        _.each(item.errors, function (error) {
+          var errorEl = createErrorElement(error);
+
+          if (errorEl) {
+            dom.prependChild(ruleList, errorEl);
+          }
+        });
+      }
+
+      if (ruleEl) {
+        list.appendChild(ruleEl);
+      }
+    });
+  }
+}
+
+/**
+ * @param {Element} containerEl
  * @param {[object]} errors
  * @constructor
  */
-function ValidationDropdown(parentEl, errors) {
+function ValidationDropdown(containerEl, errors) {
   var el = create(errors);
 
   events.add(el, {
     '.close click': 'onClose'
   }, this);
 
-  parentEl = dom.find(parentEl, '.kiln-toolbar-inner') || parentEl;
-  parentEl.appendChild(el);
-
+  containerEl.appendChild(el);
+  this.containerEl = containerEl;
   this.el = el;
 }
 
 ValidationDropdown.prototype = {
+
+  update: function (errors) {
+    var el = this.el;
+
+    if (!el.parentNode) {
+      this.containerEl.appendChild(el);
+    }
+
+    update(this.el, errors);
+  },
 
   remove: function () {
     var el = this.el;
