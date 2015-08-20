@@ -40,7 +40,6 @@ describe(dirname, function () {
 
       beforeEach(function () {
         view = rivets.bind(el, bindings);
-        console.log(el)
       });
 
       afterEach(function () {
@@ -52,7 +51,17 @@ describe(dirname, function () {
         expect(el.querySelectorAll('.simple-list-item').length).to.equal(2);
       });
 
-      it('selects on click');
+      it('selects on click', function () {
+        var firstItem = dom.find(el, '.simple-list-item'),
+          items;
+
+        firstItem.dispatchEvent(new Event('click'));
+        // note: this isn't passing the `item` in with the `bindings`?
+
+        items = findBinding('foo.data', view).observer.value();
+        expect(items[0]).to.eql({ text: 'foo', _selected: true});
+        expect(items[1]).to.eql({ text: 'bar', _selected: false});
+      });
 
       it('selects previous item on left keypress');
 
@@ -73,10 +82,8 @@ describe(dirname, function () {
       addEl, view;
 
     beforeEach(function () {
-      // _.assign(rivets.binders, result.binders);
-      console.log(el)
+      _.assign(rivets.binders, result.binders);
       view = rivets.bind(el, bindings);
-      console.log(el)
       addEl = dom.find(el, '.simple-list-add');
     });
 
@@ -87,31 +94,31 @@ describe(dirname, function () {
     it('adds item on enter if text', function () {
       expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
 
-      addEl.innerText = 'hello';
+      addEl.value = 'hello';
     });
 
     it('adds item on tab if text', function () {
       expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
 
-      addEl.innerText = 'hello';
+      addEl.value = 'hello';
     });
 
     it('adds item on comma if text', function () {
       expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
 
-      addEl.innerText = 'hello';
+      addEl.value = 'hello';
     });
 
     it('closes itself on enter if no text', function () {
       expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
 
-      addEl.innerText = '';
+      addEl.value = '';
     });
 
     it('closes itself on tab if no text', function () {
       expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
 
-      addEl.innerText = '';
+      addEl.value = '';
     });
 
     it('closes itself on comma if no text', function () {
@@ -121,37 +128,37 @@ describe(dirname, function () {
     it('selects last item on delete if no text', function () {
       expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
 
-      addEl.innerText = '';
+      addEl.value = '';
     });
 
     it('selects last item on backspace if no text', function () {
       expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
 
-      addEl.innerText = '';
+      addEl.value = '';
     });
 
     it('selects last item on left if no text', function () {
       expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
 
-      addEl.innerText = '';
+      addEl.value = '';
     });
 
     it('does not select last item on delete if text', function () {
       expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
 
-      addEl.innerText = 'hello';
+      addEl.value = 'hello';
     });
 
     it('does not select last item on backspace if text', function () {
       expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
 
-      addEl.innerText = 'hello';
+      addEl.value = 'hello';
     });
 
     it('does not select last item on left if text', function () {
       expect(findBinding('foo.data', view).observer.value().length).to.equal(2);
 
-      addEl.innerText = 'hello';
+      addEl.value = 'hello';
     });
   });
 });
