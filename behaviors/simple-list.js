@@ -79,7 +79,8 @@ module.exports = function (result) {
    * @param  {array} data
    */
   function deleteItem(e, index, data) {
-    var prevSibling = e.target.previousSibling;
+    var prevSibling = e.target.previousSibling,
+      input = dom.find(dom.closest(e.target, '.simple-list'), '.simple-list-add');
 
     e.preventDefault(); // prevent triggering the browser's back button
     data.splice(index, 1); // remove item from the list
@@ -87,6 +88,9 @@ module.exports = function (result) {
     if (index > 0) {
       prevSibling.focus();
       prevSibling.dispatchEvent(new Event('click'));
+    } else {
+      // you deleted all the items! focus the input
+      input.focus();
     }
   }
 
