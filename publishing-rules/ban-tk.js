@@ -1,15 +1,33 @@
 var label, description,
-  tkText = 'TK',
+  searchTexts = ['TK', 'tktk'],
   articleFields = ['primaryHeadline', 'teaser'],
   paragraphField = 'text',
   _ = require('lodash'),
+  stripTags = require('striptags'),
   references = require('../services/references'),
   refProp = references.referenceProperty,
   cutStart = 20,
   cutEnd = 20;
 
 label = 'Ban TKs';
-description = 'TKs are not allowed';
+description = 'Any TK or tktk in the article\'s primary headline, teaser or in any paragraph cannot be published.';
+
+/**
+ * Return first value of list to be found in str
+ * @param {string} str
+ * @param {[string]} list
+ * @returns {string|null}
+ */
+function findFirstText(str, list) {
+  var i;
+
+  for (i = 0; i < list.length; i++) {
+    if (str.indexOf(list[i]) > -1) {
+      return list[i];
+    }
+  }
+  return null;
+}
 
 /**
  * @param {string} componentName
@@ -29,9 +47,10 @@ function getLabel(componentName, label, ref) {
 /**
  * @param {string} value
  * @param {object} data
+ * @param {string} tkText
  * @returns {string}
  */
-function getPreview(value, data) {
+function getPreview(value, data, tkText) {
   var index;
 
   if (_.isString(value)) {
@@ -39,10 +58,11 @@ function getPreview(value, data) {
 
     if (index > cutStart) {
       value = '...' + value.substr(index - cutStart);
+      index = index - (index - cutStart) + 3;
     }
 
     if (value.length > index + cutEnd) {
-      value = value.substr(0, index + cutEnd) + '...';
+      value = value.substr(0, index + cutEnd + tkText.length) + '...';
     }
 
     return value;
@@ -56,19 +76,20 @@ function getPreview(value, data) {
  * @param {object} component
  * @param {string} fieldName
  * @param {[object]} errors
+ * @param {string} tkText
  */
-function addError(component, fieldName, errors) {
+function addError(component, fieldName, errors, tkText) {
   var ref = component[refProp],
     componentName = ref && references.getComponentNameFromReference(ref),
     data = component && component[fieldName],
     schema = data._schema,
     label = schema && schema._label,
-    value = data && data.value,
+    value = data && data.value && stripTags(data.value),
     error = {
       ref: ref,
       fieldName: fieldName,
       label: getLabel(componentName, label, ref),
-      preview: getPreview(value, data)
+      preview: getPreview(value, data, tkText)
     };
 
   errors.push(error);
@@ -86,11 +107,12 @@ function validate(state) {
 
   _.each(groups.paragraph, function (component) {
     var field = component[paragraphField],
-      value = field && field.value;
+      value = field && field.value && stripTags(field.value),
+      tkText = value && findFirstText(value, searchTexts);
 
-    if (_.isString(value) && value.indexOf(tkText) > -1) {
+    if (tkText) {
 
-      addError(component, paragraphField, errors);
+      addError(component, paragraphField, errors, tkText);
 
     }
   });
@@ -98,11 +120,12 @@ function validate(state) {
   _.each(groups.article, function (component) {
     _.each(articleFields, function (fieldName) {
       var field = component[fieldName],
-        value = field && field.value;
+        value = field && field.value && stripTags(field.value),
+        tkText = value && findFirstText(value, searchTexts);
 
-      if (_.isString(value) && value.indexOf(tkText) > -1) {
+      if (tkText) {
 
-        addError(component, fieldName, errors);
+        addError(component, fieldName, errors, tkText);
 
       }
     });
