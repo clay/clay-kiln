@@ -88,14 +88,14 @@ describe(dirname, function () {
           ref: 'k/components/paragraph/instances/l',
           fieldName: 'text',
           label: 'Paragraph',
-          preview: '...wertyuiopasdfghjkl;zTKqwertyuiopasdfgh...'
+          preview: '...wertyuiopasdfghjkl;zTKqwertyuiopasdfghjkl;...'
         }]);
       });
 
       it('returns errors for articles', function () {
         var justText = 'TK',
           shortText = 'abcTKdef',
-          longText = 'qwertyuiopasdfghjkl;zTKqwertyuiopasdfghjkl;z',
+          longText = 'qwer<em>tyuiopasdfghjkl;zTKqwertyuiop</em>asdfghjkl;z',
           state = {
             refs: {
               'f/components/article': {primaryHeadline: {value: shortText}},
@@ -127,7 +127,7 @@ describe(dirname, function () {
           ref: 'm/components/article/instances/n',
           fieldName: 'primaryHeadline',
           label: 'Article',
-          preview: '...wertyuiopasdfghjkl;zTKqwertyuiopasdfgh...'
+          preview: '...wertyuiopasdfghjkl;zTKqwertyuiopasdfghjkl;...'
         }, {
           ref: 'o/components/article/instances/p',
           fieldName: 'primaryHeadline',
