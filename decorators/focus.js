@@ -4,6 +4,7 @@ var _ = require('lodash'),
   select = require('../services/select'),
   dom = require('../services/dom'),
   getInput = require('../services/get-input'),
+  componentList = require('./component-list'),
   currentFocus; // eslint-disable-line
 
 function hasCurrentFocus() {
@@ -16,6 +17,7 @@ function hasCurrentFocus() {
  */
 function unfocus() {
   select.unselect();
+  componentList.closePanes(); // close any open add-component panes
   currentFocus = null;
   return forms.close();
 }
