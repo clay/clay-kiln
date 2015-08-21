@@ -1,0 +1,17 @@
+@import '../styleguide/inputs';
+@import '../styleguide/typography';
+
+.checkbox-group .checkbox-group-item {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.checkbox-group input {
+  @include checkbox();
+}
+
+.checkbox-group label {
+  @include normal-text();
+  @include overlay-copy();
+}
