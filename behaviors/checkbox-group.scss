@@ -2,9 +2,13 @@
 @import '../styleguide/typography';
 
 .checkbox-group .checkbox-group-item {
-  margin: 0;
+  margin: 0 0 1rem;
   padding: 0;
   width: 100%;
+}
+
+.checkbox-group .checkbox-group-item:first-of-type {
+  margin-top: 1.5rem;
 }
 
 .checkbox-group input {
@@ -14,4 +18,7 @@
 .checkbox-group label {
   @include normal-text();
   @include overlay-copy();
+
+  padding-left: .4rem;
+  vertical-align: middle;
 }
