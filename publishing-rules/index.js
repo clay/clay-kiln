@@ -1,4 +1,5 @@
 module.exports = [
   require('./ban-tk'),
-  require('./required')
+  require('./required'),
+  require('./soft-maxlength')
 ];
