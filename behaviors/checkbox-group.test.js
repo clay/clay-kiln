@@ -1,4 +1,3 @@
-/* eslint max-nested-callbacks: [1, 5] */
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./checkbox-group'),
