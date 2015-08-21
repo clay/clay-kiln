@@ -1,3 +1,4 @@
 module.exports = [
-  require('./ban-tk')
+  require('./ban-tk'),
+  require('./required')
 ];

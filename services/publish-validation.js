@@ -41,7 +41,9 @@ function getComponentMap(refs) {
 function getLatestRefDataMap(refs) {
   return promises.transform(refs, function (obj, ref) {
     return edit.getData(ref).catch(function () {}).then(function (data) {
-      obj[ref] = data;
+      if (ref && data) {
+        obj[ref] = data;
+      }
     });
   }, {});
 }
