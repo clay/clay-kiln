@@ -27,3 +27,11 @@
     border: 1px solid $yellow;
   }
 }
+
+@mixin checkbox {
+  height: 2.4rem;
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+  width: 2.4rem;
+}

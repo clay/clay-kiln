@@ -16,6 +16,7 @@ behaviors.add('soft-maxlength', require('./behaviors/soft-maxlength'));
 behaviors.add('radio', require('./behaviors/radio'));
 behaviors.add('description', require('./behaviors/description'));
 behaviors.add('checkbox', require('./behaviors/checkbox'));
+behaviors.add('checkbox-group', require('./behaviors/checkbox-group'));
 behaviors.add('textarea', require('./behaviors/textarea'));
 behaviors.add('url', require('./behaviors/url'));
 behaviors.add('select', require('./behaviors/select'));
