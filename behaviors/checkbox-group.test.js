@@ -32,7 +32,7 @@ describe(dirname, function () {
 
       function getLabels() {
         return _.map(resultEl.querySelectorAll('label'), function (label) {
-          return label.innerText;
+          return label.textContent;
         });
       }
 
