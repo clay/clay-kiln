@@ -7,6 +7,10 @@
   width: 100%;
 }
 
+.checkbox-group .checkbox-group-item:first-of-type {
+  margin-top: .4rem;
+}
+
 .checkbox-group input {
   @include checkbox();
 }
@@ -14,4 +18,6 @@
 .checkbox-group label {
   @include normal-text();
   @include overlay-copy();
+
+  padding-left: .4rem;
 }
