@@ -224,5 +224,29 @@ function handler(el, options) {
   return el;
 }
 
+/**
+ * close if it's open
+ * @param  {Element} el
+ */
+function closeIfOpen(el) {
+  if (el.classList.contains('open')) {
+    el.classList.remove('open');
+  }
+}
+
+/**
+ * close any open component panes
+ */
+function closePanes() {
+  var buttons = dom.findAll('.open-add-components'),
+    panes = dom.findAll('.add-components-pane');
+
+  _.forEach(buttons, closeIfOpen);
+  _.forEach(panes, closeIfOpen);
+}
+
 module.exports.when = when;
 module.exports.handler = handler;
+
+// close panes when someone unfocuses / focuses a field
+module.exports.closePanes = closePanes;
