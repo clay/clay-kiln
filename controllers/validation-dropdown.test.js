@@ -28,6 +28,36 @@ describe('validation-dropdown controller', function () {
     }).to.not.throw();
   });
 
+  it('updates with rule', function () {
+    var containerEl = dom.create('<div></div>'),
+      instance;
+
+    expect(function () {
+      instance = new lib(containerEl, []);
+      instance.update([{rule:{label: 'a', description: 'b'}}]);
+    }).to.not.throw();
+  });
+
+  it('updates with rule and error', function () {
+    var containerEl = dom.create('<div></div>'),
+      instance;
+
+    expect(function () {
+      instance = new lib(containerEl, []);
+      instance.update([{rule:{label: 'a', description: 'b', errors: [{label: 'c'}]}}]);
+    }).to.not.throw();
+  });
+
+  it('updates with rule and error with preview', function () {
+    var containerEl = dom.create('<div></div>'),
+      instance;
+
+    expect(function () {
+      instance = new lib(containerEl, []);
+      instance.update([{rule:{label: 'a', description: 'b', errors: [{label: 'c', preview: 'd'}]}}]);
+    }).to.not.throw();
+  });
+
   it('removes', function () {
     var containerEl = dom.create('<div></div>'),
       instance;

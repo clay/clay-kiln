@@ -94,14 +94,43 @@ function createRuleElement(item) {
  * @param {object} error
  * @returns {Element|null}
  */
-function createErrorElement(error) {
+function createPreviewErrorElement(error) {
   return withProperties(error, ['label', 'preview'], function (label, preview) {
     return dom.create(`
-      <li class="error">
+      <li class="error error-preview">
         <span class="name">${label}</span>
         <span class="preview">${preview}</span>
       </li>`);
   });
+}
+
+/**
+ * Create an element to put all the data.  Can return nothing if missing data.
+ *
+ * @param {object} error
+ * @returns {Element|null}
+ */
+function createPlainErrorElement(error) {
+  return withProperties(error, ['label'], function (label) {
+    return dom.create(`
+      <li class="error">
+        <span class="name">${label}</span>
+      </li>`);
+  });
+}
+
+/**
+ * Create an element to put all the data.  Can return nothing if missing data.
+ *
+ * @param {object} error
+ * @returns {Element|null}
+ */
+function createErrorElement(error) {
+  if (_.isString(error.preview) && error.preview.length > 0) {
+    return createPreviewErrorElement(error);
+  } else {
+    return createPlainErrorElement(error);
+  }
 }
 
 /**

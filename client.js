@@ -12,6 +12,7 @@ var nodeUrl = require('url'),
 // since browserify's require() uses static analysis
 behaviors.add('component-ref', require('./behaviors/component-ref'));
 behaviors.add('text', require('./behaviors/text'));
+behaviors.add('required', require('./behaviors/required'));
 behaviors.add('soft-maxlength', require('./behaviors/soft-maxlength'));
 behaviors.add('radio', require('./behaviors/radio'));
 behaviors.add('description', require('./behaviors/description'));

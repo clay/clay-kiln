@@ -58,7 +58,6 @@ $white: #ffffff;
     >.name {
       display: inline;
       font-weight: bold;
-      margin: 0.2rem;
 
       &:after {
         content: ': '
@@ -85,15 +84,17 @@ $white: #ffffff;
     >.name {
       display: block;
       margin: 0.2rem;
+    }
+  }
 
+  li.error-preview {
+    >.name {
       &:after {
         content: ': '
       }
     }
 
     >.preview {
-      display: block;
-      margin: 0.2rem;;
       &:before {
         content: '"'
       }
