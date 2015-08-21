@@ -13,4 +13,5 @@
 
 .kiln-placeholder .placeholder-label {
   @include normal-text();
+  @include overlay-copy();
 }
