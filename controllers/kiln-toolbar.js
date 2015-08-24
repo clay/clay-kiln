@@ -6,6 +6,7 @@
  */
 
 var EditorToolbar,
+  moment = require('moment'),
   dom = require('../services/dom'),
   references = require('../services/references'),
   forms = require('../services/forms'),
@@ -15,6 +16,7 @@ var EditorToolbar,
   ValidationDropdown = require('./validation-dropdown'),
   focus = require('../decorators/focus'),
   events = require('../services/events'),
+  site = require('../services/site'),
   validationDropdownInstance;
 
 /**
@@ -28,6 +30,15 @@ function publish(el) {
 
     if (errors.length === 0) {
       return edit.publishPage().then(function () {
+        var publishPane = dom.find('.kiln-publish-pane'),
+          publishStatus = dom.find(publishPane, '.publish-status'),
+          publishLink = dom.find(publishPane, '.publish-link'),
+          date = moment();
+
+        // set the status message and link
+        publishPane.classList.add('show');
+        publishStatus.innerHTML = 'Published on ' + date.format('dddd, MMMM Do') + ' at ' + date.format('h:mm a');
+        publishLink.setAttribute('href', site.addProtocol(site.addPort(dom.uri())));
         console.log('published', arguments);
       }).catch(function (error) {
         console.error('publish error', error);

@@ -1,4 +1,8 @@
 {%- if locals.edit -%}
+  <div class="kiln-publish-pane">
+    <span class="publish-status"></span>
+    <a class="publish-link" target="_blank">See Article</a>
+  </div>
   <section class="kiln-toolbar" data-uri="{{ _ref or _self }}" data-site-host="{{ site.host }}" data-site-path="{{ site.path}}" data-site-assetpath="{{ site.assetPath }}">
     <div class="kiln-toolbar-inner">
       <button class="close">

@@ -44,6 +44,13 @@
   color: $green;
 }
 
+// used for "see article" button, etc
+@mixin button-primary-3 {
+  background-color: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+}
+
 @mixin button-secondary-1 {
   background-color: $black-50;
   border: 1px solid $black-50;
