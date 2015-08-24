@@ -96,13 +96,20 @@ body {
 
 // publish pane
 .kiln-publish-pane {
-  background-color: $green;
   padding: .5rem 1rem;
   position: absolute;
   text-align: center;
   top: .7rem;
   width: 100%;
   z-index: 1;
+}
+
+.kiln-publish-pane.success {
+  background-color: $green;
+}
+
+.kiln-publish-pane.error {
+  background-color: $red;
 }
 
 .kiln-publish-pane.show {
