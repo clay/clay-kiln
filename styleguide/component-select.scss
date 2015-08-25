@@ -1,5 +1,6 @@
 @import 'colors';
 @import 'typography';
+@import 'layers';
 // Using px because the gap needs to be px so that it does not disappear, and can only add with same units.
 $bar-height: 26px; // drag, settings, delete, etc are square so width = height.
 $bar-parent-height: 20px;
@@ -30,6 +31,7 @@ $bar-parent-bg-color: rgba(139,191,211,.95);
 // Bar on a selected component
 .component-bar {
   @include overlay-copy();
+  @include component-toolbar-layer();
 
   align-content: flex-end;
   align-items: stretch;
@@ -112,7 +114,8 @@ $bar-parent-bg-color: rgba(139,191,211,.95);
   flex-basis: auto;
   flex-grow: 1;
   height: $bar-bd-height;
-  margin-left: -$bar-gap;
+  margin-left: -$bar-gap; // removes the gap from the last item
+  margin-right: 0; // ensures that the toolbar is full width
   order: 5;
 }
 
