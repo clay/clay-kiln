@@ -31,7 +31,7 @@ $bar-parent-bg-color: rgba(139,191,211,.95);
 // Bar on a selected component
 .component-bar {
   @include overlay-copy();
-  @include toolbar-layer();
+  @include component-toolbar-layer();
 
   align-content: flex-end;
   align-items: stretch;
@@ -44,7 +44,7 @@ $bar-parent-bg-color: rgba(139,191,211,.95);
   position: absolute;
   top: -$bar-height;
   transition: opacity .15s ease-in-out;
-  width: 100%;
+  width: calc(100% + 1px);
 }
 
 // Bar items
