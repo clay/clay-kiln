@@ -44,7 +44,7 @@ $bar-parent-bg-color: rgba(139,191,211,.95);
   position: absolute;
   top: -$bar-height;
   transition: opacity .15s ease-in-out;
-  width: calc(100% + 1px);
+  width: 100%;
 }
 
 // Bar items
@@ -114,7 +114,8 @@ $bar-parent-bg-color: rgba(139,191,211,.95);
   flex-basis: auto;
   flex-grow: 1;
   height: $bar-bd-height;
-  margin-left: -$bar-gap;
+  margin-left: -$bar-gap; // removes the gap from the last item
+  margin-right: 0; // ensures that the toolbar is full width
   order: 5;
 }
 
