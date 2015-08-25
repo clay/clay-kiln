@@ -29,17 +29,21 @@ function publish(el) {
     var container;
 
     if (errors.length === 0) {
-      return edit.publishPage().then(function () {
+      return edit.publishPage().then(function (res) {
         var publishPane = dom.find('.kiln-publish-pane'),
           publishStatus = dom.find(publishPane, '.publish-status'),
-          publishLink = dom.find(publishPane, '.publish-link'),
-          date = moment();
+          publishLink = dom.find(publishPane, '.publish-link');
 
-        // set the status message and link, then show the pane
-        publishStatus.innerHTML = 'Published on ' + date.format('dddd, MMMM Do') + ' at ' + date.format('h:mm a');
-        publishLink.setAttribute('href', site.addProtocol(site.addPort(dom.uri())));
-        publishPane.classList.add('success');
-        publishPane.classList.add('show');
+        return edit.getDataOnly(res.main).then(function (data) {
+          var url = site.addProtocol(site.addPort(site.get('prefix') + '/' + data.canonicalUrl)),
+            date = moment(data.date);
+
+          // set the status message and link, then show the pane
+          publishStatus.innerHTML = 'Published on ' + date.format('dddd, MMMM Do') + ' at ' + date.format('h:mm a');
+          publishLink.setAttribute('href', url);
+          publishPane.classList.add('success');
+          publishPane.classList.add('show');
+        });
       }).catch(function (error) {
         var publishPane = dom.find('.kiln-publish-pane'),
           publishStatus = dom.find(publishPane, '.publish-status'),
