@@ -32,14 +32,11 @@ function publish(el) {
       return edit.publishPage().then(function (res) {
         var publishPane = dom.find('.kiln-publish-pane'),
           publishStatus = dom.find(publishPane, '.publish-status'),
-          publishLink = dom.find(publishPane, '.publish-link'),
-          date = moment();
+          publishLink = dom.find(publishPane, '.publish-link');
 
-        return edit.getDataOnly(res.canonical).then(function (data) {
-          var url = site.addProtocol(site.addPort(site.get('prefix') + '/' + data.url));
-
-          console.log(url)
-          console.log(data)
+        return edit.getDataOnly(res.main).then(function (data) {
+          var url = site.addProtocol(site.addPort(site.get('prefix') + '/' + data.canonicalUrl)),
+            date = moment(data.date);
 
           // set the status message and link, then show the pane
           publishStatus.innerHTML = 'Published on ' + date.format('dddd, MMMM Do') + ' at ' + date.format('h:mm a');
