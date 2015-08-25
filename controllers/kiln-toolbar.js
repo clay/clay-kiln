@@ -17,14 +17,6 @@ var EditorToolbar,
   focus = require('../decorators/focus'),
   events = require('../services/events'),
   site = require('../services/site'),
-  errorMessages = [
-    'What do we say to the god of publishing? Not today.',
-    'Something broke on the server! Don\'t worry, it\'s not your fault.',
-    'Publishing failed. All those&hellip; moments&hellip; will be lost, in time, like tears&hellip; in&hellip; rain.',
-    'Why do we publish? Life\'s so fragile, a successful virus clinging to a speck of mud, suspended in endless nothing.',
-    'O, publish not the post! Our basest writers are in the poorest thing superfluous!',
-    'Friends, Romans, countrymen, lend me your ears; I come to bury this post, not to publish it.'
-  ],
   validationDropdownInstance;
 
 /**
@@ -54,7 +46,7 @@ function publish(el) {
           publishLink = dom.find(publishPane, '.publish-link');
 
         // set the status message and link, then show the pane
-        publishStatus.innerHTML = errorMessages[Math.floor(Math.random() * errorMessages.length)];
+        publishStatus.innerHTML = 'Publishing failed. Something on the server went wrong.';
         publishLink.setAttribute('href', site.addProtocol(site.addPort(dom.uri())));
         publishPane.classList.add('error');
         publishPane.classList.add('show');
