@@ -197,7 +197,7 @@ function when(el, options) {
  */
 function handler(el, options) {
   var args = _.get(options, 'data._schema.' + references.componentListProperty),
-    pane, button;
+    pane, button, dropArea;
 
   // if _componentList: true, make the args an object
   args = _.isObject(args) ? args : {};
@@ -216,10 +216,13 @@ function handler(el, options) {
     addComponentsPane.classList.toggle('open');
   });
 
-  // add the pane to the end of the component list
-  el.appendChild(pane);
+  // wrap the draggable items so that the pane is not in the drop area.
+  dropArea = dom.wrapElements(el.childNodes, 'div');
+  addDragula(dropArea, options);
+  el.appendChild(dropArea);
 
-  addDragula(el, options);
+  // add the pane below the component list drop area.
+  el.appendChild(pane);
 
   return el;
 }
