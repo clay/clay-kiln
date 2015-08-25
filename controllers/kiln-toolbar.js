@@ -6,6 +6,7 @@
  */
 
 var EditorToolbar,
+  moment = require('moment'),
   dom = require('../services/dom'),
   references = require('../services/references'),
   forms = require('../services/forms'),
@@ -15,6 +16,7 @@ var EditorToolbar,
   ValidationDropdown = require('./validation-dropdown'),
   focus = require('../decorators/focus'),
   events = require('../services/events'),
+  site = require('../services/site'),
   validationDropdownInstance;
 
 /**
@@ -28,9 +30,27 @@ function publish(el) {
 
     if (errors.length === 0) {
       return edit.publishPage().then(function () {
-        console.log('published', arguments);
+        var publishPane = dom.find('.kiln-publish-pane'),
+          publishStatus = dom.find(publishPane, '.publish-status'),
+          publishLink = dom.find(publishPane, '.publish-link'),
+          date = moment();
+
+        // set the status message and link, then show the pane
+        publishStatus.innerHTML = 'Published on ' + date.format('dddd, MMMM Do') + ' at ' + date.format('h:mm a');
+        publishLink.setAttribute('href', site.addProtocol(site.addPort(dom.uri())));
+        publishPane.classList.add('success');
+        publishPane.classList.add('show');
       }).catch(function (error) {
-        console.error('publish error', error);
+        var publishPane = dom.find('.kiln-publish-pane'),
+          publishStatus = dom.find(publishPane, '.publish-status'),
+          publishLink = dom.find(publishPane, '.publish-link');
+
+        // set the status message and link, then show the pane
+        publishStatus.innerHTML = 'Publishing failed. Something on the server went wrong.';
+        publishLink.setAttribute('href', site.addProtocol(site.addPort(dom.uri())));
+        publishPane.classList.add('error');
+        publishPane.classList.add('show');
+        console.error('publish error', error.status, error.message);
       });
     } else {
       console.error('validation errors', errors);

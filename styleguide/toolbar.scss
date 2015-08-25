@@ -40,13 +40,13 @@ body {
 .kiln-toolbar-inner {
   align-items: center;
   display: flex;
+  height: 100%;
   left: 0;
   margin: 0 auto;
   max-width: 1200px;
   position: relative;
   top: 0;
   width: 100%;
-  height: 100%;
 }
 
 .kiln-toolbar-inner > button:not(.publish) {
@@ -70,6 +70,7 @@ body {
 // Status of saving controlled by class on body.
 .kiln-toolbar-inner > .status:before {
   @include normal-text();
+
   color: $blue-75;
   content: 'Saved.';
 }
@@ -91,4 +92,54 @@ body {
   @media screen and (min-width: 600px) {
     display: inline;
   }
+}
+
+// publish pane
+.kiln-publish-pane {
+  padding: .5rem 1rem;
+  position: absolute;
+  text-align: center;
+  top: .7rem;
+  width: 100%;
+  z-index: 1;
+}
+
+.kiln-publish-pane.success {
+  background-color: $green;
+}
+
+.kiln-publish-pane.error {
+  background-color: $red;
+}
+
+.kiln-publish-pane.show {
+  top: 5rem;
+  transition: top 300ms cubic-bezier(.17, .04, .03, .94);
+
+  @media screen and (min-width: 600px) {
+    top: 6rem;
+  }
+
+  @media screen and (min-width: 1024px) {
+    top: 7rem;
+  }
+}
+
+.publish-status {
+  @include normal-text();
+  @include overlay-copy();
+
+  color: #fff;
+  font-weight: 600;
+}
+
+.publish-link {
+  @include button-small();
+  @include button-primary-3();
+
+  display: inline-block;
+  float: none;
+  font-weight: 600;
+  margin: 0 0 0 1.5rem;
+  text-decoration: none;
 }
