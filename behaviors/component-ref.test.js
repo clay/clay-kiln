@@ -1,26 +1,9 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   fixture = require('../test/fixtures/behavior')({}),
+  stringify = require('../test/stringify'),
   dom = require('../services/dom'),
   lib = require('./component-ref.js'); // static-analysis means this must be string, not `('./' + filename)`
-
-/**
- * Converts an element into a string of HTML with no extra whitespaces.
- * @param {Element|DocumentFragment} el
- * @returns {string}
- */
-function stringify(el) {
-  var isDocumentFragment = el.nodeType === 11,
-    clone = isDocumentFragment ? el.firstElementChild.cloneNode(true) : el.cloneNode(true), // Clone for in-place white-space removal.
-    walker = document.createTreeWalker(clone, NodeFilter.SHOW_ALL);
-
-  while (walker.nextNode()) {
-    // remove white spaces
-    walker.currentNode.textContent.replace(/[^\S+]+\s[^\S+]+/g, '');
-  }
-  // remove line breaks
-  return clone.outerHTML.replace(/(\r|\n)\s*/g, '');
-}
 
 describe(dirname, function () {
   describe(filename, function () {
