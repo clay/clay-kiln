@@ -5,8 +5,8 @@ var dirname = __dirname.split('/').pop(),
   lib = require('./component-ref.js'); // static-analysis means this must be string, not `('./' + filename)`
 
 /**
- * Convert an element into a string of HTML with no extra whitespaces.
- * @param {Element} el
+ * Converts an element into a string of HTML with no extra whitespaces.
+ * @param {Element|DocumentFragment} el
  * @returns {string}
  */
 function stringify(el) {
@@ -14,10 +14,9 @@ function stringify(el) {
     clone = isDocumentFragment ? el.firstElementChild.cloneNode(true) : el.cloneNode(true), // Clone for in-place white-space removal.
     walker = document.createTreeWalker(clone, NodeFilter.SHOW_ALL);
 
-  console.log(el);
   while (walker.nextNode()) {
     // remove white spaces
-    walker.currentNode.textContent && walker.currentNode.textContent.replace(/[^\S+]+\s[^\S+]+/g, '');
+    walker.currentNode.textContent.replace(/[^\S+]+\s[^\S+]+/g, '');
   }
   // remove line breaks
   return clone.outerHTML.replace(/(\r|\n)\s*/g, '');
@@ -26,7 +25,7 @@ function stringify(el) {
 describe(dirname, function () {
   describe(filename, function () {
     var querySelectorClass = 'query-selector',
-      anotherComponent = dom.create('<div class="' + querySelectorClass + '" data-uri="sit.com/path/components/x/instances/0"></div>');
+      anotherComponent = dom.create('<div class="' + querySelectorClass + '" data-uri="site.com/path/components/x/instances/0"></div>');
 
     beforeEach(function () {
       document.body.appendChild(anotherComponent);
