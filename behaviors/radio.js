@@ -11,8 +11,9 @@ function createOptions(name, options) {
   return options.map(function (option) {
     return `
       <li class="editor-radio-item">
-        <label class="option-label">${ _.startCase(option) || 'None' }
+        <label>
           <input rv-field="${name}" type="radio" rv-checked="${name}.data.value" value="${option}" />
+          ${ _.startCase(option) || 'None' }
         </label>
       </li>`;
   }).join('\n');
