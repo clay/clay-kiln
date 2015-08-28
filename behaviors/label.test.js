@@ -7,7 +7,6 @@ var dirname = __dirname.split('/').pop(),
 describe(dirname, function () {
   describe(filename, function () {
 
-
     it('fails if no .input-label', function () {
       expect(function () {
         lib(fixture);

@@ -6,7 +6,6 @@ var dirname = __dirname.split('/').pop(),
 describe(dirname, function () {
   describe(filename, function () {
 
-
     it('fails if fixture.el is a DocumentFragment', function () { // Todo: is this a good thing?
       expect(function () {
         lib(fixture);
