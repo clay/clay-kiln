@@ -21,7 +21,7 @@ describe(dirname, function () {
       description = result.el.querySelector('p.label-description');
       nextSibling = description.nextElementSibling;
 
-      expect(description.innerText).to.eql('Description');
+      expect(description.textContent).to.eql('Description');
       expect(nextSibling.tagName).to.eql('INPUT');
     });
 

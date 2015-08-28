@@ -21,7 +21,7 @@ describe(dirname, function () {
       result = lib(fixture);
       innerLabel = result.el.querySelector('.input-label').firstElementChild;
       expect(innerLabel.className).to.eql('label-inner');
-      expect(innerLabel.innerText).to.eql(fixture.bindings.label);
+      expect(innerLabel.textContent).to.eql(fixture.bindings.label);
     });
 
   });
