@@ -4,17 +4,6 @@ var dirname = __dirname.split('/').pop(),
   dom = require('../services/dom'),
   lib = require('./component-ref.js'); // static-analysis means this must be string, not `('./' + filename)`
 
-/**
- * Returns the first element even if within a document fragment.
- * @param {DocumentFragment|Element} container
- * @returns {Element}
- */
-function firstElement(container) {
-  var isDocumentFragment = container.nodeType === 11;
-
-  return isDocumentFragment ? container.firstElementChild : container;
-}
-
 describe(dirname, function () {
   describe(filename, function () {
     var querySelectorClass = 'query-selector',
@@ -30,7 +19,7 @@ describe(dirname, function () {
 
     it('appends a hidden field', function () {
       var result = lib(fixture, {selector: '.' + querySelectorClass}),
-        input = firstElement(result.el);
+        input = result.el.firstElementChild; // inside a DocumentFragment
 
       expect(input.tagName).to.eql('INPUT');
       expect(input.type).to.eql('hidden');

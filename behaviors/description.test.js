@@ -6,12 +6,21 @@ var dirname = __dirname.split('/').pop(),
 describe(dirname, function () {
   describe(filename, function () {
 
-    fixture.el.appendChild(document.createElement('INPUT')); // Add an input to the el.
+
+    it('fails if no input', function () {
+      expect(function () {
+        lib(fixture);
+      }).to.throw(Error);
+    });
 
     it('prepends description to input', function () {
-      var result = lib(fixture, {value: 'Description'}),
-        description = result.el.querySelector('p.label-description'),
-        nextSibling = description.nextElementSibling;
+      var result, description, nextSibling;
+
+      // Add an input el.
+      fixture.el.appendChild(document.createElement('INPUT'));
+      result = lib(fixture, {value: 'Description'});
+      description = result.el.querySelector('p.label-description');
+      nextSibling = description.nextElementSibling;
 
       expect(description.innerText).to.eql('Description');
       expect(nextSibling.tagName).to.eql('INPUT');
