@@ -11,13 +11,15 @@ var _ = require('lodash'),
   references = require('../services/references');
 
 module.exports = function (result, args) {
-  var name = result.name;
+  var hiddenInput,
+    name = result.name;
 
   if (args.selector) {
     result.bindings.data.value = _.map(document.querySelectorAll(args.selector), function (el) {
       return el.getAttribute(references.referenceAttribute);
     });
-    result.el.appendChild(dom.create(`<input type="hidden" class="input-text" rv-field="${name}" rv-value="${name}.data.value" />`));
+    hiddenInput = dom.create(`<input type="hidden" class="input-text" rv-field="${name}" rv-value="${name}.data.value">`);
+    result.el.appendChild(hiddenInput);
   }
   return result;
 };
