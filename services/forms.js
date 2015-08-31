@@ -32,6 +32,12 @@ function findFormContainer() {
  * @returns {boolean}
  */
 function dataChanged(data) {
+/*  console.log(data.text.value);
+  console.log(typogr.typogrify(data.text.value));
+  console.log(currentForm.data.value);*/
+  console.log(currentForm.data);
+  console.log(data);
+  debugger;
   return !_.isMatch(data, currentForm.data);
 }
 
@@ -74,6 +80,37 @@ function setEditingStatus(isEditing) {
 }
 
 /**
+ * If the val is a string, then remove white spaces.
+ * @param {*} val
+ */
+function removeSpacesFromStrings(val) {
+  if (_.isString(val)) {
+    // todo: this text formatting should share a function with form-values to keep them in-sync if there are future changes.
+    return val.replace(/(\u00a0|&#160;|&nbsp;)/g, ' ').trim(); // remove &nbsp; to be consistent with form-values.js
+  } else if (_.isObject(val)) {
+    return removeSpacesFromData(val);
+  } else {
+    return val;
+  }
+}
+
+/**
+ * Recursively remove white spaces from all string values in the object.
+ * @param {{}} data
+ */
+function removeSpacesFromData(data) {
+  return _.mapValues(data, removeSpacesFromStrings);
+}
+
+/**
+ * Set the data to be compared later for form changes.
+ * @param {{}} data
+ */
+function setCurrentFormData(data) {
+  currentForm.data = removeSpacesFromData(data);
+}
+
+/**
  * Open a form.
  * @param {string} ref
  * @param {Element} el    The element that has `data-editable`, not always the parent of the form.
@@ -100,7 +137,7 @@ function open(ref, el, path, e) {
 
       // then get a subset of the data, for the specific field / group
       data = groups.get(ref, data, path); // note: if path is undefined, it'll open the settings form
-      currentForm.data = data; // set that data into the currentForm
+      setCurrentFormData(data);// set that data into the currentForm
       setEditingStatus(true); // set editing status (a class on the <body> of the page)
 
       // determine if the form is inline, and call the relevant formCreator method
@@ -127,6 +164,9 @@ function close() {
     data = form && formValues.get(form);
 
     if (data && dataChanged(data)) { // data is null if the component was removed.
+
+      console.log('Data "changed".');
+
       // remove currentForm values
       currentForm = {};
 
