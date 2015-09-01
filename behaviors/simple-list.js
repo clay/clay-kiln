@@ -1,12 +1,13 @@
-/*
-Simple List has no arguments!
- */
-
 var _ = require('lodash'),
   keycode = require('keycode'),
   dom = require('../services/dom'),
   focus = require('../decorators/focus');
 
+/**
+ * Creates a list
+ * @param {{name: string, el: Element, bindings: {}}} result
+ * @returns {{}}
+ */
 module.exports = function (result) {
   var name = result.name,
     el = dom.create(`

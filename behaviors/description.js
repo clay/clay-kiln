@@ -1,12 +1,12 @@
-/*
-Description arguments
-
-value {string} the actual description
- */
-
 var dom = require('../services/dom'),
   getInput = require('../services/get-input');
 
+/**
+ * Add a description before the input.
+ * @param {{name: string, el: Element}} result
+ * @param {{value: string}} args    args.value is the description text.
+ * @returns {{}}
+ */
 module.exports = function (result, args) {
   var el = result.el,
     description = args.value,

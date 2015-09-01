@@ -13,6 +13,8 @@ var dirname = __dirname.split('/').pop(),
 // set some data
 fixture.bindings.data = data;
 
+// TODO: add more tests.
+
 describe(dirname, function () {
   describe(filename, function () {
     describe('el', function () {

@@ -1,12 +1,12 @@
-/*
-Radio arguments
-
-options {array} array of strings
- */
-
 var _ = require('lodash'),
   dom = require('../services/dom');
 
+/**
+ * Create list item and input for each option.
+ * @param {string} name
+ * @param {[string]} options
+ * @returns {string}
+ */
 function createOptions(name, options) {
   return options.map(function (option) {
     return `
@@ -19,19 +19,23 @@ function createOptions(name, options) {
   }).join('\n');
 }
 
+/**
+ * Create list of radio options.
+ * @param {{name: string}} result
+ * @param {{options: [string]}} args        Use an array of strings for the options.
+ * @returns {{name: string, el: Element}}
+ */
 module.exports = function (result, args) {
   var name = result.name,
     options = args.options,
-    field;
-
-  field = dom.create(`
-    <span class="input-label">
-    <ul class="editor-radios">
-      ${ createOptions(name, options) }
-    </ul>
-  `);
+    field = dom.create(`
+      <span class="input-label">
+        <ul class="editor-radios">
+          ${ createOptions(name, options) }
+        </ul>
+      </span>
+    `);
 
   result.el = field;
-
   return result;
 };

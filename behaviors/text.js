@@ -1,15 +1,16 @@
-/*
-Text arguments
-
-required {boolean} set input required (blocking)
-pattern {regex} required input pattern (blocking)
-minLength {number} minimum number of characters required (blocking)
-maxLength {number} maximum number of characters allowed (blocking)
-placeholder {string} placeholder that will display in the input
- */
-
 var dom = require('../services/dom');
 
+/**
+ * Replace result.el with text input.
+ * @param {{name: string, bindings: {}}} result
+ * @param {{}} args   defined in detail below:
+ * @param {boolean} args.required    set input required (blocking)
+ * @param {RegExp}  args.pattern     required input pattern (blocking)
+ * @param {number}  args.minLength   minimum number of characters required (blocking)
+ * @param {number}  args.maxLength   maximum number of characters allowed (blocking)
+ * @param {string}  args.placeholder placeholder that will display in the input
+ * @returns {*}
+ */
 module.exports = function (result, args) {
   var textField,
     bindings = result.bindings,

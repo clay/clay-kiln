@@ -1,15 +1,14 @@
-/*
-Component Ref is used to append hidden fields that allow component instances
-to affect other component instances, e.g. article affecting the page title
-
-Component-Ref arguments
-
-selector {string} a query selector that matches the components you want to grab
- */
 var _ = require('lodash'),
   dom = require('../services/dom'),
   references = require('../services/references');
 
+/**
+ * Append hidden field to enable component instances to affect other component instances
+ * e.g. article affecting the page title
+ * @param {{name: string, bindings: {}, el: Element}} result
+ * @param {{selector: string}} args     args.selector is the query selector that matches the components to affect.
+ * @returns {{}}
+ */
 module.exports = function (result, args) {
   var hiddenInput,
     name = result.name;

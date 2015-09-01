@@ -1,11 +1,11 @@
-/*
-Checkbox-Group arguments:
-
-{array} options each has name and value (strings)
- */
-
 var dom = require('../services/dom');
 
+/**
+ * Create checkbox group item for each option.
+ * @param {string} name
+ * @param {[{name: string, value: string}]]} options
+ * @returns {string}
+ */
 function createOptions(name, options) {
   return options.map(function (option) {
     var optName = option.name,
@@ -21,6 +21,12 @@ function createOptions(name, options) {
   }).join('\n');
 }
 
+/**
+ * Replace result.el with checkbox-group.
+ * @param {{name: string}} result
+ * @param {{options: [{name: string, value: string}]]}} args
+ * @returns {{}}
+ */
 module.exports = function (result, args) {
   var name = result.name,
     options = args.options,

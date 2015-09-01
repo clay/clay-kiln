@@ -1,9 +1,10 @@
-/*
-Checkbox has no arguments!
- */
-
 var dom = require('../services/dom');
 
+/**
+ * Replace result.el with checkbox.
+ * @param {{name: string}} result
+ * @returns {{}}
+ */
 module.exports = function (result) {
   var name = result.name,
     tpl = `

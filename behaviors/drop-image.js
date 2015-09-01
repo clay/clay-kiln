@@ -1,9 +1,10 @@
-/*
-Drop Image has no arguments!
- */
 var _ = require('lodash');
 
-// add dragdrop events to field
+/**
+ * add dragdrop events to field
+ * @param {{name: string, el: Element}} result
+ * @returns {{}}
+ */
 module.exports = function (result) {
   var el = result.el,
     name = result.name;

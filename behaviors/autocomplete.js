@@ -1,12 +1,3 @@
-/**
- * Autocomplete arguments
- *
- * api {string} api to point to
- * list {string} list (in the current site) to point to
- *
- * @module
- */
-
 var dom = require('../services/dom'),
   db = require('../services/edit/db'),
   _ = require('lodash'),
@@ -87,6 +78,14 @@ function getApi(args) {
   }
 }
 
+/**
+ * Append a datalist element with data from API for autocomplete.
+ * @param {{el: Element}} result
+ * @param {{}} args
+ * @param {string} [args.api]   api to point to
+ * @param {string} [args.list]  list (in the current site) to point to
+ * @returns {*}
+ */
 module.exports = function (result, args) {
   var api = getApi(args),
     existingInput = getInput(result.el),

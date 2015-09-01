@@ -1,13 +1,14 @@
-/*
-Simple List Primary arguments
-
-propertyName {string} name of the property that is considered "primary"
-badge {string} string to put in the badge. defaults to property name
- */
-
 var _ = require('lodash'),
   dom = require('../services/dom');
 
+/**
+ * Simple List Primary (used after simple-list)
+ * @param {{name: string, el: Element, bindings: {}}} result
+ * @param {{propertyName: string, badge: string}} args
+ * @param {string} args.propertyName  name of the property that is considered "primary"
+ * @param {string} [args.badge]       string to put in the badge. defaults to property name.
+ * @returns {*}
+ */
 module.exports = function (result, args) {
   var prop = args.propertyName,
     badge = args.badge || prop,

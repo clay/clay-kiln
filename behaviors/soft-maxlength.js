@@ -1,9 +1,3 @@
-/*
-Soft Maxlength arguments
-
-value {number} maximum number of characters allowed
- */
-
 var striptags = require('striptags'),
   dom = require('../services/dom'),
   getInput = require('../services/get-input');
@@ -47,6 +41,11 @@ function setStyles(remaining, span, input) {
   }
 }
 
+/**
+ * Remove tags and white spaces.
+ * @param {string} value
+ * @returns {string}
+ */
 function cleanValue(value) {
   var clean = striptags(value);
 
@@ -54,6 +53,12 @@ function cleanValue(value) {
   return clean;
 }
 
+/**
+ * Add soft max length: appends el and adds formatter.
+ * @param {{name: string, el: Element, bindings: {}, formatters: {}}} result
+ * @param {{value: string}} args
+ * @returns {{}}
+ */
 module.exports = function (result, args) {
   var el = result.el,
     bindings = result.bindings,
