@@ -7,15 +7,15 @@ var dirname = __dirname.split('/').pop(),
 describe(dirname, function () {
   describe(filename, function () {
 
-    var options = ['a', 'b', 'c'];
+    var options = ['apple', 'b', 'c'];
 
-    it('replaces the result.el', function () {
+    it('replaces the result.el', function () { // Is this good?
       var result,
-        elBefore = 'I could be anything';
+        elBefore = dom.create(`<div class="el-before"></div>`);
 
       fixture.el = elBefore;
       result = lib(fixture, {options: options});
-      expect(result.el).to.not.eql(elBefore);
+      expect(result.el.querySelector('.el-before')).to.eql.null;
     });
 
     it('makes a list of options', function () {
@@ -28,11 +28,12 @@ describe(dirname, function () {
       expect(label.className).to.eql('input-label');
       expect(list.className).to.eql('editor-radios');
       expect(list.querySelectorAll('.editor-radio-item').length).to.eql(3);
-      expect(firstItem.textContent.trim()).to.eql('A');
+      expect(list.querySelectorAll('input[type="radio"]').length).to.eql(3);
+      expect(firstItem.textContent.trim()).to.eql('Apple');
       expect(firstItemInput.type).to.eql('radio');
       expect(firstItemInput.getAttribute('rv-field')).to.eql('foo');
       expect(firstItemInput.getAttribute('rv-checked')).to.eql('foo.data.value');
-      expect(firstItemInput.getAttribute('value')).to.eql('a');
+      expect(firstItemInput.getAttribute('value')).to.eql('apple');
     });
 
   });
