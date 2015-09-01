@@ -1,7 +1,3 @@
-/*
-Checkbox has no arguments!
- */
-
 var dom = require('../services/dom');
 
 /**

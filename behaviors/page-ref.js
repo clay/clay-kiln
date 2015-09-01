@@ -1,12 +1,11 @@
-/*
-Page Ref is used to append hidden fields that allow component instances
-to do logic with the URIs and Page IDs on the server-side
-
-Page-Ref has no arguments!
- */
-
 var dom = require('../services/dom');
 
+/**
+ * Appends hidden field to allow component instances to affect URI's and Page ID's.
+ * No args because pageID is from the page's URL.
+ * @param {{name: string, el: Element, bindings: {}}} result
+ * @returns {{}}
+ */
 module.exports = function (result) {
   var name = result.name;
 

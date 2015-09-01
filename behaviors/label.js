@@ -1,12 +1,10 @@
-/*
-Label has no arguments!
-
-It uses the _label denoted in this field's schema
- */
-
 var dom = require('../services/dom');
 
-
+/**
+ * Find the outer label which often wraps the input elements.
+ * @param {Element} el
+ * @returns {Element|null}
+ */
 function findOuterLabelEl(el) {
   if (el.classList && el.classList.contains('input-label')) {
     return el;
@@ -15,6 +13,11 @@ function findOuterLabelEl(el) {
   }
 }
 
+/**
+ * Add a label above the input. No args because uses _label from the field's schema
+ * @param {{el: Element, bindings: {}}} result
+ * @returns {{}}
+ */
 module.exports = function (result) {
   var label = dom.create(`<span class="label-inner">${result.bindings.label}</span>`),
     el = findOuterLabelEl(result.el);

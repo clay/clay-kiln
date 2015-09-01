@@ -6,9 +6,8 @@ var _ = require('lodash'),
  * Append hidden field to enable component instances to affect other component instances
  * e.g. article affecting the page title
  * @param {{name: string, bindings: {}, el: Element}} result
- * @param {{}} args
- * @param {string} args.selector    The query selector that matches the component to affect.
- * @returns {*}
+ * @param {{selector: string}} args     args.selector is the query selector that matches the components to affect.
+ * @returns {{}}
  */
 module.exports = function (result, args) {
   var hiddenInput,
