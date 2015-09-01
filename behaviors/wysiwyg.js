@@ -1,11 +1,3 @@
-/*
-WYSIWYG arguments
-
-enableKeyboardExtras {boolean} enable creating new components on enter, and appending text to previous components on delete, etc
-buttons {array} array of button names (strings) for tooltip
-styled {boolean} apply input styles to contenteditable element
- */
-
 var _ = require('lodash'),
   select = require('selection-range'),
   MediumEditor = require('medium-editor'),
@@ -340,10 +332,18 @@ function handleComponentCreation(el, observer) {
   }
 }
 
-function isStyled(styled) {
-  return styled ? ' styled' : ''; // note the preeeding space!
+/**
+ *
+ * @param {boolean} styled
+ * @returns {string}
+ */
+function addStyledClass(styled) {
+  return styled ? ' styled' : ''; // note the preceding space!
 }
 
+/**
+ * Add a line break and set the caret after it
+ */
 function addLineBreak() {
   var selection = window.getSelection(),
     range = selection.getRangeAt(0),
@@ -371,6 +371,11 @@ function findExtension(extname) {
   };
 }
 
+/**
+ * Add binders
+ * @param {boolean} enableKeyboardExtras
+ * @returns {{publish: boolean, bind: Function}}
+ */
 function initWysiwygBinder(enableKeyboardExtras) {
   return {
     publish: true,
@@ -451,6 +456,15 @@ function initWysiwygBinder(enableKeyboardExtras) {
   };
 }
 
+/**
+ * Create WYSIWYG text editor.
+ * @param {{name: string, el: Element, binders: {}}} result
+ * @param {buttons: [string], styled: boolean, enableKeyboardExtras: boolean} args  Described in detail below:
+ * @param {[string]} args.buttons  array of button names (strings) for tooltip
+ * @param {boolean}  args.styled   apply input styles to contenteditable element
+ * @param {boolean}  args.enableKeyboardExtras  enable creating new components on enter, and appending text to previous components on delete, etc
+ * @returns {{}}
+ */
 module.exports = function (result, args) {
   var name = result.name,
     binders = result.binders,
@@ -458,7 +472,7 @@ module.exports = function (result, args) {
     styled = args.styled,
     enableKeyboardExtras = args.enableKeyboardExtras,
     textInput = getInput(result.el),
-    field = dom.create(`<p class="wysiwyg-input${ isStyled(styled) }" rv-field="${name}" rv-wysiwyg="${name}.data.value" data-wysiwyg-buttons="${buttons.join(',')}"></p>`);
+    field = dom.create(`<p class="wysiwyg-input${ addStyledClass(styled) }" rv-field="${name}" rv-wysiwyg="${name}.data.value" data-wysiwyg-buttons="${buttons.join(',')}"></p>`);
 
   // if more than 5 buttons, put the rest on the second tier
   if (buttons.length > 5) {
