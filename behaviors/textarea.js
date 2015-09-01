@@ -1,18 +1,18 @@
-/*
-Textarea arguments
-
-required {boolean} set input required (blocking)
-placeholder {string} placeholder that will display in the textarea
- */
-
 var dom = require('../services/dom');
 
+/**
+ * Create textarea.
+ * @param {{name: string, bindings: {}}} result
+ * @param {required: boolean, placeholder: string} args  described in detail below:
+ * @param {boolean} args.required     set input required (blocking)
+ * @param {string}  args.placeholder  placeholder that will display in the textarea
+ * @returns {{}}
+ */
 module.exports = function (result, args) {
   var name = result.name,
     bindings = result.bindings,
     textArea;
 
-  // add some stuff to the bindings
   bindings.required = !!args.required;
   bindings.placeholder = args.placeholder || '';
 
