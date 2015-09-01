@@ -1,13 +1,15 @@
-/*
-Segmented Button arguments
-
-options {array} which buttons to have.
-  each is an object with [icon] {string}, [text] {string}, and value {string}
- */
-
 var dom = require('../services/dom'),
   site = require('../services/site');
 
+/**
+ * Create label for option.
+ * @param {string} id
+ * @param {{}} option
+ * @param {string} [option.icon]
+ * @param {string} [option.text]
+ * @param {string} option.value
+ * @returns {string}
+ */
 function getLabel(id, option) {
   if (option.icon) {
     return `<label for="${id}"><img src="${site.get('assetPath') + option.icon }" alt="${ option.text || option.value }" /></label>`;
@@ -16,6 +18,12 @@ function getLabel(id, option) {
   }
 }
 
+/**
+ * Create input for each option.
+ * @param {string} name
+ * @param {[{icon: string, text: string, value: string}]} options
+ * @returns {string}
+ */
 function createOptions(name, options) {
   return options.map(function (option, index) {
     var id = name + '-' + option.value + '-' + index;
@@ -24,18 +32,22 @@ function createOptions(name, options) {
   }).join('\n');
 }
 
+/**
+ * Replace the result.el with segmented buttons.
+ * @param {{name: string}} result
+ * @param {{options: [{icon: string, text: string, value: string}]}} args   Options is array for buttons
+ * @returns {{}}
+ */
 module.exports = function (result, args) {
   var name = result.name,
     options = args.options,
-    field;
-
-  field = dom.create(`
-    <div class="input-label">
-      <div class="segmented-button">
-        ${ createOptions(name, options) }
+    field = dom.create(`
+      <div class="input-label">
+        <div class="segmented-button">
+          ${ createOptions(name, options) }
+        </div>
       </div>
-    </div>
-  `);
+    `);
 
   result.el = field;
 
