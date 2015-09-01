@@ -1,12 +1,14 @@
-/*
-Url arguments
-
-required {boolean} set input required (blocking)
-placeholder {string} placeholder that will display in the input
- */
-
 var dom = require('../services/dom');
 
+/**
+ * Create an URL input.
+ * @param {{name: string, bindings: {}}} result
+ * @param {required: boolean, placeholder: string} args  described in detail below:
+ * @param {boolean} args.required     set input required (blocking)
+ * @param {string}  args.placeholder  placeholder that will display in the input
+ * @param {} args
+ * @returns {*}
+ */
 module.exports = function (result, args) {
   var bindings = result.bindings,
     name = result.name,
