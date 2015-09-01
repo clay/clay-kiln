@@ -13,7 +13,7 @@ describe(dirname, function () {
       {value: 'mock-value-no-text'}
     ];
 
-    it('replaces the result.el', function () { // Is this good?
+    it('replaces the result.el', function () { // We could call this a "root" behavior
       var result,
         elBefore = dom.create(`<div class="el-before"></div>`);
 
