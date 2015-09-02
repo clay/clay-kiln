@@ -283,5 +283,55 @@ describe(dirname, function () {
         return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen(afterFormIsClosed));
       });
     });
+
+    describe('dataChanged', function () {
+      var fn = lib[this.title];
+
+      it('returns false if values are the same', function () {
+
+        // Add path...
+
+        var serverData = {
+            _schema: {
+              _placeholder: {},
+              _display: 'inline',
+              _has: {},
+              _name: 'text'
+            },
+            value: 'mock text'
+          },
+          formData = {
+            text: {
+              _schema: {
+                _placeholder: {},
+                _display: 'inline',
+                _has: [],
+                _name: 'text'
+              },
+              value: 'mock text'
+            },
+            _ref: 'site/path/components/paragraph/instances/0',
+            _schema: {}
+          };
+
+        expect(fn(serverData, formData)).to.be.false;
+      });
+
+      it('returns true if values are different', function () {
+        var serverData = {},
+          formData = {};
+
+        expect(fn(serverData, formData)).to.be.true;
+      });
+
+      it('returns true if a field has component_ref (affects another component)', function () {
+        var serverData = {},
+          formData = {};
+
+        expect(fn(serverData, formData)).to.be.true;
+      });
+
+    });
+
   });
 });

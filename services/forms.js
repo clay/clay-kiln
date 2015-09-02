@@ -26,19 +26,20 @@ function findFormContainer() {
   return dom.find(overlaySelector) || dom.find(inlineSelector);
 }
 
+
 /**
- * Check if the local data is different than the data on the server.
- * @param {object} data   Edited data.
+ * Check if the data has changed locally.
+ * @param {{}} serverData   data from the server
+ * @param {{}} formData     data from the form (after potential edits)
  * @returns {boolean}
  */
-function dataChanged(data) {
-/*  console.log(data.text.value);
-  console.log(typogr.typogrify(data.text.value));
-  console.log(currentForm.data.value);*/
-  console.log(currentForm.data);
-  console.log(data);
-  debugger;
-  return !_.isMatch(data, currentForm.data);
+function dataChanged(serverData, formData) {
+  console.log('serverData', serverData);
+  console.log('formData', formData);
+  console.log('currentForm.ref', currentForm.ref);
+  console.log('currentForm.path', currentForm.path);
+
+  return !_.contains(serverData, formData);
 }
 
 /**
@@ -107,7 +108,7 @@ function removeSpacesFromData(data) {
  * @param {{}} data
  */
 function setCurrentFormData(data) {
-  currentForm.data = removeSpacesFromData(data);
+  currentForm.data = removeSpacesFromData(_.cloneDeep(data));
 }
 
 /**
@@ -163,7 +164,7 @@ function close() {
     ref = currentForm.ref;
     data = form && formValues.get(form);
 
-    if (data && dataChanged(data)) { // data is null if the component was removed.
+    if (data && dataChanged(currentForm.data, data)) { // data is null if the component was removed.
 
       console.log('Data "changed".');
 
@@ -191,3 +192,6 @@ function close() {
 
 exports.open = open;
 exports.close = close;
+
+// for unit tests:
+exports.dataChanged = dataChanged;
