@@ -459,7 +459,7 @@ function initWysiwygBinder(enableKeyboardExtras) {
 /**
  * Create WYSIWYG text editor.
  * @param {{name: string, el: Element, binders: {}}} result
- * @param {buttons: [string], styled: boolean, enableKeyboardExtras: boolean} args  Described in detail below:
+ * @param {{buttons: [string], styled: boolean, enableKeyboardExtras: boolean}} args  Described in detail below:
  * @param {[string]} args.buttons  array of button names (strings) for tooltip
  * @param {boolean}  args.styled   apply input styles to contenteditable element
  * @param {boolean}  args.enableKeyboardExtras  enable creating new components on enter, and appending text to previous components on delete, etc
