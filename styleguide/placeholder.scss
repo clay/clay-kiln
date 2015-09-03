@@ -10,6 +10,7 @@
   width: 100%;
 }
 
+.kiln-placeholder,
 .kiln-placeholder .placeholder-label {
   @include normal-text();
   @include overlay-copy();
