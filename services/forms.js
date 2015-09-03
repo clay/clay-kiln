@@ -65,26 +65,19 @@ function setEditingStatus(isEditing) {
 }
 
 /**
- * If the val is a string, then remove white spaces.
- * @param {*} val
- */
-function removeSpacesFromStrings(val) {
-  if (_.isString(val)) {
-    return formValues.cleanTextField(val);
-  } else if (_.isObject(val)) {
-    return removeSpacesFromData(val);
-  } else {
-    return val;
-  }
-}
-
-/**
  * Recursively remove white spaces from all string values in the object.
- * This is necessary because form-values.js removes white spaces as well.
  * @param {{}} data
  */
-function removeSpacesFromData(data) {
-  return _.mapValues(data, removeSpacesFromStrings);
+function cleanDeepStringValues(data) {
+  return _.mapValues(data, function (val) {
+    if (_.isString(val)) {
+      return formValues.cleanTextField(val);
+    } else if (_.isObject(val)) {
+      return cleanDeepStringValues(val);
+    } else {
+      return val;
+    }
+  });
 }
 
 /**
@@ -118,7 +111,7 @@ function removeDeepMetaProperties(data) {
  * @returns {boolean}
  */
 function dataChanged(serverData, formData) {
-  var serverDataReduced = removeSpacesFromData(removeDeepMetaProperties(serverData)),
+  var serverDataReduced = cleanDeepStringValues(removeDeepMetaProperties(serverData)), // necessary because form-values.js cleans strings as well.
     formDataReduced = removeDeepMetaProperties(formData);
 
   return !_.isEqual(serverDataReduced, formDataReduced);
@@ -143,7 +136,6 @@ function open(ref, el, path, e) {
 
     // grab the (possibly cached) data and create the form
     return edit.getData(ref).then(function (data) {
-
       // set current form data
       currentForm = {
         ref: ref,
