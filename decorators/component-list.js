@@ -21,7 +21,9 @@ function addComponent(pane, field, name) {
 
         return edit.addToParentList({ref: newRef, parentField: field.path, parentRef: field.ref})
           .then(function (newEl) {
-            dom.insertBefore(pane, newEl);
+            var dropArea = pane.previousElementSibling;
+
+            dropArea.appendChild(newEl);
             return render.addComponentsHandlers(newEl);
           });
       });
