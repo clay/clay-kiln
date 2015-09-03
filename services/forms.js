@@ -70,8 +70,7 @@ function setEditingStatus(isEditing) {
  */
 function removeSpacesFromStrings(val) {
   if (_.isString(val)) {
-    // todo: this text formatting should share a function with form-values to keep them in-sync if there are future changes.
-    return val.replace(/(\u00a0|&#160;|&nbsp;)/g, ' ').trim(); // remove &nbsp; to be consistent with form-values.js
+    return formValues.cleanTextField(val);
   } else if (_.isObject(val)) {
     return removeSpacesFromData(val);
   } else {
@@ -81,6 +80,7 @@ function removeSpacesFromStrings(val) {
 
 /**
  * Recursively remove white spaces from all string values in the object.
+ * This is necessary because form-values.js removes white spaces as well.
  * @param {{}} data
  */
 function removeSpacesFromData(data) {
@@ -121,13 +121,6 @@ function dataChanged(serverData, formData) {
   var serverDataReduced = removeSpacesFromData(removeDeepMetaProperties(serverData)),
     formDataReduced = removeDeepMetaProperties(formData);
 
-  console.log('currentForm.ref', currentForm.ref);
-  console.log('currentForm.path', currentForm.path);
-  console.log('serverData', serverData);
-  console.log('formData', formData);
-  console.log('serverDataReduced', serverDataReduced);
-  console.log('formDataReduced', formDataReduced);
-  console.log('is equal', _.isEqual(serverDataReduced, formDataReduced));
   return !_.isEqual(serverDataReduced, formDataReduced);
 }
 
@@ -150,24 +143,18 @@ function open(ref, el, path, e) {
 
     // grab the (possibly cached) data and create the form
     return edit.getData(ref).then(function (data) {
+
       // set current form data
       currentForm = {
         ref: ref,
         path: path
       };
 
-      console.log('data before groups', _.cloneDeep(data));
-
-      // saving the data in the normal format, prior to groups.get. Can we get rid of groups.get?
-
+      // must clone because data object is changed by groups and formCreator -- can we change this?
       currentForm.data = _.cloneDeep(data); // set that data into the currentForm
 
-      // This is where the data object is getting changed, perhaps a cloneDeep would make sense here?
-
-      // then get a subset of the data, for the specific field / group
+      // get a subset of the data, for the specific field / group
       data = groups.get(ref, data, path); // note: if path is undefined, it'll open the settings form
-
-      console.log('data after groups', data);
       setEditingStatus(true); // set editing status (a class on the <body> of the page)
 
       // determine if the form is inline, and call the relevant formCreator method
