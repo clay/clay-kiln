@@ -24,7 +24,9 @@ describe(dirname, function () {
     });
 
     it('has binder that toggles too-long classes', function () {
-      var result, input, span, binder;
+      var result, input, span, binder,
+        inputLongClass = 'input-too-long',
+        spanLongClass = 'too-long';
 
       fixture.el = dom.create(`<div><input></div>`);
       result = lib(fixture, args);
@@ -32,16 +34,16 @@ describe(dirname, function () {
       span = result.el.querySelector('span.soft-maxlength');
       binder = result.binders.remaining;
 
-      expect(input.classList.contains('input-too-long')).to.be.false;
-      expect(span.classList.contains('too-long')).to.be.false;
+      expect(input.classList.contains(inputLongClass)).to.be.false;
+      expect(span.classList.contains(spanLongClass)).to.be.false;
 
       binder(span, 'Text length more than max characters.');
-      expect(input.classList.contains('input-too-long')).to.be.true;
-      expect(span.classList.contains('too-long')).to.be.true;
+      expect(input.classList.contains(inputLongClass)).to.be.true;
+      expect(span.classList.contains(spanLongClass)).to.be.true;
 
       binder(span, 'Under limit');
-      expect(input.classList.contains('input-too-long')).to.be.false;
-      expect(span.classList.contains('too-long')).to.be.false;
+      expect(input.classList.contains(inputLongClass)).to.be.false;
+      expect(span.classList.contains(spanLongClass)).to.be.false;
     });
 
   });
