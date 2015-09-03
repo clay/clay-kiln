@@ -1,3 +1,6 @@
+// transparency
+$alpha: .85;
+
 // basic colors
 
 $light-grey: #f4f4f4;
@@ -11,6 +14,7 @@ $black-50: #888;
 $black-75: #4d4d4d;
 $black-100: #111;
 $black: $black-100;
+$black-transparent: rgba($black, $alpha);
 
 // green
 $green-25: #c4e4c8;
@@ -18,6 +22,7 @@ $green-50: #89ca91;
 $green-75: #4fb05b;
 $green-100: #149524;
 $green: $green-100;
+$green-transparent: rgba($green, $alpha);
 
 // red
 $red-25: #f6cbc6;
@@ -25,6 +30,7 @@ $red-50: #ee978d;
 $red-75: #e66355;
 $red-100: #dd2f1c;
 $red: $red-100;
+$red-transparent: rgba($red, $alpha);
 
 // blue
 $blue-25: #c5e0e9;
@@ -32,10 +38,12 @@ $blue-50: #8bc0d4;
 $blue-75: #51a2bf;
 $blue-100: #1782a9;
 $blue: $blue-100;
+$blue-transparent: rgba($blue, $alpha);
 
 // yellow
 $yellow-100: #ffe600;
 $yellow: $yellow-100;
+$yellow-transparent: rgba($yellow, $alpha);
 
 // shadows
 $shadow-30: rgba(0, 0, 0, .3);

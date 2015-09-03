@@ -113,11 +113,11 @@ body {
 }
 
 .kiln-publish-pane.success {
-  background-color: $green;
+  background-color: $green-transparent;
 }
 
 .kiln-publish-pane.error {
-  background-color: $red;
+  background-color: $red-transparent;
 }
 
 .kiln-publish-pane.show {
