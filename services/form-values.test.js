@@ -261,27 +261,32 @@ describe(dirname, function () {
         ] });
       });
 
-      it('removes nonbreaking spaces from strings', function () {
+      it('cleans text for string values', function () {
         var field = stubField('foo', true),
           form = stubForm([field]);
 
+        sandbox.stub(lib, 'cleanTextField');
         formCreator.getBindings.returns(stubBinding(form, { foo: {
-          data: { value: 'b&#160;a\u00a0r&nbsp;r' }
+          data: { value: 'a string' }
         }}));
+        fn(form);
 
-        expect(fn(form)).to.eql({ foo: { value: 'b a r r' }});
+        expect(lib.cleanTextField.calledOnce).to.be.true;
       });
 
-      it('trims strings', function () {
-        var field = stubField('foo', true),
-          form = stubForm([field]);
+    });
 
-        formCreator.getBindings.returns(stubBinding(form, { foo: {
-          data: { value: '   b a r   ' }
-        }}));
+    describe('cleanTextField', function () {
+      var fn = lib[this.title];
 
-        expect(fn(form)).to.eql({ foo: { value: 'b a r' }});
+      it('removes non-breaking spaces', function () {
+        expect(fn('b&#160;a\u00a0r&nbsp;r')).to.eql('b a r r');
+      });
+
+      it('trims string', function () {
+        expect(fn('   b a r   ')).to.eql('b a r');
       });
     });
+
   });
 });

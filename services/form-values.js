@@ -22,6 +22,15 @@ function removeBehaviorMeta(value) {
 }
 
 /**
+ * Removes non-breaking spaces and trims the string.
+ * @param {string} str
+ * @returns {string}
+ */
+function cleanTextField(str) {
+  return str.replace(/(\u00a0|&nbsp;|&#160;)/g, ' ').trim();
+}
+
+/**
  * get values from inputs, lists, etc
  * @param {array} bindings
  * @param  {{}} data
@@ -40,8 +49,7 @@ function getValues(bindings, data, el) {
     viewData = removeBehaviorMeta(viewData);
     // // if the data is a string, trim it!
     if (viewData.value && _.isString(viewData.value)) {
-      viewData.value = viewData.value.replace(/(\u00a0|&nbsp;|&#160;)/g, ' '); // remove &nbsp;
-      viewData.value = viewData.value.trim();
+      viewData.value = module.exports.cleanTextField(viewData.value);
     }
     data[name] = viewData;
   }
@@ -72,3 +80,4 @@ function getFormValues(form) {
 }
 
 module.exports.get = getFormValues;
+module.exports.cleanTextField = cleanTextField; // Used by forms.js for detecting data changes.

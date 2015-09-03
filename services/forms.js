@@ -27,15 +27,6 @@ function findFormContainer() {
 }
 
 /**
- * Check if the local data is different than the data on the server.
- * @param {object} data   Edited data.
- * @returns {boolean}
- */
-function dataChanged(data) {
-  return !_.isMatch(data, currentForm.data);
-}
-
-/**
  * if it's an inline form, replace it with the original elements
  * @param {Element} el  form container, possibly inline
  */
@@ -74,6 +65,59 @@ function setEditingStatus(isEditing) {
 }
 
 /**
+ * Recursively remove white spaces from all string values in the object.
+ * @param {{}} data
+ */
+function cleanDeepStringValues(data) {
+  return _.mapValues(data, function (val) {
+    if (_.isString(val)) {
+      return formValues.cleanTextField(val);
+    } else if (_.isObject(val)) {
+      return cleanDeepStringValues(val);
+    } else {
+      return val;
+    }
+  });
+}
+
+/**
+ * Removes all keys that begin with "_".
+ * @param {{}} data     e.g. {yes: 1, _no: 2}
+ * @returns {{}}        e.g. {yes: 1}
+ */
+function removeMetaProperties(data) {
+  return _.omit(data, function (val, key) { return _.startsWith(key, '_');});
+}
+/**
+ * Removes all keys that begin with "_" for all objects within the object.
+ * @param {{}} data     e.g. {yes: {y: 1, _n: 2}, _no: 3}
+ * @returns {{}}        e.g. {yes: {y: 1}}
+ */
+function removeDeepMetaProperties(data) {
+  return _.reduce(removeMetaProperties(data), function (result, val, key) {
+    if (_.isObject(val)) {
+      result[key] = removeDeepMetaProperties(val); // go deep.
+    } else {
+      result[key] = val;
+    }
+    return result;
+  }, {});
+}
+
+/**
+ * Check if the data vales have changed locally.
+ * @param {{}} serverData   data from the server
+ * @param {{}} formData     data from the form (after potential edits)
+ * @returns {boolean}
+ */
+function dataChanged(serverData, formData) {
+  var serverDataReduced = cleanDeepStringValues(removeDeepMetaProperties(serverData)), // necessary because form-values.js cleans strings as well.
+    formDataReduced = removeDeepMetaProperties(formData);
+
+  return !_.isEqual(serverDataReduced, formDataReduced);
+}
+
+/**
  * Open a form.
  * @param {string} ref
  * @param {Element} el    The element that has `data-editable`, not always the parent of the form.
@@ -98,9 +142,11 @@ function open(ref, el, path, e) {
         path: path
       };
 
-      // then get a subset of the data, for the specific field / group
+      // must clone because data object is changed by groups and formCreator -- can we change this?
+      currentForm.data = _.cloneDeep(data); // set that data into the currentForm
+
+      // get a subset of the data, for the specific field / group
       data = groups.get(ref, data, path); // note: if path is undefined, it'll open the settings form
-      currentForm.data = data; // set that data into the currentForm
       setEditingStatus(true); // set editing status (a class on the <body> of the page)
 
       // determine if the form is inline, and call the relevant formCreator method
@@ -126,7 +172,7 @@ function close() {
     ref = currentForm.ref;
     data = form && formValues.get(form);
 
-    if (data && dataChanged(data)) { // data is null if the component was removed.
+    if (data && dataChanged(currentForm.data, data)) { // data is null if the component was removed.
       // remove currentForm values
       currentForm = {};
 
@@ -151,3 +197,6 @@ function close() {
 
 exports.open = open;
 exports.close = close;
+
+// for tests:
+exports.dataChanged = dataChanged;

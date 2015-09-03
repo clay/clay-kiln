@@ -227,7 +227,7 @@ describe(dirname, function () {
         }
 
         // Make sure form data is the same as the server data.
-        sandbox.stub(formValues, 'get').returns(data);
+        sandbox.stub(formValues, 'get').returns({title: data});
         // First open an inline form.
         stubData(data);
 
@@ -276,12 +276,72 @@ describe(dirname, function () {
         }
 
         // Make sure form data is the same as the server data.
-        sandbox.stub(formValues, 'get').returns(data);
+        sandbox.stub(formValues, 'get').returns({title: data});
         // First open an inline form.
         stubData(data);
 
         return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen(afterFormIsClosed));
       });
     });
+
+    describe('dataChanged', function () {
+      var fn = lib[this.title],
+        mockServerData,
+        mockFormData;
+
+      beforeEach(function () {
+        // reset the mock data.
+        mockServerData = {
+          text: {
+            _schema: {
+              _placeholder: {},
+              _display: 'inline',
+              _has: [],
+              _name: 'text'
+            },
+            value: ''
+          },
+          _ref: 'site/path/components/paragraph/instances/0',
+          _schema: {
+            text: {
+              _placeholder: {},
+              _display: 'inline',
+              _has: [],
+              _name: 'text'
+            }
+          }
+        };
+        mockFormData = {
+          text: {
+            _schema: {
+              _placeholder: {},
+              _display: 'inline',
+              _has: [],
+              _name: 'text'
+            },
+            value: ''
+          }
+        };
+      });
+
+      it('returns false if values are equal', function () {
+        mockServerData.text.value = 'hello';
+        mockFormData.text.value = 'hello';
+        expect(fn(mockServerData, mockFormData)).to.be.false;
+      });
+
+      it('returns true if values are not equal', function () {
+        mockServerData.text.value = 'hello';
+        mockFormData.text.value = 'hello, world';
+        expect(fn(mockServerData, mockFormData)).to.be.true;
+      });
+
+      it('returns true if a form adds a field (happens when field has `component_ref` behavior)', function () {
+        mockFormData.additionalField = {};
+        expect(fn(mockServerData, mockFormData)).to.be.true;
+      });
+
+    });
+
   });
 });
