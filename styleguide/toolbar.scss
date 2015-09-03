@@ -3,17 +3,25 @@
 @import 'buttons';
 @import 'layers';
 
-.kiln-toolbar {
+.kiln-toolbar-wrapper {
   @include toolbar-layer();
 
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.kiln-toolbar {
   background-color: #fff;
   border-bottom: 1px solid $black-25;
   box-shadow: 0 1px 10px -5px $black;
   height: 50px;
   left: 0;
-  position: fixed;
+  position: absolute;
   top: 0;
   width: 100%;
+  z-index: 2;
 
   @media screen and (min-width: 600px) {
     height: 60px;
