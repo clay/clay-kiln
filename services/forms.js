@@ -26,22 +26,6 @@ function findFormContainer() {
   return dom.find(overlaySelector) || dom.find(inlineSelector);
 }
 
-
-/**
- * Check if the data has changed locally.
- * @param {{}} serverData   data from the server
- * @param {{}} formData     data from the form (after potential edits)
- * @returns {boolean}
- */
-function dataChanged(serverData, formData) {
-  console.log('serverData', serverData);
-  console.log('formData', formData);
-  console.log('currentForm.ref', currentForm.ref);
-  console.log('currentForm.path', currentForm.path);
-
-  return !_.contains(serverData, formData);
-}
-
 /**
  * if it's an inline form, replace it with the original elements
  * @param {Element} el  form container, possibly inline
@@ -104,11 +88,47 @@ function removeSpacesFromData(data) {
 }
 
 /**
- * Set the data to be compared later for form changes.
- * @param {{}} data
+ * Removes all keys that begin with "_".
+ * @param {{}} data     e.g. {yes: 1, _no: 2}
+ * @returns {{}}        e.g. {yes: 1}
  */
-function setCurrentFormData(data) {
-  currentForm.data = removeSpacesFromData(_.cloneDeep(data));
+function removeMetaProperties(data) {
+  return _.omit(data, function (val, key) { return _.startsWith(key, '_');});
+}
+/**
+ * Removes all keys that begin with "_" for all objects within the object.
+ * @param {{}} data     e.g. {yes: {y: 1, _n: 2}, _no: 3}
+ * @returns {{}}        e.g. {yes: {y: 1}}
+ */
+function removeDeepMetaProperties(data) {
+  return _.reduce(removeMetaProperties(data), function (result, val, key) {
+    if (_.isObject(val)) {
+      result[key] = removeDeepMetaProperties(val); // go deep.
+    } else {
+      result[key] = val;
+    }
+    return result;
+  }, {});
+}
+
+/**
+ * Check if the data vales have changed locally.
+ * @param {{}} serverData   data from the server
+ * @param {{}} formData     data from the form (after potential edits)
+ * @returns {boolean}
+ */
+function dataChanged(serverData, formData) {
+  var serverDataReduced = removeSpacesFromData(removeDeepMetaProperties(serverData)),
+    formDataReduced = removeDeepMetaProperties(formData);
+
+  console.log('currentForm.ref', currentForm.ref);
+  console.log('currentForm.path', currentForm.path);
+  console.log('serverData', serverData);
+  console.log('formData', formData);
+  console.log('serverDataReduced', serverDataReduced);
+  console.log('formDataReduced', formDataReduced);
+  console.log('is equal', _.isEqual(serverDataReduced, formDataReduced));
+  return !_.isEqual(serverDataReduced, formDataReduced);
 }
 
 /**
@@ -136,9 +156,18 @@ function open(ref, el, path, e) {
         path: path
       };
 
+      console.log('data before groups', _.cloneDeep(data));
+
+      // saving the data in the normal format, prior to groups.get. Can we get rid of groups.get?
+
+      currentForm.data = _.cloneDeep(data); // set that data into the currentForm
+
+      // This is where the data object is getting changed, perhaps a cloneDeep would make sense here?
+
       // then get a subset of the data, for the specific field / group
       data = groups.get(ref, data, path); // note: if path is undefined, it'll open the settings form
-      setCurrentFormData(data);// set that data into the currentForm
+
+      console.log('data after groups', data);
       setEditingStatus(true); // set editing status (a class on the <body> of the page)
 
       // determine if the form is inline, and call the relevant formCreator method
@@ -165,9 +194,6 @@ function close() {
     data = form && formValues.get(form);
 
     if (data && dataChanged(currentForm.data, data)) { // data is null if the component was removed.
-
-      console.log('Data "changed".');
-
       // remove currentForm values
       currentForm = {};
 
@@ -193,5 +219,5 @@ function close() {
 exports.open = open;
 exports.close = close;
 
-// for unit tests:
+// for tests:
 exports.dataChanged = dataChanged;

@@ -227,7 +227,7 @@ describe(dirname, function () {
         }
 
         // Make sure form data is the same as the server data.
-        sandbox.stub(formValues, 'get').returns(data);
+        sandbox.stub(formValues, 'get').returns({title: data});
         // First open an inline form.
         stubData(data);
 
@@ -276,7 +276,7 @@ describe(dirname, function () {
         }
 
         // Make sure form data is the same as the server data.
-        sandbox.stub(formValues, 'get').returns(data);
+        sandbox.stub(formValues, 'get').returns({title: data});
         // First open an inline form.
         stubData(data);
 
@@ -285,50 +285,60 @@ describe(dirname, function () {
     });
 
     describe('dataChanged', function () {
-      var fn = lib[this.title];
+      var fn = lib[this.title],
+        mockServerData,
+        mockFormData;
 
-      it('returns false if values are the same', function () {
-
-        // Add path...
-
-        var serverData = {
+      beforeEach(function () {
+        // reset the mock data.
+        mockServerData = {
+          text: {
             _schema: {
               _placeholder: {},
               _display: 'inline',
-              _has: {},
+              _has: [],
               _name: 'text'
             },
-            value: 'mock text'
+            value: ''
           },
-          formData = {
+          _ref: 'site/path/components/paragraph/instances/0',
+          _schema: {
             text: {
-              _schema: {
-                _placeholder: {},
-                _display: 'inline',
-                _has: [],
-                _name: 'text'
-              },
-              value: 'mock text'
+              _placeholder: {},
+              _display: 'inline',
+              _has: [],
+              _name: 'text'
+            }
+          }
+        };
+        mockFormData = {
+          text: {
+            _schema: {
+              _placeholder: {},
+              _display: 'inline',
+              _has: [],
+              _name: 'text'
             },
-            _ref: 'site/path/components/paragraph/instances/0',
-            _schema: {}
-          };
-
-        expect(fn(serverData, formData)).to.be.false;
+            value: ''
+          }
+        };
       });
 
-      it('returns true if values are different', function () {
-        var serverData = {},
-          formData = {};
-
-        expect(fn(serverData, formData)).to.be.true;
+      it('returns false if values are equal', function () {
+        mockServerData.text.value = 'hello';
+        mockFormData.text.value = 'hello';
+        expect(fn(mockServerData, mockFormData)).to.be.false;
       });
 
-      it('returns true if a field has component_ref (affects another component)', function () {
-        var serverData = {},
-          formData = {};
+      it('returns true if values are not equal', function () {
+        mockServerData.text.value = 'hello';
+        mockFormData.text.value = 'hello, world';
+        expect(fn(mockServerData, mockFormData)).to.be.true;
+      });
 
-        expect(fn(serverData, formData)).to.be.true;
+      it('returns true if a form adds a field (happens when field has `component_ref` behavior)', function () {
+        mockFormData.additionalField = {};
+        expect(fn(mockServerData, mockFormData)).to.be.true;
       });
 
     });
