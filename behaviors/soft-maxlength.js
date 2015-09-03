@@ -19,25 +19,35 @@ function toggleClass(isTooLong, span, input) {
 }
 
 /**
+ * set text in a span
+ * @param {string} text
+ * @param {Element} span
+ */
+function setText(text, span) {
+  span.innerHTML = text;
+}
+
+/**
  * set styles depending on the remaining length
  * @param {number} remaining
- * @param {Element} span of the soft-maxlength
- * @param {Element} input
- * @returns {string} to display in the span
+ * @param {Element} el
  */
-function setStyles(remaining, span, input) {
+function setStyles(remaining, el) {
+  var input = getInput(el.parentNode),
+    span = el;
+
   if (remaining > 0) {
     toggleClass(false, span, input);
-    return 'Remaining: ' + remaining;
+    setText('Remaining: ' + remaining, span);
   } else if (remaining === 0) {
     toggleClass(false, span, input);
-    return 'At the character limit';
+    setText('At the character limit', span);
   } else if (remaining === -1) {
     toggleClass(true, span, input);
-    return -remaining + ' character over the limit';
+    setText(-remaining + ' character over the limit', span);
   } else {
     toggleClass(true, span, input);
-    return -remaining + ' characters over the limit';
+    setText(-remaining + ' characters over the limit', span);
   }
 }
 
@@ -64,17 +74,17 @@ module.exports = function (result, args) {
     bindings = result.bindings,
     name = result.name,
     tpl = `
-      <span class="soft-maxlength">{ ${name}.max | charsRemaining ${name}.data.value }</span>
+      <span class="soft-maxlength" rv-remaining="${name}.data.value"></span>
     `,
     span = dom.create(tpl);
 
   bindings.max = args.value;
-  result.formatters.charsRemaining = function (max, value) {
-    var length = cleanValue(value).length,
-      remaining = max - length,
-      input = getInput(el); // needs to happen after wysiwyg is instantiated
 
-    return setStyles(remaining, span, input);
+  result.binders.remaining = function (el, value) {
+    var length = cleanValue(value).length,
+      remaining = bindings.max - length;
+
+    setStyles(remaining, el);
   };
 
   el.appendChild(span);
