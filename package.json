@@ -1,6 +1,6 @@
 {
   "name": "@nymdev/clay-kiln",
-  "version": "0.10.19",
+  "version": "0.10.20",
   "description": "Editor tools for Clay",
   "browser": "client.js",
   "style": [
