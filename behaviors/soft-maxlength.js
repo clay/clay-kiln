@@ -1,4 +1,5 @@
 var striptags = require('striptags'),
+  he = require('he'),
   dom = require('../services/dom'),
   getInput = require('../services/get-input');
 
@@ -57,9 +58,8 @@ function setStyles(remaining, el) {
  * @returns {string}
  */
 function cleanValue(value) {
-  var clean = striptags(value);
+  var clean = he.decode(striptags(value));
 
-  clean = clean.replace(/(\u00a0|&nbsp;|&#160;)/ig, ' '); // remove &nbsp;
   return clean;
 }
 
