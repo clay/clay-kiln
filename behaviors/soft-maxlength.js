@@ -71,18 +71,16 @@ function cleanValue(value) {
  */
 module.exports = function (result, args) {
   var el = result.el,
-    bindings = result.bindings,
     name = result.name,
     tpl = `
-      <span class="soft-maxlength" rv-remaining="${name}.data.value"></span>
+      <span class="soft-maxlength" data-maxlength="${args.value}" rv-remaining="${name}.data.value"></span>
     `,
     span = dom.create(tpl);
 
-  bindings.max = args.value;
-
   result.binders.remaining = function (el, value) {
     var length = cleanValue(value).length,
-      remaining = bindings.max - length;
+      max = parseInt(el.getAttribute('data-maxlength')),
+      remaining = max - length;
 
     setStyles(remaining, el);
   };
