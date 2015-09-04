@@ -3,7 +3,7 @@ var dom = require('../services/dom');
 /**
  * Create checkbox group item for each option.
  * @param {string} name
- * @param {[{name: string, value: string}]]} options
+ * @param {[{name: string, value: string}]} options
  * @returns {string}
  */
 function createOptions(name, options) {
@@ -24,7 +24,7 @@ function createOptions(name, options) {
 /**
  * Replace result.el with checkbox-group.
  * @param {{name: string}} result
- * @param {{options: [{name: string, value: string}]]}} args
+ * @param {{options: [{name: string, value: string}]}} args
  * @returns {{}}
  */
 module.exports = function (result, args) {
