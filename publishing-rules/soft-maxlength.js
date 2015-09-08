@@ -1,6 +1,7 @@
 var label, description,
   behaviorName = 'soft-maxlength',
   _ = require('lodash'),
+  he = require('he'),
   stripTags = require('striptags'),
   references = require('../services/references'),
   refProp = references.referenceProperty,
@@ -14,9 +15,8 @@ description = 'Some field values must be less than a certain length for consiste
  * @returns {string}
  */
 function cleanValue(value) {
-  var clean = stripTags(value);
+  var clean = he.decode(stripTags(value));
 
-  clean = clean.replace(/(\u00a0|&nbsp;|&#160;)/ig, ' '); // remove &nbsp;
   return clean;
 }
 
