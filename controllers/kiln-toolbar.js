@@ -145,7 +145,9 @@ EditorToolbar.prototype = {
   onPublish: function () {
     var el = this.el;
 
-    publish(el);
+    focus.unfocus().then(function () {
+      return publish(el);
+    });
   }
 };
 
