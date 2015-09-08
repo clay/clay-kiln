@@ -25,35 +25,33 @@ var EditorToolbar,
  * @returns {Promise}
  */
 function publish(el) {
+  var publishPane = dom.find('.kiln-publish-pane'),
+    publishStatus = dom.find(publishPane, '.publish-status'),
+    publishLink = dom.find(publishPane, '.publish-link');
+
   return validation.validate(rules).then(function (errors) {
     var container;
 
     if (errors.length === 0) {
-      return edit.publishPage().then(function (res) {
-        var publishPane = dom.find('.kiln-publish-pane'),
-          publishStatus = dom.find(publishPane, '.publish-status'),
-          publishLink = dom.find(publishPane, '.publish-link');
+      // hide the publish pane if it's not already hidden
+      // this makes it re-appear if you immediately republish
+      publishPane.classList.remove('success', 'error', 'show');
 
+      return edit.publishPage().then(function (res) {
         return edit.getDataOnly(res.main).then(function (data) {
           var url = site.addProtocol(site.addPort(site.get('prefix') + '/' + data.canonicalUrl)),
-            date = moment(data.date);
+            date = moment();
 
           // set the status message and link, then show the pane
           publishStatus.innerHTML = 'Published on ' + date.format('dddd, MMMM Do') + ' at ' + date.format('h:mm a');
           publishLink.setAttribute('href', url);
-          publishPane.classList.add('success');
-          publishPane.classList.add('show');
+          publishPane.classList.add('success', 'show');
         });
       }).catch(function (error) {
-        var publishPane = dom.find('.kiln-publish-pane'),
-          publishStatus = dom.find(publishPane, '.publish-status'),
-          publishLink = dom.find(publishPane, '.publish-link');
-
         // set the status message and link, then show the pane
         publishStatus.innerHTML = 'Publishing failed. Something on the server went wrong.';
         publishLink.setAttribute('href', site.addProtocol(site.addPort(dom.uri())));
-        publishPane.classList.add('error');
-        publishPane.classList.add('show');
+        publishPane.classList.add('error', 'show');
         console.error('publish error', error.status, error.message);
       });
     } else {

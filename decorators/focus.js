@@ -30,6 +30,13 @@ function unfocus() {
  * @returns {Promise}
  */
 function focus(el, options, e) {
+  var publishPane = dom.find('.kiln-publish-pane');
+
+  // if the publish pane is showing, hide it
+  if (publishPane) {
+    publishPane.classList.remove('show');
+  }
+
   return unfocus() // unfocus the potentialy-opened current form first
     .then(function () {
       select.select(el);

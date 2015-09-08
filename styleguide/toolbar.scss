@@ -64,11 +64,17 @@ body {
   flex: 0 0 auto;
 }
 
+.kiln-toolbar-inner > button:first-of-type {
+  @media (max-width: 599.9px) {
+    margin-left: 2rem;
+  }
+}
+
 .publish {
   @include button-large();
   @include button-primary-1();
 
-  margin-right: 20px;
+  margin-right: 2rem;
 }
 
 .toolbar-spacer {
@@ -107,7 +113,7 @@ body {
   padding: .5rem 1rem;
   position: absolute;
   text-align: center;
-  top: .7rem;
+  top: -10rem; // make sure it's NEVER shown in the screen, no matter how long the publish text is
   width: 100%;
   z-index: 1;
 }
@@ -150,4 +156,8 @@ body {
   font-weight: 600;
   margin: 0 0 0 1.5rem;
   text-decoration: none;
+
+  @media (max-width: 599.9px) {
+    margin-top: .5rem;
+  }
 }
