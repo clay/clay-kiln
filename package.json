@@ -2,13 +2,6 @@
   "name": "@nymdev/clay-kiln",
   "version": "0.10.26",
   "description": "Editor tools for Clay",
-  "browser": "client.js",
-  "style": [
-    "styleguide/*.scss",
-    "styleguide/*.css",
-    "behaviors/*.scss",
-    "behaviors/*.css"
-  ],
   "template": "template.nunjucks",
   "scripts": {
     "lint": "node_modules/.bin/eslint client.js behaviors controllers services decorators",
@@ -44,12 +37,17 @@
     "striptags": "^2.0.2"
   },
   "devDependencies": {
+    "browserify": "^11.1.0",
     "browserify-istanbul": "^0.2.1",
     "chai": "^2.3.0",
     "chai-things": "^0.2.0",
     "coveralls": "^2.11.2",
     "es6ify": "^1.6.0",
     "eslint": "^1.1.0",
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-uglify": "^1.4.1",
     "karma": "^0.12.32",
     "karma-browserify": "^4.1.2",
     "karma-browserstack-launcher": "^0.1.2",
@@ -61,6 +59,7 @@
     "karma-safari-launcher": "^0.1.1",
     "karma-sinon": "^1.0.4",
     "mocha": "^2.2.5",
-    "sinon": "~1.14.1"
+    "sinon": "~1.14.1",
+    "vinyl-map": "^1.0.1"
   }
 }
