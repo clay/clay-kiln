@@ -1,9 +1,30 @@
 var gulp = require('gulp'),
   map = require('vinyl-map'),
   browserify = require('browserify'),
-  concat = require('gulp-concat');
+  concat = require('gulp-concat'),
+  sass = require('gulp-sass'),
+  rfn = require('responsive-filenames'),
+  autoprefix = require('gulp-autoprefixer'),
+  cssmin = require('gulp-cssmin'),
+  prefixOptions = { browsers: ['last 2 versions', 'ie >= 9', 'ios >= 7', 'android >= 4.4.2'] },
+  stylesGlob = [
+    'styleguide/*.scss',
+    'styleguide/*.css',
+    'behaviors/*.scss',
+    'behaviors/*.css'
+  ];
   // sourcemaps = require('gulp-sourcemaps'),
   // uglify = require('gulp-uglify');
+
+gulp.task('styles', function () {
+  return gulp.src(stylesGlob)
+    .pipe(sass().on('error', sass.logError))
+    .pipe(rfn())
+    .pipe(concat('clay-kiln.css'))
+    .pipe(autoprefix(prefixOptions))
+    .pipe(cssmin())
+    .pipe(gulp.dest('dist'));
+});
 
 gulp.task('scripts', function () {
   return gulp.src('client.js') // browserify will pull in all required() scripts
