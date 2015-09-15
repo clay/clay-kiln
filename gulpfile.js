@@ -12,6 +12,16 @@ var gulp = require('gulp'),
     'styleguide/*.css',
     'behaviors/*.scss',
     'behaviors/*.css'
+  ],
+  scriptsGlob = [
+    // used only for watching, since client.js references everything needed for browserify
+    'client.js',
+    'behaviors/*.js',
+    'behaviors/*.test.js',
+    'controllers/**',
+    'decorators/**',
+    'publishing-rules/**',
+    'services/**',
   ];
   // sourcemaps = require('gulp-sourcemaps'),
   // uglify = require('gulp-uglify');
@@ -57,3 +67,12 @@ gulp.task('scripts', function () {
 
 // default task: run scripts and styles
 gulp.task('default', ['styles', 'scripts']);
+
+// recompile scripts and styles when editing them
+gulp.task('watch', function () {
+  // styles
+  gulp.watch(stylesGlob, ['styles']);
+
+  // scripts
+  gulp.watch(scriptsGlob, ['scripts']);
+});
