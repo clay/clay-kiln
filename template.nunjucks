@@ -1,4 +1,10 @@
 {%- if locals.edit -%}
+  {# styles #}
+  <style>
+  {{ ('node_modules/@nymdev/clay-kiln/dist/clay-kiln.css')|includeFile }}
+  </style>
+
+  {# toolbar #}
   <div class="kiln-toolbar-wrapper">
     <div class="kiln-publish-pane">
       <span class="publish-status"></span>
@@ -27,4 +33,9 @@
       </div>
     </section>
   </div>
+
+  {# scripts #}
+  <script>
+  {{ ('node_modules/@nymdev/clay-kiln/dist/clay-kiln.js')|includeFile }}
+  </script>
 {% endif %}
