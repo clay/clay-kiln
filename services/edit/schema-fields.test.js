@@ -116,6 +116,10 @@ describe('schema-fields service', function () {
       expect(fn({num: {_schema: {}, value: '123'}, _schema: {num: {}}})).to.deep.equal({num: '123'});
     });
 
+    it('undefined value with schema to undefined value', function () {
+      expect(fn({num: {_schema: {}, value: undefined}, _schema: {num: {}}})).to.deep.equal({num: undefined});
+    });
+
     it('undefined without schema', function () {
       expect(fn({num: undefined})).to.deep.equal({num: undefined});
     });
