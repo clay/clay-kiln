@@ -35,16 +35,8 @@
     "moment": "^2.10.6",
     "rivets": "^0.8.1",
     "selection-range": "^1.0.1",
-    "striptags": "^2.0.2"
-  },
-  "devDependencies": {
+    "striptags": "^2.0.2",
     "browserify": "^11.1.0",
-    "browserify-istanbul": "^0.2.1",
-    "chai": "^2.3.0",
-    "chai-things": "^0.2.0",
-    "coveralls": "^2.11.2",
-    "es6ify": "^1.6.0",
-    "eslint": "^1.1.0",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.0.1",
     "gulp-concat": "^2.6.0",
@@ -52,6 +44,16 @@
     "gulp-sass": "^2.0.4",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-uglify": "^1.4.1",
+    "responsive-filenames": "^1.2.0",
+    "vinyl-map": "git://github.com/yoshokatana/vinyl-map.git#async"
+  },
+  "devDependencies": {
+    "browserify-istanbul": "^0.2.1",
+    "chai": "^2.3.0",
+    "chai-things": "^0.2.0",
+    "coveralls": "^2.11.2",
+    "es6ify": "^1.6.0",
+    "eslint": "^1.1.0",
     "karma": "^0.12.32",
     "karma-browserify": "^4.1.2",
     "karma-browserstack-launcher": "^0.1.2",
@@ -63,8 +65,6 @@
     "karma-safari-launcher": "^0.1.1",
     "karma-sinon": "^1.0.4",
     "mocha": "^2.2.5",
-    "responsive-filenames": "^1.2.0",
-    "sinon": "~1.14.1",
-    "vinyl-map": "git://github.com/yoshokatana/vinyl-map.git#async"
+    "sinon": "~1.14.1"
   }
 }
