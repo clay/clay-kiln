@@ -55,7 +55,14 @@ function validate(data, schema) {
   }
 
   if (unknownFields.length) {
-    errors.push(new Error('Unknown fields found in data: ' + unknownFields.toString()));
+    // todo: we need to decide:
+
+    // be forgiving; they meant well
+    _.each(unknownFields, function (unknownField) {
+      delete data[unknownField];
+    });
+
+    // unforgiving: errors.push(new Error('Unknown fields found in data: ' + unknownFields.toString()));
   }
 
   // block unusual formatting of data (so the errors_for saving past this point are consistent)

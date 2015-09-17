@@ -33,7 +33,7 @@ function addSchemaToData(schema, data) {
  * @returns {object}
  */
 function removeSchemaFromData(data) {
-  if (!!data && data.value !== undefined && !!data._schema && _.size(data) === 2) {
+  if (!!data && data.hasOwnProperty('value') && !!data._schema && _.size(data) === 2) {
     // not an object anymore
     return data.value;
   } else if (_.isObject(data)) {
