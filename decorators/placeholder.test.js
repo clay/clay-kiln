@@ -24,7 +24,7 @@ describe(dirname, function () {
         // but we don't anymore.
         // if you want to specify placeholder text, put it in the `text` property
         // e.g. _placeholder: { text: 'some string of text' }
-        expect(fn(mockName, {_placeholder: 'Bar'})).to.equal('Foo » Bar');
+        expect(fn(mockName, {_placeholder: 'Bar'})).to.equal('Foo Bar');
       });
 
       it('uses placeholder text if it exists', function () {
@@ -32,8 +32,8 @@ describe(dirname, function () {
       });
 
       it('falls back to label if no placeholder text', function () {
-        expect(fn(mockName, {_placeholder: 'true'})).to.equal('Foo » Bar');
-        expect(fn(mockName, {_placeholder: true})).to.equal('Foo » Bar');
+        expect(fn(mockName, {_placeholder: 'true'})).to.equal('Foo Bar');
+        expect(fn(mockName, {_placeholder: true})).to.equal('Foo Bar');
       });
     });
 

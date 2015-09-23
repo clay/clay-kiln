@@ -5,7 +5,7 @@ var _ = require('lodash'),
  * get label
  * if _label exists, use it
  * else get the name of the field/group, prettified
- * e.g. "title.social" would become "Title » Social"
+ * e.g. "mediaplay-image" would become "Mediaplay Image"
  * @param  {string} name
  * @param  {object} schema
  * @return {string}
@@ -13,5 +13,9 @@ var _ = require('lodash'),
 module.exports = function (name, schema) {
   var label = schema && schema[references.labelProperty];
 
-  return _.isString(label) ? label : name.split('.').map(_.startCase).join(' » ');
+  if (label) {
+    return label;
+  } else {
+    return name.split('-').map(_.startCase).join(' '); // split on hyphens
+  }
 };
