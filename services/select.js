@@ -8,6 +8,7 @@ var references = require('./references'),
   forms = require('./forms'),
   groups = require('./groups'),
   site = require('./site'),
+  label = require('./label'),
   currentSelected;
 
 /**
@@ -173,8 +174,8 @@ function scrollToComponent(el) {
  */
 function addParentLabel(componentBar, parentEl) {
   var ref = parentEl.getAttribute(references.referenceAttribute),
-    label = references.getComponentNameFromReference(ref),
-    el = dom.create(`<span class="parent label" title="Parent: ${label.toUpperCase()}">${label}</span>`);
+    parentName = references.getComponentNameFromReference(ref),
+    el = dom.create(`<span class="parent label" title="Parent: ${label(parentName)}">${label(parentName)}</span>`);
 
   el.addEventListener('click', function (e) {
     e.stopPropagation();
@@ -252,7 +253,7 @@ function handler(componentEl, options) {
   var name = references.getComponentNameFromReference(options.ref),
     tpl = `
     <aside class="component-bar">
-      <span class="label" title="${name.toUpperCase()}">${name}</span>
+      <span class="label" title="${label(name)}">${label(name)}</span>
       <span class="fill"></span>
     </aside>
     `,
