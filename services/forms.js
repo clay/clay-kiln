@@ -67,6 +67,7 @@ function setEditingStatus(isEditing) {
 /**
  * Recursively remove white spaces from all string values in the object.
  * @param {{}} data
+ * @returns {object}
  */
 function cleanDeepStringValues(data) {
   return _.mapValues(data, function (val) {

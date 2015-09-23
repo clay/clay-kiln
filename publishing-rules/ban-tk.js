@@ -1,7 +1,5 @@
-var label, description,
+var label, description, blocked,
   searchTexts = ['TK', 'tktk'],
-  articleFields = ['primaryHeadline', 'teaser'],
-  paragraphField = 'text',
   _ = require('lodash'),
   stripTags = require('striptags'),
   references = require('../services/references'),
@@ -9,8 +7,13 @@ var label, description,
   cutStart = 20,
   cutEnd = 20;
 
-label = 'Ban TKs';
-description = 'Any TK or tktk in the article\'s primary headline, teaser or in any paragraph cannot be published.';
+label = 'TKs';
+description = 'Any TK in the article cannot be published:';
+blocked = {
+  article: ['primaryHeadline', 'teaser'],
+  paragraph: ['text'],
+  'mediaplay-image': ['caption', 'credit']
+};
 
 /**
  * Return first value of list to be found in str
@@ -96,29 +99,13 @@ function addError(component, fieldName, errors, tkText) {
 }
 
 /**
- * @param {{refs: object, components: Array}} state
- * @returns {[object]}
+ * @param {Array} components
+ * @param {[string]} fieldNames
+ * @param {Array} errors
  */
-function validate(state) {
-  var errors = [],
-    groups = _.groupBy(state.refs, function (value, key) {
-      return references.getComponentNameFromReference(key);
-    });
-
-  _.each(groups.paragraph, function (component) {
-    var field = component[paragraphField],
-      value = field && field.value && stripTags(field.value),
-      tkText = value && findFirstText(value, searchTexts);
-
-    if (tkText) {
-
-      addError(component, paragraphField, errors, tkText);
-
-    }
-  });
-
-  _.each(groups.article, function (component) {
-    _.each(articleFields, function (fieldName) {
+function validateComponents(components, fieldNames, errors) {
+  _.each(components, function (component) {
+    _.each(fieldNames, function (fieldName) {
       var field = component[fieldName],
         value = field && field.value && stripTags(field.value),
         tkText = value && findFirstText(value, searchTexts);
@@ -129,6 +116,21 @@ function validate(state) {
 
       }
     });
+  });
+}
+
+/**
+ * @param {{refs: object, components: Array}} state
+ * @returns {[object]}
+ */
+function validate(state) {
+  var errors = [],
+    groups = _.groupBy(state.refs, function (value, key) {
+      return references.getComponentNameFromReference(key);
+    });
+
+  _.each(blocked, function (blockedFields, groupName) {
+    validateComponents(groups[groupName], blockedFields, errors);
   });
 
   if (errors.length) {

@@ -8,16 +8,14 @@ var label, description,
   fieldProp = references.fieldProperty;
 
 label = 'Max Length';
-description = 'Some field values must be less than a certain length for consistent formatting across all syndications.';
+description = 'Some fields must be less than a certain length for consistent formatting across all syndications:';
 
 /**
  * @param {string} value
  * @returns {string}
  */
 function cleanValue(value) {
-  var clean = he.decode(stripTags(value));
-
-  return clean;
+  return he.decode(stripTags(value));
 }
 
 /**
