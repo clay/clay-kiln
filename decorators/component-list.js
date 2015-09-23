@@ -3,6 +3,7 @@ var _ = require('lodash'),
   dom = require('../services/dom'),
   edit = require('../services/edit'),
   render = require('../services/render'),
+  label = require('../services/label'),
   dragula = require('dragula');
 
 /**
@@ -38,7 +39,7 @@ function addComponent(pane, field, name) {
  * @returns {element} buttonEl
  */
 function createComponentButton(pane, field, item) {
-  var buttonEl = dom.create(`<button class="add-component" data-component-name="${item}">${item}</button>`);
+  var buttonEl = dom.create(`<button class="add-component" data-component-name="${label(item)}">${label(item)}</button>`);
 
   buttonEl.addEventListener('click', addComponent(pane, field, item));
   return buttonEl;
