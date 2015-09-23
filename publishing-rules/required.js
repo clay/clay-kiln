@@ -7,7 +7,7 @@ var label, description,
   fieldProp = references.fieldProperty;
 
 label = 'Required';
-description = 'Some fields are required for publication.';
+description = 'Some fields are required for publication:';
 
 /**
  * @param {string} componentName
