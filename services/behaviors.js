@@ -1,24 +1,26 @@
 var _ = require('lodash'),
   references = require('./references'),
   label = require('./label'),
-  promises = require('./promises'),
-  // hash of all behaviors
-  behaviorsHash = {};
+  promises = require('./promises');
+
+// hash of all behaviors, added to global
+window.kiln = window.kiln || {}; // create global kiln if it doesn't exist
+window.kiln.behaviors = {};
 
 /**
- * add a behavior to the hash. called by users who want to create custom behaviors
+ * add a behavior to the hash. used by client.js to add internal behaviors
  * @param {string}   name
  * @param {Function} fn   usually from a browserify require() call
  */
 function add(name, fn) {
   // note: this WILL overwrite behaviors already in the hash,
   // allowing people to use custom versions of our core behaviors
-  behaviorsHash[name] = fn;
+  window.kiln.behaviors[name] = fn;
 }
 
 function omitMissingBehaviors(behavior) {
   var name = behavior[references.behaviorKey],
-    found = !!behaviorsHash[name];
+    found = !!window.kiln.behaviors[name];
 
   if (!found) {
     console.warn('Behavior "' + name + '" not found. Make sure you add it!');
@@ -86,7 +88,7 @@ function run(context) {
     // apply behaviours
     var name = behavior[references.behaviorKey];
 
-    return behaviorsHash[name](currentContext, behavior.args);
+    return window.kiln.behaviors[name](currentContext, behavior.args);
   }, {
     el: document.createDocumentFragment(),
     bindings: { label: contextLabel, name: contextName, data: context },
