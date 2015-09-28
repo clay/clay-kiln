@@ -24,7 +24,6 @@
   },
   "homepage": "https://github.com/nymag/clay-kiln",
   "dependencies": {
-    "@nymdev/references": "0.0.2",
     "browserify": "^11.1.0",
     "dollar-slice": "^2.1.0",
     "domify": "^1.3.3",
