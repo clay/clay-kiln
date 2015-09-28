@@ -36,6 +36,8 @@ decorators.add(require('./decorators/focus'));
 decorators.add(require('./decorators/component-list'));
 
 // kick off controller loading when DOM is ready
+// note: external behaviors, decorators, and validation rules should already be added
+// when this event fires
 document.addEventListener('DOMContentLoaded', function () {
   var parsed = nodeUrl.parse(location.href, true, true);
 
