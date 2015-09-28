@@ -46,9 +46,3 @@ document.addEventListener('DOMContentLoaded', function () {
     return new EditorToolbar(dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"]'));
   }
 });
-
-// expose behavior adding
-module.exports.addBehavior = behaviors.add;
-
-// and expose decorator adding, while we're at it
-module.exports.addDecorator = decorators.add;
