@@ -1,6 +1,18 @@
 var lib = require('./site');
 
 describe('site service', function () {
+  describe('get', function () {
+    var fn = lib[this.title];
+
+    it('gets things', function () {
+      lib.set({
+        protocol: 'http:'
+      });
+
+      expect(fn('protocol')).to.equal('http:');
+    });
+  });
+
   describe('addProtocol', function () {
     var fn = lib[this.title],
       uri = 'google.com/foo.html';
