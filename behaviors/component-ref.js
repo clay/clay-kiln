@@ -1,6 +1,6 @@
 var _ = require('lodash'),
   dom = require('../services/dom'),
-  references = require('@nymdev/references');
+  references = require('../services/references');
 
 /**
  * Append hidden field to enable component instances to affect other component instances

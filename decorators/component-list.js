@@ -1,5 +1,5 @@
 var _ = require('lodash'),
-  references = require('@nymdev/references'),
+  references = require('../services/references'),
   dom = require('../services/dom'),
   edit = require('../services/edit'),
   render = require('../services/render'),

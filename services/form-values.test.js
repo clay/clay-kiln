@@ -3,7 +3,7 @@ var dirname = __dirname.split('/').pop(),
   _ = require('lodash'),
   rivets = require('rivets'),
   formCreator = require('./form-creator'),
-  references = require('@nymdev/references'),
+  references = require('./references'),
   lib = require('./form-values');
 
 describe(dirname, function () {

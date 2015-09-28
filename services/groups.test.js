@@ -1,7 +1,7 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./groups'),
-  references = require('@nymdev/references');
+  references = require('./references');
 
 describe(dirname, function () {
   describe(filename, function () {

@@ -1,5 +1,5 @@
 var _ = require('lodash'),
-  references = require('@nymdev/references');
+  references = require('./references');
 
 /**
  * Given an array of fields, get an array of matching data.

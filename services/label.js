@@ -1,5 +1,5 @@
 var _ = require('lodash'),
-  references = require('@nymdev/references');
+  references = require('./references');
 
 /**
  * get label

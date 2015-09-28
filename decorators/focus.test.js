@@ -2,7 +2,7 @@ var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   forms = require('../services/forms'),
   select = require('../services/select'),
-  references = require('@nymdev/references'),
+  references = require('../services/references'),
   lib = require('./focus');
 
 describe(dirname, function () {

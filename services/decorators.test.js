@@ -2,7 +2,7 @@ var _ = require('lodash'),
   dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./decorators'),
-  references = require('@nymdev/references'),
+  references = require('./references'),
   edit = require('./edit');
 
 describe(dirname, function () {

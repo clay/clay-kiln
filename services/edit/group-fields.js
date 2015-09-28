@@ -1,5 +1,5 @@
 var _ = require('lodash'),
-  references = require('@nymdev/references');
+  references = require('../references');
 
 /**
  * True if value has a property called fields.

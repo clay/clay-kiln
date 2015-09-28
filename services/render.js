@@ -4,7 +4,7 @@ var componentEdit = require('../controllers/component-edit'),
   dom = require('./dom'),
   ds = require('dollar-slice'),
   edit = require('./edit'),
-  references = require('@nymdev/references'),
+  references = require('./references'),
   select = require('./select');
 
 /**
