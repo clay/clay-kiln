@@ -4,7 +4,7 @@ var _ = require('lodash'),
 
 // array of all decorators, added to global
 window.kiln = window.kiln || {}; // create global kiln if it doesn't exist
-window.kiln.decorators = [];
+window.kiln.decorators = window.kiln.decorators || [];
 
 /**
  * get the schema, then run through the decorators
