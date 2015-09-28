@@ -1,7 +1,7 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   edit = require('./edit'),
-  references = require('./references'),
+  references = require('@nymdev/references'),
   render = require('./render'),
   formCreator = require('./form-creator'),
   formValues = require('./form-values'),

@@ -3,7 +3,7 @@ var _ = require('lodash'),
   edit = require('./edit'),
   control = require('./edit/control'),
   promises = require('./promises'),
-  references = require('./references'),
+  references = require('@nymdev/references'),
   refAttr = references.referenceAttribute,
   refAtrrSelector = '[' + refAttr + ']';
 

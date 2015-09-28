@@ -8,7 +8,7 @@ var dirname = __dirname.split('/').pop(),
     text: 'bar'
   }],
   fixture = require('../test/fixtures/behavior')(data),
-  references = require('../services/references');
+  references = require('@nymdev/references');
 
 // set some data
 fixture.bindings.data = data;

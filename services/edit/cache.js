@@ -8,7 +8,7 @@
 
 var _ = require('lodash'),
   db = require('./db'),
-  references = require('../references'),
+  references = require('@nymdev/references'),
   groupFields = require('./group-fields'),
   schemaFields = require('./schema-fields'),
   control = require('./control'),

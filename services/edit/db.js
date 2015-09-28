@@ -1,6 +1,6 @@
 var _ = require('lodash'),
   dom = require('./../dom'),
-  references = require('./../references'),
+  references = require('@nymdev/references'),
   site = require('./../site'),
   extHtml = '.html',
   componentRoute = '/components/',

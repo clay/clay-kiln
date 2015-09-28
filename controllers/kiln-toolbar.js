@@ -8,7 +8,7 @@
 var EditorToolbar,
   moment = require('moment'),
   dom = require('../services/dom'),
-  references = require('../services/references'),
+  references = require('@nymdev/references'),
   forms = require('../services/forms'),
   edit = require('../services/edit'),
   validation = require('../services/publish-validation'),

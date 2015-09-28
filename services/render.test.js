@@ -3,7 +3,7 @@ var lib = require('./render'),
   ds = require('dollar-slice'),
   edit = require('./edit'),
   select = require('./select'),
-  references = require('./references');
+  references = require('@nymdev/references');
 
 describe('render service', function () {
   var ref = 'localhost/components/foo/id/bar',

@@ -1,6 +1,6 @@
 var path = require('path'),
   dom = require('./dom'),
-  references = require('./references'),
+  references = require('@nymdev/references'),
   editorEl = dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"]'),
   data = {};
 

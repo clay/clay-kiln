@@ -1,6 +1,6 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
-  references = require('../services/references'),
+  references = require('@nymdev/references'),
   lib = require('./component-list');
 
 describe(dirname, function () {

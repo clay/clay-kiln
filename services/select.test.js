@@ -1,6 +1,6 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
-  references = require('./references'),
+  references = require('@nymdev/references'),
   groups = require('./groups'),
   edit = require('./edit'),
   forms = require('./forms'),

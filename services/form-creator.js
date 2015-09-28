@@ -1,7 +1,7 @@
 var _ = require('lodash'),
   ds = require('dollar-slice'),
   rivets = require('rivets'),
-  references = require('./references'),
+  references = require('@nymdev/references'),
   label = require('./label'),
   behaviors = require('./behaviors'),
   dom = require('./dom'),

@@ -1,7 +1,7 @@
 // all components get decorated with component bars (which are hidden by default)
 // components that are "selected" get their bar (and their parents' bars) shown
 
-var references = require('./references'),
+var references = require('@nymdev/references'),
   dom = require('./dom'),
   edit = require('./edit'),
   focus = require('../decorators/focus'),

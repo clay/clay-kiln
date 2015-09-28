@@ -1,7 +1,7 @@
 'use strict'; // eslint-disable-line
 // note: use strict above is applied to the whole browserified doc
 var nodeUrl = require('url'),
-  references = require('./services/references'),
+  references = require('@nymdev/references'),
   behaviors = require('./services/behaviors'),
   decorators = require('./services/decorators'),
   dom = require('./services/dom'),

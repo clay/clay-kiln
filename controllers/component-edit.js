@@ -6,7 +6,7 @@
 function ComponentEdit() {
   var dom = require('../services/dom'),
     events = require('../services/events'),
-    references = require('../services/references'),
+    references = require('@nymdev/references'),
     decorate = require('../services/decorators'),
     editableAttr = references.editableAttribute,
     placeholderAttr = references.placeholderAttribute;
