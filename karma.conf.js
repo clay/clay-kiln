@@ -8,7 +8,7 @@ files = [
   'behaviors/*.js',
   'services/**/*.js',
   'decorators/*.js',
-  'publishing-rules/*.js'
+  'validators/*.js'
 ];
 
 settings = {
@@ -42,7 +42,7 @@ settings = {
     'behaviors/**/*.js': ['browserify'],
     'services/**/*.js': ['browserify'],
     'decorators/**/*.js': ['browserify'],
-    'publishing-rules/**/*.js': ['browserify']
+    'validators/**/*.js': ['browserify']
   },
   plugins: [
     'karma-coverage',
