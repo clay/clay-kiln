@@ -18,7 +18,7 @@ settings = {
   transports: ['websocket'],
   browserify: {
     debug: true,
-    transform: ['es6ify', istanbul({
+    transform: [istanbul({
       ignore: ['**/node_modules/**'],
       defaultIgnore: true
     })]
@@ -58,8 +58,6 @@ settings = {
 };
 
 module.exports = function (karma) {
-  'use strict';
-
   karma.set(_.assign(settings, {
     // browerstack config + launchers
     browserStack: {
