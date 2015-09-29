@@ -6,10 +6,7 @@ describe(dirname, function () {
   describe(filename, function () {
 
     it('references the global validators', function () {
-      window.kiln = {
-        validators: ['bar']
-      };
-
+      lib.add('bar');
       expect(lib).to.be.an('array');
       expect(lib[0]).to.equal('bar');
     });
@@ -20,7 +17,8 @@ describe(dirname, function () {
       it('adds things to the global validators', function () {
         fn('foo');
         expect(window.kiln.validators).to.be.an('array');
-        expect(window.kiln.validators[0]).to.equal('foo');
+        expect(window.kiln.validators[0]).to.equal('bar'); // added from test above. yay globals
+        expect(window.kiln.validators[1]).to.equal('foo');
       });
     });
   });
