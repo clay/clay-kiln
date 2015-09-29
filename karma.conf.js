@@ -81,20 +81,30 @@ module.exports = function (karma) {
         browser_version: '35.0',
         os: 'OS X',
         os_version: 'Yosemite'
-      }
-      // ie11 doesn't support us, so we don't support it!
-      // ie11: {
+      },
+      // safari 8 doesn't support template strings
+      // safariMac: {
       //   base: 'BrowserStack',
-      //   browser: 'ie',
-      //   browser_version: '11.0',
-      //   os: 'Windows',
-      //   os_version: '8.1'
+      //   browser: 'safari',
+      //   browser_version: '8',
+      //   os: 'OS X',
+      //   os_version: 'Yosemite'
       // }
-      // iPhone6: {
+      // ie12 (edge) doesn't support ELement#matches, so we don't support it!
+      // edge: {
+      //   base: 'BrowserStack',
+      //   browser: 'edge',
+      //   browser_version: '12.0',
+      //   os: 'Windows',
+      //   os_version: '10'
+      // }
+      // mobile safari 8.3 doesn't support template strings
+      // todo: test on ios 9 when browserstack adds it
+      // mobileSafari: {
       //   base: 'BrowserStack',
       //   device: 'iPhone 6',
       //   os: 'ios',
-      //   os_version: '8.0'
+      //   os_version: '8.3'
       // }
       // jshint ignore:end
     },
