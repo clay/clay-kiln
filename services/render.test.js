@@ -3,6 +3,7 @@ var lib = require('./render'),
   ds = require('dollar-slice'),
   edit = require('./edit'),
   select = require('./select'),
+  db = require('./edit/db'),
   references = require('./references');
 
 describe('render service', function () {
@@ -13,6 +14,7 @@ describe('render service', function () {
     sandbox = sinon.sandbox.create();
     dsStub = sandbox.stub(ds); // .controller() and .get()
     dsStub.get.returnsArg(1);
+    sandbox.stub(db);
     editStub = sandbox.stub(edit, 'getData');
     // make sure it's calling the select service with the right options
     sandbox.stub(select, 'handler', sandbox.spy());
@@ -60,6 +62,21 @@ describe('render service', function () {
         })).to.equal(true);
         done();
       }).catch(function (e) { done(e); });
+    });
+  });
+
+  describe('reloadComponent', function () {
+    var fn = lib[this.title];
+
+    it('reloads a single component', function (done) {
+      var el = stubEl();
+
+      db.getHTML.returns(Promise.resolve(el));
+
+      fn('fakeRef').then(function (newEl) {
+        expect(newEl).to.equal(undefined);
+        done();
+      });
     });
   });
 });

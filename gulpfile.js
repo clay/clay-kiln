@@ -20,7 +20,7 @@ var gulp = require('gulp'),
     'behaviors/*.test.js',
     'controllers/**',
     'decorators/**',
-    'publishing-rules/**',
+    'validators/**',
     'services/**',
   ];
   // sourcemaps = require('gulp-sourcemaps'),

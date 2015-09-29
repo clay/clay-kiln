@@ -6,7 +6,7 @@ function getInput(el) {
 }
 
 function isInput(el) {
-  return el && (el.nodeType === 'INPUT' || el.nodeType === 'TEXTAREA' || el.classList.contains('wysiwyg-input'));
+  return !!el && (el.nodeName === 'INPUT' || el.nodeName === 'TEXTAREA' || el.classList.contains('wysiwyg-input'));
 }
 
 module.exports = getInput;

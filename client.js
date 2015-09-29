@@ -4,7 +4,6 @@ var nodeUrl = require('url'),
   references = require('./services/references'),
   behaviors = require('./services/behaviors'),
   decorators = require('./services/decorators'),
-  validators = require('./validators'),
   dom = require('./services/dom'),
   EditorToolbar = require('./controllers/kiln-toolbar'),
   render = require('./services/render');
@@ -35,11 +34,6 @@ behaviors.add('page-ref', require('./behaviors/page-ref'));
 decorators.add(require('./decorators/placeholder'));
 decorators.add(require('./decorators/focus'));
 decorators.add(require('./decorators/component-list'));
-
-// add default validators
-validators.add(require('./validators/ban-tk'));
-validators.add(require('./validators/required'));
-validators.add(require('./validators/soft-maxlength'));
 
 // kick off controller loading when DOM is ready
 // note: external behaviors, decorators, and validation rules should already be added

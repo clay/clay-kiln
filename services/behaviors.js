@@ -5,7 +5,7 @@ var _ = require('lodash'),
 
 // hash of all behaviors, added to global
 window.kiln = window.kiln || {}; // create global kiln if it doesn't exist
-window.kiln.behaviors = {};
+window.kiln.behaviors = window.kiln.behaviors || {};
 
 /**
  * add a behavior to the hash. used by client.js to add internal behaviors
