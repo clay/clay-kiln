@@ -4,6 +4,16 @@ var dirname = __dirname.split('/').pop(),
 
 describe(dirname, function () {
   describe(filename, function () {
+
+    it('references the global validators', function () {
+      window.kiln = {
+        validators: ['bar']
+      };
+
+      expect(lib).to.be.an('array');
+      expect(lib[0]).to.equal('bar');
+    });
+
     describe('add', function () {
       var fn = lib[this.title];
 
