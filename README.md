@@ -67,5 +67,6 @@ This file bootstraps internal and external `behaviors`, `decorators`, and `valid
 ### Testing
 
 * `npm test` will run `eslint` and `karma` tests (the latter being run on browserify).
-* `npm lint` will run `eslint` locally on the `behaviors`, `controllers`, and `services` folders, as well as `client.js`
-* `npm test-local` will run `karma` tests locally (using `karma.local.conf.js`)
+* `npm run lint` will run `eslint` locally on the script folders, as well as `client.js`
+* `npm run test-local` will run `karma` tests locally (using `karma.local.conf.js`) and auto-watch for changes
+* `gulp watch` will automatically re-compile scripts and styles on change
