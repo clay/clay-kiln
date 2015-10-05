@@ -184,7 +184,7 @@ function publishPage() {
 
     return cache.getDataOnly(pageUri).then(function (data) {
       // pages don't have schemas or validation (later?)
-      return db.save(pageUri + '@published', _.cloneDeep(data));
+      return db.save(pageUri + '@published', _.omit(data, '_ref'));
     });
   });
 }
@@ -208,7 +208,7 @@ function createPage() {
     newPageUri = prefix + pagesRoute + 'new';
 
   return cache.getDataOnly(newPageUri).then(function (data) {
-    return db.create(prefix + pagesRoute, data).then(function (res) {
+    return db.create(prefix + pagesRoute, _.omit(data, '_ref')).then(function (res) {
       location.href = getNewPageUrl(res[refProp]);
     });
   });
