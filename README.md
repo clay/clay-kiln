@@ -1,6 +1,6 @@
 # clay-kiln
 
-[![Coverage Status](https://coveralls.io/repos/nymag/clay-kiln/badge.svg?t=cuxfVU)](https://coveralls.io/r/nymag/clay-kiln)
+[![Coverage Status](https://coveralls.io/repos/nymag/clay-kiln/badge.svg?branch=master&service=github&t=C3xeVy)](https://coveralls.io/github/nymag/clay-kiln?branch=master)
 
 Editing tools for Clay
 
