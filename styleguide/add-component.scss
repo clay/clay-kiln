@@ -6,7 +6,7 @@
   @include clearfix();
 
   clear: both;
-  margin: 30px 0 20px;
+  margin: 0 12px 12px 0;
   width: 100%;
 }
 
@@ -47,6 +47,8 @@
 }
 
 .add-component {
-  @include button-small();
+  @include button-large();
   @include button-secondary-2();
+
+  margin-bottom: 20px;
 }
