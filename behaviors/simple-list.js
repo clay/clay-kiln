@@ -172,7 +172,7 @@ module.exports = function (result) {
       function handleItemKeyEvents(e) {
         var key = keycode(e);
 
-        if (key === 'enter' || key === 'tab' || key === ',') {
+        if (key === 'enter' || key === 'tab' || (key === ',' && e.shiftKey === false)) {
           addItem(e);
         } else if (key === 'delete' || key === 'backspace' || key === 'left') {
           selectLastItem(e);
