@@ -48,7 +48,7 @@
 
 .add-component {
   @include button-large();
-  @include button-secondary-2();
+  @include button-tertiary();
 
   margin-bottom: 20px;
 }
