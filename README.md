@@ -2,7 +2,7 @@
 
 [![Coverage Status](https://coveralls.io/repos/nymag/clay-kiln/badge.svg?branch=master&service=github&t=C3xeVy)](https://coveralls.io/github/nymag/clay-kiln?branch=master)
 
-Editing tools for Clay
+🔥 Editing tools for Clay
 
 ![Kiln](http://i.imgur.com/RleQNNh.png?1)
 
