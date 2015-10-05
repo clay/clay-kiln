@@ -4,7 +4,7 @@
 
 Editing tools for Clay
 
-![Kiln](/kiln.png?raw=true)
+![Kiln](http://i.imgur.com/RleQNNh.png)
 
 ## Install
 
