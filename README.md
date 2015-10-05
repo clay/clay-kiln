@@ -55,7 +55,7 @@ To add custom `behaviors`, `decorators`, and `validators`, simply add them to th
 As `behvaiors`, `decorators`, and `validators` are standardized, we may add them into the kiln directly. They live in their respective folders, and can be overridden by clay instances as needed.
 
 * [Behaviors](https://github.com/nymag/clay-kiln/tree/master/behaviors#behaviors) — scripts and styles for standard behaviors
-* [Controllers](hhttps://github.com/nymag/clay-kiln/tree/master/controllers#controllers) — handlers attached to editable components, forms, toolbars, etc
+* [Controllers](https://github.com/nymag/clay-kiln/tree/master/controllers#controllers) — handlers attached to editable components, forms, toolbars, etc
 * [Decorators](https://github.com/nymag/clay-kiln/tree/master/decorators#decorators) — scripts for standard decorators, including `focus` and `placeholder`
 * [Media](https://github.com/nymag/clay-kiln/tree/master/media) — svgs used by standard behaviors, decorators, and other kiln elements
 * [Services](https://github.com/nymag/clay-kiln/tree/master/services) — internal services including editing, database access, and form creation
