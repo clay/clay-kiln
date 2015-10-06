@@ -81,7 +81,7 @@ module.exports = function (karma) {
         browser_version: '35.0',
         os: 'OS X',
         os_version: 'Yosemite'
-      },
+      }
       // safari 8 doesn't support template strings
       // safariMac: {
       //   base: 'BrowserStack',

@@ -76,7 +76,9 @@ function publish(el) {
 function createPage() {
   // todo: allow users to choose their layout / components
 
-  return edit.createPage();
+  return edit.createPage().then(function (url) {
+    location.href = url;
+  });
 }
 
 /**
