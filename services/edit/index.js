@@ -209,7 +209,7 @@ function createPage() {
 
   return cache.getDataOnly(newPageUri).then(function (data) {
     return db.create(prefix + pagesRoute, _.omit(data, '_ref')).then(function (res) {
-      location.href = getNewPageUrl(res[refProp]);
+      return getNewPageUrl(res[refProp]);
     });
   });
 }

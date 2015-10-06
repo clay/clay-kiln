@@ -126,6 +126,17 @@ describe('edit service', function () {
         expect(result).to.deep.equal(data);
       });
     });
+
+    it('publishes page without root ref', function () {
+      var data = expectPublish('/thing.html', '/pages/thing');
+
+      cache.getDataOnly.returns(resolveReadOnly({_ref: 'whatever'}));
+      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly({}));
+
+      return fn().then(function (result) {
+        expect(result).to.deep.equal(data);
+      });
+    });
   });
 
   describe('removeFromParentList', function () {
@@ -179,6 +190,45 @@ describe('edit service', function () {
 
       return fn({ref: 'newRef', prevRef: 'b', parentField: 'a', parentRef: 'd'}).then(function (el) {
         expect(el instanceof Element).to.equal(true);
+      });
+    });
+  });
+
+  describe('createPage', function () {
+    var fn = lib[this.title];
+
+    it('creates a page from /pages/new', function () {
+      var data = {};
+
+      cache.getDataOnly.returns(resolveReadOnly(data));
+      db.create.returns(Promise.resolve({}));
+
+      return fn().then(function () {
+        sinon.assert.calledWith(cache.getDataOnly, prefix + '/pages/new');
+        sinon.assert.calledWith(db.create, sinon.match.string, data);
+      });
+    });
+
+    it('removes reference from cached data', function () {
+      var data = {_ref: 'something'},
+        expectedData = {};
+
+      cache.getDataOnly.returns(resolveReadOnly(data));
+      db.create.returns(Promise.resolve({}));
+
+      return fn().then(function () {
+        sinon.assert.calledWith(db.create, sinon.match.string, expectedData);
+      });
+    });
+
+    it('returns new url', function () {
+      var data = {};
+
+      cache.getDataOnly.returns(resolveReadOnly(data));
+      db.create.returns(Promise.resolve(data));
+
+      return fn().then(function (url) {
+        expect(url).to.equal('place.com/b');
       });
     });
   });
