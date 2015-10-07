@@ -4,6 +4,15 @@
   display: none;
 }
 
+.simple-list-item.has-badge {
+  margin-top: 0;
+}
+
+// remember to add same margin to the simple-list-add
+.simple-list-item.has-badge + .simple-list-add {
+  margin-top: 0;
+}
+
 .simple-list-item.primary {
   border: 2px solid $green;
 
