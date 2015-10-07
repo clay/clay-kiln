@@ -39,14 +39,38 @@
   transition: margin 250ms ease-out, transform 250ms ease-out;
 }
 
+@keyframes openPanel {
+  0% {
+    height: 1px;
+    opacity: 0;
+  }
+
+  50% {
+    height: auto;
+    opacity: 0;
+  }
+
+  100% {
+    height: auto;
+    opacity: 1;
+  }
+}
+
 .add-components-pane {
-  display: none;
   float: right;
+  height: 1px;
+  opacity: 0;
+  transition: opacity 200ms ease-out;
   width: calc(100% - 60px);
 }
 
 .add-components-pane.open {
-  display: block;
+  animation-delay: 50ms;
+  animation-direction: normal;
+  animation-duration: 250ms;
+  animation-fill-mode: forwards;
+  animation-name: openPanel;
+  animation-timing-function: ease-out;
 }
 
 .add-component {
