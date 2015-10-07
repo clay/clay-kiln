@@ -24,16 +24,19 @@
   color: $blue;
   display: block;
   font-size: 30px;
-  height: 100%;
+  height: 38px;
+  line-height: 34px;
   text-align: center;
   transform: rotate(0deg);
-  transition: transform 200ms ease-out;
-  width: 100%;
+  transition: margin 200ms ease-out, transform 200ms ease-out;
+  user-select: none;
+  width: 38px;
 }
 
 .open-add-components.open .open-add-components-inner {
+  margin: 1px 0 0 1px;
   transform: rotate(135deg);
-  transition: transform 250ms ease-out;
+  transition: margin 250ms ease-out, transform 250ms ease-out;
 }
 
 .add-components-pane {
@@ -50,5 +53,5 @@
   @include button-large();
   @include button-tertiary();
 
-  margin-bottom: 20px;
+  margin: 0 15px 15px 0;
 }
