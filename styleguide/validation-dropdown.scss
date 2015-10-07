@@ -12,22 +12,22 @@ $white: #ffffff;
   color: $white;
   font-family: Helvetica, Arial, sans-serif;
   position: absolute;
-  max-width: 31rem;
+  max-width: 310px;
   right: 0;
-  top: 6rem;
+  top: 60px;
   box-shadow: 0 0 2px #888888;
 
   header, footer {
-    padding: 1rem;
+    padding: 10px;
   }
 
   header img {
-    margin-right: 1.3rem;
+    margin-right: 13px;
     height: 42px;
   }
 
   .carot {
-    transform: translate(19.8rem,-1rem);
+    transform: translate(198px, -10px);
     position: absolute;
     top: 0;
     left: 0;
@@ -50,10 +50,11 @@ $white: #ffffff;
     &:first-of-type {
       border-top: #{($red-50)} 1px solid;
     }
+
     border-bottom: #{($red-50)} 1px solid;
     list-style-type: none;
     margin: 0;
-    padding: 2rem;
+    padding: 20px;
 
     >.name {
       display: inline;
@@ -66,11 +67,11 @@ $white: #ffffff;
 
     >.description {
       display: inline;
-      margin: 0.2rem;
+      margin: 2px;
     }
 
     ol, ul {
-      margin-left: 1.9rem;
+      margin-left: 19px;
     }
   }
 
@@ -78,12 +79,12 @@ $white: #ffffff;
     @include small-text;
     color: $white;
     list-style-type: disc;
-    margin: .2rem;
+    margin: 2px;
     padding: 0;
 
     >.name {
       display: block;
-      margin: 0.2rem;
+      margin: 2px;
     }
   }
 

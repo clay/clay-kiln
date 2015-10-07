@@ -72,7 +72,7 @@ $bar-parent-bg-color: rgba(139,191,211,.95);
 .component-bar > .label {
   cursor: default;
   flex-basis: auto;
-  max-width: calc(100% - 2.8rem);
+  max-width: calc(100% - 28px);
   min-width: $bar-label-width;
   order: 1;
   padding: 0 .5rem;
@@ -93,7 +93,7 @@ $bar-parent-bg-color: rgba(139,191,211,.95);
 
 // Actions
 .component-bar > span img {
-  margin: .4rem;
+  margin: 4px;
 }
 .component-bar > .settings {
   cursor: pointer;

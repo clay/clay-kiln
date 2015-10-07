@@ -4,7 +4,7 @@
 
 .wysiwyg-input {
   cursor: text;
-  min-height: 1.9rem;
+  min-height: 19px;
   outline: none;
   white-space: normal;
 }
@@ -221,19 +221,19 @@ $wysiwyg-dropshadow: 0 0 6px $shadow-50;
 
 // toolbar buttons
 .medium-editor-toolbar li button {
-  font-size: 1.8rem;
+  font-size: 18px;
 }
 .medium-editor-action-bold b {
-  padding-left: .2rem;
+  padding-left: 2px;
 }
 .medium-editor-action-italic i,
 .medium-editor-action-italic em {
   font-weight: normal !important;
 }
 .medium-editor-action-strikethrough s {
-  padding-left: .1rem;
+  padding-left: 1px;
 }
 .medium-editor-action-anchor img {
-  margin: .7rem;
-  width: 1.8rem;
+  margin: 7px;
+  width: 18px;
 }
