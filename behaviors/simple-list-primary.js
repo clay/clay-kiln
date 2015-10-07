@@ -22,6 +22,9 @@ module.exports = function (result, args) {
 
     // add primary badge
     itemEl.appendChild(dom.create('<div class="badge">' + badge + '</div>'));
+
+    // add class for extra margins we need to display the badge
+    itemEl.classList.add('has-badge');
     return itemEl;
   });
 
