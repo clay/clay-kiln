@@ -43,18 +43,18 @@
 
 @keyframes openPanel {
   0% {
-    height: 1px;
     opacity: 0;
+    transform: translateY(-100%);
   }
 
   50% {
-    height: auto;
     opacity: 0;
+    transform: translateY(0);
   }
 
   100% {
-    height: auto;
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -62,6 +62,7 @@
   float: right;
   height: 1px;
   opacity: 0;
+  transform: translateY(-100%);
   transition: opacity 200ms ease-out;
   width: calc(100% - 60px);
 }
@@ -73,6 +74,7 @@
   animation-fill-mode: forwards;
   animation-name: openPanel;
   animation-timing-function: ease-out;
+  height: auto;
 }
 
 .add-component {
