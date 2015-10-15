@@ -10,7 +10,13 @@
       <span class="publish-status"></span>
       <a class="publish-link" target="_blank">See Article</a>
     </div>
-    <section class="kiln-toolbar" data-uri="{{ _ref or _self }}" data-site-host="{{ site.host }}" data-site-path="{{ site.path}}" data-site-assetpath="{{ site.assetPath }}">
+    <section class="kiln-toolbar"
+      {# the editor needs some stuff from the backend #}
+      data-uri="{{ _ref or _self }}"
+      data-site-host="{{ site.host }}"
+      data-site-path="{{ site.path}}"
+      data-site-assetpath="{{ site.assetPath }}"
+      data-components="{{ _components }}">
       <div class="kiln-toolbar-inner">
         <button class="close">
           <span class="mobile-button-text">╳</span>
@@ -31,6 +37,7 @@
           <span class="non-mobile-button-text">Publish Now</span>
         </button>
       </div>
+      <div>
     </section>
   </div>
 
