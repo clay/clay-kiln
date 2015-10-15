@@ -73,7 +73,8 @@ function getButtons(pane, field, possibleComponents, exclude) {
 function createPane(args) {
   var include = args.include,
     exclude = args.exclude,
-    allComponents = ['paragraph'], // todo: get list of all components
+    toolbar = dom.find('.kiln-toolbar'),
+    allComponents = toolbar.getAttribute('data-components').split(','),
     tpl =
       `<section class="component-list-bottom">
         <div class="open-add-components">
