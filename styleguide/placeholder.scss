@@ -14,4 +14,8 @@
 .kiln-placeholder .placeholder-label {
   @include normal-text();
   @include overlay-copy();
+
+  text-decoration: none;
+  font-weight: normal;
+  font-style: normal;
 }
