@@ -164,13 +164,12 @@ $bar-parent-bg-color: rgba(139, 191, 211, .9);
 }
 
 .component-bar > .menu-toggle.open {
-  border-bottom: $bar-gap solid $bar-bg-color;
+  border-bottom: none;
 }
 
 .component-bar > .menu {
   @include component-toolbar-layer();
 
-  background: $bar-bg-color;
   display: none;
   height: auto;
   margin: 0;
