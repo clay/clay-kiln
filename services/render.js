@@ -41,6 +41,10 @@ function addComponentSelector(el) {
   var ref = el.getAttribute(references.referenceAttribute);
 
   return edit.getData(ref)
+    .catch(function (e) {
+      console.log(ref)
+      console.error(e.message, e.stack);
+    })
     .then(function (data) {
       var options = {
         ref: ref,
