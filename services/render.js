@@ -44,7 +44,7 @@ function addComponentSelector(el) {
     .catch(function (e) {
       // e.g. tried to get the schema of a component, and it 404'd
       if (e.message === '404') {
-        return {}; // data is empty
+        return null; // data is empty
       } else {
         return e; // something weird happened. don't eat the error
       }
@@ -53,7 +53,7 @@ function addComponentSelector(el) {
       var options = {
         ref: ref,
         path: el.getAttribute(references.editableAttribute),
-        data: data
+        data: data || {}
       };
 
       select.handler(el, options);
