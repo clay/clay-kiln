@@ -145,7 +145,11 @@ function addSettingsOption(componentBar, data, ref) {
     hasSettings = groups.getSettingsFields(data).length > 0;
 
   if (hasSettings) {
-    el = dom.create(`<li class="settings"><img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-settings.svg" alt="Settings"></li>`);
+    el = dom.create(`<li class="settings label">
+      <img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-settings.svg" alt="Settings">
+      <span class="menu-item">Settings</span>
+    </li>`);
+
     el.addEventListener('click', function (e) {
       e.stopPropagation();
       // Open the settings overlay.
@@ -177,7 +181,7 @@ function scrollToComponent(el) {
 function addParentLabel(componentBar, parentEl) {
   var ref = parentEl.getAttribute(references.referenceAttribute),
     parentName = references.getComponentNameFromReference(ref),
-    el = dom.create(`<span class="parent label" title="Parent: ${label(parentName)}">${label(parentName)}</span>`);
+    el = dom.create(`<span class="label parent" title="Parent: ${label(parentName)}">${label(parentName)}</span>`);
 
   el.addEventListener('click', function (e) {
     e.stopPropagation();
@@ -270,7 +274,7 @@ function handler(componentEl, options) {
   var name = references.getComponentNameFromReference(options.ref),
     tpl = `
     <aside class="component-bar">
-      <span class="label" title="${label(name)}">${label(name)}</span>
+      <span class="label selected-label" title="${label(name)}">${label(name)}</span>
     </aside>
     `,
     componentBar = dom.create(tpl);
