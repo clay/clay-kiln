@@ -42,8 +42,12 @@ function addComponentSelector(el) {
 
   return edit.getData(ref)
     .catch(function (e) {
-      console.log(ref)
-      console.error(e.message, e.stack);
+      // e.g. tried to get the schema of a component, and it 404'd
+      if (e.message === '404') {
+        return {}; // data is empty
+      } else {
+        return e; // something weird happened. don't eat the error
+      }
     })
     .then(function (data) {
       var options = {
@@ -54,23 +58,6 @@ function addComponentSelector(el) {
 
       select.handler(el, options);
       return el;
-    }).catch(function (e) {
-      var options;
-
-      // tried to get the schema of a component, and it 404'd
-      if (e.message === '404') {
-        options = {
-          ref: ref,
-          path: el.getAttribute(references.editableAttribute),
-          data: {}
-        };
-
-        select.handler(el, options);
-        return el;
-      } else {
-        // something weird happened.
-        return e;
-      }
     });
 }
 

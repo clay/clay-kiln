@@ -145,14 +145,16 @@ function addSettingsOption(componentBar, data, ref) {
     hasSettings = groups.getSettingsFields(data).length > 0;
 
   if (hasSettings) {
-    el = dom.create(`<span class="settings"><img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-settings.svg" alt="Settings"></span>`);
+    el = dom.create(`<li class="settings"><img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-settings.svg" alt="Settings"></li>`);
     el.addEventListener('click', function (e) {
       e.stopPropagation();
       // Open the settings overlay.
       focus.unfocus();
       forms.open(ref, document.body);
     });
-    componentBar.appendChild(el);
+
+    addMenu(componentBar);
+    componentBar.querySelector('.menu').appendChild(el);
   }
 }
 
@@ -241,7 +243,7 @@ function addParentOptions(componentBar, el, ref) {
 }
 
 /**
- * add menu if component has certain options
+ * idempotentally add menu
  * @param {Element} componentBar
  */
 function addMenu(componentBar) {
@@ -250,7 +252,9 @@ function addMenu(componentBar) {
     <ul class="menu"></ul>
   `);
 
-  componentBar.appendChild(el);
+  if (!componentBar.querySelector('.menu-toggle')) {
+    componentBar.appendChild(el);
+  }
 }
 
 /**
@@ -272,7 +276,7 @@ function handler(componentEl, options) {
     componentBar = dom.create(tpl);
 
   // Add options to the component bar.
-  // addSettingsOption(componentBar, options.data, options.ref);
+  addSettingsOption(componentBar, options.data, options.ref);
   // addParentOptions(componentBar, componentEl, options.ref);
 
   // add events to the component itself

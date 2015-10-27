@@ -8,7 +8,7 @@
         <g id="ComponentSelectors" sketch:type="MSArtboardGroup">
             <g id="Arrow_Parent" sketch:type="MSLayerGroup">
                 <path d="M6.02769231,3 C6.02769231,3 5.94217189,3.85784374 6.07170765,5.07102403 C6.38443995,7.99995017 5,13 13,13" id="Path-704" stroke="#000000" stroke-width="3" sketch:type="MSShapeGroup"></path>
-                <polygon id="Triangle-8" fill="#000000" sketch:type="MSShapeGroup" points="6 0 12 6 0 6 "></polygon>
+                <polygon id="Triangle-8" fill="#fff" sketch:type="MSShapeGroup" points="6 0 12 6 0 6 "></polygon>
             </g>
         </g>
     </g>
