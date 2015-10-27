@@ -92,8 +92,14 @@ $bar-parent-bg-color: rgba(139, 191, 211, .9);
 }
 
 .component-bar > .selected-label {
+  align-items: center;
   border-bottom: $bar-gap solid $bar-gap-color;
+  display: flex;
   flex: 0 1 100%;
+
+  .drag-icon {
+    margin: 0 5px 0 2.5px;
+  }
 }
 
 // Parent's label
@@ -189,10 +195,8 @@ $bar-parent-bg-color: rgba(139, 191, 211, .9);
   }
 }
 
-.component-bar > .drag {
+.component-bar .drag {
   cursor: grab;
-  margin-left: -$bar-height - $bar-gap;
-  order: 0;
 }
 
 // all editable elements should have some kind of ux showing they can be edited

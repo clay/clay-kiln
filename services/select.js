@@ -202,10 +202,12 @@ function addParentLabel(componentBar, parentEl) {
  * @param {Element} componentBar
  */
 function addDragOption(componentBar) {
-  // `drag` class is applied to both `span` and `img` to simplify dragula logic.
-  var el = dom.create(`<span class="drag"><img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-drag.svg" alt="Drag" class="drag"></span>`);
+  // `drag` class is applied to the `img` and and selector elements to simplify dragula logic.
+  var selectedLabel = componentBar.querySelector('.selected-label'),
+    el = dom.create(`<img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-drag.svg" alt="Drag" class="drag drag-icon"></span>`);
 
-  componentBar.appendChild(el);
+  selectedLabel.classList.add('drag');
+  selectedLabel.insertBefore(el, selectedLabel.firstChild);
 }
 
 /**
@@ -247,7 +249,7 @@ function addParentOptions(componentBar, el, ref) {
         var componentListField = getParentComponentListField(el, parentSchema);
 
         if (componentListField) {
-          // addDragOption(componentBar);
+          addDragOption(componentBar);
           addDeleteOption(componentBar, {el: el, ref: ref, parentField: componentListField, parentRef: parentRef});
         }
       });
@@ -282,7 +284,9 @@ function handler(componentEl, options) {
   var name = references.getComponentNameFromReference(options.ref),
     tpl = `
     <aside class="component-bar">
-      <span class="label selected-label" title="${label(name)}">${label(name)}</span>
+      <span class="label selected-label" title="${label(name)}">
+        <span class="selected-label-inner">${label(name)}</span>
+      </span>
     </aside>
     `,
     componentBar = dom.create(tpl);
