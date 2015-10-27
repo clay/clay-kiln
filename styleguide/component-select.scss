@@ -98,13 +98,27 @@ $bar-parent-bg-color: rgba(139, 191, 211, .9);
 
 // Parent's label
 .component-bar > .parent.label {
+  align-items: center;
   background: $bar-parent-bg-color;
+  border-bottom: $bar-gap solid $bar-gap-color;
+  bottom: 100%;
   cursor: pointer;
+  display: flex;
   height: $bar-parent-height;
   left: 0;
   line-height: $bar-parent-height;
+  margin: 0;
+  padding: 5px;
   position: absolute;
-  top: -$bar-gap - $bar-parent-height;
+  width: 100%;
+
+  img {
+    margin: 0 2.5px;
+  }
+
+  span {
+    margin: 0 2.5px;
+  }
 }
 
 // Menu
@@ -158,13 +172,13 @@ $bar-parent-bg-color: rgba(139, 191, 211, .9);
 }
 
 .component-bar .menu li {
+  align-items: center;
   cursor: pointer;
+  display: flex;
   margin: 0;
   padding: 5px;
   position: relative;
   width: auto;
-  display: flex;
-  align-items: center;
 
   img {
     margin: 0 2.5px;

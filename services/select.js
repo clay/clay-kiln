@@ -181,7 +181,10 @@ function scrollToComponent(el) {
 function addParentLabel(componentBar, parentEl) {
   var ref = parentEl.getAttribute(references.referenceAttribute),
     parentName = references.getComponentNameFromReference(ref),
-    el = dom.create(`<span class="label parent" title="Parent: ${label(parentName)}">${label(parentName)}</span>`);
+    el = dom.create(`<span class="label parent" title="Parent: ${label(parentName)}">
+      <img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-parent.svg" alt="Go to Parent">
+      <span>${label(parentName)}</span>
+    </span>`);
 
   el.addEventListener('click', function (e) {
     e.stopPropagation();
@@ -239,8 +242,8 @@ function addParentOptions(componentBar, el, ref) {
         var componentListField = getParentComponentListField(el, parentSchema);
 
         if (componentListField) {
-          addDragOption(componentBar);
-          addDeleteOption(componentBar, {el: el, ref: ref, parentField: componentListField, parentRef: parentRef});
+          // addDragOption(componentBar);
+          // addDeleteOption(componentBar, {el: el, ref: ref, parentField: componentListField, parentRef: parentRef});
         }
       });
   }
@@ -281,7 +284,7 @@ function handler(componentEl, options) {
 
   // Add options to the component bar.
   addSettingsOption(componentBar, options.data, options.ref);
-  // addParentOptions(componentBar, componentEl, options.ref);
+  addParentOptions(componentBar, componentEl, options.ref);
 
   // add events to the component itself
   // when the component is clicked, it should be selected
