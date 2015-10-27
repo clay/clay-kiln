@@ -214,13 +214,18 @@ function addDragOption(componentBar) {
  * @param {object} opts           Options required to remove component from parent list.
  */
 function addDeleteOption(componentBar, opts) {
-  var option = dom.create(`<span class="delete"><img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-delete.svg" alt="Delete"></span>`);
+  var el = dom.create(`<li class="delete label">
+    <img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-delete.svg" alt="Delete">
+    <span class="menu-item">Delete</span>
+  </li>`);
 
-  option.addEventListener('click', function () {
+  el.addEventListener('click', function () {
     return edit.removeFromParentList(opts)
       .then(forms.close);
   });
-  componentBar.appendChild(option);
+
+  addMenu(componentBar);
+  componentBar.querySelector('.menu').appendChild(el);
 }
 
 /**
@@ -243,7 +248,7 @@ function addParentOptions(componentBar, el, ref) {
 
         if (componentListField) {
           // addDragOption(componentBar);
-          // addDeleteOption(componentBar, {el: el, ref: ref, parentField: componentListField, parentRef: parentRef});
+          addDeleteOption(componentBar, {el: el, ref: ref, parentField: componentListField, parentRef: parentRef});
         }
       });
   }

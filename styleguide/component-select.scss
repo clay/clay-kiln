@@ -195,11 +195,6 @@ $bar-parent-bg-color: rgba(139, 191, 211, .9);
   order: 0;
 }
 
-.component-bar > .delete {
-  cursor: pointer;
-  order: 3;
-}
-
 // all editable elements should have some kind of ux showing they can be edited
 [data-editable] {
   cursor: pointer;
