@@ -2,13 +2,13 @@
 @import 'typography';
 @import 'layers';
 // Using px because the gap needs to be px so that it does not disappear, and can only add with same units.
-$bar-height: 26px; // drag, settings, delete, etc are square so width = height.
-$bar-parent-height: 20px;
+$bar-height: 44px; // drag, settings, delete, etc are square so width = height.
+$bar-parent-height: 22px;
 $bar-bd-height: 3px;
 $bar-gap: 1px;
 $bar-label-width: 76px;
-$bar-bg-color: rgba(23,130,169,.95);
-$bar-parent-bg-color: rgba(139,191,211,.95);
+$bar-bg-color: rgba(23, 130, 169, .9);
+$bar-parent-bg-color: rgba(139, 191, 211, .9);
 
 
 // Wrapper around parent and component.
@@ -45,39 +45,52 @@ $bar-parent-bg-color: rgba(139,191,211,.95);
   top: -$bar-height;
   transition: opacity .15s ease-in-out;
   width: 100%;
-}
 
-// Bar items
-.component-bar > span {
-  @include label();
+  @media screen and (min-width: 600px) {
+    height: $bar-height * .8;
+    top: -$bar-height * .8;
+  }
 
-  background: $bar-bg-color;
-  color: #fff;
-  display: block;
-  flex-basis: $bar-height;
-  flex-grow: 0;
-  font-family: Arial, sans-serif;
-  font-size: 11px;
-  height: $bar-height;
-  line-height: $bar-height;
-  margin: 0 $bar-gap 0 0;
-  overflow: hidden;
-  text-align: center;
-  text-overflow: ellipsis;
-  text-transform: capitalize;
-  white-space: nowrap;
+  @media screen and (min-width: 1024px) {
+    height: $bar-height * .6;
+    top: -$bar-height * .6;
+  }
 }
 
 // Selected label
 .component-bar > .label {
+  @include label();
+
+  background: $bar-bg-color;
+  color: #fff;
   cursor: default;
-  flex-basis: auto;
-  max-width: calc(100% - 28px);
-  min-width: $bar-label-width;
+  display: block;
+  flex: 0 1 100%;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  height: $bar-height;
+  line-height: $bar-height;
+  margin: 0;
   order: 1;
+  overflow: hidden;
   padding: 0 5px;
   text-align: left;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+  white-space: nowrap;
   width: auto;
+
+  @media screen and (min-width: 600px) {
+    font-size: 13px;
+    height: $bar-height * .8;
+    line-height: $bar-height * .8;
+  }
+
+  @media screen and (min-width: 1024px) {
+    font-size: 11px;
+    height: $bar-height * .6;
+    line-height: $bar-height * .6;
+  }
 }
 
 // Parent's label

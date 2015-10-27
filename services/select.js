@@ -241,6 +241,19 @@ function addParentOptions(componentBar, el, ref) {
 }
 
 /**
+ * add menu if component has certain options
+ * @param {Element} componentBar
+ */
+function addMenu(componentBar) {
+  var el = dom.create(`
+    <span class="menu-toggle"><img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-menu.svg" alt="Component Menu"></span>
+    <ul class="menu"></ul>
+  `);
+
+  componentBar.appendChild(el);
+}
+
+/**
  * add component bar (with click events)
  * @param {Element} componentEl   An element that has a ref.
  * @param {object} options
@@ -254,14 +267,13 @@ function handler(componentEl, options) {
     tpl = `
     <aside class="component-bar">
       <span class="label" title="${label(name)}">${label(name)}</span>
-      <span class="fill"></span>
     </aside>
     `,
     componentBar = dom.create(tpl);
 
   // Add options to the component bar.
-  addSettingsOption(componentBar, options.data, options.ref);
-  addParentOptions(componentBar, componentEl, options.ref);
+  // addSettingsOption(componentBar, options.data, options.ref);
+  // addParentOptions(componentBar, componentEl, options.ref);
 
   // add events to the component itself
   // when the component is clicked, it should be selected
