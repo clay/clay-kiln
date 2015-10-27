@@ -266,6 +266,16 @@ function addMenu(componentBar) {
     <ul class="menu"></ul>
   `);
 
+  el.querySelector('.menu-toggle').addEventListener('click', function (e) {
+    var bar = dom.closest(e.target, '.component-bar'),
+      toggle = bar.querySelector('.menu-toggle'),
+      menu = bar.querySelector('.menu');
+
+    toggle.classList.toggle('open');
+    menu.classList.toggle('open');
+    e.stopPropagation();
+  });
+
   if (!componentBar.querySelector('.menu-toggle')) {
     componentBar.appendChild(el);
   }

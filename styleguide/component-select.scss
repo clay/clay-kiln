@@ -131,6 +131,7 @@ $bar-parent-bg-color: rgba(139, 191, 211, .9);
 .component-bar > .menu-toggle {
   background: $bar-bg-color;
   border-left: $bar-gap solid $bar-gap-color;
+  border-bottom: $bar-gap solid $bar-gap-color;
   cursor: pointer;
   display: block;
   flex: 0 0 $bar-height;
@@ -162,11 +163,15 @@ $bar-parent-bg-color: rgba(139, 191, 211, .9);
   }
 }
 
+.component-bar > .menu-toggle.open {
+  border-bottom: $bar-gap solid $bar-bg-color;
+}
+
 .component-bar > .menu {
   @include component-toolbar-layer();
 
   background: $bar-bg-color;
-  display: block;
+  display: none;
   height: auto;
   margin: 0;
   max-width: 100%;
@@ -175,6 +180,10 @@ $bar-parent-bg-color: rgba(139, 191, 211, .9);
   right: 0;
   top: 100%;
   width: auto;
+}
+
+.component-bar > .menu.open {
+  display: block;
 }
 
 .component-bar .menu li {
