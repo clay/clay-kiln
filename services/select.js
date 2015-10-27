@@ -145,14 +145,20 @@ function addSettingsOption(componentBar, data, ref) {
     hasSettings = groups.getSettingsFields(data).length > 0;
 
   if (hasSettings) {
-    el = dom.create(`<span class="settings"><img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-settings.svg" alt="Settings"></span>`);
+    el = dom.create(`<li class="settings label">
+      <img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-settings.svg" alt="Settings">
+      <span class="menu-item">Settings</span>
+    </li>`);
+
     el.addEventListener('click', function (e) {
       e.stopPropagation();
       // Open the settings overlay.
       focus.unfocus();
       forms.open(ref, document.body);
     });
-    componentBar.appendChild(el);
+
+    addMenu(componentBar);
+    componentBar.querySelector('.menu').appendChild(el);
   }
 }
 
@@ -175,7 +181,10 @@ function scrollToComponent(el) {
 function addParentLabel(componentBar, parentEl) {
   var ref = parentEl.getAttribute(references.referenceAttribute),
     parentName = references.getComponentNameFromReference(ref),
-    el = dom.create(`<span class="parent label" title="Parent: ${label(parentName)}">${label(parentName)}</span>`);
+    el = dom.create(`<span class="label parent" title="Parent: ${label(parentName)}">
+      <img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-parent.svg" alt="Go to Parent">
+      <span>${label(parentName)}</span>
+    </span>`);
 
   el.addEventListener('click', function (e) {
     e.stopPropagation();
@@ -193,10 +202,13 @@ function addParentLabel(componentBar, parentEl) {
  * @param {Element} componentBar
  */
 function addDragOption(componentBar) {
-  // `drag` class is applied to both `span` and `img` to simplify dragula logic.
-  var el = dom.create(`<span class="drag"><img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-drag.svg" alt="Drag" class="drag"></span>`);
+  // `drag` class is applied to the `img` and and selector elements to simplify dragula logic.
+  var selectedLabel = componentBar.querySelector('.selected-label'),
+    el = dom.create(`<img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-drag.svg" alt="Drag" class="drag drag-icon"></span>`);
 
-  componentBar.appendChild(el);
+  selectedLabel.querySelector('.selected-label-inner').classList.add('drag');
+  selectedLabel.classList.add('drag');
+  selectedLabel.insertBefore(el, selectedLabel.firstChild);
 }
 
 /**
@@ -205,13 +217,18 @@ function addDragOption(componentBar) {
  * @param {object} opts           Options required to remove component from parent list.
  */
 function addDeleteOption(componentBar, opts) {
-  var option = dom.create(`<span class="delete"><img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-delete.svg" alt="Delete"></span>`);
+  var el = dom.create(`<li class="delete label">
+    <img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-delete.svg" alt="Delete">
+    <span class="menu-item">Delete</span>
+  </li>`);
 
-  option.addEventListener('click', function () {
+  el.addEventListener('click', function () {
     return edit.removeFromParentList(opts)
       .then(forms.close);
   });
-  componentBar.appendChild(option);
+
+  addMenu(componentBar);
+  componentBar.querySelector('.menu').appendChild(el);
 }
 
 /**
@@ -241,6 +258,31 @@ function addParentOptions(componentBar, el, ref) {
 }
 
 /**
+ * idempotentally add menu
+ * @param {Element} componentBar
+ */
+function addMenu(componentBar) {
+  var el = dom.create(`
+    <span class="menu-toggle"><img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-menu.svg" alt="Component Menu"></span>
+    <ul class="menu"></ul>
+  `);
+
+  el.querySelector('.menu-toggle').addEventListener('click', function (e) {
+    var bar = dom.closest(e.target, '.component-bar'),
+      toggle = bar.querySelector('.menu-toggle'),
+      menu = bar.querySelector('.menu');
+
+    toggle.classList.toggle('open');
+    menu.classList.toggle('open');
+    e.stopPropagation();
+  });
+
+  if (!componentBar.querySelector('.menu-toggle')) {
+    componentBar.appendChild(el);
+  }
+}
+
+/**
  * add component bar (with click events)
  * @param {Element} componentEl   An element that has a ref.
  * @param {object} options
@@ -253,8 +295,9 @@ function handler(componentEl, options) {
   var name = references.getComponentNameFromReference(options.ref),
     tpl = `
     <aside class="component-bar">
-      <span class="label" title="${label(name)}">${label(name)}</span>
-      <span class="fill"></span>
+      <span class="label selected-label" title="${label(name)}">
+        <span class="selected-label-inner">${label(name)}</span>
+      </span>
     </aside>
     `,
     componentBar = dom.create(tpl);

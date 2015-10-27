@@ -41,32 +41,23 @@ function addComponentSelector(el) {
   var ref = el.getAttribute(references.referenceAttribute);
 
   return edit.getData(ref)
+    .catch(function (e) {
+      // e.g. tried to get the schema of a component, and it 404'd
+      if (e.message === '404') {
+        return null; // data is empty
+      } else {
+        return e; // something weird happened. don't eat the error
+      }
+    })
     .then(function (data) {
       var options = {
         ref: ref,
         path: el.getAttribute(references.editableAttribute),
-        data: data
+        data: data || {}
       };
 
       select.handler(el, options);
       return el;
-    }).catch(function (e) {
-      var options;
-
-      // tried to get the schema of a component, and it 404'd
-      if (e.message === '404') {
-        options = {
-          ref: ref,
-          path: el.getAttribute(references.editableAttribute),
-          data: {}
-        };
-
-        select.handler(el, options);
-        return el;
-      } else {
-        // something weird happened.
-        return e;
-      }
     });
 }
 
