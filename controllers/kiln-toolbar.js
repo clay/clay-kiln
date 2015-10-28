@@ -37,16 +37,13 @@ function publish(el) {
       // this makes it re-appear if you immediately republish
       publishPane.classList.remove('success', 'error', 'show');
 
-      return edit.publishPage().then(function (res) {
-        return edit.getDataOnly(res.main).then(function (data) {
-          var url = site.addProtocol(site.addPort(site.get('prefix') + '/' + data.canonicalUrl)),
-            date = moment();
+      return edit.publishPage().then(function (url) {
+        var date = moment();
 
-          // set the status message and link, then show the pane
-          publishStatus.innerHTML = 'Published on ' + date.format('dddd, MMMM Do') + ' at ' + date.format('h:mm a');
-          publishLink.setAttribute('href', url);
-          publishPane.classList.add('success', 'show');
-        });
+        // set the status message and link, then show the pane
+        publishStatus.innerHTML = 'Published on ' + date.format('dddd, MMMM Do') + ' at ' + date.format('h:mm a');
+        publishLink.setAttribute('href', url);
+        publishPane.classList.add('success', 'show');
       }).catch(function (error) {
         // set the status message and link, then show the pane
         publishStatus.innerHTML = 'Publishing failed. Something on the server went wrong.';

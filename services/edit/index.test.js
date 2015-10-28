@@ -86,9 +86,10 @@ describe('edit service', function () {
 
     function expectPublish(uri, pageRef) {
       var data = prefix + pageRef,
-        putData = {};
+        canonicalUrl = prefix + uri,
+        putData = {canonicalUrl: canonicalUrl};
 
-      dom.uri.returns(prefix + uri);
+      dom.uri.returns(canonicalUrl);
       db.getText.returns(Promise.resolve(data));
 
       return putData;
@@ -98,7 +99,7 @@ describe('edit service', function () {
       var data = expectPublish('/thing@thing.html', '/pages/thing@otherthing');
 
       cache.getDataOnly.returns(resolveReadOnly({}));
-      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly({}));
+      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly(data));
 
       return fn().then(function (result) {
         expect(result).to.deep.equal(data);
@@ -109,7 +110,7 @@ describe('edit service', function () {
       var data = expectPublish('/thing.html', '/pages/thing');
 
       cache.getDataOnly.returns(resolveReadOnly({}));
-      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly({}));
+      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly(data));
 
       return fn().then(function (result) {
         expect(result).to.deep.equal(data);
@@ -120,7 +121,7 @@ describe('edit service', function () {
       var data = expectPublish('/pages/thing.html', '/pages/thing');
 
       cache.getDataOnly.returns(resolveReadOnly({}));
-      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly({}));
+      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly(data));
 
       return fn().then(function (result) {
         expect(result).to.deep.equal(data);
@@ -131,9 +132,25 @@ describe('edit service', function () {
       var data = expectPublish('/thing.html', '/pages/thing');
 
       cache.getDataOnly.returns(resolveReadOnly({_ref: 'whatever'}));
-      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly({}));
+      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly(data));
 
       return fn().then(function (result) {
+        expect(result).to.deep.equal(data);
+      });
+    });
+
+    it('publishes page and adds uri', function () {
+      var data = expectPublish('/thing.html', '/pages/thing'),
+        uri = 'place.com/pages/thing';
+
+      cache.getDataOnly.returns(resolveReadOnly({}));
+      db.isUrl.withArgs(data.canonicalUrl).returns(true);
+      db.isUri.withArgs(uri).returns(true);
+      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly(data));
+      db.save.withArgs(prefix + '/uris/' + btoa(data.canonicalUrl), uri).returns(resolveReadOnly({}));
+
+      return fn().then(function (result) {
+        sinon.assert.calledWith(db.save, prefix + '/uris/' + btoa(data.canonicalUrl), uri);
         expect(result).to.deep.equal(data);
       });
     });
@@ -252,6 +269,41 @@ describe('edit service', function () {
 
       return fn('fakeName').then(function () {
         expect(cache.createThrough.calledWith(prefix + '/components/fakeName/instances', bootstrapJson)).to.equal(true);
+      });
+    });
+  });
+
+  describe('createUri', function () {
+    var fn = lib[this.title];
+
+    it('adds to db', function () {
+      var url = 'http://domain:3333/path',
+        uri = 'domain/path/some-id',
+        expectedTarget = 'place.com/uris/aHR0cDovL2RvbWFpbjozMzMzL3BhdGg=',
+        expectedBody = 'domain/path/some-id';
+
+      db.isUrl.returns(true);
+      db.isUri.returns(true);
+      db.save.returns(resolveReadOnly({}));
+
+      return fn(url, uri).then(function () {
+        sinon.assert.calledWithExactly(db.save, expectedTarget, expectedBody);
+      });
+    });
+  });
+
+  describe('removeUri', function () {
+    var fn = lib[this.title];
+
+    it('removes from db', function () {
+      var url = 'http://domain:3333/path',
+        expectedTarget = 'place.com/uris/aHR0cDovL2RvbWFpbjozMzMzL3BhdGg=';
+
+      db.isUrl.returns(true);
+      db.remove.returns(resolveReadOnly({}));
+
+      return fn(url).then(function () {
+        sinon.assert.calledWithExactly(db.remove, expectedTarget);
       });
     });
   });
