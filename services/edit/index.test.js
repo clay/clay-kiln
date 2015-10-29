@@ -102,7 +102,7 @@ describe('edit service', function () {
       db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly(data));
 
       return fn().then(function (result) {
-        expect(result).to.deep.equal(data);
+        expect(result).to.deep.equal('place.com/pages/thing.html');
       });
     });
 
@@ -113,7 +113,7 @@ describe('edit service', function () {
       db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly(data));
 
       return fn().then(function (result) {
-        expect(result).to.deep.equal(data);
+        expect(result).to.deep.equal('place.com/pages/thing.html');
       });
     });
 
@@ -124,7 +124,7 @@ describe('edit service', function () {
       db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly(data));
 
       return fn().then(function (result) {
-        expect(result).to.deep.equal(data);
+        expect(result).to.deep.equal('place.com/pages/thing.html');
       });
     });
 
@@ -135,23 +135,7 @@ describe('edit service', function () {
       db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly(data));
 
       return fn().then(function (result) {
-        expect(result).to.deep.equal(data);
-      });
-    });
-
-    it('publishes page and adds uri', function () {
-      var data = expectPublish('/thing.html', '/pages/thing'),
-        uri = 'place.com/pages/thing';
-
-      cache.getDataOnly.returns(resolveReadOnly({}));
-      db.isUrl.withArgs(data.canonicalUrl).returns(true);
-      db.isUri.withArgs(uri).returns(true);
-      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly(data));
-      db.save.withArgs(prefix + '/uris/' + btoa(data.canonicalUrl), uri).returns(resolveReadOnly({}));
-
-      return fn().then(function (result) {
-        sinon.assert.calledWith(db.save, prefix + '/uris/' + btoa(data.canonicalUrl), uri);
-        expect(result).to.deep.equal(data);
+        expect(result).to.deep.equal('place.com/pages/thing.html');
       });
     });
   });
@@ -279,15 +263,15 @@ describe('edit service', function () {
     it('adds to db', function () {
       var url = 'http://domain:3333/path',
         uri = 'domain/path/some-id',
-        expectedTarget = 'place.com/uris/aHR0cDovL2RvbWFpbjozMzMzL3BhdGg=',
+        expectedTarget = 'place.com/uris/ZG9tYWluL3BhdGg=',
         expectedBody = 'domain/path/some-id';
 
       db.isUrl.returns(true);
       db.isUri.returns(true);
-      db.save.returns(resolveReadOnly({}));
+      db.saveText.returns(resolveReadOnly({}));
 
       return fn(url, uri).then(function () {
-        sinon.assert.calledWithExactly(db.save, expectedTarget, expectedBody);
+        sinon.assert.calledWithExactly(db.saveText, expectedTarget, expectedBody);
       });
     });
   });
@@ -300,10 +284,10 @@ describe('edit service', function () {
         expectedTarget = 'place.com/uris/aHR0cDovL2RvbWFpbjozMzMzL3BhdGg=';
 
       db.isUrl.returns(true);
-      db.remove.returns(resolveReadOnly({}));
+      db.removeText.returns(resolveReadOnly({}));
 
       return fn(url).then(function () {
-        sinon.assert.calledWithExactly(db.remove, expectedTarget);
+        sinon.assert.calledWithExactly(db.removeText, expectedTarget);
       });
     });
   });

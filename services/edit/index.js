@@ -230,6 +230,11 @@ function removeUri(url) {
   return db.removeText(targetUri);
 }
 
+/**
+ * Get the component from the page that is the "canonical component" in charge of providing a canonicalUrl for the page.
+ *
+ * @returns {string}
+ */
 function getFirstCanonicalComponentReference() {
   var cacheMap = _.get(cache, 'getSchema.cache.__data__');
 
@@ -257,7 +262,6 @@ function publishPage() {
     }).then(function () {
       var ref = getFirstCanonicalComponentReference();
 
-
       if (ref) {
         // get published version of component, and expose the page
         return cache.getDataOnly(ref + '@published').then(function (data) {
@@ -266,6 +270,9 @@ function publishPage() {
           }
         });
       }
+
+      // point to page reference as html
+      return pageUri + '.html';
     });
   });
 }
