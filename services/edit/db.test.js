@@ -245,4 +245,40 @@ describe('db service', function () {
       });
     });
   });
+
+  describe('isUri', function () {
+    var fn = lib[this.title];
+
+    it('returns true when uri', function () {
+      expect(fn('domain/path')).to.equal(true);
+    });
+
+    it('returns false when not a uri', function () {
+      expect(fn('//domain/path')).to.equal(false);
+    });
+
+    it('returns false when not a uri', function () {
+      expect(fn('domain:3333/path')).to.equal(false);
+    });
+  });
+
+  describe('isUrl', function () {
+    var fn = lib[this.title];
+
+    it('returns true when url has protocol and domain and path', function () {
+      expect(fn('http://domain.com/some-path/')).to.equal(true);
+    });
+
+    it('returns true when url has protocol and domain', function () {
+      expect(fn('http://domain.com/')).to.equal(true);
+    });
+
+    it('returns false when not a url', function () {
+      expect(fn('')).to.equal(false);
+    });
+
+    it('returns false when not a url', function () {
+      expect(fn('domain/path')).to.equal(false);
+    });
+  });
 });

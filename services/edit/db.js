@@ -1,4 +1,5 @@
 var _ = require('lodash'),
+  urlParse = require('url'),
   dom = require('./../dom'),
   references = require('../references'),
   site = require('./../site'),
@@ -23,6 +24,17 @@ function isUri(str) {
 }
 
 /**
+ * True if str is a url
+ * @param {string} str
+ * @returns {boolean}
+ */
+function isUrl(str) {
+  var parts = urlParse.parse(str);
+
+  return !!parts.hostname && !!parts.protocol && !!parts.path;
+}
+
+/**
  * Block non-uris
  *
  * @param {*} uri
@@ -43,6 +55,10 @@ function createUrl(uri) {
   return site.addProtocol(site.addPort(uri));
 }
 
+/**
+ * @param {object} obj
+ * @returns {object}
+ */
 function addJsonHeader(obj) {
   _.assign(obj, {
     headers: {
@@ -53,6 +69,24 @@ function addJsonHeader(obj) {
   return obj;
 }
 
+/**
+ * @param {object} obj
+ * @returns {object}
+ */
+function addTextHeader(obj) {
+  _.assign(obj, {
+    headers: {
+      'Content-Type': 'text/plain; charset=UTF-8'
+    }
+  });
+
+  return obj;
+}
+
+/**
+ * @param {object} options
+ * @returns {Promise}
+ */
 function send(options) {
   return new Promise(function (resolve, reject) {
     var request = new XMLHttpRequest();
@@ -220,6 +254,21 @@ function save(uri, data) {
 }
 
 /**
+ * @param {string} uri
+ * @param {object} data
+ * @returns {Promise}
+ */
+function saveText(uri, data) {
+  assertUri(uri);
+
+  return send(addTextHeader({
+    method: 'PUT',
+    url: uri,
+    data: data
+  })).then(expectTextResult);
+}
+
+/**
  * Create a new object.
  *
  * @param {string} uri
@@ -249,10 +298,27 @@ function remove(uri) {
   })).then(expectJSONResult);
 }
 
+/**
+ * @param {string} uri
+ * @returns {Promise}
+ */
+function removeText(uri) {
+  assertUri(uri);
+
+  return send(addTextHeader({
+    method: 'DELETE',
+    url: uri
+  })).then(expectTextResult);
+}
+
 module.exports.getSchema = getSchema;
 module.exports.get = getObject;
 module.exports.getText = getText;
 module.exports.getHTML = getHTML;
 module.exports.save = save;
+module.exports.saveText = saveText;
 module.exports.create = create;
 module.exports.remove = remove;
+module.exports.removeText = removeText;
+module.exports.isUri = isUri;
+module.exports.isUrl = isUrl;
