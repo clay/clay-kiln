@@ -46,7 +46,7 @@
     "rivets": "^0.8.1",
     "selection-range": "^1.0.1",
     "striptags": "^2.0.2",
-    "vinyl-map": "git://github.com/yoshokatana/vinyl-map.git#async"
+    "vinyl-map2": "^1.2.1"
   },
   "devDependencies": {
     "browserify-istanbul": "^0.2.1",

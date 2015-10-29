@@ -1,5 +1,5 @@
 var gulp = require('gulp'),
-  map = require('vinyl-map'),
+  map = require('vinyl-map2'),
   browserify = require('browserify'),
   concat = require('gulp-concat'),
   sass = require('gulp-sass'),

@@ -78,7 +78,7 @@ module.exports = function (result, args) {
     span = dom.create(tpl);
 
   result.binders.remaining = function (el, value) {
-    var length = cleanValue(value).length,
+    var length = value ? cleanValue(value).length : 0,
       max = parseInt(el.getAttribute('data-maxlength')),
       remaining = max - length;
 

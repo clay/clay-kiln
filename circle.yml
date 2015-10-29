@@ -2,7 +2,7 @@ machine:
   timezone:
     America/New_York
   node:
-    version: iojs-v1.8.1
+    version: 4.0.0
 dependencies:
   pre:
     - npm install -g karma-cli
