@@ -3,7 +3,9 @@ var dirname = __dirname.split('/').pop(),
   fixture = require('../test/fixtures/behavior')({}),
   lib = require('./soft-maxlength.js'), // static-analysis means this must be string, not `('./' + filename)`
   dom = require('../services/dom'),
-  args = { value: '20' };
+  args = { value: '20' },
+  inputLongClass = 'input-too-long',
+  spanLongClass = 'too-long';
 
 describe(dirname, function () {
   describe(filename, function () {
@@ -24,9 +26,7 @@ describe(dirname, function () {
     });
 
     it('has binder that toggles too-long classes', function () {
-      var result, input, span, binder,
-        inputLongClass = 'input-too-long',
-        spanLongClass = 'too-long';
+      var result, input, span, binder;
 
       fixture.el = dom.create(`<div><input></div>`);
       result = lib(fixture, args);
@@ -46,5 +46,18 @@ describe(dirname, function () {
       expect(span.classList.contains(spanLongClass)).to.be.false;
     });
 
+    it('has binder that allows for undefined field', function () {
+      var result, input, span, binder;
+
+      fixture.el = dom.create(`<div><input></div>`);
+      result = lib(fixture, args);
+      input = result.el.querySelector('input');
+      span = result.el.querySelector('span.soft-maxlength');
+      binder = result.binders.remaining;
+
+      binder(span, undefined);
+      expect(input.classList.contains(inputLongClass)).to.be.false;
+      expect(span.classList.contains(spanLongClass)).to.be.false;
+    });
   });
 });
