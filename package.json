@@ -40,7 +40,7 @@
     "keycode": "^2.1.0",
     "lodash": "^3.8.0",
     "lodash-deep": "^1.6.0",
-    "medium-editor": "^5.5.0",
+    "medium-editor": "^5.10.0",
     "moment": "^2.10.6",
     "responsive-filenames": "^1.2.0",
     "rivets": "^0.8.1",
