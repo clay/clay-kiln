@@ -82,6 +82,7 @@ body {
 // Status of saving controlled by class on body.
 .kiln-toolbar-inner > .status:before {
   @include normal-text();
+  @include overlay-copy();
 
   color: $blue-75;
   content: 'Saved.';

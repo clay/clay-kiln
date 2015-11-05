@@ -10,7 +10,10 @@
   margin: 10px 0;
 }
 
-.editor-radio-item input[type='radio'], .editor-radio-item label {
+.editor-radio-item input[type='radio'],
+.editor-radio-item label {
   @include normal-text();
+  @include overlay-copy();
+
   vertical-align: baseline;
 }

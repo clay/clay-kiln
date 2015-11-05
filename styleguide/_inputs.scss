@@ -3,6 +3,7 @@
 
 @mixin input {
   @include normal-text();
+  @include overlay-copy();
 
   background-color: #fff;
   border: 1px solid $black-25;
@@ -15,7 +16,7 @@
   outline: none;
   padding: 10px;
   position: relative;
-  white-space: pre; // prevents &nbsp;, which messes with character counts
+  white-space: normal;
   width: 100%;
 
   &.error,

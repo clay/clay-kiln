@@ -26,10 +26,11 @@
 }
 
 .simple-list-add {
+  @include overlay-copy();
+
   border: 0;
   display: inline-block;
   flex: 1 0 135px;
-  font-family: Arial, sans-serif;
   font-size: 16px;
   height: 30px;
   min-width: 100px;

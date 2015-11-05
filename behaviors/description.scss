@@ -3,6 +3,7 @@
 
 .label-description {
   @include normal-text();
+  @include overlay-copy();
 
   color: $black-50;
   font-size: 14px;
