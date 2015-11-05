@@ -1,6 +1,7 @@
 @import 'colors';
 
 // general typography
+$system-fonts: -apple-system, '.SFNSText-Regular', 'San Francisco', 'Roboto', 'Segoe UI', 'Helvetica Neue', 'Lucida Grande', sans-serif;
 
 @mixin normal-text {
   color: $black;
@@ -18,28 +19,26 @@
 }
 
 @mixin overlay-copy {
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: $system-fonts;
+  font-style: normal;
+  font-weight: 400;
+  text-decoration: none;
 }
 
 @mixin section-header {
   color: #fff;
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: $system-fonts;
   font-size: 32px;
   font-weight: 700;
   line-height: 28px;
 }
 
-@mixin subsection-header {
-  @include normal-text();
-
-  color: $blue;
-}
-
 @mixin label {
   @include normal-text();
 
-  font-weight: 700;
   display: inline-block;
+  font-family: $system-fonts;
+  font-weight: 700;
   margin-bottom: 5px;
 }
 
@@ -48,6 +47,7 @@
   @include normal-text();
 
   color: $blue;
+  font-family: $system-fonts;
   text-decoration: none;
 
   &:hover,

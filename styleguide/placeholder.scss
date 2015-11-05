@@ -15,12 +15,9 @@
 
 .kiln-placeholder,
 .kiln-placeholder .placeholder-label {
+  @include small-text();
+  @include overlay-copy();
+
   color: $black-50;
-  font-family: -apple-system, '.SFNSText-Regular', 'San Francisco', 'Roboto', 'Segoe UI', 'Helvetica Neue', 'Lucida Grande', sans-serif;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 16px;
-  text-decoration: none;
   text-transform: uppercase;
 }

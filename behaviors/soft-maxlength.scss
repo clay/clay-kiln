@@ -3,6 +3,7 @@
 
 .soft-maxlength {
   @include normal-text();
+  @include overlay-copy();
 
   color: $black-50;
   float: right;

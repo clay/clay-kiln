@@ -1,11 +1,13 @@
 @import 'colors';
+@import 'typography';
 
 @mixin button-large {
+  @include overlay-copy();
+
   border-radius: 4px;
   box-shadow: none;
   cursor: pointer;
   float: left;
-  font-family: Helvetica, Arial, sans-serif;
   font-size: 20px;
   height: 40px;
   line-height: 24px;
@@ -17,11 +19,12 @@
 }
 
 @mixin button-small {
+  @include overlay-copy();
+
   border-radius: 4px;
   box-shadow: none;
   cursor: pointer;
   float: left;
-  font-family: Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 19px;
   margin: 0;
