@@ -1,7 +1,9 @@
 @import 'colors';
 
 // general typography
-$system-fonts: -apple-system, '.SFNSText-Regular', 'San Francisco', 'Roboto', 'Segoe UI', 'Helvetica Neue', 'Lucida Grande', sans-serif;
+// todo: possibly switch to system styles if they work for us
+//$system-fonts: -apple-system, '.SFNSText-Regular', 'San Francisco', 'Roboto', 'Segoe UI', 'Helvetica Neue', 'Lucida Grande', sans-serif;
+$system-fonts: Helvetica, Arial, sans-serif;
 
 @mixin normal-text {
   color: $black;
