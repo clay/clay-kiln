@@ -15,9 +15,9 @@
 
 .segmented-button label {
   background-color: #fff;
-  border-left: 1px solid $blue-75;
-  border-top: 1px solid $blue-75;
-  border-bottom: 1px solid $blue-75;
+  border-left: 1px solid $black-75;
+  border-top: 1px solid $black-75;
+  border-bottom: 1px solid $black-75;
   cursor: pointer;
   display: block;
   float: left;
@@ -26,7 +26,7 @@
 }
 
 .segmented-button label:last-of-type {
-  border-right: 1px solid $blue-75;
+  border-right: 1px solid $black-75;
 }
 
 // rounded borders on first and last button
@@ -45,7 +45,7 @@ $btnradius: 4px;
 // label (when button is selected)
 
 .segmented-button input:checked + label {
-  background-color: $blue-25;
+  background-color: $black-25;
 }
 
 // icons
