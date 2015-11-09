@@ -7,9 +7,9 @@ $bar-parent-height: 22px;
 $bar-bd-height: 3px;
 $bar-gap: 2px;
 $bar-label-width: 76px;
-$bar-gap-color: rgba(255, 255, 255, .95);
-$bar-bg-color: rgba(23, 130, 169, .9);
-$bar-parent-bg-color: rgba(139, 191, 211, .9);
+$bar-gap-color: $light-grey;
+$bar-bg-color: $black-50;
+$bar-parent-bg-color: $black-25;
 
 
 // Wrapper around parent and component.

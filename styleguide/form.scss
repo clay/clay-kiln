@@ -38,7 +38,7 @@
 
 .editor .button-container .save {
   @include button-large();
-  @include button-primary-1();
+  @include button-filled($blue);
 }
 
 /* Input container contains inputs, textareas, or whatever else, arranged in columns from top to bottom.  Each item

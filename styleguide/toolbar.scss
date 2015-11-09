@@ -13,15 +13,12 @@
 }
 
 .kiln-toolbar {
-  background-color: #fff;
-  border-bottom: 1px solid $black-25;
-  box-shadow: 0 1px 10px -5px $black;
+  background-color: $black;
   height: 50px;
   left: 0;
   position: absolute;
   top: 0;
   width: 100%;
-  z-index: 2;
 
   @media screen and (min-width: 600px) {
     height: 60px;
@@ -59,7 +56,7 @@ body {
 
 .kiln-toolbar-inner > button:not(.publish) {
   @include button-small();
-  @include button-secondary-2();
+  @include button-filled($black-75);
 
   flex: 0 0 auto;
 }
@@ -70,7 +67,7 @@ body {
 
 .publish {
   @include button-large();
-  @include button-primary-1();
+  @include button-filled($green);
 
   margin-right: 20px;
 }
@@ -148,7 +145,7 @@ body {
 
 .publish-link {
   @include button-small();
-  @include button-primary-3();
+  @include button-outlined(#fff, $green);
 
   display: inline-block;
   float: none;

@@ -13,7 +13,8 @@
 
 .open-add-components,
 .open-add-components:nth-of-type(n+1) {
-  @include icon-large();
+  @include button-large();
+  @include button-outlined($blue, #fff);
 
   cursor: pointer;
   float: left;
@@ -80,7 +81,7 @@
 
 .add-component {
   @include button-large();
-  @include button-tertiary();
+  @include button-outlined($blue, #fff);
 
   margin: 0 15px 15px 0;
 }

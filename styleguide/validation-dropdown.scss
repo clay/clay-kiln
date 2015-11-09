@@ -15,7 +15,7 @@ $white: #ffffff;
   max-width: 310px;
   right: 0;
   top: 60px;
-  box-shadow: 0 0 2px #888888;
+  box-shadow: 0 0 2px $black-50;
 
   header, footer {
     padding: 10px;
@@ -48,10 +48,10 @@ $white: #ffffff;
 
   li.rule {
     &:first-of-type {
-      border-top: #{($red-50)} 1px solid;
+      border-top: 1px solid $red;
     }
 
-    border-bottom: #{($red-50)} 1px solid;
+    border-bottom: 1px solid $red;
     list-style-type: none;
     margin: 0;
     padding: 20px;
@@ -77,6 +77,7 @@ $white: #ffffff;
 
   li.error {
     @include small-text;
+
     color: $white;
     list-style-type: disc;
     margin: 2px;
@@ -117,7 +118,7 @@ $white: #ffffff;
     @include button-small;
 
     background-color: inherit;
-    border: 1px solid #{$white};
+    border: 1px solid $white;
     color: inherit;
     float: none;
     flex-grow: 0;

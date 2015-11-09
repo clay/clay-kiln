@@ -5,7 +5,7 @@
 .editor-overlay-background {
   @include overlay-layer();
 
-  background-color: $shadow-80;
+  background-color: $grey-transparent;
   display: block;
   height: 100%;
   left: 0;
