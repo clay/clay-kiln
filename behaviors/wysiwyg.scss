@@ -34,8 +34,8 @@ $wysiwyg-selected-bgcolor: $grey-transparent;
 $wysiwyg-button-size: 32px;
 $wysiwyg-border-color: $grey;
 $wysiwyg-border-radius: 4px;
-$wysiwyg-boxshadow: 0 0 6px 0 $black-shadow;
-$wysiwyg-dropshadow: 0 0 6px $black-shadow;
+$wysiwyg-boxshadow: 0 0 6px 0 $grey-transparent;
+$wysiwyg-dropshadow: 0 0 6px $grey-transparent;
 
 .medium-toolbar-arrow-over:before {
   border-color: transparent transparent $wysiwyg-bgcolor;
