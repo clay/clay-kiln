@@ -2,7 +2,7 @@
 
 $light-grey: #fafafa;
 $grey: #efefef;
-$grey-transparent: rgba(34, 34, 34, .35);
+$grey-transparent: rgba(34, 34, 34, .35); // used for page overlays
 
 // 25% 50% 75% 100%
 
@@ -12,12 +12,16 @@ $black-50: #999;
 $black-75: #444;
 $black-100: #222;
 $black: $black-100;
+$black-shadow: rgba(0, 0, 0, .08); // used for input shadows
 
 // green - used for publishing
 $green: #009618;
 
 // red - used for errors
 $red: #dd2f1c;
+
+// yellow - used for warnings
+$yellow: #efb20c;
 
 // blue - used for saving, versioning
 $blue: #2389b1;
