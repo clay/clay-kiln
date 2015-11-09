@@ -81,7 +81,7 @@ body {
   @include normal-text();
   @include overlay-copy();
 
-  color: $blue-75;
+  color: $blue;
   content: 'Saved.';
 }
 .editing .kiln-toolbar-inner > .status:before {
@@ -115,11 +115,11 @@ body {
 }
 
 .kiln-publish-pane.success {
-  background-color: $green-transparent;
+  background-color: $green;
 }
 
 .kiln-publish-pane.error {
-  background-color: $red-transparent;
+  background-color: $red;
 }
 
 .kiln-publish-pane.show {
