@@ -8,9 +8,9 @@
   box-shadow: none;
   cursor: pointer;
   float: left;
-  font-size: 20px;
-  height: 40px;
-  line-height: 24px;
+  font-size: 30px;
+  height: 34px;
+  line-height: 44px;
   margin: 0;
   margin-right: 20px;
   outline: none;
@@ -25,8 +25,9 @@
   box-shadow: none;
   cursor: pointer;
   float: left;
-  font-size: 16px;
-  line-height: 19px;
+  font-size: 20px;
+  height: 34px;
+  line-height: 34px;
   margin: 0;
   margin-right: 15px;
   outline: none;
@@ -36,69 +37,13 @@
 // button styles
 // note: these are composable with both button-large and button-small
 
-@mixin button-primary-1 {
-  background-color: $green;
-  border: 1px solid $green;
+@mixin button-filled($color: $black-75) {
+  background-color: $color;
   color: #fff;
 }
 
-@mixin button-primary-2 {
-  background-color: #fff;
-  border: 1px solid $green;
-  color: $green;
-}
-
-// used for "see article" button, etc
-@mixin button-primary-3 {
-  background-color: transparent;
-  border: 1px solid #fff;
-  color: #fff;
-}
-
-@mixin button-secondary-1 {
-  background-color: $black-50;
-  border: 1px solid $black-50;
-  color: $green;
-  font-weight: bold;
-}
-
-@mixin button-secondary-2 {
-  background-color: #fff;
-  border: 1px solid $black-50;
-  color: $black-50;
-}
-
-@mixin button-tertiary {
-  background-color: #fff;
-  border: 1px solid $blue;
-  color: $blue;
-}
-
-@mixin button-warning {
-  background-color: $red;
-  border: 1px solid $red;
-  color: #fff;
-  font-weight: bold;
-}
-
-// icon buttons
-
-@mixin icon-large {
-  background-color: #fff;
-  border: 1px solid $blue;
-  border-radius: 4px;
-  height: 40px;
-  padding: 0;
-  position: relative;
-  width: 40px;
-}
-
-@mixin icon-small {
-  background-color: #fff;
-  border: 1px solid $blue;
-  border-radius: 4px;
-  height: 22px;
-  padding: 0;
-  position: relative;
-  width: 22px;
+@mixin button-outlined($color: $black-75, $fill: #fff) {
+  background-color: $fill;
+  border: 1px solid $color;
+  color: $color;
 }
