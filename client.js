@@ -11,7 +11,7 @@ var nodeUrl = require('url'),
 // manually add built-in behaviors
 // since browserify's require() uses static analysis
 behaviors.add('component-ref', require('./behaviors/component-ref'));
-behaviors.add('text', require('./behaviors/text'));
+behaviors.add('input', require('./behaviors/input'));
 behaviors.add('required', require('./behaviors/required'));
 behaviors.add('soft-maxlength', require('./behaviors/soft-maxlength'));
 behaviors.add('radio', require('./behaviors/radio'));
@@ -19,7 +19,6 @@ behaviors.add('description', require('./behaviors/description'));
 behaviors.add('checkbox', require('./behaviors/checkbox'));
 behaviors.add('checkbox-group', require('./behaviors/checkbox-group'));
 behaviors.add('textarea', require('./behaviors/textarea'));
-behaviors.add('url', require('./behaviors/url'));
 behaviors.add('select', require('./behaviors/select'));
 behaviors.add('simple-list', require('./behaviors/simple-list'));
 behaviors.add('simple-list-primary', require('./behaviors/simple-list-primary'));
