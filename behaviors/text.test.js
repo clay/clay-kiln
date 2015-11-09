@@ -2,7 +2,7 @@ var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   fixture = require('../test/fixtures/behavior')({ value: 'foobar'}),
   dom = require('../services/dom'),
-  lib = require('./input.js'); // static-analysis means this must be string, not `('./' + filename)`
+  lib = require('./text.js'); // static-analysis means this must be string, not `('./' + filename)`
 
 describe(dirname, function () {
   describe(filename, function () {
