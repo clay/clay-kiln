@@ -62,15 +62,16 @@ body {
   margin: 0 10px 0 0;
 }
 
-.kiln-toolbar-button .icon {
+.kiln-toolbar-button .icon,
+.kiln-toolbar-button .icon svg {
   height: 16px;
   margin: 0;
   padding: 0;
   width: 16px;
 
-  svg {
-    height: 16px;
-    width: 16px;
+  @media screen and (min-width: 1024px) {
+    height: 18px;
+    width: 18px;
   }
 }
 
@@ -79,7 +80,7 @@ body {
 
   @media screen and (min-width: 1024px) {
     display: block;
-    margin-left: 5px;
+    margin-left: 10px;
   }
 }
 
@@ -89,7 +90,7 @@ body {
   background-color: transparent;
   border: none;
   color: #fff;
-  padding: 0;
+  padding: 6px 0 0;
 
   svg {
     height: 24px;
