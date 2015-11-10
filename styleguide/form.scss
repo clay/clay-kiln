@@ -32,14 +32,15 @@
 }
 
 .editor .button-container {
-  left: -32px;
-  position: absolute;
-  top: calc(100% + 60px);
+  display: flex;
+  flex-direction: row-reverse;
 }
 
 .editor .button-container .save {
   @include button-large();
   @include button-filled($blue);
+
+  margin-right: 0;
 }
 
 /* Input container contains inputs, textareas, or whatever else, arranged in columns from top to bottom.  Each item
