@@ -2,7 +2,6 @@
 @import 'typography';
 @import 'buttons';
 @import 'layers';
-
 $mobile-height: 50px;
 $desktop-height: 60px;
 
@@ -47,105 +46,65 @@ body {
   height: 100%;
   left: 0;
   margin: 0 auto;
-  max-width: 1200px;
+  padding: 0 15px;
   position: relative;
   top: 0;
   width: 100%;
 }
 
-.kiln-toolbar-inner > button:not(.publish) {
+.kiln-toolbar-inner .kiln-toolbar-button, {
   @include button-small();
   @include button-filled($black-75);
 
+  align-items: center;
+  display: flex;
   flex: 0 0 auto;
+  margin: 0 10px 0 0;
 }
 
-.kiln-toolbar-inner > button:first-of-type {
-  margin-left: 20px;
+.kiln-toolbar-button .icon {
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  width: 16px;
+
+  svg {
+    height: 16px;
+    width: 16px;
+  }
 }
 
-.publish {
-  @include button-large();
-  @include button-filled($green);
+.kiln-toolbar-button .text {
+  display: none;
 
-  margin-right: 20px;
+  @media screen and (min-width: 1024px) {
+    display: block;
+    margin-left: 5px;
+  }
 }
 
-.toolbar-spacer {
+.kiln-toolbar-inner .user-icon {
+  @include button-small();
+
+  background-color: transparent;
+  border: none;
+  color: #fff;
+  padding: 0;
+
+  svg {
+    height: 24px;
+    margin: 0;
+    padding: 0;
+    width: 32px;
+  }
+}
+
+.kiln-toolbar-inner .flex-span {
   flex: 1 1 auto;
 }
 
-// Status of saving controlled by class on body.
-.kiln-toolbar-inner > .status:before {
-  display: none;
-}
+.kiln-toolbar-inner .publish {
+  @include button-filled($green);
 
-.mobile-button-text {
-  display: inline;
-
-  @media screen and (min-width: 600px) {
-    display: none;
-  }
-}
-
-.non-mobile-button-text {
-  display: none;
-
-  @media screen and (min-width: 600px) {
-    display: inline;
-  }
-}
-
-// publish pane
-.kiln-publish-pane {
-  padding: 5px 10px;
-  position: absolute;
-  text-align: center;
-  top: -100px; // make sure it's NEVER shown in the screen, no matter how long the publish text is
-  width: 100%;
-  z-index: 1;
-}
-
-.kiln-publish-pane.success {
-  background-color: $green;
-}
-
-.kiln-publish-pane.error {
-  background-color: $red;
-}
-
-.kiln-publish-pane.show {
-  top: 50px;
-  transition: top 300ms cubic-bezier(.17, .04, .03, .94);
-
-  @media screen and (min-width: 600px) {
-    top: 60px;
-  }
-
-  @media screen and (min-width: 1024px) {
-    top: 70px;
-  }
-}
-
-.publish-status {
-  @include normal-text();
-  @include overlay-copy();
-
-  color: #fff;
-  font-weight: 600;
-}
-
-.publish-link {
-  @include button-small();
-  @include button-outlined(#fff, $green);
-
-  display: inline-block;
-  float: none;
-  font-weight: 600;
-  margin: 0 0 0 15px;
-  text-decoration: none;
-
-  @media (max-width: 599.9px) {
-    margin-top: 5px;
-  }
+  margin-right: 0;
 }
