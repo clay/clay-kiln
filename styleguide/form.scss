@@ -17,9 +17,10 @@
 .editor > header {
   @include section-header();
 
-  bottom: calc(100% + 38px);
-  left: -32px;
-  position: absolute;
+  border-bottom: 1px solid $grey;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  width: 100%;
 }
 
 .editor > form {

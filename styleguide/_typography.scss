@@ -28,11 +28,11 @@ $system-fonts: Helvetica, Arial, sans-serif;
 }
 
 @mixin section-header {
-  color: #fff;
+  color: $black;
   font-family: $system-fonts;
-  font-size: 32px;
+  font-size: 22px;
   font-weight: 700;
-  line-height: 28px;
+  line-height: 26px;
 }
 
 @mixin label {
