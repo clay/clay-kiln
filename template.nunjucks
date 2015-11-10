@@ -6,10 +6,9 @@
 
   {# toolbar #}
   <div class="kiln-toolbar-wrapper">
-    <div class="kiln-publish-pane">
-      <span class="publish-status"></span>
-      <a class="publish-link" target="_blank">See Article</a>
+    <div class="kiln-status">
     </div>
+    <div class="kiln-progress"></div>
     <section class="kiln-toolbar"
       {# the editor needs some stuff from the backend #}
       data-uri="{{ _ref or _self }}"
@@ -18,7 +17,7 @@
       data-site-assetpath="{{ site.assetPath }}"
       data-components="{{ _components }}">
       <div class="kiln-toolbar-inner">
-        <button class="close">
+        <button class="clay-button">
           <span class="mobile-button-text">╳</span>
           <span class="non-mobile-button-text">Close</span>
         </button>

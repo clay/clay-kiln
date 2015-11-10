@@ -41,10 +41,32 @@
   background-color: $color;
   border: none;
   color: #fff;
+  transition: background-color 150ms ease-out;
+
+  &:hover {
+    background-color: lighten($color, 2%);
+    transition: background-color 150ms ease-out;
+  }
+
+  &:active {
+    background-color: lighten($color, 5%);
+    transition: background-color 50ms ease-out;
+  }
 }
 
 @mixin button-outlined($color: $black-75, $fill: #fff) {
   background-color: $fill;
   border: 1px solid $color;
   color: $color;
+  transition: background-color 150ms ease-out;
+
+  &:hover {
+    background-color: rgba($color, .05);
+    transition: background-color 150ms ease-out;
+  }
+
+  &:active {
+    background-color: rgba($color, .12);
+    transition: background-color 50ms ease-out;
+  }
 }
