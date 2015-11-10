@@ -16,7 +16,7 @@ function isComponent(el) {
   var ref = el instanceof Element && el.getAttribute(references.referenceAttribute),
     name = ref && references.getComponentNameFromReference(ref);
 
-  return !!(name && name !== 'editor-toolbar');
+  return !!(name && name !== 'clay-kiln');
 }
 
 /**
