@@ -1,46 +1,30 @@
 @import 'colors';
 @import 'typography';
 
-@mixin button-large {
+@mixin button {
   @include overlay-copy();
 
   border-radius: 4px;
   box-shadow: none;
   cursor: pointer;
   float: left;
-  font-size: 20px;
-  height: 44px;
-  line-height: 20px;
-  margin: 0;
-  margin-right: 20px;
+  font-size: 14px;
+  height: 34px;
+  line-height: 16px;
+  margin: 0 15px 0 0;
   outline: none;
   padding: 7px 14px 6px;
   width: auto;
 }
 
-@mixin button-small {
-  @include overlay-copy();
-
-  border-radius: 4px;
-  box-shadow: none;
-  cursor: pointer;
-  float: left;
-  font-size: 18px;
-  height: 34px;
-  line-height: 18px;
-  margin: 0;
-  margin-right: 15px;
-  outline: none;
-  padding: 6px 12px 4px;
-}
-
 // button styles
-// note: these are composable with both button-large and button-small
 
-@mixin button-filled($color: $black-75) {
+@mixin button-filled($color: $black-75, $text-color: $white) {
+  @include button();
+
   background-color: $color;
   border: none;
-  color: #fff;
+  color: $text-color;
   transition: background-color 150ms ease-out;
 
   &:hover {
@@ -52,9 +36,17 @@
     background-color: lighten($color, 5%);
     transition: background-color 50ms ease-out;
   }
+
+  &:disabled {
+    background-color: $black-25;
+    color: $text-color;
+    transition: all 50ms ease-out;
+  }
 }
 
-@mixin button-outlined($color: $black-75, $fill: #fff) {
+@mixin button-outlined($color: $black-75, $fill: $white) {
+  @include button();
+
   background-color: $fill;
   border: 1px solid $color;
   color: $color;
@@ -67,6 +59,28 @@
 
   &:active {
     background-color: rgba($color, .12);
+    color: rgba($color, .12);
     transition: background-color 50ms ease-out;
   }
+
+  &:disabled {
+    background-color: $fill;
+    border: 1px solid $black-25;
+    color: $black-25;
+    transition: all 150ms ease-out;
+  }
 }
+
+// semantic buttons
+
+// primary - used for publishing, confirmations, "moving forward"
+// $green
+
+// secondary - used for "parallel actions"
+// $blue
+
+// tertiary - used for "parallel actions"
+// $black-75 (default button color)
+
+// scheduled button
+// $orange (filled only)
