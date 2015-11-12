@@ -3,6 +3,8 @@
 @import '../node_modules/medium-editor/src/sass/medium-editor';
 
 .wysiwyg-input {
+  @include normal-text();
+
   cursor: text;
   min-height: 19px;
   outline: none;
