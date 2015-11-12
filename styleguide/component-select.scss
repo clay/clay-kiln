@@ -3,7 +3,7 @@
 @import 'layers';
 // Using px because the gap needs to be px so that it does not disappear, and can only add with same units.
 $bar-height: 44px; // drag, settings, delete, etc are square so width = height.
-$bar-parent-height: 18px;
+$bar-parent-height: 22px;
 $bar-gap: 2px;
 $bar-label-width: 76px;
 $bar-gap-color: $white;
@@ -83,7 +83,8 @@ $layout-parent-bg-color: $purple-50;
   flex: 0 1 100%;
 
   .drag-icon {
-    margin: 0 5px 0 2.5px;
+    height: 30px;
+    margin: 0 5.5px 0 0;
   }
 }
 
@@ -104,19 +105,20 @@ $layout-parent-bg-color: $purple-50;
   width: 100%;
 
   img {
-    margin: 0 2.5px;
+    height: 14px;
+    margin: 0 2.5px 0 0;
   }
 
   span {
-    margin: 0 2.5px;
+    margin: 0 7px;
   }
 }
 
 // Menu
 .component-bar > .menu-toggle {
   background: $page-bg-color;
-  border-left: $bar-gap solid $bar-gap-color;
   border-bottom: $bar-gap solid $bar-gap-color;
+  border-left: $bar-gap solid $bar-gap-color;
   cursor: pointer;
   display: block;
   flex: 0 0 $bar-height;
@@ -174,7 +176,7 @@ $layout-parent-bg-color: $purple-50;
 
   img,
   .menu-item {
-    margin: 0 2.5px;
+    margin: 0 6px 0 2px;
   }
 }
 
