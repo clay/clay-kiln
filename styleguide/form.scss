@@ -15,7 +15,7 @@
 }
 
 .editor > header {
-  @include section-header();
+  @include header();
 
   border-bottom: 1px solid $grey;
   margin-bottom: 10px;
@@ -37,8 +37,7 @@
 }
 
 .editor .button-container .save {
-  @include button-large();
-  @include button-filled($blue);
+  @include button-filled($green);
 
   margin-right: 0;
 }
@@ -69,6 +68,7 @@
 .editor .label-inner {
   @include label();
 
+  color: $black;
   margin-right: 10px;
 }
 

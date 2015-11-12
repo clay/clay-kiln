@@ -2,42 +2,30 @@
 @import 'typography';
 @import 'buttons';
 @import 'layers';
-$mobile-height: 50px;
-$desktop-height: 60px;
+
+$height: 60px;
 
 .kiln-toolbar-wrapper {
   @include toolbar-layer();
 
   left: 0;
   position: fixed;
-  top: calc(100% - #{$mobile-height});
+  top: calc(100% - #{$height});
   width: 100%;
-
-  @media screen and (min-width: 1024px) {
-    top: calc(100% - #{$desktop-height});
-  }
 }
 
 .kiln-toolbar {
   background-color: $black;
-  height: $mobile-height;
+  height: $height;
   left: 0;
   position: absolute;
   top: 0;
   width: 100%;
-
-  @media screen and (min-width: 1024px) {
-    height: $desktop-height;
-  }
 }
 
 // when the editor toolbar is on the screen, push the page content down
 body {
-  padding-bottom: $mobile-height;
-
-  @media screen and (min-width: 1024px) {
-    padding-bottom: $desktop-height;
-  }
+  padding-bottom: $height;
 }
 
 .kiln-toolbar-inner {
@@ -53,7 +41,6 @@ body {
 }
 
 .kiln-toolbar-inner .kiln-toolbar-button, {
-  @include button-small();
   @include button-filled($black-75);
 
   align-items: center;
@@ -64,15 +51,10 @@ body {
 
 .kiln-toolbar-button .icon,
 .kiln-toolbar-button .icon svg {
-  height: 16px;
+  height: 18px;
   margin: 0;
   padding: 0;
-  width: 16px;
-
-  @media screen and (min-width: 1024px) {
-    height: 18px;
-    width: 18px;
-  }
+  width: 18px;
 }
 
 .kiln-toolbar-button .text {
@@ -85,11 +67,11 @@ body {
 }
 
 .kiln-toolbar-inner .user-icon {
-  @include button-small();
+  @include button();
 
   background-color: transparent;
   border: none;
-  color: #fff;
+  color: $white;
   padding: 6px 0 0;
 
   svg {

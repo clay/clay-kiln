@@ -3,7 +3,7 @@
 
 .kiln-placeholder {
   align-items: center;
-  background-color: $light-grey;
+  background-color: $grey;
   border: 1px dashed $black-25;
   display: flex;
   height: 100%;
@@ -15,9 +15,7 @@
 
 .kiln-placeholder,
 .kiln-placeholder .placeholder-label {
-  @include small-text();
-  @include overlay-copy();
+  @include secondary-text();
 
   color: $black-50;
-  text-transform: uppercase;
 }

@@ -16,7 +16,7 @@
 }
 
 .editor-overlay {
-  @include overlay-copy();
+  @include primary-text();
 
   background-color: #fff;
   border-radius: 2px;
