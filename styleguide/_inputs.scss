@@ -7,7 +7,7 @@
 
   background-color: #fff;
   border: 1px solid $black-25;
-  box-shadow: inset 0px 4px 8px 0px $black-shadow;
+  box-shadow: inset 2px 1px 6px 0 $input-shadow;
   cursor: text;
   display: inline-block;
   margin: 0;
@@ -16,12 +16,14 @@
   outline: none;
   padding: 10px;
   position: relative;
+  transition: border 100ms ease-out;
   white-space: normal;
   width: 100%;
 
   &.error,
   &:invalid {
-    border: 1px solid $yellow;
+    border: 1px solid $red-25;
+    transition: border 150ms ease-out;
   }
 }
 
