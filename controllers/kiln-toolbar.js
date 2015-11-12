@@ -67,13 +67,13 @@ EditorToolbar.prototype = {
     // todo: add publish pane. right now it's just publishing instantly
     return validation.validate(rules).then(function (errors) {
       if (errors.length) {
-        alert('there are errors');
+        alert('there are errors'); // eslint-disable-line
       } else {
         return edit.publishPage().then(function () {
-          alert('published!');
+          alert('published!'); // eslint-disable-line
         });
       }
-    })
+    });
   }
 };
 
