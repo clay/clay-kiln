@@ -1,7 +1,9 @@
 var EditorToolbar,
   dom = require('../services/dom'),
   edit = require('../services/edit'),
-  events = require('../services/events');
+  events = require('../services/events'),
+  rules = require('../validators'),
+  validation = require('../services/publish-validation');
 
 /**
  * Create a new page with the same layout as the current page.
@@ -62,6 +64,16 @@ EditorToolbar.prototype = {
 
   onPublishClick: function openPublishPane() {
     // open the publish pane if it's not already open (close other panes first)
+    // todo: add publish pane. right now it's just publishing instantly
+    return validation.validate(rules).then(function (errors) {
+      if (errors.length) {
+        alert('there are errors');
+      } else {
+        return edit.publishPage().then(function () {
+          alert('published!');
+        });
+      }
+    })
   }
 };
 
