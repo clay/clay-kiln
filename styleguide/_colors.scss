@@ -49,6 +49,8 @@ $black-100: #111111;
 $black: $black-100;
 
 // overlays and shadows
-$overlay-background: rgba(17, 17, 17, .50);
+$overlay-background: rgba(17, 17, 17, .5);
 $overlay-shadow: rgba(0, 0, 0, .07);
-$input-shadow: rgba(0, 0, 0, .30);
+$input-shadow: rgba(0, 0, 0, .3);
+$drag-shadow: rgba(0, 0, 0, .3); // different use case than input-shadow
+$drag-error: rgba(215, 39, 39, .41);
