@@ -12,8 +12,7 @@
 
 .editor-radio-item input[type='radio'],
 .editor-radio-item label {
-  @include normal-text();
-  @include overlay-copy();
+  @include primary-text();
 
   vertical-align: baseline;
 }

@@ -20,7 +20,7 @@
 }
 
 .wysiwyg-input blockquote {
-  border-left: 10px solid $grey;
+  border-left: 10px solid $black-25;
   margin-left: 0;
   padding-left: 20px;
 }
@@ -29,13 +29,13 @@
 
 // settings
 $wysiwyg-color: $black;
-$wysiwyg-bgcolor: #fff;
-$wysiwyg-selected-bgcolor: $grey-transparent;
+$wysiwyg-bgcolor: $white;
+$wysiwyg-selected-bgcolor: $input-shadow;
 $wysiwyg-button-size: 32px;
-$wysiwyg-border-color: $grey;
+$wysiwyg-border-color: $black-25;
 $wysiwyg-border-radius: 4px;
-$wysiwyg-boxshadow: 0 0 6px 0 $grey-transparent;
-$wysiwyg-dropshadow: 0 0 6px $grey-transparent;
+$wysiwyg-boxshadow: 0 0 6px 0 $input-shadow;
+$wysiwyg-dropshadow: 0 0 6px $input-shadow;
 
 .medium-toolbar-arrow-over:before {
   border-color: transparent transparent $wysiwyg-bgcolor;

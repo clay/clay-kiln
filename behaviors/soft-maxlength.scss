@@ -2,13 +2,9 @@
 @import '../styleguide/typography';
 
 .soft-maxlength {
-  @include normal-text();
-  @include overlay-copy();
+  @include secondary-text();
 
-  color: $black-50;
   float: right;
-  font-size: 14px;
-  line-height: 17px;
   margin-top: 5px;
 }
 
