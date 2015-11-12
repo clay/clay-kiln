@@ -2,7 +2,7 @@
 @import 'typography';
 
 @mixin button {
-  @include overlay-copy();
+  @include primary-text();
 
   border-radius: 4px;
   box-shadow: none;

@@ -13,7 +13,6 @@
 
 .open-add-components,
 .open-add-components:nth-of-type(n+1) {
-  @include button-small();
   @include button-outlined($blue, #fff);
 
   cursor: pointer;
@@ -25,7 +24,7 @@
 .open-add-components-inner {
   color: $blue;
   display: block;
-  font-family: Arial, sans-serif;
+  font-family: Arial, sans-serif; // explicitly Arial
   font-size: 30px;
   height: 34px;
   line-height: 34px;
@@ -80,7 +79,6 @@
 }
 
 .add-component {
-  @include button-small();
   @include button-outlined($blue, #fff);
 
   margin: 0 15px 15px 0;
