@@ -54,16 +54,6 @@ $layout-parent-bg-color: $purple-50;
   top: -$bar-height;
   transition: opacity .15s ease-in-out;
   width: 100%;
-
-  @media screen and (min-width: 600px) {
-    height: $bar-height * .8;
-    top: -$bar-height * .8;
-  }
-
-  @media screen and (min-width: 1024px) {
-    height: $bar-height * .6;
-    top: -$bar-height * .6;
-  }
 }
 
 // All labels
@@ -84,18 +74,6 @@ $layout-parent-bg-color: $purple-50;
   text-overflow: ellipsis;
   text-transform: capitalize;
   white-space: nowrap;
-
-  @media screen and (min-width: 600px) {
-    font-size: 13px;
-    height: $bar-height * .8;
-    line-height: $bar-height * .8;
-  }
-
-  @media screen and (min-width: 1024px) {
-    font-size: 11px;
-    height: $bar-height * .6;
-    line-height: $bar-height * .6;
-  }
 }
 
 .component-bar > .selected-label {
@@ -148,18 +126,6 @@ $layout-parent-bg-color: $purple-50;
   position: relative;
   width: $bar-height;
 
-  @media screen and (min-width: 600px) {
-    flex: 0 0 $bar-height * .8;
-    height: $bar-height * .8;
-    width: $bar-height * .8;
-  }
-
-  @media screen and (min-width: 1024px) {
-    flex: 0 0 $bar-height * .6;
-    height: $bar-height * .6;
-    width: $bar-height * .6;
-  }
-
   img {
     height: auto;
     left: -30%;
@@ -206,21 +172,9 @@ $layout-parent-bg-color: $purple-50;
     border-bottom: none;
   }
 
-  @media screen and (min-width: 600px) {
-    padding: 20px 10px;
-  }
-
-  @media screen and (min-width: 1024px) {
-    padding: 18px 8px;
-  }
-
   img,
   .menu-item {
     margin: 0 2.5px;
-
-    @media screen and (min-width: 600px) {
-      margin: 0 5px;
-    }
   }
 }
 
