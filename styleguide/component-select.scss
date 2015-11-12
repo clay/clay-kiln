@@ -3,13 +3,21 @@
 @import 'layers';
 // Using px because the gap needs to be px so that it does not disappear, and can only add with same units.
 $bar-height: 44px; // drag, settings, delete, etc are square so width = height.
-$bar-parent-height: 22px;
-$bar-bd-height: 3px;
+$bar-parent-height: 18px;
 $bar-gap: 2px;
 $bar-label-width: 76px;
-$bar-gap-color: $light-grey;
-$bar-bg-color: $black-50;
-$bar-parent-bg-color: $black-25;
+$bar-gap-color: $white;
+
+// bar colors
+
+// page-specific
+$page-bg-color: $blue;
+$page-parent-bg-color: $blue-50;
+
+// layout-specific
+// todo: use these when we have a solution for layout editing
+$layout-bg-color: $purple;
+$layout-parent-bg-color: $purple-50;
 
 
 // Wrapper around parent and component.
@@ -31,7 +39,7 @@ $bar-parent-bg-color: $black-25;
 
 // Bar on a selected component
 .component-bar {
-  @include overlay-copy();
+  @include kiln-copy();
   @include component-toolbar-layer();
 
   align-content: flex-end;
@@ -62,7 +70,7 @@ $bar-parent-bg-color: $black-25;
 .component-bar .label {
   @include label();
 
-  background: $bar-bg-color;
+  background: $page-bg-color;
   color: #fff;
   cursor: default;
   display: block;
@@ -104,7 +112,7 @@ $bar-parent-bg-color: $black-25;
 // Parent's label
 .component-bar > .parent.label {
   align-items: center;
-  background: $bar-parent-bg-color;
+  background: $page-parent-bg-color;
   border-bottom: $bar-gap solid $bar-gap-color;
   bottom: 100%;
   cursor: pointer;
@@ -128,7 +136,7 @@ $bar-parent-bg-color: $black-25;
 
 // Menu
 .component-bar > .menu-toggle {
-  background: $bar-bg-color;
+  background: $page-bg-color;
   border-left: $bar-gap solid $bar-gap-color;
   border-bottom: $bar-gap solid $bar-gap-color;
   cursor: pointer;
