@@ -1,30 +1,54 @@
-// basic colors
-
-$light-grey: #fafafa;
-$grey: #efefef;
-$grey-transparent: rgba(34, 34, 34, .35); // used for page overlays
-
-// 25% 50% 75% 100%
-
-// black
-$black-25: #ccc;
-$black-50: #999;
-$black-75: #444;
-$black-100: #222;
-$black: $black-100;
-$black-shadow: rgba(0, 0, 0, .08); // used for input shadows
-
-// green - used for publishing
-$green: #009618;
-
-// red - used for errors
-$red: #dd2f1c;
-
-// yellow - used for warnings
-$yellow: #efb20c;
-
-// blue - used for saving, versioning
-$blue: #2389b1;
+// blue - used for page-specific components, saving
+$blue-10: #F0F7F9;
+$blue-25: #C5E0E9;
+$blue-50: #8BC0D4;
+$blue-75: #51A2BF;
+$blue-100: #1782A9;
+$blue: $blue-100;
 
 // orange - used for scheduling
-$orange: #e67e22;
+$orange-10: #FBF1E7;
+$orange-25: #F7DCC4;
+$orange-50: #EFB989;
+$orange-75: #E8964E;
+$orange-100: #E07313;
+$orange: $orange-100;
+
+// purple - used for layout-specific components
+$purple-10: rgba(104,76,120,0.10);
+$purple-25: #D9D2DD;
+$purple-50: #B4A5BC;
+$purple-75: #8F799B;
+$purple-100: #694C79;
+$purple: $purple-100;
+
+// red - used for errors
+$red-10: #FBEAE8;
+$red-25: #F6CBC6;
+$red-50: #EE978D;
+$red-75: #E66355;
+$red-100: #DD2F1C;
+$red: $red-100;
+
+// green - used for publishing
+$green-10: #E7F4E9;
+$green-25: #C4E4C8;
+$green-50: #89CA91;
+$green-75: #4FB05B;
+$green-100: #149524;
+$green: $green-100;
+
+// monochrome - general layout elements and typography
+$white: #fff; // note - we may make this slightly darker at some point
+$grey: #f4f4f4;
+$black-10: #E7E7E7;
+$black-25: #C3C3C3;
+$black-50: #888888;
+$black-75: #4D4D4D;
+$black-100: #111111;
+$black: $black-100;
+
+// overlays and shadows
+$overlay-background: rgba(17, 17, 17, .50);
+$overlay-shadow: rgba(0, 0, 0, .07);
+$input-shadow: rgba(0, 0, 0, .30);
