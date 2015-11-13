@@ -83,6 +83,15 @@ function isGroupEmpty(data) {
 }
 
 /**
+ * determine if a component list is empty
+ * @param {object} data
+ * @returns {boolean}
+ */
+function isComponentListEmpty(data) {
+  return data.length === 0;
+}
+
+/**
  * convert newlines to line breaks
  * @param {string} text
  * @returns {string}
@@ -116,12 +125,23 @@ function addPlaceholderDom(node, obj) {
 function hasPlaceholder(el, options) {
   var schema = _.get(options, 'data._schema'),
     isPlaceholder = !!schema && !!schema[references.placeholderProperty],
-    isField = !!schema && !!schema[references.fieldProperty];
+    isField = !!schema && !!schema[references.fieldProperty],
+    isGroup = !!schema && !!schema.fields,
+    isComponentList = !!schema && !!schema._componentList;
 
   // if it has a placeholder...
   // if it's a field, make sure it's empty
   // if it's a group, make sure it points to an empty field
-  return isPlaceholder && isField ? isFieldEmpty(options.data) : isGroupEmpty(options.data);
+  // if it's a component list, make sure it's empty
+  if (isPlaceholder && isField) {
+    return isFieldEmpty(options.data);
+  } else if (isPlaceholder && isGroup) {
+    return isGroupEmpty(options.data);
+  } else if (isPlaceholder && isComponentList) {
+    return isComponentListEmpty(options.data);
+  } else {
+    return false; // not a placeholder
+  }
 }
 
 /**
