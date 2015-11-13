@@ -14,6 +14,10 @@
   position: relative;
 }
 
+.editor-overlay .editor {
+  height: 100%;
+}
+
 .editor > form {
   @include clearfix();
 
@@ -22,10 +26,17 @@
   overflow-y: hidden;
 }
 
+.editor-overlay form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .editor > form > header {
-  align-items: center;
+  align-items: flex-start;
   border-bottom: 1px solid $grey;
   display: flex;
+  flex: 1 0 auto;
   padding: 13px 20px;
   width: 100%;
 }
@@ -49,7 +60,9 @@
   align-content: stretch;
   align-items: stretch;
   display: flex;
+  flex: 0 1 100%;
   flex-flow: row wrap;
+  overflow: scroll;
   padding: 30px 20px 50px;
 }
 

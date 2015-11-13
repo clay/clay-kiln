@@ -2,6 +2,8 @@
 @import 'layers';
 @import 'typography';
 
+$overlay-margin: 30vh;
+
 .editor-overlay-background {
   @include overlay-layer();
 
@@ -9,7 +11,7 @@
   display: block;
   height: 100%;
   left: 0;
-  overflow-y: scroll;
+  overflow: hidden;
   position: fixed;
   top: 0;
   width: 100%;
@@ -20,7 +22,8 @@
 
   background-color: $white;
   box-shadow: 0 0 30px 0 $overlay-shadow;
-  margin: 30vh auto 60px;
+  height: calc(100% - #{$overlay-margin});
+  margin: $overlay-margin auto 60px;
   max-width: 700px;
   min-height: 50px;
   overflow: visible;
