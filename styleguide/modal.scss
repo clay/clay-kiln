@@ -39,7 +39,7 @@ $overlay-margin: 30vh;
   }
 }
 
-/* don't scroll the page when overlay is open */
+/* don't scroll the page when overlay (or pane) is open */
 .noscroll {
   height: 100%;
   overflow: hidden;
