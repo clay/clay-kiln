@@ -2,11 +2,7 @@
 @import '../styleguide/typography';
 
 .label-description {
-  @include normal-text();
-  @include overlay-copy();
+  @include secondary-text();
 
-  color: $black-50;
-  font-size: 14px;
-  line-height: 17px;
   margin: 0 0 5px;
 }

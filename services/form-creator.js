@@ -41,12 +41,12 @@ function createOverlayEl(innerEl) {
 function createOverlayFormEl(formLabel, innerEl) {
   var el = dom.create(`
     <section class="editor">
-      <header>${formLabel}</header>
       <form>
-        <div class="input-container"></div>
-        <div class="button-container">
+        <header>
+          <span class="form-header">${formLabel}</span>
           <button type="submit" class="save">Save</button>
-        </div>
+        </header>
+        <div class="input-container"></div>
       </form>
     </section>
   `);

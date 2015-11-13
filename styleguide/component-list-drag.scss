@@ -1,6 +1,8 @@
+@import 'colors';
+
 /* mirror is the element added while you are dragging. */
 .gu-mirror {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: $drag-shadow;
   cursor: move;
   cursor: grab;
   margin: 10px;
@@ -39,6 +41,6 @@
 .dragula-item {}
 /* Indicate that the re-ordering has not been saved. */
 .dragula-not-saved {
-  background: rgba(215, 39, 39, 0.41) !important;
+  background: $drag-error !important;
   transition: background-color 300ms linear;
 }

@@ -83,6 +83,15 @@ function isGroupEmpty(data) {
 }
 
 /**
+ * convert newlines to line breaks
+ * @param {string} text
+ * @returns {string}
+ */
+function convertNewLines(text) {
+  return text.replace(/(?:\r\n|\r|\n|\\n)/g, '<br />');
+}
+
+/**
  * create dom element for the placeholder, add it to the specified node
  * @param {Element} node
  * @param {{ height: string, text: string }} obj
@@ -91,7 +100,7 @@ function isGroupEmpty(data) {
 function addPlaceholderDom(node, obj) {
   var placeholder = dom.create(`
     <div class="kiln-placeholder" style="min-height: ${obj.height};">
-      <span class="placeholder-label">${obj.text}</span>
+      <span class="placeholder-label">${convertNewLines(obj.text)}</span>
     </div>
   `);
 
@@ -137,3 +146,4 @@ module.exports.handler = addPlaceholder;
 module.exports.getPlaceholderText = getPlaceholderText;
 module.exports.getPlaceholderHeight = getPlaceholderHeight;
 module.exports.isFieldEmpty = isFieldEmpty;
+module.exports.convertNewLines = convertNewLines;

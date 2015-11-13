@@ -3,6 +3,8 @@
 @import '../node_modules/medium-editor/src/sass/medium-editor';
 
 .wysiwyg-input {
+  @include normal-text();
+
   cursor: text;
   min-height: 19px;
   outline: none;
@@ -20,7 +22,7 @@
 }
 
 .wysiwyg-input blockquote {
-  border-left: 10px solid $grey;
+  border-left: 10px solid $black-25;
   margin-left: 0;
   padding-left: 20px;
 }
@@ -29,13 +31,13 @@
 
 // settings
 $wysiwyg-color: $black;
-$wysiwyg-bgcolor: #fff;
+$wysiwyg-bgcolor: $white;
 $wysiwyg-selected-bgcolor: $blue-25;
 $wysiwyg-button-size: 32px;
-$wysiwyg-border-color: $grey;
+$wysiwyg-border-color: $black-25;
 $wysiwyg-border-radius: 4px;
-$wysiwyg-boxshadow: 0 0 6px 0 $shadow-50;
-$wysiwyg-dropshadow: 0 0 6px $shadow-50;
+$wysiwyg-boxshadow: 0 0 6px 0 $input-shadow;
+$wysiwyg-dropshadow: 0 0 6px $input-shadow;
 
 .medium-toolbar-arrow-over:before {
   border-color: transparent transparent $wysiwyg-bgcolor;
@@ -147,7 +149,7 @@ $wysiwyg-dropshadow: 0 0 6px $shadow-50;
 }
 
 .medium-editor-placeholder:after {
-  color: #b3b3b1;
+  color: $black-25;
 }
 
 .medium-editor-toolbar-actions {

@@ -1,52 +1,56 @@
-// transparency
-$alpha: .85;
+// blue - used for page-specific components, saving
+$blue-10: #F0F7F9;
+$blue-25: #C5E0E9;
+$blue-50: #8BC0D4;
+$blue-75: #51A2BF;
+$blue-100: #1782A9;
+$blue: $blue-100;
 
-// basic colors
+// orange - used for scheduling
+$orange-10: #FBF1E7;
+$orange-25: #F7DCC4;
+$orange-50: #EFB989;
+$orange-75: #E8964E;
+$orange-100: #E07313;
+$orange: $orange-100;
 
-$light-grey: #f4f4f4;
-$grey: #e3e3e3;
-$grey-transparent: rgba(200, 200, 200, .1);
+// purple - used for layout-specific components
+$purple-10: rgba(104,76,120,0.10);
+$purple-25: #D9D2DD;
+$purple-50: #B4A5BC;
+$purple-75: #8F799B;
+$purple-100: #694C79;
+$purple: $purple-100;
 
-// 25% 50% 75% 100%
+// red - used for errors
+$red-10: #FBEAE8;
+$red-25: #F6CBC6;
+$red-50: #EE978D;
+$red-75: #E66355;
+$red-100: #DD2F1C;
+$red: $red-100;
 
-// black
-$black-25: #c3c3c3;
-$black-50: #888;
-$black-75: #4d4d4d;
-$black-100: #111;
-$black: $black-100;
-$black-transparent: rgba($black, $alpha);
-
-// green
-$green-25: #c4e4c8;
-$green-50: #89ca91;
-$green-75: #4fb05b;
+// green - used for publishing
+$green-10: #E7F4E9;
+$green-25: #C4E4C8;
+$green-50: #89CA91;
+$green-75: #4FB05B;
 $green-100: #149524;
 $green: $green-100;
-$green-transparent: rgba($green, $alpha);
 
-// red
-$red-25: #f6cbc6;
-$red-50: #ee978d;
-$red-75: #e66355;
-$red-100: #dd2f1c;
-$red: $red-100;
-$red-transparent: rgba($red, $alpha);
+// monochrome - general layout elements and typography
+$white: #fff; // note - we may make this slightly darker at some point
+$grey: #f4f4f4;
+$black-10: #E7E7E7;
+$black-25: #C3C3C3;
+$black-50: #888888;
+$black-75: #4D4D4D;
+$black-100: #111111;
+$black: $black-100;
 
-// blue
-$blue-25: #c5e0e9;
-$blue-50: #8bc0d4;
-$blue-75: #51a2bf;
-$blue-100: #1782a9;
-$blue: $blue-100;
-$blue-transparent: rgba($blue, $alpha);
-
-// yellow
-$yellow-100: #ffe600;
-$yellow: $yellow-100;
-$yellow-transparent: rgba($yellow, $alpha);
-
-// shadows
-$shadow-30: rgba(0, 0, 0, .3);
-$shadow-50: rgba(0, 0, 0, .5);
-$shadow-80: rgba(0, 0, 0, .8);
+// overlays and shadows
+$overlay-background: rgba(17, 17, 17, .5);
+$overlay-shadow: rgba(0, 0, 0, .07);
+$input-shadow: rgba(0, 0, 0, .3);
+$drag-shadow: rgba(0, 0, 0, .3); // different use case than input-shadow
+$drag-error: rgba(215, 39, 39, .41);

@@ -4,12 +4,20 @@
 // Using px because the gap needs to be px so that it does not disappear, and can only add with same units.
 $bar-height: 44px; // drag, settings, delete, etc are square so width = height.
 $bar-parent-height: 22px;
-$bar-bd-height: 3px;
 $bar-gap: 2px;
 $bar-label-width: 76px;
-$bar-gap-color: rgba(255, 255, 255, .95);
-$bar-bg-color: rgba(23, 130, 169, .9);
-$bar-parent-bg-color: rgba(139, 191, 211, .9);
+$bar-gap-color: $white;
+
+// bar colors
+
+// page-specific
+$page-bg-color: $blue;
+$page-parent-bg-color: $blue-50;
+
+// layout-specific
+// todo: use these when we have a solution for layout editing
+$layout-bg-color: $purple;
+$layout-parent-bg-color: $purple-50;
 
 
 // Wrapper around parent and component.
@@ -31,7 +39,7 @@ $bar-parent-bg-color: rgba(139, 191, 211, .9);
 
 // Bar on a selected component
 .component-bar {
-  @include overlay-copy();
+  @include kiln-copy();
   @include component-toolbar-layer();
 
   align-content: flex-end;
@@ -46,23 +54,13 @@ $bar-parent-bg-color: rgba(139, 191, 211, .9);
   top: -$bar-height;
   transition: opacity .15s ease-in-out;
   width: 100%;
-
-  @media screen and (min-width: 600px) {
-    height: $bar-height * .8;
-    top: -$bar-height * .8;
-  }
-
-  @media screen and (min-width: 1024px) {
-    height: $bar-height * .6;
-    top: -$bar-height * .6;
-  }
 }
 
 // All labels
 .component-bar .label {
   @include label();
 
-  background: $bar-bg-color;
+  background: $page-bg-color;
   color: #fff;
   cursor: default;
   display: block;
@@ -76,18 +74,6 @@ $bar-parent-bg-color: rgba(139, 191, 211, .9);
   text-overflow: ellipsis;
   text-transform: capitalize;
   white-space: nowrap;
-
-  @media screen and (min-width: 600px) {
-    font-size: 13px;
-    height: $bar-height * .8;
-    line-height: $bar-height * .8;
-  }
-
-  @media screen and (min-width: 1024px) {
-    font-size: 11px;
-    height: $bar-height * .6;
-    line-height: $bar-height * .6;
-  }
 }
 
 .component-bar > .selected-label {
@@ -97,14 +83,15 @@ $bar-parent-bg-color: rgba(139, 191, 211, .9);
   flex: 0 1 100%;
 
   .drag-icon {
-    margin: 0 5px 0 2.5px;
+    height: 30px;
+    margin: 0 5.5px 0 0;
   }
 }
 
 // Parent's label
 .component-bar > .parent.label {
   align-items: center;
-  background: $bar-parent-bg-color;
+  background: $page-parent-bg-color;
   border-bottom: $bar-gap solid $bar-gap-color;
   bottom: 100%;
   cursor: pointer;
@@ -118,19 +105,20 @@ $bar-parent-bg-color: rgba(139, 191, 211, .9);
   width: 100%;
 
   img {
-    margin: 0 2.5px;
+    height: 14px;
+    margin: 0 2.5px 0 0;
   }
 
   span {
-    margin: 0 2.5px;
+    margin: 0 7px;
   }
 }
 
 // Menu
 .component-bar > .menu-toggle {
-  background: $bar-bg-color;
-  border-left: $bar-gap solid $bar-gap-color;
+  background: $page-bg-color;
   border-bottom: $bar-gap solid $bar-gap-color;
+  border-left: $bar-gap solid $bar-gap-color;
   cursor: pointer;
   display: block;
   flex: 0 0 $bar-height;
@@ -139,18 +127,6 @@ $bar-parent-bg-color: rgba(139, 191, 211, .9);
   padding: 0;
   position: relative;
   width: $bar-height;
-
-  @media screen and (min-width: 600px) {
-    flex: 0 0 $bar-height * .8;
-    height: $bar-height * .8;
-    width: $bar-height * .8;
-  }
-
-  @media screen and (min-width: 1024px) {
-    flex: 0 0 $bar-height * .6;
-    height: $bar-height * .6;
-    width: $bar-height * .6;
-  }
 
   img {
     height: auto;
@@ -198,21 +174,9 @@ $bar-parent-bg-color: rgba(139, 191, 211, .9);
     border-bottom: none;
   }
 
-  @media screen and (min-width: 600px) {
-    padding: 20px 10px;
-  }
-
-  @media screen and (min-width: 1024px) {
-    padding: 18px 8px;
-  }
-
   img,
   .menu-item {
-    margin: 0 2.5px;
-
-    @media screen and (min-width: 600px) {
-      margin: 0 5px;
-    }
+    margin: 0 6px 0 2px;
   }
 }
 

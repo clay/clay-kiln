@@ -5,51 +5,61 @@
 //$system-fonts: -apple-system, '.SFNSText-Regular', 'San Francisco', 'Roboto', 'Segoe UI', 'Helvetica Neue', 'Lucida Grande', sans-serif;
 $system-fonts: Helvetica, Arial, sans-serif;
 
+// text that should have the same style as the component it's in
 @mixin normal-text {
   color: $black;
   font-family: inherit;
-  font-size: 16px;
-  line-height: 19px;
+  font-size: inherit;
+  line-height: inherit;
 }
 
-// Annie says she prefers the idea of level 1 and level 2 copy.
-@mixin small-text {
-  color: $black;
-  font-family: inherit;
-  font-size: 13px;
-  line-height: 16px;
-}
-
-@mixin overlay-copy {
+// our typography
+@mixin kiln-copy {
   font-family: $system-fonts;
+  font-size: 14px;
   font-style: normal;
   font-weight: 400;
+  line-height: 17px;
   text-decoration: none;
 }
 
-@mixin section-header {
-  color: #fff;
-  font-family: $system-fonts;
-  font-size: 32px;
-  font-weight: 700;
+// headers for panes and overlays
+@mixin header {
+  @include kiln-copy();
+
+  color: $black;
+  font-size: 24px;
   line-height: 28px;
 }
 
+// labels, used on component selector and inside forms
 @mixin label {
-  @include normal-text();
+  @include kiln-copy();
 
   display: inline-block;
-  font-family: $system-fonts;
   font-weight: 700;
   margin-bottom: 5px;
 }
 
+// used as kiln text in panes and forms
+@mixin primary-text {
+  @include kiln-copy();
+
+  color: $black;
+}
+
+// secondary emphasis, used in panes and forms
+@mixin secondary-text {
+  @include kiln-copy();
+
+  color: $black-25;
+}
+
 // links
 @mixin link {
-  @include normal-text();
+  @include kiln-copy();
 
   color: $blue;
-  font-family: $system-fonts;
   text-decoration: none;
 
   &:hover,

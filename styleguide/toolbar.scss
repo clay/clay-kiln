@@ -3,46 +3,29 @@
 @import 'buttons';
 @import 'layers';
 
+$height: 60px;
+
 .kiln-toolbar-wrapper {
   @include toolbar-layer();
 
   left: 0;
   position: fixed;
-  top: 0;
+  top: calc(100% - #{$height});
   width: 100%;
 }
 
 .kiln-toolbar {
-  background-color: #fff;
-  border-bottom: 1px solid $black-25;
-  box-shadow: 0 1px 10px -5px $black;
-  height: 50px;
+  background-color: $black;
+  height: $height;
   left: 0;
   position: absolute;
   top: 0;
   width: 100%;
-  z-index: 2;
-
-  @media screen and (min-width: 600px) {
-    height: 60px;
-  }
-
-  @media screen and (min-width: 1024px) {
-    height: 70px;
-  }
 }
 
 // when the editor toolbar is on the screen, push the page content down
 body {
-  padding-top: 50px;
-
-  @media screen and (min-width: 600px) {
-    padding-top: 60px;
-  }
-
-  @media screen and (min-width: 1024px) {
-    padding-top: 70px;
-  }
+  padding-bottom: $height;
 }
 
 .kiln-toolbar-inner {
@@ -51,112 +34,60 @@ body {
   height: 100%;
   left: 0;
   margin: 0 auto;
-  max-width: 1200px;
+  padding: 0 15px;
   position: relative;
   top: 0;
   width: 100%;
 }
 
-.kiln-toolbar-inner > button:not(.publish) {
-  @include button-small();
-  @include button-secondary-2();
+.kiln-toolbar-inner .kiln-toolbar-button, {
+  @include button-filled($black-75);
 
+  align-items: center;
+  display: flex;
   flex: 0 0 auto;
+  margin: 0 10px 0 0;
 }
 
-.kiln-toolbar-inner > button:first-of-type {
-  margin-left: 20px;
+.kiln-toolbar-button .icon,
+.kiln-toolbar-button .icon svg {
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  width: 18px;
 }
 
-.publish {
-  @include button-large();
-  @include button-primary-1();
+.kiln-toolbar-button .text {
+  display: none;
 
-  margin-right: 20px;
+  @media screen and (min-width: 1024px) {
+    display: block;
+    margin-left: 10px;
+  }
 }
 
-.toolbar-spacer {
+.kiln-toolbar-inner .user-icon {
+  @include button();
+
+  background-color: transparent;
+  border: none;
+  color: $white;
+  padding: 6px 0 0;
+
+  svg {
+    height: 24px;
+    margin: 0;
+    padding: 0;
+    width: 32px;
+  }
+}
+
+.kiln-toolbar-inner .flex-span {
   flex: 1 1 auto;
 }
 
-// Status of saving controlled by class on body.
-.kiln-toolbar-inner > .status:before {
-  @include normal-text();
-  @include overlay-copy();
+.kiln-toolbar-inner .publish {
+  @include button-filled($green);
 
-  color: $blue-75;
-  content: 'Saved.';
-}
-.editing .kiln-toolbar-inner > .status:before {
-  content: 'Saving...';
-}
-
-.mobile-button-text {
-  display: inline;
-
-  @media screen and (min-width: 600px) {
-    display: none;
-  }
-}
-
-.non-mobile-button-text {
-  display: none;
-
-  @media screen and (min-width: 600px) {
-    display: inline;
-  }
-}
-
-// publish pane
-.kiln-publish-pane {
-  padding: 5px 10px;
-  position: absolute;
-  text-align: center;
-  top: -100px; // make sure it's NEVER shown in the screen, no matter how long the publish text is
-  width: 100%;
-  z-index: 1;
-}
-
-.kiln-publish-pane.success {
-  background-color: $green-transparent;
-}
-
-.kiln-publish-pane.error {
-  background-color: $red-transparent;
-}
-
-.kiln-publish-pane.show {
-  top: 50px;
-  transition: top 300ms cubic-bezier(.17, .04, .03, .94);
-
-  @media screen and (min-width: 600px) {
-    top: 60px;
-  }
-
-  @media screen and (min-width: 1024px) {
-    top: 70px;
-  }
-}
-
-.publish-status {
-  @include normal-text();
-  @include overlay-copy();
-
-  color: #fff;
-  font-weight: 600;
-}
-
-.publish-link {
-  @include button-small();
-  @include button-primary-3();
-
-  display: inline-block;
-  float: none;
-  font-weight: 600;
-  margin: 0 0 0 15px;
-  text-decoration: none;
-
-  @media (max-width: 599.9px) {
-    margin-top: 5px;
-  }
+  margin-right: 0;
 }

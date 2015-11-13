@@ -5,7 +5,7 @@
 .editor-overlay-background {
   @include overlay-layer();
 
-  background-color: $shadow-80;
+  background-color: $overlay-background;
   display: block;
   height: 100%;
   left: 0;
@@ -16,15 +16,14 @@
 }
 
 .editor-overlay {
-  @include overlay-copy();
+  @include primary-text();
 
-  background-color: #fff;
-  border-radius: 4px;
-  margin: 165px auto 200px;
+  background-color: $white;
+  box-shadow: 0 0 30px 0 $overlay-shadow;
+  margin: 30vh auto 60px;
   max-width: 700px;
   min-height: 50px;
   overflow: visible;
-  padding: 22px 32px 30px;
   position: relative;
   width: 100%;
 

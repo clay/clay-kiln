@@ -13,7 +13,7 @@
 
 .open-add-components,
 .open-add-components:nth-of-type(n+1) {
-  @include icon-large();
+  @include button-outlined($blue, #fff);
 
   cursor: pointer;
   float: left;
@@ -24,17 +24,17 @@
 .open-add-components-inner {
   color: $blue;
   display: block;
-  font-family: Arial, sans-serif;
+  font-family: Arial, sans-serif; // explicitly Arial
   font-size: 30px;
-  height: 38px;
-  line-height: 38px;
+  height: 34px;
+  line-height: 34px;
   margin: 0;
   padding: 0;
   text-align: center;
   transform: rotate(0deg) scale(1);
   transition: transform 200ms ease-out;
   user-select: none;
-  width: 38px;
+  width: 34px;
 }
 
 .open-add-components.open .open-add-components-inner {
@@ -65,7 +65,7 @@
   opacity: 0;
   transform: translateY(-100%);
   transition: opacity 200ms ease-out;
-  width: calc(100% - 60px);
+  width: calc(100% - 55px);
 }
 
 .add-components-pane.open {
@@ -79,8 +79,7 @@
 }
 
 .add-component {
-  @include button-large();
-  @include button-tertiary();
+  @include button-outlined($blue, #fff);
 
   margin: 0 15px 15px 0;
 }

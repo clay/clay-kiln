@@ -1,104 +1,85 @@
 @import 'colors';
 @import 'typography';
 
-@mixin button-large {
-  @include overlay-copy();
+@mixin button {
+  @include primary-text();
 
   border-radius: 4px;
   box-shadow: none;
   cursor: pointer;
   float: left;
-  font-size: 20px;
-  height: 40px;
-  line-height: 24px;
-  margin: 0;
-  margin-right: 20px;
+  height: 34px;
+  line-height: 16px;
+  margin: 0 15px 0 0;
   outline: none;
-  padding: 7px 14px 6px;
+  padding: 7px 11px 6px;
   width: auto;
 }
 
-@mixin button-small {
-  @include overlay-copy();
-
-  border-radius: 4px;
-  box-shadow: none;
-  cursor: pointer;
-  float: left;
-  font-size: 16px;
-  line-height: 19px;
-  margin: 0;
-  margin-right: 15px;
-  outline: none;
-  padding: 6px 8px 4px;
-}
-
 // button styles
-// note: these are composable with both button-large and button-small
 
-@mixin button-primary-1 {
-  background-color: $green;
-  border: 1px solid $green;
-  color: #fff;
+@mixin button-filled($color: $black-75, $text-color: $white) {
+  @include button();
+
+  background-color: $color;
+  border: none;
+  color: $text-color;
+  transition: background-color 150ms ease-out;
+
+  &:hover {
+    background-color: lighten($color, 2%);
+    transition: background-color 150ms ease-out;
+  }
+
+  &:active {
+    background-color: lighten($color, 5%);
+    transition: background-color 50ms ease-out;
+  }
+
+  &:disabled {
+    background-color: $black-25;
+    color: $text-color;
+    transition: all 50ms ease-out;
+  }
 }
 
-@mixin button-primary-2 {
-  background-color: #fff;
-  border: 1px solid $green;
-  color: $green;
+@mixin button-outlined($color: $black-75, $fill: $white) {
+  @include button();
+
+  background-color: $fill;
+  border: 1px solid $color;
+  color: $color;
+  transition: background-color 150ms ease-out;
+
+  &:hover {
+    background-color: rgba($color, .05);
+    transition: background-color 150ms ease-out;
+  }
+
+  &:active {
+    background-color: rgba($color, .12);
+    color: rgba($color, .12);
+    transition: background-color 50ms ease-out;
+  }
+
+  &:disabled {
+    background-color: $fill;
+    border: 1px solid $black-25;
+    color: $black-25;
+    transition: all 150ms ease-out;
+  }
 }
 
-// used for "see article" button, etc
-@mixin button-primary-3 {
-  background-color: transparent;
-  border: 1px solid #fff;
-  color: #fff;
-}
+// semantic buttons
 
-@mixin button-secondary-1 {
-  background-color: $black-50;
-  border: 1px solid $black-50;
-  color: $green;
-  font-weight: bold;
-}
+// primary - used for publishing, confirmations, "moving forward"
+// $green
 
-@mixin button-secondary-2 {
-  background-color: #fff;
-  border: 1px solid $black-50;
-  color: $black-50;
-}
+// secondary - used for "parallel actions"
+// $blue
 
-@mixin button-tertiary {
-  background-color: #fff;
-  border: 1px solid $blue;
-  color: $blue;
-}
+// tertiary - used for "parallel actions"
+// $black-75 (default button color)
 
-@mixin button-warning {
-  background-color: $red;
-  border: 1px solid $red;
-  color: #fff;
-  font-weight: bold;
-}
-
-// icon buttons
-
-@mixin icon-large {
-  background-color: #fff;
-  border: 1px solid $blue;
-  border-radius: 4px;
-  height: 40px;
-  padding: 0;
-  position: relative;
-  width: 40px;
-}
-
-@mixin icon-small {
-  background-color: #fff;
-  border: 1px solid $blue;
-  border-radius: 4px;
-  height: 22px;
-  padding: 0;
-  position: relative;
-  width: 22px;
-}
+// scheduled button
+// $orange (filled only)

@@ -9,11 +9,8 @@
 }
 
 .simple-list-item {
-  @include button-small();
+  @include button-outlined($black-75, $white);
 
-  background-color: #fff;
-  border: 1px solid $black;
-  color: $black;
   display: inline-block;
   flex: 0 0 auto;
   margin: 0 12px 12px 0;
@@ -26,7 +23,7 @@
 }
 
 .simple-list-add {
-  @include overlay-copy();
+  @include normal-text();
 
   border: 0;
   display: inline-block;

@@ -14,14 +14,6 @@
   position: relative;
 }
 
-.editor > header {
-  @include section-header();
-
-  bottom: calc(100% + 38px);
-  left: -32px;
-  position: absolute;
-}
-
 .editor > form {
   @include clearfix();
 
@@ -30,15 +22,25 @@
   overflow-y: hidden;
 }
 
-.editor .button-container {
-  left: -32px;
-  position: absolute;
-  top: calc(100% + 60px);
+.editor > form > header {
+  align-items: center;
+  border-bottom: 1px solid $grey;
+  display: flex;
+  padding: 13px 20px;
+  width: 100%;
 }
 
-.editor .button-container .save {
-  @include button-large();
-  @include button-primary-1();
+.editor > form > header .form-header {
+  @include header();
+
+  flex: 1 1 auto;
+}
+
+.editor .save {
+  @include button-filled($green);
+
+  flex: 0 0 auto;
+  margin-right: 0;
 }
 
 /* Input container contains inputs, textareas, or whatever else, arranged in columns from top to bottom.  Each item
@@ -48,6 +50,11 @@
   align-items: stretch;
   display: flex;
   flex-flow: row wrap;
+  padding: 30px 20px 50px;
+}
+
+.editor-inline .input-container {
+  padding: 0;
 }
 
 /* labels are containers that refer to inputs, textareas, or whatever else */
@@ -67,6 +74,7 @@
 .editor .label-inner {
   @include label();
 
+  color: $black;
   margin-right: 10px;
 }
 
