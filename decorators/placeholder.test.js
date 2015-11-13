@@ -159,6 +159,30 @@ describe(dirname, function () {
         expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'})).to.equal(false);
       });
 
+      it('returns true if empty component list', function () {
+        var stubData = [];
+
+        stubData._schema = {
+          _placeholder: true,
+          _componentList: {}
+        };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'content'})).to.equal(true);
+      });
+
+      it('returns false if non-empty component list', function () {
+        var stubData = [{
+          _ref: 'fakeRef2'
+        }];
+
+        stubData._schema = {
+          _placeholder: true,
+          _componentList: {}
+        };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'content'})).to.equal(false);
+      });
+
       it('returns true if group with ifEmpty pointing to an empty field', function () {
         var title = {
             value: '',
