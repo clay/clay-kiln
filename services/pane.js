@@ -1,4 +1,5 @@
-var dom = require('./dom'),
+var _ = require('lodash'),
+  dom = require('./dom'),
   ds = require('dollar-slice'),
   paneController = require('../controllers/pane'),
   publishPaneController = require('../controllers/publish-pane'),
@@ -14,11 +15,23 @@ function createPane(header, innerEl) {
   var template = dom.find('.kiln-pane-template'),
     el = document.importNode(template.content, true);
 
+  close();
   // add header and contents
   el.querySelector('.pane-header').innerHTML = header;
   el.querySelector('.pane-inner').appendChild(innerEl);
 
   return el;
+}
+
+/**
+ * close an open pane
+ */
+function close() {
+  var pane  = dom.find('.kiln-toolbar-pane-background');
+
+  if (pane) {
+    dom.removeElement(pane);
+  }
 }
 
 /**
@@ -42,4 +55,49 @@ function openPublish() {
   ds.get('publish-pane', toolbar.previousElementSibling.querySelector('.actions'));
 }
 
+function addErrors(errors) {
+  return _.reduce(errors, function (el, error) {
+    var errorEl = dom.create(`
+        <div class="publish-error">
+          <span class="label">${error.rule.label}:</span>
+          <span class="description">${error.rule.description}</span>
+          <ul class="errors"></ul>
+        </div>
+      `),
+      list = dom.find(errorEl, 'ul');
+
+    // add each place where the error occurs
+    _.each(error.errors, function (item) {
+      var itemEl = dom.create(`<li>${item.label}</li>`);
+
+      list.appendChild(itemEl);
+    });
+
+    el.appendChild(errorEl);
+    return el;
+  }, document.createDocumentFragment());
+}
+
+function openValidationErrors(errors) {
+  var header = 'Before you can publish&hellip;',
+    messageEl = dom.create(`
+      <div class="error-message">This page is missing things needed to publish.<br />Address the following and try publishing again.</div>
+    `),
+    errorsEl = addErrors(errors),
+    innerEl = document.createDocumentFragment(),
+    el;
+
+  innerEl.appendChild(messageEl);
+  innerEl.appendChild(errorsEl);
+
+  el = createPane(header, innerEl);
+
+  dom.insertBefore(toolbar, el);
+  // init controller for pane background
+  ds.controller('pane', paneController);
+  ds.get('pane', toolbar.previousElementSibling);
+}
+
+module.exports.close = close;
 module.exports.openPublish = openPublish;
+module.exports.openValidationErrors = openValidationErrors;

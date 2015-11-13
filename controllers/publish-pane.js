@@ -1,4 +1,5 @@
-const edit = require('../services/edit'),
+const pane = require('../services/pane'),
+  edit = require('../services/edit'),
   rules = require('../validators'),
   validation = require('../services/publish-validation');
 
@@ -13,10 +14,10 @@ module.exports = function () {
     },
 
     onPublishNow: function () {
-      console.log('publishing')
       return validation.validate(rules).then(function (errors) {
         if (errors.length) {
-          alert('there are errors'); // eslint-disable-line
+          pane.close();
+          pane.openValidationErrors(errors);
         } else {
           return edit.publishPage().then(function () {
             alert('published!'); // eslint-disable-line

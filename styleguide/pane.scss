@@ -93,3 +93,24 @@ $pane-margin: 30vh;
 
   width: 100%;
 }
+
+/* validation errors */
+
+.kiln-toolbar-pane .error-message {
+  @include primary-text();
+
+  color: $red;
+  padding: 0 0 20px;
+}
+
+.kiln-toolbar-pane .publish-error {
+  @include primary-text();
+
+  border-top: 1px solid $grey;
+  padding: 20px 0;
+
+  .label {
+    color: $red;
+    text-transform: uppercase;
+  }
+}

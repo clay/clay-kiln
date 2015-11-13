@@ -2,6 +2,7 @@ var EditorToolbar,
   dom = require('../services/dom'),
   edit = require('../services/edit'),
   events = require('../services/events'),
+  focus = require('../decorators/focus'),
   pane = require('../services/pane');
 
 /**
