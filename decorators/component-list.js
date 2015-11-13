@@ -7,6 +7,23 @@ var _ = require('lodash'),
   dragula = require('dragula');
 
 /**
+ * remove parent placeholder
+ * @param {{ref: string, path: string}} field
+ */
+function removeParentPlaceholder(field) {
+  // component > field > div > placeholder
+  var parent = document.querySelector('[' + references.referenceAttribute + '="' + field.ref + '"]'),
+    list = parent && parent.querySelector('[' + references.editableAttribute + '="' + field.path + '"]'),
+    div = list && dom.getFirstChildElement(list),
+    placeholder = div && dom.getFirstChildElement(div);
+
+  // remove component list placeholder if it exists
+  if (placeholder && placeholder.classList.contains('kiln-placeholder')) {
+    dom.removeElement(placeholder);
+  }
+}
+
+/**
  * Create click handler for adding a component
  * @param {Element} pane
  * @param {{ref: string, path: string}} field
@@ -15,16 +32,7 @@ var _ = require('lodash'),
  */
 function addComponent(pane, field, name) {
   return function (e) {
-    // component > field > div > placeholder
-    var parentPlaceholder = dom.getFirstChildElement(dom.getFirstChildElement(document
-      .querySelector('[' + references.referenceAttribute + '="' + field.ref + '"]') // parent component
-      .querySelector('[' + references.editableAttribute + '="' + field.path + '"]'))); // specific field
-
-    // remove component list placeholder if it exists
-    if (parentPlaceholder && parentPlaceholder.classList.contains('kiln-placeholder')) {
-      dom.removeElement(parentPlaceholder);
-    }
-
+    removeParentPlaceholder(field);
     e.stopPropagation();
     return edit.createComponent(name)
       .then(function (res) {
