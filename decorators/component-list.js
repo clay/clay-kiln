@@ -15,6 +15,16 @@ var _ = require('lodash'),
  */
 function addComponent(pane, field, name) {
   return function (e) {
+    // component > field > div > placeholder
+    var parentPlaceholder = dom.getFirstChildElement(dom.getFirstChildElement(document
+      .querySelector('[' + references.referenceAttribute + '="' + field.ref + '"]') // parent component
+      .querySelector('[' + references.editableAttribute + '="' + field.path + '"]'))); // specific field
+
+    // remove component list placeholder if it exists
+    if (parentPlaceholder && parentPlaceholder.classList.contains('kiln-placeholder')) {
+      dom.removeElement(parentPlaceholder);
+    }
+
     e.stopPropagation();
     return edit.createComponent(name)
       .then(function (res) {

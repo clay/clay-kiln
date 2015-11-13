@@ -127,7 +127,7 @@ function hasPlaceholder(el, options) {
     isPlaceholder = !!schema && !!schema[references.placeholderProperty],
     isField = !!schema && !!schema[references.fieldProperty],
     isGroup = !!schema && !!schema.fields,
-    isComponentList = !!schema && !!schema._componentList;
+    isComponentList = !!schema && !!schema[references.componentListProperty];
 
   // if it has a placeholder...
   // if it's a field, make sure it's empty
