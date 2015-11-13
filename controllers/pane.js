@@ -39,7 +39,7 @@ module.exports = function () {
     close: function (e) {
       var el = this.el;
 
-      if (e.target === e.currentTarget) {
+      if (e.target === e.currentTarget || e.currentTarget.classList.contains('close')) {
         // we clicked on the overlay itself
         dom.removeElement(el);
       }

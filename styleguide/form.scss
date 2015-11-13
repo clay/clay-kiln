@@ -45,12 +45,14 @@
   @include header();
 
   flex: 1 1 auto;
+  margin-top: 9px;
 }
 
 .editor .save {
   @include button-filled($green);
 
   flex: 0 0 auto;
+  margin-left: 30px;
   margin-right: 0;
 }
 
