@@ -81,13 +81,13 @@ describe(dirname, function () {
           expect(condense(result.innerHTML)).to.equal(condense(`
           <div class="editor-overlay">
             <section class="editor">
-              <header>Thing</header>
               <form>
+                <header>
+                  <span class="form-header">Thing</span>
+                  <button type="submit" class="save">Save</button>
+                </header>
                 <div class="input-container">
                   <div class="behaviour-element"></div>
-                </div>
-                <div class="button-container">
-                  <button type="submit" class="save">Save</button>
                 </div>
               </form>
               </section>
