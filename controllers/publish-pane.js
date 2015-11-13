@@ -9,10 +9,11 @@ module.exports = function () {
 
   constructor.prototype = {
     events: {
-      '.publish-now': 'onPublishNow'
+      '.publish-now click': 'onPublishNow'
     },
 
     onPublishNow: function () {
+      console.log('publishing')
       return validation.validate(rules).then(function (errors) {
         if (errors.length) {
           alert('there are errors'); // eslint-disable-line
