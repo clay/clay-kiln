@@ -8,6 +8,13 @@
   <div class="kiln-toolbar-wrapper">
     <div class="kiln-status"></div>
     <div class="kiln-progress"></div>
+    <div class="kiln-toolbar-pane">
+      <header>
+        <span class="pane-header"></span>
+        <button class="close">{% include 'public/media/components/clay-kiln/close.svg' %}</button>
+      </header>
+      <div class="pane-inner"></div>
+    </div>
     <section class="kiln-toolbar"
       {# the editor needs some stuff from the backend #}
       data-uri="{{ _ref or _self }}"
