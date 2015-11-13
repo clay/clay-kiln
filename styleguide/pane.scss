@@ -27,7 +27,7 @@ $pane-margin: 30vh;
   justify-content: center;
   margin: 0;
   max-height: 100 - $pane-margin;
-  max-width: 400px;
+  max-width: 375px;
   min-height: 50px;
   padding: 0;
   position: absolute;
@@ -67,6 +67,7 @@ $pane-margin: 30vh;
   flex: 0 0 auto;
   margin-left: 30px;
   margin-right: 0;
+  padding-right: 0;
 }
 
 .kiln-toolbar-pane .pane-inner {
@@ -77,4 +78,18 @@ $pane-margin: 30vh;
   flex-flow: row wrap;
   overflow: scroll;
   padding: 30px 20px 50px;
+}
+
+/* types of panes */
+
+/* publish */
+
+.kiln-toolbar-pane .actions {
+  width: 100%;
+}
+
+.kiln-toolbar-pane .publish-now {
+  @include button-outlined($green, $white);
+
+  width: 100%;
 }
