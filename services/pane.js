@@ -12,14 +12,12 @@ var dom = require('./dom'),
  */
 function createPane(header, innerEl) {
   var template = dom.find('.kiln-pane-template'),
-    el;
+    el = document.importNode(template.content, true);
 
-  // add header and contents before importing
-  template.content.querySelector('.pane-header').innerHTML = header;
-  template.content.querySelector('.pane-inner').appendChild(innerEl);
+  // add header and contents
+  el.querySelector('.pane-header').innerHTML = header;
+  el.querySelector('.pane-inner').appendChild(innerEl);
 
-  // import template
-  el = document.importNode(template.content, true);
   return el;
 }
 
