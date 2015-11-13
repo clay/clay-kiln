@@ -15,7 +15,6 @@ function createPane(header, innerEl) {
   var template = dom.find('.kiln-pane-template'),
     el = document.importNode(template.content, true);
 
-  close();
   // add header and contents
   el.querySelector('.pane-header').innerHTML = header;
   el.querySelector('.pane-inner').appendChild(innerEl);
@@ -46,6 +45,7 @@ function openPublish() {
     `),
     el = createPane(header, actionsEl);
 
+  close();
   dom.insertBefore(toolbar, el);
   // init controller for pane background
   ds.controller('pane', paneController);
@@ -92,6 +92,7 @@ function openValidationErrors(errors) {
 
   el = createPane(header, innerEl);
 
+  close();
   dom.insertBefore(toolbar, el);
   // init controller for pane background
   ds.controller('pane', paneController);
