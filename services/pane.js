@@ -103,7 +103,13 @@ function addErrors(errors) {
 
 /**
  * open validation error pane
- * @param {array} errors
+ * @param {Object[]} errors
+ * @param {object} errors[].rule
+ * @param {string} errors[].rule.label e.g. 'Required'
+ * @param {string} errors[].rule.description e.g. 'Required fields cannot be blank'
+ * @param {Object[]} errors[].errors
+ * @param {string} errors[].errors[].label e.g. 'Article > Header'
+ * @param {string} [errors[].errors[].preview] e.g. 'text in a paragraph TK more text...'
  */
 function openValidationErrors(errors) {
   var header = 'Before you can publish&hellip;',
