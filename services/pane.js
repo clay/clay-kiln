@@ -61,7 +61,8 @@ function openPublish() {
       <div class="actions">
         <button class="publish-now">Publish Now</button>
       </div>
-    `),
+    `), // todo: add other publishing actions, depending on page state
+    // e.g. schedule publish, message, cancel schedule, unpublish
     el = open(header, actionsEl);
 
   // init controller for publish pane
