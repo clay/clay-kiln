@@ -56,11 +56,9 @@
   margin-right: 0;
 }
 
-/* Input container contains inputs, textareas, or whatever else, arranged in columns from top to bottom.  Each item
- is in its own column. */
 .editor .input-container {
-  align-content: stretch;
-  align-items: stretch;
+  align-content: flex-start;
+  align-items: flex-start;
   display: flex;
   flex: 0 1 100%;
   flex-flow: row wrap;
