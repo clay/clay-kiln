@@ -130,7 +130,7 @@ function updateOrder(el, options) {
     refProp = references.referenceProperty;
 
   // refresh the data from the server first, in case any non-list properties have changed
-  return edit.getData(options.ref).then(function (parentData) {
+  return edit.getData(options.ref).then(function (data) {
     var currentElements = el.querySelectorAll(':scope > [' + refAttr + ']'), // only get direct children of the list
       newData = _.map(currentElements, function (item) {
         var newItem = {};
@@ -142,8 +142,8 @@ function updateOrder(el, options) {
     // note: when we deal with multi-user editing, add logic to add list items
     // that have been added by other people, rather than simply
     // persisting whatever's in the dom to the server :-)
-    parentData[options.path] = newData;
-    return edit.save(parentData);
+    data[options.path] = newData;
+    return edit.save(data);
   });
 }
 
