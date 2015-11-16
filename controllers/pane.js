@@ -24,8 +24,12 @@ module.exports = function () {
   }
 
   function constructor(el) {
-    disableScroll();
     dom.onRemove(el, enableScroll);
+    setTimeout(function () {
+      disableScroll();
+      // this needs to happen AFTER any onRemove event fires from a previous pane
+      // since we're switching between panes very quickly
+    }, 0);
 
     this.el = el;
   }
