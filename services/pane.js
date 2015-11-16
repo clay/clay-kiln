@@ -55,6 +55,14 @@ function openPublish() {
   ds.get('publish-pane', toolbar.previousElementSibling.querySelector('.actions'));
 }
 
+function addPreview(preview) {
+  if (preview) {
+    return `<span class="error-preview">${preview}</span>`;
+  } else {
+    return '';
+  }
+}
+
 function addErrors(errors) {
   return _.reduce(errors, function (el, error) {
     var errorEl = dom.create(`
@@ -68,7 +76,7 @@ function addErrors(errors) {
 
     // add each place where the error occurs
     _.each(error.errors, function (item) {
-      var itemEl = dom.create(`<li>${item.label}</li>`);
+      var itemEl = dom.create(`<li><span class="error-label">${item.label}</span>${addPreview(item.preview)}</li>`);
 
       list.appendChild(itemEl);
     });

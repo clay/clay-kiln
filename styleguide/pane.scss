@@ -113,4 +113,20 @@ $pane-margin: 30vh;
     color: $red;
     text-transform: uppercase;
   }
+
+  .errors {
+    margin: 10px 0 0 20px;
+    padding: 0;
+
+    li {
+      margin-top: 5px;
+    }
+  }
+}
+
+.kiln-toolbar-pane .error-preview {
+  @include secondary-text();
+
+  font-style: italic;
+  margin-left: 5px;
 }
