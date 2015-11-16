@@ -2,8 +2,7 @@ var _ = require('lodash'),
   dom = require('./dom'),
   ds = require('dollar-slice'),
   paneController = require('../controllers/pane'),
-  publishPaneController = require('../controllers/publish-pane'),
-  toolbar = dom.find('.kiln-toolbar');
+  publishPaneController = require('../controllers/publish-pane');
 
 /**
  * create pane
@@ -40,7 +39,8 @@ function close() {
  * @returns {Element} pane
  */
 function open(header, innerEl) {
-  var el = createPane(header, innerEl),
+  var toolbar = dom.find('.kiln-toolbar'),
+    el = createPane(header, innerEl),
     pane;
 
   close(); // close any other panes before opening a new one
