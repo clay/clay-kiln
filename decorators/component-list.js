@@ -122,28 +122,28 @@ function createPane(args) {
 /**
  * Save the order of the items as found in the DOM.
  * @param {Element} el
- * @param {{ref: string, path: string, data: object}} options
+ * @param {{ref: string, path: string}} options
  * @returns {Promise}
  */
 function updateOrder(el, options) {
-  var newOrder = [],
-    refAttr = references.referenceAttribute,
-    refProp = references.referenceProperty,
-    currentRefs = options.data.map(function (item) { return item[refProp]; });
+  var refAttr = references.referenceAttribute,
+    refProp = references.referenceProperty;
 
-  _.each(el.querySelectorAll('[' + refAttr + ']'), function (item) {
-    var ref = item.getAttribute(refAttr),
-      val = {};
+  // refresh the data from the server first, in case any non-list properties have changed
+  return edit.getData(options.ref).then(function (data) {
+    var currentElements = el.querySelectorAll(':scope > [' + refAttr + ']'), // only get direct children of the list
+      newData = _.map(currentElements, function (item) {
+        var newItem = {};
 
-    if (_.contains(currentRefs, ref)) {
-      val[refProp] = ref;
-      newOrder.push(val);
-    }
-  });
-  // Save.
-  return edit.getData(options.ref).then(function (componentData) {
-    componentData[options.path] = newOrder;
-    return edit.save(componentData);
+        newItem[refProp] = item.getAttribute(refAttr);
+        return newItem;
+      });
+
+    // note: when we deal with multi-user editing, add logic to add list items
+    // that have been added by other people, rather than simply
+    // persisting whatever's in the dom to the server :-)
+    data[options.path] = newData;
+    return edit.save(data);
   });
 }
 
@@ -275,3 +275,6 @@ module.exports.handler = handler;
 
 // close panes when someone unfocuses / focuses a field
 module.exports.closePanes = closePanes;
+
+// for testing
+module.exports.updateOrder = updateOrder;
