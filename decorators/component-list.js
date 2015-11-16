@@ -129,6 +129,7 @@ function updateOrder(el, options) {
   var refAttr = references.referenceAttribute,
     refProp = references.referenceProperty;
 
+  // refresh the data from the server first, in case any non-list properties have changed
   return edit.getData(options.ref).then(function (parentData) {
     var currentElements = el.querySelectorAll(':scope > [' + refAttr + ']'), // only get direct children of the list
       newData = _.map(currentElements, function (item) {
