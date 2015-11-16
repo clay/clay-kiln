@@ -2,8 +2,8 @@ var EditorToolbar,
   dom = require('../services/dom'),
   edit = require('../services/edit'),
   events = require('../services/events'),
-  rules = require('../validators'),
-  validation = require('../services/publish-validation');
+  focus = require('../decorators/focus'),
+  pane = require('../services/pane');
 
 /**
  * Create a new page with the same layout as the current page.
@@ -62,19 +62,8 @@ EditorToolbar.prototype = {
     // open the history pane if it's not already open (close other panes first)
   },
 
-  onPublishClick: function openPublishPane() {
-    // open the publish pane if it's not already open (close other panes first)
-    // todo: add publish pane. right now it's just publishing instantly
-    return validation.validate(rules).then(function (errors) {
-      if (errors.length) {
-        alert('there are errors'); // eslint-disable-line
-      } else {
-        return edit.publishPage().then(function () {
-          alert('published!'); // eslint-disable-line
-        });
-      }
-    });
-  }
+  // open the publish pane if it's not already open (close other panes first)
+  onPublishClick: pane.openPublish
 };
 
 module.exports = EditorToolbar;

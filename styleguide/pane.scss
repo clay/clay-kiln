@@ -1,0 +1,132 @@
+@import 'colors';
+@import 'layers';
+@import 'buttons';
+@import 'typography';
+$pane-margin: 30vh;
+
+.kiln-toolbar-pane-background {
+  background-color: $overlay-background;
+  display: block;
+  height: 100%;
+  left: 0;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.kiln-toolbar-pane {
+  @include primary-text();
+
+  background-color: $white;
+  bottom: 60px;
+  box-shadow: 0 0 30px 0 $overlay-shadow;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  justify-content: center;
+  margin: 0;
+  max-height: 100 - $pane-margin;
+  max-width: 375px;
+  min-height: 50px;
+  padding: 0;
+  position: absolute;
+  right: 0;
+  width: 100%;
+
+  @media screen and (min-width: 600px) {
+    width: 90%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 80%;
+  }
+}
+
+.kiln-toolbar-pane header {
+  align-items: flex-start;
+  border-bottom: 1px solid $grey;
+  display: flex;
+  flex: 1 0 auto;
+  padding: 13px 20px;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .pane-header {
+  @include header();
+
+  flex: 1 1 auto;
+  margin-top: 9px;
+}
+
+.kiln-toolbar-pane .close {
+  @include button();
+
+  background-color: $white;
+  border: none;
+  flex: 0 0 auto;
+  margin-left: 30px;
+  margin-right: 0;
+  padding-right: 0;
+}
+
+.kiln-toolbar-pane .pane-inner {
+  align-content: stretch;
+  align-items: stretch;
+  display: flex;
+  flex: 0 1 100%;
+  flex-flow: row wrap;
+  overflow: scroll;
+  padding: 30px 20px 50px;
+}
+
+/* types of panes */
+
+/* publish */
+
+.kiln-toolbar-pane .actions {
+  width: 100%;
+}
+
+.kiln-toolbar-pane .publish-now {
+  @include button-outlined($green, $white);
+
+  width: 100%;
+}
+
+/* validation errors */
+
+.kiln-toolbar-pane .error-message {
+  @include primary-text();
+
+  color: $red;
+  padding: 0 0 20px;
+}
+
+.kiln-toolbar-pane .publish-error {
+  @include primary-text();
+
+  border-top: 1px solid $grey;
+  padding: 20px 0;
+
+  .label {
+    color: $red;
+    text-transform: uppercase;
+  }
+
+  .errors {
+    margin: 10px 0 0 20px;
+    padding: 0;
+
+    li {
+      margin-top: 5px;
+    }
+  }
+}
+
+.kiln-toolbar-pane .error-preview {
+  @include secondary-text();
+
+  font-style: italic;
+  margin-left: 5px;
+}
