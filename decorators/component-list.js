@@ -122,7 +122,7 @@ function createPane(args) {
 /**
  * Save the order of the items as found in the DOM.
  * @param {Element} el
- * @param {{ref: string, path: string, data: object}} options
+ * @param {{ref: string, path: string}} options
  * @returns {Promise}
  */
 function updateOrder(el, options) {
@@ -275,3 +275,6 @@ module.exports.handler = handler;
 
 // close panes when someone unfocuses / focuses a field
 module.exports.closePanes = closePanes;
+
+// for testing
+module.exports.updateOrder = updateOrder;
