@@ -34,8 +34,8 @@ function close() {
 
 /**
  * open a pane
- * @param {string} header
- * @param {Element} innerEl
+ * @param {string} header will display at the top of the pane, html accepted
+ * @param {Element} innerEl will display inside the pane
  * @returns {Element} pane
  */
 function open(header, innerEl) {

@@ -62,10 +62,8 @@ EditorToolbar.prototype = {
     // open the history pane if it's not already open (close other panes first)
   },
 
-  onPublishClick: function openPublishPane() {
-    // open the publish pane if it's not already open (close other panes first)
-    pane.openPublish();
-  }
+  // open the publish pane if it's not already open (close other panes first)
+  onPublishClick: pane.openPublish
 };
 
 module.exports = EditorToolbar;
