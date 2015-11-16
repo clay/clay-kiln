@@ -104,12 +104,19 @@ describe(dirname, function () {
       });
 
       it('only looks for direct children of the list', function () {
-        var subItem = document.createElement('span');
+        var subItem = document.createElement('span'),
+          dontExpectSubData = function () {
+            expect(edit.save.calledWith({
+              content: [{
+                _ref: 'fakeSubItemRef'
+              }]
+            })).to.equal(false);
+          };
 
         subItem.setAttribute(references.referenceAttribute, 'fakeSubItemRef');
         item.appendChild(subItem);
         el.appendChild(item);
-        fn(el, options).then(expectData);
+        fn(el, options).then(expectData).then(dontExpectSubData);
         // should only expect fakeItemRef, not fakeSubItemRef
       });
     });
