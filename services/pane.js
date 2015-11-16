@@ -34,6 +34,25 @@ function close() {
 }
 
 /**
+ * open a pane
+ * @param {string} header
+ * @param {Element} innerEl
+ * @returns {Element} pane
+ */
+function open(header, innerEl) {
+  var el = createPane(header, innerEl),
+    pane;
+
+  close(); // close any other panes before opening a new one
+  dom.insertBefore(toolbar, el);
+  pane = toolbar.previousElementSibling; // now grab a reference to the dom
+  // init controller for pane background
+  ds.controller('pane', paneController);
+  ds.get('pane', pane);
+  return pane;
+}
+
+/**
  * open publish pane
  */
 function openPublish() {
@@ -43,16 +62,11 @@ function openPublish() {
         <button class="publish-now">Publish Now</button>
       </div>
     `),
-    el = createPane(header, actionsEl);
+    el = open(header, actionsEl);
 
-  close();
-  dom.insertBefore(toolbar, el);
-  // init controller for pane background
-  ds.controller('pane', paneController);
-  ds.get('pane', toolbar.previousElementSibling);
   // init controller for publish pane
   ds.controller('publish-pane', publishPaneController);
-  ds.get('publish-pane', toolbar.previousElementSibling.querySelector('.actions'));
+  ds.get('publish-pane', el.querySelector('.actions'));
 }
 
 function addPreview(preview) {
@@ -86,27 +100,25 @@ function addErrors(errors) {
   }, document.createDocumentFragment());
 }
 
+/**
+ * open validation error pane
+ * @param {array} errors
+ */
 function openValidationErrors(errors) {
   var header = 'Before you can publish&hellip;',
     messageEl = dom.create(`
       <div class="error-message">This page is missing things needed to publish.<br />Address the following and try publishing again.</div>
     `),
     errorsEl = addErrors(errors),
-    innerEl = document.createDocumentFragment(),
-    el;
+    innerEl = document.createDocumentFragment();
 
   innerEl.appendChild(messageEl);
   innerEl.appendChild(errorsEl);
 
-  el = createPane(header, innerEl);
-
-  close();
-  dom.insertBefore(toolbar, el);
-  // init controller for pane background
-  ds.controller('pane', paneController);
-  ds.get('pane', toolbar.previousElementSibling);
+  open(header, innerEl);
 }
 
 module.exports.close = close;
+module.exports.open = open;
 module.exports.openPublish = openPublish;
 module.exports.openValidationErrors = openValidationErrors;
