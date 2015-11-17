@@ -1,7 +1,5 @@
 var nprogress = require('nprogress'),
   dom = require('./dom'),
-  barWrapper = dom.find('.kiln-progress-wrapper'),
-  statusEl = dom.find('.kiln-status'),
   boxShadow = '0 0 10px 0',
   colors = {
     // these are taken from styleguide/_colors.scss
@@ -23,6 +21,22 @@ nprogress.configure({
 });
 
 /**
+ * get progress bar wrapper
+ * @returns {Element}
+ */
+function getWrapper() {
+  return dom.find('.kiln-progress-wrapper');
+}
+
+/**
+ * get status element
+ * @returns {Element}
+ */
+function getStatusEl() {
+  return dom.find('.kiln-status');
+}
+
+/**
  * set color of a bar or status message
  * @param {Element} el
  * @param {string} color
@@ -42,7 +56,7 @@ function setColor(el, color, hasShadow) {
  */
 function start(color) {
   nprogress.start(); // note: .bar doesn't exist until nprogress.start() is called
-  setColor(dom.find(barWrapper, '.bar'), color, true);
+  setColor(dom.find(getWrapper(), '.bar'), color, true);
 }
 
 /**
@@ -51,7 +65,7 @@ function start(color) {
  */
 function done(color) {
   if (color) {
-    setColor(dom.find(barWrapper, '.bar'), color, true);
+    setColor(dom.find(getWrapper(), '.bar'), color, true);
   }
   nprogress.done();
 }
@@ -63,6 +77,8 @@ function done(color) {
  * @param {number} [timeout] optional timeout to automatically close status
  */
 function open(color, message, timeout) {
+  var statusEl = getStatusEl();
+
   setColor(statusEl, color);
   statusEl.innerHTML = message;
   statusEl.classList.add('on');
@@ -76,7 +92,7 @@ function open(color, message, timeout) {
  * close status message
  */
 function close() {
-  statusEl.classList.remove('on');
+  getStatusEl().classList.remove('on');
 }
 
 // progress bars
