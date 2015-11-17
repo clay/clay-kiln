@@ -64,8 +64,10 @@ function start(color) {
  * @param {string} [color] optional, if you want to transition colors before it ends
  */
 function done(color) {
-  if (color) {
-    setColor(dom.find(getWrapper(), '.bar'), color, true);
+  var bar = dom.find(getWrapper(), '.bar');
+
+  if (color && bar) {
+    setColor(bar, color, true);
   }
   nprogress.done();
 }

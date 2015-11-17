@@ -6,7 +6,9 @@ var nodeUrl = require('url'),
   decorators = require('./services/decorators'),
   dom = require('./services/dom'),
   EditorToolbar = require('./controllers/kiln-toolbar'),
-  render = require('./services/render');
+  render = require('./services/render'),
+  progress = require('./services/progress'),
+  connectionLostMessage = 'Connection Lost. Changes will <strong>NOT</strong> be saved.';
 
 // manually add built-in behaviors
 // since browserify's require() uses static analysis
@@ -44,4 +46,26 @@ document.addEventListener('DOMContentLoaded', function () {
     render.addComponentsHandlers(document);
     return new EditorToolbar(dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"]'));
   }
+});
+
+// handle connection loss
+
+window.addEventListener('load', function () {
+  console.log('we are online? ' + navigator.onLine)
+  // test connection loss on page load
+  if (!navigator.onLine) {
+    // we're offline!
+    progress.open('grey', connectionLostMessage);
+  }
+});
+
+window.addEventListener('online', function () {
+  console.log('going online');
+  progress.close(); // in case there are any status messages open, close them
+});
+
+window.addEventListener('offline', function () {
+  console.log('going offline');
+  progress.done('grey'); // turn any progress indicators to grey and end them
+  progress.open('grey', connectionLostMessage);
 });
