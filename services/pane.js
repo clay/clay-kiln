@@ -49,6 +49,8 @@ function open(header, innerEl) {
   // init controller for pane background
   ds.controller('pane', paneController);
   ds.get('pane', pane);
+  // trick browser into doing a repaint, to force the animation
+  setTimeout(function () { dom.find(pane, '.kiln-toolbar-pane').classList.add('on'); }, 0);
   return pane;
 }
 

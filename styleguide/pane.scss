@@ -3,6 +3,7 @@
 @import 'buttons';
 @import 'typography';
 $pane-margin: 30vh;
+$easeOutExpo: cubic-bezier(0.190, 1.000, 0.220, 1.000);
 
 .kiln-toolbar-pane-background {
   background-color: $overlay-background;
@@ -33,6 +34,7 @@ $pane-margin: 30vh;
   position: absolute;
   right: 0;
   width: 100%;
+  transform: translateY(100%);
 
   @media screen and (min-width: 600px) {
     width: 90%;
@@ -40,6 +42,11 @@ $pane-margin: 30vh;
 
   @media screen and (min-width: 1024px) {
     width: 80%;
+  }
+
+  &.on {
+    transition: transform 350ms $easeOutExpo;
+    transform: translateY(0);
   }
 }
 
