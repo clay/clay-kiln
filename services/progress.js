@@ -60,11 +60,16 @@ function done(color) {
  * open status message
  * @param {string} color
  * @param {string} message (note: this can be a string of html)
+ * @param {number} [timeout] optional timeout to automatically close status
  */
-function open(color, message) {
+function open(color, message, timeout) {
   setColor(statusEl, color);
   statusEl.innerHTML = message;
   statusEl.classList.add('on');
+
+  if (!!timeout) {
+    setTimeout(close, timeout);
+  }
 }
 
 /**
