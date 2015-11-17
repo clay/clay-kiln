@@ -1,3 +1,6 @@
+@import 'colors';
+@import 'typography';
+
 // progress bars
 .kiln-progress-wrapper {
   bottom: 100%;
@@ -13,19 +16,31 @@
     position: absolute;
     width: 100%;
   }
-
-  .peg {
-    box-shadow: 0 0 10px #29d, 0 0 5px #29d;
-    display: block;
-    height: 2px;
-    position: absolute;
-    right: 0;
-    transform: rotate(3deg) translate(0px, -4px);
-    width: 100px;
-  }
 }
 
 // status messages
 .kiln-status {
-  display: none;
+  @include primary-text();
+
+  bottom: 100%;
+  color: $white;
+  left: 0;
+  padding: 4px 10px;
+  position: absolute;
+  text-align: center;
+  transform: translateY(30px);
+  transition: transform 150ms ease-out;
+  width: 100%;
+
+  &.on {
+    transform: translateY(0);
+    transition: transform 300ms ease-out;
+  }
+}
+
+.kiln-status a {
+  @include primary-text();
+
+  color: $white;
+  text-decoration: underline;
 }
