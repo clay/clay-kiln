@@ -51,7 +51,6 @@ document.addEventListener('DOMContentLoaded', function () {
 // handle connection loss
 
 window.addEventListener('load', function () {
-  console.log('we are online? ' + navigator.onLine)
   // test connection loss on page load
   if (!navigator.onLine) {
     // we're offline!
@@ -60,12 +59,10 @@ window.addEventListener('load', function () {
 });
 
 window.addEventListener('online', function () {
-  console.log('going online');
   progress.close(); // in case there are any status messages open, close them
 });
 
 window.addEventListener('offline', function () {
-  console.log('going offline');
   progress.done('grey'); // turn any progress indicators to grey and end them
   progress.open('grey', connectionLostMessage);
 });
