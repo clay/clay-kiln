@@ -1,0 +1,31 @@
+// progress bars
+.kiln-progress-wrapper {
+  bottom: 100%;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+
+  .bar {
+    bottom: 0;
+    height: 2px;
+    left: 0;
+    position: absolute;
+    width: 100%;
+  }
+
+  .peg {
+    box-shadow: 0 0 10px #29d, 0 0 5px #29d;
+    display: block;
+    height: 2px;
+    position: absolute;
+    right: 0;
+    transform: rotate(3deg) translate(0px, -4px);
+    width: 100px;
+  }
+}
+
+// status messages
+.kiln-status {
+  display: none;
+}

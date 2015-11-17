@@ -7,7 +7,7 @@
   {# toolbar #}
   <div class="kiln-toolbar-wrapper">
     <div class="kiln-status"></div>
-    <div class="kiln-progress"></div>
+    <div class="kiln-progress-wrapper"></div>
     {# note: toolbar pane gets added before kiln-toolbar #}
     <section class="kiln-toolbar"
       {# the editor needs some stuff from the backend #}
