@@ -23,10 +23,16 @@ module.exports = function () {
           progress.done('red');
           pane.openValidationErrors(errors);
         } else {
-          return edit.publishPage().then(function (url) {
-            progress.done();
-            progress.open('green', `Published! <a href="${url}" target="_blank">View Article</a>`);
-          });
+          return edit.publishPage()
+            .then(function (url) {
+              progress.done();
+              progress.open('green', `Published! <a href="${url}" target="_blank">View Article</a>`);
+            })
+            .catch(function () {
+              // note: the Error passed into this doesn't have a message, so we use a custom one
+              progress.done('red');
+              progress.open('red', `A server error occured. Please try again.`);
+            });
         }
       });
     }
