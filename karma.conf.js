@@ -78,7 +78,7 @@ module.exports = function (karma) {
       firefoxMac: {
         base: 'BrowserStack',
         browser: 'firefox',
-        browser_version: '35.0',
+        browser_version: '40.0',
         os: 'OS X',
         os_version: 'Yosemite'
       }
