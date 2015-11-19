@@ -5,6 +5,7 @@ var _ = require('lodash'),
   references = require('../references'),
   site = require('./../site'),
   urlParse = require('url'),
+  progress = require('../progress'),
   refProp = references.referenceProperty,
   pagesRoute = '/pages/',
   urisRoute = '/uris/',
@@ -95,6 +96,7 @@ function save(data) {
   var uri = data[refProp],
     schemaPromise = data._schema && Promise.resolve(data._schema) || cache.getSchema(uri);
 
+  progress.start('save');
   // get the schema and validate data
   return schemaPromise.then(function (schema) {
     var validationErrors = validate(data, schema);
@@ -102,7 +104,15 @@ function save(data) {
     if (validationErrors.length) {
       throw new Error(validationErrors);
     } else {
-      return cache.saveThrough(data);
+      return cache.saveThrough(data)
+        .then(function (savedData) {
+          progress.done();
+          return savedData;
+        })
+        .catch(function () {
+          progress.done('error');
+          progress.open('error', `A server error occured. Please try again.`, true);
+        });
     }
   });
 }

@@ -1,0 +1,46 @@
+@import 'colors';
+@import 'typography';
+
+// progress bars
+.kiln-progress-wrapper {
+  bottom: 100%;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+
+  .bar {
+    bottom: 0;
+    height: 2px;
+    left: 0;
+    position: absolute;
+    width: 100%;
+  }
+}
+
+// status messages
+.kiln-status {
+  @include primary-text();
+
+  bottom: 100%;
+  color: $white;
+  left: 0;
+  padding: 4px 10px;
+  position: absolute;
+  text-align: center;
+  transform: translateY(30px);
+  transition: transform 150ms ease-out;
+  width: 100%;
+
+  &.on {
+    transform: translateY(0);
+    transition: transform 300ms ease-out;
+  }
+}
+
+.kiln-status a {
+  @include primary-text();
+
+  color: $white;
+  text-decoration: underline;
+}

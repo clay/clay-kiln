@@ -1,7 +1,6 @@
 @import 'colors';
 @import 'layers';
 @import 'typography';
-
 $overlay-margin: 10vh;
 
 .editor-overlay-background {
@@ -11,10 +10,17 @@ $overlay-margin: 10vh;
   display: block;
   height: 100%;
   left: 0;
+  opacity: 0;
   overflow: scroll;
   position: fixed;
   top: 0;
+  transition: opacity 100ms ease-out;
   width: 100%;
+
+  &.on {
+    opacity: 1;
+    transition: opacity 150ms ease-out;
+  }
 }
 
 .editor-overlay {

@@ -27,6 +27,11 @@ module.exports = function () {
   function constructor(el) {
     disableScroll();
     dom.onRemove(el, enableScroll);
+    setTimeout(function () {
+      // fade in
+      el.classList.add('on');
+    }, 0);
+    this.el = el;
   }
 
   constructor.prototype = {

@@ -4,6 +4,7 @@ var lib = require('./'),
   dom = require('./../dom'),
   cache = require('./cache'),
   control = require('./control'),
+  progress = require('./../progress'),
   sinon = require('sinon');
 
 describe('edit service', function () {
@@ -29,6 +30,7 @@ describe('edit service', function () {
     sandbox.stub(dom);
     sandbox.stub(site);
     sandbox.stub(cache);
+    sandbox.stub(progress);
 
     // not under test
     site.get.withArgs('prefix').returns(prefix);

@@ -1,7 +1,8 @@
-const pane = require('../services/pane'),
+var pane = require('../services/pane'),
   edit = require('../services/edit'),
   rules = require('../validators'),
-  validation = require('../services/publish-validation');
+  validation = require('../services/publish-validation'),
+  progress = require('../services/progress');
 
 module.exports = function () {
   function constructor(el) {
@@ -14,14 +15,24 @@ module.exports = function () {
     },
 
     onPublishNow: function () {
+      pane.close();
+      progress.start('publish');
+
       return validation.validate(rules).then(function (errors) {
         if (errors.length) {
-          pane.close();
+          progress.done('error');
           pane.openValidationErrors(errors);
         } else {
-          return edit.publishPage().then(function () {
-            alert('published!'); // eslint-disable-line
-          });
+          return edit.publishPage()
+            .then(function (url) {
+              progress.done();
+              progress.open('publish', `Published! <a href="${url}" target="_blank">View Article</a>`);
+            })
+            .catch(function () {
+              // note: the Error passed into this doesn't have a message, so we use a custom one
+              progress.done('error');
+              progress.open('error', `A server error occured. Please try again.`, true);
+            });
         }
       });
     }
