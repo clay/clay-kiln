@@ -46,7 +46,7 @@ describe(dirname, function () {
 
       it('starts a progress bar', function () {
         stubWrapper();
-        fn('blue');
+        fn('save');
         expect(document.querySelector('.bar')).to.not.equal(null);
         lib.done();
       });
@@ -61,7 +61,7 @@ describe(dirname, function () {
         }
 
         stubWrapper();
-        lib.start('blue');
+        lib.start('save');
         expect(document.querySelector('.bar')).to.not.equal(null);
         fn();
         setTimeout(expectNull, 0);
@@ -81,7 +81,7 @@ describe(dirname, function () {
         }
 
         stubStatus();
-        fn('blue', message, 1000);
+        fn('save', message, 1000);
         expect(document.querySelector('.kiln-status').classList.contains('on')).to.equal(true);
         expect(document.querySelector('.kiln-status').innerHTML).to.equal(message);
         setTimeout(expectNull, 1001);

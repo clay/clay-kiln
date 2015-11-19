@@ -3,10 +3,10 @@ var nprogress = require('nprogress'),
   boxShadow = '0 0 10px 0',
   colors = {
     // these are taken from styleguide/_colors.scss
-    blue: '#1782A9',
-    green: '#149524',
-    grey: '#888',
-    red: '#DD2F1C'
+    save: '#1782A9',
+    publish: '#149524',
+    offline: '#888',
+    error: '#DD2F1C'
   };
 
 // configure nprogress

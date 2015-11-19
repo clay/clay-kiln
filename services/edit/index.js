@@ -96,7 +96,7 @@ function save(data) {
   var uri = data[refProp],
     schemaPromise = data._schema && Promise.resolve(data._schema) || cache.getSchema(uri);
 
-  progress.start('blue');
+  progress.start('save');
   // get the schema and validate data
   return schemaPromise.then(function (schema) {
     var validationErrors = validate(data, schema);
@@ -110,8 +110,8 @@ function save(data) {
           return savedData;
         })
         .catch(function () {
-          progress.done('red');
-          progress.open('red', `A server error occured. Please try again.`, 3500);
+          progress.done('error');
+          progress.open('error', `A server error occured. Please try again.`, 3500);
         });
     }
   });

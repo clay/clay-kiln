@@ -16,22 +16,22 @@ module.exports = function () {
 
     onPublishNow: function () {
       pane.close();
-      progress.start('green');
+      progress.start('publish');
 
       return validation.validate(rules).then(function (errors) {
         if (errors.length) {
-          progress.done('red');
+          progress.done('error');
           pane.openValidationErrors(errors);
         } else {
           return edit.publishPage()
             .then(function (url) {
               progress.done();
-              progress.open('green', `Published! <a href="${url}" target="_blank">View Article</a>`);
+              progress.open('publish', `Published! <a href="${url}" target="_blank">View Article</a>`);
             })
             .catch(function () {
               // note: the Error passed into this doesn't have a message, so we use a custom one
-              progress.done('red');
-              progress.open('red', `A server error occured. Please try again.`, 3500);
+              progress.done('error');
+              progress.open('error', `A server error occured. Please try again.`, 3500);
             });
         }
       });
