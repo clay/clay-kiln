@@ -7,7 +7,8 @@ var nprogress = require('nprogress'),
     publish: '#149524',
     offline: '#888',
     error: '#DD2F1C'
-  };
+  },
+  timeoutMilliseconds = 3500; // should be the same timeout for every status message
 
 // configure nprogress
 nprogress.configure({
@@ -76,7 +77,7 @@ function done(color) {
  * open status message
  * @param {string} color
  * @param {string} message (note: this can be a string of html)
- * @param {number} [timeout] optional timeout to automatically close status
+ * @param {boolean} [timeout] optional timeout to automatically close status
  */
 function open(color, message, timeout) {
   var statusEl = getStatusEl();
@@ -85,8 +86,8 @@ function open(color, message, timeout) {
   statusEl.innerHTML = message;
   statusEl.classList.add('on');
 
-  if (!!timeout) {
-    setTimeout(close, timeout);
+  if (timeout) {
+    setTimeout(close, timeoutMilliseconds);
   }
 }
 
@@ -103,3 +104,6 @@ module.exports.done = done;
 // status messages
 module.exports.open = open;
 module.exports.close = close;
+
+// for testing
+module.exports.timeoutMilliseconds = timeoutMilliseconds;

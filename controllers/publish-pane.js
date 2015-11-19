@@ -31,7 +31,7 @@ module.exports = function () {
             .catch(function () {
               // note: the Error passed into this doesn't have a message, so we use a custom one
               progress.done('error');
-              progress.open('error', `A server error occured. Please try again.`, 3500);
+              progress.open('error', `A server error occured. Please try again.`, true);
             });
         }
       });

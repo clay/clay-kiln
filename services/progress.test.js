@@ -81,10 +81,10 @@ describe(dirname, function () {
         }
 
         stubStatus();
-        fn('save', message, 1000);
+        fn('save', message, true);
         expect(document.querySelector('.kiln-status').classList.contains('on')).to.equal(true);
         expect(document.querySelector('.kiln-status').innerHTML).to.equal(message);
-        setTimeout(expectNull, 1001);
+        setTimeout(expectNull, lib.timeoutMilliseconds);
       });
     });
   });

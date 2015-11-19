@@ -111,7 +111,7 @@ function save(data) {
         })
         .catch(function () {
           progress.done('error');
-          progress.open('error', `A server error occured. Please try again.`, 3500);
+          progress.open('error', `A server error occured. Please try again.`, true);
         });
     }
   });
