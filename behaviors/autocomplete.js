@@ -92,25 +92,28 @@ module.exports = function (result, args) {
     datalistId = 'autocomplete-' + cid(),
     datalist;
 
-  handleDevErrors(api, existingInput);
+  // note: currently safari doesn't support datalist
+  if ('options' in document.createElement('datalist')) {
+    handleDevErrors(api, existingInput);
 
-  // Add element.
-  datalist = document.createElement('datalist');
-  result.el.appendChild(datalist);
+    // Add element.
+    datalist = document.createElement('datalist');
+    result.el.appendChild(datalist);
 
-  // Connect datalist to input.
-  datalist.id = datalistId;
-  existingInput.setAttribute('list', datalistId);
+    // Connect datalist to input.
+    datalist.id = datalistId;
+    existingInput.setAttribute('list', datalistId);
 
-  // Todo: once lists become large, this will need to be optimized; perhaps using the 'input' event.
-  existingInput.addEventListener('focus', function () {
-    db.get(api)
-      .then(formatOptions)
-      .then(function (optionsEl) {
-        dom.clearChildren(datalist);
-        datalist.appendChild(optionsEl);
-      });
-  });
+    // Todo: once lists become large, this will need to be optimized; perhaps using the 'input' event.
+    existingInput.addEventListener('focus', function () {
+      db.get(api)
+        .then(formatOptions)
+        .then(function (optionsEl) {
+          dom.clearChildren(datalist);
+          datalist.appendChild(optionsEl);
+        });
+    });
+  }
 
   return result;
 };
