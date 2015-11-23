@@ -6,14 +6,17 @@ var _ = require('lodash'),
 /**
  * Creates a list
  * @param {{name: string, el: Element, bindings: {}}} result
+ * @param {object} [args]
+ * @param {boolean} [args.allowRepeatedItems]
  * @returns {{}}
  */
-module.exports = function (result) {
+module.exports = function (result, args) {
   var name = result.name,
+    allowRepeat = !!args && !!args.allowRepeatedItems,
     el = dom.create(`
       <section rv-field="${name}" class="simple-list" rv-simplelist="${name}.data">
         <span tabindex="0" rv-each-item="${name}.data" class="simple-list-item" rv-class-selected="item._selected" rv-on-click="${name}.selectItem" rv-on-keydown="${name}.keyactions">{ item.text }</span>
-        <input class="simple-list-add" rv-on-click="${name}.unselectAll" placeholder="Start typing here&hellip;" />
+        <input class="simple-list-add" data-allow-repeat=${allowRepeat} rv-on-click="${name}.unselectAll" placeholder="Start typing here&hellip;" />
       </section>`);
 
   /**
@@ -133,19 +136,34 @@ module.exports = function (result) {
     bind: function (boundEl) {
       // this is called when the binder initializes
       var addEl = dom.find(boundEl, '.simple-list-add'),
+        allowRepeat = !!(addEl.getAttribute('data-allow-repeat') === 'true'),
         observer = this.observer;
+
+      // check repeated items
+      // returns true if repitition is disallowed and items repeat
+      // returns false if repitition is allowed
+      // returns false if repitition is disallowed and items don't repeat
+      function hasRepeatedValue(value, data) {
+        var oldItems = _.map(data, item => item.text);
+
+        return !allowRepeat && _.contains(oldItems, value);
+      }
 
       // add new item from the add-items field
       function addItem(e) {
         var data = observer.value(),
-          newText = { text: addEl.value }; // get the new item text
+          newText = { text: addEl.value }, // get the new item text
+          val = newText.text;
 
         // prevent creating newlines or tabbing out of the field
         if (e) {
           e.preventDefault();
         }
 
-        if (addEl.value.length) {
+        if (val.length && hasRepeatedValue(val, data)) {
+          addEl.setCustomValidity('Repeated items are not allowed!');
+        } else if (val.length && !hasRepeatedValue(val, data)) {
+          addEl.setCustomValidity(''); // valid input
           addEl.value = ''; // remove it from the add-item field
           data.push(newText); // put it into the data
           observer.setValue(data);
