@@ -23,6 +23,18 @@ describe(dirname, function () {
 
         expect(resultEl.getAttribute(references.fieldAttribute)).to.equal('foo');
       });
+
+      it('defaults to not allowing repeated items', function () {
+        var input = lib(fixture).el.querySelector('input');
+
+        expect(input.getAttribute('data-allow-repeat')).to.equal('false');
+      });
+
+      it('has allowRepeatedItems argument', function () {
+        var input = lib(fixture, { allowRepeatedItems: true }).el.querySelector('input');
+
+        expect(input.getAttribute('data-allow-repeat')).to.equal('true');
+      });
     });
 
     describe('bindings', function () {
