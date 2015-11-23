@@ -21,6 +21,30 @@ function createPage() {
 }
 
 /**
+ * update the publish button depending on the page state
+ * @param {object} state
+ * @param {boolean} [state.scheduled]
+ * @param {boolean} [state.published]
+ */
+function updatePublishButton(state) {
+  var el = dom.find('.kiln-toolbar-inner .publish'),
+    classes = el.classList,
+    published = 'published',
+    scheduled = 'scheduled';
+
+  if (state.scheduled) {
+    classes.remove(published);
+    classes.add(scheduled);
+  } else if (state.published) {
+    classes.remove(scheduled);
+    classes.add(published);
+  } else {
+    classes.remove(published);
+    classes.remove(scheduled);
+  }
+}
+
+/**
  * @class EditorToolbar
  * @param {Element} el
  * @property {Element} el
@@ -67,3 +91,4 @@ EditorToolbar.prototype = {
 };
 
 module.exports = EditorToolbar;
+module.exports.updatePublishButton = updatePublishButton;

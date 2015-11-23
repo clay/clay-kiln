@@ -91,3 +91,11 @@ body {
 
   margin-right: 0;
 }
+
+.kiln-toolbar-inner .publish.scheduled {
+  @include button-filled($orange);
+}
+
+.kiln-toolbar-inner .publish.published {
+  @include button-filled($black-50);
+}
