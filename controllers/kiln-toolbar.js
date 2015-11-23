@@ -1,4 +1,5 @@
 var EditorToolbar,
+  references = require('../services/references'),
   dom = require('../services/dom'),
   edit = require('../services/edit'),
   events = require('../services/events'),
@@ -17,6 +18,42 @@ function createPage() {
 
   return edit.createPage().then(function (url) {
     location.href = url;
+  });
+}
+
+/**
+ * check if an endpoint 404s/errors. doesn't care about the endpoint's actual data
+ * @param {string} ref
+ * @returns {Promise}
+ */
+function endpointExists(ref) {
+  return edit.getDataOnly(ref)
+    .then(function () {
+      // endpoint exists!
+      return true;
+    })
+    .catch(function () {
+      // endpoint 404s, or has some other error
+      return false;
+    });
+}
+
+/**
+ * get scheduled/published state of the page
+ * runs only when toolbar instantiates
+ * @returns {Promise}
+ */
+function getPageState() {
+  var ref = document.documentElement.getAttribute(references.referenceAttribute);
+
+  return Promise.all([
+    endpointExists(ref + '@scheduled'),
+    endpointExists(ref + '@published')
+  ]).then(function (promises) {
+    return {
+      scheduled: promises[0],
+      published: promises[1]
+    };
   });
 }
 
@@ -68,6 +105,8 @@ EditorToolbar = function (el) {
       e.returnValue = 'Are you sure you want to leave this page? Your data may not be saved.';
     }
   });
+
+  return getPageState().then(updatePublishButton);
 };
 
 /**
