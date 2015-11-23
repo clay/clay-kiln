@@ -112,7 +112,8 @@ function removeDeepMetaProperties(data) {
  * @returns {boolean}
  */
 function dataChanged(serverData, formData) {
-  var serverDataReduced = cleanDeepStringValues(removeDeepMetaProperties(serverData)), // necessary because form-values.js cleans strings as well.
+  var filteredServerData = _.pick(serverData, Object.keys(formData)), // only compare fields in the form
+    serverDataReduced = cleanDeepStringValues(removeDeepMetaProperties(filteredServerData)), // necessary because form-values.js cleans strings as well.
     formDataReduced = removeDeepMetaProperties(formData);
 
   return !_.isEqual(serverDataReduced, formDataReduced);
