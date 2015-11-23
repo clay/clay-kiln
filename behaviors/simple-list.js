@@ -153,16 +153,17 @@ module.exports = function (result, args) {
       function addItem(e) {
         var data = observer.value(),
           newText = { text: addEl.value }, // get the new item text
-          val = newText.text;
+          val = newText.text,
+          repeated = hasRepeatedValue(val, data);
 
         // prevent creating newlines or tabbing out of the field
         if (e) {
           e.preventDefault();
         }
 
-        if (val.length && hasRepeatedValue(val, data)) {
+        if (val.length && repeated) {
           addEl.setCustomValidity('Repeated items are not allowed!');
-        } else if (val.length && !hasRepeatedValue(val, data)) {
+        } else if (val.length && !repeated) {
           addEl.setCustomValidity(''); // valid input
           addEl.value = ''; // remove it from the add-item field
           data.push(newText); // put it into the data
