@@ -90,14 +90,13 @@ module.exports = function (result, args) {
   var api = getApi(args),
     existingInput = getInput(result.el),
     datalistId = 'autocomplete-' + cid(),
-    datalist;
+    datalist = document.createElement('datalist');
 
   // note: currently safari doesn't support datalist
-  if ('options' in document.createElement('datalist')) {
+  if ('options' in datalist) {
     handleDevErrors(api, existingInput);
 
     // Add element.
-    datalist = document.createElement('datalist');
     result.el.appendChild(datalist);
 
     // Connect datalist to input.
