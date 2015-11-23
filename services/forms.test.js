@@ -1,4 +1,5 @@
-var dirname = __dirname.split('/').pop(),
+var _ = require('lodash'),
+  dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   edit = require('./edit'),
   references = require('./references'),
@@ -194,7 +195,8 @@ describe(dirname, function () {
               _display: 'inline',
               _has: 'text'
             }
-          };
+          },
+          newData = _.cloneDeep(data);
 
         function afterFormIsClosed() {
           expectFormToBeRemoved(el);
@@ -203,6 +205,9 @@ describe(dirname, function () {
           expectEditingToBeDone();
         }
 
+        // Make sure form data is different than the server data.
+        newData.value = '456';
+        sandbox.stub(formValues, 'get').returns({title: newData});
         stubData(data);
 
         return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen(afterFormIsClosed));
@@ -243,7 +248,8 @@ describe(dirname, function () {
               _name: 'title',
               _has: 'text'
             }
-          };
+          },
+          newData = _.cloneDeep(data);
 
         function afterFormIsClosed() {
           expectFormToBeRemoved(el);
@@ -252,6 +258,9 @@ describe(dirname, function () {
           expectEditingToBeDone();
         }
 
+        // Make sure form data is different than the server data.
+        newData.value = '456';
+        sandbox.stub(formValues, 'get').returns({title: newData});
         stubData(data);
 
         return lib.open('fakeRef', stubNode(), 'title').then(afterFormIsOpen(afterFormIsClosed));
