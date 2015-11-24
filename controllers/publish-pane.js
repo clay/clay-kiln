@@ -2,8 +2,7 @@ var pane = require('../services/pane'),
   edit = require('../services/edit'),
   rules = require('../validators'),
   validation = require('../services/publish-validation'),
-  progress = require('../services/progress'),
-  toolbar = require('./kiln-toolbar');
+  progress = require('../services/progress');
 
 module.exports = function () {
   function constructor(el) {
@@ -28,7 +27,6 @@ module.exports = function () {
             .then(function (url) {
               progress.done();
               progress.open('publish', `Published! <a href="${url}" target="_blank">View Article</a>`);
-              toolbar.updatePublishButton({ published: true });
             })
             .catch(function () {
               // note: the Error passed into this doesn't have a message, so we use a custom one

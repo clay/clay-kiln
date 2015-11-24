@@ -98,9 +98,3 @@ body {
 
   transition: all 200ms ease-in-out;
 }
-
-.kiln-toolbar-inner .publish.published {
-  @include button-filled($black-50);
-
-  transition: all 200ms ease-in-out;
-}

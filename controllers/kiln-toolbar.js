@@ -1,10 +1,11 @@
 var EditorToolbar,
-  references = require('../services/references'),
   dom = require('../services/dom'),
   edit = require('../services/edit'),
   events = require('../services/events'),
   focus = require('../decorators/focus'),
-  pane = require('../services/pane');
+  pane = require('../services/pane'),
+  state = require('../services/page-state'),
+  progress = require('../services/progress');
 
 /**
  * Create a new page with the same layout as the current page.
@@ -19,66 +20,6 @@ function createPage() {
   return edit.createPage().then(function (url) {
     location.href = url;
   });
-}
-
-/**
- * check if an endpoint 404s/errors. doesn't care about the endpoint's actual data
- * @param {string} ref
- * @returns {Promise}
- */
-function endpointExists(ref) {
-  return edit.getDataOnly(ref)
-    .then(function () {
-      // endpoint exists!
-      return true;
-    })
-    .catch(function () {
-      // endpoint 404s, or has some other error
-      return false;
-    });
-}
-
-/**
- * get scheduled/published state of the page
- * runs only when toolbar instantiates
- * @returns {Promise}
- */
-function getPageState() {
-  var ref = document.documentElement.getAttribute(references.referenceAttribute);
-
-  return Promise.all([
-    endpointExists(ref + '@scheduled'),
-    endpointExists(ref + '@published')
-  ]).then(function (promises) {
-    return {
-      scheduled: promises[0],
-      published: promises[1]
-    };
-  });
-}
-
-/**
- * update the publish button depending on the page state
- * @param {object} state
- * @param {boolean} [state.scheduled]
- * @param {boolean} [state.published]
- */
-function updatePublishButton(state) {
-  var el = dom.find('.kiln-toolbar-inner .publish'),
-    classes = el.classList,
-    published = 'published',
-    scheduled = 'scheduled';
-
-  if (state.scheduled) {
-    classes.remove(published);
-    classes.add(scheduled);
-  } else if (state.published) {
-    classes.remove(scheduled);
-    classes.add(published);
-  } else {
-    classes.remove(published);
-    classes.remove(scheduled);
-  }
 }
 
 /**
@@ -106,7 +47,14 @@ EditorToolbar = function (el) {
     }
   });
 
-  return getPageState().then(updatePublishButton);
+  return state.get().then(function (res) {
+    if (res.scheduled) {
+      state.toggleScheduled(true);
+    }
+    if (res.published) {
+      progress.open('publish', 'Article is currently live.');
+    }
+  });
 };
 
 /**
@@ -130,4 +78,3 @@ EditorToolbar.prototype = {
 };
 
 module.exports = EditorToolbar;
-module.exports.updatePublishButton = updatePublishButton;
