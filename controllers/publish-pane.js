@@ -11,7 +11,8 @@ module.exports = function () {
 
   constructor.prototype = {
     events: {
-      '.publish-now click': 'onPublishNow'
+      '.publish-now click': 'onPublishNow',
+      '.unpublish click': 'onUnpublish'
     },
 
     onPublishNow: function () {
@@ -34,6 +35,22 @@ module.exports = function () {
               progress.open('error', `A server error occured. Please try again.`, true);
             });
         }
+      });
+    },
+
+    onUnpublish: function () {
+      pane.close();
+      progress.start('publish');
+
+      return edit.unpublishPage()
+      .then(function () {
+        progress.done();
+        progress.open('publish', `Unpublished!`, true);
+      })
+      .catch(function () {
+        // note: the Error passed into this doesn't have a message, so we use a custom one
+        progress.done('error');
+        progress.open('error', `A server error occured. Please try again.`, true);
       });
     }
   };

@@ -281,4 +281,20 @@ describe('db service', function () {
       expect(fn('domain/path')).to.equal(false);
     });
   });
+
+  describe('urlToUri', function () {
+    var fn = lib[this.title];
+
+    it('throws if not a valid url', function () {
+      function result() {
+        return fn('domain.com/some-path');
+      }
+
+      expect(result).to.throw(TypeError);
+    });
+
+    it('removes port and protocol', function () {
+      expect(fn('http://domain.com:3001/some-path')).to.equal('domain.com/some-path');
+    });
+  });
 });

@@ -219,23 +219,23 @@ function createUri(uri, destinationUri) {
 }
 
 /**
- * Remove a uri / url.
+ * Remove a uri.
  *
- * @param {string} url
+ * @param {string} uri
  * @returns {Promise}
- * @example edit.removeUri('http://nymag.com/press')
+ * @example edit.removeUri('nymag.com/press')
  */
-function removeUri(url) {
-  var prefix, base64Url, targetUri;
+function removeUri(uri) {
+  var prefix, base64Uri, targetUri;
 
   // assertion
-  if (!_.isString(url) || !db.isUrl(url)) {
-    throw new TypeError('Expecting url, not ' + url);
+  if (!_.isString(uri) || !db.isUri(uri)) {
+    throw new TypeError('Expecting uri, not ' + uri);
   }
 
   prefix = site.get('prefix');
-  base64Url = btoa(url);
-  targetUri = prefix + urisRoute + base64Url;
+  base64Uri = btoa(uri);
+  targetUri = prefix + urisRoute + base64Uri;
 
   return db.removeText(targetUri);
 }
@@ -285,6 +285,26 @@ function publishPage() {
       return pageUri + '.html';
     });
   });
+}
+
+/**
+ * unpublishes current page. returns the deleted page data
+ * @returns {Promise}
+ */
+function unpublishPage() {
+  var ref = getFirstCanonicalComponentReference();
+
+  if (ref) {
+    // get published version of component, and expose the page
+    return cache.getDataOnly(ref + '@published').then(function (data) {
+      var uri;
+
+      if (_.isString(data.canonicalUrl)) {
+        uri = db.urlToUri(data.canonicalUrl); // change url into a uri
+        return removeUri(uri);
+      }
+    });
+  }
 }
 
 /**
@@ -435,6 +455,7 @@ module.exports = {
   createUri: createUri,
   getUriDestination: getUriDestination,
   publishPage: publishPage,
+  unpublishPage: unpublishPage,
   removeFromParentList: removeFromParentList,
   removeUri: removeUri,
   savePartial: savePartial,

@@ -35,6 +35,22 @@ function isUrl(str) {
 }
 
 /**
+ * convert url (with protocol and port) into uri
+ * @param {string} url
+ * @throws if not a valid url
+ * @returns {string}
+ */
+function urlToUri(url) {
+  var parts = urlParse.parse(url);
+
+  if (!isUrl(url)) {
+    throw new TypeError('Not a valid url:', url);
+  }
+
+  return parts.hostname + parts.pathname;
+}
+
+/**
  * Block non-uris
  *
  * @param {*} uri
@@ -322,3 +338,4 @@ module.exports.remove = remove;
 module.exports.removeText = removeText;
 module.exports.isUri = isUri;
 module.exports.isUrl = isUrl;
+module.exports.urlToUri = urlToUri;
