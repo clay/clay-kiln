@@ -2,6 +2,7 @@
 @import 'layers';
 @import 'buttons';
 @import 'typography';
+@import 'inputs';
 $pane-margin: 30vh;
 $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 
@@ -96,9 +97,38 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   width: 100%;
 }
 
+.kiln-toolbar-pane .schedule-input {
+  @include input();
+
+  cursor: initial;
+  margin: 15px 0 0;
+}
+
+.kiln-toolbar-pane .schedule-input::-webkit-calendar-picker-indicator {
+  display: block;
+}
+
+.kiln-toolbar-pane .schedule-publish {
+  @include button-outlined($orange, $white);
+}
+
+.kiln-toolbar-pane .unschedule {
+  @include button-outlined($black-50, $white);
+}
+
 .kiln-toolbar-pane .publish-now {
   @include button-outlined($green, $white);
+}
 
+.kiln-toolbar-pane .unpublish {
+  @include button-outlined($black-50, $white);
+}
+
+.kiln-toolbar-pane .schedule-publish,
+.kiln-toolbar-pane .unschedule,
+.kiln-toolbar-pane .publish-now,
+.kiln-toolbar-pane .unpublish {
+  margin: 15px 0 0;
   width: 100%;
 }
 
