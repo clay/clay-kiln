@@ -57,31 +57,17 @@ function open(header, innerEl) {
 }
 
 /**
- * get today's date, in YYYY-MM-DD
- * @returns {string}
- */
-function today() {
-  return moment().format('YYYY-MM-DD');
-}
-
-/**
- * get current time, in HH:mm:ss
- * @returns {string}
- */
-function now() {
-  return moment().format('HH:mm');
-}
-
-/**
  * open publish pane
  * @returns {Promise}
  */
 function openPublish() {
   var header = 'Schedule Publish',
+    today = moment().format('YYYY-MM-DD'),
+    now = moment().format('HH:mm'),
     actions = dom.create(`<div class="actions"></div>`),
     schedule = dom.create(`<form class="schedule">
-      <input class="schedule-input" type="date" min="${today()}" value="${today()}"></input>
-      <input class="schedule-input" type="time" value="${now()}"></input>
+      <input class="schedule-input" type="date" min="${today}" value="${today}"></input>
+      <input class="schedule-input" type="time" value="${now}"></input>
       <button class="schedule-publish">Schedule Publish</button>
     </form>`),
     unschedule = dom.create(`<button class="unschedule">Unschedule</button>`),
