@@ -1,6 +1,8 @@
 var _ = require('lodash'),
+  moment = require('moment'),
   dom = require('./dom'),
   ds = require('dollar-slice'),
+  state = require('./page-state'),
   paneController = require('../controllers/pane'),
   publishPaneController = require('../controllers/publish-pane');
 
@@ -56,20 +58,43 @@ function open(header, innerEl) {
 
 /**
  * open publish pane
+ * @returns {Promise}
  */
 function openPublish() {
   var header = 'Schedule Publish',
-    actionsEl = dom.create(`
-      <div class="actions">
-        <button class="publish-now">Publish Now</button>
-      </div>
-    `), // todo: add other publishing actions, depending on page state
-    // e.g. schedule publish, message, cancel schedule, unpublish
-    el = open(header, actionsEl);
+    today = moment().format('YYYY-MM-DD'),
+    now = moment().format('HH:mm'),
+    actions = dom.create(`<div class="actions"></div>`),
+    schedule = dom.create(`<form class="schedule">
+      <input class="schedule-input" type="date" min="${today}" value="${today}"></input>
+      <input class="schedule-input" type="time" value="${now}"></input>
+      <button class="schedule-publish">Schedule Publish</button>
+    </form>`),
+    unschedule = dom.create(`<button class="unschedule">Unschedule</button>`),
+    publishNow = dom.create(`<button class="publish-now">Publish Now</button>`),
+    unpublish = dom.create(`<button class="unpublish">Unpublish</button>`),
+    el;
 
-  // init controller for publish pane
-  ds.controller('publish-pane', publishPaneController);
-  ds.get('publish-pane', el.querySelector('.actions'));
+  return state.get().then(function (res) {
+    // todo: add publish state message
+    // note: this needs save date, publish date, scheduled date?
+
+    // these buttons are added in order
+    actions.appendChild(schedule); // always exists
+    if (res.scheduled) {
+      state.toggleScheduled(true); // just in case someone else scheduled this page
+      actions.appendChild(unschedule);
+    }
+    actions.appendChild(publishNow);
+    if (res.published) {
+      actions.appendChild(unpublish);
+    }
+
+    el = open(header, actions);
+    // init controller for publish pane
+    ds.controller('publish-pane', publishPaneController);
+    ds.get('publish-pane', el.querySelector('.actions'));
+  });
 }
 
 function addPreview(preview) {

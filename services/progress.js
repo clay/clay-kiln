@@ -6,7 +6,8 @@ var nprogress = require('nprogress'),
     save: '#1782A9',
     publish: '#149524',
     offline: '#888',
-    error: '#DD2F1C'
+    error: '#DD2F1C',
+    schedule: '#E07313'
   },
   timeoutMilliseconds = 3500; // should be the same timeout for every status message
 

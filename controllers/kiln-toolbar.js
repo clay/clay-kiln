@@ -3,7 +3,9 @@ var EditorToolbar,
   edit = require('../services/edit'),
   events = require('../services/events'),
   focus = require('../decorators/focus'),
-  pane = require('../services/pane');
+  pane = require('../services/pane'),
+  state = require('../services/page-state'),
+  progress = require('../services/progress');
 
 /**
  * Create a new page with the same layout as the current page.
@@ -42,6 +44,15 @@ EditorToolbar = function (el) {
   window.addEventListener('beforeunload', function (e) {
     if (focus.hasCurrentFocus()) {
       e.returnValue = 'Are you sure you want to leave this page? Your data may not be saved.';
+    }
+  });
+
+  return state.get().then(function (res) {
+    if (res.scheduled) {
+      state.toggleScheduled(true);
+      progress.open('schedule', `Article is scheduled to be published ${state.formatTime(res.scheduledAt, true)}`);
+    } else if (res.published) {
+      progress.open('publish', `Article is currently live: <a href="${res.publishedUrl}" target="_blank">View Article</a>`);
     }
   });
 };

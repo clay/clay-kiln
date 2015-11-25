@@ -9,6 +9,7 @@ var _ = require('lodash'),
   refProp = references.referenceProperty,
   pagesRoute = '/pages/',
   urisRoute = '/uris/',
+  scheduleRoute = '/schedule',
   schemaKeywords = ['_ref', '_groups'],
   knownExtraFields = ['_ref', '_schema'],
   bannedFields = ['_self', '_components', '_pageRef', '_pageData', '_version', '_refs', 'layout', 'template'];
@@ -219,23 +220,23 @@ function createUri(uri, destinationUri) {
 }
 
 /**
- * Remove a uri / url.
+ * Remove a uri.
  *
- * @param {string} url
+ * @param {string} uri
  * @returns {Promise}
- * @example edit.removeUri('http://nymag.com/press')
+ * @example edit.removeUri('nymag.com/press')
  */
-function removeUri(url) {
-  var prefix, base64Url, targetUri;
+function removeUri(uri) {
+  var prefix, base64Uri, targetUri;
 
   // assertion
-  if (!_.isString(url) || !db.isUrl(url)) {
-    throw new TypeError('Expecting url, not ' + url);
+  if (!_.isString(uri) || !db.isUri(uri)) {
+    throw new TypeError('Expecting uri, not ' + uri);
   }
 
   prefix = site.get('prefix');
-  base64Url = btoa(url);
-  targetUri = prefix + urisRoute + base64Url;
+  base64Uri = btoa(uri);
+  targetUri = prefix + urisRoute + base64Uri;
 
   return db.removeText(targetUri);
 }
@@ -285,6 +286,26 @@ function publishPage() {
       return pageUri + '.html';
     });
   });
+}
+
+/**
+ * unpublishes current page. returns the deleted page data
+ * @returns {Promise}
+ */
+function unpublishPage() {
+  var ref = getFirstCanonicalComponentReference();
+
+  if (ref) {
+    // get published version of component, and expose the page
+    return cache.getDataOnly(ref + '@published').then(function (data) {
+      var uri;
+
+      if (_.isString(data.canonicalUrl)) {
+        uri = db.urlToUri(data.canonicalUrl); // change url into a uri
+        return removeUri(uri);
+      }
+    });
+  }
 }
 
 /**
@@ -401,6 +422,43 @@ function addToParentList(opts) {
 }
 
 /**
+ * schedule publish
+ * @param {object} data
+ * @param {number} data.at unix timestamp to be published at
+ * @param {string} data.publish uri to be published
+ * @returns {Promise}
+ */
+function schedulePublish(data) {
+  var prefix = site.get('prefix');
+
+  return db.create(prefix + scheduleRoute, data);
+}
+
+/**
+ * unschedule publish
+ * @param {string} uri
+ * @returns {Promise}
+ */
+function unschedulePublish(uri) {
+  var prefix = site.get('prefix');
+
+  // search through scheduled entries until you find the one we want
+  // todo: when amphora is updated so the _ref points to the schedule entry (rather than the page),
+  // just do GET page@scheduled and then DELETE /schedule/<_ref>
+  return db.get(prefix + scheduleRoute).then(function (data) {
+    var entry = _.find(data, function (item) {
+      return item.publish === uri;
+      // note: we only allow a page to be scheduled once, so we don't need to
+      // also match for timestamp (this saves us a call to GET uri@scheduled)
+    });
+
+    if (entry) {
+      return db.remove(entry._ref);
+    }
+  });
+}
+
+/**
  * The sad state is that people think they can write to anything in JavaScript without consequence.  For those people,
  * these functions exist.
  *
@@ -435,10 +493,13 @@ module.exports = {
   createUri: createUri,
   getUriDestination: getUriDestination,
   publishPage: publishPage,
+  unpublishPage: unpublishPage,
   removeFromParentList: removeFromParentList,
   removeUri: removeUri,
   savePartial: savePartial,
   save: save,
+  schedulePublish: schedulePublish,
+  unschedulePublish: unschedulePublish,
 
   // Please stop using these.  If you use these, we don't trust you.  Do you trust yourself?
   getData: getData,

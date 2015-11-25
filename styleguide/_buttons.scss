@@ -58,14 +58,13 @@
 
   &:active {
     background-color: rgba($color, .12);
-    color: rgba($color, .12);
     transition: background-color 50ms ease-out;
   }
 
   &:disabled {
     background-color: $fill;
-    border: 1px solid $black-25;
-    color: $black-25;
+    border: 1px solid $black-10;
+    color: $black-10;
     transition: all 150ms ease-out;
   }
 }

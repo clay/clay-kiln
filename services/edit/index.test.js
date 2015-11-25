@@ -281,15 +281,45 @@ describe('edit service', function () {
   describe('removeUri', function () {
     var fn = lib[this.title];
 
-    it('removes from db', function () {
-      var url = 'http://domain:3333/path',
-        expectedTarget = 'place.com/uris/aHR0cDovL2RvbWFpbjozMzMzL3BhdGg=';
+    it('throws error when passing in url', function () {
+      var url = 'http://domain:3333/path';
 
       db.isUrl.returns(true);
       db.removeText.returns(resolveReadOnly({}));
 
-      return fn(url).then(function () {
+      function result() {
+        return fn(url);
+      }
+
+      expect(result).to.throw(TypeError);
+    });
+
+    it('removes from db', function () {
+      var uri = 'domain/path',
+        expectedTarget = 'place.com/uris/ZG9tYWluL3BhdGg=';
+
+      db.isUri.returns(true);
+      db.removeText.returns(resolveReadOnly({}));
+
+      return fn(uri).then(function () {
         sinon.assert.calledWithExactly(db.removeText, expectedTarget);
+      });
+    });
+  });
+
+  describe('schedulePublish', function () {
+    var fn = lib[this.title];
+
+    it('POSTs to /schedule', function () {
+      var data = {
+        at: 1,
+        publish: 'fakeRef'
+      };
+
+      db.create.returns(Promise.resolve({}));
+
+      return fn(data).then(function () {
+        sinon.assert.calledWith(db.create, sinon.match.string, data);
       });
     });
   });
