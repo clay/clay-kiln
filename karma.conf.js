@@ -4,7 +4,6 @@ var files, settings,
 
 files = [
   'test/setup.js',
-  'controllers/*.js',
   'behaviors/*.js',
   'services/**/*.js',
   'decorators/*.js',
