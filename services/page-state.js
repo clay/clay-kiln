@@ -105,12 +105,13 @@ function getPageState() {
  * @param {boolean} isScheduled
  */
 function toggleScheduled(isScheduled) {
-  var el = document.querySelector('.kiln-toolbar-inner .publish');
+  var el = document.querySelector('.kiln-toolbar-inner .publish'),
+    scheduledClass = 'scheduled';
 
   if (isScheduled) {
-    el.classList.add('scheduled');
+    el.classList.add(scheduledClass);
   } else {
-    el.classList.remove('scheduled');
+    el.classList.remove(scheduledClass);
   }
 }
 
