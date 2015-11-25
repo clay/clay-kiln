@@ -125,11 +125,39 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 }
 
 .kiln-toolbar-pane .schedule-publish,
-.kiln-toolbar-pane .unschedule,
-.kiln-toolbar-pane .publish-now,
-.kiln-toolbar-pane .unpublish {
+.kiln-toolbar-pane .publish-now {
   margin: 15px 0 0;
   width: 100%;
+}
+
+.kiln-toolbar-pane .unschedule {
+  margin: 15px 0 12px;
+  position: relative;
+  width: 100%;
+
+  &:after {
+    border-bottom: 1px solid $grey;
+    bottom: -15px;
+    content: '';
+    left: -20px;
+    position: absolute;
+    width: calc(100% + 40px);
+  }
+}
+
+.kiln-toolbar-pane .unpublish {
+  margin: 27px 0 0;
+  position: relative;
+  width: 100%;
+
+  &:before {
+    border-bottom: 1px solid $grey;
+    content: '';
+    left: -20px;
+    position: absolute;
+    top: -15px;
+    width: calc(100% + 40px);
+  }
 }
 
 /* validation errors */
