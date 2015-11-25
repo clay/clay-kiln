@@ -31,7 +31,7 @@ describe(dirname, function () {
 
     describe('get', function () {
       var fn = lib[this.title],
-        pageRef = 'null@scheduled',
+        scheduleRef = 'null@scheduled',
         fakeUrl = 'http://domain.com/page.html',
         fakeUri = db.urlToUri(fakeUrl),
         fakeInstanceData = {
@@ -45,29 +45,29 @@ describe(dirname, function () {
       }
 
       it('gets scheduled state (published url is null if not published)', function () {
-        getHead.withArgs(pageRef).returns(Promise.resolve(true));
+        getDataOnly.withArgs(scheduleRef).returns(Promise.resolve({ at: 1 }));
         getDataOnly.withArgs(fakeInstanceRef).returns(Promise.reject());
-        return fn().then(expectState({ scheduled: true, published: false, publishedUrl: null }));
+        return fn().then(expectState({ scheduled: true, scheduledAt: 1, published: false, publishedUrl: null }));
       });
 
       it('gets published state (and published url)', function () {
-        getHead.withArgs(pageRef).returns(Promise.resolve(false));
+        getDataOnly.withArgs(scheduleRef).returns(Promise.reject());
         getDataOnly.withArgs(fakeInstanceRef).returns(Promise.resolve(fakeInstanceData));
         getHead.withArgs(fakeUri).returns(Promise.resolve(true));
-        return fn().then(expectState({ scheduled: false, published: true, publishedUrl: fakeUrl }));
+        return fn().then(expectState({ scheduled: false, scheduledAt: null, published: true, publishedUrl: fakeUrl }));
       });
 
       it('gets scheduled and published state (and published url)', function () {
-        getHead.withArgs(pageRef).returns(Promise.resolve(true));
+        getDataOnly.withArgs(scheduleRef).returns(Promise.resolve({ at: 1 }));
         getDataOnly.withArgs(fakeInstanceRef).returns(Promise.resolve(fakeInstanceData));
         getHead.withArgs(fakeUri).returns(Promise.resolve(true));
-        return fn().then(expectState({ scheduled: true, published: true, publishedUrl: fakeUrl }));
+        return fn().then(expectState({ scheduled: true, scheduledAt: 1, published: true, publishedUrl: fakeUrl }));
       });
 
       it('gets neither state', function () {
-        getHead.withArgs(pageRef).returns(Promise.resolve(false));
+        getDataOnly.withArgs(scheduleRef).returns(Promise.reject());
         getDataOnly.withArgs(fakeInstanceRef).returns(Promise.reject());
-        return fn().then(expectState({ scheduled: false, published: false, publishedUrl: null }));
+        return fn().then(expectState({ scheduled: false, scheduledAt: null, published: false, publishedUrl: null }));
       });
     });
   });

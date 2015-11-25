@@ -36,10 +36,44 @@ function getCanonicalUrl() {
 function hasCanonicalUrl() {
   return getCanonicalUrl().then(function (url) {
     if (url) {
-      return db.getHead(db.urlToUri(url));
+      return db.getHead(db.urlToUri(url)).then(function (res) {
+        if (res) {
+          return {
+            published: res,
+            publishedUrl: url
+          };
+        } else {
+          return {
+            published: false,
+            publishedUrl: null
+          };
+        }
+      });
     } else {
-      return false;
+      return {
+        published: false,
+        publishedUrl: null
+      };
     }
+  });
+}
+
+/**
+ * see if a page is scheduled to publish
+ * @param {string} ref e.g. domain.com/pages/pageid@scheduled
+ * @returns {Promise}
+ */
+function getScheduled(ref) {
+  return edit.getDataOnly(ref).then(function (data) {
+    return {
+      scheduled: true,
+      scheduledAt: data.at
+    };
+  }).catch(function () {
+    return {
+      scheduled: false,
+      scheduledAt: null
+    };
   });
 }
 
@@ -52,14 +86,14 @@ function getPageState() {
   var pageRef = document.documentElement.getAttribute(references.referenceAttribute);
 
   return Promise.all([
-    db.getHead(pageRef + '@scheduled'),
-    hasCanonicalUrl(),
-    getCanonicalUrl()
+    getScheduled(pageRef + '@scheduled'),
+    hasCanonicalUrl()
   ]).then(function (promises) {
     return {
-      scheduled: promises[0],
-      published: promises[1],
-      publishedUrl: promises[2]
+      scheduled: promises[0].scheduled,
+      scheduledAt: promises[0].scheduledAt,
+      published: promises[1].published,
+      publishedUrl: promises[1].publishedUrl
     };
   });
 }
