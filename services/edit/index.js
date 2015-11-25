@@ -9,6 +9,7 @@ var _ = require('lodash'),
   refProp = references.referenceProperty,
   pagesRoute = '/pages/',
   urisRoute = '/uris/',
+  scheduleRoute = '/schedule',
   schemaKeywords = ['_ref', '_groups'],
   knownExtraFields = ['_ref', '_schema'],
   bannedFields = ['_self', '_components', '_pageRef', '_pageData', '_version', '_refs', 'layout', 'template'];
@@ -421,6 +422,19 @@ function addToParentList(opts) {
 }
 
 /**
+ * schedule publish
+ * @param {object} data
+ * @param {number} data.at unix timestamp to be published at
+ * @param {string} data.publish uri to be published
+ * @returns {Promise}
+ */
+function schedulePublish(data) {
+  var prefix = site.get('prefix');
+
+  return db.create(prefix + scheduleRoute, data);
+}
+
+/**
  * The sad state is that people think they can write to anything in JavaScript without consequence.  For those people,
  * these functions exist.
  *
@@ -460,6 +474,7 @@ module.exports = {
   removeUri: removeUri,
   savePartial: savePartial,
   save: save,
+  schedulePublish: schedulePublish,
 
   // Please stop using these.  If you use these, we don't trust you.  Do you trust yourself?
   getData: getData,
