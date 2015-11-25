@@ -64,7 +64,8 @@ function hasCanonicalUrl() {
  * @returns {Promise}
  */
 function getScheduled(ref) {
-  return edit.getDataOnly(ref).then(function (data) {
+  // note: no caching here
+  return db.get(ref).then(function (data) {
     return {
       scheduled: true,
       scheduledAt: data.at

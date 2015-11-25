@@ -435,6 +435,30 @@ function schedulePublish(data) {
 }
 
 /**
+ * unschedule publish
+ * @param {string} uri
+ * @returns {Promise}
+ */
+function unschedulePublish(uri) {
+  var prefix = site.get('prefix');
+
+  // search through scheduled entries until you find the one we want
+  // todo: when amphora is updated so the _ref points to the schedule entry (rather than the page),
+  // just do GET page@scheduled and then DELETE /schedule/<_ref>
+  return db.get(prefix + scheduleRoute).then(function (data) {
+    var entry = _.find(data, function (item) {
+      return item.publish === uri;
+      // note: we only allow a page to be scheduled once, so we don't need to
+      // also match for timestamp (this saves us a call to GET uri@scheduled)
+    });
+
+    if (entry) {
+      return db.remove(entry._ref);
+    }
+  });
+}
+
+/**
  * The sad state is that people think they can write to anything in JavaScript without consequence.  For those people,
  * these functions exist.
  *
@@ -475,6 +499,7 @@ module.exports = {
   savePartial: savePartial,
   save: save,
   schedulePublish: schedulePublish,
+  unschedulePublish: unschedulePublish,
 
   // Please stop using these.  If you use these, we don't trust you.  Do you trust yourself?
   getData: getData,

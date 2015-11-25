@@ -19,7 +19,8 @@ module.exports = function () {
     events: {
       '.publish-now click': 'onPublishNow',
       '.unpublish click': 'onUnpublish',
-      '.schedule submit': 'onSchedule'
+      '.schedule submit': 'onSchedule',
+      '.unschedule click': 'onUnschedule'
     },
 
     onPublishNow: function () {
@@ -77,14 +78,36 @@ module.exports = function () {
       // stop form from submitting normally
       e.preventDefault();
 
-      return edit.schedulePublish({
-        at: timestamp,
-        publish: pageUri
-      })
+      // only schedule one thing at a time
+      return edit.unschedulePublish(pageUri).then(function () {
+        return edit.schedulePublish({
+          at: timestamp,
+          publish: pageUri
+        })
+        .then(function () {
+          progress.done();
+          progress.open('schedule', `Publishing scheduled ` + relative, true);
+          state.toggleScheduled(true);
+        })
+        .catch(function () {
+          // note: the Error passed into this doesn't have a message, so we use a custom one
+          progress.done('error');
+          progress.open('error', `A server error occured. Please try again.`, true);
+        });
+      });
+    },
+
+    onUnschedule: function () {
+      var pageUri = this.pageUri;
+
+      pane.close();
+      progress.start('schedule');
+
+      return edit.unschedulePublish(pageUri)
       .then(function () {
         progress.done();
-        progress.open('schedule', `Publishing scheduled ` + relative, true);
-        state.toggleScheduled(true);
+        progress.open('schedule', `Unscheduled!`, true);
+        state.toggleScheduled(false);
       })
       .catch(function () {
         // note: the Error passed into this doesn't have a message, so we use a custom one
