@@ -96,5 +96,6 @@ body {
 .kiln-toolbar-inner .publish.scheduled {
   @include button-filled($orange);
 
+  margin-right: 0;
   transition: all 200ms ease-in-out;
 }
