@@ -44,7 +44,7 @@ module.exports = function () {
               .catch(function () {
                 // note: the Error passed into this doesn't have a message, so we use a custom one
                 progress.done('error');
-                progress.open('error', `A server error occured. Please try again.`, true);
+                progress.open('error', `Server errored when publishing, please try again.`, true);
               });
           });
         }
@@ -67,7 +67,7 @@ module.exports = function () {
         .catch(function () {
           // note: the Error passed into this doesn't have a message, so we use a custom one
           progress.done('error');
-          progress.open('error', `A server error occured. Please try again.`, true);
+          progress.open('error', `Server errored when unpublishing, please try again.`, true);
         });
       });
     },
@@ -101,7 +101,7 @@ module.exports = function () {
         .catch(function () {
           // note: the Error passed into this doesn't have a message, so we use a custom one
           progress.done('error');
-          progress.open('error', `A server error occured. Please try again.`, true);
+          progress.open('error', `Server errored when scheduling, please try again.`, true);
         });
       });
     },
@@ -121,7 +121,7 @@ module.exports = function () {
       .catch(function () {
         // note: the Error passed into this doesn't have a message, so we use a custom one
         progress.done('error');
-        progress.open('error', `A server error occured. Please try again.`, true);
+        progress.open('error', `Server errored when unscheduling, please try again.`, true);
       });
     }
   };
