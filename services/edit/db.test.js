@@ -140,6 +140,53 @@ describe('db service', function () {
     });
   });
 
+  describe('getHead', function () {
+    var fn = lib[this.title];
+
+    // test for things in createUriBlockTests, except for 4xx and 5xx responses
+    it('throws on protocol', function () {
+      expect(function () {
+        fn('http://foo');
+      }).to.throw();
+    });
+
+    it('throws on starting slash', function () {
+      expect(function () {
+        fn('/foo');
+      }).to.throw();
+    });
+
+    it('throws on port', function () {
+      expect(function () {
+        fn('foo:8000');
+      }).to.throw();
+    });
+
+    it('returns true if resource exists', function () {
+      respond('some text');
+
+      return fn('foo').then(function (result) {
+        expect(result).to.equal(true);
+      });
+    });
+
+    it('returns false if resource responds with 4xx error', function () {
+      respondError(404);
+
+      return fn('foo').then(function (result) {
+        expect(result).to.equal(false);
+      });
+    });
+
+    it('returns false if resource responds with 5xx error', function () {
+      respondError(500);
+
+      return fn('foo').then(function (result) {
+        expect(result).to.equal(false);
+      });
+    });
+  });
+
   describe('getHTML', function () {
     var fn = lib[this.title];
 

@@ -1,23 +1,32 @@
 var _ = require('lodash'),
   edit = require('./edit'),
+  db = require('./edit/db'),
   references = require('./references'),
   dom = require('./dom');
 
 /**
- * check if an endpoint 404s/errors. doesn't care about the endpoint's actual data
- * @param {string} ref
+ * get canonical url from clay-meta-url component (if it exists)
  * @returns {Promise}
  */
-function endpointExists(ref) {
-  return edit.getDataOnly(ref)
-    .then(function () {
-      // endpoint exists!
-      return true;
-    })
-    .catch(function () {
-      // endpoint 404s, or has some other error
-      return false;
-    });
+function getCanonicalUrl() {
+  var canonical = dom.find('[' + references.referenceAttribute + '*="clay-meta-url"]'),
+    ref = canonical && canonical.getAttribute(references.referenceAttribute);
+
+  if (ref) {
+    return edit.getDataOnly(ref)
+      .then(function (data) {
+        if (_.isString(data.url) && data.url.length) {
+          return data.url;
+        } else {
+          return null;
+        }
+      })
+      .catch(function () {
+        return null;
+      });
+  } else {
+    return null;
+  }
 }
 
 /**
@@ -25,20 +34,13 @@ function endpointExists(ref) {
  * @returns {Promise}
  */
 function hasCanonicalUrl() {
-  var canonical = dom.find('[' + references.referenceAttribute + '*="clay-meta-url"]'),
-    ref = canonical && canonical.getAttribute(references.referenceAttribute);
-
-  if (ref) {
-    return edit.getDataOnly(ref)
-      .then(function (data) {
-        return _.isString(data.url) && !!data.url.length;
-      })
-      .catch(function () {
-        return false;
-      });
-  } else {
-    return false;
-  }
+  return getCanonicalUrl().then(function (url) {
+    if (url) {
+      return db.getHead(db.urlToUri(url));
+    } else {
+      return false;
+    }
+  });
 }
 
 /**
@@ -50,12 +52,14 @@ function getPageState() {
   var pageRef = document.documentElement.getAttribute(references.referenceAttribute);
 
   return Promise.all([
-    endpointExists(pageRef + '@scheduled'),
-    hasCanonicalUrl()
+    db.getHead(pageRef + '@scheduled'),
+    hasCanonicalUrl(),
+    getCanonicalUrl()
   ]).then(function (promises) {
     return {
       scheduled: promises[0],
-      published: promises[1]
+      published: promises[1],
+      publishedUrl: promises[2]
     };
   });
 }

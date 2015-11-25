@@ -159,6 +159,23 @@ function expectTextResult(target) {
 }
 
 /**
+ * expect something to exist
+ * @param {Element} target
+ * @returns {boolean}
+ */
+function expectBooleanResult(target) {
+  var statusCodeGroup = target.status.toString()[0];
+
+  if (statusCodeGroup === '2') {
+    return true;
+  } else if (statusCodeGroup === '4' || statusCodeGroup === '5') {
+    return false; // note: it returns false instead of throwing an error
+  } else {
+    return true; // 304s and such
+  }
+}
+
+/**
  * Translate the response into what we expect
  * @param {Element} target
  * @returns {{}|Element}
@@ -242,6 +259,17 @@ function getText(uri) {
   assertUri(uri);
 
   return send(uri).then(expectTextResult);
+}
+
+/**
+ * a quick way to check if a resource exists
+ * @param {string} uri
+ * @returns {Promise}
+ */
+function getHead(uri) {
+  assertUri(uri);
+
+  return send(uri).then(expectBooleanResult);
 }
 
 /**
@@ -330,6 +358,7 @@ function removeText(uri) {
 module.exports.getSchema = getSchema;
 module.exports.get = getObject;
 module.exports.getText = getText;
+module.exports.getHead = getHead;
 module.exports.getHTML = getHTML;
 module.exports.save = save;
 module.exports.saveText = saveText;
