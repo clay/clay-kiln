@@ -1,4 +1,5 @@
 var _ = require('lodash'),
+  moment = require('moment'),
   edit = require('./edit'),
   db = require('./edit/db'),
   references = require('./references'),
@@ -113,5 +114,23 @@ function toggleScheduled(isScheduled) {
   }
 }
 
+/**
+ * format timestamps in the past and future
+ * @param {number} timestamp (unix timestamp)
+ * @param {boolean} isFuture
+ * @returns {string}
+ */
+function formatTime(timestamp, isFuture) {
+  var datetime = moment(timestamp),
+    now = moment();
+
+  if (datetime.isAfter(now.add(3, 'hours')) || datetime.isBefore(now.subtract(3, 'hours'))) {
+    return datetime.calendar();
+  } else {
+    return isFuture ? datetime.toNow() : datetime.fromNow();
+  }
+}
+
 module.exports.get = getPageState;
 module.exports.toggleScheduled = toggleScheduled;
+module.exports.formatTime = formatTime;

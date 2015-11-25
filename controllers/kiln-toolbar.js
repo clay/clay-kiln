@@ -1,5 +1,4 @@
 var EditorToolbar,
-  moment = require('moment'),
   dom = require('../services/dom'),
   edit = require('../services/edit'),
   events = require('../services/events'),
@@ -51,7 +50,7 @@ EditorToolbar = function (el) {
   return state.get().then(function (res) {
     if (res.scheduled) {
       state.toggleScheduled(true);
-      progress.open('schedule', `Article is scheduled to be published ${moment(res.scheduledAt).fromNow()}`);
+      progress.open('schedule', `Article is scheduled to be published ${state.formatTime(res.scheduledAt, true)}`);
     } else if (res.published) {
       progress.open('publish', `Article is currently live: <a href="${res.publishedUrl}" target="_blank">View Article</a>`);
     }

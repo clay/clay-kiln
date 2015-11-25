@@ -68,8 +68,7 @@ module.exports = function () {
         date = dom.find(form, 'input[type=date]').value,
         time = dom.find(form, 'input[type=time]').value,
         datetime = moment(date + ' ' + time, 'YYYY-MM-DD HH:mm'),
-        timestamp = datetime.valueOf(), // todo: switch this to .unix() e.g. seconds when amphora changes
-        relative = datetime.fromNow();
+        timestamp = datetime.valueOf();
 
       // close publish pane and start progress bar
       pane.close();
@@ -86,7 +85,7 @@ module.exports = function () {
         })
         .then(function () {
           progress.done();
-          progress.open('schedule', `Publishing scheduled ` + relative, true);
+          progress.open('schedule', `Publishing scheduled ` + state.formatTime(timestamp, true), true);
           state.toggleScheduled(true);
         })
         .catch(function () {
