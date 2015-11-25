@@ -52,7 +52,7 @@ EditorToolbar = function (el) {
       state.toggleScheduled(true);
     }
     if (res.published) {
-      progress.open('publish', 'Article is currently live.');
+      progress.open('publish', `Article is currently live: <a href="${res.publishedUrl}" target="_blank">View Article</a>`);
     }
   });
 };
