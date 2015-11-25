@@ -24,6 +24,8 @@ module.exports = function () {
     },
 
     onPublishNow: function () {
+      var pageUri = this.pageUri;
+
       pane.close();
       progress.start('publish');
 
@@ -32,33 +34,41 @@ module.exports = function () {
           progress.done('error');
           pane.openValidationErrors(errors);
         } else {
-          return edit.publishPage()
-            .then(function (url) {
-              progress.done();
-              progress.open('publish', `Published! <a href="${url}" target="_blank">View Article</a>`);
-            })
-            .catch(function () {
-              // note: the Error passed into this doesn't have a message, so we use a custom one
-              progress.done('error');
-              progress.open('error', `A server error occured. Please try again.`, true);
-            });
+          return edit.unschedulePublish(pageUri).then(function () {
+            return edit.publishPage()
+              .then(function (url) {
+                progress.done();
+                progress.open('publish', `Published! <a href="${url}" target="_blank">View Article</a>`);
+                state.toggleScheduled(false);
+              })
+              .catch(function () {
+                // note: the Error passed into this doesn't have a message, so we use a custom one
+                progress.done('error');
+                progress.open('error', `A server error occured. Please try again.`, true);
+              });
+          });
         }
       });
     },
 
     onUnpublish: function () {
+      var pageUri = this.pageUri;
+
       pane.close();
       progress.start('publish');
 
-      return edit.unpublishPage()
-      .then(function () {
-        progress.done();
-        progress.open('publish', `Unpublished!`, true);
-      })
-      .catch(function () {
-        // note: the Error passed into this doesn't have a message, so we use a custom one
-        progress.done('error');
-        progress.open('error', `A server error occured. Please try again.`, true);
+      return edit.unschedulePublish(pageUri).then(function () {
+        return edit.unpublishPage()
+        .then(function () {
+          progress.done();
+          progress.open('publish', `Unpublished!`, true);
+          state.toggleScheduled(false);
+        })
+        .catch(function () {
+          // note: the Error passed into this doesn't have a message, so we use a custom one
+          progress.done('error');
+          progress.open('error', `A server error occured. Please try again.`, true);
+        });
       });
     },
 
