@@ -9,7 +9,7 @@ var dirname = __dirname.split('/').pop(),
 describe(dirname, function () {
   describe(filename, function () {
     var fakeInstanceRef = 'domain.com/components/clay-meta-url/instances/fakeInstance',
-      sandbox, getDataOnly, getHead;
+      sandbox, getDataOnly, getHead, get;
 
     function stubCanonicalUrl() {
       var el = document.createElement('div');
@@ -23,6 +23,7 @@ describe(dirname, function () {
       sandbox.stub(dom, 'find').returns(stubCanonicalUrl());
       getDataOnly = sandbox.stub(edit, 'getDataOnly');
       getHead = sandbox.stub(db, 'getHead');
+      get = sandbox.stub(db, 'get');
     });
 
     afterEach(function () {
@@ -45,27 +46,27 @@ describe(dirname, function () {
       }
 
       it('gets scheduled state (published url is null if not published)', function () {
-        getDataOnly.withArgs(scheduleRef).returns(Promise.resolve({ at: 1 }));
+        get.withArgs(scheduleRef).returns(Promise.resolve({ at: 1 }));
         getDataOnly.withArgs(fakeInstanceRef).returns(Promise.reject());
         return fn().then(expectState({ scheduled: true, scheduledAt: 1, published: false, publishedUrl: null }));
       });
 
       it('gets published state (and published url)', function () {
-        getDataOnly.withArgs(scheduleRef).returns(Promise.reject());
+        get.withArgs(scheduleRef).returns(Promise.reject());
         getDataOnly.withArgs(fakeInstanceRef).returns(Promise.resolve(fakeInstanceData));
         getHead.withArgs(fakeUri).returns(Promise.resolve(true));
         return fn().then(expectState({ scheduled: false, scheduledAt: null, published: true, publishedUrl: fakeUrl }));
       });
 
       it('gets scheduled and published state (and published url)', function () {
-        getDataOnly.withArgs(scheduleRef).returns(Promise.resolve({ at: 1 }));
+        get.withArgs(scheduleRef).returns(Promise.resolve({ at: 1 }));
         getDataOnly.withArgs(fakeInstanceRef).returns(Promise.resolve(fakeInstanceData));
         getHead.withArgs(fakeUri).returns(Promise.resolve(true));
         return fn().then(expectState({ scheduled: true, scheduledAt: 1, published: true, publishedUrl: fakeUrl }));
       });
 
       it('gets neither state', function () {
-        getDataOnly.withArgs(scheduleRef).returns(Promise.reject());
+        get.withArgs(scheduleRef).returns(Promise.reject());
         getDataOnly.withArgs(fakeInstanceRef).returns(Promise.reject());
         return fn().then(expectState({ scheduled: false, scheduledAt: null, published: false, publishedUrl: null }));
       });
