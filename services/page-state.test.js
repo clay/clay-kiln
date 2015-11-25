@@ -4,7 +4,8 @@ var dirname = __dirname.split('/').pop(),
   references = require('./references'),
   edit = require('./edit'),
   db = require('./edit/db'),
-  dom = require('./dom');
+  dom = require('./dom'),
+  moment = require('moment');
 
 describe(dirname, function () {
   describe(filename, function () {
@@ -69,6 +70,57 @@ describe(dirname, function () {
         get.withArgs(scheduleRef).returns(Promise.reject());
         getDataOnly.withArgs(fakeInstanceRef).returns(Promise.reject());
         return fn().then(expectState({ scheduled: false, scheduledAt: null, published: false, publishedUrl: null }));
+      });
+    });
+
+    describe('toggleScheduled', function () {
+      var fn = lib[this.title],
+        button = dom.create(`<div class="kiln-toolbar-inner"><button class="publish">Publish</button></div>`);
+
+      before(function () {
+        document.body.appendChild(button);
+      });
+
+      it('toggles on', function () {
+        fn(true);
+        expect(document.querySelector('.kiln-toolbar-inner .publish').classList.contains('scheduled')).to.equal(true);
+      });
+
+      it('toggles off', function () {
+        fn(false);
+        expect(document.querySelector('.kiln-toolbar-inner .publish').classList.contains('scheduled')).to.equal(false);
+      });
+    });
+
+    describe('formatTime', function () {
+      var fn = lib[this.title];
+
+      it('formats now', function () {
+        expect(fn(moment().valueOf())).to.equal(moment().fromNow());
+      });
+
+      it('formats < 3 hours ahead', function () {
+        var time = moment().add(30, 'minutes');
+
+        expect(fn(time.valueOf(), true)).to.equal(time.toNow());
+      });
+
+      it('formats > 3 hours ahead', function () {
+        var time = moment().add(5, 'hours');
+
+        expect(fn(time.valueOf(), true)).to.equal(time.calendar());
+      });
+
+      it('formats < 3 hours behind', function () {
+        var time = moment().subtract(30, 'minutes');
+
+        expect(fn(time.valueOf())).to.equal(time.fromNow());
+      });
+
+      it('formats > 3 hours behind', function () {
+        var time = moment().subtract(5, 'hours');
+
+        expect(fn(time.valueOf())).to.equal(time.calendar());
       });
     });
   });

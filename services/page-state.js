@@ -105,7 +105,7 @@ function getPageState() {
  * @param {boolean} isScheduled
  */
 function toggleScheduled(isScheduled) {
-  var el = dom.find('.kiln-toolbar-inner .publish');
+  var el = document.querySelector('.kiln-toolbar-inner .publish');
 
   if (isScheduled) {
     el.classList.add('scheduled');
@@ -122,12 +122,16 @@ function toggleScheduled(isScheduled) {
  */
 function formatTime(timestamp, isFuture) {
   var datetime = moment(timestamp),
-    now = moment();
+    now = moment(),
+    lowerbound = moment().subtract(3, 'hours'),
+    upperbound = moment().add(3, 'hours');
 
-  if (datetime.isAfter(now.add(3, 'hours')) || datetime.isBefore(now.subtract(3, 'hours'))) {
-    return datetime.calendar();
-  } else {
+  if (datetime.isSame(now, 'minute')) {
+    return datetime.fromNow();
+  } else if (datetime.isBetween(lowerbound, upperbound)) {
     return isFuture ? datetime.toNow() : datetime.fromNow();
+  } else {
+    return datetime.calendar();
   }
 }
 
