@@ -63,7 +63,8 @@ function focus(el, options, e) {
 
         return firstField;
       });
-    });
+    }).catch(_.noop); // form didn't close for some reason.
+    // usually because native validation failed
 }
 
 /**

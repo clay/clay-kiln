@@ -24,7 +24,7 @@ module.exports = function () {
         e.preventDefault();
         focus.unfocus().then(function () {
           this.removeEventListener('click', outsideClickhandler); // note: self references <html>
-        });
+        }).catch(_.noop);
       }
     }
 
@@ -50,7 +50,7 @@ module.exports = function () {
 
     closeForm: function (e) {
       e.preventDefault();
-      focus.unfocus();
+      focus.unfocus().catch(_.noop);
     }
   };
 

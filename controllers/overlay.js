@@ -42,7 +42,7 @@ module.exports = function () {
     close: function (e) {
       if (e.target === e.currentTarget) {
         // we clicked on the overlay itself
-        focus.unfocus();
+        focus.unfocus().catch(_.noop);
       }
     }
   };
