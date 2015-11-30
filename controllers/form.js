@@ -21,8 +21,10 @@ module.exports = function () {
   function constructor(el, ref, path, oldEl) {
     function outsideClickhandler(e) {
       if (!_.contains(e.path, el) && !wasTooltipClicked(e)) {
-        el.dispatchEvent(new CustomEvent('close'));
-        this.removeEventListener('click', outsideClickhandler); // note: this references <html>
+        e.preventDefault();
+        focus.unfocus().then(function () {
+          this.removeEventListener('click', outsideClickhandler); // note: self references <html>
+        });
       }
     }
 
