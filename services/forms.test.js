@@ -349,8 +349,42 @@ describe(dirname, function () {
         mockFormData.additionalField = {};
         expect(fn(mockServerData, mockFormData)).to.be.true;
       });
-
     });
 
+    describe('isFormValid', function () {
+      var fn = lib[this.title];
+
+      function stubForm(isValid) {
+        var formClass = 'editor-overlay-background',
+          container = document.createElement('div'),
+          form = document.createElement('form'),
+          input = document.createElement('input'),
+          validityMessage = isValid ? '' : 'Not valid';
+
+        // remove any open forms
+        _.each(document.querySelectorAll('.' + formClass), (el) => el.parentNode.removeChild(el));
+
+        // add new form
+        container.classList.add(formClass);
+        input.setCustomValidity(validityMessage);
+        form.appendChild(input);
+        container.appendChild(form);
+        document.body.appendChild(container);
+      }
+
+      it('returns true if no open form', function () {
+        expect(fn()).to.equal(true);
+      });
+
+      it('returns true if valid open form', function () {
+        stubForm(true);
+        expect(fn()).to.equal(true);
+      });
+
+      it('returns false if invalid form', function () {
+        stubForm(false);
+        expect(fn()).to.equal(false);
+      });
+    });
   });
 });
