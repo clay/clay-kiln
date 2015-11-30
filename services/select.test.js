@@ -4,6 +4,7 @@ var dirname = __dirname.split('/').pop(),
   groups = require('./groups'),
   edit = require('./edit'),
   forms = require('./forms'),
+  focus = require('../decorators/focus'),
   lib = require('./select');
 
 describe(dirname, function () {
@@ -146,14 +147,17 @@ describe(dirname, function () {
         parent.setAttribute(references.referenceAttribute, 'parentRef');
         parent.appendChild(el);
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
+        sandbox.stub(focus, 'unfocus').returns(Promise.resolve());
         fn(el, options);
         expect(parent.classList.contains('selected')).to.equal(false); // Parent is not selected.
 
         // Trigger click on parent label in the component's bar.
         el.querySelector('.component-bar .parent.label').dispatchEvent(new Event('click'));
 
-        expect(parent.classList.contains('selected')).to.equal(true); // Parent is selected.
-        expect(el.classList.contains('selected')).to.equal(false); // Child is not selected.
+        setTimeout(function () {
+          expect(parent.classList.contains('selected')).to.equal(true); // Parent is selected.
+          expect(el.classList.contains('selected')).to.equal(false); // Child is not selected.
+        }, 100); // allow time for the promise to resolve
       });
 
       it('adds the settings button if the component has settings', function () {
@@ -188,15 +192,18 @@ describe(dirname, function () {
         sandbox.stub(groups, 'getSettingsFields').returns([1]);
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
         sandbox.stub(forms, 'open', sandbox.spy().withArgs('fakeName', document.body));
+        sandbox.stub(focus, 'unfocus').returns(Promise.resolve());
         fn(el, options);
 
         // Trigger a click on the settings button
         el.querySelector('.component-bar .settings').dispatchEvent(new Event('click'));
 
-        // the component should still be selected
-        expect(el.classList.contains('selected')).to.equal(true);
-        // the form should be open
-        expect(forms.open.calledOnce).to.equal(true);
+        setTimeout(function () {
+          // the component should still be selected
+          expect(el.classList.contains('selected')).to.equal(true);
+          // the form should be open
+          expect(forms.open.calledOnce).to.equal(true);
+        }, 100); // allow time for the promise to resolve
       });
 
       it('will select a component when component is clicked', function () {
