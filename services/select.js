@@ -153,8 +153,9 @@ function addSettingsOption(componentBar, data, ref) {
     el.addEventListener('click', function (e) {
       e.stopPropagation();
       // Open the settings overlay.
-      focus.unfocus();
-      forms.open(ref, document.body);
+      focus.unfocus().then(function () {
+        forms.open(ref, document.body);
+      }).catch(_.noop);
     });
 
     addMenu(componentBar);
@@ -189,10 +190,11 @@ function addParentLabel(componentBar, parentEl) {
   el.addEventListener('click', function (e) {
     e.stopPropagation();
     // Select the parent.
-    focus.unfocus();
-    unselect();
-    select(parentEl);
-    scrollToComponent(parentEl);
+    focus.unfocus().then(function () {
+      unselect();
+      select(parentEl);
+      scrollToComponent(parentEl);
+    }).catch(_.noop);
   });
   componentBar.appendChild(el);
 }

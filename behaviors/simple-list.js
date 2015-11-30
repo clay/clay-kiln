@@ -170,7 +170,7 @@ module.exports = function (result, args) {
           observer.setValue(data);
         } else {
           // close the form
-          focus.unfocus();
+          focus.unfocus().catch(_.noop);
         }
       }
 

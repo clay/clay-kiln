@@ -449,7 +449,7 @@ function initWysiwygBinder(enableKeyboardExtras) {
           handleComponentCreation(editable, observer);
         } else {
           // close the form?
-          focus.unfocus();
+          focus.unfocus().catch(_.noop);
         }
       });
     }
