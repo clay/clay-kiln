@@ -38,7 +38,7 @@ module.exports = function () {
             return edit.publishPage()
               .then(function (url) {
                 progress.done();
-                progress.open('publish', `Published! <a href="${url}" target="_blank">View Article</a>`);
+                progress.open('publish', `Published! <a href="${url}" target="_blank">View Page</a>`);
                 state.toggleScheduled(false);
               })
               .catch(function () {

@@ -50,9 +50,9 @@ EditorToolbar = function (el) {
   return state.get().then(function (res) {
     if (res.scheduled) {
       state.toggleScheduled(true);
-      progress.open('schedule', `Article is scheduled to be published ${state.formatTime(res.scheduledAt, true)}`);
+      progress.open('schedule', `Page is scheduled to be published ${state.formatTime(res.scheduledAt, true)}`);
     } else if (res.published) {
-      progress.open('publish', `Article is currently live: <a href="${res.publishedUrl}" target="_blank">View Article</a>`);
+      progress.open('publish', `Page is currently live: <a href="${res.publishedUrl}" target="_blank">View Page</a>`);
     }
   });
 };
