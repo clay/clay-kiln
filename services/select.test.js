@@ -137,7 +137,7 @@ describe(dirname, function () {
         expect(fn(el, {ref: 'fakeRef'}).classList.contains('component-bar-wrapper')).to.equal(true);
       });
 
-      it('will select the parent component if parent label in the component bar is clicked', function () {
+      it('will select the parent component if parent label in the component bar is clicked', function (done) {
         var el = stubComponent(),
           parent = stubComponent(),
           options = {ref: 'fakeRef', data: {}, path: 'fakePath'};
@@ -157,6 +157,7 @@ describe(dirname, function () {
         setTimeout(function () {
           expect(parent.classList.contains('selected')).to.equal(true); // Parent is selected.
           expect(el.classList.contains('selected')).to.equal(false); // Child is not selected.
+          done();
         }, 100); // allow time for the promise to resolve
       });
 
@@ -184,7 +185,7 @@ describe(dirname, function () {
         expect(el.querySelector('.component-bar .settings')).to.equal(null); // Settings button was not added.
       });
 
-      it('will open settings form if settings button is clicked', function () {
+      it('will open settings form if settings button is clicked', function (done) {
         var el = stubComponent(),
           options = {ref: 'fakeRef', data: {}, path: 'fakePath'};
 
@@ -203,6 +204,7 @@ describe(dirname, function () {
           expect(el.classList.contains('selected')).to.equal(true);
           // the form should be open
           expect(forms.open.calledOnce).to.equal(true);
+          done();
         }, 100); // allow time for the promise to resolve
       });
 
