@@ -197,8 +197,38 @@ function close() {
   return Promise.resolve();
 }
 
+/**
+ * check if the current form is valid (if it exists)
+ * @returns {boolean}
+ */
+function isFormValid() {
+  var formContainer = findFormContainer(),
+    formEl = formContainer && formContainer.querySelector('form'),
+    isValid, hiddenSubmit;
+
+  if (formEl) {
+    isValid = formEl.checkValidity();
+
+    if (!isValid) {
+      // create a hidden submit button
+      hiddenSubmit = document.createElement('input');
+      hiddenSubmit.setAttribute('type', 'submit');
+      hiddenSubmit.classList.add('hidden-submit');
+      // then add it to the form
+      formEl.appendChild(hiddenSubmit);
+      // then trigger a manual click, which will show the validation messages
+      hiddenSubmit.dispatchEvent(new MouseEvent('click'));
+    }
+
+    return isValid;
+  } else {
+    return true;
+  }
+}
+
 exports.open = open;
 exports.close = close;
+exports.isFormValid = isFormValid;
 
 // for tests:
 exports.dataChanged = dataChanged;

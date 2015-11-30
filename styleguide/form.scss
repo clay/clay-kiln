@@ -99,3 +99,8 @@
 .hidden-wrapped {
   display: none;
 }
+
+// hidden submit button that's added to the form if it's not valid
+.hidden-submit {
+  display: none;
+}

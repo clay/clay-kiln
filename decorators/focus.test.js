@@ -12,6 +12,7 @@ describe(dirname, function () {
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
       sandbox.stub(select);
+      sandbox.stub(forms, 'isFormValid').returns(true);
     });
 
     afterEach(function () {
