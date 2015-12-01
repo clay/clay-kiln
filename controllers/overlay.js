@@ -1,5 +1,6 @@
 module.exports = function () {
-  var dom = require('../services/dom'),
+  var _ = require('lodash'),
+    dom = require('../services/dom'),
     focus = require('../decorators/focus'),
     noScrollClass = 'noscroll';
 
