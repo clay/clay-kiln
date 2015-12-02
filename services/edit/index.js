@@ -156,70 +156,6 @@ function getUriDestination(location) {
 }
 
 /**
- * @param {string} uri e.g. localhost.dev.nymag.biz/pages/U7V8okzAAAA=.html
- * @returns {string} e.g. localhost.dev.nymag.biz/pages/U7V8okzAAAA=
- */
-function removeExtension(uri) {
-  return uri.replace(/\.(html|json)$/i, '');
-}
-
-/**
- * @param {string} uri
- * @returns {string}
- */
-function removeVersion(uri) {
-  return uri.split('@')[0];
-}
-
-/**
- * @param {string} uri
- * @returns {string}
- */
-function pathOnly(uri) {
-  return removeVersion(removeExtension(uri));
-}
-
-/**
- * Create a new uri from url to some other target uri
- *
- * @param {string} uri
- * @param {string} destinationUri
- * @returns {Promise}
- * @example edit.createUri('nymag.com/press/whatever.html', 'nymag.com/press/pages/1')
- */
-function createUri(uri, destinationUri) {
-  var prefix, base64Url, targetUri, parts;
-
-
-  // accept uris or urls (like a canonical url)
-  if (db.isUrl(uri)) {
-    parts = urlParse.parse(uri);
-    uri = parts.hostname + parts.path;
-  }
-
-  // assertions
-  if (!_.isString(uri) || !db.isUri(uri)) {
-    throw new TypeError('Expecting uri, not ' + uri);
-  }
-
-  if (!_.isString(destinationUri) || !db.isUri(destinationUri)) {
-    throw new TypeError('Expecting uri, not ' + destinationUri);
-  }
-
-  // for our site specifically
-  prefix = site.get('prefix');
-
-  base64Url = btoa(uri);
-  targetUri = prefix + urisRoute + base64Url;
-
-
-  return db.saveText(targetUri, destinationUri).then(function () {
-    // return url where it exists now
-    return site.addPort(site.addProtocol(uri));
-  });
-}
-
-/**
  * Remove a uri.
  *
  * @param {string} uri
@@ -263,18 +199,11 @@ function publishPage() {
   var pageUri = document.firstElementChild.getAttribute(references.referenceAttribute);
 
   return cache.getDataOnly(pageUri).then(function (pageData) {
-    // pages don't have schemas or validation (later?)
+    // pages don't have schemas or validation
     return db.save(pageUri + '@published', _.omit(pageData, '_ref'));
   }).then(function (publishedPageData) {
-    var url = publishedPageData && publishedPageData.url;
-
-    if (_.isString(url) && db.isUrl(url)) {
-      // the page generated a url correctly, so create the uri reference
-      return createUri(url, pageUri);
-    } else {
-      // point to page reference as html
-      return pageUri + '.html';
-    }
+    // note: when putting to page@published, amphora will add the uri to /uris/
+    return publishedPageData.url;
   });
 }
 
