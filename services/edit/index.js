@@ -260,31 +260,21 @@ function getFirstCanonicalComponentReference() {
  * @returns {Promise.string}
  */
 function publishPage() {
-  var uri = dom.uri(),
-    isBarePage = uri.indexOf(pagesRoute) > -1,
-    pageRefPromise = isBarePage ? Promise.resolve(uri) : getUriDestination();
+  var pageUri = document.firstElementChild.getAttribute(references.referenceAttribute);
 
-  return pageRefPromise.then(function (pageReference) {
-    var pageUri = pathOnly(pageReference);
+  return cache.getDataOnly(pageUri).then(function (pageData) {
+    // pages don't have schemas or validation (later?)
+    return db.save(pageUri + '@published', _.omit(pageData, '_ref'));
+  }).then(function (publishedPageData) {
+    var url = publishedPageData && publishedPageData.url;
 
-    return cache.getDataOnly(pageUri).then(function (data) {
-      // pages don't have schemas or validation (later?)
-      return db.save(pageUri + '@published', _.omit(data, '_ref'));
-    }).then(function () {
-      var ref = getFirstCanonicalComponentReference();
-
-      if (ref) {
-        // get published version of component, and expose the page
-        return cache.getDataOnly(ref + '@published').then(function (data) {
-          if (_.isString(data.canonicalUrl) && db.isUrl(data.canonicalUrl)) {
-            return createUri(data.canonicalUrl, pageUri);
-          }
-        });
-      }
-
+    if (_.isString(url) && db.isUrl(url)) {
+      // the page generated a url correctly, so create the uri reference
+      return createUri(url, pageUri);
+    } else {
       // point to page reference as html
       return pageUri + '.html';
-    });
+    }
   });
 }
 
