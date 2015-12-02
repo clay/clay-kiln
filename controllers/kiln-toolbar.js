@@ -82,7 +82,14 @@ EditorToolbar.prototype = {
   },
 
   // open the publish pane if it's not already open (close other panes first)
-  onPublishClick: pane.openPublish
+  onPublishClick: function () {
+    return focus.unfocus()
+      .then(pane.openPublish)
+      .catch(function () {
+        progress.done('error');
+        progress.open('error', `Data could not be saved. Please review your open form.`, true);
+      });
+  }
 };
 
 module.exports = EditorToolbar;
