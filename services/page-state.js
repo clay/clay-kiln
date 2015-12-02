@@ -2,44 +2,32 @@ var _ = require('lodash'),
   moment = require('moment'),
   edit = require('./edit'),
   db = require('./edit/db'),
-  references = require('./references'),
   dom = require('./dom');
 
 /**
  * get canonical url from clay-meta-url component (if it exists)
+ * @param {string} pageUri
  * @returns {Promise}
  */
-function getCanonicalUrl() {
-  var 
-
-
-
-  var canonical = dom.find('[' + references.referenceAttribute + '*="clay-meta-url"]'),
-    ref = canonical && canonical.getAttribute(references.referenceAttribute);
-
-  if (ref) {
-    return edit.getDataOnly(ref)
-      .then(function (data) {
-        if (_.isString(data.url) && data.url.length) {
-          return data.url;
-        } else {
-          return null;
-        }
-      })
-      .catch(function () {
-        return null;
-      });
-  } else {
+function getCanonicalUrl(pageUri) {
+  return edit.getDataOnly(pageUri).then(function (data) {
+    if (_.isString(data.url) && data.url.length) {
+      return data.url;
+    } else {
+      return null;
+    }
+  }).catch(function () {
     return null;
-  }
+  });
 }
 
 /**
  * see if there's a published canonical url with an actual url
+ * @param {string} pageUri
  * @returns {Promise}
  */
-function hasCanonicalUrl() {
-  return getCanonicalUrl().then(function (url) {
+function hasCanonicalUrl(pageUri) {
+  return getCanonicalUrl(pageUri).then(function (url) {
     if (url) {
       return db.getHead(db.urlToUri(url)).then(function (res) {
         if (res) {
@@ -65,12 +53,12 @@ function hasCanonicalUrl() {
 
 /**
  * see if a page is scheduled to publish
- * @param {string} ref e.g. domain.com/pages/pageid@scheduled
+ * @param {string} scheduledUri e.g. domain.com/pages/pageid@scheduled
  * @returns {Promise}
  */
-function getScheduled(ref) {
+function getScheduled(scheduledUri) {
   // note: no caching here
-  return db.get(ref).then(function (data) {
+  return db.get(scheduledUri).then(function (data) {
     return {
       scheduled: true,
       scheduledAt: data.at
@@ -89,11 +77,11 @@ function getScheduled(ref) {
  * @returns {Promise}
  */
 function getPageState() {
-  var pageRef = document.documentElement.getAttribute(references.referenceAttribute);
+  var pageUri = dom.pageUri();
 
   return Promise.all([
-    getScheduled(pageRef + '@scheduled'),
-    hasCanonicalUrl()
+    getScheduled(pageUri + '@scheduled'),
+    hasCanonicalUrl(pageUri)
   ]).then(function (promises) {
     return {
       scheduled: promises[0].scheduled,

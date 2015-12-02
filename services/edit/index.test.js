@@ -5,8 +5,7 @@ var lib = require('./'),
   cache = require('./cache'),
   control = require('./control'),
   progress = require('./../progress'),
-  sinon = require('sinon'),
-  references = require('./../references');
+  sinon = require('sinon');
 
 describe('edit service', function () {
   var sandbox,
@@ -39,8 +38,6 @@ describe('edit service', function () {
     site.addPort.returns('place.com/b');
 
     db.getHTML.returns(document.createElement('div'));
-    // page-related actions need the page uri
-    document.firstElementChild.setAttribute(references.referenceAttribute, 'thing');
   });
 
   afterEach(function () {
@@ -54,6 +51,7 @@ describe('edit service', function () {
     it('publishes page with version', function () {
       var data = { url: fakeUrl };
 
+      dom.pageUri.returns('thing');
       cache.getDataOnly.returns(resolveReadOnly(data));
       db.save.withArgs('thing@published').returns(resolveReadOnly(data));
 
