@@ -370,7 +370,6 @@ module.exports = {
   addToParentList: addToParentList,
   createComponent: createComponent,
   createPage: createPage,
-  createUri: createUri,
   publishPage: publishPage,
   unpublishPage: unpublishPage,
   removeFromParentList: removeFromParentList,
