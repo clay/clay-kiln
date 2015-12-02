@@ -16,6 +16,15 @@ module.exports = {
   },
 
   /**
+   * get page uri
+   * note: page uri should be in the data-uri attribute of the <html> element
+   * @returns {string}
+   */
+  pageUri: function () {
+    return document.firstElementChild.getAttribute(references.referenceAttribute);
+  },
+
+  /**
    * This function can be minimized smaller than document.querySelector
    * @param {Element} [el]
    * @param {string} selector

@@ -162,7 +162,7 @@ function removeUri(uri) {
  * @returns {Promise.string}
  */
 function publishPage() {
-  var pageUri = document.firstElementChild.getAttribute(references.referenceAttribute);
+  var pageUri = dom.pageUri();
 
   return cache.getDataOnly(pageUri).then(function (pageData) {
     // pages don't have schemas or validation
@@ -178,7 +178,7 @@ function publishPage() {
  * @returns {Promise}
  */
 function unpublishPage() {
-  var pageUri = document.firstElementChild.getAttribute(references.referenceAttribute);
+  var pageUri = dom.pageUri();
 
   return cache.getDataOnly(pageUri).then(function (pageData) {
     // change url into uri

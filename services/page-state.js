@@ -10,6 +10,10 @@ var _ = require('lodash'),
  * @returns {Promise}
  */
 function getCanonicalUrl() {
+  var 
+
+
+
   var canonical = dom.find('[' + references.referenceAttribute + '*="clay-meta-url"]'),
     ref = canonical && canonical.getAttribute(references.referenceAttribute);
 
