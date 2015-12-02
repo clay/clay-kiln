@@ -67,7 +67,15 @@ EditorToolbar.prototype = {
     e.stopPropagation();
   },
 
-  onNewClick: createPage, // right now, just create a new page
+  onNewClick: function () {
+    if (focus.hasCurrentFocus()) {
+      if(window.confirm('Are you sure you want to create a new page? Your data on this page may not be saved.')) { // eslint-disable-line
+        return createPage();
+      } // else don't leave
+    } else {
+      return createPage();
+    }
+  },
 
   onHistoryClick: function openHistoryPane() {
     // open the history pane if it's not already open (close other panes first)
