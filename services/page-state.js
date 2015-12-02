@@ -110,12 +110,12 @@ function toggleScheduled(isScheduled) {
 /**
  * format timestamps in the past and future
  * @param {number} timestamp (unix timestamp)
- * @param {boolean} isFuture
  * @returns {string}
  */
-function formatTime(timestamp, isFuture) {
+function formatTime(timestamp) {
   var datetime = moment(timestamp),
     now = moment(),
+    isFuture = datetime.isAfter(now),
     lowerbound = moment().subtract(3, 'hours'),
     upperbound = moment().add(3, 'hours');
 

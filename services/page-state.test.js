@@ -94,13 +94,13 @@ describe(dirname, function () {
       it('formats < 3 hours ahead', function () {
         var time = moment().add(30, 'minutes');
 
-        expect(fn(time.valueOf(), true)).to.equal(time.toNow());
+        expect(fn(time.valueOf())).to.equal(time.toNow());
       });
 
       it('formats > 3 hours ahead', function () {
         var time = moment().add(5, 'hours');
 
-        expect(fn(time.valueOf(), true)).to.equal(time.calendar());
+        expect(fn(time.valueOf())).to.equal(time.calendar());
       });
 
       it('formats < 3 hours behind', function () {
