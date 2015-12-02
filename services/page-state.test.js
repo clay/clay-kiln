@@ -88,7 +88,9 @@ describe(dirname, function () {
       var fn = lib[this.title];
 
       it('formats now', function () {
-        expect(fn(moment().valueOf())).to.equal(moment().fromNow());
+        var time = moment();
+
+        expect(fn(time.valueOf())).to.equal(time.fromNow());
       });
 
       it('formats now in future tense', function () {
