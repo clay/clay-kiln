@@ -91,10 +91,16 @@ describe(dirname, function () {
         expect(fn(moment().valueOf())).to.equal(moment().fromNow());
       });
 
+      it('formats now in future tense', function () {
+        var time = moment();
+
+        expect(fn(time.valueOf(), true)).to.equal(time.toNow());
+      });
+
       it('formats < 3 hours ahead', function () {
         var time = moment().add(30, 'minutes');
 
-        expect(fn(time.valueOf())).to.equal(time.toNow());
+        expect(fn(time.valueOf())).to.equal(time.fromNow());
       });
 
       it('formats > 3 hours ahead', function () {

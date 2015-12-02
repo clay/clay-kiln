@@ -93,7 +93,7 @@ module.exports = function () {
         })
         .then(function () {
           progress.done();
-          progress.open('schedule', `Publishing scheduled ` + state.formatTime(timestamp), true);
+          progress.open('schedule', `Publishing scheduled ` + state.formatTime(timestamp, true), true);
           state.toggleScheduled(true);
         })
         .catch(function () {

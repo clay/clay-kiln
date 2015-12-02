@@ -110,19 +110,19 @@ function toggleScheduled(isScheduled) {
 /**
  * format timestamps in the past and future
  * @param {number} timestamp (unix timestamp)
+ * @param {boolean} isFuture if it should force future tense when the times are the same, e.g. "publishing in a few second!"
  * @returns {string}
  */
-function formatTime(timestamp) {
+function formatTime(timestamp, isFuture) {
   var datetime = moment(timestamp),
     now = moment(),
-    isFuture = datetime.isAfter(now),
     lowerbound = moment().subtract(3, 'hours'),
     upperbound = moment().add(3, 'hours');
 
   if (datetime.isSame(now, 'minute')) {
-    return datetime.fromNow();
-  } else if (datetime.isBetween(lowerbound, upperbound)) {
     return isFuture ? datetime.toNow() : datetime.fromNow();
+  } else if (datetime.isBetween(lowerbound, upperbound)) {
+    return datetime.fromNow();
   } else {
     return datetime.calendar();
   }
