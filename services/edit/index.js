@@ -4,7 +4,6 @@ var _ = require('lodash'),
   db = require('./db'),
   references = require('../references'),
   site = require('./../site'),
-  urlParse = require('url'),
   progress = require('../progress'),
   refProp = references.referenceProperty,
   pagesRoute = '/pages/',
@@ -134,28 +133,6 @@ function savePartial(data) {
 }
 
 /**
- * Get page reference from current location
- * @param {string} [location]
- * @returns {Promise}
- */
-function getUriDestination(location) {
-  var prefix;
-
-  if (_.isString(location)) {
-    return db.getText(location).then(function (result) {
-      if (_.contains(result, urisRoute)) {
-        result = getUriDestination(result);
-      }
-
-      return result;
-    });
-  } else {
-    prefix = site.get('prefix');
-    return getUriDestination(prefix + urisRoute + btoa(dom.uri()));
-  }
-}
-
-/**
  * Remove a uri.
  *
  * @param {string} uri
@@ -178,17 +155,6 @@ function removeUri(uri) {
 }
 
 /**
- * Get the component from the page that is the "canonical component" in charge of providing a canonicalUrl for the page.
- *
- * @returns {string}
- */
-function getFirstCanonicalComponentReference() {
-  var cacheMap = _.get(cache, 'getSchema.cache.__data__');
-
-  return cacheMap && _.findKey(cacheMap, 'canonicalUrl');
-}
-
-/**
  * Publish current page's saved data.
  *
  * Pages don't have schemas or validation (later?), so save directly to db.
@@ -208,23 +174,18 @@ function publishPage() {
 }
 
 /**
- * unpublishes current page. returns the deleted page data
+ * unpublishes current page. returns the deleted uri
  * @returns {Promise}
  */
 function unpublishPage() {
-  var ref = getFirstCanonicalComponentReference();
+  var pageUri = document.firstElementChild.getAttribute(references.referenceAttribute);
 
-  if (ref) {
-    // get published version of component, and expose the page
-    return cache.getDataOnly(ref + '@published').then(function (data) {
-      var uri;
+  return cache.getDataOnly(pageUri).then(function (pageData) {
+    // change url into uri
+    var uri = db.urlToUri(pageData.url);
 
-      if (_.isString(data.canonicalUrl)) {
-        uri = db.urlToUri(data.canonicalUrl); // change url into a uri
-        return removeUri(uri);
-      }
-    });
-  }
+    return removeUri(uri);
+  });
 }
 
 /**
@@ -410,7 +371,6 @@ module.exports = {
   createComponent: createComponent,
   createPage: createPage,
   createUri: createUri,
-  getUriDestination: getUriDestination,
   publishPage: publishPage,
   unpublishPage: unpublishPage,
   removeFromParentList: removeFromParentList,
