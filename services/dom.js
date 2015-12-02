@@ -1,5 +1,6 @@
 var domify = require('domify'),
-  _ = require('lodash');
+  _ = require('lodash'),
+  references = require('./references');
 
 module.exports = {
   /**
