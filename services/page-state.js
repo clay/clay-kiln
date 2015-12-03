@@ -81,7 +81,7 @@ function getPageState() {
 
   return Promise.all([
     getScheduled(pageUri + '@scheduled'),
-    hasCanonicalUrl(pageUri)
+    hasCanonicalUrl(pageUri + '@published')
   ]).then(function (promises) {
     return {
       scheduled: promises[0].scheduled,
