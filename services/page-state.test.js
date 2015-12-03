@@ -26,6 +26,7 @@ describe(dirname, function () {
     describe('get', function () {
       var fn = lib[this.title],
         scheduleRef = 'fakePage@scheduled',
+        publishedRef = fakePageUri + '@published',
         fakeUrl = 'http://domain.com/page.html',
         fakeUri = db.urlToUri(fakeUrl),
         fakeInstanceData = {
@@ -40,27 +41,27 @@ describe(dirname, function () {
 
       it('gets scheduled state (published url is null if not published)', function () {
         get.withArgs(scheduleRef).returns(Promise.resolve({ at: 1 }));
-        getDataOnly.withArgs(fakePageUri).returns(Promise.reject());
+        getDataOnly.withArgs(publishedRef).returns(Promise.reject());
         return fn().then(expectState({ scheduled: true, scheduledAt: 1, published: false, publishedUrl: null }));
       });
 
       it('gets published state (and published url)', function () {
         get.withArgs(scheduleRef).returns(Promise.reject());
-        getDataOnly.withArgs(fakePageUri).returns(Promise.resolve(fakeInstanceData));
+        getDataOnly.withArgs(publishedRef).returns(Promise.resolve(fakeInstanceData));
         getHead.withArgs(fakeUri).returns(Promise.resolve(true));
         return fn().then(expectState({ scheduled: false, scheduledAt: null, published: true, publishedUrl: fakeUrl }));
       });
 
       it('gets scheduled and published state (and published url)', function () {
         get.withArgs(scheduleRef).returns(Promise.resolve({ at: 1 }));
-        getDataOnly.withArgs(fakePageUri).returns(Promise.resolve(fakeInstanceData));
+        getDataOnly.withArgs(publishedRef).returns(Promise.resolve(fakeInstanceData));
         getHead.withArgs(fakeUri).returns(Promise.resolve(true));
         return fn().then(expectState({ scheduled: true, scheduledAt: 1, published: true, publishedUrl: fakeUrl }));
       });
 
       it('gets neither state', function () {
         get.withArgs(scheduleRef).returns(Promise.reject());
-        getDataOnly.withArgs(fakePageUri).returns(Promise.reject());
+        getDataOnly.withArgs(publishedRef).returns(Promise.reject());
         return fn().then(expectState({ scheduled: false, scheduledAt: null, published: false, publishedUrl: null }));
       });
     });
@@ -91,12 +92,6 @@ describe(dirname, function () {
         var time = moment();
 
         expect(fn(time.valueOf())).to.equal(time.fromNow());
-      });
-
-      it('formats now in future tense', function () {
-        var time = moment();
-
-        expect(fn(time.valueOf(), true)).to.equal(time.toNow());
       });
 
       it('formats < 3 hours ahead', function () {

@@ -5,7 +5,8 @@ var moment = require('moment'),
   validation = require('../services/publish-validation'),
   progress = require('../services/progress'),
   dom = require('../services/dom'),
-  state = require('../services/page-state');
+  state = require('../services/page-state'),
+  db = require('../services/edit/db');
 
 module.exports = function () {
   function constructor(el) {
@@ -89,7 +90,7 @@ module.exports = function () {
       return edit.unschedulePublish(pageUri).then(function () {
         return edit.schedulePublish({
           at: timestamp,
-          publish: pageUri
+          publish: db.uriToUrl(pageUri)
         })
         .then(function () {
           progress.done();

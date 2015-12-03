@@ -67,7 +67,7 @@ function assertUri(uri) {
  * @param  {string} uri
  * @return {string} uri with port and protocol added, if applicable
  */
-function createUrl(uri) {
+function uriToUrl(uri) {
   return site.addProtocol(site.addPort(uri));
 }
 
@@ -114,7 +114,7 @@ function send(options) {
       };
     }
 
-    request.open(options.method, createUrl(options.url), true);
+    request.open(options.method, uriToUrl(options.url), true);
 
     _.each(options.headers, function (value, key) {
       request.setRequestHeader(key, value);
@@ -368,3 +368,4 @@ module.exports.removeText = removeText;
 module.exports.isUri = isUri;
 module.exports.isUrl = isUrl;
 module.exports.urlToUri = urlToUri;
+module.exports.uriToUrl = uriToUrl;
