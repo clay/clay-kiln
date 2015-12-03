@@ -22,9 +22,8 @@ module.exports = function () {
     function outsideClickhandler(e) {
       if (!_.contains(e.path, el) && !wasTooltipClicked(e)) {
         e.preventDefault();
-        focus.unfocus().then(function () {
-          this.removeEventListener('click', outsideClickhandler); // note: self references <html>
-        }).catch(_.noop);
+        this.removeEventListener('click', outsideClickhandler); // note: self references <html>
+        return focus.unfocus().catch(_.noop);
       }
     }
 
