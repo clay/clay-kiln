@@ -4,7 +4,6 @@ var _ = require('lodash'),
   db = require('./db'),
   references = require('../references'),
   site = require('./../site'),
-  urlParse = require('url'),
   progress = require('../progress'),
   refProp = references.referenceProperty,
   pagesRoute = '/pages/',
@@ -134,92 +133,6 @@ function savePartial(data) {
 }
 
 /**
- * Get page reference from current location
- * @param {string} [location]
- * @returns {Promise}
- */
-function getUriDestination(location) {
-  var prefix;
-
-  if (_.isString(location)) {
-    return db.getText(location).then(function (result) {
-      if (_.contains(result, urisRoute)) {
-        result = getUriDestination(result);
-      }
-
-      return result;
-    });
-  } else {
-    prefix = site.get('prefix');
-    return getUriDestination(prefix + urisRoute + btoa(dom.uri()));
-  }
-}
-
-/**
- * @param {string} uri e.g. localhost.dev.nymag.biz/pages/U7V8okzAAAA=.html
- * @returns {string} e.g. localhost.dev.nymag.biz/pages/U7V8okzAAAA=
- */
-function removeExtension(uri) {
-  return uri.replace(/\.(html|json)$/i, '');
-}
-
-/**
- * @param {string} uri
- * @returns {string}
- */
-function removeVersion(uri) {
-  return uri.split('@')[0];
-}
-
-/**
- * @param {string} uri
- * @returns {string}
- */
-function pathOnly(uri) {
-  return removeVersion(removeExtension(uri));
-}
-
-/**
- * Create a new uri from url to some other target uri
- *
- * @param {string} uri
- * @param {string} destinationUri
- * @returns {Promise}
- * @example edit.createUri('nymag.com/press/whatever.html', 'nymag.com/press/pages/1')
- */
-function createUri(uri, destinationUri) {
-  var prefix, base64Url, targetUri, parts;
-
-
-  // accept uris or urls (like a canonical url)
-  if (db.isUrl(uri)) {
-    parts = urlParse.parse(uri);
-    uri = parts.hostname + parts.path;
-  }
-
-  // assertions
-  if (!_.isString(uri) || !db.isUri(uri)) {
-    throw new TypeError('Expecting uri, not ' + uri);
-  }
-
-  if (!_.isString(destinationUri) || !db.isUri(destinationUri)) {
-    throw new TypeError('Expecting uri, not ' + destinationUri);
-  }
-
-  // for our site specifically
-  prefix = site.get('prefix');
-
-  base64Url = btoa(uri);
-  targetUri = prefix + urisRoute + base64Url;
-
-
-  return db.saveText(targetUri, destinationUri).then(function () {
-    // return url where it exists now
-    return site.addPort(site.addProtocol(uri));
-  });
-}
-
-/**
  * Remove a uri.
  *
  * @param {string} uri
@@ -242,17 +155,6 @@ function removeUri(uri) {
 }
 
 /**
- * Get the component from the page that is the "canonical component" in charge of providing a canonicalUrl for the page.
- *
- * @returns {string}
- */
-function getFirstCanonicalComponentReference() {
-  var cacheMap = _.get(cache, 'getSchema.cache.__data__');
-
-  return cacheMap && _.findKey(cacheMap, 'canonicalUrl');
-}
-
-/**
  * Publish current page's saved data.
  *
  * Pages don't have schemas or validation (later?), so save directly to db.
@@ -260,52 +162,30 @@ function getFirstCanonicalComponentReference() {
  * @returns {Promise.string}
  */
 function publishPage() {
-  var uri = dom.uri(),
-    isBarePage = uri.indexOf(pagesRoute) > -1,
-    pageRefPromise = isBarePage ? Promise.resolve(uri) : getUriDestination();
+  var pageUri = dom.pageUri();
 
-  return pageRefPromise.then(function (pageReference) {
-    var pageUri = pathOnly(pageReference);
-
-    return cache.getDataOnly(pageUri).then(function (data) {
-      // pages don't have schemas or validation (later?)
-      return db.save(pageUri + '@published', _.omit(data, '_ref'));
-    }).then(function () {
-      var ref = getFirstCanonicalComponentReference();
-
-      if (ref) {
-        // get published version of component, and expose the page
-        return cache.getDataOnly(ref + '@published').then(function (data) {
-          if (_.isString(data.canonicalUrl) && db.isUrl(data.canonicalUrl)) {
-            return createUri(data.canonicalUrl, pageUri);
-          }
-        });
-      }
-
-      // point to page reference as html
-      return pageUri + '.html';
-    });
+  return cache.getDataOnly(pageUri).then(function (pageData) {
+    // pages don't have schemas or validation
+    return db.save(pageUri + '@published', _.omit(pageData, '_ref'));
+  }).then(function (publishedPageData) {
+    // note: when putting to page@published, amphora will add the uri to /uris/
+    return publishedPageData.url;
   });
 }
 
 /**
- * unpublishes current page. returns the deleted page data
+ * unpublishes current page. returns the deleted uri
  * @returns {Promise}
  */
 function unpublishPage() {
-  var ref = getFirstCanonicalComponentReference();
+  var pageUri = dom.pageUri();
 
-  if (ref) {
-    // get published version of component, and expose the page
-    return cache.getDataOnly(ref + '@published').then(function (data) {
-      var uri;
+  return cache.getDataOnly(pageUri).then(function (pageData) {
+    // change url into uri
+    var uri = db.urlToUri(pageData.url);
 
-      if (_.isString(data.canonicalUrl)) {
-        uri = db.urlToUri(data.canonicalUrl); // change url into a uri
-        return removeUri(uri);
-      }
-    });
-  }
+    return removeUri(uri);
+  });
 }
 
 /**
@@ -490,8 +370,6 @@ module.exports = {
   addToParentList: addToParentList,
   createComponent: createComponent,
   createPage: createPage,
-  createUri: createUri,
-  getUriDestination: getUriDestination,
   publishPage: publishPage,
   unpublishPage: unpublishPage,
   removeFromParentList: removeFromParentList,

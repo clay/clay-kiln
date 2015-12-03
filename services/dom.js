@@ -1,5 +1,6 @@
 var domify = require('domify'),
-  _ = require('lodash');
+  _ = require('lodash'),
+  references = require('./references');
 
 module.exports = {
   /**
@@ -13,6 +14,15 @@ module.exports = {
     var location = document.location;
 
     return location.hostname + location.pathname;
+  },
+
+  /**
+   * get page uri
+   * note: page uri should be in the data-uri attribute of the <html> element
+   * @returns {string}
+   */
+  pageUri: function () {
+    return document.firstElementChild.getAttribute(references.referenceAttribute);
   },
 
   /**

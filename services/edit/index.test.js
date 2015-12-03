@@ -44,100 +44,19 @@ describe('edit service', function () {
     sandbox.restore();
   });
 
-  describe('getUriDestination', function () {
-    var fn = lib[this.title];
-
-    it('gets page from string', function () {
-      var data = prefix + '/pages/thing';
-
-      db.getText.returns(Promise.resolve(data));
-      dom.uri.throws();
-
-      return fn(prefix + '/thing/thing').then(function (result) {
-        expect(result).to.equal(data);
-      });
-    });
-
-    it('gets page from location', function () {
-      var data = prefix + '/pages/thing';
-
-      db.getText.returns(Promise.resolve(data));
-      dom.uri.returns(prefix + '/thing/thing');
-
-      return fn().then(function (result) {
-        expect(result).to.equal(data);
-      });
-    });
-
-    it('gets page from redirect uri', function () {
-      var redirect = prefix + '/uris/cGxhY2UuY29tL3RoaW5nL3RoaW5n',
-        data = prefix + '/pages/thing';
-
-      db.getText.withArgs(redirect).returns(Promise.resolve(data));
-      db.getText.returns(Promise.resolve(redirect));
-      dom.uri.returns(prefix + '/thing/thing');
-
-      return fn().then(function (result) {
-        expect(result).to.equal(data);
-      });
-    });
-  });
-
   describe('publishPage', function () {
-    var fn = lib[this.title];
-
-    function expectPublish(uri, pageRef) {
-      var data = prefix + pageRef,
-        canonicalUrl = prefix + uri,
-        putData = {canonicalUrl: canonicalUrl};
-
-      dom.uri.returns(canonicalUrl);
-      db.getText.returns(Promise.resolve(data));
-
-      return putData;
-    }
+    var fn = lib[this.title],
+      fakeUrl = 'http://place.com/fake-url.html';
 
     it('publishes page with version', function () {
-      var data = expectPublish('/thing@thing.html', '/pages/thing@otherthing');
+      var data = { url: fakeUrl };
 
-      cache.getDataOnly.returns(resolveReadOnly({}));
-      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly(data));
-
-      return fn().then(function (result) {
-        expect(result).to.deep.equal('place.com/pages/thing.html');
-      });
-    });
-
-    it('publishes page without version', function () {
-      var data = expectPublish('/thing.html', '/pages/thing');
-
-      cache.getDataOnly.returns(resolveReadOnly({}));
-      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly(data));
+      dom.pageUri.returns('thing');
+      cache.getDataOnly.returns(resolveReadOnly(data));
+      db.save.withArgs('thing@published').returns(resolveReadOnly(data));
 
       return fn().then(function (result) {
-        expect(result).to.deep.equal('place.com/pages/thing.html');
-      });
-    });
-
-    it('publishes bare page', function () {
-      var data = expectPublish('/pages/thing.html', '/pages/thing');
-
-      cache.getDataOnly.returns(resolveReadOnly({}));
-      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly(data));
-
-      return fn().then(function (result) {
-        expect(result).to.deep.equal('place.com/pages/thing.html');
-      });
-    });
-
-    it('publishes page without root ref', function () {
-      var data = expectPublish('/thing.html', '/pages/thing');
-
-      cache.getDataOnly.returns(resolveReadOnly({_ref: 'whatever'}));
-      db.save.withArgs(prefix + '/pages/thing@published').returns(resolveReadOnly(data));
-
-      return fn().then(function (result) {
-        expect(result).to.deep.equal('place.com/pages/thing.html');
+        expect(result).to.deep.equal(data.url);
       });
     });
   });
@@ -255,25 +174,6 @@ describe('edit service', function () {
 
       return fn('fakeName').then(function () {
         expect(cache.createThrough.calledWith(prefix + '/components/fakeName/instances', bootstrapJson)).to.equal(true);
-      });
-    });
-  });
-
-  describe('createUri', function () {
-    var fn = lib[this.title];
-
-    it('adds to db', function () {
-      var url = 'http://domain:3333/path',
-        uri = 'domain/path/some-id',
-        expectedTarget = 'place.com/uris/ZG9tYWluL3BhdGg=',
-        expectedBody = 'domain/path/some-id';
-
-      db.isUrl.returns(true);
-      db.isUri.returns(true);
-      db.saveText.returns(resolveReadOnly({}));
-
-      return fn(url, uri).then(function () {
-        sinon.assert.calledWithExactly(db.saveText, expectedTarget, expectedBody);
       });
     });
   });

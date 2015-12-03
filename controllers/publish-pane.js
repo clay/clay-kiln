@@ -1,5 +1,4 @@
 var moment = require('moment'),
-  references = require('../services/references'),
   pane = require('../services/pane'),
   edit = require('../services/edit'),
   rules = require('../validators'),
@@ -12,7 +11,6 @@ module.exports = function () {
   function constructor(el) {
     this.el = el;
     this.form = dom.find(el, '.schedule');
-    this.pageUri = document.documentElement.getAttribute(references.referenceAttribute);
   }
 
   constructor.prototype = {
@@ -24,7 +22,7 @@ module.exports = function () {
     },
 
     onPublishNow: function () {
-      var pageUri = this.pageUri;
+      var pageUri = dom.pageUri();
 
       pane.close();
       progress.start('publish');
@@ -52,7 +50,7 @@ module.exports = function () {
     },
 
     onUnpublish: function () {
-      var pageUri = this.pageUri;
+      var pageUri = dom.pageUri();
 
       pane.close();
       progress.start('publish');
@@ -74,7 +72,7 @@ module.exports = function () {
 
     onSchedule: function (e) {
       var form = this.form,
-        pageUri = this.pageUri,
+        pageUri = dom.pageUri(),
         date = dom.find(form, 'input[type=date]').value,
         time = dom.find(form, 'input[type=time]').value,
         datetime = moment(date + ' ' + time, 'YYYY-MM-DD HH:mm'),
@@ -107,7 +105,7 @@ module.exports = function () {
     },
 
     onUnschedule: function () {
-      var pageUri = this.pageUri;
+      var pageUri = dom.pageUri();
 
       pane.close();
       progress.start('schedule');
