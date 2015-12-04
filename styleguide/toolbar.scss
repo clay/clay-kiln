@@ -2,7 +2,6 @@
 @import 'typography';
 @import 'buttons';
 @import 'layers';
-
 $height: 60px;
 
 .kiln-toolbar-wrapper {
@@ -43,10 +42,15 @@ body {
 .kiln-toolbar-inner .kiln-toolbar-button, {
   @include button-filled($black-75);
 
-  align-items: center;
-  display: flex;
   flex: 0 0 auto;
   margin: 0 10px 0 0;
+}
+
+.kiln-toolbar-inner .button-flex-inner {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  width: 100%;
 }
 
 .kiln-toolbar-button .icon,
@@ -63,6 +67,7 @@ body {
   @media screen and (min-width: 1024px) {
     display: block;
     margin-left: 10px;
+    padding-top: 1px;
   }
 }
 
