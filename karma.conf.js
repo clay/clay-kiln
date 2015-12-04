@@ -1,5 +1,6 @@
 var files, settings,
   istanbul = require('browserify-istanbul'),
+  babelify = require('babelify'),
   _ = require('lodash');
 
 files = [
@@ -20,6 +21,8 @@ settings = {
     transform: [istanbul({
       ignore: ['**/node_modules/**'],
       defaultIgnore: true
+    }), babelify.configure({
+      presets: ['es2015']
     })]
   },
   coverageReporter: {

@@ -182,7 +182,7 @@ describe(dirname, function () {
       beforeEach(function () {
         sandbox = sinon.sandbox.create();
         sandbox.stub(ds);
-        getState = sandbox.stub(state, 'get');
+        sandbox.stub(state, 'get');
       });
 
       afterEach(function () {

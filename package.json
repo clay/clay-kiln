@@ -23,6 +23,11 @@
   "bugs": {
     "url": "https://github.com/nymag/clay-kiln/issues"
   },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  },
   "homepage": "https://github.com/nymag/clay-kiln",
   "dependencies": {
     "browserify": "^11.1.0",
@@ -50,6 +55,8 @@
     "vinyl-map2": "^1.2.1"
   },
   "devDependencies": {
+    "babel-preset-es2015": "^6.3.13",
+    "babelify": "^7.2.0",
     "browserify-istanbul": "^0.2.1",
     "chai": "^2.3.0",
     "chai-things": "^0.2.0",
