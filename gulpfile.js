@@ -1,6 +1,8 @@
 var gulp = require('gulp'),
-  map = require('vinyl-map2'),
-  browserify = require('browserify'),
+  browserify = require('gulp-browserify-globs'),
+  sourcemaps = require('gulp-sourcemaps'),
+  babelify = require('babelify'),
+  uglify = require('gulp-uglify'),
   concat = require('gulp-concat'),
   sass = require('gulp-sass'),
   rfn = require('responsive-filenames'),
@@ -37,32 +39,16 @@ gulp.task('styles', function () {
 });
 
 gulp.task('scripts', function () {
-  return gulp.src('client.js') // browserify will pull in all required() scripts
-    // .pipe(sourcemaps.init({includeContent: true}))
-    .pipe(map(function (code, filename, done) {
-      var b, compiled;
-
-      if (code.indexOf('require(') > -1) {
-        // this bit of code is written in node format. browserify it!
-        b = browserify({
-          entries: filename,
-          debug: true
-        });
-        compiled = '';
-
-        b.bundle().on('data', function (chunk) {
-          compiled += chunk;
-        }).on('end', function () {
-          done(null, compiled);
-        });
-      } else {
-        done(null, code);
-      }
-    }))
-    .pipe(concat('clay-kiln.js'))
-    // .pipe(uglify()).on('error', gutil.log)
-    // .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest('dist'));
+  return browserify(['client.js'], {
+    debug: true,
+    transform: babelify.configure({ presets: ['es2015'] }),
+    outfile: 'clay-kiln.js'
+  })
+  // load sourcemaps from browserify
+  .pipe(sourcemaps.init({ loadMaps: true }))
+  .pipe(uglify())
+  .pipe(sourcemaps.write('.'))
+  .pipe(gulp.dest('dist'));
 });
 
 // default task: run scripts and styles

@@ -1,5 +1,6 @@
 var files, settings,
   istanbul = require('browserify-istanbul'),
+  babelify = require('babelify'),
   _ = require('lodash');
 
 files = [
@@ -14,12 +15,13 @@ settings = {
   autoWatch: false,
   colors: true,
   singleRun: true,
-  transports: ['websocket'],
   browserify: {
     debug: true,
     transform: [istanbul({
       ignore: ['**/node_modules/**'],
       defaultIgnore: true
+    }), babelify.configure({
+      presets: ['es2015']
     })]
   },
   coverageReporter: {
@@ -45,6 +47,7 @@ settings = {
   },
   plugins: [
     'karma-coverage',
+    'karma-spec-reporter',
     'karma-browserify',
     'karma-browserstack-launcher',
     'karma-chai',
@@ -85,11 +88,11 @@ module.exports = function (karma) {
       // safariMac: {
       //   base: 'BrowserStack',
       //   browser: 'safari',
-      //   browser_version: '8',
+      //   browser_version: '9',
       //   os: 'OS X',
-      //   os_version: 'Yosemite'
+      //   os_version: 'El Capitan'
       // }
-      // ie12 (edge) doesn't support ELement#matches, so we don't support it!
+      // ie12 (edge) doesn't support Element#matches, so we don't support it!
       // edge: {
       //   base: 'BrowserStack',
       //   browser: 'edge',

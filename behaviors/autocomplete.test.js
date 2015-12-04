@@ -48,45 +48,57 @@ describe('autocomplete behavior', function () {
     sandbox.restore();
   });
 
-  it('throws error if no api', function () {
-    function noApi() {
-      return autocomplete(fixture, {});
-    }
-    expect(noApi).to.throw(/Autocomplete requires an API./);
-  });
+  if ('options' in document.createElement('datalist')) {
+    // only run these tests if datalist is available, e.g. NOT on safari
+    it('throws error if no api', function () {
+      function noApi() {
+        return autocomplete(fixture, {});
+      }
+      expect(noApi).to.throw(/Autocomplete requires an API./);
+    });
 
-  it('throws error if no input', function () {
-    dom.clearChildren(fixture.el); // Remove input that was added by beforeEach.
-    function noInput() {
-      return autocomplete(fixture, {list: fakeListArg});
-    }
-    expect(noInput).to.throw(/Autocomplete requires a text input./);
-  });
+    it('throws error if no input', function () {
+      dom.clearChildren(fixture.el); // Remove input that was added by beforeEach.
+      function noInput() {
+        return autocomplete(fixture, {list: fakeListArg});
+      }
+      expect(noInput).to.throw(/Autocomplete requires a text input./);
+    });
 
-  it('assigns an unique id to each datalist', function () {
-    var firstId, secondId;
+    it('assigns an unique id to each datalist', function () {
+      var firstId, secondId;
 
-    firstId = autocomplete(fixture, {list: fakeListArg}).el.querySelectorAll('datalist')[0].id;
-    secondId = autocomplete(fixture, {list: fakeListArg}).el.querySelectorAll('datalist')[1].id;
+      firstId = autocomplete(fixture, {list: fakeListArg}).el.querySelectorAll('datalist')[0].id;
+      secondId = autocomplete(fixture, {list: fakeListArg}).el.querySelectorAll('datalist')[1].id;
 
-    expect(firstId).to.not.equal(secondId);
-  });
+      expect(firstId).to.not.equal(secondId);
+    });
 
-  it('gets options from API on focus', function () {
-    var resultEl = autocomplete(fixture, {list: fakeListArg}).el; // Run behavior and get the resulting element.
+    it('gets options from API on focus', function () {
+      var resultEl = autocomplete(fixture, {list: fakeListArg}).el; // Run behavior and get the resulting element.
 
-    db.get.returns(Promise.resolve(fakeList));
+      db.get.returns(Promise.resolve(fakeList));
 
-    resultEl.querySelector('input').dispatchEvent(new Event('focus')); // Trigger focus event.
-    expect(db.get.called).to.equal(true);
-  });
+      resultEl.querySelector('input').dispatchEvent(new Event('focus')); // Trigger focus event.
+      expect(db.get.called).to.equal(true);
+    });
 
-  it('formats values into option elements', function () {
-    expect(Array.prototype.slice.call(autocomplete.formatOptions(fakeList).querySelectorAll('option')).map(function (x) { return x.textContent; })).to.deep.equal(fakeList);
-  });
+    it('formats values into option elements', function () {
+      expect(Array.prototype.slice.call(autocomplete.formatOptions(fakeList).querySelectorAll('option')).map(function (x) { return x.textContent; })).to.deep.equal(fakeList);
+    });
 
-  it('formats values into option elements (when list is an array of objects)', function () {
-    expect(Array.prototype.slice.call(autocomplete.formatOptions(fakeObjList).querySelectorAll('option')).map(function (x) { return x.textContent; })).to.deep.equal(fakeList);
-  });
+    it('formats values into option elements (when list is an array of objects)', function () {
+      expect(Array.prototype.slice.call(autocomplete.formatOptions(fakeObjList).querySelectorAll('option')).map(function (x) { return x.textContent; })).to.deep.equal(fakeList);
+    });
+  } else {
+    // in places that don't support datalist (like safari), it passes through the original `result`
+    it('passes through the original result', function () {
+      function run() {
+        return autocomplete(fixture, {list: fakeListArg});
+      }
 
+      expect(run).to.not.throw(Error);
+      expect(run().el).to.equal(fixture.el);
+    });
+  }
 });
