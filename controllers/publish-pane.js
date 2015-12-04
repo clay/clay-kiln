@@ -56,8 +56,8 @@ module.exports = function () {
       pane.close();
       progress.start('publish');
 
-      return edit.unschedulePublish(pageUri).then(function () {
-        return edit.unpublishPage()
+      return edit.unschedulePublish(pageUri)
+        .then(edit.unpublishPage)
         .then(function () {
           progress.done();
           progress.open('publish', `Unpublished!`, true);
@@ -68,7 +68,6 @@ module.exports = function () {
           progress.done('error');
           progress.open('error', `Server errored when unpublishing, please try again.`, true);
         });
-      });
     },
 
     onSchedule: function (e) {
@@ -86,22 +85,30 @@ module.exports = function () {
       // stop form from submitting normally
       e.preventDefault();
 
-      // only schedule one thing at a time
-      return edit.unschedulePublish(pageUri).then(function () {
-        return edit.schedulePublish({
-          at: timestamp,
-          publish: db.uriToUrl(pageUri)
-        })
-        .then(function () {
-          progress.done();
-          progress.open('schedule', `Publishing scheduled ` + state.formatTime(timestamp, true), true);
-          state.toggleScheduled(true);
-        })
-        .catch(function () {
-          // note: the Error passed into this doesn't have a message, so we use a custom one
+      return validation.validate(rules).then(function (errors) {
+        // first, validate the page client-side
+        if (errors.length) {
           progress.done('error');
-          progress.open('error', `Server errored when scheduling, please try again.`, true);
-        });
+          pane.openValidationErrors(errors);
+        } else {
+          // only schedule one thing at a time
+          return edit.unschedulePublish(pageUri).then(function () {
+            return edit.schedulePublish({
+              at: timestamp,
+              publish: db.uriToUrl(pageUri)
+            })
+            .then(function () {
+              progress.done();
+              progress.open('schedule', `Publishing scheduled ` + state.formatTime(timestamp, true), true);
+              state.toggleScheduled(true);
+            })
+            .catch(function () {
+              // note: the Error passed into this doesn't have a message, so we use a custom one
+              progress.done('error');
+              progress.open('error', `Server errored when scheduling, please try again.`, true);
+            });
+          });
+        }
       });
     },
 
@@ -112,16 +119,16 @@ module.exports = function () {
       progress.start('schedule');
 
       return edit.unschedulePublish(pageUri)
-      .then(function () {
-        progress.done();
-        progress.open('schedule', `Unscheduled!`, true);
-        state.toggleScheduled(false);
-      })
-      .catch(function () {
-        // note: the Error passed into this doesn't have a message, so we use a custom one
-        progress.done('error');
-        progress.open('error', `Server errored when unscheduling, please try again.`, true);
-      });
+        .then(function () {
+          progress.done();
+          progress.open('schedule', `Unscheduled!`, true);
+          state.toggleScheduled(false);
+        })
+        .catch(function () {
+          // note: the Error passed into this doesn't have a message, so we use a custom one
+          progress.done('error');
+          progress.open('error', `Server errored when unscheduling, please try again.`, true);
+        });
     }
   };
   return constructor;
