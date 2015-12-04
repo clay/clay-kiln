@@ -48,6 +48,7 @@ settings = {
   },
   plugins: [
     'karma-coverage',
+    'karma-spec-reporter',
     'karma-browserify',
     'karma-browserstack-launcher',
     'karma-chai',
@@ -83,15 +84,15 @@ module.exports = function (karma) {
         browser_version: '42.0',
         os: 'OS X',
         os_version: 'Yosemite'
-      }
+      },
       // safari 8 doesn't support template strings
-      // safariMac: {
-      //   base: 'BrowserStack',
-      //   browser: 'safari',
-      //   browser_version: '8',
-      //   os: 'OS X',
-      //   os_version: 'Yosemite'
-      // }
+      safariMac: {
+        base: 'BrowserStack',
+        browser: 'safari',
+        browser_version: '9',
+        os: 'OS X',
+        os_version: 'El Capitan'
+      }
       // ie12 (edge) doesn't support ELement#matches, so we don't support it!
       // edge: {
       //   base: 'BrowserStack',

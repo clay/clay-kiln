@@ -6,6 +6,7 @@ module.exports = function (karma) {
     singleRun: false,
     autoWatch: true,
     autoWatchBatchDelay: 1000,
+    reporters: ['spec', 'coverage'],
     browsers: ['Chrome']
   }));
 };
