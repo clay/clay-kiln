@@ -169,6 +169,7 @@ module.exports = function (result, args) {
           data.push(newText); // put it into the data
           observer.setValue(data);
         } else {
+          addEl.setCustomValidity(''); // remove the invalidity of the input, so you can close the form
           // close the form
           focus.unfocus().catch(_.noop);
         }
