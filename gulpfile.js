@@ -1,7 +1,6 @@
 var gulp = require('gulp'),
   browserify = require('gulp-browserify-globs'),
   sourcemaps = require('gulp-sourcemaps'),
-  babelify = require('babelify'),
   uglify = require('gulp-uglify'),
   concat = require('gulp-concat'),
   sass = require('gulp-sass'),
@@ -41,7 +40,7 @@ gulp.task('styles', function () {
 gulp.task('scripts', function () {
   return browserify(['client.js'], {
     debug: true,
-    transform: babelify.configure({ presets: ['es2015'] }),
+    transform: ['babelify'],
     outfile: 'clay-kiln.js'
   })
   // load sourcemaps from browserify
