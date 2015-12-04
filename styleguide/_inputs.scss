@@ -19,6 +19,11 @@
   white-space: normal;
   width: 100%;
 
+  // firefox height fix
+  &:before {
+    content: "\feff ";
+  }
+
   &.error,
   &:invalid {
     border: 1px solid $red-25;
