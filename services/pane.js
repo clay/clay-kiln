@@ -66,8 +66,10 @@ function openPublish() {
     now = moment().format('HH:mm'),
     actions = dom.create(`<div class="actions"></div>`),
     schedule = dom.create(`<form class="schedule">
-      <input class="schedule-input" type="date" min="${today}" value="${today}"></input>
-      <input class="schedule-input" type="time" value="${now}"></input>
+      <label class="schedule-label" for="schedule-date">Choose a Date</label>
+      <input id="schedule-date" class="schedule-input" type="date" min="${today}" value="${today}" placeholder="${today}"></input>
+      <label class="schedule-label" for="schedule-time">Choose a Time</label>
+      <input id="schedule-time" class="schedule-input" type="time" value="${now}" placeholder="${now}"></input>
       <button class="schedule-publish">Schedule Publish</button>
     </form>`),
     unschedule = dom.create(`<button class="unschedule">Unschedule</button>`),
