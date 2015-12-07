@@ -127,7 +127,8 @@ function addIframeOverlays(el) {
   for (; i < l; i++) {
     if (!iframes[i].classList.contains('iframe-overlay')) {
       newDiv = document.createElement('div');
-      newDiv.style.cssText = getComputedStyle(iframes[i]).cssText;
+      newDiv.style.width = '100%';
+      newDiv.style.height = '100%';
       newDiv.style.position = 'absolute';
       dom.insertAfter(iframes[i], newDiv);
       iframes[i].classList.add('iframe-overlay');
