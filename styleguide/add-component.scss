@@ -63,6 +63,7 @@
   float: right;
   height: 1px;
   opacity: 0;
+  overflow: hidden; // prevent users from clicking hidden buttons
   transform: translateY(-100%);
   transition: opacity 200ms ease-out;
   width: calc(100% - 55px);
