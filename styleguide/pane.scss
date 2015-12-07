@@ -97,11 +97,17 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   width: 100%;
 }
 
+.kiln-toolbar-pane .schedule-label {
+  @include label();
+
+  margin: 15px 0 5px;
+}
+
 .kiln-toolbar-pane .schedule-input {
   @include input();
 
   cursor: initial;
-  margin: 15px 0 0;
+  margin: 0;
 }
 
 .kiln-toolbar-pane .schedule-input::-webkit-calendar-picker-indicator {
