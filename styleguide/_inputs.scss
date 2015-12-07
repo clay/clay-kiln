@@ -11,18 +11,13 @@
   display: inline-block;
   margin: 0;
   margin-top: 5px;
-  min-height: 20px;
+  min-height: 34px;
   outline: none;
   padding: 10px;
   position: relative;
   transition: border 100ms ease-out;
   white-space: normal;
   width: 100%;
-
-  // firefox height fix
-  &:before {
-    content: "\feff ";
-  }
 
   &.error,
   &:invalid {
