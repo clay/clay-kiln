@@ -60,6 +60,7 @@ function createInlineFormEl(innerEl) {
     <section class="editor editor-inline">
       <form>
         <div class="input-container"></div>
+        <button type="submit" class="hidden-submit"></button>
       </form>
     </section>
   `);

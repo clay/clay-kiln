@@ -46,9 +46,8 @@ module.exports = function () {
       submit: 'closeForm',
       close: 'closeForm',
       'input focusin': 'stopFocus',
-      'input focus': 'stopFocus',
-      '[contenteditable]': 'stopFocus',
-      'select': 'stopFocus'
+      '[contenteditable] focusin': 'stopFocus',
+      'select focusin': 'stopFocus'
     },
 
     closeForm: function (e) {
