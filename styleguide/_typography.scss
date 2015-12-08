@@ -16,10 +16,10 @@ $system-fonts: Helvetica, Arial, sans-serif;
 // our typography
 @mixin kiln-copy {
   font-family: $system-fonts;
-  font-size: 14px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
-  line-height: 17px;
+  line-height: 19px;
   text-decoration: none;
 }
 
@@ -52,7 +52,9 @@ $system-fonts: Helvetica, Arial, sans-serif;
 @mixin secondary-text {
   @include kiln-copy();
 
-  color: $black-25;
+  color: $black-50;
+  font-size: 14px;
+  line-height: 17px;
 }
 
 // links

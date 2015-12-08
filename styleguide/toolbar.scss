@@ -9,6 +9,7 @@ $height: 60px;
 
   left: 0;
   position: fixed;
+  transform: translateZ(0); // create a new viewport context
   top: calc(100% - #{$height});
   width: 100%;
 }

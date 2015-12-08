@@ -110,11 +110,16 @@ function when(el) {
  * @param {MouseEvent} e
  */
 function componentClickHandler(el, e) {
-  e.stopPropagation();
+  // allow events to propagate upwards, but set a flag
+  // this allows forms to fire the "outsideClickhandler" to close themselves
+  // while preventing parent components from thinking they're being selected
+  if (!e.stopSelection) {
+    e.stopSelection = true;
 
-  if (!el.classList.contains('selected')) {
-    unselect();
-    select(el);
+    if (!el.classList.contains('selected')) {
+      unselect();
+      select(el);
+    }
   }
 }
 
