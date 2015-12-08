@@ -222,20 +222,16 @@ function close() {
 function isFormValid() {
   var formContainer = findFormContainer(),
     formEl = formContainer && formContainer.querySelector('form'),
-    isValid, hiddenSubmit;
+    isValid, submitButton;
 
   if (formEl) {
     isValid = formEl.checkValidity();
 
     if (!isValid) {
-      // create a hidden submit button
-      hiddenSubmit = document.createElement('input');
-      hiddenSubmit.setAttribute('type', 'submit');
-      hiddenSubmit.classList.add('hidden-submit');
-      // then add it to the form
-      formEl.appendChild(hiddenSubmit);
-      // then trigger a manual click, which will show the validation messages
-      hiddenSubmit.dispatchEvent(new MouseEvent('click'));
+      submitButton = dom.find(formEl, 'button[type="submit"]');
+      // trigger a manual click on the submit button (hidden for inline, shown for overlay),
+      // which will show the validation messages
+      submitButton.dispatchEvent(new MouseEvent('click'));
     }
 
     return isValid;
