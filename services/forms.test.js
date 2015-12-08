@@ -359,6 +359,7 @@ describe(dirname, function () {
           container = document.createElement('div'),
           form = document.createElement('form'),
           input = document.createElement('input'),
+          submit = document.createElement('button'),
           validityMessage = isValid ? '' : 'Not valid';
 
         // remove any open forms
@@ -368,6 +369,8 @@ describe(dirname, function () {
         container.classList.add(formClass);
         input.setCustomValidity(validityMessage);
         form.appendChild(input);
+        submit.setAttribute('type', 'submit');
+        form.appendChild(submit);
         container.appendChild(form);
         document.body.appendChild(container);
       }

@@ -128,6 +128,7 @@ describe(dirname, function () {
             <div class="input-container">
               <div class="behaviour-element"></div>
             </div>
+            <button type="submit" class="hidden-submit"></button>
            </form>`));
 
           sandbox.verify();
