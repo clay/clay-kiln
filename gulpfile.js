@@ -46,7 +46,7 @@ gulp.task('scripts', function () {
   // load sourcemaps from browserify
   .pipe(sourcemaps.init({ loadMaps: true }))
   .pipe(uglify())
-  .pipe(sourcemaps.write('.'))
+  .pipe(sourcemaps.write())
   .pipe(gulp.dest('dist'));
 });
 
