@@ -85,7 +85,8 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   display: flex;
   flex: 0 0 auto;
   flex-flow: row wrap;
-  overflow: scroll;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 30px 20px 50px;
 }
 

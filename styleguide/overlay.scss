@@ -11,9 +11,11 @@ $overlay-margin: 10vh;
   height: 100%;
   left: 0;
   opacity: 0;
-  overflow: scroll;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
   position: fixed;
   top: 0;
+  transform: translateZ(0); // create a new viewport context
   transition: opacity 100ms ease-out;
   width: 100%;
 
