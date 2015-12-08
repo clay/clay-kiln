@@ -162,6 +162,22 @@ function open(ref, el, path, e) {
 }
 
 /**
+ * clean any cruft from medium-editor, if it was added to the dom
+ */
+function cleanMediumEditorDom() {
+  var anchor = dom.find('.medium-editor-anchor-preview'),
+    toolbar = dom.find('.medium-editor-toolbar');
+
+  if (anchor) {
+    dom.removeElement(anchor);
+  }
+
+  if (toolbar) {
+    dom.removeElement(toolbar);
+  }
+}
+
+/**
  * Close and save the open form.
  * @returns {Promise}
  */
@@ -185,6 +201,7 @@ function close() {
           return render.reloadComponent(ref);
         }).then(function () {
           setEditingStatus(false); // Status as saved.
+          cleanMediumEditorDom();
         });
     } else {
       // Nothing changed or the component was removed, so do not reload.
@@ -192,6 +209,7 @@ function close() {
       currentForm = {};
       removeCurrentForm(container);
       setEditingStatus(false); // Status as saved.
+      cleanMediumEditorDom();
     }
   }
   return Promise.resolve();
