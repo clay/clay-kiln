@@ -44,12 +44,18 @@ module.exports = function () {
   constructor.prototype = {
     events: {
       submit: 'closeForm',
-      close: 'closeForm'
+      close: 'closeForm',
+      'input focusin': 'stopFocus',
+      'input focus': 'stopFocus'
     },
 
     closeForm: function (e) {
       e.preventDefault();
       focus.unfocus().catch(_.noop);
+    },
+
+    stopFocus: function (e) {
+      e.preventDefault();
     }
   };
 
