@@ -32,14 +32,20 @@ $system-fonts: Helvetica, Arial, sans-serif;
   line-height: 28px;
 }
 
-// labels, used on component selector and inside forms
-@mixin label {
+@mixin input-text {
   @include kiln-copy();
 
-  display: inline-block;
+  color: $black;
   font-size: 16px;
-  font-weight: 700;
   line-height: 19px;
+}
+
+// labels, used on component selector and inside forms
+@mixin label {
+  @include input-text();
+
+  display: inline-block;
+  font-weight: 700;
   margin-bottom: 5px;
 }
 

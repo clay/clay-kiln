@@ -23,7 +23,7 @@
 }
 
 .simple-list-add {
-  @include primary-text();
+  @include input-text();
 
   border: 0;
   display: inline-block;

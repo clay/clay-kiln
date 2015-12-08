@@ -1,4 +1,12 @@
+@import '../styleguide/typography';
+
 .input-checkbox {
-  float: right;
-  margin-bottom: 20px;
+  margin: 5px 0 10px;
+}
+
+.checkbox-label {
+  @include input-text();
+
+  margin-left: 10px;
+  vertical-align: middle;
 }
