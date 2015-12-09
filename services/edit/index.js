@@ -322,8 +322,9 @@ function schedulePublish(data) {
 function unschedulePublish(uri) {
   var scheduled = uri + '@scheduled';
 
-  return db.get(scheduled).then(function () {
-    return db.remove(scheduled);
+  // see if it's currently scheduled, and if it is remove it
+  return db.get(scheduled).then(function (res) {
+    return db.remove(res._ref); // _ref points to the /schedule entry
   }).catch(_.noop);
 }
 
