@@ -1,3 +1,4 @@
+@import 'mixins';
 @import 'colors';
 @import 'layers';
 @import 'buttons';
@@ -56,7 +57,7 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   align-items: flex-start;
   border-bottom: 1px solid $grey;
   display: flex;
-  flex: 1 0 auto;
+  flex: 0 0 auto;
   padding: 13px 20px;
   width: 100%;
 }
@@ -83,7 +84,7 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   align-content: stretch;
   align-items: stretch;
   display: flex;
-  flex: 0 0 auto;
+  flex: 0 1 auto;
   flex-flow: row wrap;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
@@ -94,8 +95,9 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 
 /* publish */
 
-.kiln-toolbar-pane .actions {
-  width: 100%;
+.kiln-toolbar-pane .actions,
+.kiln-toolbar-pane .schedule {
+  @include clearfix();
 }
 
 .kiln-toolbar-pane .schedule-label {
