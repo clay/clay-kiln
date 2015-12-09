@@ -180,7 +180,7 @@ function publishPage() {
 function unpublishPage() {
   var pageUri = dom.pageUri();
 
-  return cache.getDataOnly(pageUri).then(function (pageData) {
+  return cache.getDataOnly(pageUri + '@published').then(function (pageData) {
     // change url into uri
     var uri = db.urlToUri(pageData.url);
 
@@ -320,22 +320,11 @@ function schedulePublish(data) {
  * @returns {Promise}
  */
 function unschedulePublish(uri) {
-  var prefix = site.get('prefix');
+  var scheduled = uri + '@scheduled';
 
-  // search through scheduled entries until you find the one we want
-  // todo: when amphora is updated so the _ref points to the schedule entry (rather than the page),
-  // just do GET page@scheduled and then DELETE /schedule/<_ref>
-  return db.get(prefix + scheduleRoute).then(function (data) {
-    var entry = _.find(data, function (item) {
-      return item.publish === uri;
-      // note: we only allow a page to be scheduled once, so we don't need to
-      // also match for timestamp (this saves us a call to GET uri@scheduled)
-    });
-
-    if (entry) {
-      return db.remove(entry._ref);
-    }
-  });
+  return db.get(scheduled).then(function () {
+    return db.remove(scheduled);
+  }).catch(_.noop);
 }
 
 /**
