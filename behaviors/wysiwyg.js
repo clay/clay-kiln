@@ -41,6 +41,9 @@ function toggleTieredToolbar(html) {
  * @returns {Element}
  */
 function createEditor(field, buttons) {
+  // add "remove formatting" button to the end
+  buttons.push('removeFormat');
+
   return new MediumEditor(field, {
     toolbar: {
       // buttons that go in the toolbar
