@@ -1,6 +1,8 @@
 @import 'colors';
 @import 'typography';
 
+// regular placeholder - displays when field is empty
+
 .kiln-placeholder {
   align-items: center;
   background-color: $grey;
@@ -19,4 +21,27 @@
 
   color: $black-50;
   text-align: center;
+}
+
+// permanent placeholder - always displays, even when there is data in fields
+
+.kiln-permanent-placeholder {
+  align-items: center;
+  background-color: $grey;
+  border: 1px dashed $black-25;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  padding: 4px 20px;
+  position: relative;
+  width: 100%;
+}
+
+.kiln-permanent-placeholder,
+.kiln-permanent-placeholder .placeholder-label {
+  @include primary-text();
+
+  color: $black-50;
+  text-align: center;
+  text-transform: uppercase;
 }

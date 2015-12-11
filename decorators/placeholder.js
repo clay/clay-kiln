@@ -22,7 +22,7 @@ function getPlaceholderText(path, schema) {
 }
 
 /**
- * get placeholder height based on the behaviors in a field
+ * get placeholder height
  * @param  {object} schema
  * @return {string}
  */
@@ -30,6 +30,17 @@ function getPlaceholderHeight(schema) {
   var placeholder = schema[references.placeholderProperty];
 
   return placeholder && placeholder.height || '100px';
+}
+
+/**
+ * get placeholder permanence
+ * @param  {object} schema
+ * @return {string}
+ */
+function getPlaceholderPermanence(schema) {
+  var placeholder = schema[references.placeholderProperty];
+
+  return placeholder && !!placeholder.permanent;
 }
 
 /**
@@ -101,14 +112,24 @@ function convertNewLines(text) {
 }
 
 /**
+ * return a different class if a placeholder is permanent
+ * @param {boolean} isPermanentPlaceholder
+ * @returns {string}
+ */
+function placeholderClass(isPermanentPlaceholder) {
+  return isPermanentPlaceholder ? 'kiln-permanent-placeholder' : 'kiln-placeholder';
+}
+
+/**
  * create dom element for the placeholder, add it to the specified node
  * @param {Element} node
- * @param {{ height: string, text: string }} obj
+ * @param {{ height: string, text: string, permanent: boolean }} obj
  * @returns {Element} node
  */
 function addPlaceholderDom(node, obj) {
-  var placeholder = dom.create(`
-    <div class="kiln-placeholder" style="min-height: ${obj.height};">
+  var isPermanentPlaceholder = !!obj.permanent,
+    placeholder = dom.create(`
+    <div class="${placeholderClass(isPermanentPlaceholder)}" style="min-height: ${obj.height};">
       <span class="placeholder-label">${convertNewLines(obj.text)}</span>
     </div>
   `);
@@ -125,15 +146,19 @@ function addPlaceholderDom(node, obj) {
 function hasPlaceholder(el, options) {
   var schema = _.get(options, 'data._schema'),
     isPlaceholder = !!schema && !!schema[references.placeholderProperty],
+    isPermanentPlaceholder = !!isPlaceholder && getPlaceholderPermanence(schema),
     isField = !!schema && !!schema[references.fieldProperty],
     isGroup = !!schema && !!schema.fields,
     isComponentList = !!schema && !!schema[references.componentListProperty];
 
   // if it has a placeholder...
+  // if it's a permanent placeholder, it always displays
   // if it's a field, make sure it's empty
   // if it's a group, make sure it points to an empty field
   // if it's a component list, make sure it's empty
-  if (isPlaceholder && isField) {
+  if (isPlaceholder && isPermanentPlaceholder) {
+    return true;
+  } else if (isPlaceholder && isField) {
     return isFieldEmpty(options.data);
   } else if (isPlaceholder && isGroup) {
     return isGroupEmpty(options.data);
@@ -155,7 +180,8 @@ function addPlaceholder(el, options) {
 
   return addPlaceholderDom(el, {
     text: getPlaceholderText(path, schema),
-    height: getPlaceholderHeight(schema)
+    height: getPlaceholderHeight(schema),
+    permanent: getPlaceholderPermanence(schema)
   });
 }
 

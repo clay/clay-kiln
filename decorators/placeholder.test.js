@@ -124,6 +124,19 @@ describe(dirname, function () {
     describe('when', function () {
       var fn = lib[this.title];
 
+      it('returns true if permanent placeholder', function () {
+        var stubData = {
+          value: '',
+          _schema: {
+            _placeholder: {
+              permanent: true
+            }
+          }
+        };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'})).to.equal(true);
+      });
+
       it('returns true if field and blank', function () {
         var stubData = {
           value: '',
@@ -264,6 +277,21 @@ describe(dirname, function () {
           newNode = fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'});
 
         expect(newNode.querySelector('.kiln-placeholder').style.minHeight).to.equal('100px');
+        expect(newNode.querySelector('span.placeholder-label').textContent).to.equal('Title');
+      });
+
+      it('adds permanent placeholder', function () {
+        var stubData = {
+            value: '',
+            _schema: {
+              _placeholder: {
+                permanent: true
+              }
+            }
+          },
+          newNode = fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'});
+
+        expect(newNode.querySelector('.kiln-permanent-placeholder').style.minHeight).to.equal('100px');
         expect(newNode.querySelector('span.placeholder-label').textContent).to.equal('Title');
       });
     });
