@@ -279,7 +279,7 @@ function getHead(uri) {
 function getHTML(uri) {
   assertUri(uri);
 
-  return send(uri + extHtml).then(expectHTMLResult(uri));
+  return send(uri + extHtml + '?edit=true').then(expectHTMLResult(uri));
 }
 
 /**
