@@ -176,6 +176,83 @@ describe('edit service', function () {
         expect(cache.createThrough.calledWith(prefix + '/components/fakeName/instances', bootstrapJson)).to.equal(true);
       });
     });
+
+    it('clones child component in componentlist', function () {
+      var baseData = {
+          a: [{
+            _ref: prefix + '/components/fakeChild'
+          }]
+        },
+        childData = {
+          _ref: prefix + '/components/fakeChild/instances/0'
+        },
+        newData = {
+          a: [{
+            _ref: prefix + '/components/fakeChild/instances/0'
+          }]
+        };
+
+      // _componentList will normally have properties inside of it
+      baseData.a._componentList = true;
+
+      cache.getDataOnly.withArgs(prefix + '/components/fakeName').returns(resolveReadOnly(baseData));
+      cache.createThrough.withArgs(prefix + '/components/fakeName/instances').returns(resolveReadOnly(baseData));
+      cache.getDataOnly.withArgs(prefix + '/components/fakeChild').returns(resolveReadOnly({}));
+      cache.createThrough.withArgs(prefix + '/components/fakeChild/instances').returns(resolveReadOnly(childData));
+      cache.saveThrough.returnsArg(0);
+
+      return fn('fakeName').then(function (res) {
+        expect(res).to.deep.equal(newData);
+        expect(cache.createThrough.calledWith(prefix + '/components/fakeName/instances', baseData)).to.equal(true);
+        expect(cache.createThrough.calledWith(prefix + '/components/fakeChild/instances')).to.equal(true);
+        expect(cache.saveThrough.calledWith(newData)).to.equal(true);
+      });
+    });
+
+    it('clones multiple child components in componentlist', function () {
+      var baseData = {
+          a: [{
+            _ref: prefix + '/components/fakeChild'
+          }, {
+            _ref: prefix + '/components/fakeChild2'
+          }]
+        },
+        child1Data = {
+          _ref: prefix + '/components/fakeChild/instances/0'
+        },
+        child2Data = {
+          _ref: prefix + '/components/fakeChild2/instances/0'
+        },
+        newData = {
+          a: [{
+            _ref: prefix + '/components/fakeChild/instances/0'
+          }, {
+            _ref: prefix + '/components/fakeChild2/instances/0'
+          }]
+        };
+
+      // _componentList will normally have properties inside of it
+      baseData.a._componentList = true;
+
+      cache.getDataOnly.withArgs(prefix + '/components/fakeName').returns(resolveReadOnly(baseData));
+      cache.createThrough.withArgs(prefix + '/components/fakeName/instances').returns(resolveReadOnly(baseData));
+
+      cache.getDataOnly.withArgs(prefix + '/components/fakeChild').returns(resolveReadOnly({}));
+      cache.createThrough.withArgs(prefix + '/components/fakeChild/instances').returns(resolveReadOnly(child1Data));
+
+      cache.getDataOnly.withArgs(prefix + '/components/fakeChild2').returns(resolveReadOnly({}));
+      cache.createThrough.withArgs(prefix + '/components/fakeChild2/instances').returns(resolveReadOnly(child2Data));
+
+      cache.saveThrough.returnsArg(0);
+
+      return fn('fakeName').then(function (res) {
+        expect(res).to.deep.equal(newData);
+        expect(cache.createThrough.calledWith(prefix + '/components/fakeName/instances', baseData)).to.equal(true);
+        expect(cache.createThrough.calledWith(prefix + '/components/fakeChild/instances')).to.equal(true);
+        expect(cache.createThrough.calledWith(prefix + '/components/fakeChild2/instances')).to.equal(true);
+        expect(cache.saveThrough.calledWith(newData)).to.equal(true);
+      });
+    });
   });
 
   describe('removeUri', function () {

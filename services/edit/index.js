@@ -214,6 +214,54 @@ function createPage() {
 }
 
 /**
+ * create a child component (from a base ref) and return it's newly generated ref
+ * @param {string} baseRef e.g. [siteprefix]/components/name
+ * @returns {Promise}
+ */
+function createChildComponent(baseRef) {
+  return cache.getDataOnly(baseRef).then(function (baseData) {
+    return cache.createThrough(baseRef + '/instances', baseData).then(function (res) {
+      return res._ref;
+    });
+  });
+}
+
+/**
+ * find and clone child components, if any
+ * @param {object} res from creating a component
+ * @returns {Promise|object}
+ */
+function cloneChildComponents(res) {
+  // after creating the component, see if there are any component lists inside it
+  var componentList = _.findKey(res, function (val) {
+      return val._componentList;
+      // assumes a component will have a maximum of one component list
+    }),
+    items = componentList && res[componentList],
+    promises = items && _.map(items, function (item) {
+      return createChildComponent(item._ref);
+    });
+
+  if (items && items.length) {
+    return Promise.all(promises).then(function (newRefs) {
+      var newRes = _.cloneDeep(res); // create a new object, since we're explicitly modifying the parent component data
+
+      // then replace the base ref with the new instance for each child component in the list
+      newRes[componentList] = _.map(newRefs, function (ref) {
+        return {
+          _ref: ref // component lists are arrays of objects that look like { _ref: something }
+        };
+      });
+
+      // save the parent with the newly cloned children
+      return cache.saveThrough(newRes);
+    });
+  } else {
+    return res;
+  }
+}
+
+/**
  * Create a new component.
  *
  * Assumes creation is happening at current site prefix.
@@ -231,7 +279,7 @@ function createComponent(name, data) {
   } else {
     return cache.getDataOnly(base) // create component with base JSON from bootstrap.
       .then(function (baseJson) {
-        return cache.createThrough(instance, baseJson);
+        return cache.createThrough(instance, baseJson).then(cloneChildComponents);
       });
   }
 }
