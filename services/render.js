@@ -85,6 +85,8 @@ function addComponentsHandlers(el) {
  */
 function reloadComponent(ref) {
   return db.getHTML(ref)
+  // ?edit=true so that components will return back edit-mode stuff (if they check for locals.edit)
+  // e.g. clay-tweet and clay-facebook-post load scripts in view mode, but not edit mode
     .then(function (el) {
       var currentEls = dom.findAll('[' + references.referenceAttribute + '="' + ref + '"]');
 
