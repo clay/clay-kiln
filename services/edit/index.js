@@ -231,7 +231,38 @@ function createComponent(name, data) {
   } else {
     return cache.getDataOnly(base) // create component with base JSON from bootstrap.
       .then(function (baseJson) {
-        return cache.createThrough(instance, baseJson);
+        return cache.createThrough(instance, baseJson).then(function (res) {
+          // after creating the component, see if there are any top-level components inside it
+          // note: it will only look for the first one, since the common case is components having
+          // a componentList with a single empty component, e.g. related-stories or source-links
+          var componentList = _.findKey(res, function (val) {
+              return val._componentList;
+            }),
+            itemRef = componentList && res[componentList][0] && res[componentList][0]._ref;
+
+          // if there is, make sure to create an instance of it
+          if (itemRef && !_.contains(itemRef, '/instances/')) {
+            console.log(itemRef)
+            return cache.getDataOnly(itemRef).then(function (itemBase) {
+              console.log(itemBase)
+              return cache.createThrough(itemRef + '/instances', itemBase).then(function (itemRes) {
+                var newRes = _.cloneDeep(res); // create a new object, since we're explicitly modifying the parent component data
+
+                // then replace the base ref with the new instance
+                // note: if there are other things in the component list of the bare parent component
+                // they will be removed!
+                // todo: make this more generic, to prevent the above ^
+                newRes[componentList] = [{
+                  _ref: itemRes._ref
+                }];
+                console.log(newRes)
+                return cache.saveThrough(newRes);
+              });
+            });
+          } else {
+            return res;
+          }
+        });
       });
   }
 }
