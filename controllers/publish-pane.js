@@ -60,8 +60,8 @@ module.exports = function () {
         .then(edit.unpublishPage)
         .then(function () {
           progress.done();
-          progress.open('publish', `Unpublished!`, true);
-          state.toggleScheduled(false);
+          // per #304, reload the page at the page url, not the published url
+          window.location.href = db.uriToUrl(pageUri) + '.html?edit=true';
         })
         .catch(function () {
           // note: the Error passed into this doesn't have a message, so we use a custom one
