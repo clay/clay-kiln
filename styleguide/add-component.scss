@@ -7,8 +7,17 @@
   @include clearfix();
 
   clear: both;
+  display: none;
   margin: 0 12px 12px 0;
   width: 100%;
+}
+
+.selected-parent .component-list-bottom {
+  display: block;
+}
+
+.selected ~ * .component-list-bottom {
+  display: none;
 }
 
 .open-add-components,
