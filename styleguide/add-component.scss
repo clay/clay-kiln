@@ -12,12 +12,8 @@
   width: 100%;
 }
 
-.selected-parent .component-list-bottom {
+.component-list-bottom.show {
   display: block;
-}
-
-.selected ~ * .component-list-bottom {
-  display: none;
 }
 
 .open-add-components,
