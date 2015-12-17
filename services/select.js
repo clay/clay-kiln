@@ -50,6 +50,33 @@ function getParentComponentListField(componentEl, parentSchema) {
   return path && parentSchema[path] && parentSchema[path][references.componentListProperty] && path;
 }
 
+function walk(node, walker) {
+  if (node && node.classList.contains('component-list-bottom')) {
+    node.classList.add('show');
+  } else if (node) {
+    walk(walker.nextNode(), walker);
+  }
+}
+
+/**
+ * show component lists in element, without showing component lists in child components of element
+ * @param {Element} el
+ */
+function showComponentList(el) {
+  var walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, {
+    acceptNode: function (currentNode) {
+      // don't look for component lists in child components
+      if (!currentNode.hasAttribute(references.referenceAttribute)) {
+        return NodeFilter.FILTER_ACCEPT;
+      } else {
+        return NodeFilter.FILTER_REJECT;
+      }
+    }
+  });
+
+  walk(walker.nextNode(), walker);
+}
+
 /**
  * set selection on a component
  * @param {Element} el editable element or component el
@@ -62,18 +89,34 @@ function select(el) {
 
   // selected component gets .selected, parent gets .selected-parent
   component.classList.add('selected');
+  showComponentList(component);
   if (parent) {
     parent.classList.add('selected-parent');
+    showComponentList(parent);
   }
   currentSelected = component;
+}
+
+/**
+ * hide ALL component lists in element
+ * @param {Element} el
+ */
+function hideComponentList(el) {
+  var lists = dom.findAll(el, '.component-list-bottom');
+
+  _.each(lists, function (list) {
+    list.classList.remove('show');
+  });
 }
 
 function removeClasses(el, parent) {
   if (el) {
     el.classList.remove('selected');
+    hideComponentList(el);
   }
   if (parent) {
     parent.classList.remove('selected-parent');
+    hideComponentList(parent);
   }
 }
 

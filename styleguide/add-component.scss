@@ -7,8 +7,13 @@
   @include clearfix();
 
   clear: both;
+  display: none;
   margin: 0 12px 12px 0;
   width: 100%;
+}
+
+.component-list-bottom.show {
+  display: block;
 }
 
 .open-add-components,

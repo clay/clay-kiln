@@ -253,11 +253,12 @@ function handler(el, options) {
   button = dom.find(pane, '.open-add-components');
 
   // add click events to toggle pane
-  button.addEventListener('click', function () {
+  button.addEventListener('click', function (e) {
     var addComponentsPane = dom.find(pane, '.add-components-pane');
 
     button.classList.toggle('open');
     addComponentsPane.classList.toggle('open');
+    e.stopPropagation(); // stop unselect() or unfocus() from firing
   });
 
   // wrap the draggable items so that the pane is not in the drop area.
