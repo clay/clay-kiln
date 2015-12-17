@@ -9,6 +9,10 @@
   min-height: 19px;
   outline: none;
   white-space: normal;
+
+  &::selection {
+    background-color: $blue-25;
+  }
 }
 
 .wysiwyg-input.styled {
