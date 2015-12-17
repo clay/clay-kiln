@@ -148,6 +148,26 @@ function updateOrder(el, options) {
 }
 
 /**
+ * get the number of components between the handle and container
+ * @param {Element} handle
+ * @param {Element} container
+ * @returns {number}
+ */
+function getComponentDepth(handle, container) {
+  var cursor = handle,
+    depth = 0;
+
+  while (cursor && !cursor.matches('html') && cursor !== container) {
+    cursor = cursor.parentNode; // iterate up through the elements
+    if (cursor.getAttribute(references.referenceAttribute)) {
+      depth++; // every time you hit a component, add to the depth
+    }
+  }
+
+  return depth; // return the number of you passed through
+}
+
+/**
  * Add dragula.
  * @param {Element} el
  * @param {{ref: string, path: string, data: object}} options
@@ -156,13 +176,15 @@ function addDragula(el, options) {
   var dropAreaClass = 'dragula-drop-area',
     dragItemClass = 'dragula-item',
     dragItemUnsavedClass = 'dragula-not-saved',
-    drag = dragula({
+    drag = dragula([el], {
       moves: function (selectedItem, container, handle) {
-        return handle.classList.contains('drag');
+        // only allow direct child components of a list to be dragged
+        // this allows for nested component lists + dragdrop
+        return handle.classList.contains('drag') && getComponentDepth(handle, container) === 1;
       }
     });
 
-  drag.containers.push(el);
+  // drag.containers.push(el);
   drag.on('cloned', function (mirror) {
     // Auto-scroll when you drag to the edge of the window.
     var buffer = 40,
