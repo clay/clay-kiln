@@ -13,6 +13,48 @@ var dom = require('../services/dom'),
   ];
 
 /**
+ * get attribute value of boolean fields
+ * e.g. autocomplete: false should be autocomplete="off" in html
+ * @param {boolean} value
+ * @returns {string}
+ */
+function onOff(value) {
+  return value ? 'on' : 'off';
+}
+
+/**
+ * add autocomplete if it exists
+ * @param {object} args
+ * @returns {string}
+ */
+function addAutocomplete(args) {
+  if (args.autocomplete !== undefined) {
+    return `autocomplete="${onOff(args.autocomplete)}"`;
+  } else {
+    return '';
+  }
+}
+
+/**
+ * add auto-capitalize if it exists
+ * @param {object} args
+ * @returns {string}
+ */
+function addAutocapitalize(args) {
+  var cap = args.autocapitalize;
+
+  if (cap !== undefined) {
+    if (_.isString(cap)) {
+      return `autocapitalize="${cap}"`;
+    } else {
+      return `autocapitalize="${onOff(cap)}"`;
+    }
+  } else {
+    return '';
+  }
+}
+
+/**
  * Replace result.el with input.
  * @param {{name: string, bindings: {}}} result
  * @param {{}} args   defined in detail below:
@@ -22,6 +64,9 @@ var dom = require('../services/dom'),
  * @param {number}  [args.minLength]   minimum number of characters required (blocking)
  * @param {number}  [args.maxLength]   maximum number of characters allowed (blocking)
  * @param {string}  [args.placeholder] placeholder that will display in the input
+ * @param {boolean}  [args.autocomplete] enable/disable autocomplete on field (defaults to true)
+ * @param {boolean|string}  [args.autocapitalize] enable/disable auto-capitalize on field (defaults to true). if set to "words" it will capitalize the first letter of each word
+ * (note: on recent mobile browsers, certain input types will have auto-capitalize disabled, e.g. emails)
  * @returns {*}
  */
 module.exports = function (result, args) {
@@ -47,6 +92,8 @@ module.exports = function (result, args) {
           class="input-text"
           rv-field="${name}"
           type="${type}"
+          ${addAutocomplete(args)}
+          ${addAutocapitalize(args)}
           rv-required="${name}.required"
           rv-pattern="${name}.pattern"
           rv-minLength="${name}.minLength"
