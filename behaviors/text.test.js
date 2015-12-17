@@ -8,12 +8,21 @@ describe(dirname, function () {
   describe(filename, function () {
 
     var args = {
-      required: true,
-      pattern: /\S/,
-      minLength: 10,
-      maxLength: 20,
-      placeholder: 'abc'
-    };
+        required: true,
+        pattern: /\S/,
+        minLength: 10,
+        maxLength: 20,
+        placeholder: 'abc'
+      },
+      autoComplete = {
+        autocomplete: true
+      },
+      autoCap = {
+        autocapitalize: true
+      },
+      autoCapWords = {
+        autocapitalize: 'words'
+      };
 
     it('replaces the result.el', function () { // We could call this a "root" behavior
       var result,
@@ -42,6 +51,24 @@ describe(dirname, function () {
       expect(input.getAttribute('rv-maxLength')).to.eql('foo.maxLength');
       expect(input.getAttribute('rv-placeholder')).to.eql('foo.placeholder');
       expect(input.getAttribute('rv-value')).to.eql('foo.data.value');
+    });
+
+    it('sets autocomplete', function () {
+      var input = lib(fixture, autoComplete).el.querySelector('input');
+
+      expect(input.getAttribute('autocomplete')).to.eql('on');
+    });
+
+    it('sets autocapitalize', function () {
+      var input = lib(fixture, autoCap).el.querySelector('input');
+
+      expect(input.getAttribute('autocapitalize')).to.eql('on');
+    });
+
+    it('sets autocapitalize to words', function () {
+      var input = lib(fixture, autoCapWords).el.querySelector('input');
+
+      expect(input.getAttribute('autocapitalize')).to.eql('words');
     });
 
     it('has bindings', function () {
