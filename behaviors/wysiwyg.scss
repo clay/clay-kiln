@@ -68,8 +68,6 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
   }
 
   li {
-    border-right: 1px solid $wysiwyg-border-color;
-
     &:nth-child(6n) {
       border-right: none;
     }
@@ -93,6 +91,10 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
     .medium-editor-button-active {
       background-color: $wysiwyg-selected-bgcolor;
     }
+  }
+
+  li + li {
+    border-left: 1px solid $wysiwyg-border-color;
   }
 }
 
