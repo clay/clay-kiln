@@ -33,7 +33,6 @@ describe(dirname, function () {
       var textarea = lib(fixture, args).el.querySelector('textarea');
 
       expect(textarea.getAttribute('rv-field')).to.eql('foo');
-      expect(textarea.getAttribute('rv-required')).to.eql('foo.required');
       expect(textarea.getAttribute('rv-placeholder')).to.eql('foo.placeholder');
       expect(textarea.getAttribute('rv-value')).to.eql('foo.data.value');
     });
@@ -41,7 +40,6 @@ describe(dirname, function () {
     it('has bindings', function () {
       var bindings = lib(fixture, args).bindings;
 
-      expect(bindings.required).to.not.be.undefined;
       expect(bindings.placeholder).to.not.be.undefined;
     });
 
