@@ -1,5 +1,9 @@
 var dom = require('../services/dom');
 
+function setRequired(isReq) {
+  return isReq ? 'required="true"' : '';
+}
+
 /**
  * Create textarea.
  * @param {{name: string, bindings: {}}} result
@@ -13,12 +17,12 @@ module.exports = function (result, args) {
     bindings = result.bindings,
     textArea;
 
-  bindings.required = !!args.required;
+  args = args || {};
   bindings.placeholder = args.placeholder || '';
 
   textArea = dom.create(`
     <label class="input-label">
-      <textarea class="editor-textarea" rv-field="${name}" rv-required="${name}.required" rv-placeholder="${name}.placeholder" rv-value="${name}.data.value"></textarea>
+      <textarea class="editor-textarea" rv-field="${name}" ${setRequired(args.required)} rv-placeholder="${name}.placeholder" rv-value="${name}.data.value"></textarea>
     </label>
   `);
 
