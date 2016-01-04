@@ -177,6 +177,8 @@ function addIframeOverlays(el) {
       newDiv = document.createElement('div');
       newDiv.style.width = '100%';
       newDiv.style.height = '100%';
+      newDiv.style.top = '0';
+      newDiv.style.left = '0';
       newDiv.style.position = 'absolute';
       dom.insertAfter(iframes[i], newDiv);
       iframes[i].classList.add('iframe-overlay');
