@@ -163,6 +163,7 @@ module.exports = function (result, args) {
 
         if (val.length && repeated) {
           addEl.setCustomValidity('Repeated items are not allowed!');
+          addEl.reportValidity();
         } else if (val.length && !repeated) {
           addEl.setCustomValidity(''); // valid input
           addEl.value = ''; // remove it from the add-item field
