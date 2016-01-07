@@ -118,7 +118,7 @@ There are three ways we display fields and forms in Kiln, `inline`, `overlay`, a
 
 **Overlay** is best when there's a one-to-many match between how your component looks and how it's edited. Some examples:
 
-* an article headline looks like a line of text, but has multiple fields for short, medium, social, and seo headlines
+* an article headline looks like a single line of text, but has multiple fields for short, medium, social, and seo headlines
 * a link looks like...a link, but has fields for the link text, url, title, and whether it should open in a new tab or not
 
 **Settings** is best when there's a many-to-many match between how your component looks and how it's edited, or when certain fields affect the entirety of a component. Some examples:
