@@ -175,13 +175,13 @@ _groups:
       - url
 ```
 
-If you point to the group in your template, it will create a form with all of that group's fields.
+If an element in your template points to that group, clicking it will create a form with all of that group's fields.
 
 ```html
 <div data-editable="myGroup"></div>
 ```
 
-You can add field properties to groups, which will work the same way as with fields.
+You can add field properties to groups, which will work the same way as with fields. Groups can be displayed `inline` as well as in an `overlay`.
 
 ```yaml
 _groups:
