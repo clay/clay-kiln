@@ -26,7 +26,7 @@ Besides `_has` (which is an array of behaviors), fields can have certain propert
 
 * **_label:** This is a human-readable label that will be used by the pre-publishing validators, and can also be consumed by the `label` behavior
 * **_display:** This specifies what kind of form the field should use. The options are `inline`, `overlay` (the default), and `settings` (to only display in the component settings form)
-* **_placeholder:** This is an object that specifies what placeholders should be displayed, used primarily when the field's data is empty. You can specify `text` and `height` (a string, e.g. `200px`)
+* **_placeholder:** This is an object that specifies what placeholders should be displayed when the field's data is empty. You can specify `text` and `height` (a string, e.g. `200px`)
 
 #### Defining Behaviors
 
@@ -66,14 +66,22 @@ has_multiple_functions_with_args:
 
 By default, placeholders are displayed when a field is empty. If you would like the placeholder to _always_ appear (e.g. for components with no visible aspects, or for things like ads which rely on client-side js which is suppressed in edit mode), add `permanent: true` to the placeholder object. This will give the placeholder a slightly different styling and prevent it from disappearing when data is added.
 
+```yaml
+adName:
+  _has: text
+  _placeholder:
+    text: AD
+    height: 300px
+    permanent: true
+```
+
 When deciding how to add placeholders, keep these things in mind:
 
 * Placeholders will display when you add `data-editable="fieldName"` or `data-placeholder="fieldName"` (though the latter will _not_ be clickable) to the component's template
-* Placeholder text should invite users to click through and edit the field
-* You can add newlines into placeholder text, either by using yaml's [multiline strings](http://stackoverflow.com/questions/3790454/in-yaml-how-do-i-break-a-string-over-multiple-lines) or by adding `\n`, e.g. `text: ARTICLE CONTENT\n\nClick plus button below to add components`
-* Placeholder height should reflect how the component will look when data is added to the field(s). A single line of text will be short, while a component list will probably be taller.
-* Placeholder height is a string, so you may specify different units. Experiment with `vh`, `rems`, and percentages if applicable.
-* Placeholders are specified in the component schema, so all instances of that component will have the same placeholder heights.
+* You can add newlines into placeholder text, either by using yaml's [multiline strings](http://stackoverflow.com/questions/3790454/in-yaml-how-do-i-break-a-string-over-multiple-lines) or by adding `\n`, e.g. `text: ARTICLE BODY\n\nClick to add #content`
+* Placeholder height should reflect how the component will look when data is added to the field. A single line of text will be short, while a component list will probably be taller.
+* Placeholder height is a string, so you may specify different units if applicable.
+* Placeholders are specified in the component schema, so all instances of that component will have the same placeholder text, height, and logic.
 
 ### Groups
 
