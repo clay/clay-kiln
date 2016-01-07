@@ -106,6 +106,30 @@ Component lists don't use `_label` or `_display` (and will ignore them if you sp
 
 **Note:** In the future you will be able to [specify a minimum and maximum number of components](https://github.com/nymag/clay-kiln/issues/298) in your component lists.
 
+#### Defining Display
+
+There are three ways we display fields and forms in Kiln, `inline`, `overlay`, and `settings`. While it is possible to display any field in any of these ways, certain displays are better for certain types of content.
+
+**Inline** is best when there's a one-to-one match between how your component looks and how it's edited. Some examples:
+
+* clicking into a paragraph should display a single inline text area
+* clicking on a header should allow you to edit that header (a single text field) in place
+* clicking on an image should allow you to upload or change that image
+
+**Overlay** is best when there's a one-to-many match between how your component looks and how it's edited. Some examples:
+
+* an article headline looks like a line of text, but has multiple fields for short, medium, social, and seo headlines
+* a link looks like...a link, but has fields for the link text, url, title, and whether it should open in a new tab or not
+
+**Settings** is best when there's a many-to-many match between how your component looks and how it's edited, or when certain fields affect the entirety of a component. Some examples:
+
+* an instance of a share component can enable and disable many social media services at once
+* an article component has data that is never displayed on the article page, but is used to generate rss feeds and sitemaps
+* a paragraph component has a feature to toggle [drop caps](https://www.smashingmagazine.com/2012/04/drop-caps-historical-use-and-current-best-practices/)
+* a feed component has a field that specifies the elasticsearch query it uses to populate items
+
+These are not hard and fast rules, so feel free to experiment!
+
 #### Defining Placeholders
 
 By default, placeholders are displayed when a field is empty. If you would like the placeholder to _always_ appear (e.g. for components with no visible aspects, or for things like ads which rely on client-side js which is suppressed in edit mode), add `permanent: true` to the placeholder object. This will give the placeholder a slightly different styling and prevent it from disappearing when data is added.
