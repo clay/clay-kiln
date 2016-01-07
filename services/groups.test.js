@@ -92,6 +92,31 @@ describe(dirname, function () {
           bar: barData
         })).to.eql([fooData]);
       });
+
+      it('returns returns explicit settings group if specified', function () {
+        var fooData = {
+            value: 'foo',
+            _schema: { _display: 'settings' }
+          },
+          barData = {
+            value: 'bar',
+            _schema: { _display: 'settings' }
+          },
+          groupData = {
+            fields: ['bar', 'foo'], // note, order is different than the property order
+            _name: 'settings'
+          };
+
+        expect(fn({
+          foo: fooData,
+          bar: barData,
+          _schema: {
+            _groups: {
+              settings: groupData
+            }
+          }
+        })).to.eql([barData, fooData]);
+      });
     });
 
     describe('get', function () {

@@ -12,16 +12,133 @@ behaviors/
 Behaviors are added to fields in your `schema.yaml`. They are an array of objects, with a `fn` property and any number of arguments:
 
 ```yaml
-my-field:
+myField:
   _has:
-    -
-      fn: text
-      required: true
-      placeholder: This is my placeholder
+    - text
     -
       fn: soft-maxlength
       maxLength: 80
 ```
+
+### Field Properties
+
+Besides `_has` (which is an array of behaviors), there are certain properties that fields can have, no matter what behaviors they use. These are prefixed with underscores.
+
+* **_label:** This is a human-readable label that will be used by the pre-publishing validators, and can also be consumed by the `label` behavior
+* **_display:** This specifies what kind of form the field should use. The options are `inline`, `overlay` (the default), and `settings` (to only display in the component settings form)
+* **_placeholder:** This is an object that specifies what placeholders should be displayed, used primarily when the field's data is empty. You can specify `text` and `height` (a string, e.g. `200px`)
+
+#### Defining Behaviors
+
+While you can write out all behaviors as an array of objects, there's syntactical sugar to make it more concise. Here are examples, in increasing order of complexity:
+
+```yaml
+# If you have a single behavior with no arguments, use a string
+has_one_function_with_no_args:
+  _has: text
+
+# if you have a single behavior but it has arguments, use an object
+has_one_function_with_args:
+  _has:
+    fn: text
+    required: true
+
+# if you have multiple behaviors, use an array
+has_multiple_functions:
+  _has:
+    - text
+    - label
+
+# you can mix and match strings (behaviors without arguments) and objects (behaviors with arguments) in your arrays
+has_multiple_functions_with_args:
+  _has:
+    -
+      fn: text
+      type: url
+    - label
+    -
+      fn: description
+      value: Write stuff here
+    - required
+```
+
+#### Defining Placeholders
+
+By default, placeholders are displayed when a field is empty. If you would like the placeholder to _always_ appear (e.g. for components with no visible aspects, or for things like ads which rely on client-side js which is suppressed in edit mode), add `permanent: true` to the placeholder object. This will give the placeholder a slightly different styling and prevent it from disappearing when data is added.
+
+When deciding how to add placeholders, keep these things in mind:
+
+* Placeholders will display when you add `data-editable="fieldName"` or `data-placeholder="fieldName"` (though the latter will _not_ be clickable) to the component's template
+* Placeholder text should invite users to click through and edit the field
+* You can add newlines into placeholder text, either by using yaml's [multiline strings](http://stackoverflow.com/questions/3790454/in-yaml-how-do-i-break-a-string-over-multiple-lines) or by adding `\n`, e.g. `text: ARTICLE CONTENT\n\nClick plus button below to add components`
+* Placeholder height should reflect how the component will look when data is added to the field(s). A single line of text will be short, while a component list will probably be taller.
+* Placeholder height is a string, so you may specify different units. Experiment with `vh`, `rems`, and percentages if applicable.
+* Placeholders are specified in the component schema, so all instances of that component will have the same placeholder heights.
+
+### Groups
+
+Groups are useful when you want to open a form with multiple fields (inline or in overlays), or when you want to guarantee the order of fields in your component settings form.
+
+#### Creating a Group
+
+In the root of your schema.yml, add a `_groups` object that contains a `fields` array.
+
+```yaml
+title:
+  _has: text
+url:
+  _has: text
+
+_groups:
+  myGroup:
+    field:
+      - title
+      - url
+```
+
+You can add field properties to groups, which will work the same way as with fields.
+
+```yaml
+_groups:
+  inlineStuff:
+    fields:
+      - title
+      - url
+    _label: Inline Stuff
+    _display: inline
+```
+
+If you add a `_placeholder` to a group, you _must_ either make it permanent (with `permanent: true`) _or_ specify a field it should check (with `ifEmpty: fieldName`). It will display the placeholder when that field is empty.
+
+```yaml
+_groups:
+  inlineStuff:
+    fields:
+      - title
+      - url
+    _label: Inline Stuff
+    _display: inline
+    _placeholder:
+      text: Click here to add stuff
+      height: 40px
+      ifEmpty: title
+```
+
+#### Settings Group
+
+By default, kiln will look through your fields to generate the component settings form. It will add any field with `_display: settings` to the form, but (because schemae are objects) there's no guarantee that the order you write your fields in the schema will be the order they appear in the form.
+
+If you want to guarantee the field order in your component settings form, you can create the `settings` group manually.
+
+```yaml
+_groups:
+  settings:
+    fields:
+      - title
+      - url
+```
+
+You don't need to specify `_label` (the form will be called "<Component Name> Settings"), `_display`, or `_placeholder` for the `settings` group.
 
 ## Called for each field
 
@@ -62,36 +179,6 @@ module.exports = function (result, args) {
 `binders` and `formatters` are singletons that are added to the form's `rivets` instance. ([Find out more about binders and formatters](http://rivetsjs.com/docs/guide/#binders))
 
 Behaviors should return the first argument passed in (the `result` object), but may return a promise that resolves to that object. This is useful if your behavior needs to make api calls or do other async things.
-
-## How to define behaviors in the schema
-
-While you can write out all behaviors as an array of objects, there's syntactical sugar to make it more concise. Here are examples, in increasing order of complexity:
-
-```yaml
-has_one_function_with_no_args:
-  _has: text
-has_one_function_with_args:
-  _has:
-    fn: text
-    required: true
-has_multiple_functions:
-  _has:
-    - text
-    -
-      fn: soft-maxlength
-      value: 80
-has_transcluded_functions:
-  _has:
-    fn: horizontal-list
-    required: true
-    each:
-      name:
-        _has:
-          fn: text
-          required: true
-      twitter:
-        _has: text
-```
 
 ## How to define arguments for your behavior
 

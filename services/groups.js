@@ -26,22 +26,32 @@ function expandFields(fields, data) {
 }
 
 /**
- * get only the fields with _display: settings
+  * get fields in the `settings` group
+  * Note: If you manually specify a `settings` group, it will override the default behavior
+  * This is used to guarantee field order if you need your settings in a specific order
+  * Default behavior is to look for all fields with `_display: settings` and generate
+  * a group from them (where field order is NOT enforced)
  * @param {object} data
  * @returns {array}
  */
 function getSettingsFields(data) {
+  var hasManualSettingsGroup = _.has(data, '_schema._groups.settings');
+
   if (!_.isObject(data) || _.isEmpty(data)) {
     return [];
+  } else if (hasManualSettingsGroup) {
+    // get fields in the `settings` group
+    return expandFields(_.get(data, '_schema._groups.settings.fields'), data);
+  } else {
+    // look for all fields with `_display: settings`
+    return _.reduce(data, function (fields, fieldData) {
+      if (fieldData._schema && fieldData._schema[references.displayProperty] === 'settings') {
+        fields.push(fieldData);
+      }
+
+      return fields;
+    }, []);
   }
-
-  return _.reduce(data, function (fields, fieldData) {
-    if (fieldData._schema && fieldData._schema[references.displayProperty] === 'settings') {
-      fields.push(fieldData);
-    }
-
-    return fields;
-  }, []);
 }
 
 /**
