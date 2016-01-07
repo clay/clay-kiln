@@ -22,8 +22,10 @@ myField:
 
 ### Field Properties
 
-Besides `_has` (which is an array of behaviors), fields can have certain properties. These are prefixed with underscores.
+Fields can have certain properties. These are prefixed with underscores.
 
+* **_has:** An array of behaviors
+* **_componentList:** A special type of field that contains components. These fields do _not_ have behaviors, labels, or display values, but may have placeholders
 * **_label:** This is a human-readable label that will be used by the pre-publishing validators, and can also be consumed by the `label` behavior
 * **_display:** This specifies what kind of form the field should use. The options are `inline`, `overlay` (the default), and `settings` (to only display in the component settings form)
 * **_placeholder:** This is an object that specifies what placeholders should be displayed when the field's data is empty. You can specify `text` and `height` (a string, e.g. `200px`)
@@ -61,6 +63,40 @@ has_multiple_functions_with_args:
       value: Write stuff here
     - required
 ```
+
+#### Defining Component Lists
+
+Component Lists are a special type of field. These fields don't have behaviors or labels, and don't appear in forms, but rather contain lists of component references and the logic for adding and removing components.
+
+```yaml
+content:
+  _componentList: true
+```
+
+Simply specifying `true` will create a component list that may contain _any_ component installed in your Clay instance (both internal components and any installed via npm). This is used primarily for component lists inside layouts, where users have the maximum amount of creative freedom to add and remove components.
+
+If `_componentList` is an object, you can specify a list of components to `exclude` (blacklisting) or `include` (whitelisting).
+
+```yaml
+# the content of our article, where we ONLY want to include certain components
+articleContent:
+  _componentList:
+    include:
+      - paragraph
+      - image
+
+# a sidebar area where we want to allow every component EXCEPT certain ones
+sideBarArea:
+  _componentList:
+    exclude:
+      - article
+      - paragraph
+      - image
+```
+
+Component lists don't use `_label` or `_display` (and will ignore them if you specify them), but they allow `_placeholder`. It's recommended to add placeholders to component lists, which will display when that list is empty.
+
+**Note:** In the future you will be able to [specify a minimum and maximum number of components](https://github.com/nymag/clay-kiln/issues/298) in your component lists.
 
 #### Defining Placeholders
 
