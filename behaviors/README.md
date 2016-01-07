@@ -20,6 +20,14 @@ myField:
       maxLength: 80
 ```
 
+## Referenced in the template
+
+Once a field is defined in the schema, you can add a `data-` attribute to an element in your component's template. When a user clicks on that element, it will open a form containing that field.
+
+```html
+<div data-editable="myField"></div>
+```
+
 ### Field Properties
 
 Fields can have certain properties. These are prefixed with underscores.
@@ -111,9 +119,10 @@ adName:
     permanent: true
 ```
 
+Placeholders will display when you add `data-editable="fieldName"` in your component's template. If you're using a permanent placeholder and/or you don't want the user to click through and open a form, you can specify `data-placeholder="fieldName"` instead.
+
 When deciding how to add placeholders, keep these things in mind:
 
-* Placeholders will display when you add `data-editable="fieldName"` or `data-placeholder="fieldName"` (though the latter will _not_ be clickable) to the component's template
 * You can add newlines into placeholder text, either by using yaml's [multiline strings](http://stackoverflow.com/questions/3790454/in-yaml-how-do-i-break-a-string-over-multiple-lines) or by adding `\n`, e.g. `text: ARTICLE BODY\n\nClick to add #content`
 * Placeholder height should reflect how the component will look when data is added to the field. A single line of text will be short, while a component list will probably be taller.
 * Placeholder height is a string, so you may specify different units if applicable.
@@ -138,6 +147,12 @@ _groups:
     field:
       - title
       - url
+```
+
+If you point to the group in your template, it will create a form with all of that group's fields.
+
+```html
+<div data-editable="myGroup"></div>
 ```
 
 You can add field properties to groups, which will work the same way as with fields.
