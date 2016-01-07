@@ -9,7 +9,7 @@ behaviors/
 
 ## Defined in the schema
 
-Behaviors are added to fields in your `schema.yaml`. They are an array of objects, with a `fn` property and any number of arguments:
+Behaviors are added to fields in your `schema.yaml`. They are an array of strings and objects, with a `fn` property and any number of arguments:
 
 ```yaml
 myField:
