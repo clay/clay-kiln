@@ -193,6 +193,8 @@ _groups:
     _display: inline
 ```
 
+When Kiln generates a form for a group, the `_display` (and `_placeholder`) properties of the individual fields are ignored. This means that you don't have to specify those properties in your fields if they're only used in groups (rather than referenced directly).
+
 If you add a `_placeholder` to a group, you _must_ either make it permanent (with `permanent: true`) _or_ specify a field it should check (with `ifEmpty: fieldName`). It will display the placeholder when that field is empty.
 
 ```yaml
@@ -211,9 +213,9 @@ _groups:
 
 #### Settings Group
 
-By default, Kiln will look through your fields to generate the component settings form. It will add any field with `_display: settings` to the form, but (because schemae are objects) there's no guarantee that the order you write your fields in the schema will be the order they appear in the form.
+By default, Kiln will look through your fields to generate the component settings form. It will add any field with `_display: settings` to the form, but (because schemae are objects) there's no guarantee that the fields' order in the schema will be their order in the form.
 
-If you want to guarantee the field order in your component settings form, you can create the `settings` group manually.
+If you want to guarantee the field order in your component settings form, you can create the `settings` group manually. This will override the default logic, so remember to add all of the fields you want to have in your settings form.
 
 ```yaml
 _groups:
@@ -223,7 +225,7 @@ _groups:
       - url
 ```
 
-You don't need to specify `_label` (the form will be called "<Component Name> Settings"), `_display`, or `_placeholder` for the `settings` group.
+You don't need to specify `_label` (the form will be called "<Component Name> Settings"), `_display`, or `_placeholder` for the `settings` group. If you use it, you also don't need to specify `_display: settings` inside the individual fields.
 
 ## Writing Behaviors
 
