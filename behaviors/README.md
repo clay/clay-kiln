@@ -9,7 +9,7 @@ behaviors/
 
 ## Defined in the schema
 
-Behaviors are added to fields in your `schema.yaml`. They are an array of strings and objects, with a `fn` property and any number of arguments:
+Behaviors are added to fields in your `schema.yaml`. They are an array of strings and/or objects (with a `fn` property and any number of arguments):
 
 ```yaml
 myField:
@@ -35,12 +35,12 @@ While you can write out all behaviors as an array of objects, there's syntactica
 ```yaml
 # If you have a single behavior with no arguments, use a string
 has_one_function_with_no_args:
-  _has: text
+  _has: text # specifying a string will point to the behavior, e.g. behaviors/text.js
 
 # if you have a single behavior but it has arguments, use an object
 has_one_function_with_args:
   _has:
-    fn: text
+    fn: text # fn points to the behavior, e.g. behaviors/text.js
     required: true
 
 # if you have multiple behaviors, use an array
