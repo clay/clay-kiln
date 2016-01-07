@@ -14,9 +14,9 @@ Behaviors are added to fields in your `schema.yaml`. They are an array of string
 ```yaml
 myField:
   _has:
-    - text
+    - text # points to behaviors/text.js
     -
-      fn: soft-maxlength
+      fn: soft-maxlength # points to behaviors/soft-maxlength.js
       maxLength: 80
 ```
 
