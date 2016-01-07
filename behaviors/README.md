@@ -251,7 +251,7 @@ module.exports = function (result, args) {
 The `result` argument contains the field's name, element, data bindings, formatters, and binders.
 
 * **name:** The name of the field, taken directly from the schema
-* **el:** The field's element. Behaviors progressively append elements to this as they're run
+* **el:** The field's element. Behaviors can progressively append elements to this as they're run
 * **bindings:** Data bindings for the field, containing `name`, `label`, and `data`. You can add more data and functions here, based on behavior logic. When all fields are added to the form, rivets will recieve a `bindings` object with each field's bindings, e.g. `{ field1: { bindings }, field2: { bindings } }`
 * **formatters:** [rivets formatters](http://rivetsjs.com/docs/guide/#formatters) that are added at the form level
 * **binders:** [rivets binders](http://rivetsjs.com/docs/guide/#binders) that are added at the form level
