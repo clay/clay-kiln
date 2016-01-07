@@ -130,7 +130,9 @@ When deciding how to add placeholders, keep these things in mind:
 
 ### Groups
 
-Groups are useful when you want to open a form with multiple fields (inline or in overlays), or when you want to guarantee the order of fields in your component settings form.
+In most inline forms, you'll want to edit a single field (e.g. when editing a paragraph). In most overlay forms, though, you'll want multiple fields. This is where groups come in.
+
+Groups can be used to open forms with multiple fields in both inline and overlay forms, or when you want to guarantee the order of fields in your component settings form.
 
 #### Creating a Group
 
@@ -199,55 +201,72 @@ _groups:
 
 You don't need to specify `_label` (the form will be called "<Component Name> Settings"), `_display`, or `_placeholder` for the `settings` group.
 
-## Called for each field
+## Writing Behaviors
 
-When the form is created, each behavior is called *in order*. The function for a behavior looks like this:
+When a form is created (by clicking an element with `data-editable`, or by clicking into component settings), fields are added and each field's behavior is called in the order they're defined. The function signature for an individual behavior has two arguments, `result` and `args`.
 
 ```js
 module.exports = function (result, args) {
   /*
-  result = { el, bindings, binders, formatters, name }
-  args = { arguments from the schema }
+   * behaviors have a lot of flexibility!
+   * They can append elements to the field,
+   * set up data binding with complicated logic,
+   * add event handlers for clicking, typing, and swiping,
+   * implement WYSIWYG libraries like medium-editor and Prosemirror,
+   * and much, much more!
    */
 
   return result; // pass it on
 };
 ```
 
-There are two objects passed into the behavior. The first (`result`) contains the element, data bindings (that will be added to the form's bindings object under the field name), the field name, and the field's formatters and binders. The `bindings` object by default contains the field's `name`, `label`, and `data` (including the schema). Add more properties to it if you want them to appear in the template:
+### Result
+
+The `result` argument contains the field's name, element, data bindings, formatters, and binders.
+
+* **name:** The name of the field, taken directly from the schema
+* **el:** The field's element. Behaviors progressively append elements to this as they're run
+* **bindings:** Data bindings for the field, containing `name`, `label`, and `data`. You can add more data and functions here, based on behavior logic. When all fields are added to the form, rivets will recieve a `bindings` object with each field's bindings, e.g. `{ field1: { bindings }, field2: { bindings } }`
+* **formatters:** [rivets formatters](http://rivetsjs.com/docs/guide/#formatters) that are added at the form level
+* **binders:** [rivets binders](http://rivetsjs.com/docs/guide/#binders) that are added at the form level
+
+Behaviors should return the first argument passed in (the `result` object), but may return a promise that resolves to that object. This is useful if your behavior needs to make api calls or do other async things.
+
+### Args
+
+The `arg` argument contains all arguments from the schema.
+
+```yaml
+fn: text
+type: url
+placeholder: http://domain.com
+```
+
+These arguments will be passed through to your behavior.
 
 ```js
 module.exports = function (result, args) {
-  var bindings = result.bindings,
-    name = result.name,
-    el = result.el;
-
-  // add bindings from the data, args, etc
-  bindings.required = args.required;
-
-  var tpl = `
-      <input type="text" rv-required="${name}.required" rv-value="${name}.data.value" />`,
-    textField = dom.create(tpl); // dom.create() makes html elements from strings
-
-  el.appendChild(textField);
-
+  console.log(args.type) // => 'url'
+  console.log(args.placeholder) // => 'http://domain.com'
   return result;
 };
 ```
 
-`binders` and `formatters` are singletons that are added to the form's `rivets` instance. ([Find out more about binders and formatters](http://rivetsjs.com/docs/guide/#binders))
+### Best Practices for Behavior Args
 
-Behaviors should return the first argument passed in (the `result` object), but may return a promise that resolves to that object. This is useful if your behavior needs to make api calls or do other async things.
-
-## How to define arguments for your behavior
-
-It's best practice to write a comment at the top of your `<behavior>.js` file describing the arguments it accepts. This acts as a sort of API document for developers writing schemas against this behavior. Here's an example:
+It's best practice to write a JSDoc comment at the top of your `module.exports` function describing the arguments it accepts. This acts as a sort of API documentation for developers writing schemae against this behavior.
 
 ```js
-/*
-  Arguments for the autocomplete behavior:
-
-  api {string} points to the api that will be used for autocomplete
-  deleteIfEmpty {boolean} if true, this will call DELETE against the api when you delete an item
+/**
+ * A short description of your behavior
+ * @param {object}  result
+ * @param {{}} args defined in detail below:
+ * @param {type}  args.foo   if your argument is required
+ * @param {type} [args.bar]  if your argument is optional
+ * @returns {object}
  */
+module.exports = function (result, args) {
+  // do stuff with those args
+  return result;
+};
 ```
