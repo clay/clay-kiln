@@ -252,11 +252,21 @@ The `result` argument contains the field's name, element, data bindings, formatt
 
 * **name:** The name of the field, taken directly from the schema
 * **el:** The field's element. Behaviors can progressively append elements to this as they're run
-* **bindings:** Data bindings for the field, containing `name`, `label`, and `data`. You can add more data and functions here, based on behavior logic. When all fields are added to the form, rivets will recieve a `bindings` object with each field's bindings, e.g. `{ field1: { bindings }, field2: { bindings } }`
-* **formatters:** [rivets formatters](http://rivetsjs.com/docs/guide/#formatters) that are added at the form level
-* **binders:** [rivets binders](http://rivetsjs.com/docs/guide/#binders) that are added at the form level
+* **bindings:** Data bindings for the field, containing `name`, `label`, and `data`. You can add more data and functions here, based on behavior logic. When all fields are added to the form, rivets will recieve a `bindings` object with properties for each field (using the field's `name`), e.g. `{ field1: { bindings }, field2: { bindings } }`
+* **formatters:** [Rivets formatters](http://rivetsjs.com/docs/guide/#formatters) are singletons that are added at the form level
+* **binders:** [Rivets binders](http://rivetsjs.com/docs/guide/#binders) are singletons that are added at the form level
 
 Behaviors should return the first argument passed in (the `result` object), but may return a promise that resolves to that object. This is useful if your behavior needs to make api calls or do other async things.
+
+```js
+module.exports = function (result, args) {
+  return fetch(args.url)
+    .then(function (res)) {
+      result.el = res;
+      return result;
+    });
+};
+```
 
 ### Args
 
