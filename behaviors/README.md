@@ -22,7 +22,7 @@ myField:
 
 ### Field Properties
 
-Besides `_has` (which is an array of behaviors), there are certain properties that fields can have, no matter what behaviors they use. These are prefixed with underscores.
+Besides `_has` (which is an array of behaviors), fields can have certain properties. These are prefixed with underscores.
 
 * **_label:** This is a human-readable label that will be used by the pre-publishing validators, and can also be consumed by the `label` behavior
 * **_display:** This specifies what kind of form the field should use. The options are `inline`, `overlay` (the default), and `settings` (to only display in the component settings form)
