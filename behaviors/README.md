@@ -44,23 +44,23 @@ While you can write out all behaviors as an array of objects, there's syntactica
 
 ```yaml
 # If you have a single behavior with no arguments, use a string
-has_one_function_with_no_args:
+hasOneFunctionWithNoArguments:
   _has: text # specifying a string will point to the behavior, e.g. behaviors/text.js
 
 # if you have a single behavior but it has arguments, use an object
-has_one_function_with_args:
+hasOneFunctionWithArguments:
   _has:
     fn: text # fn points to the behavior, e.g. behaviors/text.js
     required: true
 
 # if you have multiple behaviors, use an array
-has_multiple_functions:
+hasMultipleFunctions:
   _has:
     - text
     - label
 
 # you can mix and match strings (behaviors without arguments) and objects (behaviors with arguments) in your arrays
-has_multiple_functions_with_args:
+hasMultipleFunctionsWithArguments:
   _has:
     -
       fn: text
