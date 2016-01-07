@@ -170,7 +170,7 @@ url:
 
 _groups:
   myGroup:
-    field:
+    fields:
       - title
       - url
 ```
