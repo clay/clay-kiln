@@ -22,7 +22,7 @@ myField:
 
 ## Referenced in the template
 
-Once a field is defined in the schema, you can add a `data-` attribute to an element in your component's template. When a user clicks on that element, it will open a form containing that field.
+Once a field is defined in the schema, you can add a `data-editable` attribute to an element in your component's template. When a user clicks on that element, it will open a form containing that field.
 
 ```html
 <div data-editable="myField"></div>
