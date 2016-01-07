@@ -185,7 +185,7 @@ _groups:
 
 #### Settings Group
 
-By default, kiln will look through your fields to generate the component settings form. It will add any field with `_display: settings` to the form, but (because schemae are objects) there's no guarantee that the order you write your fields in the schema will be the order they appear in the form.
+By default, Kiln will look through your fields to generate the component settings form. It will add any field with `_display: settings` to the form, but (because schemae are objects) there's no guarantee that the order you write your fields in the schema will be the order they appear in the form.
 
 If you want to guarantee the field order in your component settings form, you can create the `settings` group manually.
 
