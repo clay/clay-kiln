@@ -15,9 +15,9 @@
 
 .segmented-button label {
   background-color: #fff;
+  border-bottom: 1px solid $blue;
   border-left: 1px solid $blue;
   border-top: 1px solid $blue;
-  border-bottom: 1px solid $blue;
   cursor: pointer;
   display: block;
   float: left;
@@ -33,13 +33,13 @@
 $btnradius: 4px;
 
 .segmented-button label:nth-of-type(1) {
-  border-top-left-radius: $btnradius;
   border-bottom-left-radius: $btnradius;
+  border-top-left-radius: $btnradius;
 }
 
 .segmented-button label:nth-last-of-type(1) {
-  border-top-right-radius: $btnradius;
   border-bottom-right-radius: $btnradius;
+  border-top-right-radius: $btnradius;
 }
 
 // label (when button is selected)
@@ -51,5 +51,6 @@ $btnradius: 4px;
 // icons
 .segmented-button img {
   height: auto;
+  min-height: 30px;
   width: 34px;
 }
