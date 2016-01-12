@@ -88,31 +88,7 @@ describe(dirname, function () {
     describe('formatTime', function () {
       var fn = lib[this.title];
 
-      it('formats now', function () {
-        var time = moment();
-
-        expect(fn(time.valueOf())).to.equal(time.fromNow());
-      });
-
-      it('formats < 3 hours ahead', function () {
-        var time = moment().add(30, 'minutes');
-
-        expect(fn(time.valueOf())).to.equal(time.fromNow());
-      });
-
-      it('formats > 3 hours ahead', function () {
-        var time = moment().add(5, 'hours');
-
-        expect(fn(time.valueOf())).to.equal(time.calendar());
-      });
-
-      it('formats < 3 hours behind', function () {
-        var time = moment().subtract(30, 'minutes');
-
-        expect(fn(time.valueOf())).to.equal(time.fromNow());
-      });
-
-      it('formats > 3 hours behind', function () {
+      it('formats with calendar time', function () {
         var time = moment().subtract(5, 'hours');
 
         expect(fn(time.valueOf())).to.equal(time.calendar());
