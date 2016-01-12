@@ -99,8 +99,7 @@ module.exports = function () {
             })
             .then(function () {
               progress.done();
-              progress.open('schedule', `Publishing scheduled ` + state.formatTime(timestamp, true));
-              state.toggleScheduled(true);
+              state.openDynamicSchedule(timestamp, db.uriToUrl(pageUri));
             })
             .catch(function () {
               // note: the Error passed into this doesn't have a message, so we use a custom one
