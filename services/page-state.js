@@ -2,7 +2,8 @@ var _ = require('lodash'),
   moment = require('moment'),
   edit = require('./edit'),
   db = require('./edit/db'),
-  dom = require('./dom');
+  dom = require('./dom'),
+  progress = require('./progress');
 
 /**
  * get canonical url from clay-meta-url component (if it exists)
@@ -118,6 +119,45 @@ function formatTime(timestamp) {
   return datetime.calendar();
 }
 
+/**
+ * do something at a certain time in the future
+ * note: this is used to switch scheduled posts to published status message
+ * if the user is on the page while it's published
+ * @param {function} fn
+ * @param {Moment} date (any date that can be parsed with moment)
+ */
+function timeout(fn, date) {
+  var future = moment(date),
+    offset = future.diff(moment()).valueOf();
+
+  window.setTimeout(fn, offset);
+}
+
+// convenience method for dynamic schedule message
+function openDynamicSchedule(time, url) {
+  // open a schedule status message
+  progress.open('schedule', `Scheduled to publish ${formatTime(time)}`);
+  toggleScheduled(true);
+  // set it to dynamically change to publish if the page is still open
+  // (or if a new user opens the page) when it's set to publish
+  timeout(function () {
+    progress.close();
+    // close the schedule status, wait a beat (drawing the eye of the user), then open the published status
+    // Normally, transitions between status messages happen instantaneously,
+    // because they're initiated by user actions (e.g. a published page being scheduled to re-publish).
+    // Because this specific transition happens without user action (rather, it's on a timeout),
+    // we need to draw the user's eye and allow them to grasp what's going on
+    // (without being obtrusive)
+    window.setTimeout(function () {
+      progress.open('publish', `Published! <a href="${url}" target="_blank">View Page</a>`);
+      // and remember to untoggle the button
+      toggleScheduled(false);
+    }, 250);
+  }, time);
+}
+
 module.exports.get = getPageState;
 module.exports.toggleScheduled = toggleScheduled;
 module.exports.formatTime = formatTime;
+module.exports.timeout = timeout;
+module.exports.openDynamicSchedule = openDynamicSchedule;

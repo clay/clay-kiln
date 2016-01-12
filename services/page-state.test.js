@@ -94,5 +94,19 @@ describe(dirname, function () {
         expect(fn(time.valueOf())).to.equal(time.calendar());
       });
     });
+
+    describe('timeout', function () {
+      var fn = lib[this.title];
+
+      it('runs a function in the future', function (done) {
+        var time = moment().add(2, 'seconds').calendar(),
+          checkFn = function () {
+            expect(true).to.equal(true);
+            done();
+          };
+
+        fn(checkFn, time);
+      });
+    });
   });
 });
