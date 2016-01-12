@@ -118,6 +118,21 @@ function formatTime(timestamp) {
   return datetime.calendar();
 }
 
+/**
+ * do something at a certain time in the future
+ * note: this is used to switch scheduled posts to published status message
+ * if the user is on the page while it's published
+ * @param {function} fn
+ * @param {Moment} date (any date that can be parsed with moment)
+ */
+function timeout(fn, date) {
+  var future = moment(date),
+    offset = future.diff(moment()).valueOf();
+
+  window.setTimeout(fn, offset);
+}
+
 module.exports.get = getPageState;
 module.exports.toggleScheduled = toggleScheduled;
 module.exports.formatTime = formatTime;
+module.exports.timeout = timeout;
