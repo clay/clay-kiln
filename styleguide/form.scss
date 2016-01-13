@@ -22,9 +22,11 @@
 .editor > form {
   @include clearfix();
 
+  background-color: $white;
   flex: 0 0 100%;
   overflow-x: hidden;
   overflow-y: hidden;
+  padding: 2px;
 }
 
 .editor-overlay form {
