@@ -70,6 +70,8 @@
 }
 
 .editor-inline .input-container {
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: 0;
 }
 
