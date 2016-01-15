@@ -55,16 +55,33 @@ function addAutocapitalize(args) {
 }
 
 /**
+ * add step if it exists and we're dealing with number inputs
+ * @param {object} args
+ * @returns {string}
+ */
+function addStep(args) {
+  var step = args.step,
+    type = args.type;
+
+  if (type === 'number' && step) {
+    return `step="${step}"`;
+  } else {
+    return '';
+  }
+}
+
+/**
  * Replace result.el with input.
  * @param {{name: string, bindings: {}}} result
  * @param {{}} args   defined in detail below:
- * @param {string}  [args.type]        defaults to `text` if not defined
- * @param {boolean} [args.required]    set input required (blocking)
- * @param {RegExp}  [args.pattern]     required input pattern (blocking)
- * @param {number}  [args.minLength]   minimum number of characters required (blocking)
- * @param {number}  [args.maxLength]   maximum number of characters allowed (blocking)
- * @param {string}  [args.placeholder] placeholder that will display in the input
- * @param {boolean}  [args.autocomplete] enable/disable autocomplete on field (defaults to true)
+ * @param {string}  [args.type]           defaults to `text` if not defined
+ * @param {boolean} [args.required]       set input required (blocking)
+ * @param {RegExp}  [args.pattern]        required input pattern (blocking)
+ * @param {number}  [args.minLength]      minimum number of characters required (blocking)
+ * @param {number}  [args.maxLength]      maximum number of characters allowed (blocking)
+ * @param {string}  [args.placeholder]    placeholder that will display in the input
+ * @param {boolean}  [args.autocomplete]  enable/disable autocomplete on field (defaults to true)
+ * @param {number} [args.step]            define step increments (for number type)
  * @param {boolean|string}  [args.autocapitalize] enable/disable auto-capitalize on field (defaults to true). if set to "words" it will capitalize the first letter of each word
  * (note: on recent mobile browsers, certain input types will have auto-capitalize disabled, e.g. emails)
  * @returns {*}
@@ -92,6 +109,7 @@ module.exports = function (result, args) {
           class="input-text"
           rv-field="${name}"
           type="${type}"
+          ${addStep(args)}
           ${addAutocomplete(args)}
           ${addAutocapitalize(args)}
           rv-required="${name}.required"
