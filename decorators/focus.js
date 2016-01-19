@@ -27,26 +27,6 @@ function unfocus() {
 }
 
 /**
- * focus on an input / contenteditable element,
- * setting caret to the end
- * @param {Element} input
- */
-function focusFirstInput(input) {
-  var range, selection;
-
-  // first, focus the input
-  input.focus();
-  // then summon the Old Ones
-  range = document.createRange();
-  selection = window.getSelection();
-  range.setStart(input, 1);
-  range.collapse(true);
-  selection.removeAllRanges();
-  selection.addRange(range);
-  // now we have clawed back the thin skein of reality and beheld the horrors beneath
-}
-
-/**
  * set focus on an Element
  * @param {Element} el
  * @param {{ref: string, path: string, data: object}} options
@@ -77,7 +57,7 @@ function focus(el, options, e) {
           firstFieldInput = getInput(firstField);
           // first field is a list or something, that contains an input as a child
           if (firstFieldInput) {
-            focusFirstInput(firstFieldInput);
+            firstFieldInput.focus();
           }
         }
 
