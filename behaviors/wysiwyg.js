@@ -444,6 +444,7 @@ function initWysiwygBinder(enableKeyboardExtras) {
         range.collapse(true);
         selection.removeAllRanges();
         selection.addRange(range);
+        // we have clawed back the thin skein of reality and beheld the horrors beneath
         // the caret is now magically at the end of the input
       });
 
