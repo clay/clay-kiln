@@ -39,7 +39,7 @@ function focusFirstInput(input) {
   // then summon the Old Ones
   range = document.createRange();
   selection = window.getSelection();
-  range.setStart(div, 1);
+  range.setStart(input, 1);
   range.collapse(true);
   selection.removeAllRanges();
   selection.addRange(range);

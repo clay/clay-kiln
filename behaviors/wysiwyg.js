@@ -426,7 +426,8 @@ function initWysiwygBinder(enableKeyboardExtras) {
       // persist editor data to data model on paste
       editor.subscribe('editablePaste', function onEditablePaste(e, editable) {
         var textmodel = model.fromElement(dom.create(editable.innerHTML)),
-          fragment = model.toElement(textmodel);
+          fragment = model.toElement(textmodel),
+          range, selection;
 
         // note: we're using the model-text service to clean up and standardize html
         // this is in addition to the cleanup that medium-editor does by default,
@@ -435,6 +436,15 @@ function initWysiwygBinder(enableKeyboardExtras) {
         dom.clearChildren(editable); // clear the current children
         editable.appendChild(fragment); // add the cleaned dom fragment
         observer.setValue(editable.innerHTML);
+
+        // SelectionAPI R'lyeh fhtagn
+        range = document.createRange();
+        selection = window.getSelection();
+        range.setStart(editable, 1);
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        // the caret is now magically at the end of the input
       });
 
       editor.subscribe('editableKeydownDelete', function onEditableKeydownDelete(e, editable) {
