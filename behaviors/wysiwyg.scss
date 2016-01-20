@@ -95,6 +95,16 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
     .medium-editor-button-active {
       background-color: $wysiwyg-selected-bgcolor;
     }
+
+    &:first-of-type button {
+      border-bottom-left-radius: $wysiwyg-border-radius;
+      border-top-left-radius: $wysiwyg-border-radius;
+    }
+
+    &:last-of-type button {
+      border-bottom-right-radius: $wysiwyg-border-radius;
+      border-top-right-radius: $wysiwyg-border-radius;
+    }
   }
 
   li + li {
