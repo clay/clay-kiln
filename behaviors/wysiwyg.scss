@@ -15,6 +15,10 @@
   }
 }
 
+.wysiwyg-input *::selection {
+  background-color: $blue-25;
+}
+
 .wysiwyg-input.styled {
   @include input();
 
