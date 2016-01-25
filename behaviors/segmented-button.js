@@ -1,5 +1,15 @@
-var dom = require('../services/dom'),
+var _ = require('lodash'),
+  dom = require('../services/dom'),
   site = require('../services/site');
+
+/**
+ * format values for use in title attributes (for mouseover tooltips)
+ * @param {string} val
+ * @returns {string}
+ */
+function getTitle(val) {
+  return val.split('-').map(_.startCase).join(' ');
+}
 
 /**
  * Create label for option.
@@ -12,9 +22,9 @@ var dom = require('../services/dom'),
  */
 function getLabel(id, option) {
   if (option.icon) {
-    return `<label for="${id}"><img src="${site.get('assetPath') + option.icon }" alt="${ option.text || option.value }" /></label>`;
+    return `<label for="${id}" title="${getTitle(option.value)}"><img src="${site.get('assetPath') + option.icon }" alt="${ option.text || option.value }" /></label>`;
   } else {
-    return `<label for="${id}">${ option.text || option.value }</label>`;
+    return `<label for="${id}" title="${getTitle(option.value)}">${ option.text || option.value }</label>`;
   }
 }
 
