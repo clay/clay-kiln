@@ -47,6 +47,16 @@ EditorToolbar = function (el) {
     }
   });
 
+  // close ANY open forms if user hits ESC
+  document.addEventListener('keydown', function (e) {
+    if (e.keyCode === 27) {
+      focus.unfocus();
+      // note: this will work even if there isn't a current form open
+      // fun fact: it'll unselect components as well, in case the user has a form closed
+      // but a component selected, and they don't want that
+    }
+  });
+
   return state.get().then(function (res) {
     if (res.scheduled) {
       state.openDynamicSchedule(res.scheduledAt, res.publishedUrl);
