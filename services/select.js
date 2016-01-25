@@ -216,14 +216,69 @@ function addSettingsOption(componentBar, data, ref) {
 }
 
 /**
+ * scroll to an element
+ * @param {number} scrollTargetY
+ * @param {number} speed (in pixels per second)
+ * @param {string} easing equation to use
+ */
+function scrollToY(scrollTargetY, speed, easing) {
+  const scrollY = window.scrollY,
+    easingEquations = {
+      easeOutSine: function (pos) {
+        return Math.sin(pos * (Math.PI / 2));
+      },
+      easeInOutSine: function (pos) {
+        return (-0.5 * (Math.cos(Math.PI * pos) - 1));
+      },
+      easeInOutQuint: function (pos) {
+        if ((pos /= 0.5) < 1) {
+          return 0.5 * Math.pow(pos, 5);
+        } else {
+          return 0.5 * (Math.pow((pos - 2), 5) + 2);
+        }
+      }
+    };
+
+  // min time .1, max time .8 seconds
+  let time = Math.max(0.1, Math.min(Math.abs(scrollY - scrollTargetY) / speed, 0.8)),
+    currentTime = 0;
+
+  scrollTargetY = scrollTargetY || 0;
+  speed = speed || 2000;
+  easing = easing || 'easeOutSine';
+
+  // recursive animation loop
+  function tick() {
+    let p, t;
+
+    currentTime += 1 / 60;
+    p = currentTime / time;
+    t = easingEquations[easing](p);
+
+    if (p < 1) {
+      window.requestAnimationFrame(tick);
+
+      window.scrollTo(0, scrollY + ((scrollTargetY - scrollY) * t));
+    } else {
+      console.log('scroll done');
+      window.scrollTo(0, scrollTargetY);
+    }
+  }
+
+  // call it once to get started
+  tick();
+}
+
+/**
  * Scroll user to the component. "Weeee!" or "What the?"
  * @param {Element} el
  */
 function scrollToComponent(el) {
   var toolBarHeight = 70,
-    componentBarHeight = 30;
+    componentBarHeight = 30,
+    pos = window.scrollY + el.getBoundingClientRect().top - toolBarHeight - componentBarHeight;
 
-  window.scrollTo(0, window.scrollY + el.getBoundingClientRect().top - toolBarHeight - componentBarHeight);
+  scrollToY(pos, 1500, 'easeInOutQuint');
 }
 
 /**
