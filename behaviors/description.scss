@@ -6,3 +6,7 @@
 
   margin: 0 0 5px;
 }
+
+.label-description a {
+  @include link();
+}
