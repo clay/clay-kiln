@@ -1,0 +1,8 @@
+@import '../styleguide/colors';
+@import '../styleguide/typography';
+
+.label-required {
+  @include secondary-text();
+
+  color: $blue-50;
+}
