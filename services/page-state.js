@@ -149,7 +149,7 @@ function openDynamicSchedule(time, url) {
     // we need to draw the user's eye and allow them to grasp what's going on
     // (without being obtrusive)
     window.setTimeout(function () {
-      progress.open('publish', `Published! <a href="${url}" target="_blank">View Page</a>`);
+      progress.open('publish', `Published! <a href="${url}@published.html" target="_blank">View Page</a>`);
       // and remember to untoggle the button
       toggleScheduled(false);
     }, 250);
