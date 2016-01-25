@@ -234,7 +234,7 @@ function scrollToComponent(el) {
 function addParentLabel(componentBar, parentEl) {
   var ref = parentEl.getAttribute(references.referenceAttribute),
     parentName = references.getComponentNameFromReference(ref),
-    el = dom.create(`<span class="label parent" title="Parent: ${label(parentName)}">
+    el = dom.create(`<span class="label parent" title="Go to parent component: ${label(parentName)}">
       <img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-parent.svg" alt="Go to Parent">
       <span>${label(parentName)}</span>
     </span>`);
@@ -260,6 +260,7 @@ function addDragOption(componentBar) {
   var selectedLabel = componentBar.querySelector('.selected-label'),
     el = dom.create(`<img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-drag.svg" alt="Drag" class="drag drag-icon"></span>`);
 
+  selectedLabel.setAttribute('title', `Drag to reorder: ${label(selectedLabel.getAttribute('title'))}`);
   selectedLabel.querySelector('.selected-label-inner').classList.add('drag');
   selectedLabel.classList.add('drag');
   selectedLabel.insertBefore(el, selectedLabel.firstChild);
