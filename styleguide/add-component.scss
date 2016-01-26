@@ -88,4 +88,8 @@
   @include button-outlined($blue, #fff);
 
   margin: 0 15px 15px 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
