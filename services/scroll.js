@@ -1,3 +1,39 @@
+const easingEquations = {
+  easeOutSine: function (pos) {
+    return Math.sin(pos * (Math.PI / 2));
+  },
+  easeInOutSine: function (pos) {
+    return (-0.5 * (Math.cos(Math.PI * pos) - 1));
+  },
+  easeInOutQuint: function (pos) {
+    if ((pos /= 0.5) < 1) {
+      return 0.5 * Math.pow(pos, 5);
+    } else {
+      return 0.5 * (Math.pow((pos - 2), 5) + 2);
+    }
+  }
+};
+
+/**
+ * add event listeners for manual scrolling
+ * @param {function} fn to call
+ */
+function addListeners(fn) {
+  window.addEventListener('wheel', fn); // firefox
+  window.addEventListener('mousewheel', fn); // chrome, safari, etc
+  window.addEventListener('touchmove', fn); // ios, android
+}
+
+/**
+ * remove event listeners for manual scrolling
+ * @param {function} fn to remove
+ */
+function removeListeners(fn) {
+  window.removeEventListener('wheel', fn); // firefox
+  window.removeEventListener('mousewheel', fn); // chrome, safari, etc
+  window.removeEventListener('touchmove', fn); // ios, android
+}
+
 /**
  * scroll to an element
  * @param {number} scrollTargetY
@@ -5,22 +41,7 @@
  * @param {string} easing equation to use
  */
 function scrollToY(scrollTargetY, speed, easing) {
-  const scrollY = window.scrollY,
-    easingEquations = {
-      easeOutSine: function (pos) {
-        return Math.sin(pos * (Math.PI / 2));
-      },
-      easeInOutSine: function (pos) {
-        return (-0.5 * (Math.cos(Math.PI * pos) - 1));
-      },
-      easeInOutQuint: function (pos) {
-        if ((pos /= 0.5) < 1) {
-          return 0.5 * Math.pow(pos, 5);
-        } else {
-          return 0.5 * (Math.pow((pos - 2), 5) + 2);
-        }
-      }
-    };
+  const scrollY = window.scrollY;
 
   // min time .1, max time .8 seconds
   let time = Math.max(0.1, Math.min(Math.abs(scrollY - scrollTargetY) / speed, 0.8)),
@@ -33,16 +54,12 @@ function scrollToY(scrollTargetY, speed, easing) {
 
   function stopAutoScroll() {
     window.autoScroll = false;
-    window.removeEventListener('wheel', stopAutoScroll);
-    window.removeEventListener('mousewheel', stopAutoScroll);
-    window.removeEventListener('touchmove', stopAutoScroll);
+    removeListeners(stopAutoScroll);
   }
 
   // set a scroll handler so we can stop tick()'ing if the user manually scrolls
   window.autoScroll = true;
-  window.addEventListener('wheel', stopAutoScroll); // firefox
-  window.addEventListener('mousewheel', stopAutoScroll); // chrome, safari, etc
-  window.addEventListener('touchmove', stopAutoScroll); // ios, android
+  addListeners(stopAutoScroll);
 
   // recursive animation loop
   function tick() {
@@ -70,3 +87,4 @@ function scrollToY(scrollTargetY, speed, easing) {
 }
 
 module.exports.toY = scrollToY;
+module.exports.easingEquations = easingEquations;
