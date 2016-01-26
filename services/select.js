@@ -110,10 +110,30 @@ function hideComponentList(el) {
   });
 }
 
+/**
+ * hide component menus when unselecting
+ * @param {Element} el
+ */
+function hideMenu(el) {
+  var toggle = dom.find(el, '.menu-toggle'),
+    menu = dom.find(el, '.menu');
+
+  if (toggle && menu) {
+    toggle.classList.remove('open');
+    menu.classList.remove('open');
+  }
+}
+
+/**
+ * remove selected classes on current and parent component
+ * @param {Element} [el]
+ * @param {Element} [parent]
+ */
 function removeClasses(el, parent) {
   if (el) {
     el.classList.remove('selected');
     hideComponentList(el);
+    hideMenu(el);
   }
   if (parent) {
     parent.classList.remove('selected-parent');
@@ -324,6 +344,8 @@ function addMenu(componentBar) {
     <ul class="menu"></ul>
   `);
 
+  // open menu when clicked
+  // note: on supported devices, menu will also open on hover
   el.querySelector('.menu-toggle').addEventListener('click', function (e) {
     var bar = dom.closest(e.target, '.component-bar'),
       toggle = bar.querySelector('.menu-toggle'),
