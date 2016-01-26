@@ -142,22 +142,40 @@ $layout-parent-bg-color: $purple-50;
   border-bottom: none;
 }
 
+@media (any-hover: hover) {
+  .component-bar:hover > .menu-toggle {
+    border-bottom: none;
+  }
+}
+
 .component-bar > .menu {
   @include component-toolbar-layer();
 
-  display: none;
-  height: auto;
+  height: 0;
   margin: 0;
   max-width: 100%;
+  opacity: 0;
+  overflow: hidden;
   padding: 0;
   position: absolute;
   right: 0;
   top: 100%;
+  transition: opacity 200ms ease-out;
   width: auto;
 }
 
 .component-bar > .menu.open {
-  display: block;
+  height: auto;
+  opacity: 1;
+  transition: opacity 200ms ease-out;
+}
+
+@media (any-hover: hover) {
+  .component-bar:hover > .menu {
+    height: auto;
+    opacity: 1;
+    transition: opacity 200ms ease-out;
+  }
 }
 
 .component-bar .menu li {
