@@ -10,6 +10,7 @@ var _ = require('lodash'),
   groups = require('./groups'),
   site = require('./site'),
   label = require('./label'),
+  scrollToY = require('./scroll').toY,
   currentSelected;
 
 /**
@@ -221,9 +222,10 @@ function addSettingsOption(componentBar, data, ref) {
  */
 function scrollToComponent(el) {
   var toolBarHeight = 70,
-    componentBarHeight = 30;
+    componentBarHeight = 30,
+    pos = window.scrollY + el.getBoundingClientRect().top - toolBarHeight - componentBarHeight;
 
-  window.scrollTo(0, window.scrollY + el.getBoundingClientRect().top - toolBarHeight - componentBarHeight);
+  scrollToY(pos, 1500, 'easeInOutQuint');
 }
 
 /**
