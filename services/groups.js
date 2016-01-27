@@ -45,7 +45,7 @@ function getSettingsFields(data) {
   } else {
     // look for all fields with `_display: settings`
     return _.reduce(data, function (fields, fieldData) {
-      if (fieldData._schema && fieldData._schema[references.displayProperty] === 'settings') {
+      if (_.get(fieldData, '_schema.' + references.displayProperty) === 'settings') {
         fields.push(fieldData);
       }
 

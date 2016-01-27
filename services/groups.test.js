@@ -93,6 +93,19 @@ describe(dirname, function () {
         })).to.eql([fooData]);
       });
 
+      it('passes over null values without schemas', function () {
+        var fooData = {
+            value: 'foo',
+            _schema: { _display: 'settings' }
+          },
+          barData = null;
+
+        expect(fn({
+          foo: fooData,
+          bar: barData
+        })).to.eql([fooData]);
+      });
+
       it('returns returns explicit settings group if specified', function () {
         var fooData = {
             value: 'foo',
