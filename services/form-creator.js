@@ -18,7 +18,7 @@ function ensureValidFormData(ref, data) {
     throw new Error('Reference is required to create a form!');
   } else if (!_.isObject(data)) {
     throw new Error('Data is required to create a form!');
-  } else if (!_.isObject(data._schema)) {
+  } else if (data && !_.isObject(data._schema)) {
     throw new Error('Schema is required to create a form!');
   } else if (!_.get(data, '_schema._name')) {
     throw new Error('_name is required to create a form!');
@@ -141,10 +141,10 @@ function expandFields(data) {
  * @returns {Promise}
  */
 function createFormPromise(data) {
-  var schema = data._schema;
+  var field = _.get(data, '_.schema.' + references.fieldProperty);
 
   // iterate through the data, creating fields
-  if (schema[references.fieldProperty]) {
+  if (field) {
     // this is a single field
     return createField(data);
   } else {
