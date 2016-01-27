@@ -152,7 +152,7 @@ function open(ref, el, path, e) {
       setEditingStatus(true); // set editing status (a class on the <body> of the page)
 
       // determine if the form is inline, and call the relevant formCreator method
-      if (data._schema[references.displayProperty] === 'inline') {
+      if (_.get(data, '_schema.' + references.displayProperty) === 'inline') {
         return formCreator.createInlineForm(ref, data, el);
       } else {
         return formCreator.createForm(ref, data);

@@ -230,7 +230,7 @@ function addDragula(el, options) {
 function when(el, options) {
   var schema = _.get(options, 'data._schema');
 
-  return schema.hasOwnProperty(references.componentListProperty);
+  return !!schema && schema.hasOwnProperty(references.componentListProperty);
 }
 
 /**

@@ -64,6 +64,16 @@ describe('schema-fields service', function () {
         });
     });
 
+    it('null without schema', function () {
+      expect(fn({}, {
+        num: null
+      }))
+        .to.deep.equal({
+          num: null,
+          _schema: {}
+        });
+    });
+
     it('missing property (different than undefined) with schema', function () {
       var schema = {num: {}},
         data = {};
@@ -120,8 +130,16 @@ describe('schema-fields service', function () {
       expect(fn({num: {_schema: {}, value: undefined}, _schema: {num: {}}})).to.deep.equal({num: undefined});
     });
 
+    it('null value with schema to null value', function () {
+      expect(fn({num: {_schema: {}, value: null}, _schema: {num: {}}})).to.deep.equal({num: null});
+    });
+
     it('undefined without schema', function () {
       expect(fn({num: undefined})).to.deep.equal({num: undefined});
+    });
+
+    it('null without schema', function () {
+      expect(fn({num: null})).to.deep.equal({num: null});
     });
 
     it('number without schema', function () {

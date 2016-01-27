@@ -75,7 +75,7 @@ function getExpandedBehaviors(behaviors) {
  * run behaviors for a field, in order
  * @param {object} context
  * @param {*} context.value
- * @param {object} context._schema
+ * @param {object} [context._schema]
  * @return {Promise}
  */
 function run(context) {
