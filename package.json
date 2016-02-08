@@ -7,7 +7,7 @@
     "lint": "node_modules/.bin/eslint client.js behaviors controllers services decorators validators",
     "test": "npm run lint && node_modules/.bin/karma start",
     "test-local": "npm run lint && node_modules/.bin/karma start karma.local.conf.js",
-    "postinstall": "node_modules/.bin/gulp --once"
+    "postinstall": "node_modules/.bin/gulp --production"
   },
   "repository": {
     "type": "git",
