@@ -1,6 +1,14 @@
 var gulp = require('gulp'),
-  browserify = require('gulp-browserify-globs'),
-  sourcemaps = require('gulp-sourcemaps'),
+  gutil = require('gulp-util'),
+  chalk = require('chalk'),
+  source = require('vinyl-source-stream'),
+  buffer = require('vinyl-buffer'),
+  rename = require('gulp-rename'),
+  gulpif = require('gulp-if'),
+  browserify = require('browserify'),
+  babelify = require('babelify'),
+  watchify = require('watchify'),
+  duration = require('gulp-duration'),
   uglify = require('gulp-uglify'),
   concat = require('gulp-concat'),
   sass = require('gulp-sass'),
@@ -13,19 +21,7 @@ var gulp = require('gulp'),
     'styleguide/*.css',
     'behaviors/*.scss',
     'behaviors/*.css'
-  ],
-  scriptsGlob = [
-    // used only for watching, since client.js references everything needed for browserify
-    'client.js',
-    'behaviors/*.js',
-    'behaviors/*.test.js',
-    'controllers/**',
-    'decorators/**',
-    'validators/**',
-    'services/**',
   ];
-  // sourcemaps = require('gulp-sourcemaps'),
-  // uglify = require('gulp-uglify');
 
 gulp.task('styles', function () {
   return gulp.src(stylesGlob)
@@ -37,17 +33,59 @@ gulp.task('styles', function () {
     .pipe(gulp.dest('dist'));
 });
 
+// Error reporting function
+function mapError(err) {
+  if (err.fileName) {
+    // Regular error
+    gutil.log(chalk.red(err.name)
+      + ': ' + chalk.yellow(err.fileName.replace(__dirname, ''))
+      + ': ' + 'Line ' + chalk.magenta(err.lineNumber)
+      + ' & ' + 'Column ' + chalk.magenta(err.columnNumber || err.column)
+      + ': ' + chalk.blue(err.description));
+  } else {
+    // Browserify error..
+    gutil.log(chalk.red(err.name)
+      + ': '
+      + chalk.yellow(err.message));
+  }
+}
+
 gulp.task('scripts', function () {
-  return browserify(['client.js'], {
-    debug: true,
-    transform: ['babelify'],
-    outfile: 'clay-kiln.js'
-  })
-  // load sourcemaps from browserify
-  .pipe(sourcemaps.init({ loadMaps: true }))
-  .pipe(uglify())
-  .pipe(sourcemaps.write())
-  .pipe(gulp.dest('dist'));
+  var b = browserify({
+      entries: ['./client.js'],
+      cache: {},
+      packageCache: {}
+    }),
+    runOnce = process.argv.indexOf('--production') > -1;
+  // for non-dev environments, use `gulp scripts --once` or `gulp --once`
+
+  // plugins and transforms
+  if (!runOnce) {
+    // on dev environments (by default), add watchify plugin
+    b.plugin(watchify, { ignoreWatch: ['**/node_modules/**', '**/dist/**'] });
+  }
+  b.transform(babelify, { presets: ['es2015'] });
+
+  if (!runOnce) {
+    // on dev environments (by default), re-bundle every time js changes
+    b.on('update', bundle);
+  }
+  // always kick things off with a bundle()
+  bundle();
+
+  function bundle() {
+    var bundleTimer = duration('Compile time');
+
+    console.log(chalk.blue('Compiling scripts!'));
+    b.bundle()
+      .on('error', mapError) // log bundling errors
+      .pipe(source('client.js')) // Set source name
+      .pipe(buffer()) // convert to vinyl buffer
+      .pipe(rename('clay-kiln.js')) // rename the output file
+      .pipe(gulpif(runOnce, uglify()))
+      .pipe(bundleTimer)
+      .pipe(gulp.dest('dist'));
+  }
 });
 
 // default task: run scripts and styles
@@ -57,7 +95,4 @@ gulp.task('default', ['styles', 'scripts']);
 gulp.task('watch', function () {
   // styles
   gulp.watch(stylesGlob, ['styles']);
-
-  // scripts
-  gulp.watch(scriptsGlob, ['scripts']);
 });
