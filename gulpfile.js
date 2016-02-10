@@ -4,13 +4,13 @@ var gulp = require('gulp'),
   source = require('vinyl-source-stream'),
   buffer = require('vinyl-buffer'),
   rename = require('gulp-rename'),
-  gulpif = require('gulp-if'),
+  // gulpif = require('gulp-if'),
   browserify = require('browserify'),
   babelify = require('babelify'),
   es2015 = require('babel-preset-es2015'),
   watchify = require('watchify'),
   duration = require('gulp-duration'),
-  uglify = require('gulp-uglify'),
+  // uglify = require('gulp-uglify'),
   concat = require('gulp-concat'),
   sass = require('gulp-sass'),
   rfn = require('responsive-filenames'),
@@ -81,7 +81,7 @@ gulp.task('scripts', function () {
       .pipe(source('client.js')) // Set source name
       .pipe(buffer()) // convert to vinyl buffer
       .pipe(rename('clay-kiln.js')) // rename the output file
-      .pipe(gulpif(runOnce, uglify()))
+      // .pipe(gulpif(runOnce, uglify()))
       .pipe(bundleTimer)
       .pipe(gulp.dest('dist'));
   }
