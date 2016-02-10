@@ -7,6 +7,7 @@ var gulp = require('gulp'),
   gulpif = require('gulp-if'),
   browserify = require('browserify'),
   babelify = require('babelify'),
+  es2015 = require('babel-preset-es2015'),
   watchify = require('watchify'),
   duration = require('gulp-duration'),
   uglify = require('gulp-uglify'),
@@ -64,20 +65,18 @@ gulp.task('scripts', function () {
     // on dev environments (by default), add watchify plugin
     b.plugin(watchify, { ignoreWatch: ['**/node_modules/**', '**/dist/**'] });
   }
-  b.transform(babelify, { presets: ['es2015'] });
+  b.transform(babelify, { presets: [es2015] });
 
   if (!runOnce) {
     // on dev environments (by default), re-bundle every time js changes
     b.on('update', bundle);
   }
-  // always kick things off with a bundle()
-  bundle();
 
   function bundle() {
     var bundleTimer = duration('Compile time');
 
     console.log(chalk.blue('Compiling scripts!'));
-    b.bundle()
+    return b.bundle()
       .on('error', mapError) // log bundling errors
       .pipe(source('client.js')) // Set source name
       .pipe(buffer()) // convert to vinyl buffer
@@ -86,6 +85,9 @@ gulp.task('scripts', function () {
       .pipe(bundleTimer)
       .pipe(gulp.dest('dist'));
   }
+
+  // always kick things off with a bundle()
+  return bundle();
 });
 
 // default task: run scripts and styles
