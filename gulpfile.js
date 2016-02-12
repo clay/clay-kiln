@@ -57,7 +57,7 @@ gulp.task('scripts', function () {
       cache: {},
       packageCache: {}
     }),
-    runOnce = process.argv.indexOf('--production') > -1;
+    runOnce = process.argv.indexOf('--once') > -1;
   // for non-dev environments, use `gulp scripts --once` or `gulp --once`
 
   // plugins and transforms
