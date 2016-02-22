@@ -1,7 +1,7 @@
 {%- if locals.edit -%}
   {# styles #}
   <style>
-  {{ ('node_modules/@nymdev/clay-kiln/dist/clay-kiln.css')|includeFile }}
+  {{ ('node_modules/clay-kiln/dist/clay-kiln.css')|includeFile }}
   </style>
 
   {# toolbar #}
@@ -44,7 +44,7 @@
 
   {# scripts #}
   <script>
-  {{ ('node_modules/@nymdev/clay-kiln/dist/clay-kiln.js')|includeFile }}
+  {{ ('node_modules/clay-kiln/dist/clay-kiln.js')|includeFile }}
   </script>
 
   {# templates #}

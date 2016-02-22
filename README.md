@@ -9,7 +9,7 @@
 ## Install
 
 ```
-npm install --save @nymdev/clay-kiln
+npm install --save clay-kiln
 ```
 
 Kiln will automatically compile scripts and styles after installing.
