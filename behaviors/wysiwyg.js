@@ -440,7 +440,7 @@ function initWysiwygBinder(enableKeyboardExtras) {
         // SelectionAPI R'lyeh fhtagn
         range = document.createRange();
         selection = window.getSelection();
-        range.setStart(editable, 1);
+        range.setStartAfter(editable.lastChild);
         range.collapse(true);
         selection.removeAllRanges();
         selection.addRange(range);
