@@ -754,6 +754,30 @@ function concatContinuousBlocks(before, after, model) {
 }
 
 /**
+ * @param {{text: string, blocks: object}} before
+ * @param {{text: string, blocks: object}} after
+ * @param {{text: string, blocks: object}} model
+ */
+function concatSingledBlocks(before, after, model) {
+  var num = before.text.length,
+    mergedBlocks = _.mapValues(_.cloneDeep(getBlocksOfType(after.blocks, singled)), function (blocks) {
+      return _.map(blocks, function (block) {
+        return block + num;
+      });
+    });
+
+  _.each(_.cloneDeep(getBlocksOfType(before.blocks, singled)), function (blocks, blockType) {
+    if (mergedBlocks[blockType]) {
+      mergedBlocks[blockType] = blocks.concat(mergedBlocks[blockType]);
+    } else {
+      mergedBlocks[blockType] = blocks;
+    }
+  });
+
+  _.assign(model.blocks, mergedBlocks);
+}
+
+/**
  * @param {object} before
  * @param {object} after
  * @returns {{text: string, blocks: object}}
@@ -766,6 +790,7 @@ function concat(before, after) {
 
   concatPropertiedBlocks(before, after, model);
   concatContinuousBlocks(before, after, model);
+  concatSingledBlocks(before, after, model);
 
   return model;
 }

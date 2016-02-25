@@ -498,5 +498,16 @@ describe('model-text service', function () {
 
       expect(documentToString(lib.toElement(result))).to.deep.equal(expectedResult);
     });
+
+    it('preserves singled blocks', function () {
+      var result,
+        before = lib.fromElement(dom.create('Hello<br>th')),
+        after = lib.fromElement(dom.create('ere<br>person!')),
+        expectedResult = 'Hello<br>there<br>person!';
+
+      result = fn(before, after);
+
+      expect(documentToString(lib.toElement(result))).to.deep.equal(expectedResult);
+    });
   });
 });
