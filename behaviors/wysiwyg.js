@@ -348,19 +348,7 @@ function addStyledClass(styled) {
  * Add a line break and set the caret after it
  */
 function addLineBreak() {
-  var selection = window.getSelection(),
-    range = selection.getRangeAt(0),
-    br = document.createElement('br');
-
-  // woah, crazy stuff!
-  // this creates a range, inserts the <br> tag, then sets the caret after it
-  range.deleteContents();
-  range.insertNode(br);
-  range.setStartAfter(br);
-  range.setEndAfter(br);
-  range.collapse(false);
-  selection.removeAllRanges();
-  selection.addRange(range);
+  document.execCommand('insertHTML', false, '<br><br>');
 }
 
 /**
