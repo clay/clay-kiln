@@ -125,6 +125,26 @@ describe('model-text service', function () {
       expect(fn(el)).to.deep.equal(result);
     });
 
+    it('finds singled blocks (i.e., line breaks)', function () {
+      var el = dom.create('Hello<br>there<br />person!'),
+        result = {
+          text: 'Hellothereperson!',
+          blocks: { 'soft return': [5, 10] }
+        };
+
+      expect(fn(el)).to.deep.equal(result);
+    });
+
+    it('allows multiple singled blocks (i.e., <br><br>)', function () {
+      var el = dom.create('Hello<br><br />there person!'),
+        result = {
+          text: 'Hellothere person!',
+          blocks: { 'soft return': [5, 5] }
+        };
+
+      expect(fn(el)).to.deep.equal(result);
+    });
+
     it('does not merge propertied blocks (i.e., links in links)', function () {
       var el = dom.create('Hello <a href="outer place">there <a href="place" alt="hey">person</a> over there</a>!'),
         result = {
@@ -264,6 +284,36 @@ describe('model-text service', function () {
           blocks: {strong: [0, 12], link: [{start: 6, end: 18}]}
         },
         result = '<strong>Hello </strong><a><strong>there </strong>person</a>!';
+
+      expect(documentToString(fn(model))).to.equal(result);
+    });
+
+    it('converts singled blocks', function () {
+      var model = {
+          text: 'Hellothereperson!',
+          blocks: {'soft return': [5, 10]}
+        },
+        result = 'Hello<br>there<br>person!';
+
+      expect(documentToString(fn(model))).to.equal(result);
+    });
+
+    it('overlaps when continuous blocks applied to singled blocks', function () {
+      var model = {
+          text: 'Hellothere person!',
+          blocks: {strong: [0, 11], 'soft return': [5]}
+        },
+        result = '<strong>Hello<br>there </strong>person!';
+
+      expect(documentToString(fn(model))).to.equal(result);
+    });
+
+    it('overlaps when propertied blocks applied to singled blocks', function () {
+      var model = {
+          text: 'Hellothere person!',
+          blocks: {link: [{start: 2, end: 10}], 'soft return': [5]}
+        },
+        result = 'He<a>llo<br>there</a> person!';
 
       expect(documentToString(fn(model))).to.equal(result);
     });

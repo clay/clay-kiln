@@ -138,14 +138,24 @@ function propertied(model, node) {
 }
 
 /**
- * Singled tags can only ever exist once at a particular position in a paragraph (<br><br> becomes <br>), and
- * they never have any content or properties.
+ * Singled tags exist at a particular position in a paragraph (rather than spanning text),
+ * and they never have any content or properties.
  *
- * They can probably be represented as an array like [1, 2, 3] that becomes "a<br>b<br>c<br>" on the text "abc", since
- * doubles can be removed by just checking for uniqueness and then sorting.
+ * @param {{text: string, blocks: object}} model
+ * @param {Node} node
  */
-function singled() {
-  // implemented later
+function singled(model, node) {
+  var pos = model.text.length,
+    nodeName = getNodeName(node),
+    tagBlockName = tagTypes[nodeName].name,
+    block = model.blocks[tagBlockName];
+
+  if (!block) {
+    block = [];
+    model.blocks[tagBlockName] = block;
+  }
+
+  block.push(pos);
 }
 
 /**
@@ -381,6 +391,43 @@ function splitTextNode(blockType, rootEl, blockAttributes, item) {
 }
 
 /**
+ * Add singled blocks to el
+ * note: singled blocks have no attributes
+ *
+ * @param {object} blockType
+ * @param {Node} rootEl
+ * @param {object} item
+ */
+function addSingledBlocks(blockType, rootEl, item) {
+  var startTextNode, blockEl, tagName,
+    textNode = item.node,
+    parentNode = textNode.parentNode || rootEl, // no parent means el is a document/document fragment
+    text = textNode.nodeValue,
+    pos = item.start,
+    startText = text.substr(0, pos),
+    endText = text.substr(pos);
+
+  // create block element
+  tagName = blockTypes[blockType].name;
+  blockEl = document.createElement(tagName);
+  // add block element
+  parentNode.insertBefore(blockEl, textNode);
+
+  // before the element
+  if (startText.length > 0) {
+    startTextNode = dom.create(startText);
+    parentNode.insertBefore(startTextNode, blockEl);
+  }
+
+  // after the element
+  if (endText.length > 0) {
+    textNode.nodeValue = endText;
+  } else {
+    parentNode.removeChild(textNode);
+  }
+}
+
+/**
  * @param {Node} el
  * @param {number} start
  * @param {number} end
@@ -495,6 +542,25 @@ function addContinuousBlocksToElement(el, model) {
 }
 
 /**
+ * @param {Node} el
+ * @param {{text: string, blocks: object}} model
+ */
+function addSingledBlocksToElement(el, model) {
+  var singledBlocks = getBlocksOfType(model.blocks, singled);
+
+  _.forOwn(singledBlocks, function (blocksOfType, blockType) {
+    var i, list, pos;
+
+    for (i = 0; i < blocksOfType.length; i++) {
+      pos = blocksOfType[i];
+      list = getTextNodeTargets(el, pos, pos); // same position
+
+      _.each(list, addSingledBlocks.bind(null, blockType, el));
+    }
+  });
+}
+
+/**
  * @param {{text: string, blocks: object}} model
  * @returns {DocumentFragment}
  */
@@ -503,6 +569,7 @@ function toElement(model) {
 
   addPropertiedBlocksToElement(el, model);
   addContinuousBlocksToElement(el, model);
+  addSingledBlocksToElement(el, model);
 
   return el;
 }
