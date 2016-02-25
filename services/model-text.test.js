@@ -419,6 +419,48 @@ describe('model-text service', function () {
       });
       expect(result).to.deep.equal(expectedResult);
     });
+
+    it('splits singled blocks to each side', function () {
+      var num = 7,
+        el = dom.create('Hello<br>there<br>person!'),
+        result,
+        expectedResult = ['Hello<br>th', 'ere<br>person!'];
+
+      result = fn(lib.fromElement(el), num);
+
+      result = _.map(result, function (modelResult) {
+        return documentToString(lib.toElement(modelResult));
+      });
+      expect(result).to.deep.equal(expectedResult);
+    });
+
+    it('removes singled blocks at middle', function () {
+      var num = 8,
+        el = dom.create('Hello th<br>ere person!'),
+        result,
+        expectedResult = ['Hello th', 'ere person!'];
+
+      result = fn(lib.fromElement(el), num);
+
+      result = _.map(result, function (modelResult) {
+        return documentToString(lib.toElement(modelResult));
+      });
+      expect(result).to.deep.equal(expectedResult);
+    });
+
+    it('removes multiple singled blocks at middle', function () {
+      var num = 8,
+        el = dom.create('Hello th<br><br />ere person!'),
+        result,
+        expectedResult = ['Hello th', 'ere person!'];
+
+      result = fn(lib.fromElement(el), num);
+
+      result = _.map(result, function (modelResult) {
+        return documentToString(lib.toElement(modelResult));
+      });
+      expect(result).to.deep.equal(expectedResult);
+    });
   });
 
   describe('concat', function () {

@@ -647,6 +647,38 @@ function splitContinuousBlocks(model, before, after, num) {
 }
 
 /**
+ * These cannot be split, so ones that fall on the border are removed.
+ *
+ * @param {{text: string, blocks: object}} model
+ * @param {{text: string, blocks: object}} before
+ * @param {{text: string, blocks: object}} after
+ * @param {number} num
+ */
+function splitSingledBlocks(model, before, after, num) {
+  _.each(getBlocksOfType(model.blocks, singled), function (blocks, blockType) {
+    var newPos,
+      beforeBlocks = [],
+      afterBlocks = [];
+
+    _.each(blocks, function (pos) {
+      if (pos < num) {
+        beforeBlocks.push(pos);
+      } else if (pos > num) {
+        newPos = pos - num;
+        afterBlocks.push(newPos);
+      }
+    });
+
+    if (beforeBlocks.length > 0) {
+      before.blocks[blockType] = beforeBlocks;
+    }
+    if (afterBlocks.length > 0) {
+      after.blocks[blockType] = afterBlocks;
+    }
+  });
+}
+
+/**
  * @param {{text: string, blocks: object}} model
  * @param {number} num
  * @returns {[object, object]}
@@ -663,6 +695,7 @@ function split(model, num) {
 
   splitPropertiedBlocks(model, before, after, num);
   splitContinuousBlocks(model, before, after, num);
+  splitSingledBlocks(model, before, after, num);
 
   return [before, after];
 }
