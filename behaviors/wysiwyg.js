@@ -348,7 +348,7 @@ function addStyledClass(styled) {
  * Add a line break and set the caret after it
  */
 function addLineBreak() {
-  document.execCommand('insertHTML', false, '<br><br>');
+  document.execCommand('insertHTML', false, '<br>');
 }
 
 /**
