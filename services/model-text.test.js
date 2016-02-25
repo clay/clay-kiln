@@ -125,6 +125,26 @@ describe('model-text service', function () {
       expect(fn(el)).to.deep.equal(result);
     });
 
+    it('finds singled blocks (i.e., line breaks)', function () {
+      var el = dom.create('Hello<br>there<br />person!'),
+        result = {
+          text: 'Hellothereperson!',
+          blocks: { 'soft return': [5, 10] }
+        };
+
+      expect(fn(el)).to.deep.equal(result);
+    });
+
+    it('allows multiple singled blocks (i.e., <br><br>)', function () {
+      var el = dom.create('Hello<br><br />there person!'),
+        result = {
+          text: 'Hellothere person!',
+          blocks: { 'soft return': [5, 5] }
+        };
+
+      expect(fn(el)).to.deep.equal(result);
+    });
+
     it('does not merge propertied blocks (i.e., links in links)', function () {
       var el = dom.create('Hello <a href="outer place">there <a href="place" alt="hey">person</a> over there</a>!'),
         result = {
@@ -267,6 +287,36 @@ describe('model-text service', function () {
 
       expect(documentToString(fn(model))).to.equal(result);
     });
+
+    it('converts singled blocks', function () {
+      var model = {
+          text: 'Hellothereperson!',
+          blocks: {'soft return': [5, 10]}
+        },
+        result = 'Hello<br>there<br>person!';
+
+      expect(documentToString(fn(model))).to.equal(result);
+    });
+
+    it('overlaps when continuous blocks applied to singled blocks', function () {
+      var model = {
+          text: 'Hellothere person!',
+          blocks: {strong: [0, 11], 'soft return': [5]}
+        },
+        result = '<strong>Hello<br>there </strong>person!';
+
+      expect(documentToString(fn(model))).to.equal(result);
+    });
+
+    it('overlaps when propertied blocks applied to singled blocks', function () {
+      var model = {
+          text: 'Hellothere person!',
+          blocks: {link: [{start: 2, end: 10}], 'soft return': [5]}
+        },
+        result = 'He<a>llo<br>there</a> person!';
+
+      expect(documentToString(fn(model))).to.equal(result);
+    });
   });
 
   describe('split', function () {
@@ -369,6 +419,48 @@ describe('model-text service', function () {
       });
       expect(result).to.deep.equal(expectedResult);
     });
+
+    it('splits singled blocks to each side', function () {
+      var num = 7,
+        el = dom.create('Hello<br>there<br>person!'),
+        result,
+        expectedResult = ['Hello<br>th', 'ere<br>person!'];
+
+      result = fn(lib.fromElement(el), num);
+
+      result = _.map(result, function (modelResult) {
+        return documentToString(lib.toElement(modelResult));
+      });
+      expect(result).to.deep.equal(expectedResult);
+    });
+
+    it('removes singled blocks at middle', function () {
+      var num = 8,
+        el = dom.create('Hello th<br>ere person!'),
+        result,
+        expectedResult = ['Hello th', 'ere person!'];
+
+      result = fn(lib.fromElement(el), num);
+
+      result = _.map(result, function (modelResult) {
+        return documentToString(lib.toElement(modelResult));
+      });
+      expect(result).to.deep.equal(expectedResult);
+    });
+
+    it('removes multiple singled blocks at middle', function () {
+      var num = 8,
+        el = dom.create('Hello th<br><br />ere person!'),
+        result,
+        expectedResult = ['Hello th', 'ere person!'];
+
+      result = fn(lib.fromElement(el), num);
+
+      result = _.map(result, function (modelResult) {
+        return documentToString(lib.toElement(modelResult));
+      });
+      expect(result).to.deep.equal(expectedResult);
+    });
   });
 
   describe('concat', function () {
@@ -401,6 +493,17 @@ describe('model-text service', function () {
         before = lib.fromElement(dom.create('<em>Hello <strong>t</strong>h</em>')),
         after = lib.fromElement(dom.create('<strong><em>ere</em></strong> person!')),
         expectedResult = '<em>Hello <strong>t</strong>h<strong>ere</strong></em> person!';
+
+      result = fn(before, after);
+
+      expect(documentToString(lib.toElement(result))).to.deep.equal(expectedResult);
+    });
+
+    it('preserves singled blocks', function () {
+      var result,
+        before = lib.fromElement(dom.create('Hello<br>th')),
+        after = lib.fromElement(dom.create('ere<br>person!')),
+        expectedResult = 'Hello<br>there<br>person!';
 
       result = fn(before, after);
 
