@@ -345,10 +345,17 @@ function addStyledClass(styled) {
 }
 
 /**
+ * Add a bullet (for fake bulleted lists) and set the caret after it
+ */
+function addBullet() {
+  document.execCommand('insertHTML', false, '&bull;&nbsp;');
+}
+
+/**
  * Add a line break and set the caret after it
  */
 function addLineBreak() {
-  document.execCommand('insertHTML', false, '<br>');
+  document.execCommand('insertHTML', false, '<br><br>');
 }
 
 /**
@@ -439,6 +446,12 @@ function initWysiwygBinder(enableKeyboardExtras) {
       editor.subscribe('editableKeydownDelete', function onEditableKeydownDelete(e, editable) {
         if (enableKeyboardExtras) {
           handleComponentDeletion(editable, e);
+        }
+      });
+
+      editor.subscribe('editableKeydownTab', function onEditableKeydownTab() {
+        if (enableKeyboardExtras) {
+          addBullet();
         }
       });
 
