@@ -174,6 +174,21 @@ function publishPage() {
 }
 
 /**
+ * Publish current page's layout.
+ *
+ * @returns {Promise.string}
+ */
+function publishLayout() {
+  var pageUri = dom.pageUri();
+
+  return cache.getDataOnly(pageUri).then(function (pageData) {
+    var layoutUri = pageData.layout;
+
+    return db.save(layoutUri + '@published'); // PUT @published with empty data
+  });
+}
+
+/**
  * unpublishes current page. returns the deleted uri
  * @returns {Promise}
  */
@@ -409,6 +424,7 @@ module.exports = {
   createComponent: createComponent,
   createPage: createPage,
   publishPage: publishPage,
+  publishLayout: publishLayout,
   unpublishPage: unpublishPage,
   removeFromParentList: removeFromParentList,
   removeUri: removeUri,

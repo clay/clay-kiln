@@ -34,7 +34,8 @@ module.exports = function () {
           pane.openValidationErrors(errors);
         } else {
           return edit.unschedulePublish(pageUri).then(function () {
-            return edit.publishPage()
+            return edit.publishLayout()
+              .then(edit.publishPage) // this returns the published page url
               .then(function (url) {
                 progress.done();
                 progress.open('publish', `Published! <a href="${url}" target="_blank">View Page</a>`);
