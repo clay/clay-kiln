@@ -8,13 +8,40 @@ var moment = require('moment'),
   state = require('../services/page-state'),
   db = require('../services/edit/db');
 
+/**
+ * schedule page and layout publishing in parallel
+ * @param {number} timestamp
+ * @returns {Promise}
+ */
+function schedulePageAndLayout(timestamp) {
+  var pageUri = dom.pageUri();
 
-function scheduleLayoutPublish(timestamp) {
   return edit.getLayout().then(function (layout) {
-    return edit.schedulePublish({
-      at: timestamp,
-      publish: db.uriToUrl(layout)
-    });
+    return Promise.all([
+      edit.schedulePublish({
+        at: timestamp,
+        publish: db.uriToUrl(pageUri)
+      }),
+      edit.schedulePublish({
+        at: timestamp,
+        publish: db.uriToUrl(layout)
+      })
+    ]);
+  });
+}
+
+/**
+ * unschedule page and layout publishing in parallel
+ * @returns {Promise}
+ */
+function unschedulePageAndLayout() {
+  var pageUri = dom.pageUri();
+
+  return edit.getLayout().then(function (layout) {
+    return Promise.all([
+      edit.unschedulePublish(pageUri),
+      edit.unschedulePublish(layout)
+    ]);
   });
 }
 
@@ -33,8 +60,6 @@ module.exports = function () {
     },
 
     onPublishNow: function () {
-      var pageUri = dom.pageUri();
-
       pane.close();
       progress.start('publish');
 
@@ -43,7 +68,7 @@ module.exports = function () {
           progress.done('error');
           pane.openValidationErrors(errors);
         } else {
-          return edit.unschedulePublish(pageUri).then(function () {
+          return unschedulePageAndLayout().then(function () {
             // publish page and layout immediately
             return Promise.all([edit.publishPage(), edit.publishLayout()])
               .then(function (promises) {
@@ -69,7 +94,7 @@ module.exports = function () {
       pane.close();
       progress.start('publish');
 
-      return edit.unschedulePublish(pageUri)
+      return unschedulePageAndLayout()
         .then(edit.unpublishPage)
         .then(function () {
           progress.done();
@@ -105,36 +130,28 @@ module.exports = function () {
           pane.openValidationErrors(errors);
         } else {
           // only schedule one thing at a time
-          return edit.unschedulePublish(pageUri).then(function () {
+          return unschedulePageAndLayout().then(function () {
             // schedule layout and page publishing in parallel
-            return Promise.all([
-              scheduleLayoutPublish(timestamp),
-              edit.schedulePublish({
-                at: timestamp,
-                publish: db.uriToUrl(pageUri)
+            return schedulePageAndLayout(timestamp)
+              .then(function () {
+                progress.done();
+                state.openDynamicSchedule(timestamp, db.uriToUrl(pageUri));
               })
-            ])
-            .then(function () {
-              progress.done();
-              state.openDynamicSchedule(timestamp, db.uriToUrl(pageUri));
-            })
-            .catch(function () {
-              // note: the Error passed into this doesn't have a message, so we use a custom one
-              progress.done('error');
-              progress.open('error', `Server errored when scheduling, please try again.`, true);
-            });
+              .catch(function () {
+                // note: the Error passed into this doesn't have a message, so we use a custom one
+                progress.done('error');
+                progress.open('error', `Server errored when scheduling, please try again.`, true);
+              });
           });
         }
       });
     },
 
     onUnschedule: function () {
-      var pageUri = dom.pageUri();
-
       pane.close();
       progress.start('schedule');
 
-      return edit.unschedulePublish(pageUri)
+      return unschedulePageAndLayout()
         .then(function () {
           progress.done();
           progress.open('schedule', `Unscheduled!`, true);
