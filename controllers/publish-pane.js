@@ -34,9 +34,10 @@ module.exports = function () {
           pane.openValidationErrors(errors);
         } else {
           return edit.unschedulePublish(pageUri).then(function () {
-            return edit.publishLayout()
-              .then(edit.publishPage) // this returns the published page url
-              .then(function (url) {
+            return Promise.all([edit.publishPage(), edit.publishLayout()])
+              .then(function (promises) {
+                var url = promises[0];
+
                 progress.done();
                 progress.open('publish', `Published! <a href="${url}" target="_blank">View Page</a>`);
                 state.toggleScheduled(false);
