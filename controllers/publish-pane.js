@@ -8,6 +8,16 @@ var moment = require('moment'),
   state = require('../services/page-state'),
   db = require('../services/edit/db');
 
+
+function scheduleLayoutPublish(timestamp) {
+  return edit.getLayout().then(function (layout) {
+    return edit.schedulePublish({
+      at: timestamp,
+      publish: db.uriToUrl(layout)
+    });
+  });
+}
+
 module.exports = function () {
   function constructor(el) {
     this.el = el;
@@ -34,6 +44,7 @@ module.exports = function () {
           pane.openValidationErrors(errors);
         } else {
           return edit.unschedulePublish(pageUri).then(function () {
+            // publish page and layout immediately
             return Promise.all([edit.publishPage(), edit.publishLayout()])
               .then(function (promises) {
                 var url = promises[0];
@@ -95,10 +106,14 @@ module.exports = function () {
         } else {
           // only schedule one thing at a time
           return edit.unschedulePublish(pageUri).then(function () {
-            return edit.schedulePublish({
-              at: timestamp,
-              publish: db.uriToUrl(pageUri)
-            })
+            // schedule layout and page publishing in parallel
+            return Promise.all([
+              scheduleLayoutPublish(timestamp),
+              edit.schedulePublish({
+                at: timestamp,
+                publish: db.uriToUrl(pageUri)
+              })
+            ])
             .then(function () {
               progress.done();
               state.openDynamicSchedule(timestamp, db.uriToUrl(pageUri));
