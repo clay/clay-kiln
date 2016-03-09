@@ -58,12 +58,41 @@ function open(header, innerEl) {
 }
 
 /**
- * open publish pane
- * @returns {Promise}
+ * create messages for the publish pane, depending on the state
+ * @param {object} res
+ * @returns {Element}
  */
-function openPublish() {
-  var header = 'Schedule Publish',
-    today = moment().format('YYYY-MM-DD'),
+function createPublishMessages(res) {
+  var messages = dom.create('<div class="messages"></div>'),
+    draftMessage = dom.create('<p>In Draft.</p>'),
+    effectMessage = dom.create('<p>Changes you make outside of the article will also be published.</p>');
+
+  // add messages (in order)
+  if (res.published) {
+    // published message
+    messages.appendChild(dom.create(`<p>Published ${state.formatTime(res.publishedAt)}</p>`)); // todo: get published time
+  } else {
+    messages.appendChild(draftMessage);
+  }
+
+  if (res.scheduled) {
+    // scheduled message
+    messages.appendChild(dom.create(`<p>This is scheduled to publish ${state.formatTime(res.scheduledAt)}.</p>`));
+  }
+
+  // message about what publishing affects
+  messages.appendChild(effectMessage);
+
+  return messages;
+}
+
+/**
+ * create actions for the publish pane, depending on the state
+ * @param {object} res
+ * @returns {Element}
+ */
+function createPublishActions(res) {
+  var today = moment().format('YYYY-MM-DD'),
     now = moment().format('HH:mm'),
     actions = dom.create('<div class="actions"></div>'),
     schedule = dom.create(`<form class="schedule">
@@ -75,25 +104,45 @@ function openPublish() {
     </form>`),
     unschedule = dom.create('<button class="unschedule">Unschedule</button>'),
     publishNow = dom.create('<button class="publish-now">Publish Now</button>'),
-    unpublish = dom.create('<button class="unpublish">Unpublish Page</button>'),
+    unpublish = dom.create('<button class="unpublish">Unpublish Page</button>');
+
+  // add actions and buttons (in order)
+  // scheduling: always exists
+  actions.appendChild(schedule);
+
+  // unscheduling
+  if (res.scheduled) {
+    state.toggleScheduled(true); // just in case someone else scheduled this page
+    actions.appendChild(unschedule);
+  }
+
+  // publish: always exists
+  actions.appendChild(publishNow);
+
+  // unpublish (only affects page)
+  if (res.published) {
+    actions.appendChild(unpublish);
+  }
+
+  return actions;
+}
+
+/**
+ * open publish pane
+ * @returns {Promise}
+ */
+function openPublish() {
+  var header = 'Schedule Publish',
+    innerEl = document.createDocumentFragment(),
     el;
 
   return state.get().then(function (res) {
-    // todo: add publish state message
-    // note: this needs save date, publish date, scheduled date?
+    // append message and actions to the doc fragment
+    innerEl.appendChild(createPublishMessages(res));
+    innerEl.appendChild(createPublishActions(res));
 
-    // these buttons are added in order
-    actions.appendChild(schedule); // always exists
-    if (res.scheduled) {
-      state.toggleScheduled(true); // just in case someone else scheduled this page
-      actions.appendChild(unschedule);
-    }
-    actions.appendChild(publishNow);
-    if (res.published) {
-      actions.appendChild(unpublish);
-    }
-
-    el = open(header, actions);
+    // create the root pane element
+    el = open(header, innerEl);
     // init controller for publish pane
     ds.controller('publish-pane', publishPaneController);
     ds.get('publish-pane', el.querySelector('.actions'));

@@ -1,56 +1,11 @@
-var _ = require('lodash'),
+'use strict';
+const _ = require('lodash'),
   moment = require('moment'),
   edit = require('./edit'),
   db = require('./edit/db'),
   dom = require('./dom'),
   progress = require('./progress');
 
-/**
- * get canonical url from clay-meta-url component (if it exists)
- * @param {string} pageUri
- * @returns {Promise}
- */
-function getCanonicalUrl(pageUri) {
-  return edit.getDataOnly(pageUri).then(function (data) {
-    if (_.isString(data.url) && data.url.length) {
-      return data.url;
-    } else {
-      return null;
-    }
-  }).catch(function () {
-    return null;
-  });
-}
-
-/**
- * see if there's a published canonical url with an actual url
- * @param {string} pageUri
- * @returns {Promise}
- */
-function hasCanonicalUrl(pageUri) {
-  return getCanonicalUrl(pageUri).then(function (url) {
-    if (url) {
-      return db.getHead(db.urlToUri(url)).then(function (res) {
-        if (res) {
-          return {
-            published: res,
-            publishedUrl: url
-          };
-        } else {
-          return {
-            published: false,
-            publishedUrl: null
-          };
-        }
-      });
-    } else {
-      return {
-        published: false,
-        publishedUrl: null
-      };
-    }
-  });
-}
 
 /**
  * see if a page is scheduled to publish
@@ -73,6 +28,95 @@ function getScheduled(scheduledUri) {
 }
 
 /**
+ * make sure page url exists
+ * and points to a real, published page
+ * @param {object} pageData
+ * @returns {Promise} url
+ */
+function getPageUrl(pageData) {
+  var url = pageData.url;
+
+  if (!url || !url.length) {
+    throw new Error('Page has no url!');
+  }
+
+  return db.getHead(db.urlToUri(url)).then(() => url);
+}
+
+function isArticleReference(ref) {
+  return _.isString(ref) && ref.indexOf('/components/article/instances/') > -1;
+}
+
+/**
+ * Gets the first reference to an article component within a page (if it exists)
+ * @param {object} page
+ * @returns {string|undefined}
+ */
+function getArticleReference(page) {
+  for (let key in page) {
+    if (page.hasOwnProperty(key)) {
+      let value = page[key];
+
+      if (isArticleReference(value)) {
+        return value;
+      } else if (_.isObject(value))  {
+        let result = _.isArray(value) ? _.find(value, isArticleReference) : getArticleReference(value);
+
+        if (result) {
+          return result;
+        }
+      }
+    }
+  }
+}
+
+/**
+ * get article date
+ * @param {object} pageData
+ * @returns {Promise} date
+ */
+function getArticleDate(pageData) {
+  var article = getArticleReference(pageData);
+
+  if (!article) {
+    throw new Error('No article in page!');
+  }
+
+  return edit.getDataOnly(article).then(res => res.date);
+}
+
+/**
+ * get published state
+ * @param {string} publishedUri
+ * @returns {Promise}
+ */
+function getPublished(publishedUri) {
+  return edit.getDataOnly(publishedUri)
+    .then(function (pageData) {
+      return Promise.all([
+        getPageUrl(pageData),
+        getArticleDate(pageData)
+      ])
+      .then(function (promises) {
+        return {
+          published: true,
+          publishedUrl: promises[0],
+          publishedAt: promises[1]
+        };
+      });
+    })
+    .catch(function () {
+      // no url, or the page can't be loaded, or the article has no date
+      // or something else went wrong somewhere!
+      return {
+        published: false,
+        publishedUrl: null,
+        publishedAt: null
+      };
+    });
+}
+
+/**
  * get scheduled/published state of the page
  * used when toolbar inits and when publish pane is opened
  * @returns {Promise}
@@ -82,14 +126,9 @@ function getPageState() {
 
   return Promise.all([
     getScheduled(pageUri + '@scheduled'),
-    hasCanonicalUrl(pageUri + '@published')
+    getPublished(pageUri + '@published')
   ]).then(function (promises) {
-    return {
-      scheduled: promises[0].scheduled,
-      scheduledAt: promises[0].scheduledAt,
-      published: promises[1].published,
-      publishedUrl: promises[1].publishedUrl
-    };
+    return _.assign({}, promises[0], promises[1]);
   });
 }
 
