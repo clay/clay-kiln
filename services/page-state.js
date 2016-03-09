@@ -40,7 +40,13 @@ function getPageUrl(pageData) {
     throw new Error('Page has no url!');
   }
 
-  return db.getHead(db.urlToUri(url)).then(() => url);
+  return db.getHead(db.urlToUri(url)).then(function (res) {
+    if (res) {
+      return url;
+    } else {
+      throw new Error('Url isn\'t a real page!');
+    }
+  });
 }
 
 function isArticleReference(ref) {
