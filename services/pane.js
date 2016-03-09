@@ -77,7 +77,7 @@ function createPublishMessages(res) {
 
   if (res.scheduled) {
     // scheduled message
-    messages.appendChild(dom.create(`<p>This is scheduled to publish ${state.formatTime(res.scheduledAt)}.</p>`));
+    messages.appendChild(dom.create(`<p>Scheduled to publish ${state.formatTime(res.scheduledAt)}.</p>`));
   }
 
   // message about what publishing affects
