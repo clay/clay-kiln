@@ -1,3 +1,4 @@
+'use strict';
 var _ = require('lodash'),
   moment = require('moment'),
   dom = require('./dom'),
@@ -64,7 +65,7 @@ function openPublish() {
   var header = 'Schedule Publish',
     today = moment().format('YYYY-MM-DD'),
     now = moment().format('HH:mm'),
-    actions = dom.create(`<div class="actions"></div>`),
+    actions = dom.create('<div class="actions"></div>'),
     schedule = dom.create(`<form class="schedule">
       <label class="schedule-label" for="schedule-date">Date</label>
       <input id="schedule-date" class="schedule-input" type="date" min="${today}" value="${today}" placeholder="${today}"></input>
@@ -72,9 +73,9 @@ function openPublish() {
       <input id="schedule-time" class="schedule-input" type="time" value="${now}" placeholder="${now}"></input>
       <button class="schedule-publish">Schedule Publish</button>
     </form>`),
-    unschedule = dom.create(`<button class="unschedule">Unschedule</button>`),
-    publishNow = dom.create(`<button class="publish-now">Publish Now</button>`),
-    unpublish = dom.create(`<button class="unpublish">Unpublish</button>`),
+    unschedule = dom.create('<button class="unschedule">Unschedule</button>'),
+    publishNow = dom.create('<button class="publish-now">Publish Now</button>'),
+    unpublish = dom.create('<button class="unpublish">Unpublish Page</button>'),
     el;
 
   return state.get().then(function (res) {
