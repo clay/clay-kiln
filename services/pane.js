@@ -1,4 +1,3 @@
-'use strict';
 var _ = require('lodash'),
   moment = require('moment'),
   dom = require('./dom'),

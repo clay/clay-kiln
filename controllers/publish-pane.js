@@ -81,7 +81,7 @@ module.exports = function () {
               .catch(function () {
                 // note: the Error passed into this doesn't have a message, so we use a custom one
                 progress.done('error');
-                progress.open('error', `Server errored when publishing, please try again.`, true);
+                progress.open('error', 'Server errored when publishing, please try again.', true);
               });
           });
         }
@@ -104,7 +104,7 @@ module.exports = function () {
         .catch(function () {
           // note: the Error passed into this doesn't have a message, so we use a custom one
           progress.done('error');
-          progress.open('error', `Server errored when unpublishing, please try again.`, true);
+          progress.open('error', 'Server errored when unpublishing, please try again.', true);
         });
     },
 
@@ -140,7 +140,7 @@ module.exports = function () {
               .catch(function () {
                 // note: the Error passed into this doesn't have a message, so we use a custom one
                 progress.done('error');
-                progress.open('error', `Server errored when scheduling, please try again.`, true);
+                progress.open('error', 'Server errored when scheduling, please try again.', true);
               });
           });
         }
@@ -154,13 +154,13 @@ module.exports = function () {
       return unschedulePageAndLayout()
         .then(function () {
           progress.done();
-          progress.open('schedule', `Unscheduled!`, true);
+          progress.open('schedule', 'Unscheduled!', true);
           state.toggleScheduled(false);
         })
         .catch(function () {
           // note: the Error passed into this doesn't have a message, so we use a custom one
           progress.done('error');
-          progress.open('error', `Server errored when unscheduling, please try again.`, true);
+          progress.open('error', 'Server errored when unscheduling, please try again.', true);
         });
     }
   };

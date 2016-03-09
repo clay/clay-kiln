@@ -14,7 +14,7 @@ describe(dirname, function () {
 
     it('replaces the result.el', function () { // We could call this a "root" behavior
       var result,
-        elBefore = dom.create(`<div class="el-before"></div>`);
+        elBefore = dom.create('<div class="el-before"></div>');
 
       fixture.el = elBefore;
       result = lib(fixture, args);

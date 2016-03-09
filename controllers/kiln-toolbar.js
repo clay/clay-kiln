@@ -96,7 +96,7 @@ EditorToolbar.prototype = {
       .then(pane.openPublish)
       .catch(function () {
         progress.done('error');
-        progress.open('error', `Data could not be saved. Please review your open form.`, true);
+        progress.open('error', 'Data could not be saved. Please review your open form.', true);
       });
   }
 };

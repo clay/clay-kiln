@@ -3,13 +3,13 @@ const easingEquations = {
     return Math.sin(pos * (Math.PI / 2));
   },
   easeInOutSine: function (pos) {
-    return (-0.5 * (Math.cos(Math.PI * pos) - 1));
+    return -0.5 * (Math.cos(Math.PI * pos) - 1);
   },
   easeInOutQuint: function (pos) {
     if ((pos /= 0.5) < 1) {
       return 0.5 * Math.pow(pos, 5);
     } else {
-      return 0.5 * (Math.pow((pos - 2), 5) + 2);
+      return 0.5 * (Math.pow(pos - 2, 5) + 2);
     }
   }
 };
@@ -72,7 +72,7 @@ function scrollToY(scrollTargetY, speed, easing) {
     if (p < 1 && window.autoScroll) {
       // keep scrolling
       window.requestAnimationFrame(tick);
-      window.scrollTo(0, scrollY + ((scrollTargetY - scrollY) * t));
+      window.scrollTo(0, scrollY + (scrollTargetY - scrollY) * t);
       window.autoScroll = true;
     } else if (!window.autoScroll) {
       // user manually stopped the scroll animation

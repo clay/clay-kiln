@@ -75,7 +75,7 @@ describe(dirname, function () {
 
     describe('toggleScheduled', function () {
       var fn = lib[this.title],
-        button = dom.create(`<div class="kiln-toolbar-inner"><button class="publish">Publish</button></div>`);
+        button = dom.create('<div class="kiln-toolbar-inner"><button class="publish">Publish</button></div>');
 
       before(function () {
         document.body.appendChild(button);

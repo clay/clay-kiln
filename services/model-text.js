@@ -28,7 +28,7 @@ function contentTextOnly(node) {
 function knownTagsOnly(node) {
   var name = node.nodeName;
 
-  return !!tagTypes[name] || (node.nodeType === Node.TEXT_NODE && contentTextOnly(node));
+  return !!tagTypes[name] || node.nodeType === Node.TEXT_NODE && contentTextOnly(node);
 }
 
 /**
@@ -220,15 +220,15 @@ blockTypes = _.transform(tagTypes, function (obj, tag, name) {
  * @enum
  */
 sameAs = {
-  'B': 'STRONG',
-  'U': 'EM',
-  'I': 'EM',
-  'H1': 'H2',
-  'H3': 'H2',
-  'H4': 'H2',
-  'H5': 'H2',
-  'H6': 'H2',
-  'STRIKE': 'DEL'
+  B: 'STRONG',
+  U: 'EM',
+  I: 'EM',
+  H1: 'H2',
+  H3: 'H2',
+  H4: 'H2',
+  H5: 'H2',
+  H6: 'H2',
+  STRIKE: 'DEL'
 };
 
 /**
