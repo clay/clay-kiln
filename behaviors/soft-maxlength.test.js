@@ -28,7 +28,7 @@ describe(dirname, function () {
     it('has binder that toggles too-long classes', function () {
       var result, input, span, binder;
 
-      fixture.el = dom.create(`<div><input></div>`);
+      fixture.el = dom.create('<div><input></div>');
       result = lib(fixture, args);
       input = result.el.querySelector('input');
       span = result.el.querySelector('span.soft-maxlength');
@@ -49,7 +49,7 @@ describe(dirname, function () {
     it('has binder that allows for undefined field', function () {
       var result, input, span, binder;
 
-      fixture.el = dom.create(`<div><input></div>`);
+      fixture.el = dom.create('<div><input></div>');
       result = lib(fixture, args);
       input = result.el.querySelector('input');
       span = result.el.querySelector('span.soft-maxlength');

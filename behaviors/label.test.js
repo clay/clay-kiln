@@ -17,7 +17,7 @@ describe(dirname, function () {
       var result, innerLabel;
 
       // Add an outer label.
-      fixture.el.appendChild(dom.create(`<label class="input-label"><input></label>`));
+      fixture.el.appendChild(dom.create('<label class="input-label"><input></label>'));
       result = lib(fixture);
       innerLabel = result.el.querySelector('.input-label').firstElementChild;
       expect(innerLabel.className).to.eql('label-inner');

@@ -37,7 +37,7 @@ module.exports = function () {
 
   constructor.prototype = {
     events: {
-      'click': 'close'
+      click: 'close'
     },
 
     close: function (e) {

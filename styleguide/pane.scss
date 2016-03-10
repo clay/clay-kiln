@@ -95,6 +95,13 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 
 /* publish */
 
+.kiln-toolbar-pane .messages {
+  p {
+    margin: 0 0 10px;
+    color: $black-50;
+  }
+}
+
 .kiln-toolbar-pane .actions,
 .kiln-toolbar-pane .schedule {
   @include clearfix();

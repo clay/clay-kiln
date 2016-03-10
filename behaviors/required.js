@@ -7,7 +7,7 @@ var dom = require('../services/dom');
  */
 module.exports = function (result) {
   var el = result.el,
-    tpl = `<span class="label-required">required</span>`,
+    tpl = '<span class="label-required">required</span>',
     requiredEl = dom.create(tpl),
     label = dom.find(el, '.label-inner');
 

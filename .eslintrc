@@ -11,29 +11,22 @@
     "chai": false,
     "sinon": false
   },
-  // enable the es6 features supported by babel
+  // enable the es6 features supported by our browsers / iojs
   "ecmaFeatures": {
     "arrowFunctions": true,
     "blockBindings": true,
-    "defaultParams": true,
-    "destructuring": true,
     "forOf": true,
-    "generators": true,
-    "modules": true,
-    "objectLiteralComputedProperties": true,
     "objectLiteralDuplicateProperties": true,
-    "objectLiteralShorthandMethods": true,
     "objectLiteralShorthandProperties": true,
-    "regexUFlag": true,
-    "regexYFlag": true,
-    "restParams": true,
-    "spread": true,
+    "objectLiteralShorthandMethods": true,
+    "octalLiterals": true,
+    "binaryLiterals": true,
     "templateStrings": true,
-    "unicodeCodePointEscapes": true
+    "generators": true
   },
   "rules": {
     // possible errors
-    "no-extra-parens": [1,"functions"],
+    "no-extra-parens": 1,
     "valid-jsdoc": [1, {
       "requireReturn": false,
       "requireParamDescription": false,
@@ -48,6 +41,7 @@
     "no-self-compare": 2,
     "no-throw-literal": 2,
     "no-void": 2,
+    "quote-props": [2, "as-needed"],
     "vars-on-top": 2,
     "wrap-iife": 2,
     // strict mode
@@ -62,7 +56,7 @@
     // stylistic issues
     "brace-style": [2, "1tbs", { "allowSingleLine": true }],
     "comma-style": [2, "last"],
-    "indent": [2, 2, { "SwitchCase": 1 ,"VariableDeclarator": 1}],
+    "indent": [2, 2, { "SwitchCase": 1 }],
     "max-nested-callbacks": [2, 4],
     "newline-after-var": [2, "always"],
     "no-nested-ternary": 2,
@@ -73,7 +67,7 @@
     "one-var": 2,
     "quotes": [2, "single", "avoid-escape"],
     "semi": [2, "always"],
-    "space-after-keywords": [2, "always"],
+    "keyword-spacing": 2,
     "space-before-blocks": [2, "always"],
     "space-before-function-paren": [2, {"anonymous": "always", "named": "never"}],
     "space-infix-ops": [1, {"int32Hint": false}],

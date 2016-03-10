@@ -111,7 +111,7 @@ function save(data) {
         })
         .catch(function () {
           progress.done('error');
-          progress.open('error', `A server error occured. Please try again.`, true);
+          progress.open('error', 'A server error occured. Please try again.', true);
         });
     }
   });
@@ -170,6 +170,25 @@ function publishPage() {
   }).then(function (publishedPageData) {
     // note: when putting to page@published, amphora will add the uri to /uris/
     return publishedPageData.url;
+  });
+}
+
+/**
+ * get layout uri for current page
+ * @returns {Promise}
+ */
+function getLayout() {
+  return cache.getDataOnly(dom.pageUri()).then(data => data.layout);
+}
+
+/**
+ * Publish current page's layout.
+ *
+ * @returns {Promise.string}
+ */
+function publishLayout() {
+  return getLayout().then(function (layout) {
+    return db.save(layout + '@published'); // PUT @published with empty data
   });
 }
 
@@ -353,7 +372,7 @@ function addToParentList(opts) {
  * schedule publish
  * @param {object} data
  * @param {number} data.at unix timestamp to be published at
- * @param {string} data.publish uri to be published
+ * @param {string} data.publish url to be published
  * @returns {Promise}
  */
 function schedulePublish(data) {
@@ -409,6 +428,8 @@ module.exports = {
   createComponent: createComponent,
   createPage: createPage,
   publishPage: publishPage,
+  getLayout: getLayout,
+  publishLayout: publishLayout,
   unpublishPage: unpublishPage,
   removeFromParentList: removeFromParentList,
   removeUri: removeUri,

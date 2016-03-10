@@ -8,6 +8,43 @@ var moment = require('moment'),
   state = require('../services/page-state'),
   db = require('../services/edit/db');
 
+/**
+ * schedule page and layout publishing in parallel
+ * @param {number} timestamp
+ * @returns {Promise}
+ */
+function schedulePageAndLayout(timestamp) {
+  var pageUri = dom.pageUri();
+
+  return edit.getLayout().then(function (layout) {
+    return Promise.all([
+      edit.schedulePublish({
+        at: timestamp,
+        publish: db.uriToUrl(pageUri)
+      }),
+      edit.schedulePublish({
+        at: timestamp,
+        publish: db.uriToUrl(layout)
+      })
+    ]);
+  });
+}
+
+/**
+ * unschedule page and layout publishing in parallel
+ * @returns {Promise}
+ */
+function unschedulePageAndLayout() {
+  var pageUri = dom.pageUri();
+
+  return edit.getLayout().then(function (layout) {
+    return Promise.all([
+      edit.unschedulePublish(pageUri),
+      edit.unschedulePublish(layout)
+    ]);
+  });
+}
+
 module.exports = function () {
   function constructor(el) {
     this.el = el;
@@ -23,8 +60,6 @@ module.exports = function () {
     },
 
     onPublishNow: function () {
-      var pageUri = dom.pageUri();
-
       pane.close();
       progress.start('publish');
 
@@ -33,9 +68,12 @@ module.exports = function () {
           progress.done('error');
           pane.openValidationErrors(errors);
         } else {
-          return edit.unschedulePublish(pageUri).then(function () {
-            return edit.publishPage()
-              .then(function (url) {
+          return unschedulePageAndLayout().then(function () {
+            // publish page and layout immediately
+            return Promise.all([edit.publishPage(), edit.publishLayout()])
+              .then(function (promises) {
+                var url = promises[0];
+
                 progress.done();
                 progress.open('publish', `Published! <a href="${url}" target="_blank">View Page</a>`);
                 state.toggleScheduled(false);
@@ -43,7 +81,7 @@ module.exports = function () {
               .catch(function () {
                 // note: the Error passed into this doesn't have a message, so we use a custom one
                 progress.done('error');
-                progress.open('error', `Server errored when publishing, please try again.`, true);
+                progress.open('error', 'Server errored when publishing, please try again.', true);
               });
           });
         }
@@ -56,7 +94,7 @@ module.exports = function () {
       pane.close();
       progress.start('publish');
 
-      return edit.unschedulePublish(pageUri)
+      return unschedulePageAndLayout()
         .then(edit.unpublishPage)
         .then(function () {
           progress.done();
@@ -66,7 +104,7 @@ module.exports = function () {
         .catch(function () {
           // note: the Error passed into this doesn't have a message, so we use a custom one
           progress.done('error');
-          progress.open('error', `Server errored when unpublishing, please try again.`, true);
+          progress.open('error', 'Server errored when unpublishing, please try again.', true);
         });
     },
 
@@ -92,41 +130,37 @@ module.exports = function () {
           pane.openValidationErrors(errors);
         } else {
           // only schedule one thing at a time
-          return edit.unschedulePublish(pageUri).then(function () {
-            return edit.schedulePublish({
-              at: timestamp,
-              publish: db.uriToUrl(pageUri)
-            })
-            .then(function () {
-              progress.done();
-              state.openDynamicSchedule(timestamp, db.uriToUrl(pageUri));
-            })
-            .catch(function () {
-              // note: the Error passed into this doesn't have a message, so we use a custom one
-              progress.done('error');
-              progress.open('error', `Server errored when scheduling, please try again.`, true);
-            });
+          return unschedulePageAndLayout().then(function () {
+            // schedule layout and page publishing in parallel
+            return schedulePageAndLayout(timestamp)
+              .then(function () {
+                progress.done();
+                state.openDynamicSchedule(timestamp, db.uriToUrl(pageUri));
+              })
+              .catch(function () {
+                // note: the Error passed into this doesn't have a message, so we use a custom one
+                progress.done('error');
+                progress.open('error', 'Server errored when scheduling, please try again.', true);
+              });
           });
         }
       });
     },
 
     onUnschedule: function () {
-      var pageUri = dom.pageUri();
-
       pane.close();
       progress.start('schedule');
 
-      return edit.unschedulePublish(pageUri)
+      return unschedulePageAndLayout()
         .then(function () {
           progress.done();
-          progress.open('schedule', `Unscheduled!`, true);
+          progress.open('schedule', 'Unscheduled!', true);
           state.toggleScheduled(false);
         })
         .catch(function () {
           // note: the Error passed into this doesn't have a message, so we use a custom one
           progress.done('error');
-          progress.open('error', `Server errored when unscheduling, please try again.`, true);
+          progress.open('error', 'Server errored when unscheduling, please try again.', true);
         });
     }
   };
