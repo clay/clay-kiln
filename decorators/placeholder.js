@@ -23,13 +23,20 @@ function getPlaceholderText(path, schema) {
 
 /**
  * get placeholder height
+ * @param {Element} parent
  * @param  {object} schema
  * @return {string}
  */
-function getPlaceholderHeight(schema) {
-  var placeholder = schema[references.placeholderProperty];
+function getPlaceholderHeight(parent, schema) {
+  var placeholder = schema[references.placeholderProperty],
+    placeholderHeight = placeholder && parseInt(placeholder.height, 10) || 100, // defaults to 100px
+    parentHeight = parent && parseInt(getComputedStyle(parent).height);
 
-  return placeholder && placeholder.height || '100px';
+  if (parentHeight && parentHeight > placeholderHeight) {
+    return parentHeight + 'px';
+  } else {
+    return placeholderHeight + 'px';
+  }
 }
 
 /**
@@ -180,7 +187,7 @@ function addPlaceholder(el, options) {
 
   return addPlaceholderDom(el, {
     text: getPlaceholderText(path, schema),
-    height: getPlaceholderHeight(schema),
+    height: getPlaceholderHeight(el, schema),
     permanent: getPlaceholderPermanence(schema)
   });
 }

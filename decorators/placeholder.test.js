@@ -41,17 +41,21 @@ describe(dirname, function () {
       var fn = lib[this.title];
 
       it('gets height when set explicitly', function () {
-        expect(fn({_placeholder: {height: '500px'}})).to.equal('500px');
+        expect(fn(document.createElement('div'), {_placeholder: {height: '500px'}})).to.equal('500px');
       });
 
-      it('gets auto height when set explicitly', function () {
-        expect(fn({_placeholder: {height: 'auto'}})).to.equal('auto');
+      it('uses computed parent height if greater than set height', function () {
+        var el = document.createElement('div');
+
+        el.style.minHeight = '100px';
+        document.body.appendChild(el); // append to dom so getComputedStyle works
+        expect(fn(el, {_placeholder: {height: '10px'}})).to.equal('100px');
       });
 
       it('falls back to 100px height', function () {
-        expect(fn({_placeholder: {text: 'This is some text'}})).to.equal('100px');
-        expect(fn({_placeholder: true})).to.equal('100px');
-        expect(fn({_placeholder: 'true'})).to.equal('100px');
+        expect(fn(document.createElement('div'), {_placeholder: {text: 'This is some text'}})).to.equal('100px');
+        expect(fn(document.createElement('div'), {_placeholder: true})).to.equal('100px');
+        expect(fn(document.createElement('div'), {_placeholder: 'true'})).to.equal('100px');
       });
     });
 
