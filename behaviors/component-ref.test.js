@@ -1,4 +1,5 @@
-var dirname = __dirname.split('/').pop(),
+var _ = require('lodash'),
+  dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   fixture = require('../test/fixtures/behavior')({}),
   dom = require('../services/dom'),
@@ -7,14 +8,19 @@ var dirname = __dirname.split('/').pop(),
 describe(dirname, function () {
   describe(filename, function () {
     var querySelectorClass = 'query-selector',
-      anotherComponent = dom.create('<div class="' + querySelectorClass + '" data-uri="site.com/path/components/x/instances/0"></div>');
+      anotherComponentUri = 'site.com/path/components/x/instances/0',
+      anotherComponent = dom.create('<div class="' + querySelectorClass + '" data-uri="' + anotherComponentUri + '"></div>'),
+      commentUri = 'site.com/path/components/y/instances/0',
+      comment = document.createComment(' data-uri="' + commentUri + '"');
 
     beforeEach(function () {
       document.body.appendChild(anotherComponent);
+      document.head.appendChild(comment);
     });
 
     afterEach(function () {
       document.body.removeChild(anotherComponent);
+      document.head.removeChild(comment);
     });
 
     it('appends a hidden field', function () {
@@ -23,9 +29,24 @@ describe(dirname, function () {
 
       expect(input.tagName).to.eql('INPUT');
       expect(input.type).to.eql('hidden');
-      expect(input.getAttribute('rv-field')).to.eql('foo');
-      expect(input.getAttribute('rv-value')).to.eql('foo.data.value');
     });
 
+    it('finds component element with selector', function () {
+      var result = lib(fixture, {selector: '[data-uri*="/components/x/"]'});
+
+      expect(_.get(result, 'bindings.data.value')).to.deep.equal([anotherComponentUri]);
+    });
+
+    it('finds component element with name', function () {
+      var result = lib(fixture, {name: 'x'});
+
+      expect(_.get(result, 'bindings.data.value')).to.deep.equal([anotherComponentUri]);
+    });
+
+    it('finds component comment (in head) with name', function () {
+      var result = lib(fixture, {name: 'y'});
+
+      expect(_.get(result, 'bindings.data.value')).to.deep.equal([commentUri]);
+    });
   });
 });
