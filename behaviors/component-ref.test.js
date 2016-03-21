@@ -34,19 +34,19 @@ describe(dirname, function () {
     it('finds component element with selector', function () {
       var result = lib(fixture, {selector: '[data-uri*="/components/x/"]'});
 
-      expect(_.get(result, 'bindings.data.value')).to.deep.equal([anotherComponentUri]);
+      expect(_.get(result, 'bindings.data')).to.deep.equal([anotherComponentUri]);
     });
 
     it('finds component element with name', function () {
       var result = lib(fixture, {name: 'x'});
 
-      expect(_.get(result, 'bindings.data.value')).to.deep.equal([anotherComponentUri]);
+      expect(_.get(result, 'bindings.data')).to.deep.equal([anotherComponentUri]);
     });
 
     it('finds component comment (in head) with name', function () {
       var result = lib(fixture, {name: 'y'});
 
-      expect(_.get(result, 'bindings.data.value')).to.deep.equal([commentUri]);
+      expect(_.get(result, 'bindings.data')).to.deep.equal([commentUri]);
     });
   });
 });
