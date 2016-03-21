@@ -63,12 +63,12 @@ module.exports = function (result, args) {
     name = result.name;
 
   if (args.selector) {
-    result.bindings.data.value = findElementsWithSelector(args.selector);
+    result.bindings.data = findElementsWithSelector(args.selector);
   } else if (args.name) {
-    result.bindings.data.value = findElementsWithName(args.name).concat(findCommentsWithName(args.name));
+    result.bindings.data = findElementsWithName(args.name).concat(findCommentsWithName(args.name));
   }
 
-  hiddenInput = dom.create(`<input type="hidden" class="input-text" rv-field="${name}" rv-value="${name}.data.value">`);
+  hiddenInput = dom.create(`<input type="hidden" class="input-text" rv-field="${name}" rv-value="${name}.data">`);
   result.el.appendChild(hiddenInput);
   return result;
 };
