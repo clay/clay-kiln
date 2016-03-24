@@ -9,7 +9,7 @@ var _ = require('lodash'),
   pagesRoute = '/pages/',
   urisRoute = '/uris/',
   scheduleRoute = '/schedule',
-  schemaKeywords = ['_ref', '_groups'],
+  schemaKeywords = ['_ref', '_groups', '_description'],
   knownExtraFields = ['_ref', '_schema'],
   bannedFields = ['_self', '_components', '_pageRef', '_pageData', '_version', '_refs', 'layout', 'template'];
 
