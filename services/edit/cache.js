@@ -12,10 +12,10 @@ var _ = require('lodash'),
   groupFields = require('./group-fields'),
   schemaFields = require('./schema-fields'),
   control = require('./control'),
-  schemaKeywords = ['_groups'];
+  schemaKeywords = ['_groups', '_description'];
 
 /**
- * Convert to plain data (no groups, no schema, no _ref).
+ * Convert to plain data (no groups, no schema, no _ref, no _description).
  *
  * Clones so original object passed in is not affected.
  *
@@ -29,6 +29,7 @@ function removeExtras(uri, data) {
     data = groupFields.remove(data, schema);
     data = schemaFields.remove(data);
     delete data[references.referenceProperty];
+    delete data[references.descriptionProperty];
     return data;
   });
 }

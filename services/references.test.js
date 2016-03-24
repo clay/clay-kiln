@@ -49,6 +49,10 @@ describe('references service', function () {
     expect(references.groupsProperty).to.equal('_groups');
   });
 
+  it('has description property', function () {
+    expect(references.descriptionProperty).to.equal('_description');
+  });
+
   describe('getComponentNameFromReference()', function () {
     it('gets name from default ref', function () {
       expect(references.getComponentNameFromReference('/components/base')).to.equal('base');

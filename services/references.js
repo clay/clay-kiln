@@ -11,6 +11,7 @@ module.exports = {
   labelProperty: '_label',
   componentListProperty: '_componentList',
   groupsProperty: '_groups',
+  descriptionProperty: '_description',
 
   // Status
   editingStatus: 'editing',
