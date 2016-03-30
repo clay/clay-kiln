@@ -227,6 +227,22 @@ _groups:
 
 You don't need to specify `_label` (the form will be called "<Component Name> Settings"), `_display`, or `_placeholder` for the `settings` group. If you use it, you also don't need to specify `_display: settings` inside the individual fields.
 
+# Component Description
+
+Every Clay component has a `README.md` which is automatically generated from that component's schema. Each schema can (and should) have a root-level `_description` property which contains markdown-formatted text describing the purpose and use of the component. Descriptions look like this:
+
+```yaml
+_description: |
+  A short description of the component.
+
+  A more detailed overview of functionality and business use cases, intended
+  for an audience of devs, designers, and product managers. It may include:
+
+  * lists of workflows, functional requirements, business justifications
+  * plain english descriptions of any non-obvious functionality
+  * intentions of the author and situations that are explicitly unsupported
+```
+
 ## Writing Behaviors
 
 When a form is created (by clicking an element with `data-editable`, or by clicking into component settings), fields are added and each field's behavior is called in the order they're defined. The function signature for an individual behavior has two arguments, `result` and `args`.
