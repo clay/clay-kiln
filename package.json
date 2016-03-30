@@ -54,6 +54,7 @@
     "rivets": "^0.8.1",
     "selection-range": "^1.0.1",
     "striptags": "^2.0.2",
+    "text-model": "^0.2.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-map2": "^1.2.1",
     "vinyl-source-stream": "^1.1.0",
