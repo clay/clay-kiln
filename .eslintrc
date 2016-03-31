@@ -22,7 +22,8 @@
     "octalLiterals": true,
     "binaryLiterals": true,
     "templateStrings": true,
-    "generators": true
+    "generators": true,
+    "modules": true
   },
   "rules": {
     // possible errors
