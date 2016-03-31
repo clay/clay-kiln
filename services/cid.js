@@ -7,7 +7,7 @@ var counter, base;
 base = 'cid-' + Math.floor(Math.random() * 100) + (new Date()).getTime(); // Pretty unique base
 counter = 0;
 
-module.exports = function () {
+export default function () {
   counter += 1; // Increment
   return base + counter;
 };

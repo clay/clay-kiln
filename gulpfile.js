@@ -6,6 +6,7 @@ var gulp = require('gulp'),
   rename = require('gulp-rename'),
   // gulpif = require('gulp-if'),
   browserify = require('browserify'),
+  rollupify = require('rollupify'),
   babelify = require('babelify'),
   es2015 = require('babel-preset-es2015'),
   watchify = require('watchify'),
@@ -65,6 +66,7 @@ gulp.task('scripts', function () {
     // on dev environments (by default), add watchify plugin
     b.plugin(watchify, { ignoreWatch: ['**/node_modules/**', '**/dist/**'] });
   }
+  b.transform(rollupify);
   b.transform(babelify, { presets: [es2015] });
 
   if (!runOnce) {
