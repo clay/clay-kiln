@@ -16,13 +16,16 @@ settings = {
   colors: true,
   singleRun: true,
   browserify: {
-    debug: true,
-    transform: [istanbul({
-      ignore: ['**/node_modules/**'],
-      defaultIgnore: true
-    }), babelify.configure({
-      presets: ['es2015']
-    })]
+    transform: [
+      'rollupify', // this needs to happen before babelify
+      babelify.configure({
+        presets: ['es2015']
+      }),
+      istanbul({
+        ignore: ['**/node_modules/**'],
+        defaultIgnore: true
+      })
+    ]
   },
   coverageReporter: {
     type: 'lcovonly',
