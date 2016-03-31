@@ -1,4 +1,4 @@
-var cid = require('./cid');
+import cid from './cid';
 
 describe('cid', function () {
 
