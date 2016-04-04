@@ -92,7 +92,7 @@ function getProperty(property) {
  * do magic on click ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
  * @param {MouseEvent} e
  * @param {object} bindings
- * @returns {Promise}
+ * @returns {Promise|undefined}
  */
 function doMagic(e, bindings) {
   const el = e.currentTarget,
