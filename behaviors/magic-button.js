@@ -6,8 +6,13 @@ const _ = require('lodash'),
     // this is an object of available transforms
     // components can specify which transform they want to use in their schemae
     mediaplayUrl: function (data) {
-      const path = data.replace(/^.*?imgs\//, ''), // remove domain and everything up to imgs/
-        barePath = path.replace(/\.w\d+\.h\d+\.2x/, ''); // remove rendition
+      const path = data.replace(/^.*?imgs\//, ''); // remove domain and everything up to imgs/
+
+      // remove rendition stuff
+      let barePath = path.replace(/\.w\d+/, ''); // remove width
+
+      barePath = barePath.replace(/\.h\d+/, ''); // remove height
+      barePath = barePath.replace('.2x', ''); // remove resolution
 
       return barePath;
     }
@@ -38,6 +43,10 @@ function getFieldData(field) {
  */
 function setFieldData(bindings, field, data) {
   const fieldEl = document.querySelector(`[rv-field="${field}"]`);
+
+  if (!data || !data.length) {
+    return; // don't set anything
+  }
 
   // set the data into rivets, so it saves
   _.set(bindings, field + '.data.value', data);
