@@ -31,13 +31,19 @@ function getFieldData(field) {
 
 /**
  * set value into field
+ * @param {object} bindings
  * @param {string} field name
  * @param {*} data
  * @throws Error if field isn't found in the DOM
  */
-function setFieldData(field, data) {
+function setFieldData(bindings, field, data) {
   const fieldEl = document.querySelector(`[rv-field="${field}"]`);
 
+  // set the data into rivets, so it saves
+  _.set(bindings, field + '.data.value', data);
+
+  // also set the data into the actual field DOM,
+  // so it appears to the user
   if (fieldEl && fieldEl.tagName === 'INPUT') {
     fieldEl.value = data;
   } else if (fieldEl && fieldEl.classList.contains('wysiwyg-input')) {
@@ -104,12 +110,15 @@ function doMagic(e, bindings) {
     transformed = data;
   }
 
-  return getAPI(url + transformed)
-    .then(getProperty(property))
-    .then(function (res) {
-      _.set(bindings, currentField + '.data.value', res); // set data into rivets
-      setFieldData(currentField, res); // set data into field itself
-    });
+  if (url && url.length) {
+    // do an api call!
+    return getAPI(url + transformed)
+      .then(getProperty(property))
+      .then(res => setFieldData(bindings, currentField, res));
+  } else {
+    // just set the data
+    return setFieldData(bindings, currentField, transformed);
+  }
 }
 
 /**
@@ -118,7 +127,7 @@ function doMagic(e, bindings) {
  * @param {object} args  described in detail below:
  * @param {string} [args.field] grab the value of this field
  * @param {string} [args.transform] key of the transform to apply to the value
- * @param {string} args.url to get data from
+ * @param {string} [args.url] to get data from
  * @param {string} [args.property] to get from the returned data
  * @returns {{}}
  */
