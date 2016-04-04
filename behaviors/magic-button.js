@@ -27,8 +27,10 @@ const _ = require('lodash'),
 function getFieldData(field) {
   const fieldEl = document.querySelector(`[rv-field="${field}"]`);
 
-  if (fieldEl) {
+  if (fieldEl && fieldEl.tagName === 'INPUT') {
     return fieldEl.value;
+  } else if (fieldEl && fieldEl.classList.contains('wysiwyg-input')) {
+    return fieldEl.textContent; // note: magic button won't preserve rich text styling when grabbing the data
   } else {
     throw new Error(`Field "${field}" not found!`);
   }
@@ -106,20 +108,20 @@ function doMagic(e, bindings) {
   e.stopPropagation();
   e.preventDefault();
 
-  if (field && field.length) {
+  if (!_.isEmpty(field)) {
     data = getFieldData(field);
   } else {
     data = '';
   }
 
-  if (transform && transform.length) {
+  if (!_.isEmpty(transform)) {
     transformed = transformers[transform](data);
   } else {
     // if a transform isn't specified, just use the data from the field directly
     transformed = data;
   }
 
-  if (url && url.length) {
+  if (!_.isEmpty(url)) {
     // do an api call!
     return getAPI(url + transformed)
       .then(getProperty(property))
@@ -143,8 +145,12 @@ function doMagic(e, bindings) {
 module.exports = function (result, args) {
   var name = result.name,
     el = result.el,
+    field = args.field || '',
+    transform = args.transform || '',
+    url = args.url || '',
+    property = args.property || '',
     input = getInput(el),
-    button = dom.create(`<button class="magic-button" rv-on-click="${name}.doMagic" data-magic-currentField="${name}" data-magic-field="${args.field}" data-magic-transform="${args.transform}" data-magic-url="${args.url}" data-magic-property="${args.property}">
+    button = dom.create(`<button class="magic-button" rv-on-click="${name}.doMagic" data-magic-currentField="${name}" data-magic-field="${field}" data-magic-transform="${transform}" data-magic-url="${url}" data-magic-property="${property}">
       <img src="${site.get('assetPath')}/media/components/clay-kiln/magic-button.svg" alt="Magic Button">
     </button>`);
 
