@@ -95,7 +95,7 @@ function getProperty(property) {
  * @returns {Promise}
  */
 function doMagic(e, bindings) {
-  const el = e.target.tagName === 'BUTTON' ? e.target : e.target.parentNode,
+  const el = e.currentTarget,
     currentField = el.getAttribute('data-magic-currentField'),
     field = el.getAttribute('data-magic-field'),
     transform = el.getAttribute('data-magic-transform'),
@@ -107,6 +107,10 @@ function doMagic(e, bindings) {
   // make sure to cancel the actual event
   e.stopPropagation();
   e.preventDefault();
+
+  if (!el.classList.contains('magic-button')) {
+    return;
+  }
 
   if (!_.isEmpty(field)) {
     data = getFieldData(field);
@@ -150,9 +154,9 @@ module.exports = function (result, args) {
     url = args.url || '',
     property = args.property || '',
     input = getInput(el),
-    button = dom.create(`<button class="magic-button" rv-on-click="${name}.doMagic" data-magic-currentField="${name}" data-magic-field="${field}" data-magic-transform="${transform}" data-magic-url="${url}" data-magic-property="${property}">
-      <img src="${site.get('assetPath')}/media/components/clay-kiln/magic-button.svg" alt="Magic Button">
-    </button>`);
+    button = dom.create(`<a class="magic-button" rv-on-click="${name}.doMagic" data-magic-currentField="${name}" data-magic-field="${field}" data-magic-transform="${transform}" data-magic-url="${url}" data-magic-property="${property}">
+      <img class="magic-button-inner" src="${site.get('assetPath')}/media/components/clay-kiln/magic-button.svg" alt="Magic Button">
+    </a>`);
 
   // add the button right before the input
   dom.insertBefore(input, button);
