@@ -4,6 +4,7 @@
 .label-description {
   @include secondary-text();
 
+  clear: left;
   margin: 0 0 5px;
 }
 

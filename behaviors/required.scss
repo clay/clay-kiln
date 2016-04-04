@@ -5,4 +5,9 @@
   @include secondary-text();
 
   color: $blue-50;
+  float: left;
+}
+
+.editor-inline .label-required {
+  margin-top: 10px; // since the inner label has a 10px margin
 }

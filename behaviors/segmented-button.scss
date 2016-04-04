@@ -4,6 +4,7 @@
 .segmented-button {
   @include clearfix();
 
+  clear: both;
   margin: 5px 0 10px;
 }
 
