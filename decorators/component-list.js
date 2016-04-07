@@ -1,6 +1,6 @@
 var _ = require('lodash'),
   references = require('../services/references'),
-  dom = require('../services/dom'),
+  dom = require('@nymag/dom'),
   edit = require('../services/edit'),
   render = require('../services/render'),
   label = require('../services/label'),

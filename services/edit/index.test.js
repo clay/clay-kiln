@@ -1,7 +1,7 @@
 var lib = require('./'),
   db = require('./db'),
   site = require('./../site'),
-  dom = require('./../dom'),
+  dom = require('@nymag/dom'),
   cache = require('./cache'),
   control = require('./control'),
   progress = require('./../progress'),

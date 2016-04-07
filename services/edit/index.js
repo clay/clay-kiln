@@ -1,5 +1,5 @@
 var _ = require('lodash'),
-  dom = require('./../dom'),
+  dom = require('@nymag/dom'),
   cache = require('./cache'),
   db = require('./db'),
   references = require('../references'),

@@ -1,5 +1,5 @@
 var path = require('path'),
-  dom = require('./dom'),
+  dom = require('@nymag/dom'),
   references = require('./references'),
   editorEl = dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"]'),
   data = {};

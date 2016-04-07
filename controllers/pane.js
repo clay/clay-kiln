@@ -1,5 +1,5 @@
 module.exports = function () {
-  var dom = require('../services/dom'),
+  var dom = require('@nymag/dom'),
     noScrollClass = 'noscroll';
 
   /**

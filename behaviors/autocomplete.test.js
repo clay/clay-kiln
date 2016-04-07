@@ -2,7 +2,7 @@ var fixture = require('../test/fixtures/behavior')(),
   autocomplete = require('./autocomplete'),
   db = require('../services/edit/db'),
   site = require('../services/site'),
-  dom = require('../services/dom');
+  dom = require('@nymag/dom');
 
 describe('autocomplete behavior', function () {
 

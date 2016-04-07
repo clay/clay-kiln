@@ -1,4 +1,4 @@
-var dom = require('../services/dom');
+var dom = require('@nymag/dom');
 
 /**
  * Add a "required" bit of text after the label (if it exists)

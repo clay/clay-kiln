@@ -1,4 +1,4 @@
-var dom = require('../services/dom'),
+var dom = require('@nymag/dom'),
   db = require('../services/edit/db'),
   _ = require('lodash'),
   site = require('../services/site'),

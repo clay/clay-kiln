@@ -1,5 +1,5 @@
 var _ = require('lodash'),
-  dom = require('./dom'),
+  dom = require('@nymag/dom'),
   references = require('./references'),
   formCreator = require('./form-creator');
 

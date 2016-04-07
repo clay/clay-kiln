@@ -1,5 +1,5 @@
 var lib = require('./publish-validation'),
-  dom = require('./dom'),
+  dom = require('@nymag/dom'),
   edit = require('./edit');
 
 // defaults for chai

@@ -1,4 +1,4 @@
-var dom = require('../services/dom');
+var dom = require('@nymag/dom');
 
 /**
  * Appends hidden field to allow component instances to affect URI's and Page ID's.
