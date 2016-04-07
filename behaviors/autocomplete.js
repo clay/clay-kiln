@@ -5,7 +5,7 @@ var dom = require('@nymag/dom'),
   getInput = require('../services/get-input'),
   textProp = 'text';
 
-import cid from '../services/cid';
+import cid from '@nymag/cid';
 
 /**
  *
