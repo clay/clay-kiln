@@ -370,9 +370,7 @@ function addToParentList(opts) {
       // todo: when we can POST and get html back, just handle the parent here
       save(parentData),
       db.getHTML(ref)
-    ]).then(function (results) {
-      return results[1]; // return the child component's html
-    });
+    ]).then(results => results[1]); // return the child component's html
   });
 }
 
