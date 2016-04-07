@@ -81,12 +81,19 @@ function addComponentsHandlers(el) {
 /**
  * Reload component with latest HTML from the server.
  * @param {string} ref
+ * @param {string} [html]
  * @returns {Promise}
  */
-function reloadComponent(ref) {
-  return db.getHTML(ref)
-  // ?edit=true so that components will return back edit-mode stuff (if they check for locals.edit)
-  // e.g. clay-tweet and clay-facebook-post load scripts in view mode, but not edit mode
+function reloadComponent(ref, html) {
+  var serverHtml;
+
+  if (html) {
+    serverHtml = Promise.resolve(html);
+  } else {
+    serverHtml = db.getHTML(ref);
+  }
+
+  return serverHtml
     .then(function (el) {
       var currentEls = dom.findAll('[' + references.referenceAttribute + '="' + ref + '"]');
 

@@ -298,6 +298,22 @@ function save(uri, data) {
 }
 
 /**
+ * save, expecting html to be returned from the server
+ * @param {string} uri
+ * @param {object} data
+ * @returns {Promise}
+ */
+function saveForHTML(uri, data) {
+  assertUri(uri);
+
+  return send(addJsonHeader({
+    method: 'PUT',
+    url: uri + extHtml + '?edit=true',
+    data: data
+  })).then(expectHTMLResult(uri));
+}
+
+/**
  * @param {string} uri
  * @param {object} data
  * @returns {Promise}
@@ -361,6 +377,7 @@ module.exports.getText = getText;
 module.exports.getHead = getHead;
 module.exports.getHTML = getHTML;
 module.exports.save = save;
+module.exports.saveForHTML = saveForHTML;
 module.exports.saveText = saveText;
 module.exports.create = create;
 module.exports.remove = remove;

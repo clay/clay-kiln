@@ -107,7 +107,7 @@ function saveThrough(data) {
   var uri = data[references.referenceProperty];
 
   return removeExtras(uri, data).then(function (data) {
-    return db.save(uri, data);
+    return db.saveForHTML(uri, data);
   }).then(function (result) {
     // only clear cache if save is successful
     exports.getData.cache = new _.memoize.Cache();

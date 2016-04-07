@@ -111,10 +111,10 @@ describe('cache service', function () {
       var data = {_ref: 'foo'};
 
       db.get.returns(Promise.resolve({foo: 'bar'}));
-      db.save.returns(Promise.resolve({foo: 'bar'}));
+      db.saveForHTML.returns(Promise.resolve('some html'));
       db.getSchema.returns(Promise.resolve({foo: 'bar'}));
       return fn(data).then(function () {
-        expect(db.save.called).to.equal(true);
+        expect(db.saveForHTML.called).to.equal(true);
       });
     });
 
@@ -122,7 +122,7 @@ describe('cache service', function () {
       var data = {_ref: 'foo'};
 
       db.get.returns(Promise.resolve({foo: 'bar'}));
-      db.save.returns(Promise.resolve('some html'));
+      db.saveForHTML.returns(Promise.resolve('some html'));
       db.getSchema.returns(Promise.resolve({foo: 'bar'}));
       return fn(data).then(function (result) {
         expect(result).to.equal('some html');
