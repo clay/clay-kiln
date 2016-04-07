@@ -86,6 +86,7 @@ function validate(data, schema) {
  * Update data for a component.
  *
  * Note: try to operate on full objects with schemas so we don't have to lookup the schema for validation.
+ * Note: returns the re-rendered html string from the server
  *
  * @param {object} data  data that will be saved
  * @param {string} data._ref  uri to save
@@ -363,8 +364,13 @@ function addToParentList(opts) {
       parentData[parentField].push(item);
     }
 
-    return save(parentData)
-      .then(db.getHTML.bind(null, ref));
+    return Promise.all([
+      // save the parent and get the child's html in parallel
+      // note: this assumes the child already exists
+      // todo: when we can POST and get html back, just handle the parent here
+      save(parentData),
+      db.getHTML(ref)
+    ]).then(results => results[1]); // return the child component's html
   });
 }
 

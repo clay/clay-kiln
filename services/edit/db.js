@@ -4,6 +4,9 @@ var _ = require('lodash'),
   references = require('../references'),
   site = require('./../site'),
   extHtml = '.html',
+  editMode = '?edit=true',
+  // when we ask for updated component html,
+  // make sure the server knows we're in edit mode
   componentRoute = '/components/',
   schemaEndpoint = '/schema';
 
@@ -279,7 +282,7 @@ function getHead(uri) {
 function getHTML(uri) {
   assertUri(uri);
 
-  return send(uri + extHtml + '?edit=true').then(expectHTMLResult(uri));
+  return send(uri + extHtml + editMode).then(expectHTMLResult(uri));
 }
 
 /**
@@ -295,6 +298,22 @@ function save(uri, data) {
     url: uri,
     data: data
   })).then(expectJSONResult);
+}
+
+/**
+ * save, expecting html to be returned from the server
+ * @param {string} uri
+ * @param {object} data
+ * @returns {Promise}
+ */
+function saveForHTML(uri, data) {
+  assertUri(uri);
+
+  return send(addJsonHeader({
+    method: 'PUT',
+    url: uri + extHtml + editMode,
+    data: data
+  })).then(expectHTMLResult(uri));
 }
 
 /**
@@ -361,6 +380,7 @@ module.exports.getText = getText;
 module.exports.getHead = getHead;
 module.exports.getHTML = getHTML;
 module.exports.save = save;
+module.exports.saveForHTML = saveForHTML;
 module.exports.saveText = saveText;
 module.exports.create = create;
 module.exports.remove = remove;

@@ -241,6 +241,32 @@ describe('db service', function () {
     });
   });
 
+  describe('saveForHTML', function () {
+    var fn = lib[this.title];
+
+    createUriBlockTests(fn);
+
+    it('returns data with schema', function () {
+      respond('<div>ok</div>');
+
+      return fn('foo').then(function (data) {
+        expect(data.getAttribute('data-uri')).to.deep.equal('foo');
+      });
+    });
+
+    it('throws on bad data', function (done) {
+      var data = 'jkfdlsa';
+
+      respond(data);
+
+      fn('foo').then(function () {
+        done('should throw');
+      }, function () {
+        done();
+      });
+    });
+  });
+
   describe('create', function () {
     var fn = lib[this.title];
 

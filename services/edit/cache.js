@@ -107,19 +107,13 @@ function saveThrough(data) {
   var uri = data[references.referenceProperty];
 
   return removeExtras(uri, data).then(function (data) {
-    return db.save(uri, data);
+    return db.saveForHTML(uri, data);
   }).then(function (result) {
     // only clear cache if save is successful
     exports.getData.cache = new _.memoize.Cache();
     exports.getDataOnly.cache = new _.memoize.Cache();
 
-    // remember new value (it is returned when save is successful; common with REST implementations)
-    result[references.referenceProperty] = uri;
-    control.setReadOnly(result);
-    exports.getDataOnly.cache.set(uri, result);
-
-    // cache version with schema, return version with schema
-    return exports.getData(uri);
+    return result;
   });
 }
 

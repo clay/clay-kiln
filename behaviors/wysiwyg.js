@@ -189,28 +189,24 @@ function appendToPrev(html, prev) {
  * remove current component from parent
  * @param {object} current
  * @param {object} parent
- * @returns {Function}
+ * @returns {Promise} new html for the parent component
  */
 function removeCurrentFromParent(current, parent) {
-  return function () {
-    return edit.removeFromParentList({el: current.component, ref: current.ref, parentField: parent.field, parentRef: parent.ref});
-  };
+  return edit.removeFromParentList({el: current.component, ref: current.ref, parentField: parent.field, parentRef: parent.ref});
 }
 
 /**
  * focus on the previous component's field
- * @param {object} parent
+ * @param {Element} el
  * @param  {object} prev
  * @param {number} textLength
  * @returns {Function}
  */
-function focusPreviousComponent(parent, prev, textLength) {
+function focusPreviousComponent(el, prev, textLength) {
   return function () {
-    var newEl = dom.find(parent.component, '[' + references.referenceAttribute + '="' + prev.ref + '"]');
-
-    return focus.focus(newEl, { ref: prev.ref, path: prev.field }).then(function (prevField) {
+    return focus.focus(el, { ref: prev.ref, path: prev.field }).then(function (el) {
       // set caret right before the new text we added
-      select(prevField, { start: prevField.textContent.length - textLength });
+      select(el, { start: el.textContent.length - textLength });
     });
   };
 }
@@ -231,9 +227,11 @@ function removeComponent(el) {
       // there's a previous component with the same name!
       // get the contents of the current field, and append them to the previous component
       return appendToPrev(getFieldContents(el), prev)
-        .then(removeCurrentFromParent(current, parent))
-        .then(render.reloadComponent.bind(null, prev.ref))
-        .then(focusPreviousComponent(parent, prev, textLength));
+        .then(function (html) {
+          return removeCurrentFromParent(current, parent)
+            .then(render.reloadComponent.bind(null, prev.ref, html))
+            .then(focusPreviousComponent(html, prev, textLength));
+        });
     }
   });
 }
@@ -255,7 +253,7 @@ function addComponent(el, text) {
   }
 
   return edit.createComponent(current.name, newData)
-    .then(function (res) {
+    .then(function (res) { // todo: when we can POST and get back html, handle it here
       var newRef = res._ref;
 
       return edit.addToParentList({ref: newRef, prevRef: current.ref, parentField: parent.field, parentRef: parent.ref})
