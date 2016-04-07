@@ -3,7 +3,7 @@
 
 var _ = require('lodash'),
   references = require('./references'),
-  dom = require('./dom'),
+  dom = require('@nymag/dom'),
   edit = require('./edit'),
   focus = require('../decorators/focus'),
   forms = require('./forms'),

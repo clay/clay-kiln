@@ -4,7 +4,7 @@ var _ = require('lodash'),
   references = require('./references'),
   label = require('./label'),
   behaviors = require('./behaviors'),
-  dom = require('./dom'),
+  dom = require('@nymag/dom'),
   currentBindings;
 
 /**

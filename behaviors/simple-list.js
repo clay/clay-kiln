@@ -1,6 +1,6 @@
 var _ = require('lodash'),
   keycode = require('keycode'),
-  dom = require('../services/dom'),
+  dom = require('@nymag/dom'),
   focus = require('../decorators/focus');
 
 /**

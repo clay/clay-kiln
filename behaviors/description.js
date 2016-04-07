@@ -1,4 +1,4 @@
-var dom = require('../services/dom'),
+var dom = require('@nymag/dom'),
   getInput = require('../services/get-input');
 
 /**

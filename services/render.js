@@ -1,7 +1,7 @@
 var componentEdit = require('../controllers/component-edit'),
   componentEditName = 'component-edit',
   db = require('./edit/db'),
-  dom = require('./dom'),
+  dom = require('@nymag/dom'),
   ds = require('dollar-slice'),
   edit = require('./edit'),
   references = require('./references'),

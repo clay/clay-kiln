@@ -4,7 +4,7 @@ var moment = require('moment'),
   rules = require('../validators'),
   validation = require('../services/publish-validation'),
   progress = require('../services/progress'),
-  dom = require('../services/dom'),
+  dom = require('@nymag/dom'),
   state = require('../services/page-state'),
   db = require('../services/edit/db');
 

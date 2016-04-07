@@ -1,6 +1,6 @@
 var _ = require('lodash'),
   urlParse = require('url'),
-  dom = require('./../dom'),
+  dom = require('@nymag/dom'),
   references = require('../references'),
   site = require('./../site'),
   extHtml = '.html',

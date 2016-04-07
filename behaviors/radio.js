@@ -1,5 +1,5 @@
 var _ = require('lodash'),
-  dom = require('../services/dom');
+  dom = require('@nymag/dom');
 
 /**
  * Create list item and input for each option.

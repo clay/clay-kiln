@@ -3,7 +3,7 @@ var dirname = __dirname.split('/').pop(),
   lib = require('./page-state'),
   edit = require('./edit'),
   db = require('./edit/db'),
-  dom = require('./dom'),
+  dom = require('@nymag/dom'),
   moment = require('moment');
 
 describe(dirname, function () {

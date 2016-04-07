@@ -1,6 +1,6 @@
 const _ = require('lodash'),
   site = require('../services/site'),
-  dom = require('../services/dom'),
+  dom = require('@nymag/dom'),
   getInput = require('../services/get-input'),
   transformers = {
     // this is an object of available transforms

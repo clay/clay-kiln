@@ -1,5 +1,5 @@
 var _ = require('lodash'),
-  dom = require('../services/dom');
+  dom = require('@nymag/dom');
 
 /**
  * Simple List Primary (used after simple-list)

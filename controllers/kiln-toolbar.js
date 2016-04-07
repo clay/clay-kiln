@@ -1,5 +1,5 @@
 var EditorToolbar,
-  dom = require('../services/dom'),
+  dom = require('@nymag/dom'),
   edit = require('../services/edit'),
   events = require('../services/events'),
   focus = require('../decorators/focus'),

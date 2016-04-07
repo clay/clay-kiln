@@ -1,6 +1,6 @@
 var _ = require('lodash'),
   moment = require('moment'),
-  dom = require('./dom'),
+  dom = require('@nymag/dom'),
   ds = require('dollar-slice'),
   state = require('./page-state'),
   paneController = require('../controllers/pane'),

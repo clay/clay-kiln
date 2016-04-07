@@ -1,5 +1,5 @@
 // this is a tiny little service that reliably gets the input element of a field
-var dom = require('./dom');
+var dom = require('@nymag/dom');
 
 function getInput(el) {
   return dom.find(el, '.checkbox-group') || dom.find(el, 'input') || dom.find(el, 'textarea') || dom.find(el, '.wysiwyg-input');

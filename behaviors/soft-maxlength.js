@@ -1,6 +1,6 @@
 var striptags = require('striptags'),
   he = require('he'),
-  dom = require('../services/dom'),
+  dom = require('@nymag/dom'),
   getInput = require('../services/get-input');
 
 /**

@@ -4,7 +4,7 @@
  */
 
 function ComponentEdit() {
-  var dom = require('../services/dom'),
+  var dom = require('@nymag/dom'),
     events = require('../services/events'),
     references = require('../services/references'),
     decorate = require('../services/decorators'),

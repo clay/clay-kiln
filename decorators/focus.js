@@ -2,7 +2,7 @@ var _ = require('lodash'),
   references = require('../services/references'),
   forms = require('../services/forms'),
   select = require('../services/select'),
-  dom = require('../services/dom'),
+  dom = require('@nymag/dom'),
   getInput = require('../services/get-input'),
   componentList = require('./component-list'),
   currentFocus;

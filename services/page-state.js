@@ -2,7 +2,7 @@ const _ = require('lodash'),
   moment = require('moment'),
   edit = require('./edit'),
   db = require('./edit/db'),
-  dom = require('./dom'),
+  dom = require('@nymag/dom'),
   progress = require('./progress');
 
 
