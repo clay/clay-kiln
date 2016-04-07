@@ -196,9 +196,9 @@ function close() {
 
       data[references.referenceProperty] = ref;
       return edit.savePartial(data)
-        .then(function () {
+        .then(function (html) {
           removeCurrentForm(container);
-          return render.reloadComponent(ref);
+          return render.reloadComponent(ref, html);
         }).then(function () {
           setEditingStatus(false); // Status as saved.
           cleanMediumEditorDom();
