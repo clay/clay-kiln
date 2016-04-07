@@ -364,8 +364,15 @@ function addToParentList(opts) {
       parentData[parentField].push(item);
     }
 
-    return save(parentData)
-      .then(db.getHTML.bind(null, ref));
+    return Promise.all([
+      // save the parent and get the child's html in parallel
+      // note: this assumes the child already exists
+      // todo: when we can POST and get html back, just handle the parent here
+      save(parentData),
+      db.getHTML(ref)
+    ]).then(function (results) {
+      return results[1]; // return the child component's html
+    });
   });
 }
 
