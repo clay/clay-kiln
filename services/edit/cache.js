@@ -113,13 +113,7 @@ function saveThrough(data) {
     exports.getData.cache = new _.memoize.Cache();
     exports.getDataOnly.cache = new _.memoize.Cache();
 
-    // remember new value (it is returned when save is successful; common with REST implementations)
-    result[references.referenceProperty] = uri;
-    control.setReadOnly(result);
-    exports.getDataOnly.cache.set(uri, result);
-
-    // cache version with schema, return version with schema
-    return exports.getData(uri);
+    return result;
   });
 }
 
