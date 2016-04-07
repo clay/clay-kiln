@@ -189,28 +189,26 @@ function appendToPrev(html, prev) {
  * remove current component from parent
  * @param {object} current
  * @param {object} parent
- * @returns {Function}
+ * @returns {Promise} new html for the parent component
  */
 function removeCurrentFromParent(current, parent) {
-  return function () {
-    return edit.removeFromParentList({el: current.component, ref: current.ref, parentField: parent.field, parentRef: parent.ref});
-  };
+  return edit.removeFromParentList({el: current.component, ref: current.ref, parentField: parent.field, parentRef: parent.ref});
 }
 
 /**
  * focus on the previous component's field
- * @param {object} parent
+ * @param {Element} el
  * @param  {object} prev
  * @param {number} textLength
- * @returns {Promise}
+ * @returns {Function}
  */
-function focusPreviousComponent(parent, prev, textLength) {
-  var newEl = dom.find(parent.component, '[' + references.referenceAttribute + '="' + prev.ref + '"]');
-
-  return focus.focus(newEl, { ref: prev.ref, path: prev.field }).then(function (prevField) {
-    // set caret right before the new text we added
-    select(prevField, { start: prevField.textContent.length - textLength });
-  });
+function focusPreviousComponent(el, prev, textLength) {
+  return function () {
+    return focus.focus(el, { ref: prev.ref, path: prev.field }).then(function (el) {
+      // set caret right before the new text we added
+      select(el, { start: el.textContent.length - textLength });
+    });
+  };
 }
 
 /**
@@ -231,8 +229,8 @@ function removeComponent(el) {
       return appendToPrev(getFieldContents(el), prev)
         .then(function (html) {
           return removeCurrentFromParent(current, parent)
-            .then(render.reloadComponent.bind(null, pre.ref, html))
-            .then(focusPreviousComponent(parent, prev, textLength));
+            .then(render.reloadComponent.bind(null, prev.ref, html))
+            .then(focusPreviousComponent(html, prev, textLength));
         });
     }
   });
