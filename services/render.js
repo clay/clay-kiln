@@ -85,13 +85,7 @@ function addComponentsHandlers(el) {
  * @returns {Promise}
  */
 function reloadComponent(ref, html) {
-  var serverHtml;
-
-  if (html) {
-    serverHtml = Promise.resolve(html);
-  } else {
-    serverHtml = db.getHTML(ref);
-  }
+  var serverHtml = html ? Promise.resolve(html) : db.getHTML(ref);
 
   return serverHtml
     .then(function (el) {
