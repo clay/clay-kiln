@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/nymag/clay-kiln",
   "dependencies": {
+    "@nymag/cid": "^1.0.1",
     "@nymag/dom": "^1.0.0",
     "babel-preset-es2015": "^6.3.13",
     "babelify": "^7.2.0",
