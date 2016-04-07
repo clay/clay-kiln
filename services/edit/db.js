@@ -4,6 +4,9 @@ var _ = require('lodash'),
   references = require('../references'),
   site = require('./../site'),
   extHtml = '.html',
+  editMode = '?edit=true',
+  // when we ask for updated component html,
+  // make sure the server knows we're in edit mode
   componentRoute = '/components/',
   schemaEndpoint = '/schema';
 
@@ -279,7 +282,7 @@ function getHead(uri) {
 function getHTML(uri) {
   assertUri(uri);
 
-  return send(uri + extHtml + '?edit=true').then(expectHTMLResult(uri));
+  return send(uri + extHtml + editMode).then(expectHTMLResult(uri));
 }
 
 /**
@@ -308,7 +311,7 @@ function saveForHTML(uri, data) {
 
   return send(addJsonHeader({
     method: 'PUT',
-    url: uri + extHtml + '?edit=true',
+    url: uri + extHtml + editMode,
     data: data
   })).then(expectHTMLResult(uri));
 }
