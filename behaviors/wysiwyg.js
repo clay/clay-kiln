@@ -253,7 +253,7 @@ function addComponent(el, text) {
   }
 
   return edit.createComponent(current.name, newData)
-    .then(function (res) {
+    .then(function (res) { // todo: when we can POST and get back html, handle it here
       var newRef = res._ref;
 
       return edit.addToParentList({ref: newRef, prevRef: current.ref, parentField: parent.field, parentRef: parent.ref})
