@@ -47,7 +47,7 @@
   {{ ('node_modules/clay-kiln/dist/clay-kiln.js')|includeFile }}
   </script>
 
-  {# templates #}
+  {# template wrappers #}
   <template class="kiln-pane-template">
     <div class="kiln-toolbar-pane-background">
       <div class="kiln-toolbar-pane">
@@ -59,4 +59,42 @@
       </div>
     </div>
   </template>
+
+  <div class="kiln-pane-template-elements">
+
+  {# sub-templates: messages #}
+    {# publish messages with default text #}
+    <div class="publish-messages messages">
+      <p class="publish-state-message">In Draft.</p>
+      <p class="publish-schedule-message hide">Scheduled to publish</p>
+      <p class="publish-effect-message">Changes you make outside of the article will also be published.</p>
+    </div>
+
+  {# sub-templates: forms #}
+    {# publish actions #}
+    <div class="publish-actions actions">
+      <form class="schedule">
+        <label class="schedule-label" for="schedule-date">Date</label>
+        <input id="schedule-date" class="schedule-input" type="date" min="" value="" placeholder=""></input>
+        <label class="schedule-label" for="schedule-time">Time</label>
+        <input id="schedule-time" class="schedule-input" type="time" value="" placeholder=""></input>
+        <button class="schedule-publish">Schedule Publish</button>
+      </form>
+      <button class="unschedule hide">Unschedule</button>
+      <button class="publish-now">Publish Now</button>
+      <button class="unpublish hide">Unpublish Page</button>
+    </div>
+
+  {# sub-templates: errors #}
+    {# publish errors with default text #}
+    <div class="publish-errors">
+      <div class="error-message">This page is missing things needed to publish.<br />Address the following and try publishing again.</div>
+      <span class="label">There was a problem:</span>
+      <span class="description">Please see below for details</span>
+      <ul class="errors">
+        <li class="error-item"><span class="error-label">Item Label</span>Item Preview</li>
+      </ul>
+    </div>
+
+  </div>
 {% endif %}
