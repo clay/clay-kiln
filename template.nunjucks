@@ -70,7 +70,7 @@
       <p class="publish-effect-message">Changes you make outside of the article will also be published.</p>
     </div>
 
-  {# sub-templates: forms #}
+  {# sub-templates: forms and actions #}
     {# publish actions #}
     <div class="publish-actions actions">
       <form class="schedule">
@@ -83,6 +83,14 @@
       <button class="unschedule hide">Unschedule</button>
       <button class="publish-now">Publish Now</button>
       <button class="unpublish hide">Unpublish Page</button>
+    </div>
+
+    <div class="new-page-actions actions">
+      <form class="select-page-type">
+        {#<label class="schedule-label" for="schedule-time">Time</label>#}
+        <button class="create-article-page primary-action">New Article Page</button>
+        <button class="create-sponsored-post primary-action">New Sponsored Post</button>
+      </form>
     </div>
 
   {# sub-templates: errors #}

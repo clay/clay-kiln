@@ -150,6 +150,18 @@ function openPublish() {
   });
 }
 
+/**
+ * open publish pane
+ * @returns {Promise}
+ */
+function openNewPage() {
+  var header = 'Create a New Page',
+    innerEl = document.createDocumentFragment();
+
+  innerEl.appendChild(dom.find('.new-page-actions'));
+  open(header, innerEl);
+}
+
 function addPreview(preview) {
   if (preview) {
     return `<span class="error-preview">${preview}</span>`;
@@ -216,5 +228,6 @@ function openValidationErrors(errors) {
 
 module.exports.close = close;
 module.exports.open = open;
+module.exports.openNewPage = openNewPage;
 module.exports.openPublish = openPublish;
 module.exports.openValidationErrors = openValidationErrors;

@@ -15,11 +15,12 @@ var EditorToolbar,
  * @returns {Promise}
  */
 function createPage() {
-  // todo: allow users to choose their layout / components
-
-  return edit.createPage().then(function (url) {
-    location.href = url;
-  });
+  return focus.unfocus()
+    .then(pane.openNewPage)
+    .catch(function () {
+      progress.done('error');
+      progress.open('error', 'Issue with opening page.', true);
+    });
 }
 
 /**
