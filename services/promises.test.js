@@ -74,10 +74,6 @@ describe('promises service', function () {
   describe('props', function () {
     var fn = lib[this.title];
 
-    it('creates Promise', function () {
-      expect(fn().promise).to.be.instanceOf(Promise);
-    });
-
     it('resolves data', function (done) {
       var data = { one: Promise.resolve('one'), two: Promise.resolve('two') };
 
@@ -88,20 +84,6 @@ describe('promises service', function () {
         expect(result.two).to.equal('two');
         done();
       });
-    });
-
-    it('rejects errors', function (done) {
-      var data = new Error(),
-        deferred = fn();
-
-      deferred.promise.then(function () {
-        done('should have rejected');
-      }).catch(function (result) {
-        expect(result).to.equal(data);
-        done();
-      });
-
-      deferred.reject(data);
     });
   });
 

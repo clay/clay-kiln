@@ -249,8 +249,9 @@ function getChildComponents(data) {
     if (_.isArray(val)) {
       // find arrays
       _.each(val, function checkArrays(item, index) {
+        console.log(item._ref, !!item._ref.match(/\/components\/[A-Za-z0-9\-]+$/))
         // see if these arrays contain components
-        if (item._ref && item._ref.match(/\/components\/[a-z\-]+$/)) {
+        if (item._ref && item._ref.match(/\/components\/[A-Za-z0-9\-]+$/)) {
           // if they do, and if the component references are base (not instance) refs,
           // add them to the mapping object
           // note: we'll use the mapping object to update the parent component
