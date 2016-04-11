@@ -19,6 +19,31 @@ function defer() {
 }
 
 /**
+ * bluebird.props with native promises
+ * @param {object} props
+ * @returns {Promise}
+ */
+function props(props) {
+  return Promise.all(Object.keys(props).map(function (key) {
+    // ok with val, func, prom?
+    return Promise.resolve(props[key]).then(function (res) {
+      let one = {};
+
+      one[key] = res;
+      return one;
+    });
+  }))
+  .then(function (resolvedArray) {
+    return resolvedArray.reduce(function (memo, oneRes) {
+      let key = Object.keys(oneRes)[0];
+
+      memo[key] = oneRes[key];
+      return memo;
+    }, {});
+  });
+}
+
+/**
  * @returns {Promise}
  */
 function join() {
@@ -90,6 +115,7 @@ function attempt(fn) {
 }
 
 module.exports.defer = defer;
+module.exports.props = props;
 module.exports.join = join;
 module.exports.each = each;
 module.exports.map = map;
