@@ -8,6 +8,8 @@ var nodeUrl = require('url'),
   EditorToolbar = require('./controllers/kiln-toolbar'),
   render = require('./services/render'),
   progress = require('./services/progress'),
+  Konami = require('konami-js'),
+  pane = require('./services/pane'),
   connectionLostMessage = 'Connection Lost. Changes will <strong>NOT</strong> be saved.';
 
 // manually add built-in behaviors
@@ -67,3 +69,5 @@ window.addEventListener('offline', function () {
   progress.done('offline'); // turn any progress indicators to grey and end them
   progress.open('offline', connectionLostMessage);
 });
+
+new Konami(pane.takeOffEveryZig);

@@ -3,6 +3,7 @@ var _ = require('lodash'),
   dom = require('@nymag/dom'),
   ds = require('dollar-slice'),
   state = require('./page-state'),
+  site = require('./site'),
   paneController = require('../controllers/pane'),
   publishPaneController = require('../controllers/publish-pane');
 
@@ -203,7 +204,26 @@ function openValidationErrors(errors) {
   open(header, innerEl);
 }
 
+function takeOffEveryZig() {
+  var header = '<span class="ayb-header">HOW ARE YOU GENTLEMEN <em>!!</em></span>',
+    messageEl = dom.create(`
+      <img class="cats-ayb" src="${site.get('assetPath')}/media/components/clay-kiln/cats.png" />
+      <div class="error-message ayb">ALL YOUR BASE ARE BELONG TO US</div>
+    `),
+    errorsEl = dom.create(`<div class="publish-error">
+      <div class="label">YOU ARE ON THE WAY TO DESTRUCTION</div>
+      <div class="description ayb">YOU HAVE NO CHANCE TO SURVIVE MAKE YOUR TIME</div>
+    </div>`),
+    innerEl = document.createDocumentFragment();
+
+  innerEl.appendChild(messageEl);
+  innerEl.appendChild(errorsEl);
+
+  open(header, innerEl);
+}
+
 module.exports.close = close;
 module.exports.open = open;
 module.exports.openPublish = openPublish;
 module.exports.openValidationErrors = openValidationErrors;
+module.exports.takeOffEveryZig = takeOffEveryZig;
