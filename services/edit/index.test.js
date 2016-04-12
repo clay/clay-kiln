@@ -21,7 +21,7 @@ describe('edit service', function () {
   }
 
   function expectSavedAs(expectedData) {
-    expect(cache.saveThrough.args[0][0]).to.deep.equal(expectedData, 'Expected saved value');
+    expect(cache.saveForHTML.args[0][0]).to.deep.equal(expectedData, 'Expected saved value');
   }
 
   beforeEach(function () {
@@ -67,6 +67,7 @@ describe('edit service', function () {
     it('removes the item from the data', function () {
       cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'}));
       cache.saveThrough.returns(resolveReadOnly({}));
+      cache.saveForHTML.returns(Promise.resolve('some html'));
 
       return fn({el: {}, ref: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
         expectSavedAs({a: [{_ref: 'c'}], _schema: {a: {}}, _ref: 'd'});
@@ -78,6 +79,7 @@ describe('edit service', function () {
 
       cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'}));
       cache.saveThrough.returns(resolveReadOnly({}));
+      cache.saveForHTML.returns(Promise.resolve('some html'));
 
       return fn({el: domEl, ref: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
         expect(dom.removeElement.calledWith(domEl)).to.equal(true);
@@ -91,6 +93,7 @@ describe('edit service', function () {
     it('adds the item to the list data', function () {
       cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'}));
       cache.saveThrough.returns(resolveReadOnly({}));
+      cache.saveForHTML.returns(Promise.resolve('some html'));
 
       return fn({ref: 'newRef', prevRef: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
         expectSavedAs({a: [{_ref: 'b'}, {_ref: 'newRef'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'});
@@ -100,6 +103,7 @@ describe('edit service', function () {
     it('adds the item to the end of the list data', function () {
       cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'}));
       cache.saveThrough.returns(resolveReadOnly({}));
+      cache.saveForHTML.returns(Promise.resolve('some html'));
 
       return fn({ref: 'newRef', prevRef: null, parentField: 'a', parentRef: 'd'}).then(function () {
         expectSavedAs({a: [{_ref: 'b'}, {_ref: 'c'}, {_ref: 'newRef'}], _schema: {a: {}}, _ref: 'd'});
@@ -109,6 +113,7 @@ describe('edit service', function () {
     it('returns a new element', function () {
       cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'}));
       cache.saveThrough.returns(resolveReadOnly({}));
+      cache.saveForHTML.returns(Promise.resolve('some html'));
 
       return fn({ref: 'newRef', prevRef: 'b', parentField: 'a', parentRef: 'd'}).then(function (el) {
         expect(el instanceof Element).to.equal(true);
@@ -192,9 +197,6 @@ describe('edit service', function () {
           }]
         };
 
-      // _componentList will normally have properties inside of it
-      baseData.a._componentList = true;
-
       cache.getDataOnly.withArgs(prefix + '/components/fakeName').returns(resolveReadOnly(baseData));
       cache.createThrough.withArgs(prefix + '/components/fakeName/instances').returns(resolveReadOnly(baseData));
       cache.getDataOnly.withArgs(prefix + '/components/fakeChild').returns(resolveReadOnly({}));
@@ -230,9 +232,6 @@ describe('edit service', function () {
             _ref: prefix + '/components/fakeChild2/instances/0'
           }]
         };
-
-      // _componentList will normally have properties inside of it
-      baseData.a._componentList = true;
 
       cache.getDataOnly.withArgs(prefix + '/components/fakeName').returns(resolveReadOnly(baseData));
       cache.createThrough.withArgs(prefix + '/components/fakeName/instances').returns(resolveReadOnly(baseData));

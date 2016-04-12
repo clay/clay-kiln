@@ -100,10 +100,36 @@ function getSchema(uri) {
 }
 
 /**
+ * save component, get saved data back
  * @param {object} data
  * @returns {Promise}
  */
 function saveThrough(data) {
+  var uri = data[references.referenceProperty];
+
+  return removeExtras(uri, data).then(function (data) {
+    return db.save(uri, data);
+  }).then(function (result) {
+    // only clear cache if save is successful
+    exports.getData.cache = new _.memoize.Cache();
+    exports.getDataOnly.cache = new _.memoize.Cache();
+
+    // remember new value (it is returned when save is successful; common with REST implementations)
+    result[references.referenceProperty] = uri;
+    control.setReadOnly(result);
+    exports.getDataOnly.cache.set(uri, result);
+
+    // cache version with schema, return version with schema
+    return exports.getData(uri);
+  });
+}
+
+/**
+ * save component, get html back
+ * @param {object} data
+ * @returns {Promise}
+ */
+function saveForHTML(data) {
   var uri = data[references.referenceProperty];
 
   return removeExtras(uri, data).then(function (data) {
@@ -148,4 +174,5 @@ exports.getSchema = control.memoizePromise(getSchema);
 
 // forgets
 exports.saveThrough = saveThrough;
+exports.saveForHTML = saveForHTML;
 exports.createThrough = createThrough;
