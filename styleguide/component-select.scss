@@ -32,7 +32,10 @@ $layout-parent-bg-color: $purple-50;
 }
 
 // Selected bar
-.component-bar-wrapper.selected > .component-bar {
+// note: sometimes (like in source-links), the bar lives inside the div
+// created by componentList
+.component-bar-wrapper.selected > .component-bar,
+.component-bar-wrapper.selected > * > .component-bar {
   display: flex;
   opacity: 1;
 }
