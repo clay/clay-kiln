@@ -9,7 +9,6 @@ var _ = require('lodash'),
   references = require('../services/references'),
   edit = require('../services/edit'),
   model = require('text-model'),
-  getInput = require('../services/get-input'),
   site = require('../services/site'),
   refAttr = references.referenceAttribute;
 
@@ -484,16 +483,17 @@ module.exports = function (result, args) {
     buttons = args.buttons,
     styled = args.styled,
     enableKeyboardExtras = args.enableKeyboardExtras,
-    textInput = getInput(result.el),
-    field = dom.create(`<p class="wysiwyg-input${ addStyledClass(styled) }" rv-field="${name}" rv-wysiwyg="${name}.data.value" data-wysiwyg-buttons="${buttons.join(',')}"></p>`);
+    field = dom.create(`<label class="input-label">
+      <p class="wysiwyg-input${ addStyledClass(styled) }" rv-field="${name}" rv-wysiwyg="${name}.data.value" data-wysiwyg-buttons="${buttons.join(',')}"></p>
+    </label>`);
 
   // if more than 5 buttons, put the rest on the second tier
   if (buttons.length > 5) {
     buttons.splice(5, 0, 'tieredToolbar'); // clicking this expands the toolbar with a second tier
   }
 
-  // put the rich text field after the input
-  dom.replaceElement(textInput, field);
+  // add the input to the field
+  result.el = field;
 
   // add the binder
   binders.wysiwyg = initWysiwygBinder(enableKeyboardExtras);

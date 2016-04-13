@@ -31,24 +31,19 @@ function setText(text, span) {
 /**
  * set styles depending on the remaining length
  * @param {number} remaining
+ * @param {number} max
  * @param {Element} el
  */
-function setStyles(remaining, el) {
+function setStyles(remaining, max, el) {
   var input = getInput(el.parentNode),
     span = el;
 
-  if (remaining > 0) {
+  if (remaining >= 0) {
     toggleClass(false, span, input);
-    setText('Remaining: ' + remaining, span);
-  } else if (remaining === 0) {
-    toggleClass(false, span, input);
-    setText('At the character limit', span);
-  } else if (remaining === -1) {
-    toggleClass(true, span, input);
-    setText(-remaining + ' character over the limit', span);
+    setText(`Remaining: ${remaining} / ${max}`, span);
   } else {
     toggleClass(true, span, input);
-    setText(-remaining + ' characters over the limit', span);
+    setText(`Remaining: ${remaining} / ${max}`, span);
   }
 }
 
@@ -82,7 +77,7 @@ module.exports = function (result, args) {
       max = parseInt(el.getAttribute('data-maxlength')),
       remaining = max - length;
 
-    setStyles(remaining, el);
+    setStyles(remaining, max, el);
   };
 
   el.appendChild(span);
