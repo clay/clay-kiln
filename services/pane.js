@@ -4,6 +4,7 @@ var _ = require('lodash'),
   ds = require('dollar-slice'),
   state = require('./page-state'),
   paneController = require('../controllers/pane'),
+  newPagePaneController = require('../controllers/pane-new-page'),
   publishPaneController = require('../controllers/publish-pane');
 
 /**
@@ -151,15 +152,25 @@ function openPublish() {
 }
 
 /**
- * open publish pane
+ * open new page type dialog pane
  * @returns {Promise}
  */
 function openNewPage() {
-  var header = 'Create a New Page',
-    innerEl = document.createDocumentFragment();
+  var header = 'Select New Page Type',
+    innerEl = document.createDocumentFragment(),
+    pageActionsSubTemplate = dom.find('.new-page-actions').cloneNode(true),
+    el;
 
-  innerEl.appendChild(dom.find('.new-page-actions'));
-  open(header, innerEl);
+  return state.get().then(function () {
+    // append actions to the doc fragment
+    innerEl.appendChild(pageActionsSubTemplate);
+
+    // create the root pane element
+    el = open(header, innerEl);
+    // init controller for publish pane
+    ds.controller('pane-new-page', newPagePaneController);
+    ds.get('pane-new-page', el.querySelector('.new-page-actions'));
+  });
 }
 
 function addPreview(preview) {
