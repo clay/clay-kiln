@@ -10,8 +10,7 @@ var _ = require('lodash'),
   edit = require('../services/edit'),
   model = require('text-model'),
   site = require('../services/site'),
-  refAttr = references.referenceAttribute,
-  paragraphSplitter = '¶¶';
+  refAttr = references.referenceAttribute;
 
 /**
  * whan that sellection, with his ranges soote
@@ -37,7 +36,10 @@ function selectAfter(node) {
  * @returns {array}
  */
 function splitParagraphs(str) {
-  return str.split(paragraphSplitter);
+  return str.split('</p>'); // split on paragraphs
+  // splitting on the closing tag allows us to grab ALL the paragraphs from
+  // google docs, since when you paste from there the last paragraph
+  // isn't wrapped in a <p> tag. weird, right?
 }
 
 /**
@@ -47,8 +49,7 @@ function splitParagraphs(str) {
  */
 function generateTextModels(rawParagraphs) {
   return _.map(rawParagraphs, function (str) {
-    // remove any unclosed / unopened <p> tags
-    str = str.replace('<p>', '').replace('</p>', '');
+    str = str.replace('<p>', ''); // remove extraneous opening <p> tags
     return model.fromElement(dom.create(str));
   });
 }
@@ -128,10 +129,7 @@ function createEditor(field, buttons) {
       ],
       preCleanReplacements: [
         [/<h[1-9]>/ig, '<h2>'],
-        [/<\/h[1-9]>/ig, '</h2>'], // force all headers to the same level
-        [/<p(.*?)>/ig, paragraphSplitter], // mark paragraphs for splitting
-        [/<br(.*?)><br(.*?)>/ig, paragraphSplitter], // mark double line breaks for splitting
-        [/<\/p>/ig, '']
+        [/<\/h[1-9]>/ig, '</h2>'] // force all headers to the same level
       ]
     },
     anchor: {
