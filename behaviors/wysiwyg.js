@@ -13,6 +13,69 @@ var _ = require('lodash'),
   refAttr = references.referenceAttribute;
 
 /**
+ * whan that sellection, with his ranges soote
+ * the finalle node hath perced to the roote
+ * @param {Node} node
+ */
+function selectAfter(node) {
+  var range = document.createRange(),
+    selection = window.getSelection();
+
+  range.setStartAfter(node); // set the caret after this node
+  range.collapse(true);
+  selection.removeAllRanges();
+  selection.addRange(range);
+  // Of the DOM, to inputte's end they wende
+  // the hooly blisful caret for to seke
+  // that hem hath holpen, when that they were pasted
+}
+
+/**
+ * split innerHTML into paragraphs
+ * @param {string} str
+ * @returns {array}
+ */
+function splitParagraphs(str) {
+  return str.split('¶');
+}
+
+/**
+ * generate text models for paragraphs
+ * @param {array} rawParagraphs
+ * @returns {array}
+ */
+function generateTextModels(rawParagraphs) {
+  return _.map(rawParagraphs, function (str) {
+    // remove any unclosed / unopened <p> tags
+    str = str.replace('<p>', '').replace('</p>', '');
+    return model.fromElement(dom.create(str));
+  });
+}
+
+/**
+ * filter out any paragraphs that are blank (filled with empty spaces)
+ * this happens when paragraphs really only contain <p> tags, <div>s, or extra spaces
+ * we filter AFTER generating text models because the generation gets rid of
+ * tags that paragraphs can't handle
+ * @param  {array} paragraphs
+ * @returns {array}
+ */
+function removeEmpties(paragraphs) {
+  return _.filter(paragraphs, function (p) {
+    return p.text.match(/\w/);
+  });
+}
+
+/**
+ * get an array of paragraph models from an innerHTML string
+ * @param {string} str
+ * @returns {array}
+ */
+function getParagraphModels(str) {
+  return removeEmpties(generateTextModels(splitParagraphs(str)));
+}
+
+/**
  * toggle the tiered toolbar
  * this is the action for the tieredToolbar extension
  * @param {Element} html
@@ -62,10 +125,10 @@ function createEditor(field, buttons) {
         'object',
         'iframe'
       ],
-      cleanReplacements: [
+      preCleanReplacements: [
         [/<h[1-9]>/ig, '<h2>'],
         [/<\/h[1-9]>/ig, '</h2>'], // force all headers to the same level
-        [/<p(.*?)>/ig, ''], // get rid of <p> tags
+        [/<p(.*?)>/ig, '¶'], // get rid of <p> tags
         [/<\/p>/ig, '']
       ]
     },
@@ -270,6 +333,47 @@ function addComponent(el, text) {
 }
 
 /**
+ * add MULTIPLE components after the current component
+ * @param {Element} el
+ * @param {array} components (array of text models)
+ * @returns {Promise}
+ */
+function addComponents(el, components) {
+  var current = getCurrent(el),
+    parent = getParent(current.component);
+
+  // create the new components
+  return Promise.all(_.map(components, function (component) {
+    var throwawayDiv = document.createElement('div'),
+      fragment = model.toElement(component);
+
+    throwawayDiv.appendChild(fragment);
+
+    return edit.createComponent(current.name, {
+      text: throwawayDiv.innerHTML
+    });
+  })).then(function (newComponents) {
+    var newRefs = _.map(newComponents, c => c._ref);
+
+    return edit.addMultipleToParentList({refs: newRefs, prevRef: current.ref, parentField: parent.field, parentRef: parent.ref})
+      .then(focus.unfocus) // save the current component before re-rendering the parent
+      .then(function (newEl) {
+        return render.reloadComponent(parent.ref, newEl)
+          .then(function () {
+            var lastNewComponentRef = _.last(newRefs),
+              lastNewComponent = dom.find('[' + refAttr + '="' + lastNewComponentRef + '"]');
+
+            // // focus on the same field in the new component
+            focus.focus(lastNewComponent, { ref: lastNewComponentRef, path: current.field }).then(function (editable) {
+              selectAfter(editable.lastChild);
+              return lastNewComponentRef;
+            });
+          });
+      });
+  });
+}
+
+/**
  * split text in a component, creating a new component
  * @param {Element} el
  * @param {object} caret
@@ -417,27 +521,26 @@ function initWysiwygBinder(enableKeyboardExtras) {
 
       // persist editor data to data model on paste
       editor.subscribe('editablePaste', function onEditablePaste(e, editable) {
-        var textmodel = model.fromElement(dom.create(editable.innerHTML)),
-          fragment = model.toElement(textmodel),
-          range, selection;
+        var paragraphs = getParagraphModels(editable.innerHTML);
 
-        // note: we're using the model-text service to clean up and standardize html
-        // this is in addition to the cleanup that medium-editor does by default,
-        // as well as the options we specified in the cleanTags / cleanReplacements paste config
+        if (paragraphs.length === 1) {
+          // we're only pasting one paragraph! add it inside the current paragraph
+          let fragment = model.toElement(_.first(paragraphs));
 
-        dom.clearChildren(editable); // clear the current children
-        editable.appendChild(fragment); // add the cleaned dom fragment
-        observer.setValue(editable.innerHTML);
+          dom.clearChildren(editable); // clear the current children
+          editable.appendChild(fragment); // add the cleaned dom fragment
+          observer.setValue(editable.innerHTML);
 
-        // SelectionAPI R'lyeh fhtagn
-        range = document.createRange();
-        selection = window.getSelection();
-        range.setStartAfter(editable.lastChild);
-        range.collapse(true);
-        selection.removeAllRanges();
-        selection.addRange(range);
-        // we have clawed back the thin skein of reality and beheld the horrors beneath
-        // the caret is now magically at the end of the input
+          selectAfter(editable.lastChild);
+        } else if (paragraphs.length > 1) {
+          let fragment = model.toElement(_.first(paragraphs));
+
+          dom.clearChildren(editable); // clear the current children
+          editable.appendChild(fragment); // add the first paragraph
+          observer.setValue(editable.innerHTML); // set the value, so when we unfocus this'll be saved
+
+          return addComponents(editable, _.rest(paragraphs));
+        }
       });
 
       editor.subscribe('editableKeydownDelete', function onEditableKeydownDelete(e, editable) {
