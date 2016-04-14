@@ -527,13 +527,14 @@ function initWysiwygBinder(enableKeyboardExtras) {
 
         if (paragraphs.length === 1) {
           // we're only pasting one paragraph! add it inside the current paragraph
-          let fragment = model.toElement(_.first(paragraphs));
+          let fragment = model.toElement(_.first(paragraphs)),
+            caret = select(editable); // get current caret position
 
           dom.clearChildren(editable); // clear the current children
           editable.appendChild(fragment); // add the cleaned dom fragment
           observer.setValue(editable.innerHTML);
 
-          selectAfter(editable.lastChild);
+          select(editable, caret); // set caret after pasted stuff
         } else if (paragraphs.length > 1) {
           let fragment = model.toElement(_.first(paragraphs));
 
