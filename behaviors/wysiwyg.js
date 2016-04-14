@@ -128,7 +128,8 @@ function createEditor(field, buttons) {
       preCleanReplacements: [
         [/<h[1-9]>/ig, '<h2>'],
         [/<\/h[1-9]>/ig, '</h2>'], // force all headers to the same level
-        [/<p(.*?)>/ig, '¶'], // get rid of <p> tags
+        [/<p(.*?)>/ig, '¶'], // mark paragraphs for splitting
+        [/<br(.*?)><br(.*?)>/ig, '¶'], // mark double line breaks for splitting
         [/<\/p>/ig, '']
       ]
     },
