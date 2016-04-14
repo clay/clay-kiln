@@ -14,10 +14,12 @@ module.exports = function (result, args) {
   var name = result.name,
     allowRepeat = !!args && !!args.allowRepeatedItems,
     el = dom.create(`
-      <section rv-field="${name}" class="simple-list" rv-simplelist="${name}.data">
-        <span tabindex="0" rv-each-item="${name}.data" class="simple-list-item" rv-class-selected="item._selected" rv-on-click="${name}.selectItem" rv-on-keydown="${name}.keyactions">{ item.text }</span>
-        <input class="simple-list-add" data-allow-repeat=${allowRepeat} rv-on-click="${name}.unselectAll" placeholder="Start typing here&hellip;" />
-      </section>`);
+      <div class="input-label">
+        <div rv-field="${name}" class="simple-list" rv-simplelist="${name}.data">
+          <span tabindex="0" rv-each-item="${name}.data" class="simple-list-item" rv-class-selected="item._selected" rv-on-click="${name}.selectItem" rv-on-keydown="${name}.keyactions">{ item.text }</span>
+          <input class="simple-list-add" data-allow-repeat=${allowRepeat} rv-on-click="${name}.unselectAll" placeholder="Start typing here&hellip;" />
+        </div>
+      </div>`);
 
   /**
    * unselect all items
