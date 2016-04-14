@@ -10,7 +10,8 @@ var _ = require('lodash'),
   edit = require('../services/edit'),
   model = require('text-model'),
   site = require('../services/site'),
-  refAttr = references.referenceAttribute;
+  refAttr = references.referenceAttribute,
+  paragraphSplitter = '¶¶';
 
 /**
  * whan that sellection, with his ranges soote
@@ -36,7 +37,7 @@ function selectAfter(node) {
  * @returns {array}
  */
 function splitParagraphs(str) {
-  return str.split('¶');
+  return str.split(paragraphSplitter);
 }
 
 /**
@@ -128,8 +129,8 @@ function createEditor(field, buttons) {
       preCleanReplacements: [
         [/<h[1-9]>/ig, '<h2>'],
         [/<\/h[1-9]>/ig, '</h2>'], // force all headers to the same level
-        [/<p(.*?)>/ig, '¶'], // mark paragraphs for splitting
-        [/<br(.*?)><br(.*?)>/ig, '¶'], // mark double line breaks for splitting
+        [/<p(.*?)>/ig, paragraphSplitter], // mark paragraphs for splitting
+        [/<br(.*?)><br(.*?)>/ig, paragraphSplitter], // mark double line breaks for splitting
         [/<\/p>/ig, '']
       ]
     },
