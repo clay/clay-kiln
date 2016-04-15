@@ -16,7 +16,7 @@ var EditorToolbar,
  * @returns {Promise}
  */
 function createPage() {
-  var hasPageTypes = site.get('path').indexOf('press') < 0;
+  var hasPageTypes = site.get('path').indexOf('press') === -1;
 
   // if there are multiple types of pages for a site, open a dialog pane to select the page type
   // otherwise, just create a new page
