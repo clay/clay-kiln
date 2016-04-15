@@ -13,10 +13,14 @@ describe(dirname, function () {
     });
 
     it('prepends description to input', function () {
-      var result, description, nextSibling;
+      var field = document.createElement('INPUT'),
+        result, description, nextSibling;
+
+      // add rv-field to the field
+      field.setAttribute('rv-field', 'foo');
 
       // Add an input el.
-      fixture.el.appendChild(document.createElement('INPUT'));
+      fixture.el.appendChild(field);
       result = lib(fixture, {value: 'Description'});
       description = result.el.querySelector('p.label-description');
       nextSibling = description.nextElementSibling;

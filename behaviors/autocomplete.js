@@ -2,7 +2,7 @@ var dom = require('@nymag/dom'),
   db = require('../services/edit/db'),
   _ = require('lodash'),
   site = require('../services/site'),
-  getInput = require('../services/get-input'),
+  getInput = require('../services/field-helpers').getInput,
   textProp = 'text';
 
 import cid from '@nymag/cid';
