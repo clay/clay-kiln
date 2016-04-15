@@ -50,7 +50,7 @@
     "konami-js": "0.0.2",
     "lodash": "^3.8.0",
     "lodash-deep": "^1.6.0",
-    "medium-editor": "^5.10.0",
+    "medium-editor": "^5.16.1",
     "moment": "^2.10.6",
     "nprogress": "^0.2.0",
     "responsive-filenames": "^1.2.0",

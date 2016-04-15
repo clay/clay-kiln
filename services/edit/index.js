@@ -420,6 +420,46 @@ function addToParentList(opts) {
 }
 
 /**
+ * Add multiple components to the parent list data. If prevRef is not provided, adds to the end of the list.
+ * @param {object} opts
+ * @param {array} opts.refs
+ * @param {string} [opts.prevRef]     The ref of the item to insert after.
+ * @param {string} opts.parentField
+ * @param {string} opts.parentRef
+ * @returns {Promise} Promise resolves to new parent Element.
+ */
+function addMultipleToParentList(opts) {
+  var refs = opts.refs,
+    prevRef = opts.prevRef,
+    parentField = opts.parentField,
+    parentRef = opts.parentRef;
+
+  return cache.getData(parentRef).then(function (parentData) {
+    var prevIndex,
+      prevItem = {},
+      items = _.map(refs, function (ref) {
+        return {
+          _ref: ref
+        };
+      });
+
+    parentData = _.cloneDeep(parentData);
+    if (prevRef) {
+      // Add to specific position in the list.
+      prevItem[refProp] = prevRef;
+      prevIndex = _.findIndex(parentData[parentField], prevItem);
+      parentData[parentField].splice(prevIndex + 1, 0, items); // note: this creates a deep array
+      parentData[parentField] = _.flatten(parentData[parentField]); // so flatten it afterwards
+    } else {
+      // Add to end of list.
+      parentData[parentField] = parentData[parentField].concat(items);
+    }
+
+    return save(parentData); // returns parent html
+  });
+}
+
+/**
  * schedule publish
  * @param {object} data
  * @param {number} data.at unix timestamp to be published at
@@ -476,6 +516,7 @@ function getDataOnly(uri) {
 module.exports = {
   // Please use these.  They should be discrete actions that should be well tested.
   addToParentList: addToParentList,
+  addMultipleToParentList: addMultipleToParentList,
   createComponent: createComponent,
   createPage: createPage,
   publishPage: publishPage,
