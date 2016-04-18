@@ -48,8 +48,8 @@
     "he": "^1.0.0",
     "keycode": "^2.1.0",
     "konami-js": "0.0.2",
-    "lodash": "^3.8.0",
-    "lodash-deep": "^1.6.0",
+    "lodash": "^4.11.1",
+    "lodash-deep": "^2.0.0",
     "medium-editor": "^5.16.1",
     "moment": "^2.10.6",
     "nprogress": "^0.2.0",
@@ -65,7 +65,7 @@
     "watchify": "^3.7.0"
   },
   "devDependencies": {
-    "browserify-istanbul": "^0.2.1",
+    "browserify-istanbul": "^2.0.0",
     "chai": "^3.4.1",
     "chai-things": "^0.2.0",
     "coveralls": "^2.11.2",
