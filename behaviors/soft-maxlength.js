@@ -30,20 +30,20 @@ function setText(text, span) {
 
 /**
  * set styles depending on the remaining length
- * @param {number} remaining
+ * @param {number} length
  * @param {number} max
  * @param {Element} el
  */
-function setStyles(remaining, max, el) {
+function setStyles(length, max, el) {
   var input = getInput(el.parentNode),
     span = el;
 
-  if (remaining >= 0) {
+  if (length <= max) {
     toggleClass(false, span, input);
-    setText(`Remaining: ${remaining} / ${max}`, span);
+    setText(`${length} / ${max}`, span);
   } else {
     toggleClass(true, span, input);
-    setText(`Remaining: ${remaining} / ${max}`, span);
+    setText(`${length} / ${max}`, span);
   }
 }
 
@@ -74,10 +74,9 @@ module.exports = function (result, args) {
 
   result.binders.remaining = function (el, value) {
     var length = value ? cleanValue(value).length : 0,
-      max = parseInt(el.getAttribute('data-maxlength')),
-      remaining = max - length;
+      max = parseInt(el.getAttribute('data-maxlength'));
 
-    setStyles(remaining, max, el);
+    setStyles(length, max, el);
   };
 
   el.appendChild(span);
