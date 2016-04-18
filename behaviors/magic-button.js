@@ -15,7 +15,40 @@ const _ = require('lodash'),
       barePath = barePath.replace('.2x', ''); // remove resolution
 
       return barePath;
-    }
+    },
+    articleUrl: (function () {
+      const articleSelector = '[data-uri*="/article/instances/"]',
+        getCanoncialUrlQuery = '?publishable=canonicalUrl';
+
+      /**
+       * @returns {string}
+       */
+      function getArticleUri() {
+        return _.get(document.querySelector(articleSelector), 'dataset.uri');
+      }
+
+      /**
+       * takes uri and adds the current page's port
+       * @param {string} uri
+       * @returns {string}
+       */
+      function addPagePort(uri) {
+        const firstSlash = uri.indexOf('/'),
+          pagePort = window.location.port;
+
+        return uri.substr(0, firstSlash) + (pagePort ? ':' + pagePort : '') + uri.substr(firstSlash);
+      }
+
+      /**
+       * @param {string} str
+       * @returns {string}
+       */
+      function appendQuery(str) {
+        return str + getCanoncialUrlQuery;
+      }
+
+      return () => appendQuery(addPagePort(getArticleUri()));
+    }())
   };
 
 /**
