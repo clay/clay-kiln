@@ -47,7 +47,7 @@
     "gulp-util": "^3.0.7",
     "he": "^1.0.0",
     "keycode": "^2.1.0",
-    "konami-js": "0.0.2",
+    "konami-js": "^0.0.2",
     "lodash": "^3.8.0",
     "lodash-deep": "^1.6.0",
     "medium-editor": "^5.16.1",
@@ -65,7 +65,7 @@
     "watchify": "^3.7.0"
   },
   "devDependencies": {
-    "browserify-istanbul": "^0.2.1",
+    "browserify-istanbul": "^2.0.0",
     "chai": "^3.4.1",
     "chai-things": "^0.2.0",
     "coveralls": "^2.11.2",
@@ -80,7 +80,7 @@
     "karma-mocha": "^0.2.1",
     "karma-safari-launcher": "^0.1.1",
     "karma-sinon": "^1.0.4",
-    "karma-spec-reporter": "0.0.26",
+    "karma-spec-reporter": "^0.0.26",
     "mocha": "^2.2.5",
     "sinon": "^1.17.2"
   }
