@@ -65,7 +65,7 @@
     "watchify": "^3.7.0"
   },
   "devDependencies": {
-    "browserify-istanbul": "^0.2.1",
+    "browserify-istanbul": "^2.0.0",
     "chai": "^3.4.1",
     "chai-things": "^0.2.0",
     "coveralls": "^2.11.2",
