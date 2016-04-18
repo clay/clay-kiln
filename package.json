@@ -38,7 +38,7 @@
     "gulp-autoprefixer": "^3.0.1",
     "gulp-concat": "^2.6.0",
     "gulp-cssmin": "^0.1.7",
-    "gulp-duration": "0.0.0",
+    "gulp-duration": "^0.0.0",
     "gulp-if": "^2.0.0",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.0.4",
@@ -47,7 +47,7 @@
     "gulp-util": "^3.0.7",
     "he": "^1.0.0",
     "keycode": "^2.1.0",
-    "konami-js": "0.0.2",
+    "konami-js": "^0.0.2",
     "lodash": "^3.8.0",
     "lodash-deep": "^1.6.0",
     "medium-editor": "^5.16.1",
@@ -80,7 +80,7 @@
     "karma-mocha": "^0.2.1",
     "karma-safari-launcher": "^0.1.1",
     "karma-sinon": "^1.0.4",
-    "karma-spec-reporter": "0.0.26",
+    "karma-spec-reporter": "^0.0.26",
     "mocha": "^2.2.5",
     "sinon": "^1.17.2"
   }
