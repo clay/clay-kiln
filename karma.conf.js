@@ -8,7 +8,8 @@ files = [
   'behaviors/*.js',
   'services/**/*.js',
   'decorators/*.js',
-  'validators/*.js'
+  'validators/*.js',
+  'template.nunjucks' // preprocess nunjucks templates
 ];
 
 settings = {
@@ -40,13 +41,14 @@ settings = {
   },
   reporters: ['dots', 'coverage'],
   files: files,
-  frameworks: ['mocha', 'chai', 'sinon', 'browserify'],
+  frameworks: ['mocha', 'chai', 'sinon', 'browserify', 'nunjucks'],
   preprocessors: {
     'controllers/**/*.js': ['browserify'],
     'behaviors/**/*.js': ['browserify'],
     'services/**/*.js': ['browserify'],
     'decorators/**/*.js': ['browserify'],
-    'validators/**/*.js': ['browserify']
+    'validators/**/*.js': ['browserify'],
+    'template.nunjucks': ['html2js']
   },
   plugins: [
     'karma-coverage',
@@ -56,9 +58,12 @@ settings = {
     'karma-chai',
     'karma-chrome-launcher',
     'karma-firefox-launcher',
+    'karma-html2js-preprocessor',
+    'karma-nunjucks',
     'karma-mocha',
     'karma-safari-launcher',
-    'karma-sinon'
+    'karma-sinon',
+    'karma-html2js-preprocessor'
   ]
 };
 
