@@ -1,7 +1,7 @@
 var striptags = require('striptags'),
   he = require('he'),
   dom = require('@nymag/dom'),
-  getInput = require('../services/get-input');
+  getInput = require('../services/field-helpers').getInput;
 
 /**
  * toggle classes on elements

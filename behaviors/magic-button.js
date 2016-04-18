@@ -1,7 +1,7 @@
 const _ = require('lodash'),
   site = require('../services/site'),
   dom = require('@nymag/dom'),
-  getInput = require('../services/get-input'),
+  getInput = require('../services/field-helpers').getInput,
   transformers = {
     // this is an object of available transforms
     // components can specify which transform they want to use in their schemae

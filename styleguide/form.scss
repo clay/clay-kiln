@@ -89,19 +89,6 @@
   margin: 0;
 }
 
-.editor .label-inner {
-  @include label();
-
-  color: $black;
-  float: left;
-  margin-right: 8px;
-  text-align: left;
-}
-
-.editor-inline .label-inner {
-  margin-top: 10px;
-}
-
 // when inline forms are opened, the other children of the parent element are hidden
 .hidden-wrapped {
   display: none;
