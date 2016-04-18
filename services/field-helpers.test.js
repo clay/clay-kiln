@@ -87,14 +87,6 @@ describe(dirname, function () {
 
         expect(fn(el)).to.equal(true);
       });
-
-      it('returns true for elements with the .simple-list class', function () {
-        var el = document.createElement('div');
-
-        el.classList.add('simple-list');
-
-        expect(fn(el)).to.equal(true);
-      });
     });
   });
 });
