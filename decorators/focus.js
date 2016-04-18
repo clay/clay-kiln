@@ -3,7 +3,7 @@ var _ = require('lodash'),
   forms = require('../services/forms'),
   select = require('../services/select'),
   dom = require('@nymag/dom'),
-  getInput = require('../services/field-helpers').getInput,
+  helpers = require('../services/field-helpers'),
   componentList = require('./component-list'),
   currentFocus;
 
@@ -45,16 +45,16 @@ function focus(el, options, e) {
     .then(function () {
       select.select(el);
       currentFocus = el;
-      return forms.open(options.ref, el, options.path, e).then(function () {
-        var firstField = dom.find('[' + references.fieldAttribute + ']'),
+      return forms.open(options.ref, el, options.path, e).then(function (formEl) {
+        var firstField = helpers.getField(formEl),
           firstFieldInput;
 
         // focus on the first field in the form we just created
-        if (firstField && getInput.isInput(firstField)) {
+        if (firstField && helpers.isInput(firstField)) {
           // first field is itself an input
           firstField.focus();
         } else if (firstField) {
-          firstFieldInput = getInput(firstField);
+          firstFieldInput = helpers.getInput(firstField);
           // first field is a list or something, that contains an input as a child
           if (firstFieldInput) {
             firstFieldInput.focus();

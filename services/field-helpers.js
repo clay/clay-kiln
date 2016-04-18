@@ -11,7 +11,7 @@ function getInput(el) {
 }
 
 function isInput(el) {
-  return !!el && (el.nodeName === 'INPUT' || el.nodeName === 'TEXTAREA' || el.classList.contains('wysiwyg-input') || el.classList.contains('simple-list'));
+  return !!el && (el.nodeName === 'INPUT' || el.nodeName === 'TEXTAREA' || el.classList.contains('wysiwyg-input'));
 }
 
 module.exports.getField = getField;
