@@ -2,10 +2,52 @@ var _ = require('lodash'),
   references = require('../services/references'),
   forms = require('../services/forms'),
   select = require('../services/select'),
+  sr = require('selection-range'),
   dom = require('@nymag/dom'),
   helpers = require('../services/field-helpers'),
   componentList = require('./component-list'),
   currentFocus;
+
+/**
+ * get the text offset from a click event
+ * @param {MouseEvent} e
+ * @returns {number}
+ */
+function getClickOffset(e) {
+  let range, textNode, offset, parent, parentText, parentOffset;
+
+  try {
+    if (document.caretPositionFromPoint) {
+      range = document.caretPositionFromPoint(e.clientX, e.clientY);
+      textNode = range.offsetNode;
+      offset = range.offset;
+    } else if (document.caretRangeFromPoint) {
+      range = document.caretRangeFromPoint(e.clientX, e.clientY);
+      textNode = range.startContainer;
+      offset = range.startOffset;
+    }
+
+    parent = dom.closest(textNode, '[data-uri]'); // get component el
+    parentText = parent.textContent.replace(/^(\n|.)*?Delete\s*/, ''); // remove component selector text
+    parentOffset = parentText.indexOf(textNode.textContent) + offset;
+
+    return parentOffset;
+  } catch (e) {
+    return 0; // if we can't find the offset, or anything breaks, just return 0;
+  }
+}
+
+/**
+ * set caret on inline forms
+ * @param {Element} field
+ * @param {number} offset
+ * @param {Element} form
+ */
+function setCaretInline(field, offset, form) {
+  if (form.classList.contains('editor-inline')) {
+    sr(field, { start: offset });
+  }
+}
 
 function hasCurrentFocus() {
   return !!currentFocus;
@@ -43,6 +85,8 @@ function focus(el, options, e) {
 
   return unfocus() // unfocus the potentialy-opened current form first
     .then(function () {
+      var offset = getClickOffset(e);
+
       select.select(el);
       currentFocus = el;
       return forms.open(options.ref, el, options.path, e).then(function (formEl) {
@@ -53,11 +97,13 @@ function focus(el, options, e) {
         if (firstField && helpers.isInput(firstField)) {
           // first field is itself an input
           firstField.focus();
+          setCaretInline(firstField, offset, formEl);
         } else if (firstField) {
           firstFieldInput = helpers.getInput(firstField);
           // first field is a list or something, that contains an input as a child
           if (firstFieldInput) {
             firstFieldInput.focus();
+            setCaretInline(firstFieldInput, offset, formEl);
           }
         }
 
