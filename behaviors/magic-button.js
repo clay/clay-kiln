@@ -1,6 +1,7 @@
 const _ = require('lodash'),
   site = require('../services/site'),
   dom = require('@nymag/dom'),
+  references = require('../services/references'),
   getInput = require('../services/field-helpers').getInput,
   transformers = {
     // this is an object of available transforms
@@ -15,6 +16,20 @@ const _ = require('lodash'),
       barePath = barePath.replace('.2x', ''); // remove resolution
 
       return barePath;
+    },
+
+    getComponentInstance: function (data) {
+      const name = references.getComponentNameFromReference(data),
+        instance = references.getInstanceIdFromReference(data);
+
+      let path = '/components/' + name;
+
+      if (instance) {
+        // this allows us to get default component data as well as instance data
+        path += '/instances/' + instance;
+      }
+
+      return path;
     }
   };
 
@@ -33,6 +48,21 @@ function getFieldData(field) {
     return fieldEl.textContent; // note: magic button won't preserve rich text styling when grabbing the data
   } else {
     throw new Error(`Field "${field}" not found!`);
+  }
+}
+
+/**
+ * get a component ref from the page, if it exists
+ * @param {string} name
+ * @returns {string}
+ */
+function findComponent(name) {
+  const firstComponent = dom.find('[data-uri*="/components/' + name + '/"]');
+
+  if (firstComponent) {
+    return firstComponent.getAttribute(references.referenceAttribute);;
+  } else {
+    return '';
   }
 }
 
@@ -98,11 +128,12 @@ function doMagic(e, bindings) {
   const el = e.currentTarget,
     currentField = el.getAttribute('data-magic-currentField'),
     field = el.getAttribute('data-magic-field'),
+    component = el.getAttribute('data-magic-component'),
     transform = el.getAttribute('data-magic-transform'),
-    url = el.getAttribute('data-magic-url'),
     property = el.getAttribute('data-magic-property');
 
-  let data, transformed;
+  let url = el.getAttribute('data-magic-url'),
+    data, transformed;
 
   // make sure to cancel the actual event
   e.stopPropagation();
@@ -112,10 +143,16 @@ function doMagic(e, bindings) {
     return;
   }
 
+  // if they specify a field to pull data from, get the data
+  // if they specify a component to pull data from, find it on the page
   if (!_.isEmpty(field)) {
     data = getFieldData(field);
+  } else if (!_.isEmpty(component)) {
+    data = findComponent(component);
   } else {
     data = '';
+    // note: to keep things sane when using transforms and api calls,
+    // we're treating "empty" data as emptystring (no matter what type the data might be)
   }
 
   if (!_.isEmpty(transform)) {
@@ -126,6 +163,9 @@ function doMagic(e, bindings) {
   }
 
   if (!_.isEmpty(url)) {
+    // we allow a single special token in urls, `$SITE_PREFIX`, which tells us
+    // to use the prefix of the current site (with proper port and protocol for api calls)
+    url = url.replace('$SITE_PREFIX', site.addPort(site.addProtocol(site.get('prefix'))));
     // do an api call!
     return getAPI(url + transformed)
       .then(getProperty(property))
@@ -138,9 +178,42 @@ function doMagic(e, bindings) {
 
 /**
  * Create magic button.
+ *
+ * ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
+ *
+ * Magic buttons are extremely powerful, but can be a little confusing to configure.
+ * This is what they generally look like:
+ *
+ * 1. specify a `field` or `component`. The button will grab the value or ref, respectively
+ * 2. specify a `transform`. Transforms are useful when doing api calls with that data
+ * 3. specify a `url` to do the api call against. It will do a GET request to `url + transformed data`
+ * 4. specify a `property` to grab from the result of that api call. You can use _.get() syntax, e.g. `foo.bar[0].baz`
+ *
+ * All of these arguments are optional!
+ *
+ * Here are some examples:
+ *
+ * (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "just grab the primary headline"
+ * field: primaryHeadline
+ *
+ * (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab a caption from mediaplay"
+ * field: url
+ * transform: mediaplayUrl (strips out stuff that ambrose does't want in the api call)
+ * url: [ambrose api for images]
+ * property: metadata.credit
+ *
+ * (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab the url of the first mediaplay-image on this page"
+ * component: mediaplay-image
+ * transform: getComponentInstance (this transforms the full component uri into a ref we can pop onto the end of our site prefix)
+ * url: $SITE_PREFIX (this is a ~ special token ~ that evaluates to the prefix of current site, so you can do api calls against your own clay instance)
+ * property: url
+ *
+ * ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
+ *
  * @param {{name: string, bindings: {}}} result
  * @param {object} args  described in detail below:
  * @param {string} [args.field] grab the value of this field
+ * @param {string} [args.component] find the first component on the page that matches this name
  * @param {string} [args.transform] key of the transform to apply to the value
  * @param {string} [args.url] to get data from
  * @param {string} [args.property] to get from the returned data
@@ -150,11 +223,12 @@ module.exports = function (result, args) {
   var name = result.name,
     el = result.el,
     field = args.field || '',
+    component = args.component || '',
     transform = args.transform || '',
     url = args.url || '',
     property = args.property || '',
     input = getInput(el),
-    button = dom.create(`<a class="magic-button" rv-on-click="${name}.doMagic" data-magic-currentField="${name}" data-magic-field="${field}" data-magic-transform="${transform}" data-magic-url="${url}" data-magic-property="${property}">
+    button = dom.create(`<a class="magic-button" rv-on-click="${name}.doMagic" data-magic-currentField="${name}" data-magic-field="${field}" data-magic-component="${component}" data-magic-transform="${transform}" data-magic-url="${url}" data-magic-property="${property}">
       <img class="magic-button-inner" src="${site.get('assetPath')}/media/components/clay-kiln/magic-button.svg" alt="Magic Button">
     </a>`);
 
