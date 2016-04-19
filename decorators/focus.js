@@ -28,6 +28,12 @@ function getClickOffset(e) {
     }
 
     parent = dom.closest(textNode, '[data-uri]'); // get component el
+
+    // if we are actually clicking on a placeholder (not real data), just return 0
+    if (dom.find(parent, '.kiln-placeholder') || dom.find(parent, '.kiln-permanent-placeholder')) {
+      return 0;
+    }
+    // otherwise try to get the full offset from the parent
     parentText = parent.textContent.replace(/^(\n|.)*?Delete\s*/, ''); // remove component selector text
     parentOffset = parentText.indexOf(textNode.textContent) + offset;
 
