@@ -44,7 +44,8 @@ function getClickOffset(e) {
  * @param {Element} form
  */
 function setCaretInline(field, offset, form) {
-  if (form.classList.contains('editor-inline')) {
+  // only set caret if it's an inline form AND there's an actual offset
+  if (form.classList.contains('editor-inline') && offset > 0) {
     sr(field, { start: offset });
   }
 }
