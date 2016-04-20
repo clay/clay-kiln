@@ -228,53 +228,35 @@ describe(dirname, function () {
     });
 
     describe('openValidationErrors', function () {
-      var fn = lib[this.title],
-        sandbox;
+      var mock = {
+          locals: {edit: true}
+        },
+        el, env, getState, result, sandbox, template;
 
-      before(function () {
-        var template = document.createElement('template'),
-          headEl = document.createElement('div'),
-          paneInnerEl = document.createElement('div'),
-          toolbar = document.createElement('div');
-
-        // add template
-        template.classList.add('kiln-pane-template');
-        headEl.classList.add('pane-header');
-        paneInnerEl.classList.add('pane-inner');
-        template.content.appendChild(headEl);
-        template.content.appendChild(paneInnerEl);
-        document.body.appendChild(template);
-
-        // add toolbar
-        toolbar.classList.add('kiln-toolbar');
-        document.body.appendChild(toolbar);
+      before(function() {
+        env = new nunjucks.Environment();
+        // satisfy request for nunjucks filter in template
+        env.addFilter('includeFile', function(){}); // TODO – include nunjucks filters
+        template = env.getPreprocessedTemplate('template.nunjucks');
       });
 
       beforeEach(function () {
+        result = template.render(mock);
         sandbox = sinon.sandbox.create();
         sandbox.stub(ds);
-        sandbox.stub(state, 'get');
+        getState = sandbox.stub(state, 'get');
       });
 
-      afterEach(function () {
+      afterEach(function() {
+        document.body.innerHTML = void 0; // reset to undefined
+        el = void 0;
         sandbox.restore();
       });
 
       it('opens an error pane', function () {
-        lib.close();
-
-        function expectPane() {
-          expect(document.querySelector('.pane-inner .error-message')).to.not.equal(null);
-        }
-
-        fn([{
-          errors: [{ preview: 'ugh', label: 'no' }],
-          rule: {
-            label: 'no',
-            description: 'bad data'
-          }
-        }]);
-        expectPane();
+        document.body.innerHTML += result;
+        el = document.querySelector('.publish-errors');
+        expect(el).to.exist;
       });
     });
   });
