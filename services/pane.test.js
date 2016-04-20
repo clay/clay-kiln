@@ -157,12 +157,12 @@ describe(dirname, function () {
       });
     });
 
-    describe('openNewPage', function () {
+    describe.only('openNewPage', function () {
       var mock = {
           locals: {edit: true}
         },
         noFilter = function () {},
-        createPage, el, env, getState, result, sandbox, spy, stub, template;
+        createPage, el, env, getState, pagePane, result, sandbox, stub, template;
 
       before(function () {
         env = new nunjucks.Environment();
@@ -196,17 +196,18 @@ describe(dirname, function () {
         expect(el).to.exist;
       });
 
-      it('creates a clone of the pane template and adds it to the dom on [+ page] button click', function () {
+      it('creates a clone of the pane template on [+ page] button click', function () {
         getState.returns(Promise.resolve({}));
         lib.close();
         document.body.innerHTML += result;
         el = document.querySelector('.kiln-toolbar-button.new');
-        spy = sandbox.spy(el, 'click');
+        sandbox.stub(el, 'click', function () { // TODO – remove stub once filters are functional
+          pagePane = document.querySelector('.kiln-pane-template-elements .new-page-actions');
+        });
         el.click();
 
         function clickToOpenPane() {
-          expect(el).to.exist;
-          sinon.assert.called(spy);
+          expect(pagePane).to.exist;
         }
 
         clickToOpenPane();

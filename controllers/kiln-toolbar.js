@@ -16,6 +16,7 @@ var EditorToolbar,
  * @returns {Promise}
  */
 function createPage() {
+  // todo: allow users to choose their layout / components
   var hasPageTypes = site.get('path').indexOf('press') === -1;
 
   // if there are multiple types of pages for a site, open a dialog pane to select the page type

@@ -62,7 +62,7 @@
 
   <div class="kiln-pane-template-elements">
 
-  {# sub-templates: messages #}
+    {# sub-templates: messages #}
     {# publish messages with default text #}
     <div class="publish-messages messages">
       <p class="publish-state-message">In Draft.</p>
@@ -70,7 +70,7 @@
       <p class="publish-effect-message">Changes you make outside of the article will also be published.</p>
     </div>
 
-  {# sub-templates: forms and actions #}
+    {# sub-templates: forms and actions #}
     {# publish actions #}
     <div class="publish-actions actions">
       <form class="schedule">
@@ -93,7 +93,7 @@
       </form>
     </div>
 
-  {# sub-templates: errors #}
+    {# sub-templates: errors #}
     {# publish errors with default text #}
     <div class="publish-errors">
       <div class="error-message">This page is missing things needed to publish.<br />Address the following and try publishing again.</div>

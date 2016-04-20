@@ -156,7 +156,7 @@ function openPublish() {
  * @returns {Promise}
  */
 function openNewPage() {
-  var header = 'Select New Page Type',
+  var header = 'New Page',
     innerEl = document.createDocumentFragment(),
     pageActionsSubTemplate = dom.find('.new-page-actions').cloneNode(true),
     el;
