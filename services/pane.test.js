@@ -1,5 +1,6 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
+  edit = require('./edit'),
   lib = require('./pane'),
   state = require('./page-state'),
   ds = require('dollar-slice');
@@ -154,6 +155,76 @@ describe(dirname, function () {
 
         fn().then(expectScheduledPane);
       });
+    });
+
+    describe('openNewPage', function () {
+      var mock = {
+          locals: {edit: true}
+        },
+        createPage, el, env, getState, result, sandbox, spy, template;
+
+      before(function() {
+        env = new nunjucks.Environment();
+        // satisfy request for nunjucks filter in template
+        env.addFilter('includeFile', function(){}); // TODO – include nunjucks filters
+        template = env.getPreprocessedTemplate('template.nunjucks');
+      });
+
+      beforeEach(function () {
+        result = template.render(mock);
+        sandbox = sinon.sandbox.create();
+        sandbox.stub(ds);
+        getState = sandbox.stub(state, 'get');
+      });
+
+      afterEach(function() {
+        document.body.innerHTML = void 0; // reset to undefined
+        el = void 0;
+        sandbox.restore();
+      });
+
+      it('has a template skeleton for selecting page type', function () {
+        document.body.innerHTML += result;
+        el = document.querySelector('.new-page-actions');
+        expect(el).to.exist;
+      });
+
+      it('has a toolbar button for opening the page type selection dialog', function() {
+        document.body.innerHTML += result;
+        el = document.querySelector('.kiln-toolbar-button.new');
+        expect(el).to.exist;
+      });
+
+      it('creates a clone of the pane template and adds it to the dom on [+ page] button click', function () {
+        getState.returns(Promise.resolve({}));
+        lib.close();
+        document.body.innerHTML += result;
+        el = document.querySelector('.kiln-toolbar-button.new');
+        spy = sandbox.spy(el, 'click');
+        el.click();
+
+        function clickToOpenPane() {
+          expect(el).to.exist;
+          sinon.assert.called(spy);
+        }
+
+        clickToOpenPane();
+      });
+
+      it('opens a create page pane and clicks new article page button', sinon.test(function() {
+        lib.close();
+        document.body.innerHTML += result;
+        el = document.querySelector('.new-page-actions .create-article-page');
+        spy = sandbox.spy(el, 'click');
+        el.click();
+        sinon.assert.called(spy);
+      }));
+
+      it('creates a new article page', sinon.test(function() {
+        createPage = sandbox.stub(edit, 'createPage');
+        lib.close();
+        expect(createPage.returns(Promise.resolve({}))).to.exist;
+      }));
     });
 
     describe('openValidationErrors', function () {
