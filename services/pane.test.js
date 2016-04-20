@@ -162,7 +162,7 @@ describe(dirname, function () {
           locals: {edit: true}
         },
         noFilter = function () {},
-        createPage, el, env, getState, result, sandbox, spy, template;
+        createPage, el, env, getState, result, sandbox, spy, stub, template;
 
       before(function () {
         env = new nunjucks.Environment();
@@ -216,9 +216,9 @@ describe(dirname, function () {
         lib.close();
         document.body.innerHTML += result;
         el = document.querySelector('.new-page-actions .create-article-page');
-        spy = sandbox.spy(el, 'click');
+        stub = sandbox.stub(el, 'click');
         el.click();
-        sinon.assert.called(spy);
+        sinon.assert.called(stub);
       }));
 
       it('creates a new article page', sinon.test(function () {
