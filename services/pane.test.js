@@ -161,12 +161,13 @@ describe(dirname, function () {
       var mock = {
           locals: {edit: true}
         },
+        noFilter = function () {},
         createPage, el, env, getState, result, sandbox, spy, template;
 
-      before(function() {
+      before(function () {
         env = new nunjucks.Environment();
         // satisfy request for nunjucks filter in template
-        env.addFilter('includeFile', function(){}); // TODO – include nunjucks filters
+        env.addFilter('includeFile', noFilter); // TODO – include nunjucks filters
         template = env.getPreprocessedTemplate('template.nunjucks');
       });
 
@@ -177,9 +178,9 @@ describe(dirname, function () {
         getState = sandbox.stub(state, 'get');
       });
 
-      afterEach(function() {
-        document.body.innerHTML = void 0; // reset to undefined
-        el = void 0;
+      afterEach(function () {
+        document.body.innerHTML = undefined;
+        el = undefined;
         sandbox.restore();
       });
 
@@ -189,7 +190,7 @@ describe(dirname, function () {
         expect(el).to.exist;
       });
 
-      it('has a toolbar button for opening the page type selection dialog', function() {
+      it('has a toolbar button for opening the page type selection dialog', function () {
         document.body.innerHTML += result;
         el = document.querySelector('.kiln-toolbar-button.new');
         expect(el).to.exist;
@@ -211,7 +212,7 @@ describe(dirname, function () {
         clickToOpenPane();
       });
 
-      it('opens a create page pane and clicks new article page button', sinon.test(function() {
+      it('opens a create page pane and clicks new article page button', sinon.test(function () {
         lib.close();
         document.body.innerHTML += result;
         el = document.querySelector('.new-page-actions .create-article-page');
@@ -220,7 +221,7 @@ describe(dirname, function () {
         sinon.assert.called(spy);
       }));
 
-      it('creates a new article page', sinon.test(function() {
+      it('creates a new article page', sinon.test(function () {
         createPage = sandbox.stub(edit, 'createPage');
         lib.close();
         expect(createPage.returns(Promise.resolve({}))).to.exist;
@@ -231,12 +232,13 @@ describe(dirname, function () {
       var mock = {
           locals: {edit: true}
         },
-        el, env, getState, result, sandbox, template;
+        noFilter = function () {},
+        el, env, result, sandbox, template;
 
-      before(function() {
+      before(function () {
         env = new nunjucks.Environment();
         // satisfy request for nunjucks filter in template
-        env.addFilter('includeFile', function(){}); // TODO – include nunjucks filters
+        env.addFilter('includeFile', noFilter); // TODO – include nunjucks filters
         template = env.getPreprocessedTemplate('template.nunjucks');
       });
 
@@ -244,12 +246,11 @@ describe(dirname, function () {
         result = template.render(mock);
         sandbox = sinon.sandbox.create();
         sandbox.stub(ds);
-        getState = sandbox.stub(state, 'get');
       });
 
-      afterEach(function() {
-        document.body.innerHTML = void 0; // reset to undefined
-        el = void 0;
+      afterEach(function () {
+        document.body.innerHTML = undefined;
+        el = undefined;
         sandbox.restore();
       });
 
