@@ -1,0 +1,9 @@
+@import '../styleguide/inputs';
+@import '../node_modules/codemirror/lib/codemirror';
+
+.CodeMirror {
+  @include input();
+
+  font-family: monospace;
+  padding: 0;
+}

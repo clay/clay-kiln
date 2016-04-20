@@ -33,6 +33,7 @@ behaviors.add('label', require('./behaviors/label'));
 behaviors.add('segmented-button', require('./behaviors/segmented-button'));
 behaviors.add('page-ref', require('./behaviors/page-ref'));
 behaviors.add('magic-button', require('./behaviors/magic-button'));
+behaviors.add('codemirror', require('./behaviors/codemirror'));
 
 // add default decorators
 decorators.add(require('./decorators/placeholder'));
