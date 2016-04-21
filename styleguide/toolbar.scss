@@ -96,6 +96,10 @@ body {
   display: none; // todo: show this when we add user stuff
 }
 
+.kiln-toolbar-inner .preview #TextFormatting { // todo: replace with final icon
+  stroke: $white;
+}
+
 .kiln-toolbar-inner .publish {
   @include button-filled($green);
 

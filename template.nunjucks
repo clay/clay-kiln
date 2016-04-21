@@ -25,6 +25,12 @@
             <span class="text">Page</span>
           </div>
         </button>
+        <button class="kiln-toolbar-button preview">
+          <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
+            <span class="icon">{% include 'public/media/components/clay-kiln/link-check.svg' ignore missing %}</span>
+            <span class="text">Preview</span>
+          </div>
+        </button>
         <button class="kiln-toolbar-button history">
           <div class="button-flex-inner">
             <span class="icon">{% include 'public/media/components/clay-kiln/history-icon.svg' ignore missing %}</span>
