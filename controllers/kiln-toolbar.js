@@ -1,5 +1,4 @@
-var EditorToolbar,
-  dom = require('../services/dom'),
+const dom = require('../services/dom'),
   edit = require('../services/edit'),
   events = require('../services/events'),
   focus = require('../decorators/focus'),
@@ -7,6 +6,7 @@ var EditorToolbar,
   site = require('../services/site'),
   state = require('../services/page-state'),
   progress = require('../services/progress');
+let EditorToolbar;
 
 /**
  * Create a new page with the same layout as the current page.
@@ -17,7 +17,7 @@ var EditorToolbar,
  */
 function createPage() {
   // todo: allow users to choose their layout / components
-  var hasPageTypes = site.get('path').indexOf('press') === -1;
+  const hasPageTypes = site.get('path').indexOf('press') === -1;
 
   // if there are multiple types of pages for a site, open a dialog pane to select the page type
   // otherwise, just create a new page

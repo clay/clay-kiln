@@ -90,10 +90,10 @@ function createPublishMessages(res) {
  * @returns {Element}
  */
 function createPublishActions(res) {
-  var actions = dom.find('.publish-actions'),
+  const actions = dom.find('.publish-actions'),
     today = moment().format('YYYY-MM-DD'),
-    now = moment().format('HH:mm'),
-    scheduleDate, scheduleTime, unpublish, unschedule;
+    now = moment().format('HH:mm');
+  let scheduleDate, scheduleTime, unpublish, unschedule;
 
   // set date and time
   if (actions) {
@@ -158,19 +158,15 @@ function openPublish() {
 function openNewPage() {
   var header = 'New Page',
     innerEl = document.createDocumentFragment(),
-    pageActionsSubTemplate = dom.find('.new-page-actions').cloneNode(true),
-    el;
+    pageActionsSubTemplate = dom.find('.new-page-actions').cloneNode(true);
 
-  return state.get().then(function () {
-    // append actions to the doc fragment
-    innerEl.appendChild(pageActionsSubTemplate);
-
-    // create the root pane element
-    el = open(header, innerEl);
-    // init controller for publish pane
-    ds.controller('pane-new-page', newPagePaneController);
-    ds.get('pane-new-page', el.querySelector('.new-page-actions'));
-  });
+  // append actions to the doc fragment
+  innerEl.appendChild(pageActionsSubTemplate);
+  // create the root pane element
+  open(header, innerEl);
+  // init controller for publish pane
+  ds.controller('pane-new-page', newPagePaneController);
+  return ds.get('pane-new-page', pageActionsSubTemplate);
 }
 
 function addPreview(preview) {

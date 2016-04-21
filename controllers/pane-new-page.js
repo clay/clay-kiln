@@ -1,4 +1,4 @@
-var edit = require('../services/edit'),
+const edit = require('../services/edit'),
   dom = require('../services/dom'),
   progress = require('../services/progress');
 
