@@ -1,4 +1,4 @@
-const dom = require('../services/dom'),
+const dom = require('@nymag/dom'),
   edit = require('../services/edit'),
   events = require('../services/events'),
   focus = require('../decorators/focus'),

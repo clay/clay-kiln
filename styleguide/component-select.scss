@@ -32,7 +32,10 @@ $layout-parent-bg-color: $purple-50;
 }
 
 // Selected bar
-.component-bar-wrapper.selected > .component-bar {
+// note: sometimes (like in source-links), the bar lives inside the div
+// created by componentList
+.component-bar-wrapper.selected > .component-bar,
+.component-bar-wrapper.selected > * > .component-bar {
   display: flex;
   opacity: 1;
 }
@@ -49,6 +52,7 @@ $layout-parent-bg-color: $purple-50;
   height: $bar-height;
   justify-content: flex-start;
   left: 0;
+  min-width: 95px; // just enough space to display the menu
   opacity: 0;
   position: absolute;
   top: -$bar-height;
@@ -156,6 +160,7 @@ $layout-parent-bg-color: $purple-50;
 .component-bar > .menu {
   @include component-toolbar-layer();
 
+  flex-flow: column;
   height: 0;
   margin: 0;
   max-width: 100%;

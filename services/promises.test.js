@@ -71,6 +71,22 @@ describe('promises service', function () {
     });
   });
 
+  describe('props', function () {
+    var fn = lib[this.title];
+
+    it('resolves data', function (done) {
+      var data = { one: Promise.resolve('one'), two: Promise.resolve('two') };
+
+      fn(data).catch(function (error) {
+        done(error);
+      }).then(function (result) {
+        expect(result.one).to.equal('one');
+        expect(result.two).to.equal('two');
+        done();
+      });
+    });
+  });
+
   describe('join', function () {
     var fn = lib[this.title];
 

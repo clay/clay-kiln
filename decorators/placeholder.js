@@ -1,7 +1,7 @@
 var _ = require('lodash'),
   references = require('../services/references'),
   label = require('../services/label'),
-  dom = require('../services/dom');
+  dom = require('@nymag/dom');
 
 /**
  * get placeholder text

@@ -1,4 +1,4 @@
-var dom = require('../services/dom'),
+var dom = require('@nymag/dom'),
   _ = require('lodash'),
   invalidTypes = [
     'button', // use other behaviors, e.g. segmented-button

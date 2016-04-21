@@ -2,10 +2,59 @@ var _ = require('lodash'),
   references = require('../services/references'),
   forms = require('../services/forms'),
   select = require('../services/select'),
-  dom = require('../services/dom'),
-  getInput = require('../services/get-input'),
+  sr = require('selection-range'),
+  dom = require('@nymag/dom'),
+  helpers = require('../services/field-helpers'),
   componentList = require('./component-list'),
   currentFocus;
+
+/**
+ * get the text offset from a click event
+ * @param {MouseEvent} e
+ * @returns {number}
+ */
+function getClickOffset(e) {
+  let range, textNode, offset, parent, parentText, parentOffset;
+
+  try {
+    if (document.caretPositionFromPoint) {
+      range = document.caretPositionFromPoint(e.clientX, e.clientY);
+      textNode = range.offsetNode;
+      offset = range.offset;
+    } else if (document.caretRangeFromPoint) {
+      range = document.caretRangeFromPoint(e.clientX, e.clientY);
+      textNode = range.startContainer;
+      offset = range.startOffset;
+    }
+
+    parent = dom.closest(textNode, '[data-uri]'); // get component el
+
+    // if we are actually clicking on a placeholder (not real data), just return 0
+    if (dom.find(parent, '.kiln-placeholder') || dom.find(parent, '.kiln-permanent-placeholder')) {
+      return 0;
+    }
+    // otherwise try to get the full offset from the parent
+    parentText = parent.textContent.replace(/^(\n|.)*?Delete\s*/, ''); // remove component selector text
+    parentOffset = parentText.indexOf(textNode.textContent) + offset;
+
+    return parentOffset;
+  } catch (e) {
+    return 0; // if we can't find the offset, or anything breaks, just return 0;
+  }
+}
+
+/**
+ * set caret on inline forms
+ * @param {Element} field
+ * @param {number} offset
+ * @param {Element} form
+ */
+function setCaretInline(field, offset, form) {
+  // only set caret if it's an inline form AND there's an actual offset
+  if (form.classList.contains('editor-inline') && offset > 0) {
+    sr(field, { start: offset });
+  }
+}
 
 function hasCurrentFocus() {
   return !!currentFocus;
@@ -43,21 +92,25 @@ function focus(el, options, e) {
 
   return unfocus() // unfocus the potentialy-opened current form first
     .then(function () {
+      var offset = getClickOffset(e);
+
       select.select(el);
       currentFocus = el;
-      return forms.open(options.ref, el, options.path, e).then(function () {
-        var firstField = dom.find('[' + references.fieldAttribute + ']'),
+      return forms.open(options.ref, el, options.path, e).then(function (formEl) {
+        var firstField = helpers.getField(formEl),
           firstFieldInput;
 
         // focus on the first field in the form we just created
-        if (firstField && getInput.isInput(firstField)) {
+        if (firstField && helpers.isInput(firstField)) {
           // first field is itself an input
           firstField.focus();
+          setCaretInline(firstField, offset, formEl);
         } else if (firstField) {
-          firstFieldInput = getInput(firstField);
+          firstFieldInput = helpers.getInput(firstField);
           // first field is a list or something, that contains an input as a child
           if (firstFieldInput) {
             firstFieldInput.focus();
+            setCaretInline(firstFieldInput, offset, formEl);
           }
         }
 

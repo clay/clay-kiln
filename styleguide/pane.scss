@@ -220,3 +220,24 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   font-style: italic;
   margin-left: 5px;
 }
+
+.kiln-toolbar-pane .cats-ayb {
+  height: 200px;
+  width: 335px;
+}
+
+.kiln-toolbar-pane .ayb-header {
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 24px;
+  position: relative;
+  top: -6px;
+}
+
+.kiln-toolbar-pane .error-message.ayb {
+  padding: 20px 0;
+}
+
+.kiln-toolbar-pane .publish-error .description.ayb {
+  padding-top: 20px;
+}

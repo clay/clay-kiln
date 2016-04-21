@@ -1,6 +1,6 @@
 module.exports = function () {
   var _ = require('lodash'),
-    dom = require('../services/dom'),
+    dom = require('@nymag/dom'),
     focus = require('../decorators/focus');
 
   function isTooltip(el) {

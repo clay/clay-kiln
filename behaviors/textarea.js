@@ -1,4 +1,4 @@
-var dom = require('../services/dom');
+var dom = require('@nymag/dom');
 
 function setRequired(isReq) {
   return isReq ? 'required="true"' : '';

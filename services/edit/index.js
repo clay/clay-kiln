@@ -1,7 +1,8 @@
 var _ = require('lodash'),
-  dom = require('./../dom'),
+  dom = require('@nymag/dom'),
   cache = require('./cache'),
   db = require('./db'),
+  promise = require('../promises'),
   references = require('../references'),
   site = require('./../site'),
   progress = require('../progress'),
@@ -83,9 +84,10 @@ function validate(data, schema) {
 }
 
 /**
- * Update data for a component.
+ * Update data for a component. Returns the component's new rendered html
  *
  * Note: try to operate on full objects with schemas so we don't have to lookup the schema for validation.
+ * Note: returns the re-rendered html string from the server
  *
  * @param {object} data  data that will be saved
  * @param {string} data._ref  uri to save
@@ -104,7 +106,7 @@ function save(data) {
     if (validationErrors.length) {
       throw new Error(validationErrors);
     } else {
-      return cache.saveThrough(data)
+      return cache.saveForHTML(data)
         .then(function (savedData) {
           progress.done();
           return savedData;
@@ -233,51 +235,85 @@ function createPage() {
 }
 
 /**
- * create a child component (from a base ref) and return it's newly generated ref
- * @param {string} baseRef e.g. [siteprefix]/components/name
- * @returns {Promise}
+ * synchronously determine if a component has references to default components
+ * inside component lists. these child components will be cloned
+ * when creating the parent component
+ * @param {object} data
+ * @returns {object}
  */
-function createChildComponent(baseRef) {
-  return cache.getDataOnly(baseRef).then(function (baseData) {
-    return cache.createThrough(baseRef + '/instances', baseData).then(function (res) {
-      return res._ref;
-    });
+function getChildComponents(data) {
+  let mapping = {};
+
+  _.forOwn(data, function checkProperties(val, key) {
+    // loop through the (base) data in the component
+    if (_.isArray(val)) {
+      // find arrays
+      _.each(val, function checkArrays(item, index) {
+        // see if these arrays contain components
+        if (item._ref && item._ref.match(/\/components\/[A-Za-z0-9\-]+$/)) {
+          // if they do, and if the component references are base (not instance) refs,
+          // add them to the mapping object
+          // note: we'll use the mapping object to update the parent component
+          // after new instances are created
+          mapping[`${key}[${index}]._ref`] = item._ref;
+        }
+      });
+    }
   });
+
+  return mapping;
 }
 
 /**
- * find and clone child components, if any
- * @param {object} res from creating a component
- * @returns {Promise|object}
+ * add child component refs into the current component's data
+ * @param {object} data mapping of resolved child instance data (note: `self` is the current component)
+ * @returns {object} the current component's data including proper child refs
  */
-function cloneChildComponents(res) {
-  // after creating the component, see if there are any component lists inside it
-  var componentList = _.findKey(res, function (val) {
-      return val._componentList;
-      // assumes a component will have a maximum of one component list
-    }),
-    items = componentList && res[componentList],
-    promises = items && _.map(items, function (item) {
-      return createChildComponent(item._ref);
-    });
+function addChildRefsToComponent(data) {
+  let current = _.cloneDeep(data.self); // `data` is read-only, so clone it
 
-  if (items && items.length) {
-    return Promise.all(promises).then(function (newRefs) {
-      var newRes = _.cloneDeep(res); // create a new object, since we're explicitly modifying the parent component data
+  // go through the child components, deep setting their instances
+  // in place of the base references
+  _.forOwn(_.omit(data, 'self'), function (val, key) {
+    _.set(current, key, val._ref);
+  });
 
-      // then replace the base ref with the new instance for each child component in the list
-      newRes[componentList] = _.map(newRefs, function (ref) {
-        return {
-          _ref: ref // component lists are arrays of objects that look like { _ref: something }
-        };
+  // return the current component's data
+  return current;
+}
+
+/**
+ * create a component AND its children, then add the new child instances
+ * to the component we've created
+ * @param {string} instance
+ * @param {object} defaultData
+ * @param {object} children
+ * @returns {Promise} with final component data (NOT html, since it needs to add itself to its parent)
+ */
+function createComponentAndChildren(instance, defaultData, children) {
+  let promises = {
+    self: cache.createThrough(instance, defaultData)
+    // POST /components/<current component>/instances
+  };
+
+  // go through the children, get their default data, and create new instances
+  _.forOwn(children, function (val, key) {
+    let name = references.getComponentNameFromReference(val),
+      childBase = site.get('prefix') + '/components/' + name,
+      childInstance = childBase + '/instances';
+
+    promises[key] = cache.getDataOnly(childBase)
+      .then(function (childDefaultData) {
+        return cache.createThrough(childInstance, childDefaultData);
+        // POST /components/<child component>/instances
+        // note: we're creating the current component AND its children in parallel
+        // so this is relatively fast
       });
+  });
 
-      // save the parent with the newly cloned children
-      return cache.saveThrough(newRes);
-    });
-  } else {
-    return res;
-  }
+  // once we have the created component refs, we can add them to the current component
+  // and save the final component data (including proper child refs)
+  return promise.props(promises).then(addChildRefsToComponent).then(cache.saveThrough);
 }
 
 /**
@@ -291,16 +327,26 @@ function cloneChildComponents(res) {
  */
 function createComponent(name, data) {
   var base = site.get('prefix') + '/components/' + name,
-    instance = base + '/instances';
+    instance = base + '/instances',
+    getDefaultData;
 
   if (data) {
-    return cache.createThrough(instance, data);
+    // if we passed through data, use it
+    getDefaultData = Promise.resolve(data);
   } else {
-    return cache.getDataOnly(base) // create component with base JSON from bootstrap.
-      .then(function (baseJson) {
-        return cache.createThrough(instance, baseJson).then(cloneChildComponents);
-      });
+    // otherwise get the component's default data
+    getDefaultData = cache.getDataOnly(base);
   }
+
+  return getDefaultData.then(function (defaultData) {
+    let children = getChildComponents(defaultData);
+
+    if (_.size(children)) {
+      return createComponentAndChildren(instance, defaultData, children);
+    } else {
+      return cache.createThrough(instance, defaultData);
+    }
+  });
 }
 
 /**
@@ -363,8 +409,53 @@ function addToParentList(opts) {
       parentData[parentField].push(item);
     }
 
-    return save(parentData)
-      .then(db.getHTML.bind(null, ref));
+    return Promise.all([
+      // save the parent and get the child's html in parallel
+      // note: this assumes the child already exists
+      // todo: when we can POST and get html back, just handle the parent here
+      save(parentData),
+      db.getHTML(ref)
+    ]).then(results => results[1]); // return the child component's html
+  });
+}
+
+/**
+ * Add multiple components to the parent list data. If prevRef is not provided, adds to the end of the list.
+ * @param {object} opts
+ * @param {array} opts.refs
+ * @param {string} [opts.prevRef]     The ref of the item to insert after.
+ * @param {string} opts.parentField
+ * @param {string} opts.parentRef
+ * @returns {Promise} Promise resolves to new parent Element.
+ */
+function addMultipleToParentList(opts) {
+  var refs = opts.refs,
+    prevRef = opts.prevRef,
+    parentField = opts.parentField,
+    parentRef = opts.parentRef;
+
+  return cache.getData(parentRef).then(function (parentData) {
+    var prevIndex,
+      prevItem = {},
+      items = _.map(refs, function (ref) {
+        return {
+          _ref: ref
+        };
+      });
+
+    parentData = _.cloneDeep(parentData);
+    if (prevRef) {
+      // Add to specific position in the list.
+      prevItem[refProp] = prevRef;
+      prevIndex = _.findIndex(parentData[parentField], prevItem);
+      parentData[parentField].splice(prevIndex + 1, 0, items); // note: this creates a deep array
+      parentData[parentField] = _.flatten(parentData[parentField]); // so flatten it afterwards
+    } else {
+      // Add to end of list.
+      parentData[parentField] = parentData[parentField].concat(items);
+    }
+
+    return save(parentData); // returns parent html
   });
 }
 
@@ -425,6 +516,7 @@ function getDataOnly(uri) {
 module.exports = {
   // Please use these.  They should be discrete actions that should be well tested.
   addToParentList: addToParentList,
+  addMultipleToParentList: addMultipleToParentList,
   createComponent: createComponent,
   createPage: createPage,
   publishPage: publishPage,

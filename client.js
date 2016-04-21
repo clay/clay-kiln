@@ -4,10 +4,12 @@ var nodeUrl = require('url'),
   references = require('./services/references'),
   behaviors = require('./services/behaviors'),
   decorators = require('./services/decorators'),
-  dom = require('./services/dom'),
+  dom = require('@nymag/dom'),
   EditorToolbar = require('./controllers/kiln-toolbar'),
   render = require('./services/render'),
   progress = require('./services/progress'),
+  Konami = require('konami-js'),
+  pane = require('./services/pane'),
   connectionLostMessage = 'Connection Lost. Changes will <strong>NOT</strong> be saved.';
 
 // manually add built-in behaviors
@@ -31,6 +33,7 @@ behaviors.add('label', require('./behaviors/label'));
 behaviors.add('segmented-button', require('./behaviors/segmented-button'));
 behaviors.add('page-ref', require('./behaviors/page-ref'));
 behaviors.add('magic-button', require('./behaviors/magic-button'));
+behaviors.add('codemirror', require('./behaviors/codemirror'));
 
 // add default decorators
 decorators.add(require('./decorators/placeholder'));
@@ -67,3 +70,5 @@ window.addEventListener('offline', function () {
   progress.done('offline'); // turn any progress indicators to grey and end them
   progress.open('offline', connectionLostMessage);
 });
+
+new Konami(pane.takeOffEveryZig);

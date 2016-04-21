@@ -1,4 +1,4 @@
-var dom = require('../services/dom');
+var dom = require('@nymag/dom');
 
 /**
  * Create checkbox group item for each option.

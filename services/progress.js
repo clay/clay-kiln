@@ -1,5 +1,5 @@
 var nprogress = require('nprogress'),
-  dom = require('./dom'),
+  dom = require('@nymag/dom'),
   boxShadow = '0 0 10px 0',
   colors = {
     // these are taken from styleguide/_colors.scss

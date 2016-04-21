@@ -160,6 +160,32 @@ describe('cache service', function () {
     });
   });
 
+  describe('saveForHTML', function () {
+    var fn = lib[this.title];
+
+    it('saves', function () {
+      var data = {_ref: 'foo'};
+
+      db.get.returns(Promise.resolve({foo: 'bar'}));
+      db.saveForHTML.returns(Promise.resolve('some html'));
+      db.getSchema.returns(Promise.resolve({foo: 'bar'}));
+      return fn(data).then(function () {
+        expect(db.saveForHTML.called).to.equal(true);
+      });
+    });
+
+    it('returns html string', function () {
+      var data = {_ref: 'foo'};
+
+      db.get.returns(Promise.resolve({foo: 'bar'}));
+      db.saveForHTML.returns(Promise.resolve('some html'));
+      db.getSchema.returns(Promise.resolve({foo: 'bar'}));
+      return fn(data).then(function (result) {
+        expect(result).to.equal('some html');
+      });
+    });
+  });
+
   describe('createThrough', function () {
     var fn = lib[this.title];
 

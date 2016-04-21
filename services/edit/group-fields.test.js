@@ -1,7 +1,7 @@
 var lib = require('./group-fields'),
   db = require('./db'),
   site = require('./../site'),
-  dom = require('./../dom');
+  dom = require('@nymag/dom');
 
 describe('group-fields service', function () {
   var sandbox;

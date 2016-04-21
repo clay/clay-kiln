@@ -1,7 +1,7 @@
 var striptags = require('striptags'),
   he = require('he'),
-  dom = require('../services/dom'),
-  getInput = require('../services/get-input');
+  dom = require('@nymag/dom'),
+  getInput = require('../services/field-helpers').getInput;
 
 /**
  * toggle classes on elements
@@ -30,25 +30,20 @@ function setText(text, span) {
 
 /**
  * set styles depending on the remaining length
- * @param {number} remaining
+ * @param {number} length
+ * @param {number} max
  * @param {Element} el
  */
-function setStyles(remaining, el) {
+function setStyles(length, max, el) {
   var input = getInput(el.parentNode),
     span = el;
 
-  if (remaining > 0) {
+  if (length <= max) {
     toggleClass(false, span, input);
-    setText('Remaining: ' + remaining, span);
-  } else if (remaining === 0) {
-    toggleClass(false, span, input);
-    setText('At the character limit', span);
-  } else if (remaining === -1) {
-    toggleClass(true, span, input);
-    setText(-remaining + ' character over the limit', span);
+    setText(`${length} / ${max}`, span);
   } else {
     toggleClass(true, span, input);
-    setText(-remaining + ' characters over the limit', span);
+    setText(`${length} / ${max}`, span);
   }
 }
 
@@ -79,10 +74,9 @@ module.exports = function (result, args) {
 
   result.binders.remaining = function (el, value) {
     var length = value ? cleanValue(value).length : 0,
-      max = parseInt(el.getAttribute('data-maxlength')),
-      remaining = max - length;
+      max = parseInt(el.getAttribute('data-maxlength'));
 
-    setStyles(remaining, el);
+    setStyles(length, max, el);
   };
 
   el.appendChild(span);

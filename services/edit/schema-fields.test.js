@@ -1,7 +1,7 @@
 var lib = require('./schema-fields'),
   db = require('./db'),
   site = require('./../site'),
-  dom = require('./../dom');
+  dom = require('@nymag/dom');
 
 describe('schema-fields service', function () {
   var sandbox;

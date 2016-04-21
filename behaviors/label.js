@@ -1,4 +1,4 @@
-var dom = require('../services/dom');
+var dom = require('@nymag/dom');
 
 /**
  * Find the outer label which often wraps the input elements.

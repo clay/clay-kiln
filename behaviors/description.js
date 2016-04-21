@@ -1,5 +1,5 @@
-var dom = require('../services/dom'),
-  getInput = require('../services/get-input');
+var dom = require('@nymag/dom'),
+  getField = require('../services/field-helpers').getField;
 
 /**
  * Add a description before the input.
@@ -12,8 +12,8 @@ module.exports = function (result, args) {
     description = args.value,
     tpl = `<p class="label-description">${ description }</p>`,
     descriptionEl = dom.create(tpl),
-    input = getInput(el);
+    field = getField(el);
 
-  dom.insertBefore(input, descriptionEl);
+  dom.insertBefore(field, descriptionEl);
   return result;
 };

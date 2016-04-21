@@ -19,7 +19,7 @@ describe(dirname, function () {
   describe(filename, function () {
     describe('el', function () {
       it('has field property', function () {
-        var resultEl = lib(fixture).el;
+        var resultEl = lib(fixture).el.firstElementChild;
 
         expect(resultEl.getAttribute(references.fieldAttribute)).to.equal('foo');
       });

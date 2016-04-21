@@ -1,5 +1,5 @@
 var _ = require('lodash'),
-  dom = require('./dom'),
+  dom = require('@nymag/dom'),
   edit = require('./edit'),
   control = require('./edit/control'),
   promises = require('./promises'),
