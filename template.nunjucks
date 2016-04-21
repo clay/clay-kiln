@@ -22,7 +22,7 @@
         <button class="kiln-toolbar-button new">
           <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
             <span class="icon">{% include 'public/media/components/clay-kiln/add-icon.svg' ignore missing %}</span>
-            <span class="text">New Page</span>
+            <span class="text">Page</span>
           </div>
         </button>
         <button class="kiln-toolbar-button history">
