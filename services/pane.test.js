@@ -157,7 +157,7 @@ describe(dirname, function () {
       });
     });
 
-    describe('openNewPage', function () {
+    describe.only('openNewPage', function () {
       var mock = {
           locals: {edit: true}
         },
@@ -175,7 +175,6 @@ describe(dirname, function () {
         result = template.render(mock);
         sandbox = sinon.sandbox.create();
         sandbox.stub(ds);
-        getState = sandbox.stub(state, 'get');
       });
 
       afterEach(function () {
@@ -197,7 +196,6 @@ describe(dirname, function () {
       });
 
       it('creates a clone of the pane template on [+ page] button click', function () {
-        getState.returns(Promise.resolve({}));
         lib.close();
         document.body.innerHTML += result;
         el = document.querySelector('.kiln-toolbar-button.new');
