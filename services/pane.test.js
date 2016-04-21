@@ -157,7 +157,7 @@ describe(dirname, function () {
       });
     });
 
-    describe.only('openNewPage', function () {
+    describe('openNewPage', function () {
       var mock = {
           locals: {edit: true}
         },
