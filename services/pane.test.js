@@ -223,9 +223,9 @@ describe(dirname, function () {
       }));
 
       it('creates a new article page', sinon.test(function () {
-        createPage = sandbox.stub(edit, 'createPage');
+        createPage = sandbox.spy(edit, 'createPage');
         lib.close();
-        expect(createPage.returns(Promise.resolve({}))).to.exist;
+        expect(createPage.returned(Promise.resolve({}))).to.exist;
       }));
     });
 
