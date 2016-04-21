@@ -1,5 +1,5 @@
 const edit = require('../services/edit'),
-  dom = require('../services/dom'),
+  dom = require('@nymag/dom'),
   progress = require('../services/progress');
 
 module.exports = function () {
