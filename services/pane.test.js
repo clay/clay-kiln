@@ -162,7 +162,7 @@ describe(dirname, function () {
           locals: {edit: true}
         },
         noFilter = function () {},
-        createPage, el, env, getState, pagePane, result, sandbox, stub, template;
+        createPage, el, env, pagePane, result, sandbox, stub, template;
 
       before(function () {
         env = new nunjucks.Environment();
