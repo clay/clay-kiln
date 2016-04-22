@@ -210,7 +210,15 @@ function unpublishPage() {
 }
 
 /**
- * Get a url for the new page that was just created, including protocol and port
+ * Get a url for the page, including protocol and port
+ * @returns {string}
+ */
+function getPageUrl() {
+  return site.addProtocol(site.addPort(dom.pageUri() + '.html'));
+}
+
+/**
+ * Get an edit mode url for the new page that was just created, including protocol, port and query string
  *
  * @param {string} uri
  * @returns {string}
@@ -522,6 +530,7 @@ module.exports = {
   createPage: createPage,
   publishPage: publishPage,
   getLayout: getLayout,
+  getPageUrl: getPageUrl,
   publishLayout: publishLayout,
   unpublishPage: unpublishPage,
   removeFromParentList: removeFromParentList,

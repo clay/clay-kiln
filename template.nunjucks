@@ -99,7 +99,7 @@
     </div>
 
     <div class="preview-actions actions">
-      <p>http://nymag.com/somepub/link-to-share.html</p>
+      <input class="preview-input" type="url" value="" placeholder=""></input>
     </div>
 
     {# sub-templates: errors #}
