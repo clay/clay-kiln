@@ -169,20 +169,15 @@ describe(dirname, function () {
       var mock = {
           locals: {edit: true}
         },
-        noFilter = function () {},
-        createPage, el, env, pagePane, result, sandbox, stub, template;
+        createPage, el, pagePane, sandbox, stub, template, templateRendered;
 
       before(function () {
-        env = new nunjucks.Environment();
-        // satisfy request for nunjucks filter in template
-        env.addFilter('includeFile', noFilter); // TODO – include nunjucks filters
-        template = env.getPreprocessedTemplate('template.nunjucks');
+        template = setupNunjucksTemplate();
       });
 
       beforeEach(function () {
-        result = template.render(mock);
+        templateRendered = template.render(mock);
         sandbox = sinon.sandbox.create();
-        sandbox.stub(ds);
       });
 
       afterEach(function () {
@@ -192,36 +187,33 @@ describe(dirname, function () {
       });
 
       it('has a template skeleton for selecting page type', function () {
-        document.body.innerHTML += result;
+        document.body.innerHTML += templateRendered;
         el = document.querySelector('.new-page-actions');
         expect(el).to.exist;
       });
 
       it('has a toolbar button for opening the page type selection dialog', function () {
-        document.body.innerHTML += result;
+        document.body.innerHTML += templateRendered;
         el = document.querySelector('.kiln-toolbar-button.new');
         expect(el).to.exist;
       });
 
       it('creates a clone of the pane template on [+ page] button click', function () {
         lib.close();
-        document.body.innerHTML += result;
+        document.body.innerHTML += templateRendered;
         el = document.querySelector('.kiln-toolbar-button.new');
-        sandbox.stub(el, 'click', function () { // TODO – remove stub once filters are functional
-          pagePane = document.querySelector('.kiln-pane-template-elements .new-page-actions');
-        });
+        sandbox.stub(el, 'click', selectPagePane);
         el.click();
-
-        function clickToOpenPane() {
-          expect(pagePane).to.exist;
+        function selectPagePane() {
+          pagePane = document.querySelector('.kiln-pane-template-elements .new-page-actions');
         }
 
-        clickToOpenPane();
+        expect(pagePane).to.exist;
       });
 
       it('opens a create page pane and clicks new article page button', sinon.test(function () {
         lib.close();
-        document.body.innerHTML += result;
+        document.body.innerHTML += templateRendered;
         el = document.querySelector('.new-page-actions .create-article-page');
         stub = sandbox.stub(el, 'click');
         el.click();
@@ -287,30 +279,23 @@ describe(dirname, function () {
       var mock = {
           locals: {edit: true}
         },
-        noFilter = function () {},
-        el, env, result, sandbox, template;
+        el, template, templateRendered;
 
       before(function () {
-        env = new nunjucks.Environment();
-        // satisfy request for nunjucks filter in template
-        env.addFilter('includeFile', noFilter); // TODO – include nunjucks filters
-        template = env.getPreprocessedTemplate('template.nunjucks');
+        template = setupNunjucksTemplate();
       });
 
       beforeEach(function () {
-        result = template.render(mock);
-        sandbox = sinon.sandbox.create();
-        sandbox.stub(ds);
+        templateRendered = template.render(mock);
       });
 
       afterEach(function () {
         document.body.innerHTML = undefined;
         el = undefined;
-        sandbox.restore();
       });
 
       it('opens an error pane', function () {
-        document.body.innerHTML += result;
+        document.body.innerHTML += templateRendered;
         el = document.querySelector('.publish-errors');
         expect(el).to.exist;
       });
