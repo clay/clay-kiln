@@ -6,6 +6,7 @@ var _ = require('lodash'),
   site = require('./site'),
   paneController = require('../controllers/pane'),
   newPagePaneController = require('../controllers/pane-new-page'),
+  previewPaneController = require('../controllers/pane-preview'),
   publishPaneController = require('../controllers/publish-pane');
 
 /**
@@ -186,6 +187,24 @@ function addPreview(preview) {
 }
 
 /**
+ * open preview dialog pane
+ * @returns {Promise}
+ */
+function openPreview() {
+  var header = 'Preview Link',
+    innerEl = document.createDocumentFragment(),
+    pageActionsSubTemplate = dom.find('.preview-actions').cloneNode(true);
+
+  // append actions to the doc fragment
+  innerEl.appendChild(pageActionsSubTemplate);
+  // create the root pane element
+  open(header, innerEl);
+  // init controller for publish pane
+  ds.controller('pane-preview', previewPaneController);
+  return ds.get('pane-preview', pageActionsSubTemplate);
+}
+
+/**
  * format and assemble error messages
  * @param {Object[]} errors
  * @returns {Element}
@@ -262,6 +281,7 @@ function takeOffEveryZig() {
 module.exports.close = close;
 module.exports.open = open;
 module.exports.openNewPage = openNewPage;
+module.exports.openPreview = openPreview;
 module.exports.openPublish = openPublish;
 module.exports.openValidationErrors = openValidationErrors;
 module.exports.takeOffEveryZig = takeOffEveryZig;
