@@ -3,7 +3,15 @@ var dirname = __dirname.split('/').pop(),
   edit = require('./edit'),
   lib = require('./pane'),
   state = require('./page-state'),
-  ds = require('dollar-slice');
+  ds = require('dollar-slice'),
+  setupNunjucksTemplate = function () {
+    var noFilter = function () {},
+      env = new nunjucks.Environment();
+
+    // satisfy request for nunjucks filter in template
+    env.addFilter('includeFile', noFilter); // TODO – include nunjucks filters
+    return env.getPreprocessedTemplate('template.nunjucks');
+  };
 
 describe(dirname, function () {
   describe(filename, function () {
@@ -225,6 +233,54 @@ describe(dirname, function () {
         lib.close();
         expect(createPage.returned(Promise.resolve({}))).to.exist;
       }));
+    });
+
+    describe('openPreview', function () {
+      var mock = {
+          locals: {edit: true}
+        },
+        el, previewPane, sandbox, template, templateRendered;
+
+      before(function () {
+        template = setupNunjucksTemplate();
+      });
+
+      beforeEach(function () {
+        templateRendered = template.render(mock);
+        sandbox = sinon.sandbox.create();
+      });
+
+      afterEach(function () {
+        document.body.innerHTML = undefined;
+        el = undefined;
+        sandbox.restore();
+      });
+
+      it('has a template skeleton for preview info', function () {
+        document.body.innerHTML += templateRendered;
+        el = document.querySelector('.preview-actions');
+        expect(el).to.exist;
+      });
+
+      it('has a toolbar button for opening the preview dialog', function () {
+        document.body.innerHTML += templateRendered;
+        el = document.querySelector('.kiln-toolbar-button.preview');
+        expect(el).to.exist;
+      });
+
+      it('creates a clone of the pane template on [√ preview] button click', function () {
+        lib.close();
+        document.body.innerHTML += templateRendered;
+        el = document.querySelector('.kiln-toolbar-button.preview');
+        sandbox.stub(el, 'click', selectPreviewPane);
+        el.click();
+
+        function selectPreviewPane() {
+          previewPane = document.querySelector('.kiln-pane-template-elements .preview-actions');
+        }
+
+        expect(previewPane).to.exist;
+      });
     });
 
     describe('openValidationErrors', function () {
