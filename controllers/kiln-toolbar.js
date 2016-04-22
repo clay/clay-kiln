@@ -50,6 +50,7 @@ EditorToolbar = function (el) {
   events.add(el, {
     '.user-icon click': 'onUserClick',
     '.new click': 'onNewClick',
+    '.preview click': 'onPreviewClick',
     '.history click': 'onHistoryClick',
     '.publish click': 'onPublishClick'
   }, this);
@@ -98,6 +99,15 @@ EditorToolbar.prototype = {
     } else {
       return createPage();
     }
+  },
+
+  onPreviewClick: function () {
+    return focus.unfocus()
+      .then(pane.openPreview)
+      .catch(function () {
+        progress.done('error');
+        progress.open('error', 'Data could not be saved. Please review your open form.', true);
+      });
   },
 
   onHistoryClick: function openHistoryPane() {
