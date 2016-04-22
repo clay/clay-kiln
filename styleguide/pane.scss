@@ -118,7 +118,8 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   margin: 15px 0 5px;
 }
 
-.kiln-toolbar-pane .schedule-input {
+.kiln-toolbar-pane .schedule-input,
+.kiln-toolbar-pane .preview-input {
   @include input();
 
   cursor: initial;

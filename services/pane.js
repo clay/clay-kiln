@@ -2,6 +2,7 @@ var _ = require('lodash'),
   moment = require('moment'),
   dom = require('@nymag/dom'),
   ds = require('dollar-slice'),
+  edit = require('./edit'),
   state = require('./page-state'),
   site = require('./site'),
   paneController = require('../controllers/pane'),
@@ -184,9 +185,18 @@ function addPreview(preview) {
  * @returns {Promise}
  */
 function openPreview() {
-  var header = 'Preview Link',
+  const header = 'Preview Link',
     innerEl = document.createDocumentFragment(),
-    pageActionsSubTemplate = dom.find('.preview-actions').cloneNode(true);
+    previewUrl = edit.getPageUrl();
+
+  let pageActionsSubTemplate = dom.find('.preview-actions').cloneNode(true),
+    previewInput;
+
+  if (pageActionsSubTemplate) {
+    previewInput = dom.find(pageActionsSubTemplate, '.preview-input');
+  }
+
+  dom.replaceElement(previewInput, dom.create(`<input class="preview-input" type="url" value="${previewUrl}" placeholder=""></input>`));
 
   // append actions to the doc fragment
   innerEl.appendChild(pageActionsSubTemplate);
