@@ -214,7 +214,7 @@ function unpublishPage() {
  * @returns {string}
  */
 function getPageUrl() {
-  return site.addProtocol(site.addPort(dom.pageUri() + '.html'));
+  return site.addProtocol(site.addPort(dom.pageUri())) + '.html';
 }
 
 /**
