@@ -221,7 +221,7 @@ function getNewPageUrl(uri) {
 
 /**
  * Create a new page, cloning the current page
- * @param {string} page type to create ('new', 'new-sponsored', etc.)
+ * @param {string} pageType to create ('new', 'new-sponsored', etc.)
  * @returns {Promise}
  */
 function createPage(pageType) {
