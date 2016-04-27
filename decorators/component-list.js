@@ -57,7 +57,7 @@ function addComponent(pane, field, name) {
  * @returns {element} buttonEl
  */
 function createComponentButton(pane, field, item) {
-  var buttonEl = dom.create(`<button class="add-component" data-component-name="${label(item)}">${label(item)}</button>`);
+  var buttonEl = dom.create(`<button class="add-component" type="button" data-component-name="${label(item)}">${label(item)}</button>`);
 
   buttonEl.addEventListener('click', addComponent(pane, field, item));
   return buttonEl;
