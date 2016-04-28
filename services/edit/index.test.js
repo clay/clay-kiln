@@ -152,6 +152,8 @@ describe('edit service', function () {
       cache.getDataOnly.returns(resolveReadOnly(data));
       db.create.returns(Promise.resolve({}));
 
+      cache.getDataOnly(prefix + '/pages/new');
+
       return fn().then(function () {
         sinon.assert.calledWith(cache.getDataOnly, prefix + '/pages/new');
         sinon.assert.calledWith(db.create, sinon.match.string, data);
