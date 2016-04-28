@@ -46,23 +46,23 @@ function close() {
 function open(header, innerEl, modifier) {
   var toolbar = dom.find('.kiln-toolbar'),
     el = createPane(header, innerEl),
-    pane, paneBackground;
+    pane, paneWrapper;
 
   close(); // close any other panes before opening a new one
   dom.insertBefore(toolbar, el);
-  paneBackground = toolbar.previousElementSibling; // now grab a reference to the dom
+  paneWrapper = toolbar.previousElementSibling; // now grab a reference to the dom
   // init controller for pane background
-  ds.controller('paneBackground', paneController);
-  ds.get('paneBackground', paneBackground);
+  ds.controller('paneWrapper', paneController);
+  ds.get('paneWrapper', paneWrapper);
   // trick browser into doing a repaint, to force the animation
   setTimeout(function () {
-    pane = dom.find(paneBackground, '.kiln-toolbar-pane');
+    pane = dom.find(paneWrapper, '.kiln-toolbar-pane');
     pane.classList.add('on');
     if (modifier) {
       pane.classList.add(modifier);
     }
   }, 0);
-  return paneBackground;
+  return paneWrapper;
 }
 
 /**
