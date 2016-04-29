@@ -6,7 +6,8 @@ var _ = require('lodash'),
   site = require('./site'),
   paneController = require('../controllers/pane'),
   newPagePaneController = require('../controllers/pane-new-page'),
-  publishPaneController = require('../controllers/publish-pane');
+  publishPaneController = require('../controllers/publish-pane'),
+  kilnHideClass = 'kiln-hide';
 
 /**
  * create pane
@@ -85,7 +86,7 @@ function createPublishMessages(res) {
     scheduleMessage = dom.find(messages, '.publish-schedule-message');
     if (scheduleMessage) {
       scheduleMessage.innerHTML = `Scheduled to publish ${state.formatTime(res.scheduledAt)}.`;
-      scheduleMessage.classList.remove('kiln-hide');
+      scheduleMessage.classList.remove(kilnHideClass);
     }
   }
 
@@ -125,7 +126,7 @@ function createPublishActions(res) {
     state.toggleScheduled(true); // just in case someone else scheduled this page
     unschedule = dom.find(actions, '.unschedule');
     if (unschedule) {
-      unschedule.classList.remove('kiln-hide');
+      unschedule.classList.remove(kilnHideClass);
     }
   }
 
@@ -133,7 +134,7 @@ function createPublishActions(res) {
   if (res.published) {
     unpublish = dom.find(actions, '.unpublish');
     if (unpublish) {
-      unpublish.classList.remove('kiln-hide');
+      unpublish.classList.remove(kilnHideClass);
     }
   }
 
