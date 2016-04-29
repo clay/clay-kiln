@@ -112,6 +112,10 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   @include clearfix();
 }
 
+.kiln-toolbar-pane .preview-actions {
+  width: 100%;
+}
+
 .kiln-toolbar-pane .schedule-label {
   @include label();
 
