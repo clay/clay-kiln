@@ -66,7 +66,7 @@
     {# publish messages with default text #}
     <div class="publish-messages messages">
       <p class="publish-state-message">In Draft.</p>
-      <p class="publish-schedule-message hide">Scheduled to publish</p>
+      <p class="publish-schedule-message kiln-hide">Scheduled to publish</p>
       <p class="publish-effect-message">Changes you make outside of the article will also be published.</p>
     </div>
 
@@ -80,9 +80,9 @@
         <input id="schedule-time" class="schedule-input" type="time" value="" placeholder=""></input>
         <button class="schedule-publish">Schedule Publish</button>
       </form>
-      <button class="unschedule hide">Unschedule</button>
+      <button class="unschedule kiln-hide">Unschedule</button>
       <button class="publish-now">Publish Now</button>
-      <button class="unpublish hide">Unpublish Page</button>
+      <button class="unpublish kiln-hide">Unpublish Page</button>
     </div>
 
     <div class="new-page-actions actions">
