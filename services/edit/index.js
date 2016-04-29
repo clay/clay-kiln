@@ -220,12 +220,13 @@ function getNewPageUrl(uri) {
 }
 
 /**
- * create a new page, cloning the current page
+ * Create a new page, cloning the current page
+ * @param {string} pageType to create ('new', 'new-sponsored', etc.)
  * @returns {Promise}
  */
-function createPage() {
+function createPage(pageType) {
   var prefix = site.get('prefix'),
-    newPageUri = prefix + pagesRoute + 'new';
+    newPageUri = prefix + pagesRoute + pageType;
 
   return cache.getDataOnly(newPageUri).then(function (data) {
     return db.create(prefix + pagesRoute, _.omit(data, '_ref')).then(function (res) {

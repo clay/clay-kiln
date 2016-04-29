@@ -8,22 +8,31 @@ module.exports = function () {
     this.form = dom.find(el, '.select-page-type');
   }
 
+  function createPageByType(pageType) {
+    return edit.createPage(pageType)
+      .then(function (url) {
+        location.href = url;
+      })
+      .catch(function () {
+        progress.done('error');
+        progress.open('error', 'Issue with opening page.', true);
+      });
+  }
+
   constructor.prototype = {
     events: {
-      '.create-article-page click': 'onNewArticle'
+      '.create-article-page click': 'onNewArticle',
+      '.create-sponsored-post click': 'onNewSponsoredPost'
     },
 
     onNewArticle: function (e) {
       e.preventDefault();
+      createPageByType('new');
+    },
 
-      return edit.createPage()
-        .then(function (url) {
-          location.href = url;
-        })
-        .catch(function () {
-          progress.done('error');
-          progress.open('error', 'Issue with opening page.', true);
-        });
+    onNewSponsoredPost: function (e) {
+      e.preventDefault();
+      createPageByType('new-sponsored');
     }
   };
   return constructor;

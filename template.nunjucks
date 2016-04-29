@@ -89,7 +89,7 @@
       <form class="select-page-type">
         {#<label class="schedule-label" for="schedule-time">Time</label>#}
         <button class="create-article-page primary-action">New Article Page</button>
-        <button class="create-sponsored-post primary-action" disabled>New Sponsored Post</button>
+        <button class="create-sponsored-post primary-action">New Sponsored Post</button>
       </form>
     </div>
 

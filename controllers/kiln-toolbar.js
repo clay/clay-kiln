@@ -30,7 +30,7 @@ function createPage() {
         progress.open('error', 'Issue with opening page options.', true);
       });
   } else {
-    return edit.createPage().then(function (url) {
+    return edit.createPage('new').then(function (url) { // only one page type, so just create a 'new' page
       location.href = url;
     });
   }

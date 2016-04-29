@@ -40,22 +40,29 @@ function close() {
  * open a pane
  * @param {string} header will display at the top of the pane, html accepted
  * @param {Element} innerEl will display inside the pane
+ * @param {string} [modifier] optional css class name for modifying the pane
  * @returns {Element} pane
  */
-function open(header, innerEl) {
+function open(header, innerEl, modifier) {
   var toolbar = dom.find('.kiln-toolbar'),
     el = createPane(header, innerEl),
-    pane;
+    pane, paneWrapper;
 
   close(); // close any other panes before opening a new one
   dom.insertBefore(toolbar, el);
-  pane = toolbar.previousElementSibling; // now grab a reference to the dom
+  paneWrapper = toolbar.previousElementSibling; // now grab a reference to the dom
   // init controller for pane background
-  ds.controller('pane', paneController);
-  ds.get('pane', pane);
+  ds.controller('paneWrapper', paneController);
+  ds.get('paneWrapper', paneWrapper);
   // trick browser into doing a repaint, to force the animation
-  setTimeout(function () { dom.find(pane, '.kiln-toolbar-pane').classList.add('on'); }, 0);
-  return pane;
+  setTimeout(function () {
+    pane = dom.find(paneWrapper, '.kiln-toolbar-pane');
+    pane.classList.add('on');
+    if (modifier) {
+      pane.classList.add(modifier);
+    }
+  }, 0);
+  return paneWrapper;
 }
 
 /**
@@ -164,7 +171,7 @@ function openNewPage() {
   // append actions to the doc fragment
   innerEl.appendChild(pageActionsSubTemplate);
   // create the root pane element
-  open(header, innerEl);
+  open(header, innerEl, 'medium');
   // init controller for publish pane
   ds.controller('pane-new-page', newPagePaneController);
   return ds.get('pane-new-page', pageActionsSubTemplate);
