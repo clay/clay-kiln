@@ -7,9 +7,9 @@
 $pane-margin: 30vh;
 $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 
-.kiln-hide,
+.hide,
 .kiln-pane-template-elements {
-  @include kiln-hide();
+  display: none !important; // Always hide your skeletons and other hidden things
 }
 
 .kiln-toolbar-pane-background {

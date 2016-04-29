@@ -85,7 +85,7 @@ function createPublishMessages(res) {
     scheduleMessage = dom.find(messages, '.publish-schedule-message');
     if (scheduleMessage) {
       scheduleMessage.innerHTML = `Scheduled to publish ${state.formatTime(res.scheduledAt)}.`;
-      scheduleMessage.classList.remove('kiln-hide');
+      scheduleMessage.classList.remove('hide');
     }
   }
 
@@ -109,14 +109,11 @@ function createPublishActions(res) {
     scheduleTime = dom.find(actions, '#schedule-time');
 
     if (scheduleDate) {
-      scheduleDate.setAttribute('min', today);
-      scheduleDate.setAttribute('value', today);
-      scheduleDate.setAttribute('placeholder', today);
+      dom.replaceElement(scheduleDate, dom.create(`<input id="schedule-date" class="schedule-input" type="date" min="${today}" value="${today}" placeholder="${today}"></input>`));
     }
 
     if (scheduleTime) {
-      scheduleTime.setAttribute('value', now);
-      scheduleTime.setAttribute('placeholder', now);
+      dom.replaceElement(scheduleTime, dom.create(`<input id="schedule-time" class="schedule-input" type="time" value="${now}" placeholder="${now}"></input>`));
     }
   }
 
@@ -125,7 +122,7 @@ function createPublishActions(res) {
     state.toggleScheduled(true); // just in case someone else scheduled this page
     unschedule = dom.find(actions, '.unschedule');
     if (unschedule) {
-      unschedule.classList.remove('kiln-hide');
+      unschedule.classList.remove('hide');
     }
   }
 
@@ -133,7 +130,7 @@ function createPublishActions(res) {
   if (res.published) {
     unpublish = dom.find(actions, '.unpublish');
     if (unpublish) {
-      unpublish.classList.remove('kiln-hide');
+      unpublish.classList.remove('hide');
     }
   }
 
