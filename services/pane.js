@@ -5,7 +5,6 @@ var _ = require('lodash'),
   state = require('./page-state'),
   site = require('./site'),
   paneController = require('../controllers/pane'),
-  newPagePaneController = require('../controllers/pane-new-page'),
   publishPaneController = require('../controllers/publish-pane');
 
 /**
@@ -64,23 +63,25 @@ function open(header, innerEl) {
  * @returns {Element}
  */
 function createPublishMessages(res) {
-  var messages = dom.find('.publish-messages'),
-    scheduleMessage, stateMessage;
+  var messages = dom.create('<div class="messages"></div>'),
+    draftMessage = dom.create('<p>In Draft.</p>'),
+    effectMessage = dom.create('<p>Changes you make outside of the article will also be published.</p>');
 
+  // add messages (in order)
   if (res.published) {
-    stateMessage = dom.find(messages, '.publish-state-message');
-    if (stateMessage) {
-      stateMessage.innerHTML = `Published ${state.formatTime(res.publishedAt)}`;
-    }
+    // published message
+    messages.appendChild(dom.create(`<p>Published ${state.formatTime(res.publishedAt)}</p>`)); // todo: get published time
+  } else {
+    messages.appendChild(draftMessage);
   }
 
   if (res.scheduled) {
-    scheduleMessage = dom.find(messages, '.publish-schedule-message');
-    if (scheduleMessage) {
-      scheduleMessage.innerHTML = `Scheduled to publish ${state.formatTime(res.scheduledAt)}.`;
-      scheduleMessage.classList.remove('hide');
-    }
+    // scheduled message
+    messages.appendChild(dom.create(`<p>Scheduled to publish ${state.formatTime(res.scheduledAt)}.</p>`));
   }
+
+  // message about what publishing affects
+  messages.appendChild(effectMessage);
 
   return messages;
 }
@@ -91,40 +92,36 @@ function createPublishMessages(res) {
  * @returns {Element}
  */
 function createPublishActions(res) {
-  const actions = dom.find('.publish-actions'),
-    today = moment().format('YYYY-MM-DD'),
-    now = moment().format('HH:mm');
-  let scheduleDate, scheduleTime, unpublish, unschedule;
+  var today = moment().format('YYYY-MM-DD'),
+    now = moment().format('HH:mm'),
+    actions = dom.create('<div class="actions"></div>'),
+    schedule = dom.create(`<form class="schedule">
+      <label class="schedule-label" for="schedule-date">Date</label>
+      <input id="schedule-date" class="schedule-input" type="date" min="${today}" value="${today}" placeholder="${today}"></input>
+      <label class="schedule-label" for="schedule-time">Time</label>
+      <input id="schedule-time" class="schedule-input" type="time" value="${now}" placeholder="${now}"></input>
+      <button class="schedule-publish">Schedule Publish</button>
+    </form>`),
+    unschedule = dom.create('<button class="unschedule">Unschedule</button>'),
+    publishNow = dom.create('<button class="publish-now">Publish Now</button>'),
+    unpublish = dom.create('<button class="unpublish">Unpublish Page</button>');
 
-  // set date and time
-  if (actions) {
-    scheduleDate = dom.find(actions, '#schedule-date');
-    scheduleTime = dom.find(actions, '#schedule-time');
-
-    if (scheduleDate) {
-      dom.replaceElement(scheduleDate, dom.create(`<input id="schedule-date" class="schedule-input" type="date" min="${today}" value="${today}" placeholder="${today}"></input>`));
-    }
-
-    if (scheduleTime) {
-      dom.replaceElement(scheduleTime, dom.create(`<input id="schedule-time" class="schedule-input" type="time" value="${now}" placeholder="${now}"></input>`));
-    }
-  }
+  // add actions and buttons (in order)
+  // scheduling: always exists
+  actions.appendChild(schedule);
 
   // unscheduling
   if (res.scheduled) {
     state.toggleScheduled(true); // just in case someone else scheduled this page
-    unschedule = dom.find(actions, '.unschedule');
-    if (unschedule) {
-      unschedule.classList.remove('hide');
-    }
+    actions.appendChild(unschedule);
   }
+
+  // publish: always exists
+  actions.appendChild(publishNow);
 
   // unpublish (only affects page)
   if (res.published) {
-    unpublish = dom.find(actions, '.unpublish');
-    if (unpublish) {
-      unpublish.classList.remove('hide');
-    }
+    actions.appendChild(unpublish);
   }
 
   return actions;
@@ -152,24 +149,6 @@ function openPublish() {
   });
 }
 
-/**
- * open new page type dialog pane
- * @returns {Promise}
- */
-function openNewPage() {
-  var header = 'New Page',
-    innerEl = document.createDocumentFragment(),
-    pageActionsSubTemplate = dom.find('.new-page-actions').cloneNode(true);
-
-  // append actions to the doc fragment
-  innerEl.appendChild(pageActionsSubTemplate);
-  // create the root pane element
-  open(header, innerEl);
-  // init controller for publish pane
-  ds.controller('pane-new-page', newPagePaneController);
-  return ds.get('pane-new-page', pageActionsSubTemplate);
-}
-
 function addPreview(preview) {
   if (preview) {
     return `<span class="error-preview">${preview}</span>`;
@@ -178,30 +157,16 @@ function addPreview(preview) {
   }
 }
 
-/**
- * format and assemble error messages
- * @param {Object[]} errors
- * @returns {Element}
- */
 function addErrors(errors) {
   return _.reduce(errors, function (el, error) {
-    var errorEl = dom.find('.publish-errors'),
-      errorLabel = dom.find(errorEl, '.label'),
-      errorDescription = dom.find(errorEl, '.description'),
+    var errorEl = dom.create(`
+        <div class="publish-error">
+          <span class="label">${error.rule.label}:</span>
+          <span class="description">${error.rule.description}</span>
+          <ul class="errors"></ul>
+        </div>
+      `),
       list = dom.find(errorEl, 'ul');
-
-    // reset template label default if available
-    if (errorLabel && _.get(error, 'rule.label')) {
-      dom.replaceElement(errorLabel, dom.create(`<span class="label">${error.rule.label}:</span>`));
-    }
-
-    // reset template description default if available
-    if (errorDescription && _.get(error, 'rule.description')) {
-      dom.replaceElement(errorDescription, dom.create(`<span class="description">${error.rule.description}</span>`));
-    }
-
-    // remove default error messages
-    dom.clearChildren(list);
 
     // add each place where the error occurs
     _.each(error.errors, function (item) {
@@ -227,10 +192,15 @@ function addErrors(errors) {
  */
 function openValidationErrors(errors) {
   var header = 'Before you can publish&hellip;',
+    messageEl = dom.create(`
+      <div class="error-message">This page is missing things needed to publish.<br />Address the following and try publishing again.</div>
+    `),
     errorsEl = addErrors(errors),
     innerEl = document.createDocumentFragment();
 
+  innerEl.appendChild(messageEl);
   innerEl.appendChild(errorsEl);
+
   open(header, innerEl);
 }
 
@@ -254,7 +224,6 @@ function takeOffEveryZig() {
 
 module.exports.close = close;
 module.exports.open = open;
-module.exports.openNewPage = openNewPage;
 module.exports.openPublish = openPublish;
 module.exports.openValidationErrors = openValidationErrors;
 module.exports.takeOffEveryZig = takeOffEveryZig;

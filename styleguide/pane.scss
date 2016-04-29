@@ -7,11 +7,6 @@
 $pane-margin: 30vh;
 $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 
-.hide,
-.kiln-pane-template-elements {
-  display: none !important; // Always hide your skeletons and other hidden things
-}
-
 .kiln-toolbar-pane-background {
   background-color: $overlay-background;
   display: block;
@@ -138,7 +133,6 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   @include button-outlined($black-50, $white);
 }
 
-.kiln-toolbar-pane .primary-action,
 .kiln-toolbar-pane .publish-now {
   @include button-outlined($green, $white);
 }
@@ -147,7 +141,6 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   @include button-outlined($black-50, $white);
 }
 
-.kiln-toolbar-pane .primary-action,
 .kiln-toolbar-pane .schedule-publish,
 .kiln-toolbar-pane .publish-now {
   margin: 15px 0 0;
