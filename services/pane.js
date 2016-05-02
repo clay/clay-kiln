@@ -209,20 +209,17 @@ function addErrors(errors) {
     var errorEl = getTemplate('.publish-errors-template'),
       errorLabel = dom.find(errorEl, '.label'),
       errorDescription = dom.find(errorEl, '.description'),
-      list = dom.find(errorEl, 'ul');
+      list = dom.find(errorEl, '.errors');
 
     // reset template label default if available
     if (errorLabel && _.get(error, 'rule.label')) {
-      dom.replaceElement(errorLabel, dom.create(`<span class="label">${error.rule.label}:</span>`));
+      errorLabel.innerHTML = error.rule.label + ':';
     }
 
     // reset template description default if available
     if (errorDescription && _.get(error, 'rule.description')) {
-      dom.replaceElement(errorDescription, dom.create(`<span class="description">${error.rule.description}</span>`));
+      errorDescription.innerHTML = error.rule.description;
     }
-
-    // remove default error messages
-    dom.clearChildren(list);
 
     // add each place where the error occurs
     _.each(error.errors, function (item) {
@@ -248,9 +245,11 @@ function addErrors(errors) {
  */
 function openValidationErrors(errors) {
   var header = 'Before you can publish&hellip;',
+    messagesEl = getTemplate('.publish-error-message-template'),
     errorsEl = addErrors(errors),
     innerEl = document.createDocumentFragment();
 
+  innerEl.appendChild(messagesEl);
   innerEl.appendChild(errorsEl);
   open(header, innerEl);
 }

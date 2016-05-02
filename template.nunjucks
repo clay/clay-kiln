@@ -101,13 +101,16 @@
   {# sub-templates: errors #}
   {# publish errors with default text #}
   <template class="publish-errors-template">
-    <div class="publish-errors">
-      <div class="error-message">This page is missing things needed to publish.<br />Address the following and try publishing again.</div>
+    <div class="publish-error">
       <span class="label">There was a problem:</span>
       <span class="description">Please see below for details</span>
       <ul class="errors">
-        <li class="error-item"><span class="error-label">Item Label</span>Item Preview</li>
+        {# each component that breaks this rule will be added to this list #}
       </ul>
     </div>
+  </template>
+
+  <template class="publish-error-message-template">
+    <div class="error-message">This page is missing things needed to publish.<br />Address the following and try publishing again.</div>
   </template>
 {% endif %}
