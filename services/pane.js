@@ -10,14 +10,24 @@ var _ = require('lodash'),
   kilnHideClass = 'kiln-hide';
 
 /**
+ * grab templates from the dom
+ * @param {string} selector
+ * @returns {Element}
+ */
+function getTemplate(selector) {
+  var template = dom.find(selector);
+
+  return document.importNode(template.content, true);
+}
+
+/**
  * create pane
  * @param {string} header
  * @param {Element|DocumentFragment} innerEl
  * @returns {Element}
  */
 function createPane(header, innerEl) {
-  var template = dom.find('.kiln-pane-template'),
-    el = document.importNode(template.content, true);
+  var el = getTemplate('.kiln-pane-template');
 
   // add header and contents
   el.querySelector('.pane-header').innerHTML = header;
@@ -72,7 +82,7 @@ function open(header, innerEl, modifier) {
  * @returns {Element}
  */
 function createPublishMessages(res) {
-  var messages = dom.find('.publish-messages'),
+  var messages = getTemplate('.publish-messages-template'),
     scheduleMessage, stateMessage;
 
   if (res.published) {
@@ -99,7 +109,7 @@ function createPublishMessages(res) {
  * @returns {Element}
  */
 function createPublishActions(res) {
-  const actions = dom.find('.publish-actions'),
+  const actions = getTemplate('.publish-actions-template'),
     today = moment().format('YYYY-MM-DD'),
     now = moment().format('HH:mm');
   let scheduleDate, scheduleTime, unpublish, unschedule;
@@ -170,7 +180,7 @@ function openPublish() {
 function openNewPage() {
   var header = 'New Page',
     innerEl = document.createDocumentFragment(),
-    pageActionsSubTemplate = dom.find('.new-page-actions').cloneNode(true);
+    pageActionsSubTemplate = getTemplate('.new-page-actions-template');
 
   // append actions to the doc fragment
   innerEl.appendChild(pageActionsSubTemplate);
@@ -196,7 +206,7 @@ function addPreview(preview) {
  */
 function addErrors(errors) {
   return _.reduce(errors, function (el, error) {
-    var errorEl = dom.find('.publish-errors'),
+    var errorEl = getTemplate('.publish-errors-template'),
       errorLabel = dom.find(errorEl, '.label'),
       errorDescription = dom.find(errorEl, '.description'),
       list = dom.find(errorEl, 'ul');
