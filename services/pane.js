@@ -27,7 +27,7 @@ function getTemplate(selector) {
  * @returns {Element}
  */
 function createPane(header, innerEl) {
-  var el = getTemplate('.kiln-pane-template');
+  var el = exports.getTemplate('.kiln-pane-template');
 
   // add header and contents
   el.querySelector('.pane-header').innerHTML = header;
@@ -82,7 +82,7 @@ function open(header, innerEl, modifier) {
  * @returns {Element}
  */
 function createPublishMessages(res) {
-  var messages = getTemplate('.publish-messages-template'),
+  var messages = exports.getTemplate('.publish-messages-template'),
     scheduleMessage, stateMessage;
 
   if (res.published) {
@@ -109,7 +109,7 @@ function createPublishMessages(res) {
  * @returns {Element}
  */
 function createPublishActions(res) {
-  const actions = getTemplate('.publish-actions-template'),
+  const actions = exports.getTemplate('.publish-actions-template'),
     today = moment().format('YYYY-MM-DD'),
     now = moment().format('HH:mm');
   let scheduleDate, scheduleTime, unpublish, unschedule;
@@ -175,12 +175,12 @@ function openPublish() {
 
 /**
  * open new page type dialog pane
- * @returns {Promise}
+ * note: not a promise
  */
 function openNewPage() {
   var header = 'New Page',
     innerEl = document.createDocumentFragment(),
-    pageActionsSubTemplate = getTemplate('.new-page-actions-template'),
+    pageActionsSubTemplate = exports.getTemplate('.new-page-actions-template'),
     el;
 
   // append actions to the doc fragment
@@ -189,7 +189,7 @@ function openNewPage() {
   el = open(header, innerEl, 'medium');
   // init controller for publish pane
   ds.controller('pane-new-page', newPagePaneController);
-  return ds.get('pane-new-page', el.querySelector('.actions'));
+  ds.get('pane-new-page', el.querySelector('.actions'));
 }
 
 function addPreview(preview) {
@@ -207,7 +207,7 @@ function addPreview(preview) {
  */
 function addErrors(errors) {
   return _.reduce(errors, function (el, error) {
-    var errorEl = getTemplate('.publish-errors-template'),
+    var errorEl = exports.getTemplate('.publish-errors-template'),
       errorLabel = dom.find(errorEl, '.label'),
       errorDescription = dom.find(errorEl, '.description'),
       list = dom.find(errorEl, '.errors');
@@ -246,7 +246,7 @@ function addErrors(errors) {
  */
 function openValidationErrors(errors) {
   var header = 'Before you can publish&hellip;',
-    messagesEl = getTemplate('.publish-error-message-template'),
+    messagesEl = exports.getTemplate('.publish-error-message-template'),
     errorsEl = addErrors(errors),
     innerEl = document.createDocumentFragment();
 
@@ -273,6 +273,7 @@ function takeOffEveryZig() {
   open(header, innerEl);
 }
 
+module.exports.getTemplate = getTemplate;
 module.exports.close = close;
 module.exports.open = open;
 module.exports.openNewPage = openNewPage;

@@ -2,14 +2,74 @@ var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./pane'),
   state = require('./page-state'),
+  dom = require('@nymag/dom'),
   ds = require('dollar-slice');
+
+// minimal templates, only what we need to test the logic and functionality
+function stubWrapperTemplate() {
+  return dom.create(`<div class="kiln-toolbar-pane-background">
+    <div class="kiln-toolbar-pane">
+      <span class="pane-header"></span>
+      <div class="pane-inner"></div>
+    </div>
+  </div>`);
+}
+
+function stubMessageTemplate() {
+  return dom.create(`<div class="publish-messages messages">
+    <p class="publish-state-message">In Draft.</p>
+    <p class="publish-schedule-message kiln-hide">Scheduled to publish</p>
+  </div>`);
+}
+
+function stubPublishTemplate() {
+  return dom.create(`<div class="publish-actions actions">
+    <form class="schedule">
+      <label class="schedule-label" for="schedule-date">Date</label>
+      <input id="schedule-date" class="schedule-input" type="date" min="" value="" placeholder=""></input>
+      <label class="schedule-label" for="schedule-time">Time</label>
+      <input id="schedule-time" class="schedule-input" type="time" value="" placeholder=""></input>
+      <button class="schedule-publish">Schedule Publish</button>
+    </form>
+    <button class="unschedule kiln-hide">Unschedule</button>
+    <button class="publish-now">Publish Now</button>
+    <button class="unpublish kiln-hide">Unpublish Page</button>
+  </div>`);
+}
+
+function stubNewPageActionsTemplate() {
+  return dom.create(`<div class="new-page-actions actions">
+    <form class="select-page-type">
+      <button class="create-article-page primary-action">New Article Page</button>
+      <button class="create-sponsored-post primary-action">New Sponsored Post</button>
+    </form>
+  </div>`);
+}
+
+function stubErrorsTemplate() {
+  return dom.create(`<div class="publish-error">
+    <span class="label">There was a problem:</span>
+    <span class="description">Please see below for details</span>
+    <ul class="errors"></ul>
+  </div>`);
+}
 
 describe(dirname, function () {
   describe(filename, function () {
-    var sandbox;
+    var sandbox, getTemplate;
 
     beforeEach(function () {
+      var toolbar = dom.create('<div class="kiln-toolbar"></div>');
+
+      document.body.appendChild(toolbar);
       sandbox = sinon.sandbox.create();
+      getTemplate = sandbox.stub(lib, 'getTemplate');
+      getTemplate.withArgs('.kiln-pane-template').returns(stubWrapperTemplate());
+      getTemplate.withArgs('.publish-messages-template').returns(stubMessageTemplate());
+      getTemplate.withArgs('.publish-actions-template').returns(stubPublishTemplate());
+      getTemplate.withArgs('.new-page-actions-template').returns(stubNewPageActionsTemplate());
+      getTemplate.withArgs('.publish-error-message-template').returns(dom.create('<div>ERROR MESSAGE</div>'));
+      getTemplate.withArgs('.publish-errors-template').returns(stubErrorsTemplate());
     });
 
     afterEach(function () {
@@ -39,54 +99,36 @@ describe(dirname, function () {
 
       it('opens a pane with header and innerEl', function () {
         var header = 'Test Pane',
-          innerEl = document.createElement('div'),
-          template = document.createElement('template'),
-          headEl = document.createElement('div'),
-          paneInnerEl = document.createElement('div'),
-          toolbar = document.createElement('div');
-
-        // add template
-        template.classList.add('kiln-pane-template');
-        headEl.classList.add('pane-header');
-        paneInnerEl.classList.add('pane-inner');
-        template.content.appendChild(headEl);
-        template.content.appendChild(paneInnerEl);
-        document.body.appendChild(template);
-
-        // add toolbar
-        toolbar.classList.add('kiln-toolbar');
-        document.body.appendChild(toolbar);
+          innerEl = document.createElement('div');
 
         // run!
         innerEl.classList.add('test-pane');
+        lib.close();
         fn(header, innerEl);
         expect(document.querySelector('.pane-header').innerHTML).to.equal('Test Pane');
         expect(document.querySelector('.pane-inner').innerHTML).to.equal('<div class="test-pane"></div>');
+      });
+
+      it('opens a pane with a modifier class', function (done) {
+        var header = 'Test Pane',
+          innerEl = document.createElement('div');
+
+        function expectClass() {
+          expect(document.querySelector('.kiln-toolbar-pane').classList.contains('test-pane-wrapper')).to.equal(true);
+          done();
+        }
+
+        // run!
+        innerEl.classList.add('test-pane');
+        lib.close();
+        fn(header, innerEl, 'test-pane-wrapper');
+        setTimeout(expectClass, 0);
       });
     });
 
     describe('openPublish', function () {
       var fn = lib[this.title],
         sandbox, getState;
-
-      before(function () {
-        var template = document.createElement('template'),
-          headEl = document.createElement('div'),
-          paneInnerEl = document.createElement('div'),
-          toolbar = document.createElement('div');
-
-        // add template
-        template.classList.add('kiln-pane-template');
-        headEl.classList.add('pane-header');
-        paneInnerEl.classList.add('pane-inner');
-        template.content.appendChild(headEl);
-        template.content.appendChild(paneInnerEl);
-        document.body.appendChild(template);
-
-        // add toolbar
-        toolbar.classList.add('kiln-toolbar');
-        document.body.appendChild(toolbar);
-      });
 
       beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -153,6 +195,78 @@ describe(dirname, function () {
         }
 
         fn().then(expectScheduledPane);
+      });
+    });
+
+    describe('openNewPage', function () {
+      var fn = lib[this.title],
+        sandbox;
+
+      beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+        sandbox.stub(ds);
+      });
+
+      afterEach(function () {
+        sandbox.restore();
+      });
+
+      it('opens a new page pane', function () {
+        lib.close();
+        fn();
+        expect(document.querySelector('.pane-header').innerHTML).to.equal('New Page');
+        expect(document.querySelectorAll('.pane-inner button').length).to.equal(2);
+      });
+    });
+
+    describe('openValidationErrors', function () {
+      var fn = lib[this.title],
+        sandbox;
+
+      beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+        sandbox.stub(ds);
+      });
+
+      afterEach(function () {
+        sandbox.restore();
+      });
+
+      it('opens with no errors', function () {
+        lib.close();
+        fn([]);
+        expect(document.querySelector('.pane-header').innerHTML).to.equal('Before you can publish…');
+        expect(document.querySelector('.pane-inner').innerHTML).to.equal('<div>ERROR MESSAGE</div>'); // just the message, nothing else!
+      });
+
+      it('opens with errors', function () {
+        lib.close();
+        fn([{
+          rule: {
+            label: 'Wrong',
+            description: 'Way'
+          },
+          errors: [{
+            label: 'Foo',
+            preview: 'Bar'
+          }]
+        }]);
+        expect(document.querySelector('.pane-header').innerHTML).to.equal('Before you can publish…');
+        expect(document.querySelector('.pane-inner .publish-error .label').innerHTML).to.equal('Wrong:'); // note the semicolon
+        expect(document.querySelector('.pane-inner .publish-error .description').innerHTML).to.equal('Way');
+        expect(document.querySelectorAll('.pane-inner .errors li').length).to.equal(1);
+      });
+
+      it('uses default label and/or description', function () {
+        lib.close();
+        fn([{
+          rule: {},
+          errors: []
+        }]);
+        expect(document.querySelector('.pane-inner .publish-error .label').innerHTML).to.equal('There was a problem:');
+        expect(document.querySelector('.pane-inner .publish-error .description').innerHTML).to.equal('Please see below for details');
+        expect(document.querySelector('.pane-inner .errors')).to.not.equal(null);
+        expect(document.querySelectorAll('.pane-inner .errors li').length).to.equal(0);
       });
     });
   });
