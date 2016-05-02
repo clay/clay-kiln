@@ -272,7 +272,7 @@ function getText(uri) {
 function getHead(uri) {
   assertUri(uri);
 
-  return send(uri).then(expectBooleanResult);
+  return send(uri).then(expectBooleanResult).catch(() => false);
 }
 
 /**
