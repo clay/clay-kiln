@@ -121,8 +121,7 @@ EditorToolbar.prototype = {
           }
         });
       })
-      .catch(function (e) {
-        console.log(e)
+      .catch(function () {
         // if we can't unfocus the current form...
         progress.done('error');
         progress.open('error', 'Data could not be saved. Please review your open form.', true);

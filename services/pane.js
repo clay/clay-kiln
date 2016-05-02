@@ -40,7 +40,7 @@ function createPane(header, innerEl) {
  * close an open pane
  */
 function close() {
-  var pane  = dom.find('.kiln-toolbar-pane-background');
+  var pane = dom.find('.kiln-toolbar-pane-background');
 
   if (pane) {
     dom.removeElement(pane);
@@ -180,15 +180,16 @@ function openPublish() {
 function openNewPage() {
   var header = 'New Page',
     innerEl = document.createDocumentFragment(),
-    pageActionsSubTemplate = getTemplate('.new-page-actions-template');
+    pageActionsSubTemplate = getTemplate('.new-page-actions-template'),
+    el;
 
   // append actions to the doc fragment
   innerEl.appendChild(pageActionsSubTemplate);
   // create the root pane element
-  open(header, innerEl, 'medium');
+  el = open(header, innerEl, 'medium');
   // init controller for publish pane
   ds.controller('pane-new-page', newPagePaneController);
-  return ds.get('pane-new-page', pageActionsSubTemplate);
+  return ds.get('pane-new-page', el.querySelector('.actions'));
 }
 
 function addPreview(preview) {
