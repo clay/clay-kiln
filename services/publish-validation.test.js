@@ -25,43 +25,46 @@ describe('publish-validation service', function () {
     var fn = lib[this.title];
 
     it('handles empty rules', function () {
-      var rules = [],
-        expectedResults = [];
+      var rules = { errors: [], warnings: [] };
 
       return fn(rules).then(function (results) {
-        expect(results).to.deep.equal(expectedResults);
+        expect(results).to.deep.equal(rules);
       });
     });
 
     it('handles rules with errors', function () {
-      var rules = [ { validate: function () { return ['bad']; } } ];
+      var rules = { errors: [ { validate: function () { return ['bad']; } } ], warnings: []};
 
       return fn(rules).then(function (results) {
-        expect(results.length).to.equal(1);
+        expect(results.errors.length).to.equal(1);
+        expect(results.warnings.length).to.equal(0);
       });
     });
 
     it('handles rules with no errors', function () {
-      var rules = [ { validate: function () { return []; } } ];
+      var rules = { errors: [ { validate: function () { return []; } } ], warnings: []};
 
       return fn(rules).then(function (results) {
-        expect(results.length).to.equal(0);
+        expect(results.errors.length).to.equal(0);
+        expect(results.warnings.length).to.equal(0);
       });
     });
 
     it('handles rules that throw errors', function () {
-      var rules = [ { validate: function () { throw new Error('hey'); } } ];
+      var rules = { errors: [ { validate: function () { throw new Error('hey'); } } ], warnings: []};
 
       return fn(rules).then(function (results) {
-        expect(results.length).to.equal(1);
+        expect(results.errors.length).to.equal(1);
+        expect(results.warnings.length).to.equal(0);
       });
     });
 
     it('avoids rules that are disabled', function () {
-      var rules = [ { enabled: false, validate: function () { throw new Error('hey'); } } ];
+      var rules = { errors: [ { enabled: false, validate: function () { throw new Error('hey'); } } ], warnings: []};
 
       return fn(rules).then(function (results) {
-        expect(results.length).to.equal(0);
+        expect(results.errors.length).to.equal(0);
+        expect(results.warnings.length).to.equal(0);
       });
     });
 
@@ -69,7 +72,7 @@ describe('publish-validation service', function () {
       var spy = sandbox.spy(),
         ref = '/components/a',
         data = {},
-        rules = [{ validate: spy }];
+        rules = { errors: [], warnings: [{ validate: spy }]};
 
       dom.findAll.withArgs('[data-uri]').returns([dom.create('<section data-uri="' + ref + '" />')]);
       edit.getData.withArgs(ref).returns(Promise.resolve(data));
