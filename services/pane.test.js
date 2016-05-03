@@ -257,6 +257,25 @@ describe(dirname, function () {
         expect(document.querySelectorAll('.pane-inner .errors li').length).to.equal(1);
       });
 
+      it('opens with warnings', function () {
+        lib.close();
+        fn({ errors: [],
+          warnings: [{
+            rule: {
+              label: 'Wrong',
+              description: 'Way'
+            },
+            errors: [{
+              label: 'Foo',
+              preview: 'Bar'
+            }]
+          }]});
+        expect(document.querySelector('.pane-header').innerHTML).to.equal('Before you can publish…');
+        expect(document.querySelector('.pane-inner .publish-warning .label').innerHTML).to.equal('Wrong:'); // note the semicolon
+        expect(document.querySelector('.pane-inner .publish-warning .description').innerHTML).to.equal('Way');
+        expect(document.querySelectorAll('.pane-inner .errors li').length).to.equal(1);
+      });
+
       it('uses default label and/or description', function () {
         lib.close();
         fn({ errors: [{

@@ -215,27 +215,28 @@ function addPreview(preview) {
 
 /**
  * format and assemble error messages
- * @param {Object[]} errors
+ * @param {Object[]} errors (or warnings)
+ * @param {string} [modifier] modifier class for warnings, info, etc
  * @returns {Element}
  */
-function addErrors(errors) {
+function addErrors(errors, modifier) {
   return _.reduce(errors, function (el, error) {
     var errorEl = exports.getTemplate('.publish-errors-template'),
       errorLabel = dom.find(errorEl, '.label'),
       errorDescription = dom.find(errorEl, '.description'),
       list = dom.find(errorEl, '.errors');
 
-    // reset template label default if available
+    // add rule label if it exists
     if (errorLabel && _.get(error, 'rule.label')) {
       errorLabel.innerHTML = error.rule.label + ':';
     }
 
-    // reset template description default if available
+    // add rule description if it exists
     if (errorDescription && _.get(error, 'rule.description')) {
       errorDescription.innerHTML = error.rule.description;
     }
 
-    // add each place where the error occurs
+    // add each place where the error/warning occurs
     _.each(error.errors, function (item) {
       var itemEl = dom.create(`<li><span class="error-label">${item.label}</span>${addPreview(item.preview)}</li>`);
 
@@ -243,6 +244,10 @@ function addErrors(errors) {
     });
 
     el.appendChild(errorEl);
+    // add modifier class if it exists
+    if (modifier) {
+      dom.find(el, '.publish-error').classList.add(modifier);
+    }
     return el;
   }, document.createDocumentFragment());
 }
@@ -257,10 +262,12 @@ function openValidationErrors(validation) {
   var header = 'Before you can publish&hellip;',
     messagesEl = exports.getTemplate('.publish-error-message-template'),
     errorsEl = addErrors(validation.errors),
+    warningsEl = addErrors(validation.warnings, 'publish-warning'),
     innerEl = document.createDocumentFragment();
 
   innerEl.appendChild(messagesEl);
   innerEl.appendChild(errorsEl);
+  innerEl.appendChild(warningsEl);
   open(header, innerEl);
 }
 

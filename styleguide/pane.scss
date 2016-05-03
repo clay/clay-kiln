@@ -217,6 +217,11 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   }
 }
 
+// special color for warnings
+.kiln-toolbar-pane .publish-warning .label {
+  color: $orange;
+}
+
 .kiln-toolbar-pane .error-preview {
   @include secondary-text();
 
