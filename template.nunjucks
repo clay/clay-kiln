@@ -106,10 +106,11 @@
     </div>
   </template>
 
-  {# sub-templates: errors #}
-  {# publish errors with default text #}
+  {# sub-templates: errors and warnings #}
+  {# publish errors and warnings with default text #}
   <template class="publish-errors-template">
     <div class="publish-error">
+      {# note: warnings use the same template, but the parent div gets a .publish-warning class to change the label color #}
       <span class="label">There was a problem:</span>
       <span class="description">Please see below for details</span>
       <ul class="errors">
@@ -120,5 +121,9 @@
 
   <template class="publish-error-message-template">
     <div class="error-message">This page is missing things needed to publish.<br />Address the following and try publishing again.</div>
+  </template>
+
+  <template class="publish-warning-message-template">
+    <div class="warning-message">This page has some warnings. Please review before publishing.</div>
   </template>
 {% endif %}

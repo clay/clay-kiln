@@ -65,10 +65,12 @@ describe(dirname, function () {
       sandbox = sinon.sandbox.create();
       getTemplate = sandbox.stub(lib, 'getTemplate');
       getTemplate.withArgs('.kiln-pane-template').returns(stubWrapperTemplate());
+      getTemplate.withArgs('.publish-valid-template').returns(dom.create('<div class="publish-valid">valid</div>'));
       getTemplate.withArgs('.publish-messages-template').returns(stubMessageTemplate());
       getTemplate.withArgs('.publish-actions-template').returns(stubPublishTemplate());
       getTemplate.withArgs('.new-page-actions-template').returns(stubNewPageActionsTemplate());
       getTemplate.withArgs('.publish-error-message-template').returns(dom.create('<div>ERROR MESSAGE</div>'));
+      getTemplate.withArgs('.publish-warning-message-template').returns(dom.create('<div>WARNING MESSAGE</div>'));
       getTemplate.withArgs('.publish-errors-template').returns(stubErrorsTemplate());
     });
 
@@ -196,6 +198,42 @@ describe(dirname, function () {
 
         fn().then(expectScheduledPane);
       });
+
+      it('adds valid message if there are no warnings', function () {
+        getState.returns(Promise.resolve({}));
+        lib.close();
+
+        function expectRegularPane() {
+          expect(document.querySelector('.pane-header').innerHTML).to.equal('Schedule Publish');
+          expect(document.querySelector('.pane-inner .publish-valid').innerHTML).to.equal('valid');
+        }
+
+        fn().then(expectRegularPane);
+      });
+
+      it('adds warning message if warnings are passed in', function () {
+        getState.returns(Promise.resolve({}));
+        lib.close();
+
+        function expectRegularPane() {
+          expect(document.querySelector('.pane-header').innerHTML).to.equal('Schedule Publish');
+          expect(document.querySelector('.pane-inner .publish-valid')).to.equal(null);
+          expect(document.querySelector('.pane-inner .publish-warning .label').innerHTML).to.equal('Wrong:'); // note the semicolon
+          expect(document.querySelector('.pane-inner .publish-warning .description').innerHTML).to.equal('Way');
+          expect(document.querySelectorAll('.pane-inner .errors li').length).to.equal(1);
+        }
+
+        fn([{
+          rule: {
+            label: 'Wrong',
+            description: 'Way'
+          },
+          errors: [{
+            label: 'Foo',
+            preview: 'Bar'
+          }]
+        }]).then(expectRegularPane);
+      });
     });
 
     describe('openNewPage', function () {
@@ -234,14 +272,14 @@ describe(dirname, function () {
 
       it('opens with no errors', function () {
         lib.close();
-        fn([]);
+        fn({ errors: [], warnings: [] });
         expect(document.querySelector('.pane-header').innerHTML).to.equal('Before you can publish…');
         expect(document.querySelector('.pane-inner').innerHTML).to.equal('<div>ERROR MESSAGE</div>'); // just the message, nothing else!
       });
 
       it('opens with errors', function () {
         lib.close();
-        fn([{
+        fn({ errors: [{
           rule: {
             label: 'Wrong',
             description: 'Way'
@@ -250,19 +288,38 @@ describe(dirname, function () {
             label: 'Foo',
             preview: 'Bar'
           }]
-        }]);
+        }], warnings: []});
         expect(document.querySelector('.pane-header').innerHTML).to.equal('Before you can publish…');
         expect(document.querySelector('.pane-inner .publish-error .label').innerHTML).to.equal('Wrong:'); // note the semicolon
         expect(document.querySelector('.pane-inner .publish-error .description').innerHTML).to.equal('Way');
         expect(document.querySelectorAll('.pane-inner .errors li').length).to.equal(1);
       });
 
+      it('opens with warnings', function () {
+        lib.close();
+        fn({ errors: [],
+          warnings: [{
+            rule: {
+              label: 'Wrong',
+              description: 'Way'
+            },
+            errors: [{
+              label: 'Foo',
+              preview: 'Bar'
+            }]
+          }]});
+        expect(document.querySelector('.pane-header').innerHTML).to.equal('Before you can publish…');
+        expect(document.querySelector('.pane-inner .publish-warning .label').innerHTML).to.equal('Wrong:'); // note the semicolon
+        expect(document.querySelector('.pane-inner .publish-warning .description').innerHTML).to.equal('Way');
+        expect(document.querySelectorAll('.pane-inner .errors li').length).to.equal(1);
+      });
+
       it('uses default label and/or description', function () {
         lib.close();
-        fn([{
+        fn({ errors: [{
           rule: {},
           errors: []
-        }]);
+        }], warnings: []});
         expect(document.querySelector('.pane-inner .publish-error .label').innerHTML).to.equal('There was a problem:');
         expect(document.querySelector('.pane-inner .publish-error .description').innerHTML).to.equal('Please see below for details');
         expect(document.querySelector('.pane-inner .errors')).to.not.equal(null);

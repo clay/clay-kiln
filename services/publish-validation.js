@@ -67,7 +67,27 @@ function validateRule(state) {
 }
 
 /**
- * @param {Array} rules
+ * map over all rules, running them and compacting the resulting errors (if any)
+ * @param {object} rules
+ * @param {object} state (read-only)
+ * @returns {Promise}
+ */
+function mapRules(rules, state) {
+  return promises.props({
+    errors: promises.map(_.filter(rules.errors, isRuleEnabled), validateRule(state)),
+    warnings: promises.map(_.filter(rules.warnings, isRuleEnabled), validateRule(state))
+  }).then(function (results) {
+    return {
+      errors: _.compact(results.errors),
+      warnings: _.compact(results.warnings)
+    };
+  });
+}
+
+/**
+ * @param {object} rules
+ * @param {array} rules.errors
+ * @param {array} rules.warnings
  * @returns {Promise}
  */
 function validate(rules) {
@@ -79,9 +99,8 @@ function validate(rules) {
     .then(function (result) {
       var state = control.setReadOnly({ refs: result[0], components: result[1] });
 
-      return promises.map(_.filter(rules, isRuleEnabled), validateRule(state));
-    })
-    .then(_.compact);
+      return mapRules(rules, state);
+    });
 }
 
 module.exports.validate = validate;

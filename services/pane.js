@@ -78,14 +78,23 @@ function open(header, innerEl, modifier) {
 
 /**
  * create validation messages
- * note: right now this solely displays valid,
- * it will display warnings in the future
+ * @param {array} [warnings]
  * @returns {Element}
  */
-function createPublishValidation() {
-  var valid = exports.getTemplate('.publish-valid-template');
+function createPublishValidation(warnings) {
+  if (warnings.length) {
+    let el = document.createDocumentFragment(),
+      messageEl = exports.getTemplate('.publish-warning-message-template'),
+      // same way the error pane does it
+      errorsEl = addErrorsOrWarnings(warnings, 'publish-warning');
 
-  return valid;
+    el.appendChild(messageEl);
+    el.appendChild(errorsEl);
+
+    return el;
+  } else {
+    return exports.getTemplate('.publish-valid-template');
+  }
 }
 
 /**
@@ -165,16 +174,17 @@ function createPublishActions(res) {
 
 /**
  * open publish pane
+ * @param {array} [warnings]
  * @returns {Promise}
  */
-function openPublish() {
+function openPublish(warnings) {
   var header = 'Schedule Publish',
     innerEl = document.createDocumentFragment(),
     el;
 
   return state.get().then(function (res) {
     // append validation, message, and actions to the doc fragment
-    innerEl.appendChild(createPublishValidation());
+    innerEl.appendChild(createPublishValidation(warnings));
     innerEl.appendChild(createPublishMessages(res));
     innerEl.appendChild(createPublishActions(res));
 
@@ -215,27 +225,28 @@ function addPreview(preview) {
 
 /**
  * format and assemble error messages
- * @param {Object[]} errors
+ * @param {Object[]} errors (or warnings)
+ * @param {string} [modifier] modifier class for warnings, info, etc
  * @returns {Element}
  */
-function addErrors(errors) {
+function addErrorsOrWarnings(errors, modifier) {
   return _.reduce(errors, function (el, error) {
     var errorEl = exports.getTemplate('.publish-errors-template'),
       errorLabel = dom.find(errorEl, '.label'),
       errorDescription = dom.find(errorEl, '.description'),
       list = dom.find(errorEl, '.errors');
 
-    // reset template label default if available
+    // add rule label if it exists
     if (errorLabel && _.get(error, 'rule.label')) {
       errorLabel.innerHTML = error.rule.label + ':';
     }
 
-    // reset template description default if available
+    // add rule description if it exists
     if (errorDescription && _.get(error, 'rule.description')) {
       errorDescription.innerHTML = error.rule.description;
     }
 
-    // add each place where the error occurs
+    // add each place where the error/warning occurs
     _.each(error.errors, function (item) {
       var itemEl = dom.create(`<li><span class="error-label">${item.label}</span>${addPreview(item.preview)}</li>`);
 
@@ -243,28 +254,30 @@ function addErrors(errors) {
     });
 
     el.appendChild(errorEl);
+    // add modifier class if it exists
+    if (modifier) {
+      dom.find(el, '.publish-error').classList.add(modifier);
+    }
     return el;
   }, document.createDocumentFragment());
 }
 
 /**
  * open validation error pane
- * @param {Object[]} errors
- * @param {object} errors[].rule
- * @param {string} errors[].rule.label e.g. 'Required'
- * @param {string} errors[].rule.description e.g. 'Required fields cannot be blank'
- * @param {Object[]} errors[].errors
- * @param {string} errors[].errors[].label e.g. 'Article > Header'
- * @param {string} [errors[].errors[].preview] e.g. 'text in a paragraph TK more text...'
+ * @param {object} validation
+ * @param {Object[]} validation.errors
+ * @param {Object[]} validation.warnings
  */
-function openValidationErrors(errors) {
+function openValidationErrors(validation) {
   var header = 'Before you can publish&hellip;',
     messagesEl = exports.getTemplate('.publish-error-message-template'),
-    errorsEl = addErrors(errors),
+    errorsEl = addErrorsOrWarnings(validation.errors),
+    warningsEl = addErrorsOrWarnings(validation.warnings, 'publish-warning'),
     innerEl = document.createDocumentFragment();
 
   innerEl.appendChild(messagesEl);
   innerEl.appendChild(errorsEl);
+  innerEl.appendChild(warningsEl);
   open(header, innerEl);
 }
 
