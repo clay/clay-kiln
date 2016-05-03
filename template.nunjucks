@@ -17,23 +17,23 @@
       data-site-assetpath="{{ site.assetPath }}"
       data-components="{{ _components }}">
       <div class="kiln-toolbar-inner">
-        <button class="user-icon">{% include 'public/media/components/clay-kiln/user-icon.svg' ignore missing %}</button>
+        <button class="user-icon">{% include 'public/media/components/clay-kiln/user-icon.svg' %}</button>
         <div class="flex-span"></div>
         <button class="kiln-toolbar-button new">
           <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
-            <span class="icon">{% include 'public/media/components/clay-kiln/add-icon.svg' ignore missing %}</span>
+            <span class="icon">{% include 'public/media/components/clay-kiln/add-icon.svg' %}</span>
             <span class="text">Page</span>
           </div>
         </button>
         <button class="kiln-toolbar-button history">
           <div class="button-flex-inner">
-            <span class="icon">{% include 'public/media/components/clay-kiln/history-icon.svg' ignore missing %}</span>
+            <span class="icon">{% include 'public/media/components/clay-kiln/history-icon.svg' %}</span>
             <span class="text">History</span>
           </div>
         </button>
         <button class="kiln-toolbar-button publish">
           <div class="button-flex-inner">
-            <span class="icon">{% include 'public/media/components/clay-kiln/publish-icon.svg' ignore missing %}</span>
+            <span class="icon">{% include 'public/media/components/clay-kiln/publish-icon.svg' %}</span>
             <span class="text">Publish</span>
           </div>
         </button>
@@ -53,10 +53,19 @@
       <div class="kiln-toolbar-pane">
         <header>
           <span class="pane-header"></span>
-          <button class="close">{% include 'public/media/components/clay-kiln/close.svg' ignore missing %}</button>
+          <button class="close">{% include 'public/media/components/clay-kiln/close.svg' %}</button>
         </header>
         <div class="pane-inner"></div>
       </div>
+    </div>
+  </template>
+
+  {# sub-template: publishing validation #}
+  {# valid message #}
+  <template class="publish-valid-template">
+    <div class="publish-valid">
+      <div class="publish-valid-icon">{% include 'public/media/components/clay-kiln/publish-check.svg' %}</div>
+      <p class="publish-valid-message">Checks pass! This is good to publish.</p>
     </div>
   </template>
 

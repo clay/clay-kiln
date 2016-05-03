@@ -105,8 +105,8 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 
 .kiln-toolbar-pane .messages {
   p {
-    margin: 0 0 10px;
     color: $black-50;
+    margin: 0 0 10px;
   }
 }
 
@@ -243,4 +243,40 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 
 .kiln-toolbar-pane .publish-error .description.ayb {
   padding-top: 20px;
+}
+
+/* validation ok */
+
+.kiln-toolbar-pane .publish-valid {
+  align-items: center;
+  display: flex;
+  margin-bottom: 15px;
+  padding-bottom: 30px;
+  position: relative;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .publish-valid:after {
+  border-bottom: 1px solid #f4f4f4;
+  bottom: 0;
+  content: '';
+  left: -20px;
+  position: absolute;
+  width: calc(100% + 40px);
+}
+
+.kiln-toolbar-pane .publish-valid-icon {
+  margin-right: 16px;
+}
+
+.publish-valid-icon svg {
+  display: inline-block;
+  fill: $green;
+  height: 24px;
+  width: 24px;
+}
+
+.publish-valid-message {
+  color: $green;
+  margin: 4px 0; // vertically center with the icon (24px - 16px)
 }

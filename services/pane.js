@@ -77,6 +77,18 @@ function open(header, innerEl, modifier) {
 }
 
 /**
+ * create validation messages
+ * note: right now this solely displays valid,
+ * it will display warnings in the future
+ * @returns {Element}
+ */
+function createPublishValidation() {
+  var valid = exports.getTemplate('.publish-valid-template');
+
+  return valid;
+}
+
+/**
  * create messages for the publish pane, depending on the state
  * @param {object} res
  * @returns {Element}
@@ -161,7 +173,8 @@ function openPublish() {
     el;
 
   return state.get().then(function (res) {
-    // append message and actions to the doc fragment
+    // append validation, message, and actions to the doc fragment
+    innerEl.appendChild(createPublishValidation());
     innerEl.appendChild(createPublishMessages(res));
     innerEl.appendChild(createPublishActions(res));
 
