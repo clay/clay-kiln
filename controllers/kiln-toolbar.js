@@ -5,7 +5,10 @@ const dom = require('@nymag/dom'),
   pane = require('../services/pane'),
   site = require('../services/site'),
   state = require('../services/page-state'),
-  progress = require('../services/progress');
+  progress = require('../services/progress'),
+  rules = require('../validators'),
+  validation = require('../services/publish-validation');
+
 let EditorToolbar;
 
 /**
@@ -107,8 +110,19 @@ EditorToolbar.prototype = {
   // open the publish pane if it's not already open (close other panes first)
   onPublishClick: function () {
     return focus.unfocus()
-      .then(pane.openPublish)
+      .then(function () {
+        // validate before opening the publish pane
+        return validation.validate(rules).then(function (errors) {
+          if (errors.length) {
+            progress.done('error');
+            pane.openValidationErrors(errors);
+          } else {
+            pane.openPublish();
+          }
+        });
+      })
       .catch(function () {
+        // if we can't unfocus the current form...
         progress.done('error');
         progress.open('error', 'Data could not be saved. Please review your open form.', true);
       });

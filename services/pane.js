@@ -10,14 +10,24 @@ var _ = require('lodash'),
   kilnHideClass = 'kiln-hide';
 
 /**
+ * grab templates from the dom
+ * @param {string} selector
+ * @returns {Element}
+ */
+function getTemplate(selector) {
+  var template = dom.find(selector);
+
+  return document.importNode(template.content, true);
+}
+
+/**
  * create pane
  * @param {string} header
  * @param {Element|DocumentFragment} innerEl
  * @returns {Element}
  */
 function createPane(header, innerEl) {
-  var template = dom.find('.kiln-pane-template'),
-    el = document.importNode(template.content, true);
+  var el = exports.getTemplate('.kiln-pane-template');
 
   // add header and contents
   el.querySelector('.pane-header').innerHTML = header;
@@ -30,7 +40,7 @@ function createPane(header, innerEl) {
  * close an open pane
  */
 function close() {
-  var pane  = dom.find('.kiln-toolbar-pane-background');
+  var pane = dom.find('.kiln-toolbar-pane-background');
 
   if (pane) {
     dom.removeElement(pane);
@@ -72,7 +82,7 @@ function open(header, innerEl, modifier) {
  * @returns {Element}
  */
 function createPublishMessages(res) {
-  var messages = dom.find('.publish-messages'),
+  var messages = exports.getTemplate('.publish-messages-template'),
     scheduleMessage, stateMessage;
 
   if (res.published) {
@@ -99,7 +109,7 @@ function createPublishMessages(res) {
  * @returns {Element}
  */
 function createPublishActions(res) {
-  const actions = dom.find('.publish-actions'),
+  const actions = exports.getTemplate('.publish-actions-template'),
     today = moment().format('YYYY-MM-DD'),
     now = moment().format('HH:mm');
   let scheduleDate, scheduleTime, unpublish, unschedule;
@@ -165,20 +175,21 @@ function openPublish() {
 
 /**
  * open new page type dialog pane
- * @returns {Promise}
+ * note: not a promise
  */
 function openNewPage() {
   var header = 'New Page',
     innerEl = document.createDocumentFragment(),
-    pageActionsSubTemplate = dom.find('.new-page-actions').cloneNode(true);
+    pageActionsSubTemplate = exports.getTemplate('.new-page-actions-template'),
+    el;
 
   // append actions to the doc fragment
   innerEl.appendChild(pageActionsSubTemplate);
   // create the root pane element
-  open(header, innerEl, 'medium');
+  el = open(header, innerEl, 'medium');
   // init controller for publish pane
   ds.controller('pane-new-page', newPagePaneController);
-  return ds.get('pane-new-page', pageActionsSubTemplate);
+  ds.get('pane-new-page', el.querySelector('.actions'));
 }
 
 function addPreview(preview) {
@@ -196,23 +207,20 @@ function addPreview(preview) {
  */
 function addErrors(errors) {
   return _.reduce(errors, function (el, error) {
-    var errorEl = dom.find('.publish-errors'),
+    var errorEl = exports.getTemplate('.publish-errors-template'),
       errorLabel = dom.find(errorEl, '.label'),
       errorDescription = dom.find(errorEl, '.description'),
-      list = dom.find(errorEl, 'ul');
+      list = dom.find(errorEl, '.errors');
 
     // reset template label default if available
     if (errorLabel && _.get(error, 'rule.label')) {
-      dom.replaceElement(errorLabel, dom.create(`<span class="label">${error.rule.label}:</span>`));
+      errorLabel.innerHTML = error.rule.label + ':';
     }
 
     // reset template description default if available
     if (errorDescription && _.get(error, 'rule.description')) {
-      dom.replaceElement(errorDescription, dom.create(`<span class="description">${error.rule.description}</span>`));
+      errorDescription.innerHTML = error.rule.description;
     }
-
-    // remove default error messages
-    dom.clearChildren(list);
 
     // add each place where the error occurs
     _.each(error.errors, function (item) {
@@ -238,9 +246,11 @@ function addErrors(errors) {
  */
 function openValidationErrors(errors) {
   var header = 'Before you can publish&hellip;',
+    messagesEl = exports.getTemplate('.publish-error-message-template'),
     errorsEl = addErrors(errors),
     innerEl = document.createDocumentFragment();
 
+  innerEl.appendChild(messagesEl);
   innerEl.appendChild(errorsEl);
   open(header, innerEl);
 }
@@ -263,6 +273,7 @@ function takeOffEveryZig() {
   open(header, innerEl);
 }
 
+module.exports.getTemplate = getTemplate;
 module.exports.close = close;
 module.exports.open = open;
 module.exports.openNewPage = openNewPage;

@@ -1,8 +1,6 @@
 var moment = require('moment'),
   pane = require('../services/pane'),
   edit = require('../services/edit'),
-  rules = require('../validators'),
-  validation = require('../services/publish-validation'),
   progress = require('../services/progress'),
   dom = require('@nymag/dom'),
   state = require('../services/page-state'),
@@ -63,28 +61,21 @@ module.exports = function () {
       pane.close();
       progress.start('publish');
 
-      return validation.validate(rules).then(function (errors) {
-        if (errors.length) {
-          progress.done('error');
-          pane.openValidationErrors(errors);
-        } else {
-          return unschedulePageAndLayout().then(function () {
-            // publish page and layout immediately
-            return Promise.all([edit.publishPage(), edit.publishLayout()])
-              .then(function (promises) {
-                var url = promises[0];
+      return unschedulePageAndLayout().then(function () {
+        // publish page and layout immediately
+        return Promise.all([edit.publishPage(), edit.publishLayout()])
+          .then(function (promises) {
+            var url = promises[0];
 
-                progress.done();
-                progress.open('publish', `Published! <a href="${url}" target="_blank">View Page</a>`);
-                state.toggleScheduled(false);
-              })
-              .catch(function () {
-                // note: the Error passed into this doesn't have a message, so we use a custom one
-                progress.done('error');
-                progress.open('error', 'Server errored when publishing, please try again.', true);
-              });
+            progress.done();
+            progress.open('publish', `Published! <a href="${url}" target="_blank">View Page</a>`);
+            state.toggleScheduled(false);
+          })
+          .catch(function () {
+            // note: the Error passed into this doesn't have a message, so we use a custom one
+            progress.done('error');
+            progress.open('error', 'Server errored when publishing, please try again.', true);
           });
-        }
       });
     },
 
@@ -123,27 +114,19 @@ module.exports = function () {
       // stop form from submitting normally
       e.preventDefault();
 
-      return validation.validate(rules).then(function (errors) {
-        // first, validate the page client-side
-        if (errors.length) {
-          progress.done('error');
-          pane.openValidationErrors(errors);
-        } else {
-          // only schedule one thing at a time
-          return unschedulePageAndLayout().then(function () {
-            // schedule layout and page publishing in parallel
-            return schedulePageAndLayout(timestamp)
-              .then(function () {
-                progress.done();
-                state.openDynamicSchedule(timestamp, db.uriToUrl(pageUri));
-              })
-              .catch(function () {
-                // note: the Error passed into this doesn't have a message, so we use a custom one
-                progress.done('error');
-                progress.open('error', 'Server errored when scheduling, please try again.', true);
-              });
+      // only schedule one thing at a time
+      return unschedulePageAndLayout().then(function () {
+        // schedule layout and page publishing in parallel
+        return schedulePageAndLayout(timestamp)
+          .then(function () {
+            progress.done();
+            state.openDynamicSchedule(timestamp, db.uriToUrl(pageUri));
+          })
+          .catch(function () {
+            // note: the Error passed into this doesn't have a message, so we use a custom one
+            progress.done('error');
+            progress.open('error', 'Server errored when scheduling, please try again.', true);
           });
-        }
       });
     },
 

@@ -60,18 +60,19 @@
     </div>
   </template>
 
-  <div class="kiln-pane-template-elements">
-
-    {# sub-templates: messages #}
-    {# publish messages with default text #}
+  {# sub-templates: messages #}
+  {# publish messages with default text #}
+  <template class="publish-messages-template">
     <div class="publish-messages messages">
       <p class="publish-state-message">In Draft.</p>
       <p class="publish-schedule-message kiln-hide">Scheduled to publish</p>
       <p class="publish-effect-message">Changes you make outside of the article will also be published.</p>
     </div>
+  </template>
 
-    {# sub-templates: forms and actions #}
-    {# publish actions #}
+  {# sub-templates: forms and actions #}
+  {# publish actions #}
+  <template class="publish-actions-template">
     <div class="publish-actions actions">
       <form class="schedule">
         <label class="schedule-label" for="schedule-date">Date</label>
@@ -84,25 +85,31 @@
       <button class="publish-now">Publish Now</button>
       <button class="unpublish kiln-hide">Unpublish Page</button>
     </div>
+  </template>
 
+  {# new page actions #}
+  <template class="new-page-actions-template">
     <div class="new-page-actions actions">
       <form class="select-page-type">
-        {#<label class="schedule-label" for="schedule-time">Time</label>#}
         <button class="create-article-page primary-action">New Article Page</button>
         <button class="create-sponsored-post primary-action">New Sponsored Post</button>
       </form>
     </div>
+  </template>
 
-    {# sub-templates: errors #}
-    {# publish errors with default text #}
-    <div class="publish-errors">
-      <div class="error-message">This page is missing things needed to publish.<br />Address the following and try publishing again.</div>
+  {# sub-templates: errors #}
+  {# publish errors with default text #}
+  <template class="publish-errors-template">
+    <div class="publish-error">
       <span class="label">There was a problem:</span>
       <span class="description">Please see below for details</span>
       <ul class="errors">
-        <li class="error-item"><span class="error-label">Item Label</span>Item Preview</li>
+        {# each component that breaks this rule will be added to this list #}
       </ul>
     </div>
+  </template>
 
-  </div>
+  <template class="publish-error-message-template">
+    <div class="error-message">This page is missing things needed to publish.<br />Address the following and try publishing again.</div>
+  </template>
 {% endif %}
