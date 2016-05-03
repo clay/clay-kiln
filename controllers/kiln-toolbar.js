@@ -112,12 +112,12 @@ EditorToolbar.prototype = {
     return focus.unfocus()
       .then(function () {
         // validate before opening the publish pane
-        return validation.validate(rules).then(function (errors) {
-          if (errors.length) {
+        return validation.validate(rules).then(function (results) {
+          if (results.errors.length) {
             progress.done('error');
-            pane.openValidationErrors(errors);
+            pane.openValidationErrors(results);
           } else {
-            pane.openPublish();
+            pane.openPublish(results.warnings);
           }
         });
       })

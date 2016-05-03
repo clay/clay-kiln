@@ -249,18 +249,14 @@ function addErrors(errors) {
 
 /**
  * open validation error pane
- * @param {Object[]} errors
- * @param {object} errors[].rule
- * @param {string} errors[].rule.label e.g. 'Required'
- * @param {string} errors[].rule.description e.g. 'Required fields cannot be blank'
- * @param {Object[]} errors[].errors
- * @param {string} errors[].errors[].label e.g. 'Article > Header'
- * @param {string} [errors[].errors[].preview] e.g. 'text in a paragraph TK more text...'
+ * @param {object} validation
+ * @param {Object[]} validation.errors
+ * @param {Object[]} validation.warnings
  */
-function openValidationErrors(errors) {
+function openValidationErrors(validation) {
   var header = 'Before you can publish&hellip;',
     messagesEl = exports.getTemplate('.publish-error-message-template'),
-    errorsEl = addErrors(errors),
+    errorsEl = addErrors(validation.errors),
     innerEl = document.createDocumentFragment();
 
   innerEl.appendChild(messagesEl);

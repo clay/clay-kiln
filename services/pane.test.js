@@ -234,14 +234,14 @@ describe(dirname, function () {
 
       it('opens with no errors', function () {
         lib.close();
-        fn([]);
+        fn({ errors: [], warnings: [] });
         expect(document.querySelector('.pane-header').innerHTML).to.equal('Before you can publish…');
         expect(document.querySelector('.pane-inner').innerHTML).to.equal('<div>ERROR MESSAGE</div>'); // just the message, nothing else!
       });
 
       it('opens with errors', function () {
         lib.close();
-        fn([{
+        fn({ errors: [{
           rule: {
             label: 'Wrong',
             description: 'Way'
@@ -250,7 +250,7 @@ describe(dirname, function () {
             label: 'Foo',
             preview: 'Bar'
           }]
-        }]);
+        }], warnings: []});
         expect(document.querySelector('.pane-header').innerHTML).to.equal('Before you can publish…');
         expect(document.querySelector('.pane-inner .publish-error .label').innerHTML).to.equal('Wrong:'); // note the semicolon
         expect(document.querySelector('.pane-inner .publish-error .description').innerHTML).to.equal('Way');
@@ -259,10 +259,10 @@ describe(dirname, function () {
 
       it('uses default label and/or description', function () {
         lib.close();
-        fn([{
+        fn({ errors: [{
           rule: {},
           errors: []
-        }]);
+        }], warnings: []});
         expect(document.querySelector('.pane-inner .publish-error .label').innerHTML).to.equal('There was a problem:');
         expect(document.querySelector('.pane-inner .publish-error .description').innerHTML).to.equal('Please see below for details');
         expect(document.querySelector('.pane-inner .errors')).to.not.equal(null);
