@@ -65,7 +65,7 @@
   <template class="publish-valid-template">
     <div class="publish-valid">
       <div class="publish-valid-icon">{% include 'public/media/components/clay-kiln/publish-check.svg' %}</div>
-      <p class="publish-valid-message">No errors or warnings. Good to publish.</p>
+      <p class="publish-valid-message">Checks pass! This is good to publish.</p>
     </div>
   </template>
 
