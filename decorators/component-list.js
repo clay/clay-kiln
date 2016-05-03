@@ -177,10 +177,11 @@ function addDragula(el, options) {
     dragItemClass = 'dragula-item',
     dragItemUnsavedClass = 'dragula-not-saved',
     drag = dragula([el], {
+      ignoreInputTextSelection: true, // allow selecting text in draggable components
       moves: function (selectedItem, container, handle) {
         // only allow direct child components of a list to be dragged
         // this allows for nested component lists + dragdrop
-        return handle.classList.contains('drag') && getComponentDepth(handle, container) === 1;
+        return selectedItem.classList.contains('drag') && getComponentDepth(handle, container) <= 1;
       }
     });
 
