@@ -86,7 +86,7 @@ function createPublishValidation(warnings) {
     let el = document.createDocumentFragment(),
       messageEl = exports.getTemplate('.publish-warning-message-template'),
       // same way the error pane does it
-      errorsEl = addErrors(warnings, 'publish-warning');
+      errorsEl = addErrorsOrWarnings(warnings, 'publish-warning');
 
     el.appendChild(messageEl);
     el.appendChild(errorsEl);
@@ -229,7 +229,7 @@ function addPreview(preview) {
  * @param {string} [modifier] modifier class for warnings, info, etc
  * @returns {Element}
  */
-function addErrors(errors, modifier) {
+function addErrorsOrWarnings(errors, modifier) {
   return _.reduce(errors, function (el, error) {
     var errorEl = exports.getTemplate('.publish-errors-template'),
       errorLabel = dom.find(errorEl, '.label'),
@@ -271,8 +271,8 @@ function addErrors(errors, modifier) {
 function openValidationErrors(validation) {
   var header = 'Before you can publish&hellip;',
     messagesEl = exports.getTemplate('.publish-error-message-template'),
-    errorsEl = addErrors(validation.errors),
-    warningsEl = addErrors(validation.warnings, 'publish-warning'),
+    errorsEl = addErrorsOrWarnings(validation.errors),
+    warningsEl = addErrorsOrWarnings(validation.warnings, 'publish-warning'),
     innerEl = document.createDocumentFragment();
 
   innerEl.appendChild(messagesEl);
