@@ -78,14 +78,23 @@ function open(header, innerEl, modifier) {
 
 /**
  * create validation messages
- * note: right now this solely displays valid,
- * it will display warnings in the future
+ * @param {array} [warnings]
  * @returns {Element}
  */
-function createPublishValidation() {
-  var valid = exports.getTemplate('.publish-valid-template');
+function createPublishValidation(warnings) {
+  if (warnings.length) {
+    let el = document.createDocumentFragment(),
+      messageEl = exports.getTemplate('.publish-warning-message-template'),
+      // same way the error pane does it
+      errorsEl = addErrors(warnings, 'publish-warning');
 
-  return valid;
+    el.appendChild(messageEl);
+    el.appendChild(errorsEl);
+
+    return el;
+  } else {
+    return exports.getTemplate('.publish-valid-template');
+  }
 }
 
 /**
@@ -165,16 +174,17 @@ function createPublishActions(res) {
 
 /**
  * open publish pane
+ * @param {array} [warnings]
  * @returns {Promise}
  */
-function openPublish() {
+function openPublish(warnings) {
   var header = 'Schedule Publish',
     innerEl = document.createDocumentFragment(),
     el;
 
   return state.get().then(function (res) {
     // append validation, message, and actions to the doc fragment
-    innerEl.appendChild(createPublishValidation());
+    innerEl.appendChild(createPublishValidation(warnings));
     innerEl.appendChild(createPublishMessages(res));
     innerEl.appendChild(createPublishActions(res));
 

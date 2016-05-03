@@ -222,6 +222,13 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   color: $orange;
 }
 
+.kiln-toolbar-pane .warning-message {
+  @include primary-text();
+
+  color: $orange;
+  padding: 0 0 20px;
+}
+
 .kiln-toolbar-pane .error-preview {
   @include secondary-text();
 

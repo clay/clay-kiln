@@ -122,4 +122,8 @@
   <template class="publish-error-message-template">
     <div class="error-message">This page is missing things needed to publish.<br />Address the following and try publishing again.</div>
   </template>
+
+  <template class="publish-warning-message-template">
+    <div class="warning-message">This page has some warnings. Please review before publishing.</div>
+  </template>
 {% endif %}
