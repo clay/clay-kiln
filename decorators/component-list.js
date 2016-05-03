@@ -168,6 +168,19 @@ function getComponentDepth(handle, container) {
 }
 
 /**
+ * determine if a component is draggable inside a specific container
+ * @param {Element} handle
+ * @param {Element} container
+ * @returns {boolean}
+ */
+function isDraggable(handle, container) {
+  // components are draggable if the handle is the component element and it's a direct child of the container (depth 0)
+  // OR if the handle is some OTHER element inside the direct child component (depth 1)
+  return !!handle.getAttribute(references.referenceAttribute) && getComponentDepth(handle, container) === 0
+    || !handle.getAttribute(references.referenceAttribute) && getComponentDepth(handle, container) === 1;
+}
+
+/**
  * Add dragula.
  * @param {Element} el
  * @param {{ref: string, path: string, data: object}} options
@@ -181,7 +194,7 @@ function addDragula(el, options) {
       moves: function (selectedItem, container, handle) {
         // only allow direct child components of a list to be dragged
         // this allows for nested component lists + dragdrop
-        return selectedItem.classList.contains('drag') && getComponentDepth(handle, container) <= 1;
+        return selectedItem.classList.contains('drag') && isDraggable(handle, container);
       }
     });
 
