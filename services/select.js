@@ -284,7 +284,6 @@ function addDragOption(componentBar, el) {
     dragIcon = dom.create(`<img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-drag.svg" alt="Drag" class="drag-icon"></span>`);
 
   selectedLabel.setAttribute('title', `Drag to reorder: ${label(selectedLabel.getAttribute('title'))}`);
-  // selectedLabel.querySelector('.selected-label-inner').classList.add('drag');
   el.classList.add('drag');
   selectedLabel.insertBefore(dragIcon, selectedLabel.firstChild);
 }
