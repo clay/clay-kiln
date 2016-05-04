@@ -75,7 +75,11 @@ module.exports = function () {
     this.list = dom.find(el, '.filtered-items'),
     this.items = dom.findAll(this.list, '.filtered-item');
 
-    setTimeout(() => this.input.focus(), 100); // give the pane a moment to animate in
+    // give the pane a moment to animate in, then focus the input
+    setTimeout(() => this.input.focus(), 100);
+
+    // set the height so when we filter it won't jump around
+    this.list.style.height = getComputedStyle(this.list).height;
   }
 
   constructor.prototype = {

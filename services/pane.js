@@ -318,7 +318,7 @@ function openAddComponent(components, options) {
   el = open(header, innerEl);
   // init controller for add component pane
   ds.controller('add-component-pane', addComponentPaneController);
-  ds.get('add-component-pane', el, options);
+  ds.get('add-component-pane', el.querySelector('.kiln-toolbar-pane'), options);
 }
 
 function takeOffEveryZig() {
