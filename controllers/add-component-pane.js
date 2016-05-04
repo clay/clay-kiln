@@ -79,7 +79,8 @@ module.exports = function () {
   constructor.prototype = {
     events: {
       '.filtered-input keyup': 'onInputKeyup',
-      '.filtered-item keyup': 'onItemKeyup'
+      '.filtered-item keyup': 'onItemKeyup',
+      '.filtered-item click': 'onItemClick'
     },
 
     onInputKeyup: function (e) {
@@ -131,6 +132,11 @@ module.exports = function () {
         addComponent(this.pane, this.field, currentItem.getAttribute('data-item-name'))
           .then(() => pane.close()); // only close if we added successfully
       }
+    },
+
+    onItemClick: function (e) {
+      addComponent(this.pane, this.field, e.target.getAttribute('data-item-name'))
+        .then(() => pane.close()); // only close if we added successfully
     }
   };
   return constructor;
