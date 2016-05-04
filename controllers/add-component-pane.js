@@ -85,6 +85,7 @@ module.exports = function () {
   constructor.prototype = {
     events: {
       '.filtered-input keyup': 'onInputKeyup',
+      '.filtered-item keydown': 'onItemKeydown',
       '.filtered-item keyup': 'onItemKeyup',
       '.filtered-item click': 'onItemClick'
     },
@@ -112,10 +113,20 @@ module.exports = function () {
       }
     },
 
+    onItemKeydown: function (e) {
+      // simulate active states when pressing enter
+      if (keyCode(e) === 'enter') {
+        e.target.classList.add('active');
+      }
+    },
+
     onItemKeyup: function (e) {
       var key = keyCode(e),
         available = getAvailable(this.items),
         currentItem = e.target;
+
+      // remove any active state if it exists
+      currentItem.classList.remove('active');
 
       // if it's down or up, transfer focus
       // note: tab and shift+tab will work natively with the visible items
