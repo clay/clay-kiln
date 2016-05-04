@@ -74,6 +74,8 @@ module.exports = function () {
     this.input = dom.find(el, '.filtered-input');
     this.list = dom.find(el, '.filtered-items'),
     this.items = dom.findAll(this.list, '.filtered-item');
+
+    setTimeout(() => this.input.focus(), 100); // give the pane a moment to animate in
   }
 
   constructor.prototype = {
