@@ -41,6 +41,6 @@
 .dragula-item {}
 /* Indicate that the re-ordering has not been saved. */
 .dragula-not-saved {
-  background: $drag-error !important;
+  background: $drag-saving !important;
   transition: background-color 300ms linear;
 }

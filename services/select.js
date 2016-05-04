@@ -276,16 +276,16 @@ function addParentLabel(componentBar, parentEl) {
 /**
  * Add drag within a component list.
  * @param {Element} componentBar
+ * @param {Element} el (component element)
  */
-function addDragOption(componentBar) {
+function addDragOption(componentBar, el) {
   // `drag` class is applied to the `img` and and selector elements to simplify dragula logic.
   var selectedLabel = componentBar.querySelector('.selected-label'),
-    el = dom.create(`<img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-drag.svg" alt="Drag" class="drag drag-icon"></span>`);
+    dragIcon = dom.create(`<img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-drag.svg" alt="Drag" class="drag-icon"></span>`);
 
   selectedLabel.setAttribute('title', `Drag to reorder: ${label(selectedLabel.getAttribute('title'))}`);
-  selectedLabel.querySelector('.selected-label-inner').classList.add('drag');
-  selectedLabel.classList.add('drag');
-  selectedLabel.insertBefore(el, selectedLabel.firstChild);
+  el.classList.add('drag');
+  selectedLabel.insertBefore(dragIcon, selectedLabel.firstChild);
 }
 
 /**
@@ -327,7 +327,7 @@ function addParentOptions(componentBar, el, ref) {
         var componentListField = getParentComponentListField(el, parentSchema);
 
         if (componentListField) {
-          addDragOption(componentBar);
+          addDragOption(componentBar, el);
           addDeleteOption(componentBar, {el: el, ref: ref, parentField: componentListField, parentRef: parentRef});
         }
       });
