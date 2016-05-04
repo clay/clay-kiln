@@ -72,6 +72,9 @@ describe(dirname, function () {
       getTemplate.withArgs('.publish-error-message-template').returns(dom.create('<div>ERROR MESSAGE</div>'));
       getTemplate.withArgs('.publish-warning-message-template').returns(dom.create('<div>WARNING MESSAGE</div>'));
       getTemplate.withArgs('.publish-errors-template').returns(stubErrorsTemplate());
+      getTemplate.withArgs('.filtered-input-template').returns(dom.create('<input class="filtered-input" />'));
+      getTemplate.withArgs('.filtered-items-template').returns(dom.create('<div><ul class="filtered-items"></div>')); // wrapper divs to simulate doc fragments
+      getTemplate.withArgs('.filtered-item-template').returns(dom.create('<div><li class="filtered-item"></div>')); // wrapper divs to simulate doc fragments
     });
 
     afterEach(function () {
@@ -347,9 +350,9 @@ describe(dirname, function () {
         };
 
         lib.close();
-        fn(['foo', 'bar'], options);
+        fn(['foo'], options);
         expect(document.querySelector('.pane-header').innerHTML).to.equal('Add Component');
-        expect(document.querySelectorAll('.pane-inner li.filtered-item').length).to.equal(2); // 2 component buttons
+        expect(document.querySelectorAll('.pane-inner li.filtered-item').length).to.equal(1);
       });
     });
   });
