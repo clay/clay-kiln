@@ -11,8 +11,10 @@ var pane = require('../services/pane'),
  */
 function filter(val, items) {
   _.each(items, function (item) {
-    var label = item.textContent,
-      name = item.getAttribute('data-item-name');
+    var label = item.textContent.toLowerCase(),
+      name = item.getAttribute('data-item-name').toLowerCase();
+
+    val = val.toLowerCase();
 
     if (_.includes(label, val) || _.includes(name, val)) {
       item.classList.remove('filtered');
