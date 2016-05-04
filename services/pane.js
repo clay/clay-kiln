@@ -8,6 +8,7 @@ var _ = require('lodash'),
   paneController = require('../controllers/pane'),
   newPagePaneController = require('../controllers/pane-new-page'),
   publishPaneController = require('../controllers/publish-pane'),
+  addComponentPaneController = require('../controllers/add-component-pane'),
   kilnHideClass = 'kiln-hide';
 
 /**
@@ -303,18 +304,21 @@ function addFilteredItems(items) {
 /**
  * open the add component pane
  * @param {array} components
- * @param {object} options
+ * @param {object} options to pass to controller (used for calling addComponent)
  */
 function openAddComponent(components, options) {
   var header = 'Add Component',
     inputEl = exports.getTemplate('.filtered-input-template'),
     itemsEl = addFilteredItems(components),
-    innerEl = document.createDocumentFragment();
+    innerEl = document.createDocumentFragment(),
+    el;
 
   innerEl.appendChild(inputEl);
   innerEl.appendChild(itemsEl);
-  open(header, innerEl);
-  // init dollar-slice controller for add-component
+  el = open(header, innerEl);
+  // init controller for add component pane
+  ds.controller('add-component-pane', addComponentPaneController);
+  ds.get('add-component-pane', el, options);
 }
 
 function takeOffEveryZig() {
