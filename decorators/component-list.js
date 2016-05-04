@@ -31,54 +31,35 @@ function removeParentPlaceholder(field) {
  * @returns {Promise}
  */
 function addComponent(pane, field, name) {
-  return function (e) {
-    removeParentPlaceholder(field);
-    e.stopPropagation();
-    return edit.createComponent(name)
-      .then(function (res) {
-        var newRef = res._ref;
+  removeParentPlaceholder(field);
+  return edit.createComponent(name)
+    .then(function (res) {
+      var newRef = res._ref;
 
-        return edit.addToParentList({ref: newRef, parentField: field.path, parentRef: field.ref})
-          .then(function (newEl) {
-            var dropArea = pane.previousElementSibling;
+      return edit.addToParentList({ref: newRef, parentField: field.path, parentRef: field.ref})
+        .then(function (newEl) {
+          var dropArea = pane.previousElementSibling;
 
-            dropArea.appendChild(newEl);
-            return render.addComponentsHandlers(newEl);
-          });
-      });
-  };
-}
-
-/**
- * create a new button for each component
- * @param {Element} pane
- * @param {{ref: string, path: string}} field
- * @param {string} item name
- * @returns {element} buttonEl
- */
-function createComponentButton(pane, field, item) {
-  var buttonEl = dom.create(`<button class="add-component" type="button" data-component-name="${label(item)}">${label(item)}</button>`);
-
-  buttonEl.addEventListener('click', addComponent(pane, field, item));
-  return buttonEl;
+          dropArea.appendChild(newEl);
+          return render.addComponentsHandlers(newEl);
+        });
+    });
 }
 
 /**
  * map through components, filtering out excluded
- * @param {Element} pane
- * @param {{ref: string, path: string}} field
  * @param {array} possibleComponents
  * @param {array} [exclude] array of components to exclude
  * @returns {array} array of elements
  */
-function getButtons(pane, field, possibleComponents, exclude) {
+function getAddableComponents(possibleComponents, exclude) {
   return _.compact(_.map(possibleComponents, function (item) {
     if (exclude && exclude.length) {
       if (!_.contains(exclude)) {
-        return createComponentButton(pane, field, item);
+        return item;
       }
     } else {
-      return createComponentButton(pane, field, item);
+      return item;
     }
   }));
 }
@@ -95,26 +76,22 @@ function createPane(args) {
     allComponents = toolbar.getAttribute('data-components').split(','),
     tpl =
       `<section class="component-list-bottom">
-        <div class="open-add-components">
+        <button class="open-add-components">
           <span class="open-add-components-inner">+</span>
-        </div>
-        <section class="add-components-pane">
-        </section>
+        </button>
       </section>`,
     pane = dom.create(tpl),
-    buttons;
+    addableComponents;
 
   // figure out what components should be available for adding
   if (include && include.length) {
-    buttons = getButtons(pane, args.field, include, exclude);
+    addableComponents = getAddableComponents(include, exclude);
   } else {
-    buttons = getButtons(pane, args.field, allComponents, exclude);
+    addableComponents = getAddableComponents(allComponents, exclude);
   }
 
-  // put add components buttons into the pane
-  _.each(buttons, function (button) {
-    dom.find(pane, '.add-components-pane').appendChild(button);
-  });
+  // add those components to the button
+  dom.find(pane, '.open-add-components').setAttribute('data-components', addableComponents.join(','));
 
   return pane;
 }
@@ -268,10 +245,16 @@ function handler(el, options) {
 
   // add click events to toggle pane
   button.addEventListener('click', function (e) {
-    var addComponentsPane = dom.find(pane, '.add-components-pane');
+    var addableComponents = button.getAttribute('data-components').split(',');
 
-    button.classList.toggle('open');
-    addComponentsPane.classList.toggle('open');
+    if (addableComponents.length === 1) {
+      addComponent(pane, args.field, addableComponents[0]);
+    } else {
+      // open the add components pane
+      console.log('\nI can add these components:')
+      console.log(addableComponents)
+    }
+
     e.stopPropagation(); // stop unselect() or unfocus() from firing
   });
 
