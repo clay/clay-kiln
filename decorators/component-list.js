@@ -2,49 +2,8 @@ var _ = require('lodash'),
   references = require('../services/references'),
   dom = require('@nymag/dom'),
   edit = require('../services/edit'),
-  render = require('../services/render'),
-  label = require('../services/label'),
-  dragula = require('dragula');
-
-/**
- * remove parent placeholder
- * @param {{ref: string, path: string}} field
- */
-function removeParentPlaceholder(field) {
-  // component > field > div > placeholder
-  var parent = document.querySelector('[' + references.referenceAttribute + '="' + field.ref + '"]'),
-    list = parent && parent.querySelector('[' + references.editableAttribute + '="' + field.path + '"]'),
-    div = list && dom.getFirstChildElement(list),
-    placeholder = div && dom.getFirstChildElement(div);
-
-  // remove component list placeholder if it exists
-  if (placeholder && placeholder.classList.contains('kiln-placeholder')) {
-    dom.removeElement(placeholder);
-  }
-}
-
-/**
- * Create click handler for adding a component
- * @param {Element} pane
- * @param {{ref: string, path: string}} field
- * @param {string} name
- * @returns {Promise}
- */
-function addComponent(pane, field, name) {
-  removeParentPlaceholder(field);
-  return edit.createComponent(name)
-    .then(function (res) {
-      var newRef = res._ref;
-
-      return edit.addToParentList({ref: newRef, parentField: field.path, parentRef: field.ref})
-        .then(function (newEl) {
-          var dropArea = pane.previousElementSibling;
-
-          dropArea.appendChild(newEl);
-          return render.addComponentsHandlers(newEl);
-        });
-    });
-}
+  dragula = require('dragula'),
+  addComponent = require('../services/add-component');
 
 /**
  * map through components, filtering out excluded
