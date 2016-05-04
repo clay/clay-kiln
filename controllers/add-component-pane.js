@@ -106,6 +106,9 @@ module.exports = function () {
       } else if (key === 'enter' && available.length === 1) {
         addComponent(this.pane, this.field, available[0].getAttribute('data-item-name'))
           .then(() => pane.close()); // only close if we added successfully
+      } else if (key === 'enter') {
+        input.classList.add('kiln-shake');
+        setTimeout(() => input.classList.remove('kiln-shake'), 301); // length of the animation + 1
       } else if (key === 'esc') {
         pane.close();
       } else {

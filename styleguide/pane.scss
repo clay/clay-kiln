@@ -340,3 +340,15 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 .kiln-toolbar-pane .filtered-item.active {
   border-bottom-width: 2px;
 }
+
+@keyframes shake {
+  0%, 100% {transform: translateX(0);}
+  20%, 60% {transform: translateX(-5px);}
+  40%, 80% {transform: translateX(5px);}
+}
+
+.kiln-shake {
+  animation-name: shake;
+  animation-duration: 300ms;
+  animation-fill-mode: both;
+}
