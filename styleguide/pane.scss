@@ -338,7 +338,7 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 }
 
 .kiln-toolbar-pane .filtered-item.active {
-  border-bottom-width: 2px;
+  border-bottom: 2px solid $blue;
 }
 
 @keyframes shake {

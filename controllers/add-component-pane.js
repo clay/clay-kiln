@@ -84,10 +84,21 @@ module.exports = function () {
 
   constructor.prototype = {
     events: {
+      '.filtered-input keydown': 'onInputKeydown',
       '.filtered-input keyup': 'onInputKeyup',
       '.filtered-item keydown': 'onItemKeydown',
       '.filtered-item keyup': 'onItemKeyup',
       '.filtered-item click': 'onItemClick'
+    },
+
+    onInputKeydown: function (e) {
+      var key = keyCode(e),
+        available = getAvailable(this.items);
+
+      // simulate active states when pressing enter
+      if (key === 'enter' && available.length === 1) {
+        available[0].classList.add('active');
+      }
     },
 
     onInputKeyup: function (e) {
@@ -104,6 +115,7 @@ module.exports = function () {
       if (key === 'down') {
         focusFirst(available); // focus on first available item in list
       } else if (key === 'enter' && available.length === 1) {
+        available[0].classList.remove('active');
         addComponent(this.pane, this.field, available[0].getAttribute('data-item-name'))
           .then(() => pane.close()); // only close if we added successfully
       } else if (key === 'enter') {
