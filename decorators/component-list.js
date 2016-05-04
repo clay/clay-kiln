@@ -3,7 +3,8 @@ var _ = require('lodash'),
   dom = require('@nymag/dom'),
   edit = require('../services/edit'),
   dragula = require('dragula'),
-  addComponent = require('../services/add-component');
+  addComponent = require('../services/add-component'),
+  paneService = require('../services/pane');
 
 /**
  * map through components, filtering out excluded
@@ -203,18 +204,15 @@ function handler(el, options) {
   button = dom.find(pane, '.open-add-components');
 
   // add click events to toggle pane
-  button.addEventListener('click', function (e) {
+  button.addEventListener('click', function () {
     var addableComponents = button.getAttribute('data-components').split(',');
 
     if (addableComponents.length === 1) {
       addComponent(pane, args.field, addableComponents[0]);
     } else {
       // open the add components pane
-      console.log('\nI can add these components:')
-      console.log(addableComponents)
+      paneService.openAddComponent(addableComponents, { pane: pane, field: args.field });
     }
-
-    e.stopPropagation(); // stop unselect() or unfocus() from firing
   });
 
   // wrap the draggable items so that the pane is not in the drop area.

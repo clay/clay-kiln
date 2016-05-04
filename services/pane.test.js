@@ -326,5 +326,31 @@ describe(dirname, function () {
         expect(document.querySelectorAll('.pane-inner .errors li').length).to.equal(0);
       });
     });
+
+    describe('openAddComponent', function () {
+      var fn = lib[this.title],
+        sandbox;
+
+      beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+        sandbox.stub(ds);
+      });
+
+      afterEach(function () {
+        sandbox.restore();
+      });
+
+      it('opens a an add component pane', function () {
+        var options = {
+          field: { ref: null, path: null}, // parent data, passed to addComponent (we don't care about it here)
+          pane: document.createElement('div') // pane element, passed to addComponent (we don't care about it here)
+        };
+
+        lib.close();
+        fn(['foo', 'bar'], options);
+        expect(document.querySelector('.pane-header').innerHTML).to.equal('Add Component');
+        expect(document.querySelectorAll('.pane-inner li.filtered-item').length).to.equal(2); // 2 component buttons
+      });
+    });
   });
 });

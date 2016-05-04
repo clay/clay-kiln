@@ -294,3 +294,45 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   color: $green;
   margin: 4px 0; // vertically center with the icon (24px - 16px)
 }
+
+/* filtered item search pane (add component, possibly new page in the future) */
+.kiln-toolbar-pane .filtered-input {
+  @include input();
+
+  margin: 0;
+  position: relative;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .filtered-items {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .filtered-item {
+  @include primary-text();
+
+  cursor: pointer;
+  line-height: 16px;
+  list-style: none;
+  margin: 0;
+  padding: 15px 0;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .filtered-item.filtered {
+  display: none;
+}
+
+.kiln-toolbar-pane .filtered-item:not(.filtered) {
+  border-bottom: 1px solid $grey;
+  transition: 200ms border-bottom-color ease-out;
+}
+
+.kiln-toolbar-pane .filtered-item:focus {
+  border-bottom: 1px solid $blue;
+  outline: none;
+  transition: 200ms border-bottom-color ease-out;
+}

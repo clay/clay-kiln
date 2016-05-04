@@ -126,4 +126,18 @@
   <template class="publish-warning-message-template">
     <div class="warning-message">This page has some warnings. Please review before publishing.</div>
   </template>
+
+  <template class="filtered-input-template">
+    <input class="filtered-input" />
+  </template>
+
+  <template class="filtered-items-template">
+    <ul class="filtered-items">
+      {# filtered items get added using the .filtered-item-template below #}
+    </ul>
+  </template>
+
+  <template class="filtered-item-template">
+    <li class="filtered-item" tabindex="0"></li>
+  </template>
 {% endif %}

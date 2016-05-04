@@ -4,6 +4,7 @@ var _ = require('lodash'),
   ds = require('dollar-slice'),
   state = require('./page-state'),
   site = require('./site'),
+  label = require('./label'),
   paneController = require('../controllers/pane'),
   newPagePaneController = require('../controllers/pane-new-page'),
   publishPaneController = require('../controllers/publish-pane'),
@@ -281,6 +282,41 @@ function openValidationErrors(validation) {
   open(header, innerEl);
 }
 
+function addFilteredItems(items) {
+  var wrapper = exports.getTemplate('.filtered-items-template'),
+    listEl = dom.find(wrapper, 'ul');
+
+  _.each(items, function (item) {
+    var itemEl = exports.getTemplate('.filtered-item-template'),
+      listItem = dom.find(itemEl, 'li');
+
+    // add component name and label to each list item
+    listItem.innerHTML = label(item);
+    listItem.setAttribute('data-item-name', item);
+    // add it to the list
+    listEl.appendChild(itemEl);
+  });
+
+  return wrapper;
+}
+
+/**
+ * open the add component pane
+ * @param {array} components
+ * @param {object} options
+ */
+function openAddComponent(components, options) {
+  var header = 'Add Component',
+    inputEl = exports.getTemplate('.filtered-input-template'),
+    itemsEl = addFilteredItems(components),
+    innerEl = document.createDocumentFragment();
+
+  innerEl.appendChild(inputEl);
+  innerEl.appendChild(itemsEl);
+  open(header, innerEl);
+  // init dollar-slice controller for add-component
+}
+
 function takeOffEveryZig() {
   var header = '<span class="ayb-header">HOW ARE YOU GENTLEMEN <em>!!</em></span>',
     messageEl = dom.create(`
@@ -305,4 +341,5 @@ module.exports.open = open;
 module.exports.openNewPage = openNewPage;
 module.exports.openPublish = openPublish;
 module.exports.openValidationErrors = openValidationErrors;
+module.exports.openAddComponent = openAddComponent;
 module.exports.takeOffEveryZig = takeOffEveryZig;
