@@ -321,7 +321,7 @@ function handler(componentEl, options) {
   var name = references.getComponentNameFromReference(options.ref),
     infoMenu = dom.create(`
     <aside class="selected-info">
-      <button class="selected-info-item selected-label" title="${label(name)}">${label(name)}</button>
+      <span class="selected-info-item selected-label" title="${label(name)}">${label(name)}</span>
     </aside>
     `),
     actionsMenu = dom.create('<aside class="selected-actions"></aside>'),
@@ -341,8 +341,24 @@ function handler(componentEl, options) {
   // (selector is used so we can easily toggle the menus+border on and off)
   // (and so we can have something to easily wrap/unwrap for inline forms)
   selector.appendChild(infoMenu);
-  selector.appendChild(actionsMenu);
+  // only add action menu if there are actions
+  // do this after addParentOptions() has finished running
+  setTimeout(function () {
+    if (actionsMenu.children.length) {
+      selector.appendChild(actionsMenu);
+    }
+  }, 0);
   dom.prependChild(componentEl, selector); // prepended, so parent components are behind child components
+  // set styles so info and action menus will be centered
+  // todo: in the future, this is where we make sure they'll be in the viewport
+  // note: 15px is the offset of the outline / component selector element
+  setTimeout(function () {
+    // do this after the elements are painted
+    infoMenu.style.marginLeft = `-${infoMenu.getBoundingClientRect().width / 2}px`;
+    if (actionsMenu.children.length) {
+      actionsMenu.style.marginLeft = `-${actionsMenu.getBoundingClientRect().width / 2}px`;
+    }
+  }, 0);
   // add an iframe-overlay to iframes so we can click on components with them
   addIframeOverlays(componentEl);
   return componentEl;

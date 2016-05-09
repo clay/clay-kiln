@@ -1,215 +1,119 @@
 @import 'colors';
 @import 'typography';
 @import 'layers';
-// Using px because the gap needs to be px so that it does not disappear, and can only add with same units.
-$bar-height: 44px; // drag, settings, delete, etc are square so width = height.
-$bar-parent-height: 22px;
-$bar-gap: 2px;
-$bar-label-width: 76px;
-$bar-gap-color: $white;
+$selector-menu-height: 30px;
+$half-selector-menu-height: 15px;
+$selector-menu-width: 10px;
+$half-selector-menu-width: 5px;
+$selector-menu-offset: 14px; // half height - 1px, so the border shows
 
 // bar colors
 
 // page-specific
-$page-bg-color: $blue;
-$page-parent-bg-color: $blue-50;
+$page-color: $blue-50;
 
 // layout-specific
 // todo: use these when we have a solution for layout editing
-$layout-bg-color: $purple;
-$layout-parent-bg-color: $purple-50;
+$layout-color: $purple-50;
 
 
 // Wrapper around parent and component.
-.component-bar-wrapper {
+.component-selector-wrapper {
   position: relative;
 }
 
-// Parent's bar hidden for now.
-.component-bar-wrapper.selected-parent > .component-bar {
+// Parent's selector hidden (for now)
+// note: maybe in the future we want to display an outline for the parent?
+.component-selector-wrapper.selected-parent > .component-selector {
   display: none;
   opacity: 0;
 }
 
-// Selected bar
-// note: sometimes (like in source-links), the bar lives inside the div
+// Selected component
+// note: sometimes (like in source-links), the selector lives inside the div
 // created by componentList
-.component-bar-wrapper.selected > .component-bar,
-.component-bar-wrapper.selected > * > .component-bar {
+.component-selector-wrapper.selected > .component-selector,
+.component-selector-wrapper.selected > * > .component-selector {
   display: flex;
   opacity: 1;
+  z-index: 1; // note: prevents weird fade in z-index issues when menus overlay other components' placeholders
 }
 
-// Bar on a selected component
-.component-bar {
-  @include kiln-copy();
-  @include component-toolbar-layer();
-
-  align-content: flex-end;
-  align-items: stretch;
-  display: none;
-  flex-flow: row nowrap;
-  height: $bar-height;
-  justify-content: flex-start;
-  left: 0;
-  min-width: 95px; // just enough space to display the menu
+// Selector on a selected component
+.component-selector {
+  border: 1px solid $page-color;
+  height: calc(100% + #{$selector-menu-height});
+  left: -$half-selector-menu-width;
   opacity: 0;
   position: absolute;
-  top: -$bar-height;
-  transition: opacity .15s ease-in-out;
-  width: 100%;
+  top: -$half-selector-menu-height;
+  transition: 100ms opacity ease-out;
+  width: calc(100% + #{$selector-menu-width});
 }
 
-// All labels
-.component-bar .label {
+.component-selector .selected-info,
+.component-selector .selected-actions {
+  @include component-toolbar-layer();
+
+  align-items: center;
+  background: rgba(255, 255, 255, .85);
+  border: 1px solid $page-color;
+  border-radius: 10px;
+  color: $blue;
+  display: flex;
+  height: 30px;
+  left: 50%;
+  padding: 5px 10px;
+  position: absolute;
+}
+
+.component-selector .selected-info {
+  bottom: calc(100% - #{$selector-menu-offset});
+}
+
+.component-selector .selected-actions {
+  top: calc(100% - #{$selector-menu-offset});
+}
+
+// selected label
+.selected-info-item.selected-label {
   @include label();
 
-  background: $page-bg-color;
-  color: #fff;
-  cursor: default;
-  display: block;
+  color: $blue;
   font-size: 14px;
-  height: $bar-height;
-  line-height: $bar-height;
+  line-height: 14px;
   margin: 0;
-  overflow: hidden;
-  padding: 0 5px;
-  text-align: left;
-  text-overflow: ellipsis;
-  text-transform: capitalize;
   white-space: nowrap;
 }
 
-.component-bar > .selected-label {
-  align-items: center;
-  border-bottom: $bar-gap solid $bar-gap-color;
-  display: flex;
-  flex: 0 1 100%;
-
-  .drag-icon {
-    height: 30px;
-    margin: 0 5.5px 0 0;
-  }
-
-  .selected-label-inner {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
-// Parent's label
-.component-bar > .parent.label {
-  align-items: center;
-  background: $page-parent-bg-color;
-  border-bottom: $bar-gap solid $bar-gap-color;
-  bottom: 100%;
+// buttons
+.selected-info-item.parent,
+.selected-action {
+  background: none;
+  border: none;
   cursor: pointer;
-  display: flex;
-  height: $bar-parent-height;
-  left: 0;
-  line-height: $bar-parent-height;
+  height: 14px;
   margin: 0;
-  padding: 5px;
-  position: absolute;
-  width: 100%;
+  outline: none;
+  padding: 0;
+  width: 14px;
 
   img {
     height: 14px;
-    margin: 0 2.5px 0 0;
-  }
-
-  span {
-    margin: 0 7px;
   }
 }
 
-// Menu
-.component-bar > .menu-toggle {
-  background: $page-bg-color;
-  border-bottom: $bar-gap solid $bar-gap-color;
-  border-left: $bar-gap solid $bar-gap-color;
-  cursor: pointer;
-  display: block;
-  flex: 0 0 $bar-height;
-  height: $bar-height;
-  margin: 0;
-  padding: 0;
-  position: relative;
-  width: $bar-height;
-
-  img {
-    height: auto;
-    left: -30%;
-    margin: 50% 50%;
-    position: absolute;
-    top: -2px;
-    width: 60%;
-  }
+// parent button
+.selected-info-item.parent {
+  margin-left: 5px; // only appears if parent exists
 }
 
-.component-bar > .menu-toggle.open {
-  border-bottom: none;
+// settings and delete buttons
+.selected-action:not(:first-child) {
+  margin-left: 5px;
 }
-
-@media (any-hover: hover) {
-  .component-bar:hover > .menu-toggle {
-    border-bottom: none;
-  }
-}
-
-.component-bar > .menu {
-  @include component-toolbar-layer();
-
-  flex-flow: column;
-  height: 0;
-  margin: 0;
-  max-width: 100%;
-  opacity: 0;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  right: 0;
-  top: 100%;
-  transition: opacity 200ms ease-out;
-  width: auto;
-}
-
-.component-bar > .menu.open {
-  height: auto;
-  opacity: 1;
-  transition: opacity 200ms ease-out;
-}
-
-@media (any-hover: hover) {
-  .component-bar:hover > .menu {
-    height: auto;
-    opacity: 1;
-    transition: opacity 200ms ease-out;
-  }
-}
-
-.component-bar .menu li {
-  align-items: center;
-  border-bottom: $bar-gap solid $bar-gap-color;
-  cursor: pointer;
-  display: flex;
-  margin: 0;
-  padding: 5px;
-  position: relative;
-  width: auto;
-
-  &:last-of-type {
-    border-bottom: none;
-  }
-
-  img,
-  .menu-item {
-    margin: 0 6px 0 2px;
-  }
-}
-
-.component-bar .drag {
-  cursor: grab;
+.selected-action:not(:last-child) {
+  margin-right: 5px;
 }
 
 // all editable elements should have some kind of ux showing they can be edited
