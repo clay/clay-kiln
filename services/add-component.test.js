@@ -3,7 +3,9 @@ var dirname = __dirname.split('/').pop(),
   lib = require('./add-component'),
   dom = require('@nymag/dom'),
   edit = require('./edit'),
-  render = require('./render');
+  render = require('./render'),
+  progress = require('./progress'),
+  focus = require('../decorators/focus');
 
 describe(dirname, function () {
   describe(filename, function () {
@@ -13,13 +15,15 @@ describe(dirname, function () {
       sandbox = sinon.sandbox.create();
       sandbox.stub(edit);
       sandbox.stub(render);
+      sandbox.stub(progress);
+      sandbox.stub(focus);
     });
 
     afterEach(function () {
       sandbox.restore();
     });
 
-    it('creates component and adds it before the pane', function () {
+    it('creates component and adds it at the end', function () {
       var pane = dom.create('<div class="pane"></div>');
 
       document.body.appendChild(pane);

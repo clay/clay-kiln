@@ -59,7 +59,13 @@ function addComponent(pane, field, name, prevRef) {
         .then(function (newEl) {
           var prev = dom.find(pane, `[${references.referenceAttribute}="${prevRef}"]`);
 
-          dom.insertAfter(prev, newEl);
+          if (prev) {
+            // insert it right after the previous component
+            dom.insertAfter(prev, newEl);
+          } else {
+            // insert it at the end of the component list
+            pane.firstElementChild.appendChild(newEl);
+          }
           return render.addComponentsHandlers(newEl).then(function () {
             focus.unfocus();
             select.unselect();
