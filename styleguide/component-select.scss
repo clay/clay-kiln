@@ -39,6 +39,12 @@ $layout-color: $purple-50;
   z-index: 1; // note: prevents weird fade in z-index issues when menus overlay other components' placeholders
 }
 
+// selected component: components inside the selected component ALSO needs a higher z-index
+// so we can click into them when the parent is selected
+.component-selector-wrapper.selected [data-uri] {
+  z-index: 1;
+}
+
 // Selector on a selected component
 .component-selector {
   border: 1px solid $page-color;
@@ -49,6 +55,7 @@ $layout-color: $purple-50;
   top: -$half-selector-menu-height;
   transition: 100ms opacity ease-out;
   width: calc(100% + #{$selector-menu-width});
+  z-index: -1;
 }
 
 .component-selector .selected-info,
