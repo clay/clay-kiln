@@ -2,6 +2,7 @@ var references = require('../services/references'),
   dom = require('@nymag/dom'),
   edit = require('../services/edit'),
   render = require('../services/render'),
+  focus = require('../decorators/focus'),
   select = require('../services/select');
 
 /**
@@ -58,6 +59,7 @@ function addComponent(pane, field, name, prevRef) {
 
           dom.insertAfter(prev, newEl);
           return render.addComponentsHandlers(newEl).then(function () {
+            focus.unfocus();
             select.unselect();
             return select.select(newEl);
           });
