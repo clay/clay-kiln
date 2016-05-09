@@ -1,9 +1,10 @@
 var references = require('../services/references'),
   dom = require('@nymag/dom'),
-  edit = require('../services/edit'),
-  render = require('../services/render'),
+  edit = require('./edit'),
+  render = require('./render'),
   focus = require('../decorators/focus'),
-  select = require('../services/select');
+  select = require('./select'),
+  progress = require('./progress');
 
 /**
  * find placeholders to remove from the parent
@@ -48,6 +49,7 @@ function removeParentPlaceholder(field) {
  * @returns {Promise}
  */
 function addComponent(pane, field, name, prevRef) {
+  progress.start('save');
   removeParentPlaceholder(field);
   return edit.createComponent(name)
     .then(function (res) {
@@ -61,6 +63,7 @@ function addComponent(pane, field, name, prevRef) {
           return render.addComponentsHandlers(newEl).then(function () {
             focus.unfocus();
             select.unselect();
+            progress.done('save');
             return select.select(newEl);
           });
         });
