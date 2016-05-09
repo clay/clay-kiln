@@ -116,6 +116,29 @@ $layout-color: $purple-50;
   margin-right: 5px;
 }
 
+// add component button
+.selected-action.add {
+  margin: 0 10px; // extra margin around the button
+  position: relative;
+}
+
+.selected-action .add-inner {
+  color: $blue;
+  display: block;
+  font-family: Arial, sans-serif; // explicitly Arial
+  font-size: 40px;
+  height: 40px;
+  left: -13px;
+  line-height: 40px;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  text-align: center;
+  top: -13px;
+  user-select: none;
+  width: 40px;
+}
+
 // all editable elements should have some kind of ux showing they can be edited
 [data-editable] {
   cursor: pointer;
