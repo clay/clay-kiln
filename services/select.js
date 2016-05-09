@@ -265,7 +265,7 @@ function addAddComponentOption(actionsMenu, opts) {
     pane = opts.pane,
     field = opts.field,
     toolbar = dom.find('.kiln-toolbar'),
-    allComponents = toolbar.getAttribute('data-components').split(','),
+    allComponents = toolbar && toolbar.getAttribute('data-components') && toolbar.getAttribute('data-components').split(',') || [],
     el = dom.create(`<button class="selected-action add">
       <span class="add-inner">+</span>
     </button>`),
@@ -339,7 +339,7 @@ function addParentOptions(infoMenu, actionsMenu, el, ref) {
 
         if (componentListField) {
           addDragOption(el);
-          addAddComponentOption(actionsMenu, { include: include, exclude: exclude, pane: pane, field: { ref: parentRef, path: componentListField} });
+          addAddComponentOption(actionsMenu, { include: include, exclude: exclude, pane: pane, field: { ref: parentRef, path: componentListField } });
           addDeleteOption(actionsMenu, {el: el, ref: ref, parentField: componentListField, parentRef: parentRef});
         }
       });
@@ -367,39 +367,34 @@ function handler(componentEl, options) {
 
   // Add options to info and actions
   addSettingsOption(actionsMenu, options.data, options.ref);
-  addParentOptions(infoMenu, actionsMenu, componentEl, options.ref);
+  return Promise.resolve(addParentOptions(infoMenu, actionsMenu, componentEl, options.ref))
+    .then(function () {
+      // add events to the component itself
+      // when the component is clicked, it should be selected
+      componentEl.addEventListener('click', componentClickHandler.bind(null, componentEl));
 
-  // add events to the component itself
-  // when the component is clicked, it should be selected
-  componentEl.addEventListener('click', componentClickHandler.bind(null, componentEl));
-
-  // make sure components are relatively positioned
-  componentEl.classList.add('component-selector-wrapper');
-  // add info and actions to selector
-  // (selector is used so we can easily toggle the menus+border on and off)
-  // (and so we can have something to easily wrap/unwrap for inline forms)
-  selector.appendChild(infoMenu);
-  // only add action menu if there are actions
-  // do this after addParentOptions() has finished running
-  setTimeout(function () {
-    if (actionsMenu.children.length) {
-      selector.appendChild(actionsMenu);
-    }
-  }, 0);
-  dom.prependChild(componentEl, selector); // prepended, so parent components are behind child components
-  // set styles so info and action menus will be centered
-  // todo: in the future, this is where we make sure they'll be in the viewport
-  // note: 15px is the offset of the outline / component selector element
-  setTimeout(function () {
-    // do this after the elements are painted
-    infoMenu.style.marginLeft = `-${infoMenu.getBoundingClientRect().width / 2}px`;
-    if (actionsMenu.children.length) {
-      actionsMenu.style.marginLeft = `-${actionsMenu.getBoundingClientRect().width / 2}px`;
-    }
-  }, 0);
-  // add an iframe-overlay to iframes so we can click on components with them
-  addIframeOverlays(componentEl);
-  return componentEl;
+      // make sure components are relatively positioned
+      componentEl.classList.add('component-selector-wrapper');
+      // add info and actions to selector
+      // (selector is used so we can easily toggle the menus+border on and off)
+      // (and so we can have something to easily wrap/unwrap for inline forms)
+      selector.appendChild(infoMenu);
+      // only add action menu if there are actions
+      if (actionsMenu.children.length) {
+        selector.appendChild(actionsMenu);
+      }
+      dom.prependChild(componentEl, selector); // prepended, so parent components are behind child components
+      // set styles so info and action menus will be centered
+      // todo: in the future, this is where we make sure they'll be in the viewport
+      // note: 15px is the offset of the outline / component selector element
+      infoMenu.style.marginLeft = `-${infoMenu.getBoundingClientRect().width / 2}px`;
+      if (actionsMenu.children.length) {
+        actionsMenu.style.marginLeft = `-${actionsMenu.getBoundingClientRect().width / 2}px`;
+      }
+      // add an iframe-overlay to iframes so we can click on components with them
+      addIframeOverlays(componentEl);
+      return componentEl;
+    });
 }
 
 // focus and unfocus

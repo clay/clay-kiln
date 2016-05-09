@@ -5,20 +5,11 @@ var dirname = __dirname.split('/').pop(),
   edit = require('./edit'),
   forms = require('./forms'),
   focus = require('../decorators/focus'),
+  site = require('./site'),
   lib = require('./select');
 
 describe(dirname, function () {
   describe(filename, function () {
-    var sandbox;
-
-    beforeEach(function () {
-      sandbox = sinon.sandbox.create();
-    });
-
-    afterEach(function () {
-      sandbox.restore();
-    });
-
     function stubEditableElement() {
       var node = document.createElement('div');
 
@@ -121,20 +112,36 @@ describe(dirname, function () {
     });
 
     describe('handler', function () {
-      var fn = lib[this.title];
+      var fn = lib[this.title],
+        sandbox;
+
+      beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+        sandbox.stub(site);
+      });
+
+      afterEach(function () {
+        sandbox.restore();
+      });
 
       it('creates a component selector as the component\'s first child element', function () {
         var el = stubComponent();
 
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
-        expect(fn(el, {ref: 'fakeRef'}).childNodes[0].classList.contains('component-selector')).to.equal(true);
+        sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
+        return fn(el, {ref: 'fakeRef'}).then(function (res) {
+          expect(res.childNodes[0].classList.contains('component-selector')).to.equal(true);
+        });
       });
 
       it('adds the .component-selector-wrapper class to the component', function () {
         var el = stubComponent();
 
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
-        expect(fn(el, {ref: 'fakeRef'}).classList.contains('component-selector-wrapper')).to.equal(true);
+        sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
+        return fn(el, {ref: 'fakeRef'}).then(function (res) {
+          expect(res.classList.contains('component-selector-wrapper')).to.equal(true);
+        });
       });
 
       it('adds the component label', function () {
@@ -142,9 +149,10 @@ describe(dirname, function () {
           options = {ref: 'fakeRef', data: {}, path: 'fakePath'};
 
         sandbox.stub(references, 'getComponentNameFromReference').returns('fake-name');
-        fn(el, options);
-
-        expect(el.querySelector('.component-selector .selected-label').textContent).to.equal('Fake Name');
+        sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
+        return fn(el, options).then(function (res) {
+          expect(res.querySelector('.component-selector .selected-label').textContent).to.equal('Fake Name');
+        });
       });
 
       it('adds the parent label if the component has a parent', function () {
@@ -158,9 +166,10 @@ describe(dirname, function () {
         parent.appendChild(el);
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
         sandbox.stub(focus, 'unfocus').returns(Promise.resolve());
-        fn(el, options);
-
-        expect(el.querySelector('.component-selector .parent')).to.not.equal(null); // parent label was added
+        sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
+        return fn(el, options).then(function (res) {
+          expect(res.querySelector('.component-selector .parent')).to.not.equal(null); // parent label was added
+        });
       });
 
       it('does not add the parent label if componet does not have parent', function () {
@@ -168,9 +177,10 @@ describe(dirname, function () {
           options = {ref: 'fakeRef', data: {}, path: 'fakePath'};
 
         sandbox.stub(references, 'getComponentNameFromReference').returns('fake-name');
-        fn(el, options);
-
-        expect(el.querySelector('.component-selector .parent')).to.equal(null);
+        sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
+        return fn(el, options).then(function (res) {
+          expect(res.querySelector('.component-selector .parent')).to.equal(null);
+        });
       });
 
       it('will select the parent component if parent label in the component selector is clicked', function (done) {
@@ -184,17 +194,23 @@ describe(dirname, function () {
         parent.appendChild(el);
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
         sandbox.stub(focus, 'unfocus').returns(Promise.resolve());
-        fn(el, options);
-        expect(parent.classList.contains('selected')).to.equal(false); // Parent is not selected.
+        sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
 
-        // Trigger click on parent label in the component's bar.
-        el.querySelector('.component-selector .parent').dispatchEvent(new Event('click'));
-
-        setTimeout(function () {
+        function expectSelected() {
           expect(parent.classList.contains('selected')).to.equal(true); // Parent is selected.
           expect(el.classList.contains('selected')).to.equal(false); // Child is not selected.
           done();
-        }, 100); // allow time for the promise to resolve
+        }
+
+        fn(el, options).then(function () {
+          expect(parent.classList.contains('selected')).to.equal(false); // Parent is not selected.
+
+          // Trigger click on parent label in the component's bar.
+          el.querySelector('.component-selector .parent').dispatchEvent(new Event('click'));
+
+          // wait for repaint before checking
+          setTimeout(expectSelected, 0);
+        });
       });
 
       it('adds the settings button if the component has settings', function () {
@@ -204,9 +220,10 @@ describe(dirname, function () {
         // Setup: getSettingsFields returns an array, so we assume there are settings
         sandbox.stub(groups, 'getSettingsFields').returns([1]);
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
-        fn(el, options);
-
-        expect(el.querySelector('.component-selector .settings')).to.not.equal(null); // Settings button was added.
+        sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
+        return fn(el, options).then(function (res) {
+          expect(res.querySelector('.component-selector .settings')).to.not.equal(null); // Settings button was added.
+        });
       });
 
       it('does not add the settings button if the component has no settings', function () {
@@ -216,9 +233,10 @@ describe(dirname, function () {
         // Setup: getSettingsFields returns an empty array, so we assume there are no settings
         sandbox.stub(groups, 'getSettingsFields').returns([]);
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
-        fn(el, options);
-
-        expect(el.querySelector('.component-selector .settings')).to.equal(null); // Settings button was not added.
+        sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
+        return fn(el, options).then(function (res) {
+          expect(res.querySelector('.component-selector .settings')).to.equal(null); // Settings button was not added.
+        });
       });
 
       it('will open settings form if settings button is clicked', function (done) {
@@ -230,60 +248,60 @@ describe(dirname, function () {
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
         sandbox.stub(forms, 'open', sandbox.spy().withArgs('fakeName', document.body));
         sandbox.stub(focus, 'unfocus').returns(Promise.resolve());
-        fn(el, options);
+        sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
 
-        // Trigger a click on the settings button
-        el.querySelector('.component-selector .settings').dispatchEvent(new Event('click'));
-
-        setTimeout(function () {
+        function expectSettings() {
           // the component should still be selected
           expect(el.classList.contains('selected')).to.equal(true);
           // the form should be open
           expect(forms.open.calledOnce).to.equal(true);
           done();
-        }, 100); // allow time for the promise to resolve
+        }
+
+        fn(el, options).then(function (res) {
+          // Trigger a click on the settings button
+          res.querySelector('.component-selector .settings').dispatchEvent(new Event('click'));
+
+          setTimeout(expectSettings, 0);
+        });
       });
 
       it('will select a component when component is clicked', function () {
         var el = stubComponent();
 
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
-        fn(el, {ref: 'fakeRef'});
+        sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
+        return fn(el, {ref: 'fakeRef'}).then(function (res) {
+          // the component shouldn't be selected yet
+          expect(res.classList.contains('selected')).to.equal(false);
 
-        // the component shouldn't be selected yet
-        expect(el.classList.contains('selected')).to.equal(false);
+          // trigger a click on the component
+          res.dispatchEvent(new Event('click'));
 
-        // trigger a click on the component
-        el.dispatchEvent(new Event('click'));
-
-        // the component should now be selected
-        expect(el.classList.contains('selected')).to.equal(true);
+          // the component should now be selected
+          expect(res.classList.contains('selected')).to.equal(true);
+        });
       });
 
-      it('adds the delete button if the component is within a component list', function (done) {
+      it('adds the delete button if the component is within a component list', function () {
         var el = stubComponent(),
           componentList = stubEditableComponent(),
           options = {ref: 'fakeRef', data: {}, path: 'fakePath'},
           componentListSchema = {content: {}};
 
         // Setup: there is a component within a component list
-        componentListSchema.content[references.componentListProperty] = []; // isComponentList
+        componentListSchema.content[references.componentListProperty] = true; // isComponentList
         sandbox.stub(edit, 'getSchema').returns(Promise.resolve(componentListSchema));
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
         componentList.appendChild(el); // el is within component list.
 
         // Add component bar.
-        fn(el, options);
-
-        // Problem is that addParentOptions returns a promise, but the handler returns an element synchronously.
-        // Todo: get all the data in one pass or better way to get the closest field?
-        window.setTimeout(function () {
+        return fn(el, options).then(function () {
           expect(el.querySelector('.component-selector .delete')).to.not.equal(null); // Has delete.
-          done();
-        }, 0);
+        });
       });
 
-      it('does not add the delete button if the component is not within a component list', function (done) {
+      it('does not add the delete button if the component is not within a component list', function () {
         var el = stubComponent(),
           componentList = stubEditableComponent(),
           options = {ref: 'fakeRef', data: {}, path: 'fakePath'},
@@ -295,12 +313,44 @@ describe(dirname, function () {
         componentList.appendChild(el); // el is within component list.
 
         // Add component bar.
-        fn(el, options);
-
-        window.setTimeout(function () {
+        return fn(el, options).then(function () {
           expect(el.querySelector('.component-selector .delete')).to.equal(null); // Has delete.
-          done();
-        }, 0);
+        });
+      });
+
+      it('adds the add component button if the component is within a component list', function () {
+        var el = stubComponent(),
+          componentList = stubEditableComponent(),
+          options = {ref: 'fakeRef', data: {}, path: 'fakePath'},
+          componentListSchema = {content: {}};
+
+        // Setup: there is a component within a component list
+        componentListSchema.content[references.componentListProperty] = true; // isComponentList
+        sandbox.stub(edit, 'getSchema').returns(Promise.resolve(componentListSchema));
+        sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
+        componentList.appendChild(el); // el is within component list.
+
+        // Add component bar.
+        return fn(el, options).then(function (res) {
+          expect(res.querySelector('.component-selector .add')).to.not.equal(null);
+        });
+      });
+
+      it('does not add the add component button if the component is not within a component list', function () {
+        var el = stubComponent(),
+          componentList = stubEditableComponent(),
+          options = {ref: 'fakeRef', data: {}, path: 'fakePath'},
+          componentListSchema = {content: {}};
+
+        // Setup: there is a component within a component list
+        sandbox.stub(edit, 'getSchema').returns(Promise.resolve(componentListSchema)); // is not a componentList
+        sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
+        componentList.appendChild(el); // el is within component list.
+
+        // Add component bar.
+        return fn(el, options).then(function (res) {
+          expect(res.querySelector('.component-selector .add')).to.equal(null);
+        });
       });
     });
   });
