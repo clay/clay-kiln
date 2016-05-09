@@ -286,10 +286,10 @@ function addAddComponentOption(actionsMenu, opts) {
     var addableComponents = el.getAttribute('data-components').split(',');
 
     if (addableComponents.length === 1) {
-      addComponent(pane, field, addableComponents[0]);
+      addComponent(pane, field, addableComponents[0], opts.ref);
     } else {
       // open the add components pane
-      paneService.openAddComponent(addableComponents, { pane: pane, field: field });
+      paneService.openAddComponent(addableComponents, { pane: pane, field: field, ref: opts.ref });
     }
   });
 
@@ -339,7 +339,7 @@ function addParentOptions(infoMenu, actionsMenu, el, ref) {
 
         if (componentListField) {
           addDragOption(el);
-          addAddComponentOption(actionsMenu, { include: include, exclude: exclude, pane: pane, field: { ref: parentRef, path: componentListField } });
+          addAddComponentOption(actionsMenu, { ref: ref, include: include, exclude: exclude, pane: pane, field: { ref: parentRef, path: componentListField } });
           addDeleteOption(actionsMenu, {el: el, ref: ref, parentField: componentListField, parentRef: parentRef});
         }
       });

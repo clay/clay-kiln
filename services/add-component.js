@@ -42,20 +42,20 @@ function removeParentPlaceholder(field) {
  * @param {Element} pane (component list element)
  * @param {{ref: string, path: string}} field (parent data)
  * @param {string} name of the component
+ * @param {string} prevRef uri of the component to insert new component after
  * @returns {Promise}
  */
-function addComponent(pane, field, name) {
+function addComponent(pane, field, name, prevRef) {
   removeParentPlaceholder(field);
   return edit.createComponent(name)
     .then(function (res) {
       var newRef = res._ref;
 
-      return edit.addToParentList({ref: newRef, parentField: field.path, parentRef: field.ref})
+      return edit.addToParentList({ref: newRef, parentField: field.path, parentRef: field.ref, prevRef: prevRef})
         .then(function (newEl) {
-          var dropArea = pane.firstElementChild;
+          var prev = dom.find(pane, `[${references.referenceAttribute}="${prevRef}"]`);
 
-          // todo: add components inside list, not just at the end
-          dropArea.appendChild(newEl);
+          dom.insertAfter(prev, newEl);
           return render.addComponentsHandlers(newEl);
         });
     });

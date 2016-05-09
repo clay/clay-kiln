@@ -72,6 +72,7 @@ module.exports = function () {
     // parent options, passed in from the component list
     this.pane = options.pane;
     this.field = options.field;
+    this.prevRef = options.ref;
     // useful elements
     this.input = dom.find(el, '.filtered-input');
     this.list = dom.find(el, '.filtered-items'),
@@ -118,7 +119,7 @@ module.exports = function () {
         focusFirst(available); // focus on first available item in list
       } else if (key === 'enter' && available.length === 1) {
         available[0].classList.remove('active');
-        addComponent(this.pane, this.field, available[0].getAttribute('data-item-name'))
+        addComponent(this.pane, this.field, available[0].getAttribute('data-item-name'), this.prevRef)
           .then(() => pane.close()); // only close if we added successfully
       } else if (key === 'enter') {
         input.classList.add('kiln-shake');
@@ -163,13 +164,13 @@ module.exports = function () {
       } else if (key === 'esc') {
         pane.close();
       } else if (key === 'enter') {
-        addComponent(this.pane, this.field, currentItem.getAttribute('data-item-name'))
+        addComponent(this.pane, this.field, currentItem.getAttribute('data-item-name'), this.prevRef)
           .then(() => pane.close()); // only close if we added successfully
       }
     },
 
     onItemClick: function (e) {
-      addComponent(this.pane, this.field, e.target.getAttribute('data-item-name'))
+      addComponent(this.pane, this.field, e.target.getAttribute('data-item-name'), this.prevRef)
         .then(() => pane.close()); // only close if we added successfully
     }
   };
