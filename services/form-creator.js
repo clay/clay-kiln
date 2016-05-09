@@ -216,7 +216,7 @@ function createInlineForm(ref, data, oldEl) {
     newEl = createInlineFormEl(form.el);
     wrapped = dom.wrapElements(_.filter(oldEl.childNodes, function (child) {
       if (child.nodeType === 1) {
-        return !child.classList.contains('component-bar');
+        return !child.classList.contains('component-selector');
       } else {
         return true; // always pass through text nodes
       }

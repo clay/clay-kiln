@@ -123,21 +123,57 @@ describe(dirname, function () {
     describe('handler', function () {
       var fn = lib[this.title];
 
-      it('creates a component bar as the component\'s first child element', function () {
+      it('creates a component selector as the component\'s first child element', function () {
         var el = stubComponent();
 
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
-        expect(fn(el, {ref: 'fakeRef'}).childNodes[0].classList.contains('component-bar')).to.equal(true);
+        expect(fn(el, {ref: 'fakeRef'}).childNodes[0].classList.contains('component-selector')).to.equal(true);
       });
 
-      it('adds the .component-bar-wrapper class to the component', function () {
+      it('adds the .component-selector-wrapper class to the component', function () {
         var el = stubComponent();
 
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
-        expect(fn(el, {ref: 'fakeRef'}).classList.contains('component-bar-wrapper')).to.equal(true);
+        expect(fn(el, {ref: 'fakeRef'}).classList.contains('component-selector-wrapper')).to.equal(true);
       });
 
-      it('will select the parent component if parent label in the component bar is clicked', function (done) {
+      it('adds the component label', function () {
+        var el = stubComponent(),
+          options = {ref: 'fakeRef', data: {}, path: 'fakePath'};
+
+        sandbox.stub(references, 'getComponentNameFromReference').returns('fake-name');
+        fn(el, options);
+
+        expect(el.querySelector('.component-selector .selected-label').textContent).to.equal('Fake Name');
+      });
+
+      it('adds the parent label if the component has a parent', function () {
+        var el = stubComponent(),
+          parent = stubComponent(),
+          options = {ref: 'fakeRef', data: {}, path: 'fakePath'};
+
+        // Setup: Create a parent component and selected child component.
+        el.setAttribute(references.referenceAttribute, options.ref);
+        parent.setAttribute(references.referenceAttribute, 'parentRef');
+        parent.appendChild(el);
+        sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
+        sandbox.stub(focus, 'unfocus').returns(Promise.resolve());
+        fn(el, options);
+
+        expect(el.querySelector('.component-selector .parent')).to.not.equal(null); // parent label was added
+      });
+
+      it('does not add the parent label if componet does not have parent', function () {
+        var el = stubComponent(),
+          options = {ref: 'fakeRef', data: {}, path: 'fakePath'};
+
+        sandbox.stub(references, 'getComponentNameFromReference').returns('fake-name');
+        fn(el, options);
+
+        expect(el.querySelector('.component-selector .parent')).to.equal(null);
+      });
+
+      it('will select the parent component if parent label in the component selector is clicked', function (done) {
         var el = stubComponent(),
           parent = stubComponent(),
           options = {ref: 'fakeRef', data: {}, path: 'fakePath'};
@@ -152,7 +188,7 @@ describe(dirname, function () {
         expect(parent.classList.contains('selected')).to.equal(false); // Parent is not selected.
 
         // Trigger click on parent label in the component's bar.
-        el.querySelector('.component-bar .parent.label').dispatchEvent(new Event('click'));
+        el.querySelector('.component-selector .parent').dispatchEvent(new Event('click'));
 
         setTimeout(function () {
           expect(parent.classList.contains('selected')).to.equal(true); // Parent is selected.
@@ -170,7 +206,7 @@ describe(dirname, function () {
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
         fn(el, options);
 
-        expect(el.querySelector('.component-bar .settings')).to.not.equal(null); // Settings button was added.
+        expect(el.querySelector('.component-selector .settings')).to.not.equal(null); // Settings button was added.
       });
 
       it('does not add the settings button if the component has no settings', function () {
@@ -182,7 +218,7 @@ describe(dirname, function () {
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
         fn(el, options);
 
-        expect(el.querySelector('.component-bar .settings')).to.equal(null); // Settings button was not added.
+        expect(el.querySelector('.component-selector .settings')).to.equal(null); // Settings button was not added.
       });
 
       it('will open settings form if settings button is clicked', function (done) {
@@ -197,7 +233,7 @@ describe(dirname, function () {
         fn(el, options);
 
         // Trigger a click on the settings button
-        el.querySelector('.component-bar .settings').dispatchEvent(new Event('click'));
+        el.querySelector('.component-selector .settings').dispatchEvent(new Event('click'));
 
         setTimeout(function () {
           // the component should still be selected
@@ -224,7 +260,7 @@ describe(dirname, function () {
         expect(el.classList.contains('selected')).to.equal(true);
       });
 
-      it('adds the drag and delete buttons if the component is within a component list', function (done) {
+      it('adds the delete button if the component is within a component list', function (done) {
         var el = stubComponent(),
           componentList = stubEditableComponent(),
           options = {ref: 'fakeRef', data: {}, path: 'fakePath'},
@@ -242,13 +278,12 @@ describe(dirname, function () {
         // Problem is that addParentOptions returns a promise, but the handler returns an element synchronously.
         // Todo: get all the data in one pass or better way to get the closest field?
         window.setTimeout(function () {
-          expect(el.querySelector('.component-bar .drag-icon')).to.not.equal(null); // Has drag icon.
-          expect(el.querySelector('.component-bar .delete')).to.not.equal(null); // Has delete.
+          expect(el.querySelector('.component-selector .delete')).to.not.equal(null); // Has delete.
           done();
         }, 0);
       });
 
-      it('does not add the drag and delete buttons if the component is not within a component list', function (done) {
+      it('does not add the delete button if the component is not within a component list', function (done) {
         var el = stubComponent(),
           componentList = stubEditableComponent(),
           options = {ref: 'fakeRef', data: {}, path: 'fakePath'},
@@ -263,8 +298,7 @@ describe(dirname, function () {
         fn(el, options);
 
         window.setTimeout(function () {
-          expect(el.querySelector('.component-bar .drag-icon')).to.equal(null); // Has drag icon.
-          expect(el.querySelector('.component-bar .delete')).to.equal(null); // Has delete.
+          expect(el.querySelector('.component-selector .delete')).to.equal(null); // Has delete.
           done();
         }, 0);
       });
