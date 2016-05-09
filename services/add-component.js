@@ -1,7 +1,8 @@
 var references = require('../services/references'),
   dom = require('@nymag/dom'),
   edit = require('../services/edit'),
-  render = require('../services/render');
+  render = require('../services/render'),
+  select = require('../services/select');
 
 /**
  * find placeholders to remove from the parent
@@ -56,7 +57,10 @@ function addComponent(pane, field, name, prevRef) {
           var prev = dom.find(pane, `[${references.referenceAttribute}="${prevRef}"]`);
 
           dom.insertAfter(prev, newEl);
-          return render.addComponentsHandlers(newEl);
+          return render.addComponentsHandlers(newEl).then(function () {
+            select.unselect();
+            return select.select(newEl);
+          });
         });
     });
 }
