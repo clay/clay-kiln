@@ -39,7 +39,7 @@ function removeParentPlaceholder(field) {
 
 /**
  * Add a component to a specified list
- * @param {Element} pane (add component button, put the new component above this)
+ * @param {Element} pane (component list element)
  * @param {{ref: string, path: string}} field (parent data)
  * @param {string} name of the component
  * @returns {Promise}
@@ -52,8 +52,9 @@ function addComponent(pane, field, name) {
 
       return edit.addToParentList({ref: newRef, parentField: field.path, parentRef: field.ref})
         .then(function (newEl) {
-          var dropArea = pane.previousElementSibling;
+          var dropArea = pane.firstElementChild;
 
+          // todo: add components inside list, not just at the end
           dropArea.appendChild(newEl);
           return render.addComponentsHandlers(newEl);
         });

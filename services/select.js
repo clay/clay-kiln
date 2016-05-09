@@ -11,6 +11,8 @@ var _ = require('lodash'),
   site = require('./site'),
   label = require('./label'),
   scrollToY = require('./scroll').toY,
+  addComponent = require('../services/add-component'),
+  paneService = require('../services/pane'),
   currentSelected;
 
 /**
@@ -51,33 +53,6 @@ function getParentComponentListField(componentEl, parentSchema) {
   return path && parentSchema[path] && parentSchema[path][references.componentListProperty] && path;
 }
 
-function walk(node, walker) {
-  if (node && node.classList.contains('component-list-bottom')) {
-    node.classList.add('show');
-  } else if (node) {
-    walk(walker.nextNode(), walker);
-  }
-}
-
-/**
- * show component lists in element, without showing component lists in child components of element
- * @param {Element} el
- */
-function showComponentList(el) {
-  var walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, {
-    acceptNode: function (currentNode) {
-      // don't look for component lists in child components
-      if (!currentNode.hasAttribute(references.referenceAttribute)) {
-        return NodeFilter.FILTER_ACCEPT;
-      } else {
-        return NodeFilter.FILTER_REJECT;
-      }
-    }
-  });
-
-  walk(walker.nextNode(), walker);
-}
-
 /**
  * set selection on a component
  * @param {Element} el editable element or component el
@@ -90,10 +65,8 @@ function select(el) {
 
   // selected component gets .selected, parent gets .selected-parent
   component.classList.add('selected');
-  showComponentList(component);
   if (parent) {
     parent.classList.add('selected-parent');
-    showComponentList(parent);
   }
   currentSelected = component;
 }
@@ -264,9 +237,69 @@ function addDragOption(el) {
 }
 
 /**
+ * map through components, filtering out excluded
+ * @param {array} possibleComponents
+ * @param {array} [exclude] array of components to exclude
+ * @returns {array} array of elements
+ */
+function getAddableComponents(possibleComponents, exclude) {
+  return _.compact(_.map(possibleComponents, function (item) {
+    if (exclude && exclude.length) {
+      if (!_.contains(exclude)) {
+        return item;
+      }
+    } else {
+      return item;
+    }
+  }));
+}
+
+/**
+ * Add add component option within a component list.
+ * @param {Element} actionsMenu
+ * @param {object} opts options required to add component to parent list.
+ */
+function addAddComponentOption(actionsMenu, opts) {
+  var include = opts.include,
+    exclude = opts.exclude,
+    pane = opts.pane,
+    field = opts.field,
+    toolbar = dom.find('.kiln-toolbar'),
+    allComponents = toolbar.getAttribute('data-components').split(','),
+    el = dom.create(`<button class="selected-action add">
+      <span class="add-inner">+</span>
+    </button>`),
+    addableComponents;
+
+  // figure out what components should be available for adding
+  if (include && include.length) {
+    addableComponents = getAddableComponents(include, exclude);
+  } else {
+    addableComponents = getAddableComponents(allComponents, exclude);
+  }
+
+  // add those components to the button
+  el.setAttribute('data-components', addableComponents.join(','));
+
+  // add click event handler
+  el.addEventListener('click', function () {
+    var addableComponents = el.getAttribute('data-components').split(',');
+
+    if (addableComponents.length === 1) {
+      addComponent(pane, field, addableComponents[0]);
+    } else {
+      // open the add components pane
+      paneService.openAddComponent(addableComponents, { pane: pane, field: field });
+    }
+  });
+
+  actionsMenu.appendChild(el);
+}
+
+/**
  * Add delete option within a component list.
  * @param {Element} actionsMenu
- * @param {object} opts ptions required to remove component from parent list.
+ * @param {object} opts options required to remove component from parent list.
  */
 function addDeleteOption(actionsMenu, opts) {
   var el = dom.create(`<button class="selected-action delete">
@@ -298,10 +331,15 @@ function addParentOptions(infoMenu, actionsMenu, el, ref) {
     addParentLabel(infoMenu, parentEl);
     return edit.getSchema(parentRef)
       .then(function (parentSchema) {
-        var componentListField = getParentComponentListField(el, parentSchema);
+        var componentListField = getParentComponentListField(el, parentSchema),
+          componentList = componentListField && _.get(parentSchema, `${componentListField}.${references.componentListProperty}`), // get parent's component list
+          include = componentList && componentList.include,
+          exclude = componentList && componentList.exclude,
+          pane = dom.find(parentEl, `[${references.editableAttribute}="${componentListField}"]`);
 
         if (componentListField) {
           addDragOption(el);
+          addAddComponentOption(actionsMenu, { include: include, exclude: exclude, pane: pane, field: { ref: parentRef, path: componentListField} });
           addDeleteOption(actionsMenu, {el: el, ref: ref, parentField: componentListField, parentRef: parentRef});
         }
       });
