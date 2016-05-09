@@ -72,6 +72,9 @@ describe(dirname, function () {
       getTemplate.withArgs('.publish-error-message-template').returns(dom.create('<div>ERROR MESSAGE</div>'));
       getTemplate.withArgs('.publish-warning-message-template').returns(dom.create('<div>WARNING MESSAGE</div>'));
       getTemplate.withArgs('.publish-errors-template').returns(stubErrorsTemplate());
+      getTemplate.withArgs('.filtered-input-template').returns(dom.create('<input class="filtered-input" />'));
+      getTemplate.withArgs('.filtered-items-template').returns(dom.create('<div><ul class="filtered-items"></div>')); // wrapper divs to simulate doc fragments
+      getTemplate.withArgs('.filtered-item-template').returns(dom.create('<div><li class="filtered-item"></div>')); // wrapper divs to simulate doc fragments
     });
 
     afterEach(function () {
@@ -324,6 +327,32 @@ describe(dirname, function () {
         expect(document.querySelector('.pane-inner .publish-error .description').innerHTML).to.equal('Please see below for details');
         expect(document.querySelector('.pane-inner .errors')).to.not.equal(null);
         expect(document.querySelectorAll('.pane-inner .errors li').length).to.equal(0);
+      });
+    });
+
+    describe('openAddComponent', function () {
+      var fn = lib[this.title],
+        sandbox;
+
+      beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+        sandbox.stub(ds);
+      });
+
+      afterEach(function () {
+        sandbox.restore();
+      });
+
+      it('opens a an add component pane', function () {
+        var options = {
+          field: { ref: null, path: null}, // parent data, passed to addComponent (we don't care about it here)
+          pane: document.createElement('div') // pane element, passed to addComponent (we don't care about it here)
+        };
+
+        lib.close();
+        fn(['foo'], options);
+        expect(document.querySelector('.pane-header').innerHTML).to.equal('Add Component');
+        expect(document.querySelectorAll('.pane-inner li.filtered-item').length).to.equal(1);
       });
     });
   });

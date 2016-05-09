@@ -2,83 +2,24 @@ var _ = require('lodash'),
   references = require('../services/references'),
   dom = require('@nymag/dom'),
   edit = require('../services/edit'),
-  render = require('../services/render'),
-  label = require('../services/label'),
-  dragula = require('dragula');
-
-/**
- * remove parent placeholder
- * @param {{ref: string, path: string}} field
- */
-function removeParentPlaceholder(field) {
-  // component > field > div > placeholder
-  var parent = document.querySelector('[' + references.referenceAttribute + '="' + field.ref + '"]'),
-    list = parent && parent.querySelector('[' + references.editableAttribute + '="' + field.path + '"]'),
-    div = list && dom.getFirstChildElement(list),
-    placeholder = div && dom.getFirstChildElement(div);
-
-  // remove component list placeholder if it exists
-  if (placeholder && placeholder.classList.contains('kiln-placeholder')) {
-    dom.removeElement(placeholder);
-  }
-}
-
-/**
- * Create click handler for adding a component
- * @param {Element} pane
- * @param {{ref: string, path: string}} field
- * @param {string} name
- * @returns {Promise}
- */
-function addComponent(pane, field, name) {
-  return function (e) {
-    removeParentPlaceholder(field);
-    e.stopPropagation();
-    return edit.createComponent(name)
-      .then(function (res) {
-        var newRef = res._ref;
-
-        return edit.addToParentList({ref: newRef, parentField: field.path, parentRef: field.ref})
-          .then(function (newEl) {
-            var dropArea = pane.previousElementSibling;
-
-            dropArea.appendChild(newEl);
-            return render.addComponentsHandlers(newEl);
-          });
-      });
-  };
-}
-
-/**
- * create a new button for each component
- * @param {Element} pane
- * @param {{ref: string, path: string}} field
- * @param {string} item name
- * @returns {element} buttonEl
- */
-function createComponentButton(pane, field, item) {
-  var buttonEl = dom.create(`<button class="add-component" type="button" data-component-name="${label(item)}">${label(item)}</button>`);
-
-  buttonEl.addEventListener('click', addComponent(pane, field, item));
-  return buttonEl;
-}
+  dragula = require('dragula'),
+  addComponent = require('../services/add-component'),
+  paneService = require('../services/pane');
 
 /**
  * map through components, filtering out excluded
- * @param {Element} pane
- * @param {{ref: string, path: string}} field
  * @param {array} possibleComponents
  * @param {array} [exclude] array of components to exclude
  * @returns {array} array of elements
  */
-function getButtons(pane, field, possibleComponents, exclude) {
+function getAddableComponents(possibleComponents, exclude) {
   return _.compact(_.map(possibleComponents, function (item) {
     if (exclude && exclude.length) {
       if (!_.contains(exclude)) {
-        return createComponentButton(pane, field, item);
+        return item;
       }
     } else {
-      return createComponentButton(pane, field, item);
+      return item;
     }
   }));
 }
@@ -95,26 +36,22 @@ function createPane(args) {
     allComponents = toolbar.getAttribute('data-components').split(','),
     tpl =
       `<section class="component-list-bottom">
-        <div class="open-add-components">
+        <button class="open-add-components">
           <span class="open-add-components-inner">+</span>
-        </div>
-        <section class="add-components-pane">
-        </section>
+        </button>
       </section>`,
     pane = dom.create(tpl),
-    buttons;
+    addableComponents;
 
   // figure out what components should be available for adding
   if (include && include.length) {
-    buttons = getButtons(pane, args.field, include, exclude);
+    addableComponents = getAddableComponents(include, exclude);
   } else {
-    buttons = getButtons(pane, args.field, allComponents, exclude);
+    addableComponents = getAddableComponents(allComponents, exclude);
   }
 
-  // put add components buttons into the pane
-  _.each(buttons, function (button) {
-    dom.find(pane, '.add-components-pane').appendChild(button);
-  });
+  // add those components to the button
+  dom.find(pane, '.open-add-components').setAttribute('data-components', addableComponents.join(','));
 
   return pane;
 }
@@ -267,12 +204,15 @@ function handler(el, options) {
   button = dom.find(pane, '.open-add-components');
 
   // add click events to toggle pane
-  button.addEventListener('click', function (e) {
-    var addComponentsPane = dom.find(pane, '.add-components-pane');
+  button.addEventListener('click', function () {
+    var addableComponents = button.getAttribute('data-components').split(',');
 
-    button.classList.toggle('open');
-    addComponentsPane.classList.toggle('open');
-    e.stopPropagation(); // stop unselect() or unfocus() from firing
+    if (addableComponents.length === 1) {
+      addComponent(pane, args.field, addableComponents[0]);
+    } else {
+      // open the add components pane
+      paneService.openAddComponent(addableComponents, { pane: pane, field: args.field });
+    }
   });
 
   // wrap the draggable items so that the pane is not in the drop area.
