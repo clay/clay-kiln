@@ -3,6 +3,7 @@ var dirname = __dirname.split('/').pop(),
   lib = require('./pane'),
   state = require('./page-state'),
   dom = require('@nymag/dom'),
+  tpl = require('./tpl'),
   ds = require('dollar-slice');
 
 // minimal templates, only what we need to test the logic and functionality
@@ -63,7 +64,7 @@ describe(dirname, function () {
 
       document.body.appendChild(toolbar);
       sandbox = sinon.sandbox.create();
-      getTemplate = sandbox.stub(lib, 'getTemplate');
+      getTemplate = sandbox.stub(tpl, 'get');
       getTemplate.withArgs('.kiln-pane-template').returns(stubWrapperTemplate());
       getTemplate.withArgs('.publish-valid-template').returns(dom.create('<div class="publish-valid">valid</div>'));
       getTemplate.withArgs('.publish-messages-template').returns(stubMessageTemplate());
