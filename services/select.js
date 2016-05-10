@@ -246,7 +246,7 @@ function addLabel(selector, name) {
 function addParentHandler(selector, parent) {
   var button = dom.find(selector, '.selected-info-parent');
 
-  if (parent) {
+  if (parent.el) {
     // if parent exists at all, add the handler
     button.classList.remove(hidden);
     button.addEventListener('click', function (e) {

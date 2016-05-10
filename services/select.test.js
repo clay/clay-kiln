@@ -6,7 +6,10 @@ var dirname = __dirname.split('/').pop(),
   forms = require('./forms'),
   focus = require('../decorators/focus'),
   site = require('./site'),
-  lib = require('./select');
+  tpl = require('./tpl'),
+  dom = require('@nymag/dom'),
+  lib = require('./select'),
+  hidden = 'kiln-hide';
 
 describe(dirname, function () {
   describe(filename, function () {
@@ -118,6 +121,23 @@ describe(dirname, function () {
       beforeEach(function () {
         sandbox = sinon.sandbox.create();
         sandbox.stub(site);
+        sandbox.stub(tpl, 'get').returns(dom.create(`<aside class="component-selector">
+          <aside class="component-selector-top">
+            <div class="selected-info">
+              <span class="selected-label"></span>
+              <button class="selected-info-parent kiln-hide" title="Select Parent"></button>
+            </div>
+            <div class="selected-actions kiln-hide">
+              <button class="selected-action-settings kiln-hide" title="Component Settings"></button>
+              <button class="selected-action-delete kiln-hide" title="Delete Component"></button>
+            </div>
+          </aside>
+          <aside class="component-selector-bottom kiln-hide">
+            <button class="selected-add kiln-hide" title="Add Component">
+              <span class="add-inner">+</span>
+            </button>
+          </aside>
+        </aside>`));
       });
 
       afterEach(function () {
@@ -168,18 +188,18 @@ describe(dirname, function () {
         sandbox.stub(focus, 'unfocus').returns(Promise.resolve());
         sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
         return fn(el, options).then(function (res) {
-          expect(res.querySelector('.component-selector .parent')).to.not.equal(null); // parent label was added
+          expect(res.querySelector('.component-selector .selected-info-parent').classList.contains(hidden)).to.equal(false); // parent label was added
         });
       });
 
-      it('does not add the parent label if componet does not have parent', function () {
+      it('does not add the parent label if component does not have parent', function () {
         var el = stubComponent(),
           options = {ref: 'fakeRef', data: {}, path: 'fakePath'};
 
         sandbox.stub(references, 'getComponentNameFromReference').returns('fake-name');
         sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
         return fn(el, options).then(function (res) {
-          expect(res.querySelector('.component-selector .parent')).to.equal(null);
+          expect(res.querySelector('.component-selector .selected-info-parent').classList.contains(hidden)).to.equal(true);
         });
       });
 
@@ -206,7 +226,7 @@ describe(dirname, function () {
           expect(parent.classList.contains('selected')).to.equal(false); // Parent is not selected.
 
           // Trigger click on parent label in the component's bar.
-          el.querySelector('.component-selector .parent').dispatchEvent(new Event('click'));
+          el.querySelector('.component-selector .selected-info-parent').dispatchEvent(new Event('click'));
 
           // wait for repaint before checking
           setTimeout(expectSelected, 0);
@@ -222,7 +242,7 @@ describe(dirname, function () {
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
         sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
         return fn(el, options).then(function (res) {
-          expect(res.querySelector('.component-selector .settings')).to.not.equal(null); // Settings button was added.
+          expect(res.querySelector('.component-selector .selected-action-settings').classList.contains(hidden)).to.equal(false);
         });
       });
 
@@ -235,7 +255,7 @@ describe(dirname, function () {
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
         sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
         return fn(el, options).then(function (res) {
-          expect(res.querySelector('.component-selector .settings')).to.equal(null); // Settings button was not added.
+          expect(res.querySelector('.component-selector .selected-action-settings').classList.contains(hidden)).to.equal(true);
         });
       });
 
@@ -260,7 +280,7 @@ describe(dirname, function () {
 
         fn(el, options).then(function (res) {
           // Trigger a click on the settings button
-          res.querySelector('.component-selector .settings').dispatchEvent(new Event('click'));
+          res.querySelector('.component-selector .selected-action-settings').dispatchEvent(new Event('click'));
 
           setTimeout(expectSettings, 0);
         });
@@ -297,7 +317,7 @@ describe(dirname, function () {
 
         // Add component bar.
         return fn(el, options).then(function () {
-          expect(el.querySelector('.component-selector .delete')).to.not.equal(null); // Has delete.
+          expect(el.querySelector('.component-selector .selected-action-delete').classList.contains(hidden)).to.equal(false);
         });
       });
 
@@ -314,7 +334,7 @@ describe(dirname, function () {
 
         // Add component bar.
         return fn(el, options).then(function () {
-          expect(el.querySelector('.component-selector .delete')).to.equal(null); // Has delete.
+          expect(el.querySelector('.component-selector .selected-action-delete').classList.contains(hidden)).to.equal(true);
         });
       });
 
@@ -332,7 +352,7 @@ describe(dirname, function () {
 
         // Add component bar.
         return fn(el, options).then(function (res) {
-          expect(res.querySelector('.component-selector .add')).to.not.equal(null);
+          expect(res.querySelector('.component-selector .selected-add').classList.contains(hidden)).to.equal(false);
         });
       });
 
@@ -349,7 +369,7 @@ describe(dirname, function () {
 
         // Add component bar.
         return fn(el, options).then(function (res) {
-          expect(res.querySelector('.component-selector .add')).to.equal(null);
+          expect(res.querySelector('.component-selector .selected-add').classList.contains(hidden)).to.equal(true);
         });
       });
     });
