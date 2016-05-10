@@ -1,3 +1,5 @@
+var dom = require('@nymag/dom');
+
 /**
  * grab templates from the dom
  * @param {string} selector
