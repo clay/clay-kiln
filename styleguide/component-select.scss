@@ -1,149 +1,203 @@
 @import 'colors';
 @import 'typography';
 @import 'layers';
-$selector-menu-height: 30px;
-$half-selector-menu-height: 15px;
-$selector-menu-width: 10px;
-$half-selector-menu-width: 5px;
-$selector-menu-offset: 14px; // half height - 1px, so the border shows
 
-// bar colors
+// selector offsets, for the selector outline
+$offset-width: 10px;
+$offset-width-half: $offset-width / 2;
+$offset-height: 30px;
+$offset-height-half: $offset-height / 2;
+$offset-height-menu: $offset-height-half - 1; // 1px less, so the menu border always displays
+$parent-offset: 4px; // how much wider should parent outline be
 
-// page-specific
-$page-color: $blue-50;
+// icon sizes
+$action-icon-small: 16px;
+$action-icon-large: 24px;
 
-// layout-specific
-// todo: use these when we have a solution for layout editing
-$layout-color: $purple-50;
+// selector colors
+$page-color: $blue;
+$page-bg-color: $blue-50;
+$page-parent-color: $blue-75;
+$page-parent-bg-color: $blue-25;
 
+// todo: in the future layout-specific selectors use these colors
+$layout-color: $purple;
+$layout-bg-color: $purple-50;
+$layout-parent-color: $purple-50;
+$layout-parent-bg-color: $purple-25;
 
-// Wrapper around parent and component.
+// mixin for creating the selector icons
+@mixin selector-icon($fill, $size) {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin: 0;
+  outline: none;
+  color: $fill;
+  // width: $size;
+  // height: $size;
+  padding: 6px 8px;
+
+  svg {
+    fill: $fill;
+    width: $size;
+    height: $size;
+
+    * {
+      fill: $fill;
+    }
+  }
+}
+
+// component element needs to be position: relative for the selectors to display
 .component-selector-wrapper {
   position: relative;
 }
 
-// Parent's selector hidden (for now)
-// note: maybe in the future we want to display an outline for the parent?
-.component-selector-wrapper.selected-parent > .component-selector {
-  display: none;
+// selector outlines
+.component-selector {
+  border-style: solid;
+  border-width: 1px;
+  border-color: transparent;
+  height: calc(100% + #{$offset-height});
+  left: -$offset-width-half;
   opacity: 0;
+  position: absolute;
+  top: -$offset-height-half;
+  transition: 100ms opacity ease-out; // fade in/out when selecting and unselecting (quick animation)
+  width: calc(100% + #{$offset-width});
+  z-index: -1; // should be less than any element in the component itself
 }
 
-// Selected component
-// note: sometimes (like in source-links), the selector lives inside the div
-// created by componentList
+// menus
+.component-selector-top,
+.component-selector-bottom {
+  background: rgba(255, 255, 255, .85);
+  border-color: transparent;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 10px;
+  right: $offset-width-half;
+  position: absolute;
+}
+
+// place the top and bottom menus bisecting the outline vertically
+.component-selector-top {
+  bottom: calc(100% - #{$offset-height-menu});
+}
+
+.component-selector-bottom {
+  // bottom menu is more offset, since it concerns actions that don't
+  // affect the component itself (but rather things around it, e.g. adding new components)
+  top: calc(100% - #{$offset-height-menu / 2});
+}
+
+.component-selector-top,
+.component-selector-bottom,
+.selected-info,
+.selected-actions,
+.component-selector-bottom {
+  align-items: center;
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-start;
+}
+
+// current component label
+.selected-label {
+  @include label();
+
+  font-size: 14px;
+  line-height: 16px;
+  margin: 0;
+  padding: 6px 8px;
+  white-space: nowrap;
+}
+
+// selected parent
+.component-selector-wrapper.selected-parent > .component-selector,
+.component-selector-wrapper.selected-parent > * > .component-selector {
+  // include overrides for outline offset (width only)
+  left: -#{$offset-width-half + $parent-offset};
+  width: calc(100% + #{$offset-width + $parent-offset * 2});
+
+  // show selector
+  opacity: 1;
+
+  // display selector ABOVE stuff
+  z-index: 1;
+
+  // set colors
+  border-color: $page-parent-bg-color;
+
+  .component-selector-top {
+    border-color: $page-parent-bg-color;
+  }
+
+  .selected-label,
+  .selected-action-settings {
+    @include selector-icon($page-parent-color, $action-icon-small);
+  }
+
+  // set a border on settings instead of its container,
+  // because a parent might only have `delete` and we don't want an empty
+  // `selected-actions` menu with a border and empty space
+  .selected-action-settings {
+    border-left: 1px solid $page-parent-bg-color;
+  }
+
+  // hide extraneous buttons
+  .selected-info-parent,
+  .selected-action-delete,
+  .component-selector-bottom {
+    display: none;
+  }
+}
+
+// selected component
 .component-selector-wrapper.selected > .component-selector,
 .component-selector-wrapper.selected > * > .component-selector {
-  display: flex;
+  // show selector
   opacity: 1;
-  z-index: 1; // note: prevents weird fade in z-index issues when menus overlay other components' placeholders
+
+  // display selector ABOVE stuff
+  z-index: 2;
+
+  // set colors
+  border-color: $page-bg-color;
+
+  .component-selector-top {
+    border-color: $page-bg-color;
+  }
+
+  .selected-label,
+  .selected-info-parent,
+  .selected-action-settings,
+  .selected-action-delete {
+    @include selector-icon($page-color, $action-icon-small);
+  }
+
+  // set a border on settings and delete
+  .selected-info-parent,
+  .selected-action-settings,
+  .selected-action-delete {
+    border-left: 1px solid $page-bg-color;
+  }
+
+  // add component button gets the PARENT colors, to reinforce that it's something
+  // that affects the parent component
+  .component-selector-bottom {
+    border-color: $page-parent-bg-color;
+  }
+  .selected-add {
+    @include selector-icon($page-parent-color, $action-icon-large);
+  }
 }
 
 // selected component: components inside the selected component ALSO needs a higher z-index
 // so we can click into them when the parent is selected
 .component-selector-wrapper.selected [data-uri] {
-  z-index: 1;
-}
-
-// Selector on a selected component
-.component-selector {
-  border: 1px solid $page-color;
-  height: calc(100% + #{$selector-menu-height});
-  left: -$half-selector-menu-width;
-  opacity: 0;
-  position: absolute;
-  top: -$half-selector-menu-height;
-  transition: 100ms opacity ease-out;
-  width: calc(100% + #{$selector-menu-width});
-  z-index: -1;
-}
-
-.component-selector .selected-info,
-.component-selector .selected-actions {
-  @include component-toolbar-layer();
-
-  align-items: center;
-  background: rgba(255, 255, 255, .85);
-  border: 1px solid $page-color;
-  border-radius: 10px;
-  color: $blue;
-  display: flex;
-  height: 30px;
-  left: 50%;
-  padding: 5px 10px;
-  position: absolute;
-}
-
-.component-selector .selected-info {
-  bottom: calc(100% - #{$selector-menu-offset});
-}
-
-.component-selector .selected-actions {
-  top: calc(100% - #{$selector-menu-offset});
-}
-
-// selected label
-.selected-info-item.selected-label {
-  @include label();
-
-  color: $blue;
-  font-size: 14px;
-  line-height: 14px;
-  margin: 0;
-  white-space: nowrap;
-}
-
-// buttons
-.selected-info-item.parent,
-.selected-action {
-  background: none;
-  border: none;
-  cursor: pointer;
-  height: 14px;
-  margin: 0;
-  outline: none;
-  padding: 0;
-  width: 14px;
-
-  img {
-    height: 14px;
-  }
-}
-
-// parent button
-.selected-info-item.parent {
-  margin-left: 5px; // only appears if parent exists
-}
-
-// settings and delete buttons
-.selected-action:not(:first-child) {
-  margin-left: 5px;
-}
-.selected-action:not(:last-child) {
-  margin-right: 5px;
-}
-
-// add component button
-.selected-action.add {
-  margin: 0 10px; // extra margin around the button
-  position: relative;
-}
-
-.selected-action .add-inner {
-  color: $blue;
-  display: block;
-  font-family: Arial, sans-serif; // explicitly Arial
-  font-size: 40px;
-  height: 40px;
-  left: -13px;
-  line-height: 40px;
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  text-align: center;
-  top: -13px;
-  user-select: none;
-  width: 40px;
+  z-index: 3;
 }
 
 // all editable elements should have some kind of ux showing they can be edited
