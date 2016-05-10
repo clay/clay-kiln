@@ -147,9 +147,6 @@ $layout-parent-bg-color: $purple-25;
   opacity: 1;
   transition: 250ms opacity ease-out; // fade in slower than the current component
 
-  // display selector ABOVE stuff
-  z-index: 1;
-
   // override colors colors
   border-color: $page-parent-bg-color;
 
@@ -183,21 +180,26 @@ $layout-parent-bg-color: $purple-25;
   // show selector
   opacity: 1;
   transition: 150ms opacity ease-out; // fade relatively quickly
+}
 
-  // display selector ABOVE stuff
+.component-selector-wrapper.selected-parent {
+  z-index: 1  !important;
+}
+
+// parent component: siblings of the selected component need a higher z-index
+// than the parent selector, but a lower index than the current selector
+.component-selector-wrapper.selected-parent [data-uri] {
   z-index: 2;
 }
 
-// parent component: siblings of the selected component need a higher z-index so
-// they can be selected with one click
-.component-selector-wrapper.selected-parent [data-uri] {
-  z-index: 2;
+.component-selector-wrapper.selected {
+  z-index: 3 !important;
 }
 
 // selected component: components inside the selected component ALSO needs a higher z-index
 // so we can click into them when the parent is selected
 .component-selector-wrapper.selected [data-uri] {
-  z-index: 3;
+  z-index: 4;
 }
 
 // all editable elements should have some kind of ux showing they can be edited
