@@ -307,8 +307,12 @@ function addDeleteOption(actionsMenu, opts) {
   </button>`);
 
   el.addEventListener('click', function () {
-    return edit.removeFromParentList(opts)
-      .then(forms.close);
+    var confirm = window.confirm('Delete this component? This cannot be undone.'); // eslint-disable-line
+
+    if (confirm) {
+      return edit.removeFromParentList(opts)
+        .then(forms.close);
+    }
   });
 
   actionsMenu.appendChild(el);
