@@ -5,7 +5,6 @@ var _ = require('lodash'),
   sr = require('selection-range'),
   dom = require('@nymag/dom'),
   helpers = require('../services/field-helpers'),
-  componentList = require('./component-list'),
   currentFocus;
 
 /**
@@ -77,7 +76,6 @@ function hasCurrentFocus() {
 function unfocus() {
   if (forms.isFormValid()) {
     select.unselect();
-    componentList.closePanes(); // close any open add-component panes
     currentFocus = null;
     return forms.close();
   } else {

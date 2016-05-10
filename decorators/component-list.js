@@ -148,26 +148,8 @@ function handler(el, options) {
   return el;
 }
 
-/**
- * close if it's open
- * @param  {Element} el
- */
-function closeIfOpen(el) {
-  // todo: remove
-}
-
-/**
- * close any open component panes
- */
-function closePanes() {
-  // todo: remove
-}
-
 module.exports.when = when;
 module.exports.handler = handler;
-
-// close panes when someone unfocuses / focuses a field
-module.exports.closePanes = closePanes;
 
 // for testing
 module.exports.updateOrder = updateOrder;
