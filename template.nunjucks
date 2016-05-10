@@ -149,7 +149,7 @@
           <span class="selected-label"></span>
           <button class="selected-info-parent kiln-hide" title="Select Parent">{% include 'public/media/components/clay-kiln/component-bar-parent.svg' %}</button>
         </div>
-        <div class="selected-actions kiln-hide">
+        <div class="selected-actions">
           <button class="selected-action-settings kiln-hide" title="Component Settings">{% include 'public/media/components/clay-kiln/component-bar-settings.svg' %}</button>
           <button class="selected-action-delete kiln-hide" title="Delete Component">{% include 'public/media/components/clay-kiln/component-bar-delete.svg' %}</button>
         </div>

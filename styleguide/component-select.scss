@@ -58,13 +58,13 @@ $layout-parent-bg-color: $purple-25;
 .component-selector {
   border-style: solid;
   border-width: 1px;
-  border-color: transparent;
+  border-color: $page-bg-color;
   height: calc(100% + #{$offset-height});
   left: -$offset-width-half;
   opacity: 0;
   position: absolute;
   top: -$offset-height-half;
-  transition: 100ms opacity ease-out; // fade in/out when selecting and unselecting (quick animation)
+  transition: 50ms opacity linear; // fade out quickly
   width: calc(100% + #{$offset-width});
   z-index: -1; // should be less than any element in the component itself
 }
@@ -83,10 +83,14 @@ $layout-parent-bg-color: $purple-25;
 
 // place the top and bottom menus bisecting the outline vertically
 .component-selector-top {
+  border-color: $page-bg-color;
   bottom: calc(100% - #{$offset-height-menu});
 }
 
 .component-selector-bottom {
+  // add component button gets the PARENT colors, to reinforce that it's something
+  // that affects the parent component
+  border-color: $page-parent-bg-color;
   // bottom menu is more offset, since it concerns actions that don't
   // affect the component itself (but rather things around it, e.g. adding new components)
   top: calc(100% - #{$offset-height-menu / 2});
@@ -114,6 +118,24 @@ $layout-parent-bg-color: $purple-25;
   white-space: nowrap;
 }
 
+.selected-label,
+.selected-info-parent,
+.selected-action-settings,
+.selected-action-delete {
+  @include selector-icon($page-color, $action-icon-small);
+}
+
+// set a border on parent, settings, and delete
+.selected-info-parent,
+.selected-action-settings,
+.selected-action-delete {
+  border-left: 1px solid $page-bg-color;
+}
+
+.selected-add {
+  @include selector-icon($page-parent-color, $action-icon-large);
+}
+
 // selected parent
 .component-selector-wrapper.selected-parent > .component-selector,
 .component-selector-wrapper.selected-parent > * > .component-selector {
@@ -123,11 +145,12 @@ $layout-parent-bg-color: $purple-25;
 
   // show selector
   opacity: 1;
+  transition: 250ms opacity ease-out; // fade in slower than the current component
 
   // display selector ABOVE stuff
   z-index: 1;
 
-  // set colors
+  // override colors colors
   border-color: $page-parent-bg-color;
 
   .component-selector-top {
@@ -159,39 +182,16 @@ $layout-parent-bg-color: $purple-25;
 .component-selector-wrapper.selected > * > .component-selector {
   // show selector
   opacity: 1;
+  transition: 150ms opacity ease-out; // fade relatively quickly
 
   // display selector ABOVE stuff
   z-index: 2;
+}
 
-  // set colors
-  border-color: $page-bg-color;
-
-  .component-selector-top {
-    border-color: $page-bg-color;
-  }
-
-  .selected-label,
-  .selected-info-parent,
-  .selected-action-settings,
-  .selected-action-delete {
-    @include selector-icon($page-color, $action-icon-small);
-  }
-
-  // set a border on settings and delete
-  .selected-info-parent,
-  .selected-action-settings,
-  .selected-action-delete {
-    border-left: 1px solid $page-bg-color;
-  }
-
-  // add component button gets the PARENT colors, to reinforce that it's something
-  // that affects the parent component
-  .component-selector-bottom {
-    border-color: $page-parent-bg-color;
-  }
-  .selected-add {
-    @include selector-icon($page-parent-color, $action-icon-large);
-  }
+// parent component: siblings of the selected component need a higher z-index so
+// they can be selected with one click
+.component-selector-wrapper.selected-parent [data-uri] {
+  z-index: 2;
 }
 
 // selected component: components inside the selected component ALSO needs a higher z-index

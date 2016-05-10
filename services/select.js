@@ -271,20 +271,6 @@ function hasSettings(options) {
 }
 
 /**
- * unhide top menu if settings or delete is available
- * note: more options might exist in the top action menu in the future
- * note: right now all components in lists get delete, add, and reorder handlers
- * @param {Element} selector
- * @param {object} parent
- * @param {object} options
- */
-function unhideTopMenu(selector, parent, options) {
-  if (hasSettings(options) || parent.isComponentList) {
-    dom.find(selector, '.selected-actions').classList.remove(hidden);
-  }
-}
-
-/**
  * unhide settings button and add handler
  * @param {Element} selector
  * @param {object} options
@@ -416,11 +402,6 @@ function handler(el, options) {
     addLabel(selector, name);
     // if parent, unhide + add handler
     addParentHandler(selector, parent);
-
-    // if settings or delete, unhide actions
-    // note: more options might exist in the top action menu in the future
-    // note: right now all components in lists get delete, add, and reorder handlers
-    unhideTopMenu(selector, parent, el, options);
 
     // if settings, unhide + add handler
     addSettingsHandler(selector, options);
