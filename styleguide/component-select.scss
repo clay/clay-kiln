@@ -46,6 +46,19 @@ $layout-parent-bg-color: $purple-25;
   svg,
   svg * {
     fill: $fill;
+    transition: 150ms fill ease-out;
+  }
+
+  &:hover svg,
+  &:hover svg * {
+    fill: darken($fill, 5%);
+    transition: 150ms fill ease-out;
+  }
+
+  &:active svg,
+  &:active svg * {
+    fill: darken($fill, 10%);
+    transition: 50ms fill ease-out;
   }
 }
 
