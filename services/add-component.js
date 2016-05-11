@@ -45,7 +45,7 @@ function removeParentPlaceholder(field) {
  * @param {Element} pane (component list element)
  * @param {{ref: string, path: string}} field (parent data)
  * @param {string} name of the component
- * @param {string} prevRef uri of the component to insert new component after
+ * @param {string} [prevRef] uri of the component to insert new component after
  * @returns {Promise}
  */
 function addComponent(pane, field, name, prevRef) {
@@ -53,13 +53,21 @@ function addComponent(pane, field, name, prevRef) {
   removeParentPlaceholder(field);
   return edit.createComponent(name)
     .then(function (res) {
-      var newRef = res._ref;
+      var newRef = res._ref,
+        listArgs = {
+          ref: newRef,
+          parentField: field.path,
+          parentRef: field.ref
+        };
 
-      return edit.addToParentList({ref: newRef, parentField: field.path, parentRef: field.ref, prevRef: prevRef})
+      // if we're adding AFTER a component, add that to the arguments
+      _.assign(listArgs, { prevRef: prevRef });
+
+      return edit.addToParentList(listArgs)
         .then(function (newEl) {
-          var prev = dom.find(pane, `[${references.referenceAttribute}="${prevRef}"]`);
+          if (prevRef) {
+            let prev = dom.find(pane, `[${references.referenceAttribute}="${prevRef}"]`);
 
-          if (prev) {
             // insert it right after the previous component
             dom.insertAfter(prev, newEl);
           } else {
