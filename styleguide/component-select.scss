@@ -12,7 +12,7 @@ $parent-offset: 4px; // how much wider should parent outline be
 
 // icon sizes
 $action-icon-small: 16px;
-$action-icon-large: 24px;
+$action-icon-large: 22px;
 
 // selector colors
 $page-color: $blue;
@@ -59,6 +59,7 @@ $layout-parent-bg-color: $purple-25;
   border-style: solid;
   border-width: 1px;
   border-color: $page-bg-color;
+  box-shadow: 1px 1px 20px -11px $black;
   height: calc(100% + #{$offset-height});
   left: -$offset-width-half;
   opacity: 0;
@@ -72,11 +73,12 @@ $layout-parent-bg-color: $purple-25;
 // menus
 .component-selector-top,
 .component-selector-bottom {
-  background: rgba(255, 255, 255, .85);
+  background: rgba(255, 255, 255, .9);
   border-color: transparent;
   border-width: 1px;
   border-style: solid;
   border-radius: 10px;
+  box-shadow: 1px 1px 20px -9px $black;
   right: $offset-width-half;
   position: absolute;
 }
@@ -88,9 +90,7 @@ $layout-parent-bg-color: $purple-25;
 }
 
 .component-selector-bottom {
-  // add component button gets the PARENT colors, to reinforce that it's something
-  // that affects the parent component
-  border-color: $page-parent-bg-color;
+  border-color: $page-bg-color;
   // bottom menu is more offset, since it concerns actions that don't
   // affect the component itself (but rather things around it, e.g. adding new components)
   top: calc(100% - #{$offset-height-menu / 2});
@@ -125,15 +125,16 @@ $layout-parent-bg-color: $purple-25;
   @include selector-icon($page-color, $action-icon-small);
 }
 
+// add button is larger
+.selected-add {
+  @include selector-icon($page-color, $action-icon-large);
+}
+
 // set a border on parent, settings, and delete
 .selected-info-parent,
 .selected-action-settings,
 .selected-action-delete {
   border-left: 1px solid $page-bg-color;
-}
-
-.selected-add {
-  @include selector-icon($page-parent-color, $action-icon-large);
 }
 
 // selected parent
@@ -181,6 +182,13 @@ $layout-parent-bg-color: $purple-25;
   opacity: 1;
   transition: 150ms opacity ease-out; // fade relatively quickly
 }
+
+// z-index setting
+// needs to be:
+// 1. selected parent (to appear above other page elements)
+// 2. components inside selected parent (so you can click into them)
+// 3. selected component (to appear above its siblings)
+// 4. components inside selected component (so you can click into them)
 
 .component-selector-wrapper.selected-parent {
   z-index: 1  !important;
