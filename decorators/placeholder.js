@@ -1,7 +1,8 @@
 var _ = require('lodash'),
   references = require('../services/references'),
   label = require('../services/label'),
-  dom = require('@nymag/dom');
+  dom = require('@nymag/dom'),
+  tpl = require('../services/tpl');
 
 /**
  * get placeholder text
@@ -128,6 +129,44 @@ function placeholderClass(isPermanentPlaceholder) {
 }
 
 /**
+ * add placeholder class
+ * @param {Element} placeholder
+ * @param {boolean} isPermanentPlaceholder
+ */
+function addPlaceholderClass(placeholder, isPermanentPlaceholder) {
+  placeholder.firstElementChild.classList.add(placeholderClass(isPermanentPlaceholder));
+}
+
+/**
+ * add min-height to placeholder
+ * @param {Element} placeholder
+ * @param {string} height
+ */
+function addPlaceholderHeight(placeholder, height) {
+  placeholder.firstElementChild.style.minHeight = height;
+}
+
+/**
+ * add text into placeholder, converting newlines
+ * @param {Element} placeholder
+ * @param {string} text
+ */
+function addPlaceholderText(placeholder, text) {
+  dom.find(placeholder, '.placeholder-label').innerHTML = convertNewLines(text);
+}
+
+/**
+ * show the add button for placeholders in empty lists
+ * @param {Element} placeholder
+ * @param {boolean} isList
+ */
+function addPlaceholderList(placeholder, isList) {
+  if (isList) {
+    dom.find(placeholder, '.placeholder-add-component').classList.remove('kiln-hide');
+  }
+}
+
+/**
  * create dom element for the placeholder, add it to the specified node
  * @param {Element} node
  * @param {{ height: string, text: string, permanent: boolean }} obj
@@ -135,11 +174,13 @@ function placeholderClass(isPermanentPlaceholder) {
  */
 function addPlaceholderDom(node, obj) {
   var isPermanentPlaceholder = !!obj.permanent,
-    placeholder = dom.create(`
-    <div class="${placeholderClass(isPermanentPlaceholder)}" style="min-height: ${obj.height};">
-      <span class="placeholder-label">${convertNewLines(obj.text)}</span>
-    </div>
-  `);
+    isList = !!obj.list,
+    placeholder = tpl.get('.placeholder-template');
+
+  addPlaceholderClass(placeholder, isPermanentPlaceholder);
+  addPlaceholderHeight(placeholder, obj.height);
+  addPlaceholderText(placeholder, obj.text);
+  addPlaceholderList(placeholder, isList);
 
   node.appendChild(placeholder);
   return node;
@@ -188,7 +229,8 @@ function addPlaceholder(el, options) {
   return addPlaceholderDom(el, {
     text: getPlaceholderText(path, schema),
     height: getPlaceholderHeight(el, schema),
-    permanent: getPlaceholderPermanence(schema)
+    permanent: getPlaceholderPermanence(schema),
+    list: isComponentListEmpty(options.data)
   });
 }
 

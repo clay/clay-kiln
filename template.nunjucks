@@ -159,4 +159,12 @@
       </aside>
     </aside>
   </template>
+
+  {# template: placeholders #}
+  <template class="placeholder-template">
+    <div>
+      <span class="placeholder-label"></span>
+      <span class="placeholder-add-component kiln-hide" title="Add Component To List">{% include 'public/media/components/clay-kiln/add-icon.svg' %}</span>
+    </div>
+  </template>
 {% endif %}
