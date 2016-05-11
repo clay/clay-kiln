@@ -7,7 +7,7 @@ var references = require('../services/references'),
 /**
  * get parent list element
  * note: it might be the parent element itself (e.g. in source-links)
- * @param {Element} el
+ * @param {Element} el component element
  * @param {string} path
  * @returns {Element}
  */

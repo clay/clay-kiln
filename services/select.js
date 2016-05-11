@@ -278,10 +278,13 @@ function addSettingsHandler(selector, options) {
  * @param {object} parent
  */
 function addListPlaceholder(parent) {
-  var listDiv = dom.find(parent.listEl, 'component-list-inner');
+  var listDiv = dom.find(parent.listEl, '.component-list-inner'),
+    children = _.filter(listDiv.children, function (child) {
+      return !_.includes(['SCRIPT', 'STYLE'], child.tagName);
+    });
 
   // if the list is empty in the dom, re-add the placeholder for it
-  if (!listDiv.children.length) {
+  if (!children.length) {
     let emptyList = [];
 
     // placeholder decorator expects an empty array with a _schema property
@@ -308,9 +311,9 @@ function addDeleteHandler(selector, parent, el, options) {
 
       if (confirm) {
         return edit.removeFromParentList({el: el, ref: options.ref, parentField: parent.path, parentRef: parent.ref})
-          // .then(function () {
-          //   addListPlaceholder(parent);
-          // })
+          .then(function () {
+            addListPlaceholder(parent);
+          })
           .then(forms.close);
       }
     });

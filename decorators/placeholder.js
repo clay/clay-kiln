@@ -121,6 +121,24 @@ function isComponentListEmpty(data) {
 }
 
 /**
+ * get list element, even when we're re-adding placeholders to empty lists
+ * @param {Element} el
+ * @param {string} path
+ * @returns {Element}
+ */
+function getListEl(el, path) {
+  var isListInner = el.classList.contains('component-list-inner'),
+    parent = isListInner && el.parentNode,
+    isParentList = parent && parent.getAttribute(references.editableAttribute) === path;
+
+  if (isParentList) {
+    return parent;
+  } else {
+    return addComponentHandler.getParentListElement(el, path);
+  }
+}
+
+/**
  * get placeholder list, if it exists and is empty
  * @param {Element} el
  * @param {object} options
@@ -132,7 +150,7 @@ function getPlaceholderList(el, options) {
       ref: options.ref,
       path: options.path,
       list: _.get(options, `data._schema.${references.componentListProperty}`),
-      listEl: addComponentHandler.getParentListElement(el, options.path)
+      listEl: getListEl(el, options.path)
     };
   } // if no empty list, returns undefined
 }
