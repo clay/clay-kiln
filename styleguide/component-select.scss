@@ -63,6 +63,9 @@ $layout-parent-bg-color: $purple-25;
   height: calc(100% + #{$offset-height});
   left: -$offset-width-half;
   opacity: 0;
+  // because we're just setting opacity to show/hide, don't allow child selectors to be clicked
+  // note: selected-parent and selected both set this to `all` so current selectors can be clicked
+  pointer-events: none;
   position: absolute;
   top: -$offset-height-half;
   transition: 50ms opacity linear; // fade out quickly
@@ -146,6 +149,7 @@ $layout-parent-bg-color: $purple-25;
 
   // show selector
   opacity: 1;
+  pointer-events: all;
   transition: 250ms opacity ease-out; // fade in slower than the current component
 
   // override colors colors
@@ -180,6 +184,7 @@ $layout-parent-bg-color: $purple-25;
 .component-selector-wrapper.selected > * > .component-selector {
   // show selector
   opacity: 1;
+  pointer-events: all;
   transition: 150ms opacity ease-out; // fade relatively quickly
 }
 
