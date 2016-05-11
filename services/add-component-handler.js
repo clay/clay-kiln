@@ -83,3 +83,6 @@ function addHandler(button, options, prevRef) {
 
 module.exports = addHandler;
 module.exports.getParentListElement = getParentListElement;
+
+// for testing
+module.exports.getAddableComponents = getAddableComponents;
