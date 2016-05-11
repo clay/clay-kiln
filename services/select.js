@@ -197,6 +197,21 @@ function getAddableComponents(possibleComponents, exclude) {
 }
 
 /**
+ * get parent list element
+ * note: it might be the parent element itself (e.g. in source-links)
+ * @param {Element} el
+ * @param {string} path
+ * @returns {Element}
+ */
+function getParentListElement(el, path) {
+  if (el.getAttribute(references.editableAttribute) === path) {
+    return el;
+  } else {
+    return dom.find(el, `[${references.editableAttribute}="${path}"]`);
+  }
+}
+
+/**
  * get parent info, if it exists
  * @param {Element} el current component
  * @returns {Promise} w/ empty object OR el, ref, path, list (from the schema), listEl, and isComponentList (boolean)
@@ -218,7 +233,7 @@ function getParentInfo(el) {
         isComponentList: !!path, // we use this to determine whether the current component lives in a list
         path: path,
         list: _.get(schema, `${path}.${references.componentListProperty}`),
-        listEl: dom.find(parentEl, `[${references.editableAttribute}="${path}"]`)
+        listEl: getParentListElement(parentEl, path)
       });
     });
   } else {
@@ -354,7 +369,7 @@ function addAddHandler(selector, parent, options) {
     button.setAttribute('data-components', available.join(','));
 
     // add click event handler
-    button.addEventListener('click', function () {
+    button.addEventListener('click', function addComponentHandler() {
       var currentAvailable = button.getAttribute('data-components').split(','),
         field = {
           ref: parent.ref,
