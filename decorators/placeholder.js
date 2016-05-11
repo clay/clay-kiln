@@ -2,7 +2,8 @@ var _ = require('lodash'),
   references = require('../services/references'),
   label = require('../services/label'),
   dom = require('@nymag/dom'),
-  tpl = require('../services/tpl');
+  tpl = require('../services/tpl'),
+  addComponentHandler = require('../services/add-component-handler');
 
 /**
  * get placeholder text
@@ -102,12 +103,38 @@ function isGroupEmpty(data) {
 }
 
 /**
+ * determine if a field is a component list
+ * @param {object} options
+ * @returns {boolean}
+ */
+function isComponentList(options) {
+  return _.has(options, `data._schema.${references.componentListProperty}`);
+}
+
+/**
  * determine if a component list is empty
  * @param {object} data
  * @returns {boolean}
  */
 function isComponentListEmpty(data) {
   return data.length === 0;
+}
+
+/**
+ * get placeholder list, if it exists and is empty
+ * @param {Element} el
+ * @param {object} options
+ * @returns {object|undefined}
+ */
+function getPlaceholderList(el, options) {
+  if (isComponentList(options) && isComponentListEmpty(options.data)) {
+    return {
+      ref: options.ref,
+      path: options.path,
+      list: _.get(options, `data._schema.${references.componentListProperty}`),
+      listEl: addComponentHandler.getParentListElement(el, options.path)
+    };
+  } // if no empty list, returns undefined
 }
 
 /**
@@ -174,13 +201,13 @@ function addPlaceholderList(placeholder, isList) {
  */
 function addPlaceholderDom(node, obj) {
   var isPermanentPlaceholder = !!obj.permanent,
-    isList = !!obj.list,
+    list = obj.list,
     placeholder = tpl.get('.placeholder-template');
 
   addPlaceholderClass(placeholder, isPermanentPlaceholder);
   addPlaceholderHeight(placeholder, obj.height);
   addPlaceholderText(placeholder, obj.text);
-  addPlaceholderList(placeholder, isList);
+  addPlaceholderList(placeholder, list);
 
   node.appendChild(placeholder);
   return node;
@@ -196,8 +223,7 @@ function hasPlaceholder(el, options) {
     isPlaceholder = !!schema && !!schema[references.placeholderProperty],
     isPermanentPlaceholder = !!isPlaceholder && getPlaceholderPermanence(schema),
     isField = !!schema && !!schema[references.fieldProperty],
-    isGroup = !!schema && !!schema.fields,
-    isComponentList = !!schema && !!schema[references.componentListProperty];
+    isGroup = !!schema && !!schema.fields;
 
   // if it has a placeholder...
   // if it's a permanent placeholder, it always displays
@@ -210,7 +236,7 @@ function hasPlaceholder(el, options) {
     return isFieldEmpty(options.data);
   } else if (isPlaceholder && isGroup) {
     return isGroupEmpty(options.data);
-  } else if (isPlaceholder && isComponentList) {
+  } else if (isPlaceholder && isComponentList(options)) {
     return isComponentListEmpty(options.data);
   } else {
     return false; // not a placeholder
@@ -230,7 +256,7 @@ function addPlaceholder(el, options) {
     text: getPlaceholderText(path, schema),
     height: getPlaceholderHeight(el, schema),
     permanent: getPlaceholderPermanence(schema),
-    list: isComponentListEmpty(options.data)
+    list: getPlaceholderList(el, options)
   });
 }
 

@@ -11,8 +11,7 @@ var _ = require('lodash'),
   groups = require('./groups'),
   label = require('./label'),
   scrollToY = require('./scroll').toY,
-  addComponent = require('./add-component'),
-  paneService = require('./pane'),
+  addComponentHandler = require('./add-component-handler'),
   hidden = 'kiln-hide',
   currentSelected;
 
@@ -179,39 +178,6 @@ function scrollToComponent(el) {
 }
 
 /**
- * map through components, filtering out excluded
- * @param {array} possibleComponents
- * @param {array} [exclude] array of components to exclude
- * @returns {array} array of elements
- */
-function getAddableComponents(possibleComponents, exclude) {
-  return _.compact(_.map(possibleComponents, function (item) {
-    if (exclude && exclude.length) {
-      if (!_.contains(exclude)) {
-        return item;
-      }
-    } else {
-      return item;
-    }
-  }));
-}
-
-/**
- * get parent list element
- * note: it might be the parent element itself (e.g. in source-links)
- * @param {Element} el
- * @param {string} path
- * @returns {Element}
- */
-function getParentListElement(el, path) {
-  if (el.getAttribute(references.editableAttribute) === path) {
-    return el;
-  } else {
-    return dom.find(el, `[${references.editableAttribute}="${path}"]`);
-  }
-}
-
-/**
  * get parent info, if it exists
  * @param {Element} el current component
  * @returns {Promise} w/ empty object OR el, ref, path, list (from the schema), listEl, and isComponentList (boolean)
@@ -233,7 +199,7 @@ function getParentInfo(el) {
         isComponentList: !!path, // we use this to determine whether the current component lives in a list
         path: path,
         list: _.get(schema, `${path}.${references.componentListProperty}`),
-        listEl: getParentListElement(parentEl, path)
+        listEl: addComponentHandler.getParentListElement(parentEl, path)
       });
     });
   } else {
@@ -346,43 +312,14 @@ function unhideBottomMenu(selector, parent) {
  * @param {object} options
  */
 function addAddHandler(selector, parent, options) {
-  var button = dom.find(selector, '.selected-add'),
-    toolbar = dom.find('.kiln-toolbar'),
-    allComponents = toolbar && toolbar.getAttribute('data-components') && toolbar.getAttribute('data-components').split(',') || [],
-    available;
+  var button = dom.find(selector, '.selected-add');
 
   if (parent.isComponentList) {
-    let include = _.get(parent, 'list.include'),
-      exclude = _.get(parent, 'list.exclude');
-
     // unhide the button
     button.classList.remove(hidden);
 
-    // figure out what components should be available for adding
-    if (include && include.length) {
-      available = getAddableComponents(include, exclude);
-    } else {
-      available = getAddableComponents(allComponents, exclude);
-    }
-
-    // add those components to the button
-    button.setAttribute('data-components', available.join(','));
-
-    // add click event handler
-    button.addEventListener('click', function addComponentHandler() {
-      var currentAvailable = button.getAttribute('data-components').split(','),
-        field = {
-          ref: parent.ref,
-          path: parent.path
-        };
-
-      if (currentAvailable.length === 1) {
-        addComponent(parent.listEl, field, currentAvailable[0], options.ref);
-      } else {
-        // open the add components pane
-        paneService.openAddComponent(currentAvailable, { pane: parent.listEl, field: field, ref: options.ref });
-      }
-    });
+    // attach the event handler
+    addComponentHandler(button, parent, options.ref);
   }
 }
 
