@@ -185,11 +185,14 @@ function addPlaceholderText(placeholder, text) {
 /**
  * show the add button for placeholders in empty lists
  * @param {Element} placeholder
- * @param {boolean} isList
+ * @param {boolean} list
  */
-function addPlaceholderList(placeholder, isList) {
-  if (isList) {
-    dom.find(placeholder, '.placeholder-add-component').classList.remove('kiln-hide');
+function addPlaceholderList(placeholder, list) {
+  if (list) {
+    let button = dom.find(placeholder, '.placeholder-add-component');
+
+    button.classList.remove('kiln-hide');
+    addComponentHandler(button, list);
   }
 }
 
