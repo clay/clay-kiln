@@ -34,18 +34,18 @@ $layout-parent-bg-color: $purple-25;
   margin: 0;
   outline: none;
   color: $fill;
-  // width: $size;
-  // height: $size;
   padding: 6px 8px;
 
+  // set icon sizes
   svg {
-    fill: $fill;
     width: $size;
     height: $size;
+  }
 
-    * {
-      fill: $fill;
-    }
+  // set fill color
+  svg,
+  svg * {
+    fill: $fill;
   }
 }
 
