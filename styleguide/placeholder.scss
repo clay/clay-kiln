@@ -60,12 +60,14 @@
     transition: 150ms fill ease-out;
   }
 
+  // subtle hover style
   &:hover svg,
   &:hover svg * {
     fill: darken($black-25, 5%);
     transition: 150ms fill ease-out;
   }
 
+  // subtle active style
   &:active svg,
   &:active svg * {
     fill: darken($black-25, 10%);

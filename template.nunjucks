@@ -162,7 +162,7 @@
 
   {# template: placeholders #}
   <template class="placeholder-template">
-    <div>
+    <div> {# this gets a .kiln-placeholder or .kiln-permanent-placeholder class #}
       <span class="placeholder-label"></span>
       <span class="placeholder-add-component kiln-hide" title="Add Component To List">{% include 'public/media/components/clay-kiln/add-icon.svg' %}</span>
     </div>

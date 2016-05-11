@@ -8,7 +8,7 @@ $offset-width-half: $offset-width / 2;
 $offset-height: 30px;
 $offset-height-half: $offset-height / 2;
 $offset-height-menu: $offset-height-half - 1; // 1px less, so the menu border always displays
-$parent-offset: 4px; // how much wider should parent outline be
+$parent-offset: 4px; // how much wider should parent outline be (each side)
 
 // icon sizes
 $action-icon-small: 16px;
@@ -23,7 +23,7 @@ $page-parent-bg-color: $blue-25;
 // todo: in the future layout-specific selectors use these colors
 $layout-color: $purple;
 $layout-bg-color: $purple-50;
-$layout-parent-color: $purple-50;
+$layout-parent-color: $purple-75;
 $layout-parent-bg-color: $purple-25;
 
 // mixin for creating the selector icons
@@ -49,17 +49,24 @@ $layout-parent-bg-color: $purple-25;
     transition: 150ms fill ease-out;
   }
 
+  // subtle hover state
   &:hover svg,
   &:hover svg * {
     fill: darken($fill, 5%);
     transition: 150ms fill ease-out;
   }
 
+  // subtle active state
   &:active svg,
   &:active svg * {
     fill: darken($fill, 10%);
     transition: 50ms fill ease-out;
   }
+
+  // note: hover and active states are different than our regular outlined buttons,
+  // since the border-radius is applied to their parent elements
+  // (which means we can't set the background-color for each button without
+  // doing a bunch of logic to set their border radii)
 }
 
 // component element needs to be position: relative for the selectors to display
@@ -71,7 +78,14 @@ $layout-parent-bg-color: $purple-25;
 .component-selector {
   border-style: solid;
   border-width: 1px;
+  // selector colors are set for the selected component by default,
+  // then overridden for the selected-parent. this is so we don't get a
+  // visual jump when animating them in
+  // (technically the parent DOES jump, but it's a lot less noticible than the
+  // selected component. plus, the colors are similar enough that you don't see it)
   border-color: $page-bg-color;
+  // subtle shadow to create more visual distinction between selectors and the
+  // stuff behind them
   box-shadow: 1px 1px 20px -11px $black;
   height: calc(100% + #{$offset-height});
   left: -$offset-width-half;
@@ -89,12 +103,12 @@ $layout-parent-bg-color: $purple-25;
 // menus
 .component-selector-top,
 .component-selector-bottom {
-  background: rgba(255, 255, 255, .9);
+  background: rgba(255, 255, 255, .9); // todo: maybe blur the backgrounds in the future?
   border-color: transparent;
   border-width: 1px;
   border-style: solid;
   border-radius: 10px;
-  box-shadow: 1px 1px 20px -9px $black;
+  box-shadow: 1px 1px 20px -9px $black; // even subtler shadow for the menus
   right: $offset-width-half;
   position: absolute;
 }
@@ -105,13 +119,14 @@ $layout-parent-bg-color: $purple-25;
   bottom: calc(100% - #{$offset-height-menu});
 }
 
+// bottom menu is more offset, since it concerns actions that don't
+// affect the component itself (but rather things around it, e.g. adding new components)
 .component-selector-bottom {
   border-color: $page-bg-color;
-  // bottom menu is more offset, since it concerns actions that don't
-  // affect the component itself (but rather things around it, e.g. adding new components)
   top: calc(100% - #{$offset-height-menu / 2});
 }
 
+// all menus use flex to align their buttons
 .component-selector-top,
 .component-selector-bottom,
 .selected-info,
@@ -128,12 +143,13 @@ $layout-parent-bg-color: $purple-25;
   @include label();
 
   font-size: 14px;
-  line-height: 16px;
+  line-height: $action-icon-small; // same vertical space as the icons
   margin: 0;
   padding: 6px 8px;
   white-space: nowrap;
 }
 
+// regular button styles
 .selected-label,
 .selected-info-parent,
 .selected-action-settings,
@@ -154,8 +170,7 @@ $layout-parent-bg-color: $purple-25;
 }
 
 // selected parent
-.component-selector-wrapper.selected-parent > .component-selector,
-.component-selector-wrapper.selected-parent > * > .component-selector {
+.component-selector-wrapper.selected-parent > .component-selector {
   // include overrides for outline offset (width only)
   left: -#{$offset-width-half + $parent-offset};
   width: calc(100% + #{$offset-width + $parent-offset * 2});
@@ -193,8 +208,7 @@ $layout-parent-bg-color: $purple-25;
 }
 
 // selected component
-.component-selector-wrapper.selected > .component-selector,
-.component-selector-wrapper.selected > * > .component-selector {
+.component-selector-wrapper.selected > .component-selector {
   // show selector
   opacity: 1;
   pointer-events: all;

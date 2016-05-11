@@ -203,7 +203,7 @@ function getParentInfo(el) {
       });
     });
   } else {
-    return Promise.resolve({});
+    return Promise.resolve({}); // so we can easily check `parent.el`, `parent.isComponentList`, etc
   }
 }
 

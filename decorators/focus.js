@@ -43,7 +43,6 @@ function getClickOffset(e) {
       }
     });
     // otherwise try to get the full offset from the parent
-    // parentText = wrapped.textContent;
     parentOffset = parentText.indexOf(textNode.textContent) + offset;
 
     return parentOffset;
