@@ -139,7 +139,14 @@ function when(el, options) {
  * @returns {Element}
  */
 function handler(el, options) {
-  var dropArea = dropArea = dom.wrapElements(el.childNodes, 'div');
+  var wrappableEls = _.filter(el.childNodes, function (child) {
+      // wrap everything that ISN'T the component selector
+      return child.nodeType !== 1 || !child.classList.contains('component-selector');
+    }),
+    dropArea = dom.wrapElements(wrappableEls, 'div');
+
+  // add a class to the div so we can reference it later
+  dropArea.classList.add('component-list-inner');
 
   // wrap the draggable items so that the pane is not in the drop area.
   addDragula(dropArea, options);

@@ -7,6 +7,7 @@ var _ = require('lodash'),
   tpl = require('./tpl'),
   edit = require('./edit'),
   focus = require('../decorators/focus'),
+  placeholder = require('../decorators/placeholder'),
   forms = require('./forms'),
   groups = require('./groups'),
   label = require('./label'),
@@ -198,7 +199,8 @@ function getParentInfo(el) {
       return _.assign(parent, {
         isComponentList: !!path, // we use this to determine whether the current component lives in a list
         path: path,
-        list: _.get(schema, `${path}.${references.componentListProperty}`),
+        schema: _.get(schema, path), // full schema for the field, including labels and placeholders
+        list: _.get(schema, `${path}.${references.componentListProperty}`), // component list data only
         listEl: addComponentHandler.getParentListElement(parentEl, path)
       });
     });
@@ -272,6 +274,24 @@ function addSettingsHandler(selector, options) {
 }
 
 /**
+ * add component list placeholder when the last component is deleted from a list
+ * @param {object} parent
+ */
+function addListPlaceholder(parent) {
+  var listDiv = dom.find(parent.listEl, 'component-list-inner');
+
+  // if the list is empty in the dom, re-add the placeholder for it
+  if (!listDiv.children.length) {
+    let emptyList = [];
+
+    // placeholder decorator expects an empty array with a _schema property
+    // (it checks data.length to see if the list is actually empty)
+    emptyList._schema = parent.schema;
+    placeholder.handler(listDiv, { ref: parent.ref, path: parent.path, data: emptyList });
+  }
+}
+
+/**
  * unhide delete button and add handler
  * @param {Element} selector
  * @param {object} parent
@@ -288,6 +308,9 @@ function addDeleteHandler(selector, parent, el, options) {
 
       if (confirm) {
         return edit.removeFromParentList({el: el, ref: options.ref, parentField: parent.path, parentRef: parent.ref})
+          // .then(function () {
+          //   addListPlaceholder(parent);
+          // })
           .then(forms.close);
       }
     });

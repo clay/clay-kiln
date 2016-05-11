@@ -109,6 +109,20 @@ describe(dirname, function () {
           path: 'foo'
         })).to.not.equal(null);
       });
+
+      it('removes parent placeholder when parent el itself is editable', function () {
+        var parent = dom.create(`<section data-uri="fakeParentPlaceholder7" data-editable="foo">
+            <div>
+              <div class="kiln-placeholder"></div>
+            </div>
+        </section>`);
+
+        document.body.appendChild(parent);
+        expect(fn({
+          ref: 'fakeParentPlaceholder7',
+          path: 'foo'
+        })).to.not.equal(null);
+      });
     });
   });
 });

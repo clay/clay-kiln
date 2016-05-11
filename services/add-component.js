@@ -12,18 +12,16 @@ var references = require('../services/references'),
  * @returns {Element|null}
  */
 function getRemovablePlaceholder(field) {
-  // component > field > div > placeholder
-  var parent = document.querySelector('[' + references.referenceAttribute + '="' + field.ref + '"]'),
-    list = parent && parent.querySelector('[' + references.editableAttribute + '="' + field.path + '"]'),
-    div = list && dom.getFirstChildElement(list),
-    placeholder = div && dom.getFirstChildElement(div);
+  var parent = dom.find(`[${references.referenceAttribute}="${field.ref}"]`),
+    list;
 
-  // only remove regular placeholders, not permanent placeholders
-  if (placeholder && placeholder.classList.contains('kiln-placeholder')) {
-    return placeholder;
-  } else {
-    return null;
+  if (parent && parent.getAttribute(references.editableAttribute) === field.path) {
+    list = parent;
+  } else if (parent) {
+    list = dom.find(parent, `[${references.editableAttribute}="${field.path}"]`);
   }
+  // only remove regular placeholders, not permanent placeholders
+  return list && dom.find(list, '.kiln-placeholder') || null;
 }
 
 /**
@@ -72,7 +70,7 @@ function addComponent(pane, field, name, prevRef) {
             dom.insertAfter(prev, newEl);
           } else {
             // insert it at the end of the component list
-            pane.firstElementChild.appendChild(newEl);
+            dom.find(pane, '.component-list-inner').appendChild(newEl);
           }
           return render.addComponentsHandlers(newEl).then(function () {
             focus.unfocus();
