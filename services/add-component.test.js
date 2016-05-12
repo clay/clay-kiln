@@ -3,7 +3,9 @@ var dirname = __dirname.split('/').pop(),
   lib = require('./add-component'),
   dom = require('@nymag/dom'),
   edit = require('./edit'),
-  render = require('./render');
+  render = require('./render'),
+  progress = require('./progress'),
+  focus = require('../decorators/focus');
 
 describe(dirname, function () {
   describe(filename, function () {
@@ -13,13 +15,15 @@ describe(dirname, function () {
       sandbox = sinon.sandbox.create();
       sandbox.stub(edit);
       sandbox.stub(render);
+      sandbox.stub(progress);
+      sandbox.stub(focus);
     });
 
     afterEach(function () {
       sandbox.restore();
     });
 
-    it('creates component and adds it before the pane', function () {
+    it('creates component and adds it at the end', function () {
       var pane = dom.create('<div class="pane"></div>');
 
       document.body.appendChild(pane);
@@ -102,6 +106,20 @@ describe(dirname, function () {
         document.body.appendChild(parent);
         expect(fn({
           ref: 'fakeParentPlaceholder6',
+          path: 'foo'
+        })).to.not.equal(null);
+      });
+
+      it('removes parent placeholder when parent el itself is editable', function () {
+        var parent = dom.create(`<section data-uri="fakeParentPlaceholder7" data-editable="foo">
+            <div>
+              <div class="kiln-placeholder"></div>
+            </div>
+        </section>`);
+
+        document.body.appendChild(parent);
+        expect(fn({
+          ref: 'fakeParentPlaceholder7',
           path: 'foo'
         })).to.not.equal(null);
       });

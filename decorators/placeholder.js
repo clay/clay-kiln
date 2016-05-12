@@ -1,7 +1,9 @@
 var _ = require('lodash'),
   references = require('../services/references'),
   label = require('../services/label'),
-  dom = require('@nymag/dom');
+  dom = require('@nymag/dom'),
+  tpl = require('../services/tpl'),
+  addComponentHandler = require('../services/add-component-handler');
 
 /**
  * get placeholder text
@@ -101,12 +103,59 @@ function isGroupEmpty(data) {
 }
 
 /**
+ * determine if a field is a component list
+ * @param {object} options
+ * @returns {boolean}
+ */
+function isComponentList(options) {
+  return _.has(options, `data._schema.${references.componentListProperty}`);
+}
+
+/**
  * determine if a component list is empty
  * @param {object} data
  * @returns {boolean}
  */
 function isComponentListEmpty(data) {
   return data.length === 0;
+}
+
+/**
+ * get list element, even when we're re-adding placeholders to empty lists
+ * when re-running placeholders after deleting all items from a component list,
+ * the .component-list-inner div has already been added by the component-list decorator.
+ * when we look for the list to add the placeholder, we need to take that into account
+ * @param {Element} el
+ * @param {string} path
+ * @returns {Element}
+ */
+function getListEl(el, path) {
+  var isListInner = el.classList.contains('component-list-inner'),
+    parent = isListInner && el.parentNode,
+    isParentList = parent && parent.getAttribute(references.editableAttribute) === path;
+
+  if (isParentList) {
+    return parent;
+  } else {
+    return addComponentHandler.getParentListElement(el, path);
+  }
+}
+
+/**
+ * get placeholder list, if it exists and is empty
+ * @param {Element} el
+ * @param {object} options
+ * @returns {object|undefined}
+ */
+function getPlaceholderList(el, options) {
+  if (isComponentList(options) && isComponentListEmpty(options.data)) {
+    return {
+      ref: options.ref,
+      path: options.path,
+      list: _.get(options, `data._schema.${references.componentListProperty}`),
+      listEl: getListEl(el, options.path)
+    };
+  } // if no empty list, returns undefined
 }
 
 /**
@@ -128,6 +177,47 @@ function placeholderClass(isPermanentPlaceholder) {
 }
 
 /**
+ * add placeholder class
+ * @param {Element} placeholder
+ * @param {boolean} isPermanentPlaceholder
+ */
+function addPlaceholderClass(placeholder, isPermanentPlaceholder) {
+  placeholder.firstElementChild.classList.add(placeholderClass(isPermanentPlaceholder));
+}
+
+/**
+ * add min-height to placeholder
+ * @param {Element} placeholder
+ * @param {string} height
+ */
+function addPlaceholderHeight(placeholder, height) {
+  placeholder.firstElementChild.style.minHeight = height;
+}
+
+/**
+ * add text into placeholder, converting newlines
+ * @param {Element} placeholder
+ * @param {string} text
+ */
+function addPlaceholderText(placeholder, text) {
+  dom.find(placeholder, '.placeholder-label').innerHTML = convertNewLines(text);
+}
+
+/**
+ * show the add button for placeholders in empty lists
+ * @param {Element} placeholder
+ * @param {boolean} list
+ */
+function addPlaceholderList(placeholder, list) {
+  if (list) {
+    let button = dom.find(placeholder, '.placeholder-add-component');
+
+    button.classList.remove('kiln-hide');
+    addComponentHandler(button, list);
+  }
+}
+
+/**
  * create dom element for the placeholder, add it to the specified node
  * @param {Element} node
  * @param {{ height: string, text: string, permanent: boolean }} obj
@@ -135,11 +225,13 @@ function placeholderClass(isPermanentPlaceholder) {
  */
 function addPlaceholderDom(node, obj) {
   var isPermanentPlaceholder = !!obj.permanent,
-    placeholder = dom.create(`
-    <div class="${placeholderClass(isPermanentPlaceholder)}" style="min-height: ${obj.height};">
-      <span class="placeholder-label">${convertNewLines(obj.text)}</span>
-    </div>
-  `);
+    list = obj.list,
+    placeholder = tpl.get('.placeholder-template');
+
+  addPlaceholderClass(placeholder, isPermanentPlaceholder);
+  addPlaceholderHeight(placeholder, obj.height);
+  addPlaceholderText(placeholder, obj.text);
+  addPlaceholderList(placeholder, list);
 
   node.appendChild(placeholder);
   return node;
@@ -155,8 +247,7 @@ function hasPlaceholder(el, options) {
     isPlaceholder = !!schema && !!schema[references.placeholderProperty],
     isPermanentPlaceholder = !!isPlaceholder && getPlaceholderPermanence(schema),
     isField = !!schema && !!schema[references.fieldProperty],
-    isGroup = !!schema && !!schema.fields,
-    isComponentList = !!schema && !!schema[references.componentListProperty];
+    isGroup = !!schema && !!schema.fields;
 
   // if it has a placeholder...
   // if it's a permanent placeholder, it always displays
@@ -169,7 +260,7 @@ function hasPlaceholder(el, options) {
     return isFieldEmpty(options.data);
   } else if (isPlaceholder && isGroup) {
     return isGroupEmpty(options.data);
-  } else if (isPlaceholder && isComponentList) {
+  } else if (isPlaceholder && isComponentList(options)) {
     return isComponentListEmpty(options.data);
   } else {
     return false; // not a placeholder
@@ -188,7 +279,8 @@ function addPlaceholder(el, options) {
   return addPlaceholderDom(el, {
     text: getPlaceholderText(path, schema),
     height: getPlaceholderHeight(el, schema),
-    permanent: getPlaceholderPermanence(schema)
+    permanent: getPlaceholderPermanence(schema),
+    list: getPlaceholderList(el, options)
   });
 }
 

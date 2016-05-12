@@ -4,13 +4,16 @@
 var _ = require('lodash'),
   references = require('./references'),
   dom = require('@nymag/dom'),
+  tpl = require('./tpl'),
   edit = require('./edit'),
   focus = require('../decorators/focus'),
+  placeholder = require('../decorators/placeholder'),
   forms = require('./forms'),
   groups = require('./groups'),
-  site = require('./site'),
   label = require('./label'),
   scrollToY = require('./scroll').toY,
+  addComponentHandler = require('./add-component-handler'),
+  hidden = 'kiln-hide',
   currentSelected;
 
 /**
@@ -51,33 +54,6 @@ function getParentComponentListField(componentEl, parentSchema) {
   return path && parentSchema[path] && parentSchema[path][references.componentListProperty] && path;
 }
 
-function walk(node, walker) {
-  if (node && node.classList.contains('component-list-bottom')) {
-    node.classList.add('show');
-  } else if (node) {
-    walk(walker.nextNode(), walker);
-  }
-}
-
-/**
- * show component lists in element, without showing component lists in child components of element
- * @param {Element} el
- */
-function showComponentList(el) {
-  var walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, {
-    acceptNode: function (currentNode) {
-      // don't look for component lists in child components
-      if (!currentNode.hasAttribute(references.referenceAttribute)) {
-        return NodeFilter.FILTER_ACCEPT;
-      } else {
-        return NodeFilter.FILTER_REJECT;
-      }
-    }
-  });
-
-  walk(walker.nextNode(), walker);
-}
-
 /**
  * set selection on a component
  * @param {Element} el editable element or component el
@@ -90,10 +66,8 @@ function select(el) {
 
   // selected component gets .selected, parent gets .selected-parent
   component.classList.add('selected');
-  showComponentList(component);
   if (parent) {
     parent.classList.add('selected-parent');
-    showComponentList(parent);
   }
   currentSelected = component;
 }
@@ -111,20 +85,6 @@ function hideComponentList(el) {
 }
 
 /**
- * hide component menus when unselecting
- * @param {Element} el
- */
-function hideMenu(el) {
-  var toggle = dom.find(el, '.menu-toggle'),
-    menu = dom.find(el, '.menu');
-
-  if (toggle && menu) {
-    toggle.classList.remove('open');
-    menu.classList.remove('open');
-  }
-}
-
-/**
  * remove selected classes on current and parent component
  * @param {Element} [el]
  * @param {Element} [parent]
@@ -133,7 +93,6 @@ function removeClasses(el, parent) {
   if (el) {
     el.classList.remove('selected');
     hideComponentList(el);
-    hideMenu(el);
   }
   if (parent) {
     parent.classList.remove('selected-parent');
@@ -208,193 +167,245 @@ function addIframeOverlays(el) {
 }
 
 /**
- * Add the settings option to the component bar.
- * @param {Element} componentBar
- * @param {object} data
- * @param {string} ref
- */
-function addSettingsOption(componentBar, data, ref) {
-  var el,
-    hasSettings = groups.getSettingsFields(data).length > 0;
-
-  if (hasSettings) {
-    el = dom.create(`<li class="settings label">
-      <img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-settings.svg" alt="Settings">
-      <span class="menu-item">Settings</span>
-    </li>`);
-
-    el.addEventListener('click', function (e) {
-      e.stopPropagation();
-      // Open the settings overlay.
-      return focus.unfocus().then(function () {
-        return forms.open(ref, document.body);
-      }).catch(_.noop);
-    });
-
-    addMenu(componentBar);
-    componentBar.querySelector('.menu').appendChild(el);
-  }
-}
-
-/**
  * Scroll user to the component. "Weeee!" or "What the?"
  * @param {Element} el
  */
 function scrollToComponent(el) {
   var toolBarHeight = 70,
-    componentBarHeight = 30,
-    pos = window.scrollY + el.getBoundingClientRect().top - toolBarHeight - componentBarHeight;
+    selectedBorderHeight = 4,
+    pos = window.scrollY + el.getBoundingClientRect().top - toolBarHeight - selectedBorderHeight;
 
   scrollToY(pos, 1500, 'easeInOutQuint');
 }
 
 /**
- * Add the parent's label to the component bar.
- * @param {Element} componentBar
- * @param {Element} parentEl
+ * get parent info, if it exists
+ * @param {Element} el current component
+ * @returns {Promise}
  */
-function addParentLabel(componentBar, parentEl) {
-  var ref = parentEl.getAttribute(references.referenceAttribute),
-    parentName = references.getComponentNameFromReference(ref),
-    el = dom.create(`<span class="label parent" title="Go to parent component: ${label(parentName)}">
-      <img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-parent.svg" alt="Go to Parent">
-      <span>${label(parentName)}</span>
-    </span>`);
-
-  el.addEventListener('click', function (e) {
-    e.stopPropagation();
-    // Select the parent.
-    return focus.unfocus().then(function () {
-      unselect();
-      select(parentEl);
-      scrollToComponent(parentEl);
-    }).catch(_.noop);
-  });
-  componentBar.appendChild(el);
-}
-
-/**
- * Add drag within a component list.
- * @param {Element} componentBar
- * @param {Element} el (component element)
- */
-function addDragOption(componentBar, el) {
-  // `drag` class is applied to the `img` and and selector elements to simplify dragula logic.
-  var selectedLabel = componentBar.querySelector('.selected-label'),
-    dragIcon = dom.create(`<img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-drag.svg" alt="Drag" class="drag-icon"></span>`);
-
-  selectedLabel.setAttribute('title', `Drag to reorder: ${label(selectedLabel.getAttribute('title'))}`);
-  el.classList.add('drag');
-  selectedLabel.insertBefore(dragIcon, selectedLabel.firstChild);
-}
-
-/**
- * Add delete option within a component list.
- * @param {Element} componentBar
- * @param {object} opts           Options required to remove component from parent list.
- */
-function addDeleteOption(componentBar, opts) {
-  var el = dom.create(`<li class="delete label">
-    <img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-delete.svg" alt="Delete">
-    <span class="menu-item">Delete</span>
-  </li>`);
-
-  el.addEventListener('click', function () {
-    return edit.removeFromParentList(opts)
-      .then(forms.close);
-  });
-
-  addMenu(componentBar);
-  componentBar.querySelector('.menu').appendChild(el);
-}
-
-/**
- * Add options that depend on the parent (e.g. parent label and parent being a component list).
- * @param {Element} componentBar
- * @param {Element} el            The component element.
- * @param {Element} ref           The ref of the component.
- * @returns {Promise|undefined}
- */
-function addParentOptions(componentBar, el, ref) {
-  var parentEl = getParentEl(el),
-    parentRef;
+function getParentInfo(el) {
+  const parentEl = getParentEl(el);
 
   if (parentEl) {
-    parentRef = parentEl.getAttribute(references.referenceAttribute);
-    addParentLabel(componentBar, parentEl);
-    return edit.getSchema(parentRef)
-      .then(function (parentSchema) {
-        var componentListField = getParentComponentListField(el, parentSchema);
+    const ref = parentEl.getAttribute(references.referenceAttribute);
 
-        if (componentListField) {
-          addDragOption(componentBar, el);
-          addDeleteOption(componentBar, {el: el, ref: ref, parentField: componentListField, parentRef: parentRef});
-        }
+    return edit.getSchema(ref).then(function (schema) {
+      let parent = {
+          el: parentEl,
+          ref: ref
+        },
+        path = getParentComponentListField(el, schema);
+
+      return _.assign(parent, {
+        isComponentList: !!path, // we use this to determine whether the current component lives in a list
+        path: path,
+        schema: _.get(schema, path), // full schema for the field, including labels and placeholders
+        list: _.get(schema, `${path}.${references.componentListProperty}`), // component list data only
+        listEl: addComponentHandler.getParentListElement(parentEl, path)
       });
+    });
+  } else {
+    return Promise.resolve({}); // so we can easily check `parent.el`, `parent.isComponentList`, etc
   }
 }
 
 /**
- * idempotentally add menu
- * @param {Element} componentBar
+ * add label for current component
+ * @param {Element} selector
+ * @param {string} name
  */
-function addMenu(componentBar) {
-  var el = dom.create(`
-    <span class="menu-toggle"><img src="${site.get('assetPath')}/media/components/clay-kiln/component-bar-menu.svg" alt="Component Menu"></span>
-    <ul class="menu"></ul>
-  `);
+function addLabel(selector, name) {
+  var labelEl = dom.find(selector, '.selected-label');
 
-  // open menu when clicked
-  // note: on supported devices, menu will also open on hover
-  el.querySelector('.menu-toggle').addEventListener('click', function (e) {
-    var bar = dom.closest(e.target, '.component-bar'),
-      toggle = bar.querySelector('.menu-toggle'),
-      menu = bar.querySelector('.menu');
+  labelEl.innerHTML = label(name);
+  labelEl.setAttribute('title', label(name));
+}
 
-    toggle.classList.toggle('open');
-    menu.classList.toggle('open');
-    e.stopPropagation();
-  });
+/**
+ * add parent arrow and handler if parent exists
+ * @param {Element} selector
+ * @param {object} parent
+ */
+function addParentHandler(selector, parent) {
+  var button = dom.find(selector, '.selected-info-parent');
 
-  if (!componentBar.querySelector('.menu-toggle')) {
-    componentBar.appendChild(el);
+  if (parent.el) {
+    // if parent exists at all, add the handler
+    button.classList.remove(hidden);
+    button.addEventListener('click', function (e) {
+      e.stopPropagation();
+      // Select the parent.
+      return focus.unfocus().then(function () {
+        unselect();
+        select(parent.el);
+        scrollToComponent(parent.el);
+      }).catch(_.noop);
+    });
+  }
+}
+
+/**
+ * determine if a component has settings
+ * @param {object} options
+ * @returns {boolean}
+ */
+function hasSettings(options) {
+  return groups.getSettingsFields(options.data).length > 0;
+}
+
+/**
+ * unhide settings button and add handler
+ * @param {Element} selector
+ * @param {object} options
+ */
+function addSettingsHandler(selector, options) {
+  var button = dom.find(selector, '.selected-action-settings');
+
+  if (hasSettings(options)) {
+    button.classList.remove(hidden);
+    button.addEventListener('click', function (e) {
+      e.stopPropagation();
+      // Open the settings overlay.
+      return focus.unfocus().then(function () {
+        return forms.open(options.ref, document.body);
+      }).catch(_.noop);
+    });
+  }
+}
+
+/**
+ * add component list placeholder when the last component is deleted from a list
+ * @param {object} parent
+ */
+function addListPlaceholder(parent) {
+  var listDiv = dom.find(parent.listEl, '.component-list-inner');
+
+  // if the list is empty in the dom, re-add the placeholder for it
+  if (!listDiv.children.length) {
+    let emptyList = [];
+
+    // placeholder decorator expects an empty array with a _schema property
+    // (it checks data.length to see if the list is actually empty)
+    emptyList._schema = parent.schema;
+    placeholder.handler(listDiv, { ref: parent.ref, path: parent.path, data: emptyList });
+  }
+}
+
+/**
+ * unhide delete button and add handler
+ * @param {Element} selector
+ * @param {object} parent
+ * @param {Element} el
+ * @param {object} options
+ */
+function addDeleteHandler(selector, parent, el, options) {
+  var button = dom.find(selector, '.selected-action-delete');
+
+  if (parent.isComponentList) {
+    button.classList.remove(hidden);
+    button.addEventListener('click', function () {
+      var confirm = window.confirm('Delete this component? This cannot be undone.'); // eslint-disable-line
+
+      if (confirm) {
+        return edit.removeFromParentList({el: el, ref: options.ref, parentField: parent.path, parentRef: parent.ref})
+          .then(() => addListPlaceholder(parent))
+          .then(forms.close);
+      }
+    });
+  }
+}
+
+/**
+ * unhide bottom menu if add component is available
+ * @param {Element} selector
+ * @param {object} parent
+ */
+function unhideBottomMenu(selector, parent) {
+  if (parent.isComponentList) {
+    dom.find(selector, '.component-selector-bottom').classList.remove(hidden);
+  }
+}
+
+/**
+ * unhide and add handler for add component
+ * @param {Element} selector
+ * @param {object} parent
+ * @param {object} options
+ */
+function addAddHandler(selector, parent, options) {
+  var button = dom.find(selector, '.selected-add');
+
+  if (parent.isComponentList) {
+    // unhide the button
+    button.classList.remove(hidden);
+
+    // attach the event handler
+    addComponentHandler(button, parent, options.ref);
+  }
+}
+
+/**
+ * add drag within a component list.
+ * @param {Element} el (component element, not the selector)
+ * @param {object} parent
+ */
+function addDragHandler(el, parent) {
+  if (parent.isComponentList) {
+    el.classList.add('drag');
   }
 }
 
 /**
  * add component bar (with click events)
- * @param {Element} componentEl   An element that has a ref.
+ * @param {Element} el component element
  * @param {object} options
  * @param {string} options.ref
  * @param {string} options.path
  * @param {object} options.data
  * @returns {Element}
  */
-function handler(componentEl, options) {
+function handler(el, options) {
   var name = references.getComponentNameFromReference(options.ref),
-    tpl = `
-    <aside class="component-bar">
-      <span class="label selected-label" title="${label(name)}">
-        <span class="selected-label-inner">${label(name)}</span>
-      </span>
-    </aside>
-    `,
-    componentBar = dom.create(tpl);
+    selector = tpl.get('.component-selector-template');
 
-  // Add options to the component bar.
-  addSettingsOption(componentBar, options.data, options.ref);
-  addParentOptions(componentBar, componentEl, options.ref);
+  // resolve parent info. if there are no parents this resolves to empty object
+  return getParentInfo(el).then(function (parent) {
+    // add options to the component selector
+    // set component label
+    addLabel(selector, name);
+    // if parent, unhide + add handler
+    addParentHandler(selector, parent);
 
-  // add events to the component itself
-  // when the component is clicked, it should be selected
-  componentEl.addEventListener('click', componentClickHandler.bind(null, componentEl));
+    // if settings, unhide + add handler
+    addSettingsHandler(selector, options);
+    // if delete, unhide + add handler
+    addDeleteHandler(selector, parent, el, options);
 
-  // make sure components are relatively positioned
-  componentEl.classList.add('component-bar-wrapper');
-  dom.prependChild(componentEl, componentBar); // prepended, so parent components are behind child components
-  // add an iframe-overlay to iframes so we can click on components with them
-  addIframeOverlays(componentEl);
-  return componentEl;
+    // if add, unhide bottom
+    // note: more options might exist in the bottom menu in the future
+    unhideBottomMenu(selector, parent);
+    // if add, unhide + add handler
+    addAddHandler(selector, parent, options);
+
+    // if drag, add class
+    // note: this adds a class to the component itself,
+    // not the selector
+    addDragHandler(el, parent);
+
+    // add iframe overlays
+    addIframeOverlays(el);
+
+    // add events to the component itself
+    // when the component is clicked, it should be selected
+    el.addEventListener('click', componentClickHandler.bind(null, el));
+
+    // make sure components are relatively positioned
+    el.classList.add('component-selector-wrapper');
+
+    // add selector to the component el, BEHIND the component's children
+    dom.prependChild(el, selector);
+    return el;
+  });
 }
 
 // focus and unfocus

@@ -2,59 +2,7 @@ var _ = require('lodash'),
   references = require('../services/references'),
   dom = require('@nymag/dom'),
   edit = require('../services/edit'),
-  dragula = require('dragula'),
-  addComponent = require('../services/add-component'),
-  paneService = require('../services/pane');
-
-/**
- * map through components, filtering out excluded
- * @param {array} possibleComponents
- * @param {array} [exclude] array of components to exclude
- * @returns {array} array of elements
- */
-function getAddableComponents(possibleComponents, exclude) {
-  return _.compact(_.map(possibleComponents, function (item) {
-    if (exclude && exclude.length) {
-      if (!_.contains(exclude)) {
-        return item;
-      }
-    } else {
-      return item;
-    }
-  }));
-}
-
-/**
- * create pane and buttons
- * @param {object} args
- * @returns {Element}
- */
-function createPane(args) {
-  var include = args.include,
-    exclude = args.exclude,
-    toolbar = dom.find('.kiln-toolbar'),
-    allComponents = toolbar.getAttribute('data-components').split(','),
-    tpl =
-      `<section class="component-list-bottom">
-        <button class="open-add-components">
-          <span class="open-add-components-inner">+</span>
-        </button>
-      </section>`,
-    pane = dom.create(tpl),
-    addableComponents;
-
-  // figure out what components should be available for adding
-  if (include && include.length) {
-    addableComponents = getAddableComponents(include, exclude);
-  } else {
-    addableComponents = getAddableComponents(allComponents, exclude);
-  }
-
-  // add those components to the button
-  dom.find(pane, '.open-add-components').setAttribute('data-components', addableComponents.join(','));
-
-  return pane;
-}
+  dragula = require('dragula');
 
 /**
  * Save the order of the items as found in the DOM.
@@ -185,73 +133,43 @@ function when(el, options) {
 }
 
 /**
+ * certain elements should NOT be wrapped in the component list:
+ * component selector
+ * script tags (injected if a component is reloaded from the server)
+ * style tags (injected if a component is reloaded from the server)
+ * note: script and style tags might also be added by the component itself, e.g. for embeds
+ * @param {Element} el
+ * @returns {boolean}
+ */
+function isWrappable(el) {
+  return !el.classList.contains('component-selector') && !_.includes(['SCRIPT', 'STYLE'], el.tagName);
+}
+
+/**
  * add "add component" button
  * @param {Element} el
  * @param {{ref: string, path: string, data: object}} options
  * @returns {Element}
  */
 function handler(el, options) {
-  var args = _.get(options, 'data._schema.' + references.componentListProperty),
-    pane, button, dropArea;
+  var wrappableEls = _.filter(el.childNodes, function (child) {
+      // wrap everything that ISN'T the component selector
+      return child.nodeType !== 1 || isWrappable(child);
+    }),
+    dropArea = dom.wrapElements(wrappableEls, 'div');
 
-  // if _componentList: true, make the args an object
-  args = _.isObject(args) ? args : {};
-
-  args.field = _.omit(options, 'data'); // add button needs ref and path.
-
-  // create the pane
-  pane = createPane(args);
-  button = dom.find(pane, '.open-add-components');
-
-  // add click events to toggle pane
-  button.addEventListener('click', function () {
-    var addableComponents = button.getAttribute('data-components').split(',');
-
-    if (addableComponents.length === 1) {
-      addComponent(pane, args.field, addableComponents[0]);
-    } else {
-      // open the add components pane
-      paneService.openAddComponent(addableComponents, { pane: pane, field: args.field });
-    }
-  });
+  // add a class to the div so we can reference it later
+  dropArea.classList.add('component-list-inner');
 
   // wrap the draggable items so that the pane is not in the drop area.
-  dropArea = dom.wrapElements(el.childNodes, 'div');
   addDragula(dropArea, options);
   el.appendChild(dropArea);
-
-  // add the pane below the component list drop area.
-  el.appendChild(pane);
 
   return el;
 }
 
-/**
- * close if it's open
- * @param  {Element} el
- */
-function closeIfOpen(el) {
-  if (el.classList.contains('open')) {
-    el.classList.remove('open');
-  }
-}
-
-/**
- * close any open component panes
- */
-function closePanes() {
-  var buttons = dom.findAll('.open-add-components'),
-    panes = dom.findAll('.add-components-pane');
-
-  _.forEach(buttons, closeIfOpen);
-  _.forEach(panes, closeIfOpen);
-}
-
 module.exports.when = when;
 module.exports.handler = handler;
-
-// close panes when someone unfocuses / focuses a field
-module.exports.closePanes = closePanes;
 
 // for testing
 module.exports.updateOrder = updateOrder;

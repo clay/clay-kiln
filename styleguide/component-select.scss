@@ -1,215 +1,245 @@
 @import 'colors';
 @import 'typography';
 @import 'layers';
-// Using px because the gap needs to be px so that it does not disappear, and can only add with same units.
-$bar-height: 44px; // drag, settings, delete, etc are square so width = height.
-$bar-parent-height: 22px;
-$bar-gap: 2px;
-$bar-label-width: 76px;
-$bar-gap-color: $white;
 
-// bar colors
+// selector offsets, for the selector outline
+$offset-width: 10px;
+$offset-width-half: $offset-width / 2;
+$offset-height: 30px;
+$offset-height-half: $offset-height / 2;
+$offset-height-menu: $offset-height-half - 1; // 1px less, so the menu border always displays
+$parent-offset: 4px; // how much wider should parent outline be (each side)
 
-// page-specific
-$page-bg-color: $blue;
-$page-parent-bg-color: $blue-50;
+// icon sizes
+$action-icon-small: 16px;
+$action-icon-large: 22px;
 
-// layout-specific
-// todo: use these when we have a solution for layout editing
-$layout-bg-color: $purple;
-$layout-parent-bg-color: $purple-50;
+// selector colors
+$page-color: $blue;
+$page-bg-color: $blue-50;
+$page-parent-color: $blue-75;
+$page-parent-bg-color: $blue-25;
 
+// todo: in the future layout-specific selectors use these colors
+$layout-color: $purple;
+$layout-bg-color: $purple-50;
+$layout-parent-color: $purple-75;
+$layout-parent-bg-color: $purple-25;
 
-// Wrapper around parent and component.
-.component-bar-wrapper {
+// mixin for creating the selector icons
+@mixin selector-icon($fill, $size) {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin: 0;
+  outline: none;
+  color: $fill;
+  padding: 6px 8px;
+
+  // set icon sizes
+  svg {
+    width: $size;
+    height: $size;
+  }
+
+  // set fill color
+  svg,
+  svg * {
+    fill: $fill;
+    transition: 150ms fill ease-out;
+  }
+
+  // subtle hover state
+  &:hover svg,
+  &:hover svg * {
+    fill: darken($fill, 5%);
+    transition: 150ms fill ease-out;
+  }
+
+  // subtle active state
+  &:active svg,
+  &:active svg * {
+    fill: darken($fill, 10%);
+    transition: 50ms fill ease-out;
+  }
+
+  // note: hover and active states are different than our regular outlined buttons,
+  // since the border-radius is applied to their parent elements
+  // (which means we can't set the background-color for each button without
+  // doing a bunch of logic to set their border radii)
+}
+
+// component element needs to be position: relative for the selectors to display
+.component-selector-wrapper {
   position: relative;
 }
 
-// Parent's bar hidden for now.
-.component-bar-wrapper.selected-parent > .component-bar {
-  display: none;
+// selector outlines
+.component-selector {
+  border-style: solid;
+  border-width: 1px;
+  // selector colors are set for the selected component by default,
+  // then overridden for the selected-parent. this is so we don't get a
+  // visual jump when animating them in
+  // (technically the parent DOES jump, but it's a lot less noticible than the
+  // selected component. plus, the colors are similar enough that you don't see it)
+  border-color: $page-bg-color;
+  // subtle shadow to create more visual distinction between selectors and the
+  // stuff behind them
+  box-shadow: 1px 1px 20px -11px $black;
+  height: calc(100% + #{$offset-height});
+  left: -$offset-width-half;
   opacity: 0;
-}
-
-// Selected bar
-// note: sometimes (like in source-links), the bar lives inside the div
-// created by componentList
-.component-bar-wrapper.selected > .component-bar,
-.component-bar-wrapper.selected > * > .component-bar {
-  display: flex;
-  opacity: 1;
-}
-
-// Bar on a selected component
-.component-bar {
-  @include kiln-copy();
-  @include component-toolbar-layer();
-
-  align-content: flex-end;
-  align-items: stretch;
-  display: none;
-  flex-flow: row nowrap;
-  height: $bar-height;
-  justify-content: flex-start;
-  left: 0;
-  min-width: 95px; // just enough space to display the menu
-  opacity: 0;
+  // because we're just setting opacity to show/hide, don't allow child selectors to be clicked
+  // note: selected-parent and selected both set this to `all` so current selectors can be clicked
+  pointer-events: none;
   position: absolute;
-  top: -$bar-height;
-  transition: opacity .15s ease-in-out;
-  width: 100%;
+  top: -$offset-height-half;
+  transition: 50ms opacity linear; // fade out quickly
+  width: calc(100% + #{$offset-width});
+  z-index: -1; // should be less than any element in the component itself
 }
 
-// All labels
-.component-bar .label {
+// menus
+.component-selector-top,
+.component-selector-bottom {
+  background: rgba(255, 255, 255, .9); // todo: maybe blur the backgrounds in the future?
+  border-color: transparent;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 10px;
+  box-shadow: 1px 1px 20px -9px $black; // even subtler shadow for the menus
+  right: $offset-width-half;
+  position: absolute;
+}
+
+// place the top and bottom menus bisecting the outline vertically
+.component-selector-top {
+  border-color: $page-bg-color;
+  bottom: calc(100% - #{$offset-height-menu});
+}
+
+// bottom menu is more offset, since it concerns actions that don't
+// affect the component itself (but rather things around it, e.g. adding new components)
+.component-selector-bottom {
+  border-color: $page-bg-color;
+  top: calc(100% - #{$offset-height-menu / 2});
+}
+
+// all menus use flex to align their buttons
+.component-selector-top,
+.component-selector-bottom,
+.selected-info,
+.selected-actions,
+.component-selector-bottom {
+  align-items: center;
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-start;
+}
+
+// current component label
+.selected-label {
   @include label();
 
-  background: $page-bg-color;
-  color: #fff;
-  cursor: default;
-  display: block;
   font-size: 14px;
-  height: $bar-height;
-  line-height: $bar-height;
+  line-height: $action-icon-small; // same vertical space as the icons
   margin: 0;
-  overflow: hidden;
-  padding: 0 5px;
-  text-align: left;
-  text-overflow: ellipsis;
-  text-transform: capitalize;
+  padding: 6px 8px;
   white-space: nowrap;
 }
 
-.component-bar > .selected-label {
-  align-items: center;
-  border-bottom: $bar-gap solid $bar-gap-color;
-  display: flex;
-  flex: 0 1 100%;
-
-  .drag-icon {
-    height: 30px;
-    margin: 0 5.5px 0 0;
-  }
-
-  .selected-label-inner {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+// regular button styles
+.selected-label,
+.selected-info-parent,
+.selected-action-settings,
+.selected-action-delete {
+  @include selector-icon($page-color, $action-icon-small);
 }
 
-// Parent's label
-.component-bar > .parent.label {
-  align-items: center;
-  background: $page-parent-bg-color;
-  border-bottom: $bar-gap solid $bar-gap-color;
-  bottom: 100%;
-  cursor: pointer;
-  display: flex;
-  height: $bar-parent-height;
-  left: 0;
-  line-height: $bar-parent-height;
-  margin: 0;
-  padding: 5px;
-  position: absolute;
-  width: 100%;
-
-  img {
-    height: 14px;
-    margin: 0 2.5px 0 0;
-  }
-
-  span {
-    margin: 0 7px;
-  }
+// add button is larger
+.selected-add {
+  @include selector-icon($page-color, $action-icon-large);
 }
 
-// Menu
-.component-bar > .menu-toggle {
-  background: $page-bg-color;
-  border-bottom: $bar-gap solid $bar-gap-color;
-  border-left: $bar-gap solid $bar-gap-color;
-  cursor: pointer;
-  display: block;
-  flex: 0 0 $bar-height;
-  height: $bar-height;
-  margin: 0;
-  padding: 0;
-  position: relative;
-  width: $bar-height;
-
-  img {
-    height: auto;
-    left: -30%;
-    margin: 50% 50%;
-    position: absolute;
-    top: -2px;
-    width: 60%;
-  }
+// set a border on parent, settings, and delete
+.selected-info-parent,
+.selected-action-settings,
+.selected-action-delete {
+  border-left: 1px solid $page-bg-color;
 }
 
-.component-bar > .menu-toggle.open {
-  border-bottom: none;
-}
+// selected parent
+.component-selector-wrapper.selected-parent > .component-selector {
+  // include overrides for outline offset (width only)
+  left: -#{$offset-width-half + $parent-offset};
+  width: calc(100% + #{$offset-width + $parent-offset * 2});
 
-@media (any-hover: hover) {
-  .component-bar:hover > .menu-toggle {
-    border-bottom: none;
-  }
-}
-
-.component-bar > .menu {
-  @include component-toolbar-layer();
-
-  flex-flow: column;
-  height: 0;
-  margin: 0;
-  max-width: 100%;
-  opacity: 0;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  right: 0;
-  top: 100%;
-  transition: opacity 200ms ease-out;
-  width: auto;
-}
-
-.component-bar > .menu.open {
-  height: auto;
+  // show selector
   opacity: 1;
-  transition: opacity 200ms ease-out;
-}
+  pointer-events: all;
+  transition: 250ms opacity ease-out; // fade in slower than the current component
 
-@media (any-hover: hover) {
-  .component-bar:hover > .menu {
-    height: auto;
-    opacity: 1;
-    transition: opacity 200ms ease-out;
+  // override colors colors
+  border-color: $page-parent-bg-color;
+
+  .component-selector-top {
+    border-color: $page-parent-bg-color;
+  }
+
+  .selected-label,
+  .selected-action-settings {
+    @include selector-icon($page-parent-color, $action-icon-small);
+  }
+
+  // set a border on settings instead of its container,
+  // because a parent might only have `delete` and we don't want an empty
+  // `selected-actions` menu with a border and empty space
+  .selected-action-settings {
+    border-left: 1px solid $page-parent-bg-color;
+  }
+
+  // hide extraneous buttons
+  .selected-info-parent,
+  .selected-action-delete,
+  .component-selector-bottom {
+    display: none;
   }
 }
 
-.component-bar .menu li {
-  align-items: center;
-  border-bottom: $bar-gap solid $bar-gap-color;
-  cursor: pointer;
-  display: flex;
-  margin: 0;
-  padding: 5px;
-  position: relative;
-  width: auto;
-
-  &:last-of-type {
-    border-bottom: none;
-  }
-
-  img,
-  .menu-item {
-    margin: 0 6px 0 2px;
-  }
+// selected component
+.component-selector-wrapper.selected > .component-selector {
+  // show selector
+  opacity: 1;
+  pointer-events: all;
+  transition: 150ms opacity ease-out; // fade relatively quickly
 }
 
-.component-bar .drag {
-  cursor: grab;
+// z-index setting
+// needs to be:
+// 1. selected parent (to appear above other page elements)
+// 2. components inside selected parent (so you can click into them)
+// 3. selected component (to appear above its siblings)
+// 4. components inside selected component (so you can click into them)
+
+.component-selector-wrapper.selected-parent {
+  z-index: 1  !important;
+}
+
+// parent component: siblings of the selected component need a higher z-index
+// than the parent selector, but a lower index than the current selector
+.component-selector-wrapper.selected-parent [data-uri] {
+  z-index: 2;
+}
+
+.component-selector-wrapper.selected {
+  z-index: 3 !important;
+}
+
+// selected component: components inside the selected component ALSO needs a higher z-index
+// so we can click into them when the parent is selected
+.component-selector-wrapper.selected [data-uri] {
+  z-index: 4;
 }
 
 // all editable elements should have some kind of ux showing they can be edited

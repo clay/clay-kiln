@@ -5,7 +5,6 @@ var _ = require('lodash'),
   sr = require('selection-range'),
   dom = require('@nymag/dom'),
   helpers = require('../services/field-helpers'),
-  componentList = require('./component-list'),
   currentFocus;
 
 /**
@@ -14,7 +13,8 @@ var _ = require('lodash'),
  * @returns {number}
  */
 function getClickOffset(e) {
-  let range, textNode, offset, parent, parentText, parentOffset;
+  var parentText = '',
+    range, textNode, offset, parent, parentOffset;
 
   try {
     if (document.caretPositionFromPoint) {
@@ -33,9 +33,17 @@ function getClickOffset(e) {
     if (dom.find(parent, '.kiln-placeholder') || dom.find(parent, '.kiln-permanent-placeholder')) {
       return 0;
     }
+
+    // grab all the text that isn't in the selector
+    // e.g. regular textnodes, formatted stuff
+    _.each(parent.childNodes, function (node) {
+      // if it's a text node (type is 3) or ISN'T the component selector, grab the text
+      if (!node.classList || !node.classList.contains('component-selector')) {
+        parentText += node.textContent;
+      }
+    });
     // otherwise try to get the full offset from the parent
-    parentText = parent.textContent.replace(/^(\n|.)*?Delete\s*/, ''); // remove component selector text
-    parentOffset = parentText.indexOf(textNode.textContent) + offset;
+    parentOffset = parentText.trim().indexOf(textNode.textContent) + offset;
 
     return parentOffset;
   } catch (e) {
@@ -67,7 +75,6 @@ function hasCurrentFocus() {
 function unfocus() {
   if (forms.isFormValid()) {
     select.unselect();
-    componentList.closePanes(); // close any open add-component panes
     currentFocus = null;
     return forms.close();
   } else {
