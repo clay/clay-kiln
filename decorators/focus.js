@@ -38,12 +38,12 @@ function getClickOffset(e) {
     // e.g. regular textnodes, formatted stuff
     _.each(parent.childNodes, function (node) {
       // if it's a text node (type is 3) or ISN'T the component selector, grab the text
-      if (node.nodeType === 3 || !node.classList.contains('component-selector')) {
+      if (!node.classList || !node.classList.contains('component-selector')) {
         parentText += node.textContent;
       }
     });
     // otherwise try to get the full offset from the parent
-    parentOffset = parentText.indexOf(textNode.textContent) + offset;
+    parentOffset = parentText.trim().indexOf(textNode.textContent) + offset;
 
     return parentOffset;
   } catch (e) {
