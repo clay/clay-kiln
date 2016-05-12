@@ -181,7 +181,7 @@ function scrollToComponent(el) {
 /**
  * get parent info, if it exists
  * @param {Element} el current component
- * @returns {Promise} w/ empty object OR el, ref, path, list (from the schema), listEl, and isComponentList (boolean)
+ * @returns {Promise}
  */
 function getParentInfo(el) {
   const parentEl = getParentEl(el);
@@ -278,13 +278,10 @@ function addSettingsHandler(selector, options) {
  * @param {object} parent
  */
 function addListPlaceholder(parent) {
-  var listDiv = dom.find(parent.listEl, '.component-list-inner'),
-    children = _.filter(listDiv.children, function (child) {
-      return !_.includes(['SCRIPT', 'STYLE'], child.tagName);
-    });
+  var listDiv = dom.find(parent.listEl, '.component-list-inner');
 
   // if the list is empty in the dom, re-add the placeholder for it
-  if (!children.length) {
+  if (!listDiv.children.length) {
     let emptyList = [];
 
     // placeholder decorator expects an empty array with a _schema property
@@ -311,9 +308,7 @@ function addDeleteHandler(selector, parent, el, options) {
 
       if (confirm) {
         return edit.removeFromParentList({el: el, ref: options.ref, parentField: parent.path, parentRef: parent.ref})
-          .then(function () {
-            addListPlaceholder(parent);
-          })
+          .then(() => addListPlaceholder(parent))
           .then(forms.close);
       }
     });
@@ -407,7 +402,7 @@ function handler(el, options) {
     // make sure components are relatively positioned
     el.classList.add('component-selector-wrapper');
 
-    // add selector to the component el
+    // add selector to the component el, BEHIND the component's children
     dom.prependChild(el, selector);
     return el;
   });

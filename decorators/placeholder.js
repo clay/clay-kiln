@@ -122,6 +122,9 @@ function isComponentListEmpty(data) {
 
 /**
  * get list element, even when we're re-adding placeholders to empty lists
+ * when re-running placeholders after deleting all items from a component list,
+ * the .component-list-inner div has already been added by the component-list decorator.
+ * when we look for the list to add the placeholder, we need to take that into account
  * @param {Element} el
  * @param {string} path
  * @returns {Element}

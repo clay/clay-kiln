@@ -133,6 +133,19 @@ function when(el, options) {
 }
 
 /**
+ * certain elements should NOT be wrapped in the component list:
+ * component selector
+ * script tags (injected if a component is reloaded from the server)
+ * style tags (injected if a component is reloaded from the server)
+ * note: script and style tags might also be added by the component itself, e.g. for embeds
+ * @param {Element} el
+ * @returns {boolean}
+ */
+function isWrappable(el) {
+  return !el.classList.contains('component-selector') && !_.includes(['SCRIPT', 'STYLE'], el.tagName);
+}
+
+/**
  * add "add component" button
  * @param {Element} el
  * @param {{ref: string, path: string, data: object}} options
@@ -141,7 +154,7 @@ function when(el, options) {
 function handler(el, options) {
   var wrappableEls = _.filter(el.childNodes, function (child) {
       // wrap everything that ISN'T the component selector
-      return child.nodeType !== 1 || !child.classList.contains('component-selector');
+      return child.nodeType !== 1 || isWrappable(child);
     }),
     dropArea = dom.wrapElements(wrappableEls, 'div');
 
