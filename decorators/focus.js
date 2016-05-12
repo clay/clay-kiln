@@ -13,8 +13,8 @@ var _ = require('lodash'),
  * @returns {number}
  */
 function getClickOffset(e) {
-  var parentText = '';
-  let range, textNode, offset, parent, parentOffset;
+  var parentText = '',
+    range, textNode, offset, parent, parentOffset;
 
   try {
     if (document.caretPositionFromPoint) {
