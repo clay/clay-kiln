@@ -322,5 +322,26 @@ describe('edit service', function () {
         sinon.assert.calledWith(db.create, sinon.match.string, data);
       });
     });
+
+    describe('getComponentRef', function () {
+      var fn = lib[this.title];
+
+      it('resolves a component reference', function () {
+        dom.pageUri.returns('/pages/foo');
+        function expectRef(ref) {
+          expect(ref).to.equal('/components/fakeRef');
+        }
+        return fn('/components/fakeRef').then(expectRef);
+      });
+
+      it('resolves a layout reference from a page uri', function () {
+        dom.pageUri.returns('/pages/foo');
+        cache.getDataOnly.returns(Promise.resolve({ layout: '/components/fakeLayout' }));
+        function expectRef(ref) {
+          expect(ref).to.equal('/components/fakeLayout');
+        }
+        return fn('/pages/foo').then(expectRef);
+      });
+    });
   });
 });

@@ -513,6 +513,22 @@ function getDataOnly(uri) {
   return cache.getDataOnly(uri).then(_.cloneDeep).then(addDeviantArraySchemas);
 }
 
+/**
+ * get the component ref, properly handling layouts
+ * note: layouts get passed the page uri, so we'll need to get the layout from the page data
+ * @param {string} uri
+ * @returns {Promise}
+ */
+function getComponentRef(uri) {
+  // if we're enabling editing on the first component on the page (the layout),
+  // the ref we grab from the element will be the page uri
+  if (uri === dom.pageUri()) {
+    return cache.getDataOnly(uri).then(pageData => pageData.layout);
+  } else {
+    return Promise.resolve(uri);
+  }
+}
+
 // Expose main actions (alphabetical!)
 module.exports = {
   // Please use these.  They should be discrete actions that should be well tested.
@@ -530,6 +546,7 @@ module.exports = {
   save: save,
   schedulePublish: schedulePublish,
   unschedulePublish: unschedulePublish,
+  getComponentRef: getComponentRef,
 
   // Please stop using these.  If you use these, we don't trust you.  Do you trust yourself?
   getData: getData,
