@@ -49,7 +49,7 @@ function getAddableComponents(possibleComponents, exclude) {
  */
 function addHandler(button, options, prevRef) {
   var toolbar = dom.find('.kiln-toolbar'),
-    allComponents = toolbar && toolbar.getAttribute('data-components') && toolbar.getAttribute('data-components').split(',') || [],
+    allComponents = toolbar && toolbar.getAttribute('data-components') && toolbar.getAttribute('data-components').split(',').sort() || [],
     include = _.get(options, 'list.include'),
     exclude = _.get(options, 'list.exclude'),
     available;
