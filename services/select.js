@@ -23,7 +23,7 @@ var _ = require('lodash'),
  */
 function getComponentEl(el) {
   var attr = references.referenceAttribute,
-    componentEl = dom.closest(el, '[' + attr + ']');
+    componentEl = el && dom.closest(el, '[' + attr + ']');
 
   return componentEl;
 }
@@ -65,11 +65,13 @@ function select(el) {
     parent = getParentEl(component);
 
   // selected component gets .selected, parent gets .selected-parent
-  component.classList.add('selected');
+  if (component) {
+    component.classList.add('selected');
+    currentSelected = component;
+  }
   if (parent) {
     parent.classList.add('selected-parent');
   }
-  currentSelected = component;
 }
 
 /**
@@ -189,19 +191,21 @@ function getParentInfo(el) {
   if (parentEl) {
     const ref = parentEl.getAttribute(references.referenceAttribute);
 
-    return edit.getSchema(ref).then(function (schema) {
-      let parent = {
-          el: parentEl,
-          ref: ref
-        },
-        path = getParentComponentListField(el, schema);
+    return edit.getComponentRef(ref).then(function (componentRef) {
+      return edit.getSchema(componentRef).then(function (schema) {
+        let parent = {
+            el: parentEl,
+            ref: componentRef
+          },
+          path = getParentComponentListField(el, schema);
 
-      return _.assign(parent, {
-        isComponentList: !!path, // we use this to determine whether the current component lives in a list
-        path: path,
-        schema: _.get(schema, path), // full schema for the field, including labels and placeholders
-        list: _.get(schema, `${path}.${references.componentListProperty}`), // component list data only
-        listEl: addComponentHandler.getParentListElement(parentEl, path)
+        return _.assign(parent, {
+          isComponentList: !!path, // we use this to determine whether the current component lives in a list
+          path: path,
+          schema: _.get(schema, path), // full schema for the field, including labels and placeholders
+          list: _.get(schema, `${path}.${references.componentListProperty}`), // component list data only
+          listEl: addComponentHandler.getParentListElement(parentEl, path)
+        });
       });
     });
   } else {

@@ -16,6 +16,11 @@ function isComponent(el) {
   var ref = el instanceof Element && el.getAttribute(references.referenceAttribute),
     name = ref && references.getComponentNameFromReference(ref);
 
+  if (ref && ref === dom.pageUri()) {
+    // this component is the layout
+    return true;
+  }
+
   return !!(name && name !== 'clay-kiln');
 }
 
@@ -40,25 +45,27 @@ function findComponents(el) {
 function addComponentSelector(el) {
   var ref = el.getAttribute(references.referenceAttribute);
 
-  return edit.getData(ref)
-    .catch(function (e) {
-      // e.g. tried to get the schema of a component, and it 404'd
-      if (e.message === '404') {
-        return null; // data is empty
-      } else {
-        return e; // something weird happened. don't eat the error
-      }
-    })
-    .then(function (data) {
-      var options = {
-        ref: ref,
-        path: el.getAttribute(references.editableAttribute),
-        data: data || {}
-      };
+  return edit.getComponentRef(ref).then(function (componentRef) {
+    return edit.getData(componentRef)
+      .catch(function (e) {
+        // e.g. tried to get the schema of a component, and it 404'd
+        if (e.message === '404') {
+          return null; // data is empty
+        } else {
+          return e; // something weird happened. don't eat the error
+        }
+      })
+      .then(function (data) {
+        var options = {
+          ref: componentRef,
+          path: el.getAttribute(references.editableAttribute),
+          data: data || {}
+        };
 
-      select.handler(el, options);
-      return el;
-    });
+        select.handler(el, options);
+        return el;
+      });
+  });
 }
 
 /**

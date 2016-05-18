@@ -156,7 +156,9 @@ function handler(el, options) {
       // wrap everything that ISN'T the component selector
       return child.nodeType !== 1 || isWrappable(child);
     }),
-    dropArea = dom.wrapElements(wrappableEls, 'div');
+    dropArea = dom.wrapElements(wrappableEls, 'div'),
+    isPage = _.has(options, `data._schema.${references.componentListProperty}.page`); // eslint-disable-line
+    // todo: page checking will go here
 
   // add a class to the div so we can reference it later
   dropArea.classList.add('component-list-inner');

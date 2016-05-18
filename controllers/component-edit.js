@@ -5,6 +5,7 @@
 
 function ComponentEdit() {
   var dom = require('@nymag/dom'),
+    edit = require('../services/edit'),
     events = require('../services/events'),
     references = require('../services/references'),
     decorate = require('../services/decorators'),
@@ -21,7 +22,7 @@ function ComponentEdit() {
   }
 
   /**
-   * recursively decorate nodes with click events, placeholders, and other decorators
+   * decorate nodes with click events, placeholders, and other decorators
    * @param {Element} node
    * @param {TreeWalker} walker
    * @param {string} ref
@@ -33,11 +34,6 @@ function ComponentEdit() {
     if (path) {
       // this element is editable, decorate it!
       promises.push(decorate(node, ref, path));
-    }
-
-    if (node) {
-      // keep walking through the nodes
-      decorateNodes(walker.nextNode(), walker, ref, promises);
     }
   }
 
@@ -61,34 +57,40 @@ function ComponentEdit() {
   function constructor(el) {
     var ref = el.getAttribute(references.referenceAttribute),
       componentHasPath = ref && !!getDecoratorPath(el),
-      walker, path, promises = [];
+      promises = [],
+      scope = this,
+      walker, node, path;
 
     if (isComponentEditable(el)) {
-      walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, {
-        acceptNode: function (currentNode) {
-          if (!currentNode.hasAttribute(references.referenceAttribute)) {
-            return NodeFilter.FILTER_ACCEPT;
-          } else {
-            return NodeFilter.FILTER_REJECT;
+      return edit.getComponentRef(ref).then(function (componentRef) {
+        walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, {
+          acceptNode: function (currentNode) {
+            if (!currentNode.hasAttribute(references.referenceAttribute)) {
+              return NodeFilter.FILTER_ACCEPT;
+            } else {
+              return NodeFilter.FILTER_REJECT;
+            }
           }
+        });
+
+        // add click events to children with [name], but NOT children inside child components
+        while (node = walker.nextNode()) {
+          decorateNodes(node, walker, componentRef, promises);
         }
+
+        // special case when editable path is in the component's root element.
+        if (componentHasPath) {
+          path = getDecoratorPath(el);
+          promises.push(decorate(el, componentRef, path));
+        }
+
+        events.add(el, {
+          'a click': 'killLinks'
+        }, scope);
+
+        return Promise.all(promises);
       });
-
-      // add click events to children with [name], but NOT children inside child components
-      decorateNodes(walker.nextNode(), walker, ref, promises);
-
-      // special case when editable path is in the component's root element.
-      if (componentHasPath) {
-        path = getDecoratorPath(el);
-        promises.push(decorate(el, ref, path));
-      }
     }
-
-    events.add(el, {
-      'a click': 'killLinks'
-    }, this);
-
-    return Promise.all(promises);
   }
 
   constructor.prototype = {
