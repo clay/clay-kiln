@@ -48,9 +48,9 @@ EditorToolbar = function (el) {
 
   this.statusEl = dom.find(el, '.kiln-status');
   this.progressEl = dom.find(el, '.kiln-progress');
-  this.el = el;
+  this.toolbar = dom.find(el, '.kiln-toolbar');
 
-  events.add(el, {
+  events.add(this.toolbar, {
     '.user-icon click': 'onUserClick',
     '.new click': 'onNewClick',
     '.history click': 'onHistoryClick',
