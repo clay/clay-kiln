@@ -520,8 +520,6 @@ function getDataOnly(uri) {
  * @returns {Promise}
  */
 function getComponentRef(uri) {
-  // if we're enabling editing on the first component on the page (the layout),
-  // the ref we grab from the element will be the page uri
   if (uri === dom.pageUri()) {
     return cache.getDataOnly(uri).then(pageData => pageData.layout);
   } else {
