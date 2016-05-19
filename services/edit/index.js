@@ -364,7 +364,6 @@ function removeFromComponentList(parentData, options) {
   var el = options.el,
     ref = options.ref,
     parentField = options.parentField,
-    pageUri = dom.pageUri(),
     item = {},
     index;
 
@@ -378,7 +377,6 @@ function removeFromComponentList(parentData, options) {
 
 /**
  * Remove a component from a list.
- * @param {object} parentData
  * @param {object}  options
  * @param {Element} options.el          The component to be removed.
  * @param {string}  options.ref         The ref of the component to be removed.
