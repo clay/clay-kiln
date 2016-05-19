@@ -5,20 +5,48 @@ var dirname = __dirname.split('/').pop(),
 describe(dirname, function () {
   describe(filename, function () {
 
-    it('references the global validators', function () {
-      lib.add('bar');
-      expect(lib).to.be.an('array');
-      expect(lib[0]).to.equal('bar');
+    beforeEach(function () {
+      // clear validators
+      lib.errors = [];
+      lib.warnings = [];
     });
 
-    describe('add', function () {
+    it('references the global validators', function () {
+      lib.addError('foo');
+      lib.addWarning('bar');
+      // both should be arrays
+      expect(lib).to.be.an('object');
+      expect(lib.errors).to.be.an('array');
+      expect(lib.warnings).to.be.an('array');
+      expect(lib.errors[0]).to.equal('foo');
+      expect(lib.warnings[0]).to.equal('bar');
+    });
+
+    describe('addError', function () {
       var fn = lib[this.title];
 
-      it('adds things to the global validators', function () {
+      it('adds to the global validators', function () {
+        expect(window.kiln.validators.errors).to.be.an('array');
+        expect(window.kiln.validators.errors.length).to.equal(0);
+
         fn('foo');
-        expect(window.kiln.validators).to.be.an('array');
-        expect(window.kiln.validators[0]).to.equal('bar'); // added from test above. yay globals
-        expect(window.kiln.validators[1]).to.equal('foo');
+
+        expect(window.kiln.validators.errors.length).to.equal(1);
+        expect(window.kiln.validators.errors[0]).to.equal('foo');
+      });
+    });
+
+    describe('addWarning', function () {
+      var fn = lib[this.title];
+
+      it('adds to the global validators', function () {
+        expect(window.kiln.validators.warnings).to.be.an('array');
+        expect(window.kiln.validators.warnings.length).to.equal(0);
+
+        fn('foo');
+
+        expect(window.kiln.validators.warnings.length).to.equal(1);
+        expect(window.kiln.validators.warnings[0]).to.equal('foo');
       });
     });
   });

@@ -7,9 +7,8 @@
 $pane-margin: 30vh;
 $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 
-.hide,
-.kiln-pane-template-elements {
-  display: none !important; // Always hide your skeletons and other hidden things
+.kiln-hide {
+  @include kiln-hide();
 }
 
 .kiln-toolbar-pane-background {
@@ -97,7 +96,7 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   flex-flow: row wrap;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 30px 20px 50px;
+  padding: 20px 20px 40px;
 }
 
 /* types of panes */
@@ -105,10 +104,22 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 /* publish */
 
 .kiln-toolbar-pane .messages {
+  padding-top: 20px;
+  position: relative;
+
   p {
-    margin: 0 0 10px;
     color: $black-50;
+    margin: 0 0 10px;
   }
+}
+
+.kiln-toolbar-pane .publish-messages:before {
+  border-top: 1px solid $grey;
+  content: '';
+  left: -20px;
+  position: absolute;
+  top: 0;
+  width: calc(100% + 40px);
 }
 
 .kiln-toolbar-pane .actions,
@@ -223,6 +234,18 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   }
 }
 
+// special color for warnings
+.kiln-toolbar-pane .publish-warning .label {
+  color: $orange;
+}
+
+.kiln-toolbar-pane .warning-message {
+  @include primary-text();
+
+  color: $orange;
+  padding: 0 0 20px;
+}
+
 .kiln-toolbar-pane .error-preview {
   @include secondary-text();
 
@@ -249,4 +272,88 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 
 .kiln-toolbar-pane .publish-error .description.ayb {
   padding-top: 20px;
+}
+
+/* validation ok */
+
+.kiln-toolbar-pane .publish-valid {
+  align-items: center;
+  display: flex;
+  margin-bottom: 20px;
+  position: relative;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .publish-valid-icon {
+  margin-right: 16px;
+}
+
+.publish-valid-icon svg {
+  display: inline-block;
+  fill: $green;
+  height: 24px;
+  width: 24px;
+}
+
+.publish-valid-message {
+  color: $green;
+  margin: 4px 0; // vertically center with the icon (24px - 16px)
+}
+
+/* filtered item search pane (add component, possibly new page in the future) */
+.kiln-toolbar-pane .filtered-input {
+  @include input();
+
+  margin: 0;
+  position: relative;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .filtered-items {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .filtered-item {
+  @include primary-text();
+
+  cursor: pointer;
+  line-height: 16px;
+  list-style: none;
+  margin: 0;
+  padding: 15px 0;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .filtered-item.filtered {
+  display: none;
+}
+
+.kiln-toolbar-pane .filtered-item:not(.filtered) {
+  border-bottom: 1px solid $grey;
+  transition: 200ms border-bottom-color ease-out;
+}
+
+.kiln-toolbar-pane .filtered-item:focus {
+  border-bottom: 1px solid $blue;
+  outline: none;
+  transition: 200ms border-bottom-color ease-out;
+}
+
+.kiln-toolbar-pane .filtered-item.active {
+  border-bottom: 2px solid $blue;
+}
+
+@keyframes shake {
+  0%, 100% {transform: translateX(0);}
+  20%, 60% {transform: translateX(-5px);}
+  40%, 80% {transform: translateX(5px);}
+}
+
+.kiln-shake {
+  animation-name: shake;
+  animation-duration: 300ms;
+  animation-fill-mode: both;
 }

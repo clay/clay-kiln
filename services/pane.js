@@ -5,10 +5,24 @@ var _ = require('lodash'),
   edit = require('./edit'),
   state = require('./page-state'),
   site = require('./site'),
+  label = require('./label'),
   paneController = require('../controllers/pane'),
   newPagePaneController = require('../controllers/pane-new-page'),
   previewPaneController = require('../controllers/pane-preview'),
-  publishPaneController = require('../controllers/publish-pane');
+  publishPaneController = require('../controllers/publish-pane'),
+  addComponentPaneController = require('../controllers/add-component-pane'),
+  kilnHideClass = 'kiln-hide';
+
+/**
+ * grab templates from the dom
+ * @param {string} selector
+ * @returns {Element}
+ */
+function getTemplate(selector) {
+  var template = dom.find(selector);
+
+  return document.importNode(template.content, true);
+}
 
 /**
  * create pane
@@ -17,8 +31,7 @@ var _ = require('lodash'),
  * @returns {Element}
  */
 function createPane(header, innerEl) {
-  var template = dom.find('.kiln-pane-template'),
-    el = document.importNode(template.content, true);
+  var el = exports.getTemplate('.kiln-pane-template');
 
   // add header and contents
   el.querySelector('.pane-header').innerHTML = header;
@@ -31,7 +44,7 @@ function createPane(header, innerEl) {
  * close an open pane
  */
 function close() {
-  var pane  = dom.find('.kiln-toolbar-pane-background');
+  var pane = dom.find('.kiln-toolbar-pane-background');
 
   if (pane) {
     dom.removeElement(pane);
@@ -68,12 +81,33 @@ function open(header, innerEl, modifier) {
 }
 
 /**
+ * create validation messages
+ * @param {array} [warnings]
+ * @returns {Element}
+ */
+function createPublishValidation(warnings) {
+  if (warnings.length) {
+    let el = document.createDocumentFragment(),
+      messageEl = exports.getTemplate('.publish-warning-message-template'),
+      // same way the error pane does it
+      errorsEl = addErrorsOrWarnings(warnings, 'publish-warning');
+
+    el.appendChild(messageEl);
+    el.appendChild(errorsEl);
+
+    return el;
+  } else {
+    return exports.getTemplate('.publish-valid-template');
+  }
+}
+
+/**
  * create messages for the publish pane, depending on the state
  * @param {object} res
  * @returns {Element}
  */
 function createPublishMessages(res) {
-  var messages = dom.find('.publish-messages'),
+  var messages = exports.getTemplate('.publish-messages-template'),
     scheduleMessage, stateMessage;
 
   if (res.published) {
@@ -87,7 +121,7 @@ function createPublishMessages(res) {
     scheduleMessage = dom.find(messages, '.publish-schedule-message');
     if (scheduleMessage) {
       scheduleMessage.innerHTML = `Scheduled to publish ${state.formatTime(res.scheduledAt)}.`;
-      scheduleMessage.classList.remove('hide');
+      scheduleMessage.classList.remove(kilnHideClass);
     }
   }
 
@@ -100,7 +134,7 @@ function createPublishMessages(res) {
  * @returns {Element}
  */
 function createPublishActions(res) {
-  const actions = dom.find('.publish-actions'),
+  const actions = exports.getTemplate('.publish-actions-template'),
     today = moment().format('YYYY-MM-DD'),
     now = moment().format('HH:mm');
   let scheduleDate, scheduleTime, unpublish, unschedule;
@@ -111,11 +145,14 @@ function createPublishActions(res) {
     scheduleTime = dom.find(actions, '#schedule-time');
 
     if (scheduleDate) {
-      dom.replaceElement(scheduleDate, dom.create(`<input id="schedule-date" class="schedule-input" type="date" min="${today}" value="${today}" placeholder="${today}"></input>`));
+      scheduleDate.setAttribute('min', today);
+      scheduleDate.setAttribute('value', today);
+      scheduleDate.setAttribute('placeholder', today);
     }
 
     if (scheduleTime) {
-      dom.replaceElement(scheduleTime, dom.create(`<input id="schedule-time" class="schedule-input" type="time" value="${now}" placeholder="${now}"></input>`));
+      scheduleTime.setAttribute('value', now);
+      scheduleTime.setAttribute('placeholder', now);
     }
   }
 
@@ -124,7 +161,7 @@ function createPublishActions(res) {
     state.toggleScheduled(true); // just in case someone else scheduled this page
     unschedule = dom.find(actions, '.unschedule');
     if (unschedule) {
-      unschedule.classList.remove('hide');
+      unschedule.classList.remove(kilnHideClass);
     }
   }
 
@@ -132,7 +169,7 @@ function createPublishActions(res) {
   if (res.published) {
     unpublish = dom.find(actions, '.unpublish');
     if (unpublish) {
-      unpublish.classList.remove('hide');
+      unpublish.classList.remove(kilnHideClass);
     }
   }
 
@@ -141,15 +178,17 @@ function createPublishActions(res) {
 
 /**
  * open publish pane
+ * @param {array} [warnings]
  * @returns {Promise}
  */
-function openPublish() {
+function openPublish(warnings) {
   var header = 'Schedule Publish',
     innerEl = document.createDocumentFragment(),
     el;
 
   return state.get().then(function (res) {
-    // append message and actions to the doc fragment
+    // append validation, message, and actions to the doc fragment
+    innerEl.appendChild(createPublishValidation(warnings));
     innerEl.appendChild(createPublishMessages(res));
     innerEl.appendChild(createPublishActions(res));
 
@@ -163,20 +202,21 @@ function openPublish() {
 
 /**
  * open new page type dialog pane
- * @returns {Promise}
+ * note: not a promise
  */
 function openNewPage() {
   var header = 'New Page',
     innerEl = document.createDocumentFragment(),
-    pageActionsSubTemplate = dom.find('.new-page-actions').cloneNode(true);
+    pageActionsSubTemplate = exports.getTemplate('.new-page-actions-template'),
+    el;
 
   // append actions to the doc fragment
   innerEl.appendChild(pageActionsSubTemplate);
   // create the root pane element
-  open(header, innerEl, 'medium');
+  el = open(header, innerEl, 'medium');
   // init controller for publish pane
   ds.controller('pane-new-page', newPagePaneController);
-  return ds.get('pane-new-page', pageActionsSubTemplate);
+  ds.get('pane-new-page', el.querySelector('.actions'));
 }
 
 function addPreview(preview) {
@@ -192,54 +232,51 @@ function addPreview(preview) {
  * @returns {Promise}
  */
 function openPreview() {
-  const header = 'Preview Link',
+  var header = 'Preview Link',
     innerEl = document.createDocumentFragment(),
-    previewUrl = edit.getPageUrl();
-
-  let pageActionsSubTemplate = dom.find('.preview-actions').cloneNode(true),
-    previewInput;
+    pageActionsSubTemplate = exports.getTemplate('.preview-actions-template'),
+    previewUrl = edit.getPageUrl(),
+    el, previewInput;
 
   if (pageActionsSubTemplate) {
     previewInput = dom.find(pageActionsSubTemplate, '.preview-input');
   }
 
-  dom.replaceElement(previewInput, dom.create(`<input class="preview-input" type="url" value="${previewUrl}" placeholder=""></input>`));
+  previewInput.setAttribute('value', previewUrl);
 
   // append actions to the doc fragment
   innerEl.appendChild(pageActionsSubTemplate);
   // create the root pane element
-  open(header, innerEl);
+  el = open(header, innerEl);
   // init controller for publish pane
   ds.controller('pane-preview', previewPaneController);
-  return ds.get('pane-preview', pageActionsSubTemplate);
+  ds.get('pane-preview', el.querySelector('.actions'));
 }
 
 /**
  * format and assemble error messages
- * @param {Object[]} errors
+ * @param {Object[]} errors (or warnings)
+ * @param {string} [modifier] modifier class for warnings, info, etc
  * @returns {Element}
  */
-function addErrors(errors) {
+function addErrorsOrWarnings(errors, modifier) {
   return _.reduce(errors, function (el, error) {
-    var errorEl = dom.find('.publish-errors'),
+    var errorEl = exports.getTemplate('.publish-errors-template'),
       errorLabel = dom.find(errorEl, '.label'),
       errorDescription = dom.find(errorEl, '.description'),
-      list = dom.find(errorEl, 'ul');
+      list = dom.find(errorEl, '.errors');
 
-    // reset template label default if available
+    // add rule label if it exists
     if (errorLabel && _.get(error, 'rule.label')) {
-      dom.replaceElement(errorLabel, dom.create(`<span class="label">${error.rule.label}:</span>`));
+      errorLabel.innerHTML = error.rule.label + ':';
     }
 
-    // reset template description default if available
+    // add rule description if it exists
     if (errorDescription && _.get(error, 'rule.description')) {
-      dom.replaceElement(errorDescription, dom.create(`<span class="description">${error.rule.description}</span>`));
+      errorDescription.innerHTML = error.rule.description;
     }
 
-    // remove default error messages
-    dom.clearChildren(list);
-
-    // add each place where the error occurs
+    // add each place where the error/warning occurs
     _.each(error.errors, function (item) {
       var itemEl = dom.create(`<li><span class="error-label">${item.label}</span>${addPreview(item.preview)}</li>`);
 
@@ -247,27 +284,69 @@ function addErrors(errors) {
     });
 
     el.appendChild(errorEl);
+    // add modifier class if it exists
+    if (modifier) {
+      dom.find(el, '.publish-error').classList.add(modifier);
+    }
     return el;
   }, document.createDocumentFragment());
 }
 
 /**
  * open validation error pane
- * @param {Object[]} errors
- * @param {object} errors[].rule
- * @param {string} errors[].rule.label e.g. 'Required'
- * @param {string} errors[].rule.description e.g. 'Required fields cannot be blank'
- * @param {Object[]} errors[].errors
- * @param {string} errors[].errors[].label e.g. 'Article > Header'
- * @param {string} [errors[].errors[].preview] e.g. 'text in a paragraph TK more text...'
+ * @param {object} validation
+ * @param {Object[]} validation.errors
+ * @param {Object[]} validation.warnings
  */
-function openValidationErrors(errors) {
+function openValidationErrors(validation) {
   var header = 'Before you can publish&hellip;',
-    errorsEl = addErrors(errors),
+    messagesEl = exports.getTemplate('.publish-error-message-template'),
+    errorsEl = addErrorsOrWarnings(validation.errors),
+    warningsEl = addErrorsOrWarnings(validation.warnings, 'publish-warning'),
     innerEl = document.createDocumentFragment();
 
+  innerEl.appendChild(messagesEl);
   innerEl.appendChild(errorsEl);
+  innerEl.appendChild(warningsEl);
   open(header, innerEl);
+}
+
+function addFilteredItems(items) {
+  var wrapper = exports.getTemplate('.filtered-items-template'),
+    listEl = dom.find(wrapper, 'ul');
+
+  _.each(items, function (item) {
+    var itemEl = exports.getTemplate('.filtered-item-template'),
+      listItem = dom.find(itemEl, 'li');
+
+    // add component name and label to each list item
+    listItem.innerHTML = label(item);
+    listItem.setAttribute('data-item-name', item);
+    // add it to the list
+    listEl.appendChild(itemEl);
+  });
+
+  return wrapper;
+}
+
+/**
+ * open the add component pane
+ * @param {array} components
+ * @param {object} options to pass to controller (used for calling addComponent)
+ */
+function openAddComponent(components, options) {
+  var header = 'Add Component',
+    inputEl = exports.getTemplate('.filtered-input-template'),
+    itemsEl = addFilteredItems(components),
+    innerEl = document.createDocumentFragment(),
+    el;
+
+  innerEl.appendChild(inputEl);
+  innerEl.appendChild(itemsEl);
+  el = open(header, innerEl);
+  // init controller for add component pane
+  ds.controller('add-component-pane', addComponentPaneController);
+  ds.get('add-component-pane', el.querySelector('.kiln-toolbar-pane'), options);
 }
 
 function takeOffEveryZig() {
@@ -288,10 +367,12 @@ function takeOffEveryZig() {
   open(header, innerEl);
 }
 
+module.exports.getTemplate = getTemplate;
 module.exports.close = close;
 module.exports.open = open;
 module.exports.openNewPage = openNewPage;
 module.exports.openPreview = openPreview;
 module.exports.openPublish = openPublish;
 module.exports.openValidationErrors = openValidationErrors;
+module.exports.openAddComponent = openAddComponent;
 module.exports.takeOffEveryZig = takeOffEveryZig;

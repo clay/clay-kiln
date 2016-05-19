@@ -242,7 +242,7 @@ describe(dirname, function () {
         // Problem is that addParentOptions returns a promise, but the handler returns an element synchronously.
         // Todo: get all the data in one pass or better way to get the closest field?
         window.setTimeout(function () {
-          expect(el.querySelector('.component-bar .drag')).to.not.equal(null); // Has drag.
+          expect(el.querySelector('.component-bar .drag-icon')).to.not.equal(null); // Has drag icon.
           expect(el.querySelector('.component-bar .delete')).to.not.equal(null); // Has delete.
           done();
         }, 0);
@@ -263,7 +263,7 @@ describe(dirname, function () {
         fn(el, options);
 
         window.setTimeout(function () {
-          expect(el.querySelector('.component-bar .drag')).to.equal(null); // Has drag.
+          expect(el.querySelector('.component-bar .drag-icon')).to.equal(null); // Has drag icon.
           expect(el.querySelector('.component-bar .delete')).to.equal(null); // Has delete.
           done();
         }, 0);
