@@ -352,6 +352,57 @@ function createComponent(name, data) {
 
 /**
  * Remove a component from a list.
+ * @param {object} parentData
+ * @param {object}  options
+ * @param {Element} options.el          The component to be removed.
+ * @param {string}  options.ref         The ref of the component to be removed.
+ * @param {string}  options.parentField
+ * @param {string}  options.parentRef
+ * @returns {Promise}
+ */
+function removeFromComponentList(parentData, options) {
+  var el = options.el,
+    ref = options.ref,
+    parentField = options.parentField,
+    pageUri = dom.pageUri(),
+    item = {},
+    index;
+
+  parentData = _.cloneDeep(parentData);
+  item[refProp] = ref;
+  index = _.findIndex(parentData[parentField], item);
+  parentData[parentField].splice(index, 1); // remove component from parent data
+  dom.removeElement(el); // remove component from DOM
+  return save(parentData);
+}
+
+/**
+ * Remove a component from a list.
+ * @param {object} parentData
+ * @param {object}  options
+ * @param {Element} options.el          The component to be removed.
+ * @param {string}  options.ref         The ref of the component to be removed.
+ * @param {string}  options.parentField
+ * @returns {Promise}
+ */
+function removeFromPageList(options) {
+  var el = options.el,
+    ref = options.ref,
+    parentField = options.parentField,
+    pageUri = dom.pageUri(),
+    index;
+
+  return db.get(pageUri).then(function (pageData) {
+    pageData = _.cloneDeep(pageData);
+    index = pageData[parentField].indexOf(ref);
+    pageData[parentField].splice(index, 1); // remove component from parent data
+    dom.removeElement(el); // remove component from DOM
+    return db.save(pageUri, _.omit(pageData, '_ref'));
+  });
+}
+
+/**
+ * Remove a component from a list.
  * @param {object}  opts
  * @param {Element} opts.el          The component to be removed.
  * @param {string}  opts.ref         The ref of the component to be removed.
@@ -360,21 +411,17 @@ function createComponent(name, data) {
  * @returns {Promise}
  */
 function removeFromParentList(opts) {
-  var el = opts.el,
-    ref = opts.ref,
-    parentRef = opts.parentRef,
+  var parentRef = opts.parentRef,
     parentField = opts.parentField;
 
   return cache.getData(parentRef).then(function (parentData) {
-    var index,
-      item = {};
-
-    parentData = _.cloneDeep(parentData);
-    item[refProp] = ref;
-    index = _.findIndex(parentData[parentField], item);
-    parentData[parentField].splice(index, 1); // remove component from parent data
-    dom.removeElement(el); // remove component from DOM
-    return save(parentData);
+    if (_.isArray(parentData[parentField])) {
+      // regular ol' component list
+      return removeFromComponentList(parentData, opts);
+    } else {
+      // the parent is actually a page!
+      return removeFromPageList(opts);
+    }
   });
 }
 
@@ -432,11 +479,11 @@ function addToPageList(options) {
     pageUri = dom.pageUri(),
     prevIndex;
 
-  return cache.getDataOnly(pageUri).then(function (pageData) {
+  return db.get(pageUri).then(function (pageData) {
     pageData = _.cloneDeep(pageData);
     if (prevRef) {
       // add to specific position in the page area
-      prevIndex = _.findIndex(pageData[parentField], prevRef);
+      prevIndex = pageData[parentField].indexOf(prevRef);
       pageData[parentField].splice(prevIndex + 1, 0, ref);
     } else {
       // add to end of page area
