@@ -83,7 +83,7 @@ $layout-parent-bg-color: $purple-25;
   // visual jump when animating them in
   // (technically the parent DOES jump, but it's a lot less noticible than the
   // selected component. plus, the colors are similar enough that you don't see it)
-  border-color: $page-bg-color;
+  border-color: $layout-bg-color;
   // subtle shadow to create more visual distinction between selectors and the
   // stuff behind them
   box-shadow: 1px 1px 20px -11px $black;
@@ -98,6 +98,10 @@ $layout-parent-bg-color: $purple-25;
   transition: 50ms opacity linear; // fade out quickly
   width: calc(100% + #{$offset-width});
   z-index: -1; // should be less than any element in the component itself
+}
+
+.kiln-page-area .component-selector {
+  border-color: $page-bg-color;
 }
 
 // menus
@@ -115,15 +119,20 @@ $layout-parent-bg-color: $purple-25;
 
 // place the top and bottom menus bisecting the outline vertically
 .component-selector-top {
-  border-color: $page-bg-color;
+  border-color: $layout-bg-color;
   bottom: calc(100% - #{$offset-height-menu});
 }
 
 // bottom menu is more offset, since it concerns actions that don't
 // affect the component itself (but rather things around it, e.g. adding new components)
 .component-selector-bottom {
-  border-color: $page-bg-color;
+  border-color: $layout-bg-color;
   top: calc(100% - #{$offset-height-menu / 2});
+}
+
+.kiln-page-area .component-selector-top,
+.kiln-page-area .component-selector-bottom {
+  border-color: $page-bg-color;
 }
 
 // all menus use flex to align their buttons
@@ -154,11 +163,21 @@ $layout-parent-bg-color: $purple-25;
 .selected-info-parent,
 .selected-action-settings,
 .selected-action-delete {
+  @include selector-icon($layout-color, $action-icon-small);
+}
+
+.kiln-page-area .selected-label,
+.kiln-page-area .selected-info-parent,
+.kiln-page-area .selected-action-settings,
+.kiln-page-area .selected-action-delete {
   @include selector-icon($page-color, $action-icon-small);
 }
 
 // add button is larger
 .selected-add {
+  @include selector-icon($layout-color, $action-icon-large);
+}
+.kiln-page-area .selected-add {
   @include selector-icon($page-color, $action-icon-large);
 }
 
@@ -166,6 +185,11 @@ $layout-parent-bg-color: $purple-25;
 .selected-info-parent,
 .selected-action-settings,
 .selected-action-delete {
+  border-left: 1px solid $layout-bg-color;
+}
+.kiln-page-area .selected-info-parent,
+.kiln-page-area .selected-action-settings,
+.kiln-page-area .selected-action-delete {
   border-left: 1px solid $page-bg-color;
 }
 
@@ -180,7 +204,35 @@ $layout-parent-bg-color: $purple-25;
   pointer-events: all;
   transition: 250ms opacity ease-out; // fade in slower than the current component
 
-  // override colors colors
+  // override colors
+  border-color: $layout-parent-bg-color;
+
+  .component-selector-top {
+    border-color: $layout-parent-bg-color;
+  }
+
+  .selected-label,
+  .selected-action-settings {
+    @include selector-icon($layout-parent-color, $action-icon-small);
+  }
+
+  // set a border on settings instead of its container,
+  // because a parent might only have `delete` and we don't want an empty
+  // `selected-actions` menu with a border and empty space
+  .selected-action-settings {
+    border-left: 1px solid $layout-parent-bg-color;
+  }
+
+  // hide extraneous buttons
+  .selected-info-parent,
+  .selected-action-delete,
+  .component-selector-bottom {
+    display: none;
+  }
+}
+
+.kiln-page-area .component-selector-wrapper.selected-parent > .component-selector {
+  // override colors
   border-color: $page-parent-bg-color;
 
   .component-selector-top {
@@ -197,13 +249,6 @@ $layout-parent-bg-color: $purple-25;
   // `selected-actions` menu with a border and empty space
   .selected-action-settings {
     border-left: 1px solid $page-parent-bg-color;
-  }
-
-  // hide extraneous buttons
-  .selected-info-parent,
-  .selected-action-delete,
-  .component-selector-bottom {
-    display: none;
   }
 }
 
