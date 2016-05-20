@@ -8,6 +8,7 @@ const dom = require('@nymag/dom'),
   progress = require('../services/progress'),
   rules = require('../validators'),
   validation = require('../services/publish-validation');
+
 let EditorToolbar;
 
 /**
@@ -47,9 +48,9 @@ EditorToolbar = function (el) {
 
   this.statusEl = dom.find(el, '.kiln-status');
   this.progressEl = dom.find(el, '.kiln-progress');
-  this.el = el;
+  this.toolbar = dom.find(el, '.kiln-toolbar');
 
-  events.add(el, {
+  events.add(this.toolbar, {
     '.user-icon click': 'onUserClick',
     '.new click': 'onNewClick',
     '.preview click': 'onPreviewClick',
@@ -131,6 +132,7 @@ EditorToolbar.prototype = {
         });
       })
       .catch(function () {
+        // if we can't unfocus the current form...
         progress.done('error');
         progress.open('error', 'Data could not be saved. Please review your open form.', true);
       });

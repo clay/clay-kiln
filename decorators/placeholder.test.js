@@ -1,6 +1,8 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./placeholder'),
+  tpl = require('../services/tpl'),
+  dom = require('@nymag/dom'),
   references = require('../services/references');
 
 describe(dirname, function () {
@@ -9,6 +11,10 @@ describe(dirname, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
+      sandbox.stub(tpl, 'get').returns(dom.create(`<div>
+        <span class="placeholder-label"></span>
+        <span class="placeholder-add-component kiln-hide" title="Add Component To List"></span>
+      </div>`));
     });
 
     afterEach(function () {

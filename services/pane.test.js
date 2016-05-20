@@ -1,10 +1,11 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
-  edit = require('./edit'),
   lib = require('./pane'),
   state = require('./page-state'),
   dom = require('@nymag/dom'),
-  ds = require('dollar-slice');
+  tpl = require('./tpl'),
+  ds = require('dollar-slice'),
+  edit = require('./edit');
 
 // minimal templates, only what we need to test the logic and functionality
 function stubWrapperTemplate() {
@@ -47,6 +48,14 @@ function stubNewPageActionsTemplate() {
   </div>`);
 }
 
+function stubPreviewActionsTemplate() {
+  return dom.create(`<div class="preview-actions actions">
+    <form class="preview-link">
+      <input class="preview-input" type="url" value="" placeholder=""></input>
+    </form>
+  </div>`);
+}
+
 function stubErrorsTemplate() {
   return dom.create(`<div class="publish-error">
     <span class="label">There was a problem:</span>
@@ -64,12 +73,13 @@ describe(dirname, function () {
 
       document.body.appendChild(toolbar);
       sandbox = sinon.sandbox.create();
-      getTemplate = sandbox.stub(lib, 'getTemplate');
+      getTemplate = sandbox.stub(tpl, 'get');
       getTemplate.withArgs('.kiln-pane-template').returns(stubWrapperTemplate());
       getTemplate.withArgs('.publish-valid-template').returns(dom.create('<div class="publish-valid">valid</div>'));
       getTemplate.withArgs('.publish-messages-template').returns(stubMessageTemplate());
       getTemplate.withArgs('.publish-actions-template').returns(stubPublishTemplate());
       getTemplate.withArgs('.new-page-actions-template').returns(stubNewPageActionsTemplate());
+      getTemplate.withArgs('.preview-actions-template').returns(stubPreviewActionsTemplate());
       getTemplate.withArgs('.publish-error-message-template').returns(dom.create('<div>ERROR MESSAGE</div>'));
       getTemplate.withArgs('.publish-warning-message-template').returns(dom.create('<div>WARNING MESSAGE</div>'));
       getTemplate.withArgs('.publish-errors-template').returns(stubErrorsTemplate());
@@ -261,30 +271,26 @@ describe(dirname, function () {
       });
     });
 
-    describe.only('openPreview', function () {
+    describe('openPreview', function () {
       var fn = lib[this.title],
         sandbox;
 
       beforeEach(function () {
         sandbox = sinon.sandbox.create();
         sandbox.stub(ds);
+        sandbox.stub(edit);
       });
 
       afterEach(function () {
         sandbox.restore();
       });
 
-      // Opens a preview pane
-      it('opens a new preview pane', function () {
+      it('opens a preview pane', function () {
         lib.close();
         fn();
         expect(document.querySelector('.pane-header').innerHTML).to.equal('Preview Link');
-        //expect(document.querySelector('.preview-input').valueOf()).to.equal('')
+        expect(document.querySelectorAll('.pane-inner input').length).to.equal(1);
       });
-
-      // Populates a preview pane with a link
-
-
     });
 
     describe('openValidationErrors', function () {

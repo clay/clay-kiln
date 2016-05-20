@@ -1,8 +1,8 @@
 ## Validators
 
-Validators are rules that block publishing of articles. They live in a global `window.kiln.validators` array. To add internal (kiln-specific) validators, use `validators.add()` in the `client.js`. To add them externally, use `window.kiln.validators.push(yourValidator)` before the `DOMContentLoaded` event fires.
+Validators are rules that block publishing (errors) or notify users (warnings) when opening the publishing pane. They live in a global `window.kiln.validators` object. To add internal (kiln-specific) validators, use `validators.addError()` or `validators.addWarning()` in the `client.js`. To add them externally, use `window.kiln.validators.errors.push(yourValidator)` or `window.kiln.validators.warnings.push(yourValidator)` before the `DOMContentLoaded` event fires.
 
-Each validator needs to be an object with three properties:
+Warnings and errors have the _exact same api_, allowing us to easily swap rules between them. Each validator needs to be an object with three properties:
 
 ### label
 
@@ -14,11 +14,11 @@ A longer description that explains the validation error.
 
 ### validate
 
-A function that returns an `errors` array (return an empty array if there are no errors). It receives a frozen `state` object with refs and components. For example, the following validator blocks `TK` and `tktk` in article headlines and paragraphs:
+A function that returns an array of warnings/errors (return an empty array if all rules pass). It receives a frozen `state` object with refs and components. For example, the following validator warns when `tk` exists in article headlines and paragraphs:
 
 ```js
 var label = 'TKs';
-  description = 'Any TK in the article cannot be published:';
+  description = 'You have TKs on this page:';
   blocked = {
     article: ['primaryHeadline'],
     paragraph: ['text']
@@ -44,7 +44,7 @@ function validate(state) {
 }
 
 // add it to the global validators
-window.kiln.validators.push({
+window.kiln.validators.warnings.push({
   label: label,
   description: description,
   validate: validate

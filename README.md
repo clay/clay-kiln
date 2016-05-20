@@ -44,7 +44,7 @@ Kiln has a simple client-side api that is used to extend its functionality. It c
 
 * [Behaviors](https://github.com/nymag/clay-kiln/tree/master/behaviors#behaviors) — run on each field when opening forms
 * [Decorators](https://github.com/nymag/clay-kiln/tree/master/decorators#decorators) — run on each field (elements with `data-editable`) when the page is loaded
-* [Validators](https://github.com/nymag/clay-kiln/tree/master/validators#validators) — run when clicking the `PUBLISH` button and block publishing if they don't validate
+* [Validators](https://github.com/nymag/clay-kiln/tree/master/validators#validators) — run when opening the `PUBLISH` pane and returns errors and warnings
 
 To add custom `behaviors`, `decorators`, and `validators`, simply add them to the `kiln` object before the page's `DOMContentLoaded` event fires.
 

@@ -6,6 +6,7 @@ var _ = require('lodash'),
   state = require('./page-state'),
   site = require('./site'),
   label = require('./label'),
+  tpl = require('./tpl'),
   paneController = require('../controllers/pane'),
   newPagePaneController = require('../controllers/pane-new-page'),
   previewPaneController = require('../controllers/pane-preview'),
@@ -14,24 +15,13 @@ var _ = require('lodash'),
   kilnHideClass = 'kiln-hide';
 
 /**
- * grab templates from the dom
- * @param {string} selector
- * @returns {Element}
- */
-function getTemplate(selector) {
-  var template = dom.find(selector);
-
-  return document.importNode(template.content, true);
-}
-
-/**
  * create pane
  * @param {string} header
  * @param {Element|DocumentFragment} innerEl
  * @returns {Element}
  */
 function createPane(header, innerEl) {
-  var el = exports.getTemplate('.kiln-pane-template');
+  var el = tpl.get('.kiln-pane-template');
 
   // add header and contents
   el.querySelector('.pane-header').innerHTML = header;
@@ -88,7 +78,7 @@ function open(header, innerEl, modifier) {
 function createPublishValidation(warnings) {
   if (warnings.length) {
     let el = document.createDocumentFragment(),
-      messageEl = exports.getTemplate('.publish-warning-message-template'),
+      messageEl = tpl.get('.publish-warning-message-template'),
       // same way the error pane does it
       errorsEl = addErrorsOrWarnings(warnings, 'publish-warning');
 
@@ -97,7 +87,7 @@ function createPublishValidation(warnings) {
 
     return el;
   } else {
-    return exports.getTemplate('.publish-valid-template');
+    return tpl.get('.publish-valid-template');
   }
 }
 
@@ -107,7 +97,7 @@ function createPublishValidation(warnings) {
  * @returns {Element}
  */
 function createPublishMessages(res) {
-  var messages = exports.getTemplate('.publish-messages-template'),
+  var messages = tpl.get('.publish-messages-template'),
     scheduleMessage, stateMessage;
 
   if (res.published) {
@@ -134,7 +124,7 @@ function createPublishMessages(res) {
  * @returns {Element}
  */
 function createPublishActions(res) {
-  const actions = exports.getTemplate('.publish-actions-template'),
+  const actions = tpl.get('.publish-actions-template'),
     today = moment().format('YYYY-MM-DD'),
     now = moment().format('HH:mm');
   let scheduleDate, scheduleTime, unpublish, unschedule;
@@ -207,7 +197,7 @@ function openPublish(warnings) {
 function openNewPage() {
   var header = 'New Page',
     innerEl = document.createDocumentFragment(),
-    pageActionsSubTemplate = exports.getTemplate('.new-page-actions-template'),
+    pageActionsSubTemplate = tpl.get('.new-page-actions-template'),
     el;
 
   // append actions to the doc fragment
@@ -229,26 +219,27 @@ function addPreview(preview) {
 
 /**
  * open preview dialog pane
- * @returns {Promise}
  */
 function openPreview() {
   var header = 'Preview Link',
     innerEl = document.createDocumentFragment(),
-    pageActionsSubTemplate = exports.getTemplate('.preview-actions-template'),
     previewUrl = edit.getPageUrl(),
-    el, previewInput;
+    pageActionsSubTemplate = tpl.get('.preview-actions-template'),
+    previewInput, el;
 
   if (pageActionsSubTemplate) {
     previewInput = dom.find(pageActionsSubTemplate, '.preview-input');
   }
 
-  previewInput.setAttribute('value', previewUrl);
+  if (previewInput) {
+    previewInput.setAttribute('value', previewUrl);
+  }
 
   // append actions to the doc fragment
   innerEl.appendChild(pageActionsSubTemplate);
   // create the root pane element
   el = open(header, innerEl);
-  // init controller for publish pane
+  // init controller for preview pane
   ds.controller('pane-preview', previewPaneController);
   ds.get('pane-preview', el.querySelector('.actions'));
 }
@@ -261,7 +252,7 @@ function openPreview() {
  */
 function addErrorsOrWarnings(errors, modifier) {
   return _.reduce(errors, function (el, error) {
-    var errorEl = exports.getTemplate('.publish-errors-template'),
+    var errorEl = tpl.get('.publish-errors-template'),
       errorLabel = dom.find(errorEl, '.label'),
       errorDescription = dom.find(errorEl, '.description'),
       list = dom.find(errorEl, '.errors');
@@ -300,7 +291,7 @@ function addErrorsOrWarnings(errors, modifier) {
  */
 function openValidationErrors(validation) {
   var header = 'Before you can publish&hellip;',
-    messagesEl = exports.getTemplate('.publish-error-message-template'),
+    messagesEl = tpl.get('.publish-error-message-template'),
     errorsEl = addErrorsOrWarnings(validation.errors),
     warningsEl = addErrorsOrWarnings(validation.warnings, 'publish-warning'),
     innerEl = document.createDocumentFragment();
@@ -312,11 +303,11 @@ function openValidationErrors(validation) {
 }
 
 function addFilteredItems(items) {
-  var wrapper = exports.getTemplate('.filtered-items-template'),
+  var wrapper = tpl.get('.filtered-items-template'),
     listEl = dom.find(wrapper, 'ul');
 
   _.each(items, function (item) {
-    var itemEl = exports.getTemplate('.filtered-item-template'),
+    var itemEl = tpl.get('.filtered-item-template'),
       listItem = dom.find(itemEl, 'li');
 
     // add component name and label to each list item
@@ -336,7 +327,7 @@ function addFilteredItems(items) {
  */
 function openAddComponent(components, options) {
   var header = 'Add Component',
-    inputEl = exports.getTemplate('.filtered-input-template'),
+    inputEl = tpl.get('.filtered-input-template'),
     itemsEl = addFilteredItems(components),
     innerEl = document.createDocumentFragment(),
     el;
@@ -367,12 +358,11 @@ function takeOffEveryZig() {
   open(header, innerEl);
 }
 
-module.exports.getTemplate = getTemplate;
 module.exports.close = close;
 module.exports.open = open;
 module.exports.openNewPage = openNewPage;
-module.exports.openPreview = openPreview;
 module.exports.openPublish = openPublish;
+module.exports.openPreview = openPreview;
 module.exports.openValidationErrors = openValidationErrors;
 module.exports.openAddComponent = openAddComponent;
 module.exports.takeOffEveryZig = takeOffEveryZig;
