@@ -55,7 +55,7 @@
     "moment": "^2.10.6",
     "nprogress": "^0.2.0",
     "responsive-filenames": "^1.2.0",
-    "rivets": "^0.8.1",
+    "rivets": "^0.9.0",
     "rollupify": "^0.2.0",
     "selection-range": "^1.0.1",
     "striptags": "^2.0.2",
