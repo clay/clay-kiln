@@ -9,7 +9,6 @@ var _ = require('lodash'),
   tpl = require('./tpl'),
   paneController = require('../controllers/pane'),
   newPagePaneController = require('../controllers/pane-new-page'),
-  previewPaneController = require('../controllers/pane-preview'),
   publishPaneController = require('../controllers/publish-pane'),
   addComponentPaneController = require('../controllers/add-component-pane'),
   kilnHideClass = 'kiln-hide';
@@ -238,10 +237,7 @@ function openPreview() {
   // append actions to the doc fragment
   innerEl.appendChild(pageActionsSubTemplate);
   // create the root pane element
-  el = open(header, innerEl);
-  // init controller for preview pane
-  ds.controller('pane-preview', previewPaneController);
-  ds.get('pane-preview', el.querySelector('.actions'));
+  open(header, innerEl);
 }
 
 /**
