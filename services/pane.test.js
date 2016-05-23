@@ -294,28 +294,43 @@ describe(dirname, function () {
       });
     });
 
-        function clickToOpenPane() {
-          expect(pagePane).to.exist;
-        }
+    describe('openValidationErrors', function () {
+      var fn = lib[this.title],
+        sandbox;
 
-        clickToOpenPane();
+      beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+        sandbox.stub(ds);
       });
 
-      it('opens a create page pane and clicks new article page button', sinon.test(function () {
-        lib.close();
-        document.body.innerHTML += result;
-        el = document.querySelector('.new-page-actions .create-article-page');
-        stub = sandbox.stub(el, 'click');
-        el.click();
-        sinon.assert.called(stub);
-      }));
+      afterEach(function () {
+        sandbox.restore();
+      });
 
-      it('creates a new article page', sinon.test(function () {
-        createPage = sandbox.spy(edit, 'createPage');
+      it('opens with no errors', function () {
         lib.close();
-        expect(createPage.returned(Promise.resolve({}))).to.exist;
-      }));
-    });
+        fn({ errors: [], warnings: [] });
+        expect(document.querySelector('.pane-header').innerHTML).to.equal('Before you can publish…');
+        expect(document.querySelector('.pane-inner').innerHTML).to.equal('<div>ERROR MESSAGE</div>'); // just the message, nothing else!
+      });
+
+      it('opens with errors', function () {
+        lib.close();
+        fn({ errors: [{
+          rule: {
+            label: 'Wrong',
+            description: 'Way'
+          },
+          errors: [{
+            label: 'Foo',
+            preview: 'Bar'
+          }]
+        }], warnings: []});
+        expect(document.querySelector('.pane-header').innerHTML).to.equal('Before you can publish…');
+        expect(document.querySelector('.pane-inner .publish-error .label').innerHTML).to.equal('Wrong:'); // note the semicolon
+        expect(document.querySelector('.pane-inner .publish-error .description').innerHTML).to.equal('Way');
+        expect(document.querySelectorAll('.pane-inner .errors li').length).to.equal(1);
+      });
 
       it('opens with warnings', function () {
         lib.close();
