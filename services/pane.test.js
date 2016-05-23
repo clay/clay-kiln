@@ -4,7 +4,8 @@ var dirname = __dirname.split('/').pop(),
   state = require('./page-state'),
   dom = require('@nymag/dom'),
   tpl = require('./tpl'),
-  ds = require('dollar-slice');
+  ds = require('dollar-slice'),
+  edit = require('./edit');
 
 // minimal templates, only what we need to test the logic and functionality
 function stubWrapperTemplate() {
@@ -47,6 +48,14 @@ function stubNewPageActionsTemplate() {
   </div>`);
 }
 
+function stubPreviewActionsTemplate() {
+  return dom.create(`<div class="preview-actions actions">
+    <form class="preview-link">
+      <input class="preview-input" type="url" value="" placeholder=""></input>
+    </form>
+  </div>`);
+}
+
 function stubErrorsTemplate() {
   return dom.create(`<div class="publish-error">
     <span class="label">There was a problem:</span>
@@ -71,6 +80,7 @@ describe(dirname, function () {
       getTemplate.withArgs('.publish-messages-template').returns(stubMessageTemplate());
       getTemplate.withArgs('.publish-actions-template').returns(stubPublishTemplate());
       getTemplate.withArgs('.new-page-actions-template').returns(stubNewPageActionsTemplate());
+      getTemplate.withArgs('.preview-actions-template').returns(stubPreviewActionsTemplate());
       getTemplate.withArgs('.publish-error-message-template').returns(dom.create('<div>ERROR MESSAGE</div>'));
       getTemplate.withArgs('.publish-warning-message-template').returns(dom.create('<div>WARNING MESSAGE</div>'));
       getTemplate.withArgs('.publish-errors-template').returns(stubErrorsTemplate());
@@ -259,6 +269,28 @@ describe(dirname, function () {
         fn();
         expect(document.querySelector('.pane-header').innerHTML).to.equal('New Page');
         expect(document.querySelectorAll('.pane-inner button').length).to.equal(2);
+      });
+    });
+
+    describe('openPreview', function () {
+      var fn = lib[this.title],
+        sandbox;
+
+      beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+        sandbox.stub(ds);
+        sandbox.stub(edit);
+      });
+
+      afterEach(function () {
+        sandbox.restore();
+      });
+
+      it('opens a preview pane', function () {
+        lib.close();
+        fn();
+        expect(document.querySelector('.pane-header').innerHTML).to.equal('Preview Link');
+        expect(document.querySelectorAll('.pane-inner input').length).to.equal(1);
       });
     });
 

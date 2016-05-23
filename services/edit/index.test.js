@@ -28,9 +28,9 @@ describe('edit service', function () {
     sandbox = sinon.sandbox.create();
     sandbox.stub(db);
     sandbox.stub(dom);
-    sandbox.stub(site);
     sandbox.stub(cache);
     sandbox.stub(progress);
+    sandbox.stub(site);
 
     // not under test
     site.get.withArgs('prefix').returns(prefix);
@@ -176,6 +176,14 @@ describe('edit service', function () {
       return fn({refs: ['newRef', 'otherRef'], prevRef: null, parentField: 'a', parentRef: 'd'}).then(function () {
         expectSavedAs({a: [{_ref: 'b'}, {_ref: 'c'}, {_ref: 'newRef'}, {_ref: 'otherRef'}], _schema: {a: {}}, _ref: 'd'});
       });
+    });
+  });
+
+  describe('getPageUrl', function () {
+    const fn = lib[this.title];
+
+    it('gets a url', function () {
+      expect(fn()).to.equal('place.com/b.html');
     });
   });
 

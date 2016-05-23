@@ -2,6 +2,7 @@ var _ = require('lodash'),
   moment = require('moment'),
   dom = require('@nymag/dom'),
   ds = require('dollar-slice'),
+  edit = require('./edit'),
   state = require('./page-state'),
   site = require('./site'),
   label = require('./label'),
@@ -216,6 +217,30 @@ function addPreview(preview) {
 }
 
 /**
+ * open preview dialog pane
+ */
+function openPreview() {
+  var header = 'Preview Link',
+    innerEl = document.createDocumentFragment(),
+    previewUrl = edit.getPageUrl(),
+    pageActionsSubTemplate = tpl.get('.preview-actions-template'),
+    previewInput;
+
+  if (pageActionsSubTemplate) {
+    previewInput = dom.find(pageActionsSubTemplate, '.preview-input');
+  }
+
+  if (previewInput) {
+    previewInput.setAttribute('value', previewUrl);
+  }
+
+  // append actions to the doc fragment
+  innerEl.appendChild(pageActionsSubTemplate);
+  // create the root pane element
+  open(header, innerEl);
+}
+
+/**
  * format and assemble error messages
  * @param {Object[]} errors (or warnings)
  * @param {string} [modifier] modifier class for warnings, info, etc
@@ -333,6 +358,7 @@ module.exports.close = close;
 module.exports.open = open;
 module.exports.openNewPage = openNewPage;
 module.exports.openPublish = openPublish;
+module.exports.openPreview = openPreview;
 module.exports.openValidationErrors = openValidationErrors;
 module.exports.openAddComponent = openAddComponent;
 module.exports.takeOffEveryZig = takeOffEveryZig;
