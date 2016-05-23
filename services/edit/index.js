@@ -360,6 +360,55 @@ function createComponent(name, data) {
 
 /**
  * Remove a component from a list.
+ * @param {object} parentData
+ * @param {object}  options
+ * @param {Element} options.el          The component to be removed.
+ * @param {string}  options.ref         The ref of the component to be removed.
+ * @param {string}  options.parentField
+ * @param {string}  options.parentRef
+ * @returns {Promise}
+ */
+function removeFromComponentList(parentData, options) {
+  var el = options.el,
+    ref = options.ref,
+    parentField = options.parentField,
+    item = {},
+    index;
+
+  parentData = _.cloneDeep(parentData);
+  item[refProp] = ref;
+  index = _.findIndex(parentData[parentField], item);
+  parentData[parentField].splice(index, 1); // remove component from parent data
+  dom.removeElement(el); // remove component from DOM
+  return save(parentData);
+}
+
+/**
+ * Remove a component from a list.
+ * @param {object}  options
+ * @param {Element} options.el          The component to be removed.
+ * @param {string}  options.ref         The ref of the component to be removed.
+ * @param {string}  options.parentField
+ * @returns {Promise}
+ */
+function removeFromPageList(options) {
+  var el = options.el,
+    ref = options.ref,
+    parentField = options.parentField,
+    pageUri = dom.pageUri(),
+    index;
+
+  return db.get(pageUri).then(function (pageData) {
+    pageData = _.cloneDeep(pageData);
+    index = pageData[parentField].indexOf(ref);
+    pageData[parentField].splice(index, 1); // remove component from parent data
+    dom.removeElement(el); // remove component from DOM
+    return db.save(pageUri, _.omit(pageData, '_ref'));
+  });
+}
+
+/**
+ * Remove a component from a list.
  * @param {object}  opts
  * @param {Element} opts.el          The component to be removed.
  * @param {string}  opts.ref         The ref of the component to be removed.
@@ -368,21 +417,92 @@ function createComponent(name, data) {
  * @returns {Promise}
  */
 function removeFromParentList(opts) {
-  var el = opts.el,
-    ref = opts.ref,
-    parentRef = opts.parentRef,
+  var parentRef = opts.parentRef,
     parentField = opts.parentField;
 
   return cache.getData(parentRef).then(function (parentData) {
-    var index,
-      item = {};
+    if (_.isArray(parentData[parentField])) {
+      // regular ol' component list
+      return removeFromComponentList(parentData, opts);
+    } else {
+      // the parent is actually a page!
+      return removeFromPageList(opts);
+    }
+  });
+}
 
-    parentData = _.cloneDeep(parentData);
-    item[refProp] = ref;
-    index = _.findIndex(parentData[parentField], item);
-    parentData[parentField].splice(index, 1); // remove component from parent data
-    dom.removeElement(el); // remove component from DOM
-    return save(parentData);
+/**
+ * add a component to a component list
+ * @param {object} parentData
+ * @param {object} options
+ * @param {string} options.ref new component ref
+ * @param {string} [options.prevRef] (optionally) insert the new component after this ref
+ * @param {string} options.parentField
+ * @param {string} options.parentRef
+ * @returns {Promise} Promise resolves to new component Element.
+ */
+function addToComponentList(parentData, options) {
+  var ref = options.ref,
+    prevRef = options.prevRef,
+    parentField = options.parentField,
+    prevIndex,
+    prevItem = {},
+    item = {};
+
+  parentData = _.cloneDeep(parentData);
+  item[refProp] = ref;
+  if (prevRef) {
+    // Add to specific position in the list.
+    prevItem[refProp] = prevRef;
+    prevIndex = _.findIndex(parentData[parentField], prevItem);
+    parentData[parentField].splice(prevIndex + 1, 0, item);
+  } else {
+    // Add to end of list.
+    parentData[parentField].push(item);
+  }
+
+  return Promise.all([
+    // save the parent and get the child's html in parallel
+    // note: this assumes the child already exists
+    // todo: when we can POST and get html back, just handle the parent here
+    save(parentData),
+    db.getHTML(ref)
+  ]).then(results => results[1]); // return the child component's html
+}
+
+/**
+ * add a component to a page area
+ * @param {object} options
+ * @param {string} options.ref new component ref
+ * @param {string} [options.prevRef] (optionally) insert the new component after this ref
+ * @param {string} options.parentField
+ * @returns {Promise} Promise resolves to new component Element.
+ */
+function addToPageList(options) {
+  var ref = options.ref,
+    prevRef = options.prevRef,
+    parentField = options.parentField,
+    pageUri = dom.pageUri(),
+    prevIndex;
+
+  return db.get(pageUri).then(function (pageData) {
+    pageData = _.cloneDeep(pageData);
+    if (prevRef) {
+      // add to specific position in the page area
+      prevIndex = pageData[parentField].indexOf(prevRef);
+      pageData[parentField].splice(prevIndex + 1, 0, ref);
+    } else {
+      // add to end of page area
+      pageData[parentField].push(ref);
+    }
+
+    return Promise.all([
+      // save the parent and get the child's html in parallel
+      // note: this assumes the child already exists
+      db.save(pageUri, _.omit(pageData, '_ref')), // call db.save directly, not edit.save
+      // edit.save is only for saving components
+      db.getHTML(ref)
+    ]).then(results => results[1]); // return the child component's html
   });
 }
 
@@ -396,35 +516,17 @@ function removeFromParentList(opts) {
  * @returns {Promise} Promise resolves to new component Element.
  */
 function addToParentList(opts) {
-  var ref = opts.ref,
-    prevRef = opts.prevRef,
-    parentField = opts.parentField,
+  var parentField = opts.parentField,
     parentRef = opts.parentRef;
 
   return cache.getData(parentRef).then(function (parentData) {
-    var prevIndex,
-      prevItem = {},
-      item = {};
-
-    parentData = _.cloneDeep(parentData);
-    item[refProp] = ref;
-    if (prevRef) {
-      // Add to specific position in the list.
-      prevItem[refProp] = prevRef;
-      prevIndex = _.findIndex(parentData[parentField], prevItem);
-      parentData[parentField].splice(prevIndex + 1, 0, item);
+    if (_.isArray(parentData[parentField])) {
+      // regular ol' component list
+      return addToComponentList(parentData, opts);
     } else {
-      // Add to end of list.
-      parentData[parentField].push(item);
+      // the parent is actually a page!
+      return addToPageList(opts);
     }
-
-    return Promise.all([
-      // save the parent and get the child's html in parallel
-      // note: this assumes the child already exists
-      // todo: when we can POST and get html back, just handle the parent here
-      save(parentData),
-      db.getHTML(ref)
-    ]).then(results => results[1]); // return the child component's html
   });
 }
 

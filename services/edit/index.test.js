@@ -64,13 +64,25 @@ describe('edit service', function () {
   describe('removeFromParentList', function () {
     var fn = lib[this.title];
 
-    it('removes the item from the data', function () {
+    it('removes the item from component data', function () {
       cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'}));
       cache.saveThrough.returns(resolveReadOnly({}));
       cache.saveForHTML.returns(Promise.resolve('some html'));
 
       return fn({el: {}, ref: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
         expectSavedAs({a: [{_ref: 'c'}], _schema: {a: {}}, _ref: 'd'});
+      });
+    });
+
+    it('removes the item from page data', function () {
+      cache.getData.returns(resolveReadOnly({a: {value: 'a'}, _schema: {a: {}}, _ref: 'd'}));
+      db.get.returns(resolveReadOnly({ a: ['b', 'c' ], _ref: 'e'}));
+      dom.pageUri.returns('e');
+      db.save.returns(resolveReadOnly({}));
+      db.getHTML.returns(Promise.resolve('some html'));
+
+      return fn({el: {}, ref: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
+        expect(db.save.calledWith('e', {a: ['c']})).to.equal(true);
       });
     });
 
@@ -115,8 +127,32 @@ describe('edit service', function () {
       cache.saveThrough.returns(resolveReadOnly({}));
       cache.saveForHTML.returns(Promise.resolve('some html'));
 
-      return fn({ref: 'newRef', prevRef: 'b', parentField: 'a', parentRef: 'd'}).then(function (el) {
+      return fn({ref: 'newRef', parentField: 'a', parentRef: 'd'}).then(function (el) {
         expect(el instanceof Element).to.equal(true);
+      });
+    });
+
+    it('adds the item to page data', function () {
+      cache.getData.returns(resolveReadOnly({a: {value: 'a'}, _schema: {a: {}}, _ref: 'd'}));
+      db.get.returns(resolveReadOnly({a: ['b', 'c'], _ref: 'e'}));
+      dom.pageUri.returns('e');
+      db.save.returns(resolveReadOnly({}));
+      db.getHTML.returns(Promise.resolve('some html'));
+
+      return fn({ref: 'newRef', prevRef: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
+        expect(db.save.calledWith('e', {a: ['b', 'newRef', 'c']})).to.equal(true);
+      });
+    });
+
+    it('adds the item to the end of page data', function () {
+      cache.getData.returns(resolveReadOnly({a: {value: 'a'}, _schema: {a: {}}, _ref: 'd'}));
+      db.get.returns(resolveReadOnly({a: [], _ref: 'e'}));
+      dom.pageUri.returns('e');
+      db.save.returns(resolveReadOnly({}));
+      db.getHTML.returns(Promise.resolve('some html'));
+
+      return fn({ref: 'newRef', prevRef: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
+        expect(db.save.calledWith('e', {a: ['newRef']})).to.equal(true);
       });
     });
   });
