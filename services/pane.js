@@ -224,7 +224,7 @@ function openPreview() {
     innerEl = document.createDocumentFragment(),
     previewUrl = edit.getPageUrl(),
     pageActionsSubTemplate = tpl.get('.preview-actions-template'),
-    previewInput, el;
+    previewInput;
 
   if (pageActionsSubTemplate) {
     previewInput = dom.find(pageActionsSubTemplate, '.preview-input');
