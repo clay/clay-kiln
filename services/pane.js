@@ -250,17 +250,20 @@ function addErrorsOrWarnings(errors, modifier) {
   return _.reduce(errors, function (el, error) {
     var errorEl = tpl.get('.publish-errors-template'),
       errorLabel = dom.find(errorEl, '.label'),
+      labelVal = _.get(error, 'rule.label'),
+      descVal = _.get(error, 'rule.description'),
       errorDescription = dom.find(errorEl, '.description'),
       list = dom.find(errorEl, '.errors');
 
     // add rule label if it exists
-    if (errorLabel && _.get(error, 'rule.label')) {
-      errorLabel.innerHTML = error.rule.label + ':';
+    if (errorLabel) {
+      errorLabel.innerHTML = labelVal ? `${labelVal}:` : 'There was a problem:';
+      // note the colon after the label, hence using a ternary operator
     }
 
     // add rule description if it exists
-    if (errorDescription && _.get(error, 'rule.description')) {
-      errorDescription.innerHTML = error.rule.description;
+    if (errorDescription) {
+      errorDescription.innerHTML = descVal || 'Please see below for details';
     }
 
     // add each place where the error/warning occurs

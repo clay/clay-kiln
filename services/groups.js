@@ -1,5 +1,6 @@
 var _ = require('lodash'),
-  references = require('./references');
+  references = require('./references'),
+  label = require('./label');
 
 /**
  * Given an array of fields, get an array of matching data.
@@ -65,7 +66,7 @@ function getSettingsGroup(ref, data) {
     value: getSettingsFields(data),
     _schema: {
       _display: 'settings',
-      _label: _.startCase(references.getComponentNameFromReference(ref)) + ' Settings',
+      _label: label(references.getComponentNameFromReference(ref)) + ' Settings',
       _name: 'settings'
     }
   };
