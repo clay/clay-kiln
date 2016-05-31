@@ -39,15 +39,6 @@ function stubPublishTemplate() {
   </div>`);
 }
 
-function stubNewPageActionsTemplate() {
-  return dom.create(`<div class="new-page-actions actions">
-    <form class="select-page-type">
-      <button class="create-article-page primary-action">New Article Page</button>
-      <button class="create-sponsored-post primary-action">New Sponsored Post</button>
-    </form>
-  </div>`);
-}
-
 function stubPreviewActionsTemplate() {
   return dom.create(`<div class="preview-actions actions">
     <form class="preview-link">
@@ -79,7 +70,7 @@ describe(dirname, function () {
       getTemplate.withArgs('.publish-valid-template').returns(dom.create('<div class="publish-valid">valid</div>'));
       getTemplate.withArgs('.publish-messages-template').returns(stubMessageTemplate());
       getTemplate.withArgs('.publish-actions-template').returns(stubPublishTemplate());
-      getTemplate.withArgs('.new-page-actions-template').returns(stubNewPageActionsTemplate());
+      getTemplate.withArgs('.new-page-actions-template').returns(dom.create('<div><div class="new-page-actions actions"></div></div>')); // wrapper divs to simulate doc fragments
       getTemplate.withArgs('.preview-actions-template').returns(stubPreviewActionsTemplate());
       getTemplate.withArgs('.publish-error-message-template').returns(dom.create('<div>ERROR MESSAGE</div>'));
       getTemplate.withArgs('.publish-warning-message-template').returns(dom.create('<div>WARNING MESSAGE</div>'));
@@ -258,17 +249,27 @@ describe(dirname, function () {
       beforeEach(function () {
         sandbox = sinon.sandbox.create();
         sandbox.stub(ds);
+        sandbox.stub(edit, 'getDataOnly');
       });
 
       afterEach(function () {
         sandbox.restore();
       });
 
-      it('opens a new page pane', function () {
+      it('opens a new page pane with two possible pages', function () {
+        function expectButtons() {
+          expect(document.querySelector('.pane-header').innerHTML).to.equal('New Page');
+          expect(document.querySelectorAll('.new-page-actions button').length).to.equal(2);
+        }
+        edit.getDataOnly.returns(Promise.resolve([{
+          id: 'new',
+          title: 'New Page'
+        }, {
+          id: 'new-other',
+          title: 'Other New Page'
+        }]));
         lib.close();
-        fn();
-        expect(document.querySelector('.pane-header').innerHTML).to.equal('New Page');
-        expect(document.querySelectorAll('.pane-inner button').length).to.equal(2);
+        return fn().then(expectButtons);
       });
     });
 
