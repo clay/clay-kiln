@@ -255,6 +255,7 @@ $layout-parent-bg-color: $purple-25;
 // selected component
 .component-selector-wrapper.selected > .component-selector {
   // show selector
+  background-color: $white;
   opacity: 1;
   pointer-events: all;
   transition: 150ms opacity ease-out; // fade relatively quickly
