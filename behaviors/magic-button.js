@@ -3,9 +3,17 @@ const _ = require('lodash'),
   dom = require('@nymag/dom'),
   references = require('../services/references'),
   getInput = require('../services/field-helpers').getInput,
+  speakingurl = require('speakingurl'),
+  he = require('he'),
+  striptags = require('striptags'),
   transformers = {
     // this is an object of available transforms
     // components can specify which transform they want to use in their schemae
+    /**
+     * transform a full url into a path we can query mediaplay with
+     * @param {string} data
+     * @returns {string}
+     */
     mediaplayUrl: function (data) {
       const path = data.replace(/^.*?imgs\//, ''); // remove domain and everything up to imgs/
 
@@ -18,6 +26,11 @@ const _ = require('lodash'),
       return barePath;
     },
 
+    /**
+     * transform a component uri into a path we can query amphora with (to get the component data)
+     * @param {string} data
+     * @returns {string}
+     */
     getComponentInstance: function (data) {
       const name = references.getComponentNameFromReference(data),
         instance = references.getInstanceIdFromReference(data);
@@ -30,8 +43,44 @@ const _ = require('lodash'),
       }
 
       return path;
+    },
+
+    /**
+     * transform rich text into a hyphen-delineated slug
+     * @param {string} data
+     * @returns {string}
+     */
+    toSlug: function (data) {
+      // remove EVERYTHING from the slug, then run it through speakingurl
+      return speakingurl(toPlainText(stripUnicode(data)), {
+        custom: {
+          _: '-' // convert underscores to hyphens
+        }
+      });
     }
   };
+
+/**
+ * Removes all unicode from string
+ * @param {string} str
+ * @returns {string}
+ */
+function stripUnicode(str) {
+  return str.replace(/[^A-Za-z 0-9\.,\?!@#\$%\^&\*\(\)-_=\+;:<>\/\\\|\}\{\[\]~]*/g, '');
+}
+
+/**
+ * remove all html stuff from a string
+ * @param {string} str
+ * @returns {string}
+ */
+function toPlainText(str) {
+  // coerce all text into a string. Undefined stuff is just an empty string
+  if (!_.isString(str)) {
+    return '';
+  }
+  return he.decode(striptags(str.replace('&nbsp;', ' ')));
+}
 
 /**
  * get value from field
