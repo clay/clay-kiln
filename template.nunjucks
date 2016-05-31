@@ -105,10 +105,7 @@
     {# new page actions #}
     <template class="new-page-actions-template">
       <div class="new-page-actions actions">
-        <form class="select-page-type">
-          <button class="create-article-page primary-action">New Article Page</button>
-          <button class="create-sponsored-post primary-action">New Sponsored Post</button>
-        </form>
+        {# new page buttons get added here #}
       </div>
     </template>
 

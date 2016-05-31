@@ -8,7 +8,7 @@ var _ = require('lodash'),
   label = require('./label'),
   tpl = require('./tpl'),
   paneController = require('../controllers/pane'),
-  newPagePaneController = require('../controllers/pane-new-page'),
+  newPagePaneController = require('../controllers/new-page-pane'),
   publishPaneController = require('../controllers/publish-pane'),
   addComponentPaneController = require('../controllers/add-component-pane'),
   kilnHideClass = 'kiln-hide';
@@ -190,22 +190,46 @@ function openPublish(warnings) {
 }
 
 /**
+ * add new pages buttons
+ * @param {Element} actionsEl
+ * @returns {Function}
+ */
+function addNewPageButtons(actionsEl) {
+  return function (pages) {
+    _.each(pages, function (page) {
+      var button = dom.create(`<button class="primary-action" data-page-id="${page.id}">${page.title}</button>`);
+
+      actionsEl.appendChild(button);
+    });
+
+    return actionsEl;
+  };
+}
+
+/**
  * open new page type dialog pane
- * note: not a promise
+ * @returns {Promise}
  */
 function openNewPage() {
   var header = 'New Page',
     innerEl = document.createDocumentFragment(),
-    pageActionsSubTemplate = tpl.get('.new-page-actions-template'),
+    actionsTpl = tpl.get('.new-page-actions-template'),
+    actionsEl = dom.find(actionsTpl, '.new-page-actions'),
     el;
 
-  // append actions to the doc fragment
-  innerEl.appendChild(pageActionsSubTemplate);
-  // create the root pane element
-  el = open(header, innerEl, 'medium');
-  // init controller for publish pane
-  ds.controller('pane-new-page', newPagePaneController);
-  ds.get('pane-new-page', el.querySelector('.actions'));
+  // /lists/new-pages contains a site-specific array of pages that should be available
+  // to clone, each one having a `id` (the page id) and `title` (the button title) property
+  return edit.getDataOnly(`${site.get('prefix')}/lists/new-pages`)
+    .then(addNewPageButtons(actionsEl))
+    .then(function (populatedActionsEl) {
+      // append actions to the doc fragment
+      innerEl.appendChild(populatedActionsEl);
+      // create the root pane element
+      el = open(header, innerEl, 'medium');
+      // init controller for publish pane
+      ds.controller('pane-new-page', newPagePaneController);
+      ds.get('pane-new-page', el);
+    });
 }
 
 function addPreview(preview) {

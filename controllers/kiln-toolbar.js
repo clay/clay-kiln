@@ -12,31 +12,29 @@ const dom = require('@nymag/dom'),
 let EditorToolbar;
 
 /**
- * Create a new page with the same layout as the current page.
- * currently, this just clones the `new` page
- * (cloning special "new" instances of the page-specific components)
- * e.g. /components/article/instances/new
+ * Open the new page pane
+ * note: if there's only one possible page, it'll just create it instead
  * @returns {Promise}
  */
 function createPage() {
-  // todo: allow users to choose their layout / components
-  const hasPageTypes = site.get('path').indexOf('press') === -1;
-
-  // if there are multiple types of pages for a site, open a dialog pane to select the page type
-  // otherwise, just create a new page
-  // currently 'Press' is the only site that has only one page type
-  if (hasPageTypes) {
-    return focus.unfocus()
-      .then(pane.openNewPage)
-      .catch(function () {
-        progress.done('error');
-        progress.open('error', 'Issue with opening page options.', true);
-      });
-  } else {
-    return edit.createPage('new').then(function (url) { // only one page type, so just create a 'new' page
-      location.href = url;
+  return edit.getDataOnly(`${site.get('prefix')}/lists/new-pages`)
+    .then(function (pages) {
+      // if there are multiple types of pages for a site, open a dialog pane to select the page type
+      // otherwise, just create a new page
+      // currently 'Press' is the only site that has only one page type
+      if (pages.length > 1) {
+        return focus.unfocus()
+          .then(pane.openNewPage)
+          .catch(function () {
+            progress.done('error');
+            progress.open('error', 'Issue with opening page options.', true);
+          });
+      } else {
+        return edit.createPage(pages[0].id).then(function (url) { // only one page type, so just create a 'new' page
+          location.href = url;
+        });
+      }
     });
-  }
 }
 
 /**
