@@ -36,10 +36,13 @@ function selectAfter(node) {
  * @returns {array}
  */
 function splitParagraphs(str) {
-  return str.split('</p>'); // split on paragraphs
+  return str.split(/<\/(?:p|div)>/ig); // split on paragraphs
   // splitting on the closing tag allows us to grab ALL the paragraphs from
   // google docs, since when you paste from there the last paragraph
   // isn't wrapped in a <p> tag. weird, right?
+  // splitting on closing <div> tags allows us to support some weird
+  // google docs situations (lots of line breaks with embedded media),
+  // as well as "plaintext" editors like IA Writer
 }
 
 /**
@@ -49,7 +52,7 @@ function splitParagraphs(str) {
  */
 function generateTextModels(rawParagraphs) {
   return _.map(rawParagraphs, function (str) {
-    str = str.replace('<p>', ''); // remove extraneous opening <p> tags
+    str = str.replace(/<(?:p|div)>/ig, ''); // remove extraneous opening <p> and <div tags
     return model.fromElement(dom.create(str));
   });
 }
