@@ -289,3 +289,6 @@ module.exports = function (result, args) {
 
   return result;
 };
+
+// for testing
+module.exports.transformers = transformers;
