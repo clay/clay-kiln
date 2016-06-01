@@ -145,6 +145,7 @@ function setFieldData(bindings, field, data) {
 
 /**
  * get data from an API
+ * note: we export this and then use the exported method, so we can stub it in our tests
  * @param {string} endpoint
  * @returns {Promise}
  */
@@ -171,10 +172,12 @@ function getProperty(property) {
  * do magic on click ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
  * @param {MouseEvent} e
  * @param {object} bindings
+ * @param {Element} [testEl] for testing, we pass a stubbed element in rather than the event
+ * note: when this function is called from the binding, testEl is undefined
  * @returns {Promise|undefined}
  */
-function doMagic(e, bindings) {
-  const el = e.currentTarget,
+function doMagic(e, bindings, testEl) {
+  const el = testEl || e.currentTarget,
     currentField = el.getAttribute('data-magic-currentField'),
     field = el.getAttribute('data-magic-field'),
     component = el.getAttribute('data-magic-component'),
@@ -185,8 +188,10 @@ function doMagic(e, bindings) {
     data, transformed;
 
   // make sure to cancel the actual event
-  e.stopPropagation();
-  e.preventDefault();
+  if (e) {
+    e.stopPropagation();
+    e.preventDefault();
+  }
 
   if (!el.classList.contains('magic-button')) {
     return;
@@ -216,12 +221,12 @@ function doMagic(e, bindings) {
     // to use the prefix of the current site (with proper port and protocol for api calls)
     url = url.replace('$SITE_PREFIX', site.addPort(site.addProtocol(site.get('prefix'))));
     // do an api call!
-    return getAPI(url + transformed)
+    return module.exports.getAPI(url + transformed)
       .then(getProperty(property))
       .then(res => setFieldData(bindings, currentField, res));
   } else {
     // just set the data
-    return setFieldData(bindings, currentField, transformed);
+    return Promise.resolve(setFieldData(bindings, currentField, transformed));
   }
 }
 
@@ -292,3 +297,5 @@ module.exports = function (result, args) {
 
 // for testing
 module.exports.transformers = transformers;
+module.exports.getAPI = getAPI;
+module.exports.doMagic = doMagic;
