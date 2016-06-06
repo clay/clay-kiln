@@ -21,12 +21,12 @@
           <div class="flex-span"></div>
           <button class="kiln-toolbar-button new">
             <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
-              <span class="icon">{% include 'public/media/components/clay-kiln/add-icon.svg' %}</span>
+              <span class="icon">{% include 'public/media/components/clay-kiln/new-page.svg' %}</span>
             </div>
           </button>
           <button class="kiln-toolbar-button preview">
             <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
-              <span class="icon">{% include 'public/media/components/clay-kiln/link-check.svg' %}</span>
+              <span class="icon">{% include 'public/media/components/clay-kiln/eyecon.svg' %}</span>
             </div>
           </button>
           <button class="kiln-toolbar-button history">
@@ -36,7 +36,7 @@
           </button>
           <button class="kiln-toolbar-button publish">
             <div class="button-flex-inner">
-              <span class="icon">{% include 'public/media/components/clay-kiln/publish-icon.svg' %}</span>
+              <span class="icon">{% include 'public/media/components/clay-kiln/paper-plane.svg' %}</span>
             </div>
           </button>
         </div>
