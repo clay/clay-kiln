@@ -61,6 +61,23 @@ body {
   width: 18px;
 }
 
+.kiln-toolbar-button.preview .icon,
+.kiln-toolbar-button.preview .icon svg {
+  height: 24px;
+  width: 24px;
+}
+
+.kiln-toolbar-button.preview {
+  fill: none;
+  padding: 7px 8px 6px;
+  stroke: $white;
+}
+
+.kiln-toolbar-button.new,
+.kiln-toolbar-button.publish {
+  fill: $white;
+}
+
 .kiln-toolbar-button .text {
   display: none;
 
@@ -94,10 +111,6 @@ body {
 
 .kiln-toolbar-inner .history {
   display: none; // todo: show this when we add user stuff
-}
-
-.kiln-toolbar-inner .preview #TextFormatting { // todo: replace with final icon
-  stroke: $white;
 }
 
 .kiln-toolbar-inner .publish {
