@@ -3,9 +3,17 @@ const _ = require('lodash'),
   dom = require('@nymag/dom'),
   references = require('../services/references'),
   getInput = require('../services/field-helpers').getInput,
+  speakingurl = require('speakingurl'),
+  he = require('he'),
+  striptags = require('striptags'),
   transformers = {
     // this is an object of available transforms
     // components can specify which transform they want to use in their schemae
+    /**
+     * transform a full url into a path we can query mediaplay with
+     * @param {string} data
+     * @returns {string}
+     */
     mediaplayUrl: function (data) {
       const path = data.replace(/^.*?imgs\//, ''); // remove domain and everything up to imgs/
 
@@ -18,6 +26,11 @@ const _ = require('lodash'),
       return barePath;
     },
 
+    /**
+     * transform a component uri into a path we can query amphora with (to get the component data)
+     * @param {string} data
+     * @returns {string}
+     */
     getComponentInstance: function (data) {
       const name = references.getComponentNameFromReference(data),
         instance = references.getInstanceIdFromReference(data);
@@ -30,8 +43,44 @@ const _ = require('lodash'),
       }
 
       return path;
+    },
+
+    /**
+     * transform rich text into a hyphen-delineated slug
+     * @param {string} data
+     * @returns {string}
+     */
+    toSlug: function (data) {
+      // remove EVERYTHING from the slug, then run it through speakingurl
+      return speakingurl(toPlainText(stripUnicode(data)), {
+        custom: {
+          _: '-' // convert underscores to hyphens
+        }
+      });
     }
   };
+
+/**
+ * Removes all unicode from string
+ * @param {string} str
+ * @returns {string}
+ */
+function stripUnicode(str) {
+  return str.replace(/[^A-Za-z 0-9\.,\?!@#\$%\^&\*\(\)-_=\+;:<>\/\\\|\}\{\[\]~]*/g, '');
+}
+
+/**
+ * remove all html stuff from a string
+ * @param {string} str
+ * @returns {string}
+ */
+function toPlainText(str) {
+  // coerce all text into a string. Undefined stuff is just an empty string
+  if (!_.isString(str)) {
+    return '';
+  }
+  return he.decode(striptags(str.replace('&nbsp;', ' ')));
+}
 
 /**
  * get value from field
@@ -96,6 +145,7 @@ function setFieldData(bindings, field, data) {
 
 /**
  * get data from an API
+ * note: we export this and then use the exported method, so we can stub it in our tests
  * @param {string} endpoint
  * @returns {Promise}
  */
@@ -122,10 +172,12 @@ function getProperty(property) {
  * do magic on click ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
  * @param {MouseEvent} e
  * @param {object} bindings
+ * @param {Element} [testEl] for testing, we pass a stubbed element in rather than the event
+ * note: when this function is called from the binding, testEl is undefined
  * @returns {Promise|undefined}
  */
-function doMagic(e, bindings) {
-  const el = e.currentTarget,
+function doMagic(e, bindings, testEl) {
+  const el = testEl || e.currentTarget,
     currentField = el.getAttribute('data-magic-currentField'),
     field = el.getAttribute('data-magic-field'),
     component = el.getAttribute('data-magic-component'),
@@ -136,8 +188,10 @@ function doMagic(e, bindings) {
     data, transformed;
 
   // make sure to cancel the actual event
-  e.stopPropagation();
-  e.preventDefault();
+  if (e) {
+    e.stopPropagation();
+    e.preventDefault();
+  }
 
   if (!el.classList.contains('magic-button')) {
     return;
@@ -167,12 +221,12 @@ function doMagic(e, bindings) {
     // to use the prefix of the current site (with proper port and protocol for api calls)
     url = url.replace('$SITE_PREFIX', site.addPort(site.addProtocol(site.get('prefix'))));
     // do an api call!
-    return getAPI(url + transformed)
+    return module.exports.getAPI(url + transformed)
       .then(getProperty(property))
       .then(res => setFieldData(bindings, currentField, res));
   } else {
     // just set the data
-    return setFieldData(bindings, currentField, transformed);
+    return Promise.resolve(setFieldData(bindings, currentField, transformed));
   }
 }
 
@@ -240,3 +294,8 @@ module.exports = function (result, args) {
 
   return result;
 };
+
+// for testing
+module.exports.transformers = transformers;
+module.exports.getAPI = getAPI;
+module.exports.doMagic = doMagic;

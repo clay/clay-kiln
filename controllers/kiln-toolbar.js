@@ -1,9 +1,7 @@
 const dom = require('@nymag/dom'),
-  edit = require('../services/edit'),
   events = require('../services/events'),
   focus = require('../decorators/focus'),
   pane = require('../services/pane'),
-  site = require('../services/site'),
   state = require('../services/page-state'),
   progress = require('../services/progress'),
   rules = require('../validators'),
@@ -17,23 +15,11 @@ let EditorToolbar;
  * @returns {Promise}
  */
 function createPage() {
-  return edit.getDataOnly(`${site.get('prefix')}/lists/new-pages`)
-    .then(function (pages) {
-      // if there are multiple types of pages for a site, open a dialog pane to select the page type
-      // otherwise, just create a new page
-      // currently 'Press' is the only site that has only one page type
-      if (pages.length > 1) {
-        return focus.unfocus()
-          .then(pane.openNewPage)
-          .catch(function () {
-            progress.done('error');
-            progress.open('error', 'Issue with opening page options.', true);
-          });
-      } else {
-        return edit.createPage(pages[0].id).then(function (url) { // only one page type, so just create a 'new' page
-          location.href = url;
-        });
-      }
+  return focus.unfocus()
+    .then(pane.openNewPage)
+    .catch(function () {
+      progress.done('error');
+      progress.open('error', 'Issue with opening page options.', true);
     });
 }
 
