@@ -1,12 +1,12 @@
 var _ = require('lodash'),
   dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
-  edit = require('./edit'),
-  references = require('./references'),
-  render = require('./render'),
+  edit = require('../edit'),
+  references = require('../references'),
+  render = require('../components/render'),
   formCreator = require('./form-creator'),
   formValues = require('./form-values'),
-  lib = require('./forms'),
+  lib = require('./index'),
   expect = require('chai').expect,
   assert = require('chai').assert;
 

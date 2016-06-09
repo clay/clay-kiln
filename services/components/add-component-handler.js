@@ -1,7 +1,7 @@
-var references = require('../services/references'),
+var references = require('../references'),
   dom = require('@nymag/dom'),
   _ = require('lodash'),
-  paneService = require('./pane'),
+  paneService = require('../pane'),
   addComponent = require('./add-component');
 
 /**

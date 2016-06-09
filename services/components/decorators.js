@@ -1,5 +1,5 @@
 var _ = require('lodash'),
-  edit = require('./edit'),
+  edit = require('../edit'),
   groups = require('./groups');
 
 // array of all decorators, added to global

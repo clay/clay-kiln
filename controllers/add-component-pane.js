@@ -1,5 +1,5 @@
 var pane = require('../services/pane'),
-  addComponent = require('../services/add-component'),
+  addComponent = require('../services/components/add-component'),
   dom = require('@nymag/dom'),
   keyCode = require('keycode');
 

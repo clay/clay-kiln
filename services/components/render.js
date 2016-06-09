@@ -1,10 +1,10 @@
-var componentEdit = require('../controllers/component-edit'),
+var componentEdit = require('../../controllers/component-edit'),
   componentEditName = 'component-edit',
-  db = require('./edit/db'),
+  db = require('../edit/db'),
   dom = require('@nymag/dom'),
   ds = require('dollar-slice'),
-  edit = require('./edit'),
-  references = require('./references'),
+  edit = require('../edit'),
+  references = require('../references'),
   select = require('./select');
 
 /**

@@ -1,7 +1,7 @@
 var _ = require('lodash'),
   references = require('../services/references'),
   forms = require('../services/forms'),
-  select = require('../services/select'),
+  select = require('../services/components/select'),
   sr = require('selection-range'),
   dom = require('@nymag/dom'),
   helpers = require('../services/field-helpers'),
