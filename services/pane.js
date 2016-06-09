@@ -7,6 +7,7 @@ var _ = require('lodash'),
   site = require('./site'),
   label = require('./label'),
   tpl = require('./tpl'),
+  datepicker = require('./field-helpers/datepicker'),
   paneController = require('../controllers/pane'),
   newPagePaneController = require('../controllers/new-page-pane'),
   publishPaneController = require('../controllers/publish-pane'),
@@ -143,6 +144,10 @@ function createPublishActions(res) {
       scheduleTime.setAttribute('value', now);
       scheduleTime.setAttribute('placeholder', now);
     }
+
+    // init datepicker for non-native browsers
+    datepicker.init(scheduleDate);
+    datepicker.init(scheduleTime);
   }
 
   // unscheduling

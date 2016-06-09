@@ -1,0 +1,24 @@
+@import 'layers';
+@import 'typography';
+
+.flatpickr-wrapper.inline .flatpickr-calendar,
+.flatpickr-wrapper.open .flatpickr-calendar {
+  @include datepicker-layer();
+
+  // not the full kiln-copy (no sizes, overrides, etc)
+  font-family: $system-fonts;
+}
+
+.flatpickr-month {
+  padding: 6px 10px 4px;
+}
+
+.flatpickr-weekdays {
+  font-size: 11.5px;
+}
+
+.flatpickr-hour,
+.flatpickr-minute,
+.flatpickr-am-pm {
+  font-size: 14px;
+}
