@@ -8,7 +8,7 @@ function ComponentEdit() {
     edit = require('../services/edit'),
     events = require('../services/events'),
     references = require('../services/references'),
-    decorate = require('../services/decorators'),
+    decorate = require('../services/components/decorators'),
     editableAttr = references.editableAttribute,
     placeholderAttr = references.placeholderAttribute;
 

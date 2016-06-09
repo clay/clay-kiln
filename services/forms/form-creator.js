@@ -1,8 +1,8 @@
 var _ = require('lodash'),
   ds = require('dollar-slice'),
   rivets = require('rivets'),
-  references = require('./references'),
-  label = require('./label'),
+  references = require('../references'),
+  label = require('../label'),
   behaviors = require('./behaviors'),
   dom = require('@nymag/dom'),
   currentBindings;
@@ -187,8 +187,8 @@ function createForm(ref, data, rootEl) {
     rootEl.appendChild(el);
 
     // register + instantiate controllers
-    ds.controller('form', require('../controllers/form'));
-    ds.controller('overlay', require('../controllers/overlay'));
+    ds.controller('form', require('../../controllers/form'));
+    ds.controller('overlay', require('../../controllers/overlay'));
     ds.get('form', el, ref, name);
     ds.get('overlay', el);
 
@@ -226,7 +226,7 @@ function createInlineForm(ref, data, oldEl) {
     oldEl.appendChild(newEl);
 
     // register + instantiate form controller
-    ds.controller('form', require('../controllers/form'));
+    ds.controller('form', require('../../controllers/form'));
     ds.get('form', newEl, ref, name, oldEl);
 
     return newEl;
