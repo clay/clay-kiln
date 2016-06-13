@@ -119,14 +119,29 @@ function createPublishMessages(res) {
 }
 
 /**
+ * get scheduled date
+ * @param {object} res
+ * @param {boolean} [res.scheduled]
+ * @param {string} [res.scheduledAt]
+ * @returns {object}
+ */
+function getScheduledValues(res) {
+  var at = res.scheduled ? moment(res.scheduledAt) : moment(),
+    date = at.format('YYYY-MM-DD'),
+    time = at.format('HH:mm');
+
+  return { date, time };
+}
+
+/**
  * create actions for the publish pane, depending on the state
  * @param {object} res
  * @returns {Element}
  */
 function createPublishActions(res) {
   const actions = tpl.get('.publish-actions-template'),
-    today = moment().format('YYYY-MM-DD'),
-    now = moment().format('HH:mm');
+    val = getScheduledValues(res);
+
   let scheduleDate, scheduleTime, unpublish, unschedule;
 
   // set date and time
@@ -135,14 +150,14 @@ function createPublishActions(res) {
     scheduleTime = dom.find(actions, '#schedule-time');
 
     if (scheduleDate) {
-      scheduleDate.setAttribute('min', today);
-      scheduleDate.setAttribute('value', today);
-      scheduleDate.setAttribute('placeholder', today);
+      scheduleDate.setAttribute('min', val.date);
+      scheduleDate.setAttribute('value', val.date);
+      scheduleDate.setAttribute('placeholder', val.date);
     }
 
     if (scheduleTime) {
-      scheduleTime.setAttribute('value', now);
-      scheduleTime.setAttribute('placeholder', now);
+      scheduleTime.setAttribute('value', val.time);
+      scheduleTime.setAttribute('placeholder', val.time);
     }
 
     // init datepicker for non-native browsers
