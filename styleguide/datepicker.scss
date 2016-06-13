@@ -1,5 +1,6 @@
 @import 'layers';
 @import 'typography';
+@import 'colors';
 
 .flatpickr-wrapper.inline .flatpickr-calendar,
 .flatpickr-wrapper.open .flatpickr-calendar {
@@ -21,4 +22,11 @@
 .flatpickr-minute,
 .flatpickr-am-pm {
   font-size: 14px;
+}
+
+// use our blue for selected date
+.flatpickr-day.selected,
+.flatpickr-day.selected:hover {
+  background: $blue none repeat scroll 0% 0%;
+  border-color: $blue;
 }
