@@ -61,4 +61,5 @@ function init(el, options) {
   }
 }
 
+module.exports.hasNativePicker = hasNativePicker;
 module.exports.init = init;

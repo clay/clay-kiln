@@ -13,7 +13,8 @@ var dom = require('@nymag/dom'),
     'search', // unsupported, not needed for input
     'submit' // unsupported form-level input (i.e. we already have submit buttons)
   ],
-  firefoxDateFormat = 'YYYY-MM-DD hh:mm A';
+  firefoxDateFormat = 'YYYY-MM-DD hh:mm A',
+  defaultDateFormat = 'YYYY-MM-DDThh:mm';
 
 /**
  * get attribute value of boolean fields
@@ -145,15 +146,24 @@ module.exports = function (result, args) {
         var observer = this.observer;
 
         // when instantiating, convert from the ISO format (what we save) to firefox's format (what the datepicker needs)
-        el.value = moment(observer.value()).format(firefoxDateFormat);
-        datepicker.init(el, { onChange: function (date) {
-          // when the datepicker changes, convert it back to ISO format
-          observer.setValue(moment(date).utc().format());
-        }});
+        if (!datepicker.hasNativePicker()) {
+          el.value = moment(observer.value()).format(firefoxDateFormat);
+          datepicker.init(el, { onChange: function (date) {
+            // when the datepicker changes, convert it back to ISO format
+            observer.setValue(moment(date).utc().format());
+          }});
+        } else {
+          // use iso format
+          el.value = moment(observer.value()).format(defaultDateFormat);
+        }
       },
       routine: function (el, value) {
         // every time the data updates, display the NEW data in firefox's format
-        el.value = moment(value).format(firefoxDateFormat);
+        if (!datepicker.hasNativePicker()) {
+          el.value = moment(value).format(firefoxDateFormat);
+        } else {
+          el.value = moment(value).format(defaultDateFormat);
+        }
       }
     };
   }
