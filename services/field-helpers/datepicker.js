@@ -22,7 +22,7 @@ function hasNativePicker() {
     isIEedge = winNav.userAgent.indexOf('Edge') > -1,
     isIOSChrome = !!winNav.userAgent.match('CriOS'),
     isMobileSafari = !!winNav.userAgent.match(/(iPod|iPhone|iPad)/) && !!winNav.userAgent.match(/AppleWebKit/),
-    isDesktopChrome = isChromium !== null && isChromium !== undefined && vendorName === 'Google Inc.' && isOpera == false && isIEedge == false;
+    isDesktopChrome = isChromium !== null && isChromium !== undefined && vendorName === 'Google Inc.' && isOpera === false && isIEedge === false;
 
   return isIOSChrome || isDesktopChrome || isMobileSafari;
 }
