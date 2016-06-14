@@ -150,7 +150,7 @@ module.exports = function (result, args) {
           el.value = moment(observer.value()).format(firefoxDateFormat);
           datepicker.init(el, { onChange: function (date) {
             // when the datepicker changes, convert it back to ISO format
-            observer.setValue(moment(date).utc().format());
+            observer.setValue(moment(date).toISOString());
           }});
         } else {
           // use iso format
