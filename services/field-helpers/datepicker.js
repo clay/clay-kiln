@@ -34,11 +34,8 @@ function hasNativePicker() {
  * @returns {object|undefined}
  */
 function init(el, options) {
-  // flatpickr inits itself onto selector rather than an element, so add a random
-  // class to the element passed in
   var type = el.getAttribute('type'),
     enableTime, noCalendar, finalOptions; // options that change depending on input type
-
 
   if (type === 'datetime-local') {
     enableTime = true;
