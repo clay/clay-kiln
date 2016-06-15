@@ -136,6 +136,7 @@
       <div class="warning-message">This page has some warnings. Please review before publishing.</div>
     </template>
 
+    {# generic filtered list template. used for the add component pane #}
     <template class="filtered-input-template">
       <input class="filtered-input" />
     </template>
