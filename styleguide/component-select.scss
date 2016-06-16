@@ -297,4 +297,5 @@ $layout-parent-bg-color: $purple-25;
 // (this will display properly if their parents are either flexed OR box)
 .component-list-inner {
   display: inherit;
+  flex-flow: row wrap;
 }
