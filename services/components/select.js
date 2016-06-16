@@ -75,18 +75,6 @@ function select(el) {
 }
 
 /**
- * hide ALL component lists in element
- * @param {Element} el
- */
-function hideComponentList(el) {
-  var lists = dom.findAll(el, '.component-list-bottom');
-
-  _.each(lists, function (list) {
-    list.classList.remove('show');
-  });
-}
-
-/**
  * remove selected classes on current and parent component
  * @param {Element} [el]
  * @param {Element} [parent]
@@ -94,11 +82,9 @@ function hideComponentList(el) {
 function removeClasses(el, parent) {
   if (el) {
     el.classList.remove('selected');
-    hideComponentList(el);
   }
   if (parent) {
     parent.classList.remove('selected-parent');
-    hideComponentList(parent);
   }
 }
 

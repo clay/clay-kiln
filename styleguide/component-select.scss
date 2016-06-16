@@ -292,3 +292,9 @@ $layout-parent-bg-color: $purple-25;
 [data-editable] {
   cursor: pointer;
 }
+
+// inner component lists should always be flexed
+// (this will display properly if their parents are either flexed OR box)
+.component-list-inner {
+  display: inherit;
+}
