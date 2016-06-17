@@ -48,6 +48,12 @@
   text-transform: uppercase;
 }
 
+// use BR elements in multi-line labels to describe groups of elements
+.kiln-placeholder .placeholder-label br,
+.kiln-permanent-placeholder .placeholder-label br {
+  line-height: 1.6;
+}
+
 // add component button - added to placeholders of empty component lists
 .kiln-placeholder .placeholder-add-component,
 .kiln-permanent-placeholder .placeholder-add-component {
