@@ -104,7 +104,9 @@ module.exports = function () {
         pageUri = dom.pageUri(),
         date = dom.find(form, 'input[type=date]').value,
         time = dom.find(form, 'input[type=time]').value,
-        datetime = moment(date + ' ' + time, 'YYYY-MM-DD HH:mm'),
+        // firefox uses a nonstandard AM/PM format, rather than the accepted W3C standard that other browsers use
+        // therefore, check for AM/PM
+        datetime = _.includes(time, 'M') ? moment(date + ' ' + time, 'YYYY-MM-DD h:mm A') : moment(date + ' ' + time, 'YYYY-MM-DD HH:mm'),
         timestamp = datetime.valueOf();
 
       // close publish pane and start progress bar
