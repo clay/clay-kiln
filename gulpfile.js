@@ -19,6 +19,7 @@ var gulp = require('gulp'),
   cssmin = require('gulp-cssmin'),
   prefixOptions = { browsers: ['last 2 versions', 'ie >= 9', 'ios >= 7', 'android >= 4.4.2'] },
   stylesGlob = [
+    'node_modules/flatpickr/dist/flatpickr.min.css',
     'styleguide/*.scss',
     'styleguide/*.css',
     'behaviors/*.scss',

@@ -2,10 +2,10 @@ var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./add-component'),
   dom = require('@nymag/dom'),
-  edit = require('./edit'),
+  edit = require('../edit'),
   render = require('./render'),
-  progress = require('./progress'),
-  focus = require('../decorators/focus');
+  progress = require('../progress'),
+  focus = require('../../decorators/focus');
 
 describe(dirname, function () {
   describe(filename, function () {

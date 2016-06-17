@@ -132,6 +132,8 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 .kiln-toolbar-pane .actions,
 .kiln-toolbar-pane .schedule {
   @include clearfix();
+
+  width: 100%;
 }
 
 .kiln-toolbar-pane .preview-actions {
@@ -145,7 +147,8 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 }
 
 .kiln-toolbar-pane .schedule-input,
-.kiln-toolbar-pane .preview-input {
+.kiln-toolbar-pane .preview-input,
+.kiln-toolbar-pane .kiln-input { // generic input class, used by flatpickr
   @include input();
 
   cursor: initial;

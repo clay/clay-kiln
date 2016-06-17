@@ -1,6 +1,6 @@
 var _ = require('lodash'),
-  references = require('./references'),
-  label = require('./label');
+  references = require('../references'),
+  label = require('../label');
 
 /**
  * Given an array of fields, get an array of matching data.

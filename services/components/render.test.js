@@ -1,10 +1,10 @@
 var lib = require('./render'),
   sinon = require('sinon'),
   ds = require('dollar-slice'),
-  edit = require('./edit'),
+  edit = require('../edit'),
   select = require('./select'),
-  db = require('./edit/db'),
-  references = require('./references');
+  db = require('../edit/db'),
+  references = require('../references');
 
 describe('render service', function () {
   var ref = 'localhost/components/foo/id/bar',

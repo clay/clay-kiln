@@ -2,16 +2,16 @@
 // components that are "selected" get their bar (and their parents' bars) shown
 
 var _ = require('lodash'),
-  references = require('./references'),
+  references = require('../references'),
   dom = require('@nymag/dom'),
-  tpl = require('./tpl'),
-  edit = require('./edit'),
-  focus = require('../decorators/focus'),
-  placeholder = require('../decorators/placeholder'),
-  forms = require('./forms'),
+  tpl = require('../tpl'),
+  edit = require('../edit'),
+  focus = require('../../decorators/focus'),
+  placeholder = require('../../decorators/placeholder'),
+  forms = require('../forms'),
   groups = require('./groups'),
-  label = require('./label'),
-  scrollToY = require('./scroll').toY,
+  label = require('../label'),
+  scrollToY = require('../scroll').toY,
   addComponentHandler = require('./add-component-handler'),
   hidden = 'kiln-hide',
   currentSelected;
@@ -75,18 +75,6 @@ function select(el) {
 }
 
 /**
- * hide ALL component lists in element
- * @param {Element} el
- */
-function hideComponentList(el) {
-  var lists = dom.findAll(el, '.component-list-bottom');
-
-  _.each(lists, function (list) {
-    list.classList.remove('show');
-  });
-}
-
-/**
  * remove selected classes on current and parent component
  * @param {Element} [el]
  * @param {Element} [parent]
@@ -94,11 +82,9 @@ function hideComponentList(el) {
 function removeClasses(el, parent) {
   if (el) {
     el.classList.remove('selected');
-    hideComponentList(el);
   }
   if (parent) {
     parent.classList.remove('selected-parent');
-    hideComponentList(parent);
   }
 }
 

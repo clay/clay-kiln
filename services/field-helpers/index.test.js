@@ -1,6 +1,6 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
-  lib = require('./field-helpers');
+  lib = require('./index');
 
 describe(dirname, function () {
   describe(filename, function () {

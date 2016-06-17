@@ -1,10 +1,10 @@
-var references = require('../services/references'),
+var references = require('../references'),
   dom = require('@nymag/dom'),
-  edit = require('./edit'),
+  edit = require('../edit'),
   render = require('./render'),
-  focus = require('../decorators/focus'),
+  focus = require('../../decorators/focus'),
   select = require('./select'),
-  progress = require('./progress');
+  progress = require('../progress');
 
 /**
  * find placeholders to remove from the parent

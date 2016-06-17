@@ -1,7 +1,7 @@
 var _ = require('lodash'),
-  references = require('./references'),
-  label = require('./label'),
-  promises = require('./promises');
+  references = require('../references'),
+  label = require('../label'),
+  promises = require('../promises');
 
 // hash of all behaviors, added to global
 window.kiln = window.kiln || {}; // create global kiln if it doesn't exist

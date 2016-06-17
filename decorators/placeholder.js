@@ -3,7 +3,7 @@ var _ = require('lodash'),
   label = require('../services/label'),
   dom = require('@nymag/dom'),
   tpl = require('../services/tpl'),
-  addComponentHandler = require('../services/add-component-handler');
+  addComponentHandler = require('../services/components/add-component-handler');
 
 /**
  * get placeholder text

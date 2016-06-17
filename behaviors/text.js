@@ -1,5 +1,7 @@
 var dom = require('@nymag/dom'),
   _ = require('lodash'),
+  moment = require('moment'),
+  datepicker = require('../services/field-helpers/datepicker'),
   invalidTypes = [
     'button', // use other behaviors, e.g. segmented-button
     'checkbox', // use checkbox or checkbox-group behaviors
@@ -10,7 +12,9 @@ var dom = require('@nymag/dom'),
     'reset', // unsupported form-level input
     'search', // unsupported, not needed for input
     'submit' // unsupported form-level input (i.e. we already have submit buttons)
-  ];
+  ],
+  firefoxDateFormat = 'YYYY-MM-DD hh:mm A',
+  defaultDateFormat = 'YYYY-MM-DDThh:mm';
 
 /**
  * get attribute value of boolean fields
@@ -71,6 +75,18 @@ function addStep(args) {
 }
 
 /**
+ * add datepicker binder if it's a date input
+ * @param {string} name
+ * @param {string} type
+ * @returns {string}
+ */
+function addDateBinder(name, type) {
+  if (_.includes(['datetime-local', 'date', 'time'], type)) {
+    return `rv-datepicker="${name}.data.value"`;
+  }
+}
+
+/**
  * Replace result.el with input.
  * @param {{name: string, bindings: {}}} result
  * @param {{}} args   defined in detail below:
@@ -109,6 +125,7 @@ module.exports = function (result, args) {
           class="input-text"
           rv-field="${name}"
           type="${type}"
+          ${addDateBinder(name, type)}
           ${addStep(args)}
           ${addAutocomplete(args)}
           ${addAutocapitalize(args)}
@@ -120,6 +137,36 @@ module.exports = function (result, args) {
           rv-value="${name}.data.value" />
       </label>
     `);
+
+  // if it's a date input, init datepicker for non-native browsers
+  if (_.includes(['datetime-local', 'date', 'time'], type)) {
+    result.binders.datepicker = {
+      publish: true,
+      bind: function (el) {
+        var observer = this.observer;
+
+        // when instantiating, convert from the ISO format (what we save) to firefox's format (what the datepicker needs)
+        if (!datepicker.hasNativePicker()) {
+          el.value = moment(observer.value()).format(firefoxDateFormat);
+          datepicker.init(el, { onChange: function (date) {
+            // when the datepicker changes, convert it back to ISO format
+            observer.setValue(moment(date).toISOString());
+          }});
+        } else {
+          // use iso format
+          el.value = moment(observer.value()).format(defaultDateFormat);
+        }
+      },
+      routine: function (el, value) {
+        // every time the data updates, display the NEW data in firefox's format
+        if (!datepicker.hasNativePicker()) {
+          el.value = moment(value).format(firefoxDateFormat);
+        } else {
+          el.value = moment(value).format(defaultDateFormat);
+        }
+      }
+    };
+  }
 
   result.el = textField;
 

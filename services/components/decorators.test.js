@@ -2,8 +2,8 @@ var _ = require('lodash'),
   dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./decorators'),
-  references = require('./references'),
-  edit = require('./edit');
+  references = require('../references'),
+  edit = require('../edit');
 
 describe(dirname, function () {
   describe(filename, function () {

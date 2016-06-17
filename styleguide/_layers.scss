@@ -13,3 +13,7 @@
 @mixin overlay-layer {
   z-index: 1020;
 }
+
+@mixin datepicker-layer {
+  z-index: 1030; // must be above toolbar AND overlays
+}
