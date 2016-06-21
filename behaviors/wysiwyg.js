@@ -131,9 +131,10 @@ function createEditor(field, buttons) {
         'iframe'
       ],
       preCleanReplacements: [
+        [/&lt;(.*?)&gt;/ig, '<$1>'], // catch any html trying to be sent in as escaped strings,
+        // thus allowing cleanTags (above) or text-model to manage them
         [/<h[1-9]>/ig, '<h2>'],
-        [/<\/h[1-9]>/ig, '</h2>'], // force all headers to the same level
-        [/&lt;(.*?)&gt;/ig, ''] // catch any html trying to be sent in as escaped strings
+        [/<\/h[1-9]>/ig, '</h2>'] // force all headers to the same level
       ]
     },
     anchor: {
