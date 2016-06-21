@@ -132,7 +132,8 @@ function createEditor(field, buttons) {
       ],
       preCleanReplacements: [
         [/<h[1-9]>/ig, '<h2>'],
-        [/<\/h[1-9]>/ig, '</h2>'] // force all headers to the same level
+        [/<\/h[1-9]>/ig, '</h2>'], // force all headers to the same level
+        [/&lt;(.*?)&gt;/ig, ''] // catch any html trying to be sent in as escaped strings
       ]
     },
     anchor: {
