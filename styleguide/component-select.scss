@@ -298,4 +298,5 @@ $layout-parent-bg-color: $purple-25;
 .component-list-inner {
   display: inherit;
   flex-flow: row wrap;
+  flex: 1 1 100%;
 }
