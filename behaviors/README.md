@@ -243,7 +243,21 @@ _description: |
   * intentions of the author and situations that are explicitly unsupported
 ```
 
-## Writing Behaviors
+## Field Descriptions
+
+When defining fields in a component's schema, it's usually useful to add descriptions explaining what kinds of data should live in the field and how it's used. These descriptions will be displayed when the form opens, _and will be used when generating a component's readme._
+
+```yaml
+fieldName:
+  _label: Field Label
+  _has:
+    - text
+    -
+      fn: description
+      value: This is the description of the field. <em>You can add html tags.</em> It will display in the form and in the component readme.
+```
+
+# Writing Behaviors
 
 When a form is created (by clicking an element with `data-editable`, or by clicking into component settings), fields are added and each field's behavior is called in the order they're defined. The function signature for an individual behavior has two arguments, `result` and `args`.
 
@@ -262,7 +276,7 @@ module.exports = function (result, args) {
 };
 ```
 
-### Result
+## Result
 
 The `result` argument contains the field's name, element, data bindings, formatters, and binders.
 
@@ -284,7 +298,7 @@ module.exports = function (result, args) {
 };
 ```
 
-### Args
+## Args
 
 The `arg` argument contains all arguments from the schema.
 
