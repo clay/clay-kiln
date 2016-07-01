@@ -57,7 +57,7 @@
     "nprogress": "^0.2.0",
     "responsive-filenames": "^1.2.0",
     "rivets": "^0.8.1",
-    "rollupify": "^0.2.0",
+    "rollupify": "^0.3.0",
     "selection-range": "^1.0.1",
     "striptags": "^2.0.2",
     "text-model": "^0.2.0",
