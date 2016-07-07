@@ -6,7 +6,7 @@ _Note:_ When this behavior is added to a field, it will replace any previous ele
 
 ## Arguments
 
-* *options* _(required)_ an array of checkboxes
+* **options** _(required)_ an array of checkboxes
 
 Each option should be an object with `name` and `value` properties. Use the bootstrap to specify which should be toggled by default, e.g.
 

@@ -6,7 +6,7 @@ _Note:_ When this behavior is added to a field, it will replace any previous ele
 
 ## Arguments
 
-* *label* _(required)_ the checkbox label
+* **label** _(required)_ the checkbox label
 
 In practice, it's usually best to use a conversational tone / question as the checkbox label, with the field label being shorter. e.g.
 

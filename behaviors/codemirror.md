@@ -6,7 +6,7 @@ _Note:_ When this behavior is added to a field, it will replace any previous ele
 
 ## Arguments
 
-* *mode* _(required)_ the language used
+* **mode** _(required)_ the language used
 
 The mode of the editor sets syntax highlighting, linting, and other functionality. Currently, we support these modes:
 

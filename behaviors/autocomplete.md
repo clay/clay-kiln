@@ -4,7 +4,7 @@ Autocomplete can be added to any input field, and will allow users to easily sel
 
 ## Arguments
 
-* *api* _(optional)_ api to point to
-* *list* _(optional)_ list on the current site to point to
+* **api** _(optional)_ api to point to
+* **list** _(optional)_ list on the current site to point to
 
 You can specify either a 3rd party api, or a specific list (e.g. `/lists/authors`) on the current site.
