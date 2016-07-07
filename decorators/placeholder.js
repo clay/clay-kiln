@@ -6,28 +6,28 @@ var _ = require('lodash'),
   addComponentHandler = require('../services/components/add-component-handler');
 
 /**
- *
- * @param {Array} groupItems
- * @param {string} propName
+ * given an array of fields, find the field that matches a certain name
+ * @param {string} fieldName
+ * @param {Array} groupFields
  * @returns {object|undefined}
  */
-function findPropInFieldGroup(groupItems, propName) {
-  return _.find(groupItems, groupProp => _.get(groupProp, '_schema._name') === propName);
+function getFieldFromGroup(fieldName, groupFields) {
+  return _.find(groupFields, field => _.get(field, '_schema._name') === fieldName);
 }
 
 /**
- * get the property value
+ * get the field's value
  * @param {string} path
  * @param {object} data
- * @param {string} propName
+ * @param {string} fieldName
  * @returns {String}
  */
-function getPropVal(path, data, propName) {
+function getFieldVal(path, data, fieldName) {
   var value = 'value';
 
   return new String( // always return a string; we cannot rely on the `toString` method as it can throw errors
     _.get(
-      propName === path ? data : findPropInFieldGroup(data[value], propName), // single property or field-group
+      fieldName === path ? data : getFieldFromGroup(fieldName, data[value]), // single field or group
       value
     ) || ''); // default to empty string
 }
@@ -38,8 +38,8 @@ function getPropVal(path, data, propName) {
  * @param {object} data
  * @returns {Function}
  */
-function replacePropVal(path, data) {
-  return (match, propName) => getPropVal(path, data, propName.trim());
+function replaceFieldName(path, data) {
+  return (match, fieldName) => getFieldVal(path, data, fieldName.trim());
 }
 
 /**
@@ -57,7 +57,7 @@ function getPlaceholderText(path, data) {
     propNamePattern = /\${(\w+)}/ig; // allows property value in text, e.g. 'The value is ${propName}'
 
   if (_.isObject(placeholder) && placeholder.text) {
-    return placeholder.text.replace(propNamePattern, replacePropVal(path, data));
+    return placeholder.text.replace(propNamePattern, replaceFieldName(path, data));
   } else {
     return label(path, schema);
   }
@@ -109,23 +109,6 @@ function isFieldEmpty(data) {
   }
 
   return !_.isBoolean(value) && !_.isNumber(value) && _.isEmpty(value);
-}
-
-/**
- * given an array of fields, find the field that matches a certain name
- * @param {string} name
- * @param {array} value
- * @throws {Error} if no field found (this is a programmer error)
- * @returns {object}
- */
-function getFieldFromGroup(name, value) {
-  var possibleField = _.find(value, function (field) {
-    var currentField = _.get(field, '_schema._name');
-
-    return name === currentField;
-  });
-
-  return possibleField;
 }
 
 /**

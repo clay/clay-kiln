@@ -150,18 +150,16 @@ Placeholders can display the value of a field, which is useful for components no
 videoId:
   _placeholder:
     text: Video Id ${videoId}
-    height: 100px
     permanent: true
 
-# field-group with values in placeholder text
+# group with values in placeholder text
 _groups:
-  settings:
+  group1:
     fields:
       - name
       - description
     _placeholder:
       text: Ad Unit ${name} ${description}
-      height: 100px
       permanent: true
 ```
 
