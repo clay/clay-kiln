@@ -9,10 +9,10 @@ var _ = require('lodash'),
  *
  * @param {Array} groupItems
  * @param {string} propName
- * @returns {object}
+ * @returns {object|undefined}
  */
 function findPropInFieldGroup(groupItems, propName) {
-  return _.find(groupItems, groupProp => _.get(groupProp, '_schema._name') === propName) || null;
+  return _.find(groupItems, groupProp => _.get(groupProp, '_schema._name') === propName);
 }
 
 /**
@@ -25,7 +25,7 @@ function findPropInFieldGroup(groupItems, propName) {
 function getPropVal(path, data, propName) {
   var value = 'value';
 
-  return String( // always return a string
+  return new String( // always return a string; we cannot rely on the `toString` method as it can throw errors
     _.get(
       propName === path ? data : findPropInFieldGroup(data[value], propName), // single property or field-group
       value
@@ -54,7 +54,7 @@ function replacePropVal(path, data) {
 function getPlaceholderText(path, data) {
   var schema = data._schema,
     placeholder = schema[references.placeholderProperty],
-    propNamePattern = /\$\{(\w+)\}/ig; // allows property value in text, e.g. 'The value is ${propName}'
+    propNamePattern = /\${(\w+)}/ig; // allows property value in text, e.g. 'The value is ${propName}'
 
   if (_.isObject(placeholder) && placeholder.text) {
     return placeholder.text.replace(propNamePattern, replacePropVal(path, data));
