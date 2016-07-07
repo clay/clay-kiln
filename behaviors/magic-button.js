@@ -6,6 +6,7 @@ const _ = require('lodash'),
   speakingurl = require('speakingurl'),
   he = require('he'),
   striptags = require('striptags'),
+  promises = require('../services/promises'),
   transformers = {
     // this is an object of available transforms
     // components can specify which transform they want to use in their schemae
@@ -169,45 +170,36 @@ function getProperty(property) {
 }
 
 /**
- * do magic on click ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
- * @param {MouseEvent} e
- * @param {object} bindings
- * @param {Element} [testEl] for testing, we pass a stubbed element in rather than the event
- * note: when this function is called from the binding, testEl is undefined
- * @returns {Promise|undefined}
+ * get the initial data from a field or component
+ * @param {string} field
+ * @param {string} component
+ * @returns {string}
  */
-function doMagic(e, bindings, testEl) {
-  const el = testEl || e.currentTarget,
-    currentField = el.getAttribute('data-magic-currentField'),
-    field = el.getAttribute('data-magic-field'),
-    component = el.getAttribute('data-magic-component'),
-    transform = el.getAttribute('data-magic-transform'),
-    property = el.getAttribute('data-magic-property');
-
-  let url = el.getAttribute('data-magic-url'),
-    data, transformed;
-
-  // make sure to cancel the actual event
-  if (e) {
-    e.stopPropagation();
-    e.preventDefault();
-  }
-
-  if (!el.classList.contains('magic-button')) {
-    return;
-  }
-
+function getData(field, component) {
   // if they specify a field to pull data from, get the data
   // if they specify a component to pull data from, find it on the page
   if (!_.isEmpty(field)) {
-    data = getFieldData(field);
+    return getFieldData(field);
   } else if (!_.isEmpty(component)) {
-    data = findComponent(component);
+    return findComponent(component);
   } else {
-    data = '';
+    return '';
     // note: to keep things sane when using transforms and api calls,
     // we're treating "empty" data as emptystring (no matter what type the data might be)
   }
+}
+
+/**
+ * apply transforms, call urls, and grab properties
+ * @param {string} data
+ * @param {object} options
+ * @returns {Promise}
+ */
+function doMoreMagic(data, options) {
+  var transform = options.transform,
+    url = options.url,
+    property = options.property,
+    transformed, promise;
 
   if (!_.isEmpty(transform)) {
     transformed = transformers[transform](data);
@@ -221,12 +213,66 @@ function doMagic(e, bindings, testEl) {
     // to use the prefix of the current site (with proper port and protocol for api calls)
     url = url.replace('$SITE_PREFIX', site.addPort(site.addProtocol(site.get('prefix'))));
     // do an api call!
-    return module.exports.getAPI(url + transformed)
-      .then(getProperty(property))
-      .then(res => setFieldData(bindings, currentField, res));
+    promise = module.exports.getAPI(url + transformed)
+      .then(getProperty(property));
   } else {
     // just set the data
-    return Promise.resolve(setFieldData(bindings, currentField, transformed));
+    promise = Promise.resolve(transformed);
+  }
+
+  return promise;
+}
+
+/**
+ * do magic on click ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
+ * @param {MouseEvent} e
+ * @param {object} bindings
+ * @param {Element} [testEl] for testing, we pass a stubbed element in rather than the event
+ * note: when this function is called from the binding, testEl is undefined
+ * @returns {Promise|undefined}
+ */
+function doMagic(e, bindings, testEl) {
+  const el = testEl || e.currentTarget,
+    currentField = el.getAttribute('data-magic-currentField'),
+    field = el.getAttribute('data-magic-field'),
+    component = el.getAttribute('data-magic-component'),
+    transform = el.getAttribute('data-magic-transform'),
+    property = el.getAttribute('data-magic-property'),
+    moreMagicString = el.getAttribute('data-magic-moremagic') || '',
+    moreMagic = moreMagicString.length ? JSON.parse(moreMagicString) : [];
+
+  let url = el.getAttribute('data-magic-url'),
+    data, promise;
+
+  // make sure to cancel the actual event
+  if (e) {
+    e.stopPropagation();
+    e.preventDefault();
+  }
+
+  if (!el.classList.contains('magic-button')) {
+    return;
+  }
+
+  // get the initial data
+  data = getData(field, component);
+
+  // apply an optional transform, call an optional url
+  promise = doMoreMagic(data, {
+    transform: transform,
+    url: url,
+    property: property
+  });
+
+  // if there's more magic, iterate through each item transforming the returned value
+  // note: each item in moreMagic is only allowed to have transform, url, and property
+  // (not field, component, or moreMagic)
+  if (moreMagic.length) {
+    return promise.then(function (res) {
+      return promises.reduce(moreMagic, doMoreMagic, res);
+    }).then(finalRes => setFieldData(bindings, currentField, finalRes));
+  } else {
+    return promise.then(finalRes => setFieldData(bindings, currentField, finalRes));
   }
 }
 
@@ -240,6 +286,7 @@ function doMagic(e, bindings, testEl) {
  * @param {string} [args.transform] key of the transform to apply to the value
  * @param {string} [args.url] to get data from
  * @param {string} [args.property] to get from the returned data
+ * @param {array} [args.moreMagic] an array of objects with optional transforms, urls, and properties
  * @returns {{}}
  */
 module.exports = function (result, args) {
@@ -250,8 +297,9 @@ module.exports = function (result, args) {
     transform = args.transform || '',
     url = args.url || '',
     property = args.property || '',
+    moreMagic = args.moreMagic ? JSON.stringify(args.moreMagic) : '',
     input = getInput(el),
-    button = dom.create(`<a class="magic-button" rv-on-click="${name}.doMagic" data-magic-currentField="${name}" data-magic-field="${field}" data-magic-component="${component}" data-magic-transform="${transform}" data-magic-url="${url}" data-magic-property="${property}">
+    button = dom.create(`<a class="magic-button" rv-on-click="${name}.doMagic" data-magic-currentField="${name}" data-magic-field="${field}" data-magic-component="${component}" data-magic-transform="${transform}" data-magic-url="${url}" data-magic-property="${property}" data-magic-moremagic="${moreMagic}">
       <img class="magic-button-inner" src="${site.get('assetPath')}/media/components/clay-kiln/magic-button.svg" alt="Magic Button">
     </a>`);
 
