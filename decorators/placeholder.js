@@ -6,18 +6,58 @@ var _ = require('lodash'),
   addComponentHandler = require('../services/components/add-component-handler');
 
 /**
+ *
+ * @param {Array} groupItems
+ * @param {string} propName
+ * @returns {object}
+ */
+function findPropInFieldGroup(groupItems, propName) {
+  return _.find(groupItems, groupProp => _.get(groupProp, '_schema._name') === propName) || null;
+}
+
+/**
+ * get the property value
+ * @param {string} path
+ * @param {object} data
+ * @param {string} propName
+ * @returns {String}
+ */
+function getPropVal(path, data, propName) {
+  var value = 'value';
+
+  return String( // always return a string
+    _.get(
+      propName === path ? data : findPropInFieldGroup(data[value], propName), // single property or field-group
+      value
+    ) || ''); // default to empty string
+}
+
+/**
+ *
+ * @param {string} path
+ * @param {object} data
+ * @returns {Function}
+ */
+function replacePropVal(path, data) {
+  return (match, propName) => getPropVal(path, data, propName.trim());
+}
+
+/**
  * get placeholder text
  * if placeholder has a text property, use it
  * else call the label service
- * @param  {string} path
- * @param  {{}} schema
- * @return {string}
+ * @param {string} path
+ * @param {object} data
+ * @param {object} data._schema
+ * @returns {string}
  */
-function getPlaceholderText(path, schema) {
-  var placeholder = schema[references.placeholderProperty];
+function getPlaceholderText(path, data) {
+  var schema = data._schema,
+    placeholder = schema[references.placeholderProperty],
+    propNamePattern = new RegExp(/\$\{([^\}]+)}/ig); // allows property value in text, e.g. 'The value is ${propName}'
 
   if (_.isObject(placeholder) && placeholder.text) {
-    return placeholder.text;
+    return placeholder.text.replace(propNamePattern, replacePropVal(path, data));
   } else {
     return label(path, schema);
   }
@@ -277,7 +317,7 @@ function addPlaceholder(el, options) {
     schema = _.get(options, 'data._schema');
 
   return addPlaceholderDom(el, {
-    text: getPlaceholderText(path, schema),
+    text: getPlaceholderText(path, options.data),
     height: getPlaceholderHeight(el, schema),
     permanent: getPlaceholderPermanence(schema),
     list: getPlaceholderList(el, options)
