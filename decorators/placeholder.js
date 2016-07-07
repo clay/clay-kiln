@@ -54,7 +54,7 @@ function replacePropVal(path, data) {
 function getPlaceholderText(path, data) {
   var schema = data._schema,
     placeholder = schema[references.placeholderProperty],
-    propNamePattern = new RegExp(/\$\{([^\}]+)}/ig); // allows property value in text, e.g. 'The value is ${propName}'
+    propNamePattern = /\$\{(\w+)\}/ig; // allows property value in text, e.g. 'The value is ${propName}'
 
   if (_.isObject(placeholder) && placeholder.text) {
     return placeholder.text.replace(propNamePattern, replacePropVal(path, data));
