@@ -143,6 +143,26 @@ adName:
     permanent: true
 ```
 
+Placeholders can display the value of a field, which is useful for components not visible during edit mode, e.g. third-party JavaScript. The syntax for displaying a value in the placeholder text is `${fieldName}`, which is similar to JavaScript [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals). Note that `permanent: true` must be set. Example schemas:
+
+```yaml
+# single field with value in placeholder text
+videoId:
+  _placeholder:
+    text: Video Id ${videoId}
+    permanent: true
+
+# group with values in placeholder text
+_groups:
+  group1:
+    fields:
+      - name
+      - description
+    _placeholder:
+      text: Ad Unit ${name} ${description}
+      permanent: true
+```
+
 Placeholders will display when you add `data-editable="fieldName"` in your component's template. If you're using a permanent placeholder and/or you don't want the user to click through and open a form, you can specify `data-placeholder="fieldName"` instead.
 
 When deciding how to add placeholders, keep these things in mind:

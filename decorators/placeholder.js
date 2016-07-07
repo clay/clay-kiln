@@ -6,18 +6,58 @@ var _ = require('lodash'),
   addComponentHandler = require('../services/components/add-component-handler');
 
 /**
+ * given an array of fields, find the field that matches a certain name
+ * @param {string} fieldName
+ * @param {Array} groupFields
+ * @returns {object|undefined}
+ */
+function getFieldFromGroup(fieldName, groupFields) {
+  return _.find(groupFields, field => _.get(field, '_schema._name') === fieldName);
+}
+
+/**
+ * get the field's value
+ * @param {string} path
+ * @param {object} data
+ * @param {string} fieldName
+ * @returns {String}
+ */
+function getFieldVal(path, data, fieldName) {
+  var value = 'value';
+
+  return new String( // always return a string; we cannot rely on the `toString` method as it can throw errors
+    _.get(
+      fieldName === path ? data : getFieldFromGroup(fieldName, data[value]), // single field or group
+      value
+    ) || ''); // default to empty string
+}
+
+/**
+ *
+ * @param {string} path
+ * @param {object} data
+ * @returns {Function}
+ */
+function replaceFieldName(path, data) {
+  return (match, fieldName) => getFieldVal(path, data, fieldName);
+}
+
+/**
  * get placeholder text
  * if placeholder has a text property, use it
  * else call the label service
- * @param  {string} path
- * @param  {{}} schema
- * @return {string}
+ * @param {string} path
+ * @param {object} data
+ * @param {object} data._schema
+ * @returns {string}
  */
-function getPlaceholderText(path, schema) {
-  var placeholder = schema[references.placeholderProperty];
+function getPlaceholderText(path, data) {
+  var schema = data._schema,
+    placeholder = schema[references.placeholderProperty],
+    fieldNamePattern = /\${\s*(\w+)\s*}/ig; // allows field value in text, e.g. 'The value is ${fieldName}'
 
   if (_.isObject(placeholder) && placeholder.text) {
-    return placeholder.text;
+    return placeholder.text.replace(fieldNamePattern, replaceFieldName(path, data));
   } else {
     return label(path, schema);
   }
@@ -69,23 +109,6 @@ function isFieldEmpty(data) {
   }
 
   return !_.isBoolean(value) && !_.isNumber(value) && _.isEmpty(value);
-}
-
-/**
- * given an array of fields, find the field that matches a certain name
- * @param {string} name
- * @param {array} value
- * @throws {Error} if no field found (this is a programmer error)
- * @returns {object}
- */
-function getFieldFromGroup(name, value) {
-  var possibleField = _.find(value, function (field) {
-    var currentField = _.get(field, '_schema._name');
-
-    return name === currentField;
-  });
-
-  return possibleField;
 }
 
 /**
@@ -277,7 +300,7 @@ function addPlaceholder(el, options) {
     schema = _.get(options, 'data._schema');
 
   return addPlaceholderDom(el, {
-    text: getPlaceholderText(path, schema),
+    text: getPlaceholderText(path, options.data),
     height: getPlaceholderHeight(el, schema),
     permanent: getPlaceholderPermanence(schema),
     list: getPlaceholderList(el, options)
