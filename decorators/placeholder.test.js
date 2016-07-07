@@ -322,6 +322,267 @@ describe(dirname, function () {
 
         expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'title'})).to.equal(false);
       });
+
+      it('returns true if group with ifEmpty pointing to two empty fields with AND', function () {
+        var title = {
+            value: '',
+            _schema: {
+              _has: 'text',
+              _name: 'title'
+            }
+          },
+          desc = {
+            value: '',
+            _schema: {
+              _has: 'text',
+              _name: 'desc'
+            }
+          },
+          stubData = {
+            value: [title, desc],
+            _schema: {
+              fields: ['title', 'desc'],
+              _placeholder: {
+                ifEmpty: 'title AND desc'
+              },
+              _name: 'titlegroup'
+            }
+          };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'titlegroup'})).to.equal(true);
+      });
+
+      it('returns false if group with ifEmpty pointing to one empty field and one non-empty field with AND', function () {
+        var title = {
+            value: '',
+            _schema: {
+              _has: 'text',
+              _name: 'title'
+            }
+          },
+          desc = {
+            value: 'asdf',
+            _schema: {
+              _has: 'text',
+              _name: 'desc'
+            }
+          },
+          stubData = {
+            value: [title, desc],
+            _schema: {
+              fields: ['title', 'desc'],
+              _placeholder: {
+                ifEmpty: 'title AND desc'
+              },
+              _name: 'titlegroup'
+            }
+          };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'titlegroup'})).to.equal(false);
+      });
+
+      it('returns false if group with ifEmpty pointing to two non-empty fields with AND', function () {
+        var title = {
+            value: 'asdf',
+            _schema: {
+              _has: 'text',
+              _name: 'title'
+            }
+          },
+          desc = {
+            value: 'asdf',
+            _schema: {
+              _has: 'text',
+              _name: 'desc'
+            }
+          },
+          stubData = {
+            value: [title, desc],
+            _schema: {
+              fields: ['title', 'desc'],
+              _placeholder: {
+                ifEmpty: 'title AND desc'
+              },
+              _name: 'titlegroup'
+            }
+          };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'titlegroup'})).to.equal(false);
+      });
+
+      it('returns true if group with ifEmpty pointing to two empty fields with OR', function () {
+        var title = {
+            value: '',
+            _schema: {
+              _has: 'text',
+              _name: 'title'
+            }
+          },
+          desc = {
+            value: '',
+            _schema: {
+              _has: 'text',
+              _name: 'desc'
+            }
+          },
+          stubData = {
+            value: [title, desc],
+            _schema: {
+              fields: ['title', 'desc'],
+              _placeholder: {
+                ifEmpty: 'title OR desc'
+              },
+              _name: 'titlegroup'
+            }
+          };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'titlegroup'})).to.equal(true);
+      });
+
+      it('returns true if group with ifEmpty pointing to one empty field and one non-empty field with OR', function () {
+        var title = {
+            value: '',
+            _schema: {
+              _has: 'text',
+              _name: 'title'
+            }
+          },
+          desc = {
+            value: 'asdf',
+            _schema: {
+              _has: 'text',
+              _name: 'desc'
+            }
+          },
+          stubData = {
+            value: [title, desc],
+            _schema: {
+              fields: ['title', 'desc'],
+              _placeholder: {
+                ifEmpty: 'title OR desc'
+              },
+              _name: 'titlegroup'
+            }
+          };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'titlegroup'})).to.equal(true);
+      });
+
+      it('returns false if group with ifEmpty pointing to two non-empty fields with OR', function () {
+        var title = {
+            value: 'asdf',
+            _schema: {
+              _has: 'text',
+              _name: 'title'
+            }
+          },
+          desc = {
+            value: 'asdf',
+            _schema: {
+              _has: 'text',
+              _name: 'desc'
+            }
+          },
+          stubData = {
+            value: [title, desc],
+            _schema: {
+              fields: ['title', 'desc'],
+              _placeholder: {
+                ifEmpty: 'title OR desc'
+              },
+              _name: 'titlegroup'
+            }
+          };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'titlegroup'})).to.equal(false);
+      });
+
+      it('returns false if group with ifEmpty pointing to two empty fields with XOR', function () {
+        var title = {
+            value: '',
+            _schema: {
+              _has: 'text',
+              _name: 'title'
+            }
+          },
+          desc = {
+            value: '',
+            _schema: {
+              _has: 'text',
+              _name: 'desc'
+            }
+          },
+          stubData = {
+            value: [title, desc],
+            _schema: {
+              fields: ['title', 'desc'],
+              _placeholder: {
+                ifEmpty: 'title XOR desc'
+              },
+              _name: 'titlegroup'
+            }
+          };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'titlegroup'})).to.equal(false);
+      });
+
+      it('returns true if group with ifEmpty pointing to one empty field and one non-empty field with XOR', function () {
+        var title = {
+            value: '',
+            _schema: {
+              _has: 'text',
+              _name: 'title'
+            }
+          },
+          desc = {
+            value: 'asdf',
+            _schema: {
+              _has: 'text',
+              _name: 'desc'
+            }
+          },
+          stubData = {
+            value: [title, desc],
+            _schema: {
+              fields: ['title', 'desc'],
+              _placeholder: {
+                ifEmpty: 'title XOR desc'
+              },
+              _name: 'titlegroup'
+            }
+          };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'titlegroup'})).to.equal(true);
+      });
+
+      it('returns false if group with ifEmpty pointing to two non-empty fields with XOR', function () {
+        var title = {
+            value: 'asdf',
+            _schema: {
+              _has: 'text',
+              _name: 'title'
+            }
+          },
+          desc = {
+            value: 'asdf',
+            _schema: {
+              _has: 'text',
+              _name: 'desc'
+            }
+          },
+          stubData = {
+            value: [title, desc],
+            _schema: {
+              fields: ['title', 'desc'],
+              _placeholder: {
+                ifEmpty: 'title XOR desc'
+              },
+              _name: 'titlegroup'
+            }
+          };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'titlegroup'})).to.equal(false);
+      });
     });
 
     describe('handler', function () {

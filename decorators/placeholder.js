@@ -113,12 +113,13 @@ function isFieldEmpty(data) {
 
 /**
  * determine if a group is empty
- * by looking at the field denoted by the `ifEmpty` property (in the placeholder object)
+ * by looking at the field(s) denoted by the `ifEmpty` property (in the placeholder object)
  * @param {obejct} data
  * @returns {boolean}
  */
 function isGroupEmpty(data) {
-  var fieldName = _.get(data, '_schema._placeholder.ifEmpty'),
+  var ifEmpty = _.get(data, '_schema._placeholder.ifEmpty'),
+  fieldNames
     field = getFieldFromGroup(fieldName, data.value),
     isField = _.has(field, '_schema.' + references.fieldProperty);
 
