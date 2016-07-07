@@ -6,10 +6,6 @@ _Note:_ When this behavior is added to a field, it will replace any previous ele
 
 ## Arguments
 
-* **required** _(optional)_ set textarea required (will block saving)
-* **placeholder** _(optional)_ placeholder that will display in the textarea
-
-
 * **buttons** _(optional)_  array of button names (strings) for text styling. defaults to "remove formatting"
 * **styled** _(optional)_   style the content editable element like our `text` and `textarea` inputs.
 * **enableKeyboardExtras** _(optional)_  enable creating new components on enter, and appending text to previous components on delete, etc
