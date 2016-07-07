@@ -54,10 +54,10 @@ function replaceFieldName(path, data) {
 function getPlaceholderText(path, data) {
   var schema = data._schema,
     placeholder = schema[references.placeholderProperty],
-    propNamePattern = /\${\s*(\w+)\s*}/ig; // allows property value in text, e.g. 'The value is ${propName}'
+    fieldNamePattern = /\${\s*(\w+)\s*}/ig; // allows field value in text, e.g. 'The value is ${fieldName}'
 
   if (_.isObject(placeholder) && placeholder.text) {
-    return placeholder.text.replace(propNamePattern, replaceFieldName(path, data));
+    return placeholder.text.replace(fieldNamePattern, replaceFieldName(path, data));
   } else {
     return label(path, schema);
   }
