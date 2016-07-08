@@ -22,8 +22,12 @@ settings = {
         presets: ['es2015']
       }),
       istanbul({
-        ignore: ['**/node_modules/**'],
-        defaultIgnore: true
+        ignore: [
+          '**/*.test.js',
+          '**/*.md',
+          '**/*.scss'
+        ],
+        defaultIgnore: true // ignores node_modules, /test/, json files
       })
     ]
   },
