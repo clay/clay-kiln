@@ -25,7 +25,8 @@ settings = {
         ignore: [
           '**/*.test.js',
           '**/*.md',
-          '**/*.scss'
+          '**/*.scss',
+          '**/controllers/**' // none of these have tests
         ],
         defaultIgnore: true // ignores node_modules, /test/, json files
       })
