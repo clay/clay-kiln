@@ -231,7 +231,7 @@ _groups:
       ifEmpty: title
 ```
 
-Placeholders may check two different fields, and run a logical comparison on them. This is handy for components with editable links, as you'll usually want to display a placeholder when _either_ the url and the link text are empty. Comparators are case-insensitive, and you can use `AND`, `OR`, or `XOR`.
+Placeholders may check two different fields with a logical operator. This is handy for components with editable links, as you'll usually want to display a placeholder when _either_ the url or the link text are empty. Operators are case-insensitive, and you can use `AND`, `OR`, or `XOR`.
 
 ```yaml
 _groups:
