@@ -215,7 +215,7 @@ _groups:
 
 When Kiln generates a form for a group, the `_display` (and `_placeholder`) properties of the individual fields are ignored. This means that you don't have to specify those properties in your fields if they're only used in groups (rather than referenced directly).
 
-If you add a `_placeholder` to a group, you _must_ either make it permanent (with `permanent: true`) _or_ specify a field it should check (with `ifEmpty: fieldName`). It will display the placeholder when that field is empty.
+If you add a `_placeholder` to a group, you _must_ either make it permanent (with `permanent: true`) _or_ specify fields it should check (with `ifEmpty: fieldName`). It will display the placeholder when that field is empty.
 
 ```yaml
 _groups:
@@ -229,6 +229,18 @@ _groups:
       text: Click here to add stuff
       height: 40px
       ifEmpty: title
+```
+
+Placeholders may check two different fields with a logical operator. This is handy for components with editable links, as you'll usually want to display a placeholder when _either_ the url or the link text are empty. Operators are case-insensitive, and you can use `AND`, `OR`, or `XOR`.
+
+```yaml
+_groups:
+  link:
+    fields:
+      - url
+      - text
+    _placeholder:
+      ifEmpty: url OR text
 ```
 
 #### Settings Group
