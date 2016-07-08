@@ -1,7 +1,8 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./add-component-handler'),
-  dom = require('@nymag/dom');
+  dom = require('@nymag/dom'),
+  site = require('../site');
 
 describe(dirname, function () {
   describe(filename, function () {
@@ -22,7 +23,17 @@ describe(dirname, function () {
     });
 
     describe('getAddableComponents', function () {
-      var fn = lib[this.title];
+      var fn = lib[this.title],
+        sandbox;
+
+      beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+        sandbox.stub(site, 'get').returns('testSite');
+      });
+
+      afterEach(function () {
+        sandbox.restore();
+      });
 
       it('works for empty array', function () {
         expect(fn([])).to.deep.equal([]);
@@ -38,6 +49,22 @@ describe(dirname, function () {
 
       it('works when excluding stuff', function () {
         expect(fn(['foo'], ['bar'])).to.deep.equal(['foo']);
+      });
+
+      it('allows components included on current site', function () {
+        expect(fn(['foo (testSite)'])).to.deep.equal(['foo']);
+      });
+
+      it('disallows components not included on current site', function () {
+        expect(fn(['foo (otherSite)'])).to.deep.equal([]);
+      });
+
+      it('disallows components excluded from current site', function () {
+        expect(fn(['foo (not:testSite)'])).to.deep.equal([]);
+      });
+
+      it('disallows components included but also excluded from current site', function () {
+        expect(fn(['foo (testSite, not:testSite)'])).to.deep.equal([]);
       });
     });
   });

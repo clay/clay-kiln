@@ -72,12 +72,15 @@ function filterComponent(str, exclude) {
 /**
  * map through components, filtering out excluded
  * then filter out components not allowed on the current site
+ * then remove any site logic (to only return the component names)
  * @param {array} possibleComponents
  * @param {array} [exclude] array of components to exclude
  * @returns {array} array of elements
  */
 function getAddableComponents(possibleComponents, exclude) {
-  return _.filter(possibleComponents, (item) => filterComponent(item, exclude));
+  return _.map(_.filter(possibleComponents, (item) => filterComponent(item, exclude)), function (str) {
+    return str.replace(/\s?\(.*?\)/g, ''); // remove any site logic
+  });
 }
 
 /**
