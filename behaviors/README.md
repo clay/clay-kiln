@@ -104,6 +104,21 @@ sideBarArea:
 
 Component lists don't use `_label` or `_display` (and will ignore them if you specify them), but they allow `_placeholder`. It's recommended to add placeholders to component lists, which will display when that list is empty.
 
+##### Site-specific Components
+
+You may optionally specify that components in a list should be included or excluded on a specific site. To do so, add a comma-separated list of sites in parenthesis after the name of the component in the `include` list:
+
+```yaml
+include:
+  - article (site1, site2) # allow on site1 and site2 ONLY
+  - paragraph # allow on all sites
+  - image (not:site1) # allow on all sites EXCEPT site1
+  - link (site1, site2, site3, not:site2, not:site3) # only allow on site1
+  # if (for some reason) you both include and exclude a site, it'll filter by the
+  # included sites first, then filter out the excluded. this works the same way as the
+  # include and exclude lists above
+```
+
 **Note:** In the future you will be able to [specify a minimum and maximum number of components](https://github.com/nymag/clay-kiln/issues/298) in your component lists.
 
 #### Defining Display
