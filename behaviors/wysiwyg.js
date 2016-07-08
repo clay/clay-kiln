@@ -1,7 +1,7 @@
 var _ = require('lodash'),
   select = require('selection-range'),
   MediumEditor = require('medium-editor'),
-  MediumButton = require('../services/field-helpers/medium-button'),
+  MediumButton = require('@yoshokatana/medium-button'),
   dom = require('@nymag/dom'),
   db = require('../services/edit/db'),
   render = require('../services/components/render'),
