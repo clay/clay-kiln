@@ -29,19 +29,19 @@ function getParentListElement(el, path) {
 function availableOnCurrentSite(slug, logic) {
   var tokens = logic.split(',').map((str) => str.trim()), // trim any extra whitespace
     // list of site slugs to include
-    include = _.reject(tokens, (token) => _.includes(token, 'not:')),
+    sitesToInclude = _.reject(tokens, (token) => _.includes(token, 'not:')),
     // list of site slugs to exclude (remove the "not:" from the tokens)
-    exclude = _.map(_.filter(tokens, (token) => _.includes(token, 'not:')), (token) => token.replace(/not:\s?/ig, ''));
+    sitesToExclude = _.map(_.filter(tokens, (token) => _.includes(token, 'not:')), (token) => token.replace(/not:\s?/ig, ''));
 
-  if (!_.isEmpty(include)) {
+  if (!_.isEmpty(sitesToInclude)) {
     // if we have any sites explicitly included, then the component is available if we're
     // on one of those sites AND we're not on any sites in the excluded list
     // note: configuring "(siteName, otherSiteName, not:siteName)" is silly, but possible
-    return _.includes(include, slug) && !_.includes(exclude, slug);
+    return _.includes(sitesToInclude, slug) && !_.includes(sitesToExclude, slug);
   } else {
     // if we don't explicitly include certain sites, then just make sure the
     // current site isn't excluded
-    return !_.includes(exclude, slug);
+    return !_.includes(sitesToExclude, slug);
   }
 }
 
@@ -53,7 +53,7 @@ function availableOnCurrentSite(slug, logic) {
  * @returns {boolean}
  */
 function filterComponent(str, exclude) {
-  var matches = str.match(/([\w-]+)(?:\s?\((.*?)\))?/),
+  var matches = str.match(/([\w-]+)(?:\s?\((.*?)\))?/), // e.g. component-name (site logic)
     name = matches[1],
     siteLogic = matches[2];
 
@@ -78,9 +78,9 @@ function filterComponent(str, exclude) {
  * @returns {array} array of elements
  */
 function getAddableComponents(possibleComponents, exclude) {
-  return _.map(_.filter(possibleComponents, (item) => filterComponent(item, exclude)), function (str) {
-    return str.replace(/\s?\(.*?\)/g, ''); // remove any site logic
-  });
+  return _.map(_.filter(possibleComponents, (item) => filterComponent(item, exclude)), (str) => str.replace(/\s?\(.*?\)/g, ''));
+  // that regex removes anything in parenthesis (the site logic)
+  // as well as any spaces between the name of the component and the parenthesis
 }
 
 /**
