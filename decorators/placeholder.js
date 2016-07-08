@@ -125,13 +125,13 @@ function isFieldAndEmpty(name, data) {
 }
 
 /**
- * compare multiple fields to see if they're empty
+ * compare two fields to see if they're empty
  * comparators are case insensitive, so AND, and, OR, or, etc work
  * @param {array} tokens must have 3 items
  * @param {object} data
  * @returns {boolean}
  */
-function compareMultipleFields(tokens, data) {
+function compareTwoFields(tokens, data) {
   var isFirstEmpty = isFieldAndEmpty(tokens[0], data),
     comparator = tokens[1].toLowerCase(), // comparator is case-insensitive
     isSecondEmpty = isFieldAndEmpty(tokens[2], data);
@@ -169,7 +169,7 @@ function isGroupEmpty(data) {
     // check multiple fields
     // note: for now this is limited to checking two fields
     // e.g. foo AND bar, foo OR bar, foo XOR bar
-    return compareMultipleFields(tokens, data);
+    return compareTwoFields(tokens, data);
   } else {
     // someone messed something up in their ifEmpty statement, let them know
     throw new Error('Cannot check if fields are empty: ' + ifEmpty);
