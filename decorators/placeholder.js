@@ -112,6 +112,39 @@ function isFieldEmpty(data) {
 }
 
 /**
+ * check if a property name is a field, and if it's empty
+ * @param {string} name
+ * @param {object} data
+ * @returns {boolean}
+ */
+function isFieldAndEmpty(name, data) {
+  var field = getFieldFromGroup(name, data.value),
+    isField = _.has(field, '_schema.' + references.fieldProperty);
+
+  return isField && isFieldEmpty(field);
+}
+
+/**
+ * compare multiple fields to see if they're empty
+ * comparators are case insensitive, so AND, and, OR, or, etc work
+ * @param {array} tokens must have 3 items
+ * @param {object} data
+ * @returns {boolean}
+ */
+function compareMultipleFields(tokens, data) {
+  var isFirstEmpty = isFieldAndEmpty(tokens[0], data),
+    comparator = tokens[1].toLowerCase(), // comparator is case-insensitive
+    isSecondEmpty = isFieldAndEmpty(tokens[2], data);
+
+  switch (comparator) {
+    case 'and': return isFirstEmpty && isSecondEmpty;
+    case 'or': return isFirstEmpty || isSecondEmpty;
+    case 'xor': return isFirstEmpty && !isSecondEmpty || !isFirstEmpty && isSecondEmpty;
+    default: throw new Error('Unknown comparator: ' + tokens[1]);
+  }
+}
+
+/**
  * determine if a group is empty
  * by looking at the field(s) denoted by the `ifEmpty` property (in the placeholder object)
  * @param {obejct} data
@@ -119,11 +152,28 @@ function isFieldEmpty(data) {
  */
 function isGroupEmpty(data) {
   var ifEmpty = _.get(data, '_schema._placeholder.ifEmpty'),
-  fieldNames
-    field = getFieldFromGroup(fieldName, data.value),
-    isField = _.has(field, '_schema.' + references.fieldProperty);
+    tokens;
 
-  return !!fieldName && isField && isFieldEmpty(field);
+  // if there's no ifEmpty property specified, return false immediately
+  if (!ifEmpty) {
+    return false;
+  }
+
+  // otherwise, tokenize what's there and check the emptiness of the field(s)
+  tokens = ifEmpty.split(' ');
+
+  if (tokens.length === 1) {
+    // check a single field to see if it's empty
+    return isFieldAndEmpty(tokens[0], data);
+  } else if (tokens.length === 3) {
+    // check multiple fields
+    // note: for now this is limited to checking two fields
+    // e.g. foo AND bar, foo OR bar, foo XOR bar
+    return compareMultipleFields(tokens, data);
+  } else {
+    // someone messed something up in their ifEmpty statement, let them know
+    throw new Error('Cannot check if fields are empty: ' + ifEmpty);
+  }
 }
 
 /**
