@@ -3,6 +3,8 @@ var Codemirror = require('codemirror'),
 
 // scss mode
 require('codemirror/mode/css/css');
+// yaml mode
+require('codemirror/mode/yaml/yaml');
 // show selections
 require('codemirror/addon/selection/active-line.js');
 
@@ -19,7 +21,8 @@ function initCodemirror() {
           mode: mode,
           lint: true,
           styleActiveLine: true,
-          lineNumbers: true
+          lineNumbers: true,
+          tabSize: 2
         });
 
       // refresh the codemirror instance after it instantiates
