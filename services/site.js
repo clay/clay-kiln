@@ -53,6 +53,7 @@ if (editorEl) {
   data.host = editorEl.getAttribute('data-site-host');
   data.path = normalizePath(editorEl.getAttribute('data-site-path'));
   data.assetPath = editorEl.getAttribute('data-site-assetpath');
+  data.slug = editorEl.getAttribute('data-site-slug');
   data.port = location.port;
   data.prefix = path.join(data.host, data.path);
   data.protocol = location.protocol;
