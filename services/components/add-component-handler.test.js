@@ -53,6 +53,7 @@ describe(dirname, function () {
 
       it('allows components included on current site', function () {
         expect(fn(['foo (testSite)'])).to.deep.equal(['foo']);
+        expect(fn(['foo (testSite, otherSite)'])).to.deep.equal(['foo']);
       });
 
       it('disallows components not included on current site', function () {
@@ -61,10 +62,11 @@ describe(dirname, function () {
 
       it('disallows components excluded from current site', function () {
         expect(fn(['foo (not:testSite)'])).to.deep.equal([]);
+        expect(fn(['foo (not: testSite)'])).to.deep.equal([]);
       });
 
       it('disallows components included but also excluded from current site', function () {
-        expect(fn(['foo (testSite, not:testSite)'])).to.deep.equal([]);
+        expect(fn(['foo (testSite, otherSite, not:testSite)'])).to.deep.equal([]);
       });
     });
   });

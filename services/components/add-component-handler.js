@@ -31,7 +31,7 @@ function availableOnCurrentSite(slug, logic) {
     // list of site slugs to include
     include = _.reject(tokens, (token) => _.includes(token, 'not:')),
     // list of site slugs to exclude (remove the "not:" from the tokens)
-    exclude = _.map(_.filter(tokens, (token) => _.includes(token, 'not:')), (token) => token.replace('not:', ''));
+    exclude = _.map(_.filter(tokens, (token) => _.includes(token, 'not:')), (token) => token.replace(/not:\s?/ig, ''));
 
   if (!_.isEmpty(include)) {
     // if we have any sites explicitly included, then the component is available if we're
