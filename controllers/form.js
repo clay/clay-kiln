@@ -12,6 +12,31 @@ module.exports = function () {
   }
 
   /**
+   * determine if we're clicking into the current component
+   * used to stop outside clicks for inline forms
+   * @param {NodeList} path
+   * @param {Element} el
+   * @returns {boolean}
+   */
+  function insideCurrentComponent(path, el) {
+    return _.contains(path, el);
+  }
+
+  /**
+   * determine if we're clicking into another form that's been opened
+   * sometimes the outside click handler isn't removed fast enough when clicking
+   * directly into something like a component's parent's settings,
+   * so it'll fire if we click anything inside that settings form
+   * @param {NodeList} path
+   * @returns {boolean}
+   */
+  function insideOtherForm(path) {
+    return !!_.find(path, function (el) {
+      return el && el.classList && el.classList.contains('editor');
+    });
+  }
+
+  /**
    * constructor
    * @param  {Element} el
    * @param  {string} ref   component ref
@@ -20,7 +45,7 @@ module.exports = function () {
    */
   function constructor(el, ref, path, oldEl) {
     function outsideClickhandler(e) {
-      if (!_.contains(e.path, el) && !wasTooltipClicked(e)) {
+      if (!insideCurrentComponent(e.path, el) && !insideOtherForm(e.path) && !wasTooltipClicked(e)) {
         e.preventDefault();
         this.removeEventListener('click', outsideClickhandler); // note: self references <html>
         return focus.unfocus().catch(_.noop);
