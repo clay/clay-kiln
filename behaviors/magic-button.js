@@ -308,7 +308,7 @@ module.exports = function (result, args) {
   // magic that lives in an object isn't treated kindly by template strings with dom.create()
   // instead, add object-based magic once the dom element has been created
   if (moreMagic) {
-    button.setAttribute("data-magic-moremagic", moreMagic)
+    button.setAttribute('data-magic-moremagic;, moreMagic);
   }
 
   // add the button right before the input
