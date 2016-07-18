@@ -239,7 +239,8 @@ function doMagic(e, bindings, testEl) {
     transform = el.getAttribute('data-magic-transform'),
     property = el.getAttribute('data-magic-property'),
     moreMagicString = el.getAttribute('data-magic-moremagic') || '',
-    moreMagic = moreMagicString.length ? JSON.parse(moreMagicString) : [];
+    // object-based element attribute values require escaping double quotes
+    moreMagic = moreMagicString.length ? JSON.parse(moreMagicString.replace(/\"/g,'"')) : [];
 
   let url = el.getAttribute('data-magic-url'),
     data, promise;
@@ -297,11 +298,18 @@ module.exports = function (result, args) {
     transform = args.transform || '',
     url = args.url || '',
     property = args.property || '',
-    moreMagic = args.moreMagic ? JSON.stringify(args.moreMagic) : '',
+    // object-based element attribute values require escaping double quotes
+    moreMagic = args.moreMagic ? JSON.stringify(args.moreMagic).replace(/"/g,'\"') : '',
     input = getInput(el),
-    button = dom.create(`<a class="magic-button" rv-on-click="${name}.doMagic" data-magic-currentField="${name}" data-magic-field="${field}" data-magic-component="${component}" data-magic-transform="${transform}" data-magic-url="${url}" data-magic-property="${property}" data-magic-moremagic="${moreMagic}">
+    button = dom.create(`<a class="magic-button" rv-on-click="${name}.doMagic" data-magic-currentField="${name}" data-magic-field="${field}" data-magic-component="${component}" data-magic-transform="${transform}" data-magic-url="${url}" data-magic-property="${property}">
       <img class="magic-button-inner" src="${site.get('assetPath')}/media/components/clay-kiln/magic-button.svg" alt="Magic Button">
     </a>`);
+
+  // magic that lives in an object isn't treated kindly by template strings with dom.create()
+  // instead, add object-based magic once the dom element has been created
+  if (moreMagic) {
+    button.setAttribute("data-magic-moremagic", moreMagic)
+  }
 
   // add the button right before the input
   dom.insertBefore(input, button);
