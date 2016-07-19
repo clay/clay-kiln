@@ -87,6 +87,7 @@
 
 .editor-inline .input-label {
   margin: 0;
+  text-align: left; // override component styling
 }
 
 // when inline forms are opened, the other children of the parent element are hidden
