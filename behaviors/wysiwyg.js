@@ -134,7 +134,18 @@ function createEditor(field, buttons) {
         [/&lt;(.*?)&gt;/ig, '<$1>'], // catch any html trying to be sent in as escaped strings,
         // thus allowing cleanTags (above) or text-model to manage them
         [/<h[1-9]>/ig, '<h2>'],
-        [/<\/h[1-9]>/ig, '</h2>'] // force all headers to the same level
+        [/<\/h[1-9]>/ig, '</h2>'], // force all headers to the same level
+        [/<\/?blockquote(.*?)>/ig, ''], // unwrap blockquotes
+        // decode SPECIFIC html entities (not all of them, as that's a security hole)
+        ['&amp;', '&'],
+        ['&nbsp;', ' '],
+        ['&ldquo;', '“'],
+        ['&rdguo;', '”'],
+        ['&lsquo;', '‘'],
+        ['&rsquo;', '’'],
+        ['&hellip;', '…'],
+        ['&mdash;', '—'],
+        ['&ndash;', '–']
       ]
     },
     anchor: {
