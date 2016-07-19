@@ -1,7 +1,7 @@
 @import '../styleguide/typography';
 
 .input-checkbox {
-  margin: 5px 0 10px;
+  margin: 5px 0 10px 2px; // left-margin space to accommodate browser focus display
 }
 
 .checkbox-label {
