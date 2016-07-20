@@ -1,5 +1,5 @@
 @import '../styleguide/inputs';
-@import '../node_modules/codemirror/lib/codemirror';
+@import 'codemirror/lib/codemirror.css';
 
 .CodeMirror {
   @include input();
