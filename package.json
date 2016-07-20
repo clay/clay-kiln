@@ -44,7 +44,7 @@
     "gulp-duration": "^0.0.0",
     "gulp-if": "^2.0.0",
     "gulp-rename": "^1.2.2",
-    "gulp-sass": "^2.0.4",
+    "gulp-sass": "^2.3.2",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-uglify": "^1.4.1",
     "gulp-util": "^3.0.7",
