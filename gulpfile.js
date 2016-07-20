@@ -14,7 +14,6 @@ var gulp = require('gulp'),
   // uglify = require('gulp-uglify'),
   concat = require('gulp-concat'),
   sass = require('gulp-sass'),
-  rfn = require('responsive-filenames'),
   autoprefix = require('gulp-autoprefixer'),
   cssmin = require('gulp-cssmin'),
   prefixOptions = { browsers: ['last 2 versions', 'ie >= 9', 'ios >= 7', 'android >= 4.4.2'] },
@@ -29,7 +28,6 @@ var gulp = require('gulp'),
 gulp.task('styles', function () {
   return gulp.src(stylesGlob)
     .pipe(sass().on('error', sass.logError))
-    .pipe(rfn())
     .pipe(concat('clay-kiln.css'))
     .pipe(autoprefix(prefixOptions))
     .pipe(cssmin())
