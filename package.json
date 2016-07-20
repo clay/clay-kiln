@@ -1,6 +1,6 @@
 {
   "name": "clay-kiln",
-  "version": "0.23.17",
+  "version": "0.23.18",
   "description": "Editor tools for Clay",
   "template": "template.nunjucks",
   "scripts": {
