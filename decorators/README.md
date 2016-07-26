@@ -14,6 +14,7 @@ Each decorator should export a `when` method. It looks like this:
  * @param {string} options.ref component reference
  * @param {string} options.path path to the field or group
  * @param {object} options.data field or group data
+ * @param {object} options.componentData full data for the component
  * @returns {boolean}
  */
 function when(el, options) {
@@ -33,6 +34,7 @@ Each decorator should export a `handler` method that applies stuff to the elemen
  * @param {string} options.ref component reference
  * @param {string} options.path path to the field or group
  * @param {object} options.data field or group data
+ * @param {object} options.componentData full data for the component
  * @returns {Element} el
  */
 function handler(el, options) {

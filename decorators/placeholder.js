@@ -3,7 +3,8 @@ var _ = require('lodash'),
   label = require('../services/label'),
   dom = require('@nymag/dom'),
   tpl = require('../services/tpl'),
-  addComponentHandler = require('../services/components/add-component-handler');
+  addComponentHandler = require('../services/components/add-component-handler'),
+  interpolate = require('../services/interpolate-fields');
 
 /**
  * given an array of fields, find the field that matches a certain name
@@ -16,48 +17,21 @@ function getFieldFromGroup(fieldName, groupFields) {
 }
 
 /**
- * get the field's value
- * @param {string} path
- * @param {object} data
- * @param {string} fieldName
- * @returns {String}
- */
-function getFieldVal(path, data, fieldName) {
-  var value = 'value';
-
-  return new String( // always return a string; we cannot rely on the `toString` method as it can throw errors
-    _.get(
-      fieldName === path ? data : getFieldFromGroup(fieldName, data[value]), // single field or group
-      value
-    ) || ''); // default to empty string
-}
-
-/**
- *
- * @param {string} path
- * @param {object} data
- * @returns {Function}
- */
-function replaceFieldName(path, data) {
-  return (match, fieldName) => getFieldVal(path, data, fieldName);
-}
-
-/**
  * get placeholder text
  * if placeholder has a text property, use it
  * else call the label service
  * @param {string} path
  * @param {object} data
  * @param {object} data._schema
+ * @param {object} componentData
  * @returns {string}
  */
-function getPlaceholderText(path, data) {
+function getPlaceholderText(path, data, componentData) {
   var schema = data._schema,
-    placeholder = schema[references.placeholderProperty],
-    fieldNamePattern = /\${\s*(\w+)\s*}/ig; // allows field value in text, e.g. 'The value is ${fieldName}'
+    placeholder = schema[references.placeholderProperty];
 
   if (_.isObject(placeholder) && placeholder.text) {
-    return placeholder.text.replace(fieldNamePattern, replaceFieldName(path, data));
+    return interpolate(placeholder.text, componentData);
   } else {
     return label(path, schema);
   }
@@ -343,7 +317,7 @@ function hasPlaceholder(el, options) {
 
 /**
  * @param {Element} el
- * @param {{ref: string, path: string, data: object}} options
+ * @param {{ref: string, path: string, data: object, componentData: object}} options
  * @returns {Element}
  */
 function addPlaceholder(el, options) {
@@ -351,7 +325,7 @@ function addPlaceholder(el, options) {
     schema = _.get(options, 'data._schema');
 
   return addPlaceholderDom(el, {
-    text: getPlaceholderText(path, options.data),
+    text: getPlaceholderText(path, options.data, options.componentData),
     height: getPlaceholderHeight(el, schema),
     permanent: getPlaceholderPermanence(schema),
     list: getPlaceholderList(el, options)
