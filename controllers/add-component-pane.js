@@ -1,7 +1,8 @@
 var pane = require('../services/pane'),
   addComponent = require('../services/components/add-component'),
   dom = require('@nymag/dom'),
-  keyCode = require('keycode');
+  keyCode = require('keycode'),
+  _ = require('lodash');
 
 /**
  * filter items in the list, based on the label or name

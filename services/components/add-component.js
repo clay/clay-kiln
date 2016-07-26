@@ -4,7 +4,8 @@ var references = require('../references'),
   render = require('./render'),
   focus = require('../../decorators/focus'),
   select = require('./select'),
-  progress = require('../progress');
+  progress = require('../progress'),
+  _ = require('lodash');
 
 /**
  * find placeholders to remove from the parent
