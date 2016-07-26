@@ -46,13 +46,13 @@ describe(dirname, function () {
 
       it('gets scheduled when not published', function () {
         get.withArgs(scheduleRef).returns(Promise.resolve({ at: 1 }));
-        getDataOnly.withArgs(publishedRef).returns(Promise.reject());
+        get.withArgs(publishedRef).returns(Promise.reject());
         return fn().then(expectState({ scheduled: true, scheduledAt: 1, published: false, publishedUrl: null, publishedAt: null }));
       });
 
       it('gets published when not scheduled', function () {
         get.withArgs(scheduleRef).returns(Promise.reject());
-        getDataOnly.withArgs(publishedRef).returns(Promise.resolve(fakeInstanceData));
+        get.withArgs(publishedRef).returns(Promise.resolve(fakeInstanceData));
         getDataOnly.withArgs(fakeArticleRef).returns(Promise.resolve(fakeArticle));
         getHead.withArgs(fakeUri).returns(Promise.resolve(true));
         return fn().then(expectState({ scheduled: false, scheduledAt: null, published: true, publishedUrl: fakeUrl, publishedAt: new Date(0) }));
@@ -60,7 +60,7 @@ describe(dirname, function () {
 
       it('gets scheduled and published', function () {
         get.withArgs(scheduleRef).returns(Promise.resolve({ at: 1 }));
-        getDataOnly.withArgs(publishedRef).returns(Promise.resolve(fakeInstanceData));
+        get.withArgs(publishedRef).returns(Promise.resolve(fakeInstanceData));
         getDataOnly.withArgs(fakeArticleRef).returns(Promise.resolve(fakeArticle));
         getHead.withArgs(fakeUri).returns(Promise.resolve(true));
         return fn().then(expectState({ scheduled: true, scheduledAt: 1, published: true, publishedUrl: fakeUrl, publishedAt: new Date(0) }));
@@ -68,7 +68,7 @@ describe(dirname, function () {
 
       it('gets neither scheduled nor published', function () {
         get.withArgs(scheduleRef).returns(Promise.reject());
-        getDataOnly.withArgs(publishedRef).returns(Promise.reject());
+        get.withArgs(publishedRef).returns(Promise.reject());
         return fn().then(expectState({ scheduled: false, scheduledAt: null, published: false, publishedUrl: null, publishedAt: null }));
       });
     });
