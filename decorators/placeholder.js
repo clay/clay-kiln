@@ -23,14 +23,15 @@ function getFieldFromGroup(fieldName, groupFields) {
  * @param {string} path
  * @param {object} data
  * @param {object} data._schema
+ * @param {object} componentData
  * @returns {string}
  */
-function getPlaceholderText(path, data) {
+function getPlaceholderText(path, data, componentData) {
   var schema = data._schema,
     placeholder = schema[references.placeholderProperty];
 
   if (_.isObject(placeholder) && placeholder.text) {
-    return interpolate(placeholder.text, data);
+    return interpolate(placeholder.text, componentData);
   } else {
     return label(path, schema);
   }
@@ -316,7 +317,7 @@ function hasPlaceholder(el, options) {
 
 /**
  * @param {Element} el
- * @param {{ref: string, path: string, data: object}} options
+ * @param {{ref: string, path: string, data: object, componentData: object}} options
  * @returns {Element}
  */
 function addPlaceholder(el, options) {
@@ -324,7 +325,7 @@ function addPlaceholder(el, options) {
     schema = _.get(options, 'data._schema');
 
   return addPlaceholderDom(el, {
-    text: getPlaceholderText(path, options.data),
+    text: getPlaceholderText(path, options.data, options.componentData),
     height: getPlaceholderHeight(el, schema),
     permanent: getPlaceholderPermanence(schema),
     list: getPlaceholderList(el, options)

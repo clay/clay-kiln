@@ -44,53 +44,61 @@ describe(dirname, function () {
 
       it('uses property value in placeholder text if value exists', function () {
         var mockData = {
-          _schema: {
-            _placeholder: {
-              text: 'Value is ${mockProp}'
+            _schema: {
+              _placeholder: {
+                text: 'Value is ${mockProp}'
+              },
+              _name: 'mockProp'
             },
-            _name: 'mockProp'
+            value: 'some value'
           },
-          value: 'some value'
-        };
+          componentData = { mockProp: { value: 'some value' }};
 
-        expect(fn('mockProp', mockData)).to.equal('Value is some value');
+        expect(fn('mockProp', mockData, componentData)).to.equal('Value is some value');
       });
 
       it('uses values from a group in placeholder text if values exist', function () {
         var mockGroupData = {
-          value: [{
+            value: [{
+              _schema: {
+                _name: 'propA'
+              }, value: 'some value'
+            }, {
+              _schema: {
+                _name: 'propB'
+              }, value: 'another value'
+            }],
             _schema: {
-              _name: 'propA'
-            }, value: 'some value'
-          }, {
-            _schema: {
-              _name: 'propB'
-            }, value: 'another value'
-          }],
-          _schema: {
-            _name: 'mockGroup',
-            fields: ['propA', 'propB'],
-            _placeholder: {
-              text: 'A is ${propA} and B is ${propB}'
+              _name: 'mockGroup',
+              fields: ['propA', 'propB'],
+              _placeholder: {
+                text: 'A is ${propA} and B is ${propB}'
+              }
             }
-          }
-        };
+          },
+          componentData = {
+            propA: { value: 'some value' },
+            propB: { value: 'another value' }
+          };
 
-        expect(fn('mockGroup', mockGroupData)).to.equal('A is some value and B is another value');
+        expect(fn('mockGroup', mockGroupData, componentData)).to.equal('A is some value and B is another value');
       });
 
       it('uses empty string in placeholder text if value does not exist', function () {
         var mockData = {
-          _schema:{
-            _placeholder: {
-              text: 'Value is ${mockProp}'
+            _schema:{
+              _placeholder: {
+                text: 'Value is ${mockProp}'
+              },
+              _name: 'mockProp'
             },
-            _name: 'mockProp'
+            value: undefined
           },
-          value: undefined
-        };
+          componentData = {
+            mockProp: { value: null }
+          };
 
-        expect(fn('mockProp', mockData)).to.equal('Value is ');
+        expect(fn('mockProp', mockData, componentData)).to.equal('Value is ');
       });
     });
 

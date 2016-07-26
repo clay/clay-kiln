@@ -27,6 +27,8 @@ function decorate(el, ref, path) {
 
     // add the data for this specific field or group
     options.data = groups.get(ref, data, path);
+    // add full component data, just in case decorators need to reference other fields
+    options.componentData = data;
     // iterate through all the decorators, calling the ones that need to run
     return _.map(window.kiln.decorators, function (decorator) {
       if (decorator.when(el, options)) {

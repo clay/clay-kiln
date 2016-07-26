@@ -3,27 +3,40 @@ const pattern = /\${\s*(\w+)\s*}/ig; // allows field value in text, e.g. 'The va
 /**
  * get a field's value
  * @param {string} fieldName
- * @param {object} data
+ * @param {object} componentData
  * @returns {String}
  */
-function getFieldVal(fieldName, data) {
-  var value = 'value';
+function getFieldVal(fieldName, componentData) {
+  var fieldData = _.get(componentData, fieldName),
+    val = fieldData && fieldData.value;
 
-  console.log('\n\n' + fieldName)
-  console.log(data)
-  // always return a string; we cannot rely on the `toString` method as it can throw errors
-  return new String(_.get(data, value) || ''); // default to empty string
+  if (val !== undefined) { // accept falsy values, because we want to cast them to strings
+    if (_.isString(val)) {
+      return val;
+    } else if (_.isNumber(val)) {
+      return val.toString(); // explicitly return '0' for 0, not falsy value
+    } else if (_.isBoolean(val)) {
+      return val.toString(); // explicitly return 'true'/'false', not falsy value
+    }
+  } else {
+    // no .value, means this is an object or array
+    if (_.isArray(fieldData) && !_.isObject(fieldData[0])) {
+      return fieldData.join(', ');
+    } // we don't support objects or arrays of objects
+    // todo: add support for listing component names in lists/properties
+  }
 }
 
 /**
  * replace matched field name with field value
- * @param {object} data
+ * @param {object} componentData
  * @returns {Function}
  */
-function replaceFieldName(data) {
-  return (match, fieldName) => getFieldVal(fieldName, data);
+function replaceFieldName(componentData) {
+  // always return a string; we cannot rely on the `toString` method as it can throw errors
+  return (match, fieldName) => new String(getFieldVal(fieldName, componentData) || ''); // default to empty string
 }
 
-module.exports = function (str, data) {
-  return str.replace(pattern, replaceFieldName(data));
+module.exports = function (str, componentData) {
+  return str.replace(pattern, replaceFieldName(componentData));
 };
