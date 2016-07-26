@@ -4,7 +4,8 @@ var moment = require('moment'),
   progress = require('../services/progress'),
   dom = require('@nymag/dom'),
   state = require('../services/page-state'),
-  db = require('../services/edit/db');
+  db = require('../services/edit/db'),
+  _ = require('lodash');
 
 /**
  * schedule page and layout publishing in parallel
