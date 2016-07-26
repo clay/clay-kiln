@@ -3,7 +3,8 @@ var _ = require('lodash'),
   label = require('../services/label'),
   dom = require('@nymag/dom'),
   tpl = require('../services/tpl'),
-  addComponentHandler = require('../services/components/add-component-handler');
+  addComponentHandler = require('../services/components/add-component-handler'),
+  interpolate = require('../services/interpolate-fields');
 
 /**
  * given an array of fields, find the field that matches a certain name
@@ -13,33 +14,6 @@ var _ = require('lodash'),
  */
 function getFieldFromGroup(fieldName, groupFields) {
   return _.find(groupFields, field => _.get(field, '_schema._name') === fieldName);
-}
-
-/**
- * get the field's value
- * @param {string} path
- * @param {object} data
- * @param {string} fieldName
- * @returns {String}
- */
-function getFieldVal(path, data, fieldName) {
-  var value = 'value';
-
-  return new String( // always return a string; we cannot rely on the `toString` method as it can throw errors
-    _.get(
-      fieldName === path ? data : getFieldFromGroup(fieldName, data[value]), // single field or group
-      value
-    ) || ''); // default to empty string
-}
-
-/**
- *
- * @param {string} path
- * @param {object} data
- * @returns {Function}
- */
-function replaceFieldName(path, data) {
-  return (match, fieldName) => getFieldVal(path, data, fieldName);
 }
 
 /**
@@ -53,11 +27,10 @@ function replaceFieldName(path, data) {
  */
 function getPlaceholderText(path, data) {
   var schema = data._schema,
-    placeholder = schema[references.placeholderProperty],
-    fieldNamePattern = /\${\s*(\w+)\s*}/ig; // allows field value in text, e.g. 'The value is ${fieldName}'
+    placeholder = schema[references.placeholderProperty];
 
   if (_.isObject(placeholder) && placeholder.text) {
-    return placeholder.text.replace(fieldNamePattern, replaceFieldName(path, data));
+    return interpolate(placeholder.text, data);
   } else {
     return label(path, schema);
   }
