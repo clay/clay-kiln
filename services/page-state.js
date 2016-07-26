@@ -96,7 +96,7 @@ function getArticleDate(pageData) {
  * @returns {Promise}
  */
 function getPublished(publishedUri) {
-  return edit.getDataOnly(publishedUri)
+  return db.get(publishedUri)
     .then(function (pageData) {
       return Promise.all([
         getPageUrl(pageData),
