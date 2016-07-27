@@ -46,6 +46,13 @@ function removeParentPlaceholder(field) {
   }
 }
 
+/**
+ * add a new component to a parent's list
+ * @param {object} args
+ * @param {Element} pane
+ * @param {string} [prevRef]
+ * @returns {Promise}
+ */
 function addToList(args, pane, prevRef) {
   // if we're adding AFTER a component, add that to the arguments
   _.assign(args, { prevRef: prevRef });
@@ -65,6 +72,12 @@ function addToList(args, pane, prevRef) {
     });
 }
 
+/**
+ * add a new component to a parent's property
+ * @param {object} args
+ * @param {Element} pane
+ * @returns {Promise}
+ */
 function addToProp(args, pane) {
   var parentData = {
       _ref: args.parentRef

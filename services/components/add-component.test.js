@@ -69,7 +69,7 @@ describe(dirname, function () {
       it('does nothing if no placeholder found in wrapper div', function () {
         var parent = dom.create(`<section data-uri="fakeParentPlaceholder4">
           <div data-editable="foo">
-            <div></div>
+            <div class="component-list-inner"></div>
           </div>
         </section>`);
 
@@ -82,7 +82,7 @@ describe(dirname, function () {
       it('does nothing if placeholder is permanent', function () {
         var parent = dom.create(`<section data-uri="fakeParentPlaceholder5">
           <div data-editable="foo">
-            <div>
+            <div class="component-list-inner">
               <div class="kiln-permanent-placeholder"></div>
             </div>
           </div>
@@ -97,7 +97,7 @@ describe(dirname, function () {
       it('removes parent placeholder', function () {
         var parent = dom.create(`<section data-uri="fakeParentPlaceholder6">
           <div data-editable="foo">
-            <div>
+            <div class="component-list-inner">
               <div class="kiln-placeholder"></div>
             </div>
           </div>
@@ -112,7 +112,7 @@ describe(dirname, function () {
 
       it('removes parent placeholder when parent el itself is editable', function () {
         var parent = dom.create(`<section data-uri="fakeParentPlaceholder7" data-editable="foo">
-            <div>
+            <div class="component-list-inner">
               <div class="kiln-placeholder"></div>
             </div>
         </section>`);
