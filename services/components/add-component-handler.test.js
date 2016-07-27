@@ -6,6 +6,17 @@ var dirname = __dirname.split('/').pop(),
 
 describe(dirname, function () {
   describe(filename, function () {
+    it('adds handler for list', function () {
+      var button = lib(dom.create('<button>+</button>'), {
+        list: {
+          include: ['foo', 'bar']
+        }
+      });
+
+      expect(button.getAttribute('data-components')).to.equal('foo,bar');
+    });
+
+
     describe('getParentEditableElement', function () {
       var fn = lib[this.title];
 

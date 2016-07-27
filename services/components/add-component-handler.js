@@ -92,6 +92,7 @@ function getAddableComponents(possibleComponents, exclude) {
  * @param {object} options.list (schema w/ include/exclude/etc)
  * @param {Element} options.listEl (list element to add components to)
  * @param {string} [prevRef] optional component ref to add components after
+ * @returns {Element}
  */
 function addHandler(button, options, prevRef) {
   var toolbar = dom.find('.kiln-toolbar'),
@@ -126,6 +127,8 @@ function addHandler(button, options, prevRef) {
       paneService.openAddComponent(currentAvailable, { pane: pane, field: field, ref: prevRef });
     }
   });
+
+  return button;
 }
 
 module.exports = addHandler;
