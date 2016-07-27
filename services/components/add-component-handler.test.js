@@ -6,7 +6,7 @@ var dirname = __dirname.split('/').pop(),
 
 describe(dirname, function () {
   describe(filename, function () {
-    describe('getParentListElement', function () {
+    describe('getParentEditableElement', function () {
       var fn = lib[this.title];
 
       it('finds list when list is parent el', function () {

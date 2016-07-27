@@ -6,13 +6,13 @@ var references = require('../references'),
   site = require('../site');
 
 /**
- * get parent list element
+ * get parent list/prop element
  * note: it might be the parent element itself (e.g. in source-links)
  * @param {Element} el component element
  * @param {string} path
  * @returns {Element}
  */
-function getParentListElement(el, path) {
+function getParentEditableElement(el, path) {
   if (el.getAttribute(references.editableAttribute) === path) {
     return el;
   } else {
@@ -128,7 +128,7 @@ function addHandler(button, options, prevRef) {
 }
 
 module.exports = addHandler;
-module.exports.getParentListElement = getParentListElement;
+module.exports.getParentEditableElement = getParentEditableElement;
 
 // for testing
 module.exports.getAddableComponents = getAddableComponents;
