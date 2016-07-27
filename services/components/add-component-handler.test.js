@@ -16,6 +16,16 @@ describe(dirname, function () {
       expect(button.getAttribute('data-components')).to.equal('foo,bar');
     });
 
+    it('adds handler for property', function () {
+      var button = lib(dom.create('<button>+</button>'), {
+        prop: {
+          include: ['foo', 'bar']
+        }
+      });
+
+      expect(button.getAttribute('data-components')).to.equal('foo,bar');
+    });
+
 
     describe('getParentEditableElement', function () {
       var fn = lib[this.title];
