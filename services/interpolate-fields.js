@@ -1,4 +1,5 @@
-const pattern = /\${\s*(\w+)\s*}/ig; // allows field value in text, e.g. 'The value is ${fieldName}'
+const _ = require('lodash'),
+  pattern = /\${\s*(\w+)\s*}/ig; // allows field value in text, e.g. 'The value is ${fieldName}'
 
 /**
  * get a field's value
