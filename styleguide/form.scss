@@ -69,6 +69,11 @@
   padding: 30px 20px 50px;
 }
 
+.editor-inline {
+  max-width: 90vw;
+  margin: 0 auto;
+}
+
 .editor-inline .input-container {
   overflow-x: hidden;
   overflow-y: auto;
