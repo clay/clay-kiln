@@ -10,6 +10,7 @@ module.exports = {
   placeholderProperty: '_placeholder',
   labelProperty: '_label',
   componentListProperty: '_componentList',
+  componentProperty: '_component',
   groupsProperty: '_groups',
   descriptionProperty: '_description',
 

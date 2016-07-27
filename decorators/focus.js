@@ -138,9 +138,10 @@ function when(el, options) {
 
   schema = _.get(options, 'data._schema');
   isEditable = el.hasAttribute(references.editableAttribute);
-  isComponentList = !!schema && schema.hasOwnProperty(references.componentListProperty);
+  isComponentList = !!schema && schema.hasOwnProperty(references.componentListProperty),
+  isComponent = !!schema && schema.hasOwnProperty(references.componentProperty);
 
-  return isEditable && !isComponentList;
+  return isEditable && !isComponentList && !isComponent;
 }
 
 /**
