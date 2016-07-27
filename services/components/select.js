@@ -40,18 +40,19 @@ function getParentEl(componentEl) {
 }
 
 /**
- * Get the parent field if it is a component list.
+ * Get the parent field if it is a component list or prop
  * @param {Element} componentEl
  * @param {object} parentSchema
+ * @param {string} property
  * @returns {string|undefined}
  */
-function getParentComponentListField(componentEl, parentSchema) {
+function getParentField(componentEl, parentSchema, property) {
   var attr = references.editableAttribute,
     parent = componentEl.parentNode,
     field = parent && dom.closest(parent, '[' + attr + ']'),
     path = field && field.getAttribute(attr);
 
-  return path && parentSchema[path] && parentSchema[path][references.componentListProperty] && path;
+  return path && parentSchema[path] && parentSchema[path][property] && path;
 }
 
 /**
@@ -183,15 +184,30 @@ function getParentInfo(el) {
             el: parentEl,
             ref: componentRef
           },
-          path = getParentComponentListField(el, schema);
+          listPath = getParentField(el, schema, references.componentListProperty),
+          propPath = getParentField(el, schema, references.componentProperty);
 
-        return _.assign(parent, {
-          isComponentList: !!path, // we use this to determine whether the current component lives in a list
-          path: path,
-          schema: _.get(schema, path), // full schema for the field, including labels and placeholders
-          list: _.get(schema, `${path}.${references.componentListProperty}`), // component list data only
-          listEl: addComponentHandler.getParentListElement(parentEl, path)
-        });
+        if (listPath) {
+          // add component list if it exists
+          _.assign(parent, {
+            isComponentList: !!listPath, // we use this to determine whether the current component lives in a list
+            path: listPath,
+            schema: _.get(schema, listPath), // full schema for the field, including labels and placeholders
+            list: _.get(schema, `${listPath}.${references.componentListProperty}`), // component list data only
+            listEl: addComponentHandler.getParentEditableElement(parentEl, listPath)
+          });
+        } else if (propPath) {
+          // add component prop if it exists
+          _.assign(parent, {
+            isComponentProp: !!propPath, // we use this to determine whether the current component lives in a property
+            path: propPath,
+            schema: _.get(schema, propPath), // full schema for the field, including labels and placeholders
+            prop: _.get(schema, `${propPath}.${references.componentProperty}`), // component prop data only
+            propEl: addComponentHandler.getParentEditableElement(parentEl, propPath)
+          });
+        }
+
+        return parent;
       });
     });
   } else {
@@ -283,6 +299,7 @@ function addListPlaceholder(parent) {
 
 /**
  * unhide delete button and add handler
+ * note: only for components in LISTS! components in properties can be replaced but not deleted (for now)
  * @param {Element} selector
  * @param {object} parent
  * @param {Element} el
@@ -311,13 +328,13 @@ function addDeleteHandler(selector, parent, el, options) {
  * @param {object} parent
  */
 function unhideBottomMenu(selector, parent) {
-  if (parent.isComponentList) {
+  if (parent.isComponentList || parent.isComponentProp) {
     dom.find(selector, '.component-selector-bottom').classList.remove(hidden);
   }
 }
 
 /**
- * unhide and add handler for add component
+ * unhide and add handler for add component (to list)
  * @param {Element} selector
  * @param {object} parent
  * @param {object} options
@@ -326,6 +343,24 @@ function addAddHandler(selector, parent, options) {
   var button = dom.find(selector, '.selected-add');
 
   if (parent.isComponentList) {
+    // unhide the button
+    button.classList.remove(hidden);
+
+    // attach the event handler
+    addComponentHandler(button, parent, options.ref);
+  }
+}
+
+/**
+ * unhide and add handler for replacing component (in property)
+ * @param {Element} selector
+ * @param {object} parent
+ * @param {object} options
+ */
+function addReplaceHandler(selector, parent, options) {
+  var button = dom.find(selector, '.selected-replace');
+
+  if (parent.isComponentProp) {
     // unhide the button
     button.classList.remove(hidden);
 
@@ -371,11 +406,13 @@ function handler(el, options) {
     // if delete, unhide + add handler
     addDeleteHandler(selector, parent, el, options);
 
-    // if add, unhide bottom
+    // if component lives in a list or property, unhide bottom
     // note: more options might exist in the bottom menu in the future
     unhideBottomMenu(selector, parent);
-    // if add, unhide + add handler
+    // if list, unhide + add handler
     addAddHandler(selector, parent, options);
+    // if property, unhide + add handler
+    addReplaceHandler(selector, parent, options);
 
     // if drag, add class
     // note: this adds a class to the component itself,

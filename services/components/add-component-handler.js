@@ -6,13 +6,13 @@ var references = require('../references'),
   site = require('../site');
 
 /**
- * get parent list element
+ * get parent list/prop element
  * note: it might be the parent element itself (e.g. in source-links)
  * @param {Element} el component element
  * @param {string} path
  * @returns {Element}
  */
-function getParentListElement(el, path) {
+function getParentEditableElement(el, path) {
   if (el.getAttribute(references.editableAttribute) === path) {
     return el;
   } else {
@@ -92,12 +92,14 @@ function getAddableComponents(possibleComponents, exclude) {
  * @param {object} options.list (schema w/ include/exclude/etc)
  * @param {Element} options.listEl (list element to add components to)
  * @param {string} [prevRef] optional component ref to add components after
+ * @returns {Element}
  */
 function addHandler(button, options, prevRef) {
   var toolbar = dom.find('.kiln-toolbar'),
     allComponents = toolbar && toolbar.getAttribute('data-components') && toolbar.getAttribute('data-components').split(',').sort() || [],
-    include = _.get(options, 'list.include'),
-    exclude = _.get(options, 'list.exclude'),
+    include = _.get(options, 'list.include') || _.get(options, 'prop.include'),
+    exclude = _.get(options, 'list.exclude') || _.get(options, 'prop.exclude'),
+    pane = options.listEl || options.propEl,
     available;
 
   // figure out what components should be available for adding
@@ -119,16 +121,18 @@ function addHandler(button, options, prevRef) {
       };
 
     if (currentAvailable.length === 1) {
-      addComponent(options.listEl, field, currentAvailable[0], prevRef);
+      addComponent(pane, field, currentAvailable[0], prevRef);
     } else {
       // open the add components pane
-      paneService.openAddComponent(currentAvailable, { pane: options.listEl, field: field, ref: prevRef });
+      paneService.openAddComponent(currentAvailable, { pane: pane, field: field, ref: prevRef });
     }
   });
+
+  return button;
 }
 
 module.exports = addHandler;
-module.exports.getParentListElement = getParentListElement;
+module.exports.getParentEditableElement = getParentEditableElement;
 
 // for testing
 module.exports.getAddableComponents = getAddableComponents;

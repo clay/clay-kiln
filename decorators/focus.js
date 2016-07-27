@@ -134,13 +134,12 @@ function focus(el, options, e) {
  * @returns {boolean}
  */
 function when(el, options) {
-  var schema, isEditable, isComponentList;
+  var schema = _.get(options, 'data._schema'),
+    isEditable = el.hasAttribute(references.editableAttribute),
+    isComponentList = !!schema && schema.hasOwnProperty(references.componentListProperty),
+    isComponentProp = !!schema && schema.hasOwnProperty(references.componentProperty);
 
-  schema = _.get(options, 'data._schema');
-  isEditable = el.hasAttribute(references.editableAttribute);
-  isComponentList = !!schema && schema.hasOwnProperty(references.componentListProperty);
-
-  return isEditable && !isComponentList;
+  return isEditable && !isComponentList && !isComponentProp;
 }
 
 /**

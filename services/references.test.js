@@ -45,6 +45,10 @@ describe('references service', function () {
     expect(references.componentListProperty).to.equal('_componentList');
   });
 
+  it('has component property', function () {
+    expect(references.componentProperty).to.equal('_component');
+  });
+
   it('has groups property', function () {
     expect(references.groupsProperty).to.equal('_groups');
   });

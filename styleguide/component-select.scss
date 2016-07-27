@@ -174,10 +174,12 @@ $layout-parent-bg-color: $purple-25;
 }
 
 // add button is larger
-.selected-add {
+.selected-add,
+.selected-replace {
   @include selector-icon($layout-color, $action-icon-large);
 }
-.kiln-page-area .selected-add {
+.kiln-page-area .selected-add,
+.kiln-page-area .selected-replace {
   @include selector-icon($page-color, $action-icon-large);
 }
 

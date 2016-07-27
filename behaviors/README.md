@@ -104,9 +104,33 @@ sideBarArea:
 
 Component lists don't use `_label` or `_display` (and will ignore them if you specify them), but they allow `_placeholder`. It's recommended to add placeholders to component lists, which will display when that list is empty.
 
-##### Site-specific Components
+#### Defining Component Properties
 
-You may optionally specify that components in a list should be included or excluded on a specific site. To do so, add a comma-separated list of sites in parenthesis after the name of the component in the `include` list:
+Components may include a single child component in a property, rather than in a list. Like lists, component properties don't have behaviors or labels, and don't appear in forms, but rather contain component references and the logic for adding and removing components.
+
+```yaml
+content:
+  _component: true
+```
+
+Simply specifying `true` will create a component property that may contain _any_ component installed in your Clay instance (both internal components and any installed via npm).
+
+If `_component` is an object, you can specify a list of components to `exclude` (blacklisting) or `include` (whitelisting).
+
+```yaml
+# select between different share tool components for an article
+articleShareTools:
+  _component:
+    include:
+      - large-share
+      - small-share
+```
+
+Component properties don't use `_label` or `_display` (and will ignore them if you specify them), but they allow `_placeholder`. It's recommended to add placeholders to component properties, which will display when that property doesn't reference a component.
+
+#### Site-specific Components
+
+You may optionally specify that components in a list or property should be included or excluded on a specific site. To do so, add a comma-separated list of sites in parenthesis after the name of the component in the `include` list:
 
 ```yaml
 include:
@@ -117,6 +141,27 @@ include:
   # if (for some reason) you both include and exclude a site, it'll filter by the
   # included sites first, then filter out the excluded. this works the same way as the
   # include and exclude lists above
+```
+
+#### Page Areas
+
+[As this overview explains](https://github.com/nymag/amphora/wiki#for-developers-and-designers), _pages_ in Clay reference both a layout and page-specific components. In layout schemas, you can specify that a certain list or property lives in the page data by adding `page: true` to the config.
+
+```yaml
+pageHeader:
+  _component:
+    include:
+      - header-small
+      - header-large
+    page: true
+
+sidebar:
+  _componentList:
+    include:
+      - ad
+      - masthead
+      - tag-cloud
+    page: true
 ```
 
 **Note:** In the future you will be able to [specify a minimum and maximum number of components](https://github.com/nymag/clay-kiln/issues/298) in your component lists.

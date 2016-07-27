@@ -185,7 +185,7 @@ function getListEl(el, path) {
   if (isParentList) {
     return parent;
   } else {
-    return addComponentHandler.getParentListElement(el, path);
+    return addComponentHandler.getParentEditableElement(el, path);
   }
 }
 

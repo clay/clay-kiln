@@ -136,6 +136,7 @@ describe(dirname, function () {
             <button class="selected-add kiln-hide" title="Add Component">
               <span class="add-inner">+</span>
             </button>
+            <button class="selected-replace kiln-hide">replace</button>
           </aside>
         </aside>`));
       });
@@ -370,6 +371,41 @@ describe(dirname, function () {
         // Add component bar.
         return fn(el, options).then(function (res) {
           expect(res.querySelector('.component-selector .selected-add').classList.contains(hidden)).to.equal(true);
+        });
+      });
+
+      it('adds the replace component button if the component is within a component property', function () {
+        var el = stubComponent(),
+          componentProp = stubEditableComponent(),
+          options = {ref: 'fakeRef', data: {}, path: 'fakePath'},
+          componentPropSchema = {content: {}};
+
+        // Setup: there is a component within a component list
+        componentPropSchema.content[references.componentProperty] = true; // isComponentList
+        sandbox.stub(edit, 'getSchema').returns(Promise.resolve(componentPropSchema));
+        sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
+        componentProp.appendChild(el); // el is within component list.
+
+        // Add component bar.
+        return fn(el, options).then(function (res) {
+          expect(res.querySelector('.component-selector .selected-replace').classList.contains(hidden)).to.equal(false);
+        });
+      });
+
+      it('does not add the replace component button if the component is not within a component property', function () {
+        var el = stubComponent(),
+          componentProp = stubEditableComponent(),
+          options = {ref: 'fakeRef', data: {}, path: 'fakePath'},
+          componentPropSchema = {content: {}};
+
+        // Setup: there is a component within a component list
+        sandbox.stub(edit, 'getSchema').returns(Promise.resolve(componentPropSchema)); // is not a componentProp
+        sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
+        componentProp.appendChild(el); // el is within component list.
+
+        // Add component bar.
+        return fn(el, options).then(function (res) {
+          expect(res.querySelector('.component-selector .selected-replace').classList.contains(hidden)).to.equal(true);
         });
       });
     });

@@ -167,6 +167,7 @@
         </aside>
         <aside class="component-selector-bottom kiln-hide">
           <button class="selected-add kiln-hide" title="Add Component">{% include 'public/media/components/clay-kiln/add-icon.svg' %}</button>
+          <button class="selected-replace kiln-hide" title="Replace Component">{% include 'public/media/components/clay-kiln/replace-icon.svg' %}</button>
         </aside>
       </aside>
     </template>
