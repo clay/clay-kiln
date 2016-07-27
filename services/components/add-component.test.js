@@ -5,7 +5,8 @@ var dirname = __dirname.split('/').pop(),
   edit = require('../edit'),
   render = require('./render'),
   progress = require('../progress'),
-  focus = require('../../decorators/focus');
+  focus = require('../../decorators/focus'),
+  db = require('../edit/db');
 
 describe(dirname, function () {
   describe(filename, function () {
@@ -17,13 +18,14 @@ describe(dirname, function () {
       sandbox.stub(render);
       sandbox.stub(progress);
       sandbox.stub(focus);
+      sandbox.stub(db);
     });
 
     afterEach(function () {
       sandbox.restore();
     });
 
-    it('creates component and adds it at the end', function () {
+    it('creates component in list and adds it at the end', function () {
       var pane = dom.create('<div class="pane"></div>');
 
       document.body.appendChild(pane);
@@ -31,9 +33,28 @@ describe(dirname, function () {
       edit.createComponent.returns(Promise.resolve({
         _ref: 'newRef'
       }));
+      edit.getData.returns(Promise.resolve({ foo: { _schema: { _componentList: true }}}));
       edit.addToParentList.returns(Promise.resolve(dom.create('<div class="new-component"></div>')));
-      lib(pane, { field: null, ref: null }, 'fakeName').then(function () {
+      lib(pane, { path: 'foo', ref: null }, 'fakeName').then(function () {
         expect(dom.find(pane.previousElementSibling, '.new-component')).to.not.equal(null);
+        expect(edit.addToParentList.calledOnce).to.equal(true);
+      });
+    });
+
+    it('replaces component in prop', function () {
+      var pane = dom.create('<div class="pane"></div>');
+
+      document.body.appendChild(pane);
+      // stub stuff
+      edit.createComponent.returns(Promise.resolve({
+        _ref: 'newRef'
+      }));
+      edit.getData.returns(Promise.resolve({ foo: { _schema: { _component: true }}}));
+      edit.savePartial.returns(Promise.resolve({}));
+      db.getHTML.returns(Promise.resolve(dom.create('<div class="new-component"></div>')));
+      lib(pane, { path: 'foo', ref: null }, 'fakeName').then(function () {
+        expect(dom.find(pane.previousElementSibling, '.new-component')).to.not.equal(null);
+        expect(edit.savePartial.calledOnce).to.equal(true);
       });
     });
 

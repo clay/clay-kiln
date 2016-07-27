@@ -56,7 +56,7 @@ describe(dirname, function () {
     describe('when', function () {
       var fn = lib[this.title];
 
-      it('returns true if not component list', function () {
+      it('returns true if not component list or prop', function () {
         var stubData = {
           _schema: {
             _has: 'text'
@@ -80,6 +80,26 @@ describe(dirname, function () {
         var stubData = {
           _schema: {
             _componentList: true
+          }
+        };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'content'})).to.equal(false);
+      });
+
+      it('returns false if component prop is object', function () {
+        var stubData = {
+          _schema: {
+            _component: {}
+          }
+        };
+
+        expect(fn(stubNode(), {data: stubData, ref: 'fakeRef', path: 'content'})).to.equal(false);
+      });
+
+      it('returns false if component prop is true', function () {
+        var stubData = {
+          _schema: {
+            _component: true
           }
         };
 
