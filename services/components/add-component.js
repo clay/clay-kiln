@@ -5,6 +5,7 @@ var references = require('../references'),
   focus = require('../../decorators/focus'),
   select = require('./select'),
   progress = require('../progress'),
+  db = require('../edit/db'),
   _ = require('lodash');
 
 /**
@@ -60,6 +61,27 @@ function addToList(args, pane, prevRef) {
         // insert it at the end of the component list
         dom.find(pane, '.component-list-inner').appendChild(newEl);
       }
+      return newEl;
+    });
+}
+
+function addToProp(args, pane) {
+  var parentData = {
+      _ref: args.parentRef
+    },
+    newComponent = {
+      _ref: args.ref
+    };
+
+  // add new component into property (or replace current component in that property)
+  parentData[args.parentField] = newComponent;
+
+  return Promise.all([edit.savePartial(parentData), db.getHTML(args.ref)])
+    .then(function (promises) {
+      var newEl = promises[1];
+
+      dom.clearChildren(pane);
+      pane.appendChild(newEl);
       return newEl;
     });
 }

@@ -96,8 +96,9 @@ function getAddableComponents(possibleComponents, exclude) {
 function addHandler(button, options, prevRef) {
   var toolbar = dom.find('.kiln-toolbar'),
     allComponents = toolbar && toolbar.getAttribute('data-components') && toolbar.getAttribute('data-components').split(',').sort() || [],
-    include = _.get(options, 'list.include'),
-    exclude = _.get(options, 'list.exclude'),
+    include = _.get(options, 'list.include') || _.get(options, 'prop.include'),
+    exclude = _.get(options, 'list.exclude') || _.get(options, 'prop.exclude'),
+    pane = options.listEl || options.propEl,
     available;
 
   // figure out what components should be available for adding
@@ -119,10 +120,10 @@ function addHandler(button, options, prevRef) {
       };
 
     if (currentAvailable.length === 1) {
-      addComponent(options.listEl, field, currentAvailable[0], prevRef);
+      addComponent(pane, field, currentAvailable[0], prevRef);
     } else {
       // open the add components pane
-      paneService.openAddComponent(currentAvailable, { pane: options.listEl, field: field, ref: prevRef });
+      paneService.openAddComponent(currentAvailable, { pane: pane, field: field, ref: prevRef });
     }
   });
 }
