@@ -1,4 +1,5 @@
+@import '../styleguide/inputs';
+
 .editor-select {
-  font-size: 18px;
-  margin-left: 1px; // selects have a 1px border
+  @include select();
 }

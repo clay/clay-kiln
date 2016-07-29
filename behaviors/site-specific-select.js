@@ -22,7 +22,7 @@ function createOptions(options) {
 function createField(name, options) {
   return dom.create(`
     <label class="input-label">
-      <select class="editor-select" rv-field="${name}" rv-value="${name}.data.value">
+      <select class="editor-site-specific-select" rv-field="${name}" rv-value="${name}.data.value">
         ${ createOptions(options) }
       </select>
     </label>
