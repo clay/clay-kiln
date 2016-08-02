@@ -51,7 +51,7 @@
     "he": "^1.0.0",
     "keycode": "^2.1.0",
     "konami-js": "^0.0.2",
-    "lodash": "^3.8.0",
+    "lodash": "^4.13.1",
     "lodash-deep": "^1.6.0",
     "medium-editor": "^5.21.0",
     "moment": "^2.10.6",
