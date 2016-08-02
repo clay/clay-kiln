@@ -42,7 +42,7 @@ describe(dirname, function () {
         options: options
       }]});
       label = result.el;
-      select = label.querySelector('select.editor-select');
+      select = label.querySelector('select.editor-site-specific-select');
       selectOptions = select.querySelectorAll('option');
       firstOption = selectOptions[0];
 
@@ -67,7 +67,7 @@ describe(dirname, function () {
         options: ['foo', 'bar', 'baz']
       }]});
       label = result.el;
-      select = label.querySelector('select.editor-select');
+      select = label.querySelector('select.editor-site-specific-select');
       selectOptions = select.querySelectorAll('option');
       firstOption = selectOptions[0];
 
@@ -89,7 +89,7 @@ describe(dirname, function () {
         options: options
       }], default: ['baz']});
       label = result.el;
-      select = label.querySelector('select.editor-select');
+      select = label.querySelector('select.editor-site-specific-select');
       selectOptions = select.querySelectorAll('option');
       firstOption = selectOptions[0];
 
