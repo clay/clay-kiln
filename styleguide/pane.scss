@@ -55,10 +55,6 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
     transform: translateY(0);
     transition: transform 350ms $easeOutExpo;
   }
-
-  &.medium {
-    max-width: 300px;
-  }
 }
 
 .kiln-toolbar-pane header {

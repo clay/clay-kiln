@@ -16,16 +16,32 @@ var _ = require('lodash'),
 
 /**
  * create pane
- * @param {string} header
- * @param {Element|DocumentFragment} innerEl
+ * @param {array} tabs
+ * @param {object} [dynamicTab]
  * @returns {Element}
  */
-function createPane(header, innerEl) {
-  var el = tpl.get('.kiln-pane-template');
+function createPane(tabs, dynamicTab) {
+  var el = tpl.get('.kiln-pane-template'),
+    tabsEl = dom.find(el, '.pane-tabs'),
+    innerEl = dom.find(el, '.pane-inner');
 
-  // add header and contents
-  el.querySelector('.pane-header').innerHTML = header;
-  el.querySelector('.pane-inner').appendChild(innerEl);
+  // loop through the tabs, adding the tab and contents
+  _.each(tabs, function (tab, index) {
+    var contentWrapper = dom.create(`<div id="pane-content-${index}" class="pane-content"></div>`);
+
+    tabsEl.appendChild(dom.create(`<span id="pane-tab-${index}" class="pane-tab">${tab.header}</span>`));
+    contentWrapper.appendChild(tab.content);
+    innerEl.appendChild(contentWrapper);
+  });
+
+  // lastly, add the dynamic tab if it exists
+  if (dynamicTab) {
+    let contentWrapper = dom.create('<div id="pane-content-dynamic" class="pane-content"></div>');
+
+    tabsEl.appendChild(dom.create(`<span id="pane-tab-dynamic" class="pane-tab-dynamic">${dynamicTab.header}</span>`));
+    contentWrapper.appendChild(dynamicTab.content);
+    innerEl.appendChild(contentWrapper);
+  }
 
   return el;
 }
@@ -43,14 +59,13 @@ function close() {
 
 /**
  * open a pane
- * @param {string} header will display at the top of the pane, html accepted
- * @param {Element} innerEl will display inside the pane
- * @param {string} [modifier] optional css class name for modifying the pane
+ * @param {array} tabs with `tab` and `content`
+ * @param {object} dynamicTab will display at the right of the tabs
  * @returns {Element} pane
  */
-function open(header, innerEl, modifier) {
+function open(tabs, dynamicTab) {
   var toolbar = dom.find('.kiln-toolbar'),
-    el = createPane(header, innerEl),
+    el = createPane(tabs, dynamicTab),
     pane, paneWrapper;
 
   close(); // close any other panes before opening a new one
@@ -63,9 +78,6 @@ function open(header, innerEl, modifier) {
   setTimeout(function () {
     pane = dom.find(paneWrapper, '.kiln-toolbar-pane');
     pane.classList.add('on');
-    if (modifier) {
-      pane.classList.add(modifier);
-    }
   }, 0);
   return paneWrapper;
 }
@@ -221,7 +233,7 @@ function openPublish(warnings) {
     innerEl.appendChild(createPublishActions(res));
 
     // create the root pane element
-    el = open(header, innerEl);
+    el = open([{header: header, content: innerEl}]);
     // init controller for publish pane
     ds.controller('publish-pane', publishPaneController);
     ds.get('publish-pane', el);
@@ -264,7 +276,7 @@ function openNewPage() {
       // append actions to the doc fragment
       innerEl.appendChild(populatedActionsEl);
       // create the root pane element
-      el = open(header, innerEl, 'medium');
+      el = open([{header: header, content: innerEl}]);
       // init controller for publish pane
       ds.controller('pane-new-page', newPagePaneController);
       ds.get('pane-new-page', el);
@@ -300,7 +312,7 @@ function openPreview() {
   // append actions to the doc fragment
   innerEl.appendChild(pageActionsSubTemplate);
   // create the root pane element
-  open(header, innerEl);
+  open([{header: header, content: innerEl}]);
 }
 
 /**
@@ -361,7 +373,7 @@ function openValidationErrors(validation) {
   innerEl.appendChild(messagesEl);
   innerEl.appendChild(errorsEl);
   innerEl.appendChild(warningsEl);
-  open(header, innerEl);
+  open([{header: header, content: innerEl}]);
 }
 
 function addFilteredItems(items) {
@@ -396,7 +408,7 @@ function openAddComponent(components, options) {
 
   innerEl.appendChild(inputEl);
   innerEl.appendChild(itemsEl);
-  el = open(header, innerEl);
+  el = open([{header: header, content: innerEl}]);
   // init controller for add component pane
   ds.controller('add-component-pane', addComponentPaneController);
   ds.get('add-component-pane', el.querySelector('.kiln-toolbar-pane'), options);
@@ -417,7 +429,7 @@ function takeOffEveryZig() {
   innerEl.appendChild(messageEl);
   innerEl.appendChild(errorsEl);
 
-  open(header, innerEl);
+  open([{header: header, content: innerEl}]);
 }
 
 module.exports.close = close;
