@@ -80,6 +80,11 @@ function createUndoActions(res) {
 
   let unpublish, unschedule;
 
+  // show undo actions if either are available
+  if (res.scheduled || res.published) {
+    dom.find(undo, '.undo').classList.remove(kilnHideClass);
+  }
+
   // unscheduling
   if (res.scheduled) {
     state.toggleScheduled(true); // just in case someone else scheduled this page

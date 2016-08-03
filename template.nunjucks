@@ -66,7 +66,7 @@
     {# sub-templates: undoing scheduling and publishing #}
     {# publish undo #}
     <template class="publish-undo-template">
-      <div class="publish-undo">
+      <div class="publish-undo undo kiln-hide">
         <button class="unpublish kiln-hide">Unpublish Page</button>
         <button class="unschedule kiln-hide">Unschedule</button>
       </div>
@@ -95,11 +95,16 @@
     <template class="publish-actions-template">
       <div class="publish-actions actions">
         <button class="publish-now">Publish Now</button>
+        <div class="schedule-border"></div>
         <form class="schedule">
-          <label class="schedule-label" for="schedule-date">Date</label>
-          <input id="schedule-date" class="schedule-input" type="date" min="" value="" placeholder=""></input>
-          <label class="schedule-label" for="schedule-time">Time</label>
-          <input id="schedule-time" class="schedule-input" type="time" value="" placeholder=""></input>
+          <div class="schedule-item">
+            <label class="schedule-label" for="schedule-date">Date</label>
+            <input id="schedule-date" class="schedule-input" type="date" min="" value="" placeholder=""></input>
+          </div>
+          <div class="schedule-item">
+            <label class="schedule-label" for="schedule-time">Time</label>
+            <input id="schedule-time" class="schedule-input" type="time" value="" placeholder=""></input>
+          </div>
           <button class="schedule-publish">Schedule Publish</button>
         </form>
 
