@@ -27,9 +27,10 @@ function createPane(tabs, dynamicTab) {
 
   // loop through the tabs, adding the tab and contents
   _.each(tabs, function (tab, index) {
-    var contentWrapper = dom.create(`<div id="pane-content-${index}" class="pane-content"></div>`);
+    var index1 = index + 1, // 1-indexed, for easier debugging
+      contentWrapper = dom.create(`<div id="pane-content-${index1}" class="pane-content"></div>`);
 
-    tabsEl.appendChild(dom.create(`<span id="pane-tab-${index}" class="pane-tab">${tab.header}</span>`));
+    tabsEl.appendChild(dom.create(`<span id="pane-tab-${index1}" class="pane-tab">${tab.header}</span>`));
     contentWrapper.appendChild(tab.content);
     innerEl.appendChild(contentWrapper);
   });
