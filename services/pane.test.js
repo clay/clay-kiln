@@ -17,6 +17,13 @@ function stubWrapperTemplate() {
   </div>`);
 }
 
+function stubUndoTemplate() {
+  return dom.create(`<div class="publish-undo undo kiln-hide">
+    <button class="unpublish kiln-hide">Unpublish Page</button>
+    <button class="unschedule kiln-hide">Unschedule</button>
+  </div>`);
+}
+
 function stubMessageTemplate() {
   return dom.create(`<div class="publish-messages messages">
     <p class="publish-state-message">In Draft.</p>
@@ -26,6 +33,7 @@ function stubMessageTemplate() {
 
 function stubPublishTemplate() {
   return dom.create(`<div class="publish-actions actions">
+    <button class="publish-now">Publish Now</button>
     <form class="schedule">
       <label class="schedule-label" for="schedule-date">Date</label>
       <input id="schedule-date" class="schedule-input" type="date" min="" value="" placeholder=""></input>
@@ -33,9 +41,6 @@ function stubPublishTemplate() {
       <input id="schedule-time" class="schedule-input" type="time" value="" placeholder=""></input>
       <button class="schedule-publish">Schedule Publish</button>
     </form>
-    <button class="unschedule kiln-hide">Unschedule</button>
-    <button class="publish-now">Publish Now</button>
-    <button class="unpublish kiln-hide">Unpublish Page</button>
   </div>`);
 }
 
@@ -68,6 +73,7 @@ describe(dirname, function () {
       getTemplate = sandbox.stub(tpl, 'get');
       getTemplate.withArgs('.kiln-pane-template').returns(stubWrapperTemplate());
       getTemplate.withArgs('.publish-valid-template').returns(dom.create('<div class="publish-valid">valid</div>'));
+      getTemplate.withArgs('.publish-undo-template').returns(stubUndoTemplate());
       getTemplate.withArgs('.publish-messages-template').returns(stubMessageTemplate());
       getTemplate.withArgs('.publish-actions-template').returns(stubPublishTemplate());
       getTemplate.withArgs('.new-page-actions-template').returns(dom.create('<div><div class="new-page-actions actions"></div></div>')); // wrapper divs to simulate doc fragments
