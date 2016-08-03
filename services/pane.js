@@ -196,8 +196,8 @@ function createPublishActions(res) {
     }
 
     // init datepicker for non-native browsers
-    datepicker.init(scheduleDate);
-    datepicker.init(scheduleTime);
+    datepicker.init(scheduleDate, {static: true});
+    datepicker.init(scheduleTime, {static: true});
   }
 
   return actions;
