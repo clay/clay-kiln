@@ -236,11 +236,13 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   padding: 0;
 }
 
-$half-minus-20: calc(50% - 10px);
+$schedule-item-width: calc(50% - 8px);
+// close enough to 10px (standard margins in this form),
+// but enough space for chrome to display its datepicker toggles
 
 .kiln-toolbar-pane .schedule-item {
-  flex: 0 0 $half-minus-20;
-  width: $half-minus-20;
+  flex: 0 0 $schedule-item-width;
+  width: $schedule-item-width;
 }
 
 .kiln-toolbar-pane .schedule-label {
