@@ -46,7 +46,6 @@ function unschedulePageAndLayout() {
 
 module.exports = function () {
   function constructor(el) {
-    this.el = el;
     this.form = dom.find(el, '.schedule');
   }
 

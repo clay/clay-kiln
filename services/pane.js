@@ -71,6 +71,36 @@ function open(header, innerEl, modifier) {
 }
 
 /**
+ * create actions for undoing scheduling and publishing
+ * @param {object} res
+ * @returns {Element}
+ */
+function createUndoActions(res) {
+  const undo = tpl.get('.publish-undo-template');
+
+  let unpublish, unschedule;
+
+  // unscheduling
+  if (res.scheduled) {
+    state.toggleScheduled(true); // just in case someone else scheduled this page
+    unschedule = dom.find(undo, '.unschedule');
+    if (unschedule) {
+      unschedule.classList.remove(kilnHideClass);
+    }
+  }
+
+  // unpublish (only affects page)
+  if (res.published) {
+    unpublish = dom.find(undo, '.unpublish');
+    if (unpublish) {
+      unpublish.classList.remove(kilnHideClass);
+    }
+  }
+
+  return undo;
+}
+
+/**
  * create validation messages
  * @param {array} [warnings]
  * @returns {Element}
@@ -142,7 +172,7 @@ function createPublishActions(res) {
   const actions = tpl.get('.publish-actions-template'),
     val = getScheduledValues(res);
 
-  let scheduleDate, scheduleTime, unpublish, unschedule;
+  let scheduleDate, scheduleTime;
 
   // set date and time
   if (actions) {
@@ -165,23 +195,6 @@ function createPublishActions(res) {
     datepicker.init(scheduleTime);
   }
 
-  // unscheduling
-  if (res.scheduled) {
-    state.toggleScheduled(true); // just in case someone else scheduled this page
-    unschedule = dom.find(actions, '.unschedule');
-    if (unschedule) {
-      unschedule.classList.remove(kilnHideClass);
-    }
-  }
-
-  // unpublish (only affects page)
-  if (res.published) {
-    unpublish = dom.find(actions, '.unpublish');
-    if (unpublish) {
-      unpublish.classList.remove(kilnHideClass);
-    }
-  }
-
   return actions;
 }
 
@@ -197,6 +210,7 @@ function openPublish(warnings) {
 
   return state.get().then(function (res) {
     // append validation, message, and actions to the doc fragment
+    innerEl.appendChild(createUndoActions(res));
     innerEl.appendChild(createPublishValidation(warnings));
     innerEl.appendChild(createPublishMessages(res));
     innerEl.appendChild(createPublishActions(res));
@@ -205,7 +219,7 @@ function openPublish(warnings) {
     el = open(header, innerEl);
     // init controller for publish pane
     ds.controller('publish-pane', publishPaneController);
-    ds.get('publish-pane', el.querySelector('.actions'));
+    ds.get('publish-pane', el);
   });
 }
 
