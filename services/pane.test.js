@@ -4,8 +4,7 @@ var dirname = __dirname.split('/').pop(),
   state = require('./page-state'),
   dom = require('@nymag/dom'),
   tpl = require('./tpl'),
-  ds = require('dollar-slice'),
-  edit = require('./edit');
+  ds = require('dollar-slice');
 
 // minimal templates, only what we need to test the logic and functionality
 function stubWrapperTemplate() {
@@ -125,114 +124,114 @@ describe(dirname, function () {
       });
     });
 
-    // describe('openPublish', function () {
-    //   var fn = lib[this.title],
-    //     sandbox, getState;
-    //
-    //   beforeEach(function () {
-    //     sandbox = sinon.sandbox.create();
-    //     sandbox.stub(ds);
-    //     getState = sandbox.stub(state, 'get');
-    //   });
-    //
-    //   afterEach(function () {
-    //     sandbox.restore();
-    //   });
-    //
-    //   it('opens a publish pane', function () {
-    //     getState.returns(Promise.resolve({}));
-    //     lib.close();
-    //
-    //     function expectRegularPane() {
-    //       expect(document.querySelector('.pane-header').innerHTML).to.equal('Schedule Publish');
-    //       expect(document.querySelector('.pane-inner .schedule-publish')).to.not.equal(null);
-    //       expect(document.querySelector('.pane-inner .unschedule')).to.equal(null);
-    //       expect(document.querySelector('.pane-inner .publish-now')).to.not.equal(null);
-    //       expect(document.querySelector('.pane-inner .unpublish')).to.equal(null);
-    //     }
-    //
-    //     fn().then(expectRegularPane);
-    //   });
-    //
-    //   it('adds unschedule if page is scheduled', function () {
-    //     getState.returns(Promise.resolve({ scheduled: true }));
-    //     lib.close();
-    //
-    //     function expectScheduledPane() {
-    //       expect(document.querySelector('.pane-inner .schedule-publish')).to.not.equal(null);
-    //       expect(document.querySelector('.pane-inner .unschedule')).to.not.equal(null);
-    //       expect(document.querySelector('.pane-inner .publish-now')).to.not.equal(null);
-    //       expect(document.querySelector('.pane-inner .unpublish')).to.equal(null);
-    //     }
-    //
-    //     fn().then(expectScheduledPane);
-    //   });
-    //
-    //   it('adds unpublish if page is published', function () {
-    //     getState.returns(Promise.resolve({ published: true }));
-    //     lib.close();
-    //
-    //     function expectScheduledPane() {
-    //       expect(document.querySelector('.pane-inner .schedule-publish')).to.not.equal(null);
-    //       expect(document.querySelector('.pane-inner .unschedule')).to.equal(null);
-    //       expect(document.querySelector('.pane-inner .publish-now')).to.not.equal(null);
-    //       expect(document.querySelector('.pane-inner .unpublish')).to.not.equal(null);
-    //     }
-    //
-    //     fn().then(expectScheduledPane);
-    //   });
-    //
-    //   it('adds unschedule and unpublish if page is scheduled and published', function () {
-    //     getState.returns(Promise.resolve({ scheduled: true, published: true }));
-    //     lib.close();
-    //
-    //     function expectScheduledPane() {
-    //       expect(document.querySelector('.pane-inner .schedule-publish')).to.not.equal(null);
-    //       expect(document.querySelector('.pane-inner .unschedule')).to.not.equal(null);
-    //       expect(document.querySelector('.pane-inner .publish-now')).to.not.equal(null);
-    //       expect(document.querySelector('.pane-inner .unpublish')).to.not.equal(null);
-    //     }
-    //
-    //     fn().then(expectScheduledPane);
-    //   });
-    //
-    //   it('adds valid message if there are no warnings', function () {
-    //     getState.returns(Promise.resolve({}));
-    //     lib.close();
-    //
-    //     function expectRegularPane() {
-    //       expect(document.querySelector('.pane-header').innerHTML).to.equal('Schedule Publish');
-    //       expect(document.querySelector('.pane-inner .publish-valid').innerHTML).to.equal('valid');
-    //     }
-    //
-    //     fn().then(expectRegularPane);
-    //   });
-    //
-    //   it('adds warning message if warnings are passed in', function () {
-    //     getState.returns(Promise.resolve({}));
-    //     lib.close();
-    //
-    //     function expectRegularPane() {
-    //       expect(document.querySelector('.pane-header').innerHTML).to.equal('Schedule Publish');
-    //       expect(document.querySelector('.pane-inner .publish-valid')).to.equal(null);
-    //       expect(document.querySelector('.pane-inner .publish-warning .label').innerHTML).to.equal('Wrong:'); // note the semicolon
-    //       expect(document.querySelector('.pane-inner .publish-warning .description').innerHTML).to.equal('Way');
-    //       expect(document.querySelectorAll('.pane-inner .errors li').length).to.equal(1);
-    //     }
-    //
-    //     fn([{
-    //       rule: {
-    //         label: 'Wrong',
-    //         description: 'Way'
-    //       },
-    //       errors: [{
-    //         label: 'Foo',
-    //         preview: 'Bar'
-    //       }]
-    //     }]).then(expectRegularPane);
-    //   });
-    // });
-    //
+    describe('openPublish', function () {
+      var fn = lib[this.title],
+        sandbox, getState;
+
+      beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+        sandbox.stub(ds);
+        getState = sandbox.stub(state, 'get');
+      });
+
+      afterEach(function () {
+        sandbox.restore();
+      });
+
+      it('opens a publish pane', function () {
+        getState.returns(Promise.resolve({}));
+        lib.close();
+
+        function expectRegularPane() {
+          expect(document.querySelector('#pane-tab-1').innerHTML).to.equal('Schedule Publish');
+          expect(document.querySelector('.pane-inner .schedule-publish')).to.not.equal(null);
+          expect(document.querySelector('.pane-inner .unschedule')).to.equal(null);
+          expect(document.querySelector('.pane-inner .publish-now')).to.not.equal(null);
+          expect(document.querySelector('.pane-inner .unpublish')).to.equal(null);
+        }
+
+        fn().then(expectRegularPane);
+      });
+
+      it('adds unschedule if page is scheduled', function () {
+        getState.returns(Promise.resolve({ scheduled: true }));
+        lib.close();
+
+        function expectScheduledPane() {
+          expect(document.querySelector('.pane-inner .schedule-publish')).to.not.equal(null);
+          expect(document.querySelector('.pane-inner .unschedule')).to.not.equal(null);
+          expect(document.querySelector('.pane-inner .publish-now')).to.not.equal(null);
+          expect(document.querySelector('.pane-inner .unpublish')).to.equal(null);
+        }
+
+        fn().then(expectScheduledPane);
+      });
+
+      it('adds unpublish if page is published', function () {
+        getState.returns(Promise.resolve({ published: true }));
+        lib.close();
+
+        function expectScheduledPane() {
+          expect(document.querySelector('.pane-inner .schedule-publish')).to.not.equal(null);
+          expect(document.querySelector('.pane-inner .unschedule')).to.equal(null);
+          expect(document.querySelector('.pane-inner .publish-now')).to.not.equal(null);
+          expect(document.querySelector('.pane-inner .unpublish')).to.not.equal(null);
+        }
+
+        fn().then(expectScheduledPane);
+      });
+
+      it('adds unschedule and unpublish if page is scheduled and published', function () {
+        getState.returns(Promise.resolve({ scheduled: true, published: true }));
+        lib.close();
+
+        function expectScheduledPane() {
+          expect(document.querySelector('.pane-inner .schedule-publish')).to.not.equal(null);
+          expect(document.querySelector('.pane-inner .unschedule')).to.not.equal(null);
+          expect(document.querySelector('.pane-inner .publish-now')).to.not.equal(null);
+          expect(document.querySelector('.pane-inner .unpublish')).to.not.equal(null);
+        }
+
+        fn().then(expectScheduledPane);
+      });
+
+      it('adds valid message if there are no warnings', function () {
+        getState.returns(Promise.resolve({}));
+        lib.close();
+
+        function expectRegularPane() {
+          expect(document.querySelector('.pane-header').innerHTML).to.equal('Schedule Publish');
+          expect(document.querySelector('.pane-inner .publish-valid').innerHTML).to.equal('valid');
+        }
+
+        fn().then(expectRegularPane);
+      });
+
+      it('adds warning message if warnings are passed in', function () {
+        getState.returns(Promise.resolve({}));
+        lib.close();
+
+        function expectRegularPane() {
+          expect(document.querySelector('.pane-header').innerHTML).to.equal('Schedule Publish');
+          expect(document.querySelector('.pane-inner .publish-valid')).to.equal(null);
+          expect(document.querySelector('.pane-inner .publish-warning .label').innerHTML).to.equal('Wrong:'); // note the semicolon
+          expect(document.querySelector('.pane-inner .publish-warning .description').innerHTML).to.equal('Way');
+          expect(document.querySelectorAll('.pane-inner .errors li').length).to.equal(1);
+        }
+
+        fn([{
+          rule: {
+            label: 'Wrong',
+            description: 'Way'
+          },
+          errors: [{
+            label: 'Foo',
+            preview: 'Bar'
+          }]
+        }]).then(expectRegularPane);
+      });
+    });
+
     // describe('openNewPage', function () {
     //   var fn = lib[this.title],
     //     sandbox;
