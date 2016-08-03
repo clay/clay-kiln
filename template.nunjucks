@@ -55,9 +55,19 @@
       <div class="kiln-toolbar-pane-background">
         <div class="kiln-toolbar-pane">
           <header class="pane-tabs">
+            <div class="pane-tabs-inner"></div>
           </header>
           <div class="pane-inner"></div>
         </div>
+      </div>
+    </template>
+
+    <template class="health-header-template">
+      <div class="health-header-wrapper">
+        <span class="health-icon valid kiln-hide">{% include 'public/media/components/clay-kiln/health-valid.svg' %}</span>
+        <span class="health-icon warnings kiln-hide">{% include 'public/media/components/clay-kiln/health-warnings.svg' %}</span>
+        <span class="health-icon errors kiln-hide">{% include 'public/media/components/clay-kiln/health-errors.svg' %}</span>
+        <span class="health-header">Health</span>
       </div>
     </template>
 

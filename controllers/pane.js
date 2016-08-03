@@ -59,13 +59,13 @@ module.exports = function () {
 
     switchTab: function (e) {
       var el = this.el,
-        activeTab = e.target,
+        activeTab = e.currentTarget,
         id = activeTab.getAttribute('data-content-id'),
         activeContent = dom.find(el, `#${id}`),
         oldTab = dom.find(el, '.pane-tab.active') || dom.find(el, '.pane-tab-dynamic.active'),
         oldContent = dom.find(el, '.pane-content.active') || dom.find(el, '.pane-content-dynamic.active');
 
-      e.stopPropagation();
+      // e.stopPropagation();
       // unset currently active tabs/contents
       if (oldTab) {
         oldTab.classList.remove('active');

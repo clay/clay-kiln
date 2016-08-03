@@ -23,6 +23,7 @@ var _ = require('lodash'),
 function createPane(tabs, dynamicTab) {
   var el = tpl.get('.kiln-pane-template'),
     tabsEl = dom.find(el, '.pane-tabs'),
+    tabsInnerEl = dom.find(el, '.pane-tabs-inner'),
     innerEl = dom.find(el, '.pane-inner');
 
   // loop through the tabs, adding the tab and contents
@@ -30,7 +31,7 @@ function createPane(tabs, dynamicTab) {
     var index1 = index + 1, // 1-indexed, for easier debugging
       contentWrapper = dom.create(`<div id="pane-content-${index1}" class="pane-content"></div>`);
 
-    tabsEl.appendChild(dom.create(`<span id="pane-tab-${index1}" data-content-id="pane-content-${index1}" class="pane-tab">${tab.header}</span>`));
+    tabsInnerEl.appendChild(dom.create(`<span id="pane-tab-${index1}" data-content-id="pane-content-${index1}" class="pane-tab">${tab.header}</span>`));
     contentWrapper.appendChild(tab.content);
     innerEl.appendChild(contentWrapper);
   });
@@ -140,6 +141,24 @@ function createPublishValidation(warnings) {
 }
 
 /**
+ * create the health dynamic pane header
+ * todo: add icons, also handle errors when we consolidate that into here
+ * @param {array} warnings
+ * @returns {string}
+ */
+function createHealthHeader(warnings) {
+  var header = tpl.get('.health-header-template');
+
+  if (warnings.length) {
+    dom.find(header, '.warnings').classList.remove(kilnHideClass);
+  } else {
+    dom.find(header, '.valid').classList.remove(kilnHideClass);
+  }
+
+  return header.firstElementChild.innerHTML;
+}
+
+/**
  * create messages for the publish pane, depending on the state
  * @param {object} res
  * @returns {Element}
@@ -222,19 +241,30 @@ function createPublishActions(res) {
  * @returns {Promise}
  */
 function openPublish(warnings) {
-  var header = 'Publish',
-    innerEl = document.createDocumentFragment(),
-    el;
+  var pubHeader = 'Publish',
+    pubContent = document.createDocumentFragment(),
+    healthContent = document.createDocumentFragment(),
+    healthHeader, el;
 
   return state.get().then(function (res) {
-    // append validation, message, and actions to the doc fragment
-    innerEl.appendChild(createUndoActions(res));
-    innerEl.appendChild(createPublishValidation(warnings));
-    innerEl.appendChild(createPublishMessages(res));
-    innerEl.appendChild(createPublishActions(res));
+    // append message and actions to the doc fragment
+    pubContent.appendChild(createUndoActions(res));
+    pubContent.appendChild(createPublishMessages(res));
+    pubContent.appendChild(createPublishActions(res));
+
+    // add dynamic pane with validation
+    healthContent.appendChild(createPublishValidation(warnings));
+    healthHeader = createHealthHeader(warnings);
 
     // create the root pane element
-    el = open([{header: header, content: innerEl}]);
+    el = open([{
+      header: pubHeader,
+      content: pubContent
+    }], {
+      // dynamic health tab
+      header: healthHeader,
+      content: healthContent
+    });
     // init controller for publish pane
     ds.controller('publish-pane', publishPaneController);
     ds.get('publish-pane', el);
