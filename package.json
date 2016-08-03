@@ -85,7 +85,7 @@
     "karma-safari-launcher": "^0.1.1",
     "karma-sinon": "^1.0.4",
     "karma-spec-reporter": "0.0.23",
-    "mocha": "^2.2.5",
+    "mocha": "^3.0.0",
     "sinon": "^1.17.2",
     "speakingurl": "^9.0.0",
     "striptags": "^2.1.1"
