@@ -57,42 +57,64 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   }
 }
 
-.kiln-toolbar-pane header {
+// regular tabs
+.kiln-toolbar-pane .pane-tabs {
   align-items: flex-start;
   border-bottom: 1px solid $grey;
   display: flex;
   flex: 0 0 auto;
-  padding: 13px 20px;
+  justify-content: flex-start;
+  padding: 0;
   width: 100%;
 }
 
-.kiln-toolbar-pane .pane-header {
-  @include header();
+.kiln-toolbar-pane .pane-tab {
+  @include input-text(); // larger than kiln-copy
 
-  flex: 1 1 auto;
-  margin-top: 9px;
+  cursor: pointer;
+  flex: 0 0 auto;
+  padding: 20px;
+  position: relative;
+
+  &.active:after {
+    border-bottom: 6px solid $black-25;
+    bottom: 14px;
+    content: '';
+    left: 20px;
+    position: absolute;
+    width: calc(100% - 40px);
+  }
+
+  &.disabled {
+    color: $grey;
+    cursor: default;
+    pointer-events: none;
+  }
 }
 
-.kiln-toolbar-pane .close {
-  @include button();
-
-  background-color: $white;
-  border: none;
-  flex: 0 0 auto;
-  margin-left: 30px;
-  margin-right: 0;
-  padding-right: 0;
+.kiln-toolbar-pane .pane-tab-dynamic {
+  flex: 1 0 auto;
+  border-left: 1px solid $grey;
 }
 
 .kiln-toolbar-pane .pane-inner {
+  width: 100%;
+}
+
+.kiln-toolbar-pane .pane-content,
+.kiln-toolbar-pane .pane-content-dynamic {
   align-content: stretch;
   align-items: stretch;
-  display: flex;
+  display: none;
   flex: 0 1 auto;
   flex-flow: row wrap;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   padding: 20px 20px 40px;
+
+  &.active {
+    display: flex;
+  }
 }
 
 @mixin pane-border-before {

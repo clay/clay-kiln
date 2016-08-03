@@ -30,7 +30,7 @@ function createPane(tabs, dynamicTab) {
     var index1 = index + 1, // 1-indexed, for easier debugging
       contentWrapper = dom.create(`<div id="pane-content-${index1}" class="pane-content"></div>`);
 
-    tabsEl.appendChild(dom.create(`<span id="pane-tab-${index1}" class="pane-tab">${tab.header}</span>`));
+    tabsEl.appendChild(dom.create(`<span id="pane-tab-${index1}" data-content-id="pane-content-${index1}" class="pane-tab">${tab.header}</span>`));
     contentWrapper.appendChild(tab.content);
     innerEl.appendChild(contentWrapper);
   });
@@ -39,7 +39,7 @@ function createPane(tabs, dynamicTab) {
   if (dynamicTab) {
     let contentWrapper = dom.create('<div id="pane-content-dynamic" class="pane-content"></div>');
 
-    tabsEl.appendChild(dom.create(`<span id="pane-tab-dynamic" class="pane-tab-dynamic">${dynamicTab.header}</span>`));
+    tabsEl.appendChild(dom.create(`<span id="pane-tab-dynamic" data-content-id="pane-content-dynamic" class="pane-tab-dynamic">${dynamicTab.header}</span>`));
     contentWrapper.appendChild(dynamicTab.content);
     innerEl.appendChild(contentWrapper);
   }
@@ -222,7 +222,7 @@ function createPublishActions(res) {
  * @returns {Promise}
  */
 function openPublish(warnings) {
-  var header = 'Schedule Publish',
+  var header = 'Publish',
     innerEl = document.createDocumentFragment(),
     el;
 
@@ -365,7 +365,7 @@ function addErrorsOrWarnings(errors, modifier) {
  * @param {Object[]} validation.warnings
  */
 function openValidationErrors(validation) {
-  var header = 'Before you can publish&hellip;',
+  var header = 'Errors',
     messagesEl = tpl.get('.publish-error-message-template'),
     errorsEl = addErrorsOrWarnings(validation.errors),
     warningsEl = addErrorsOrWarnings(validation.warnings, 'publish-warning'),
