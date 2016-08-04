@@ -1,4 +1,5 @@
-var nprogress = require('nprogress'),
+var _ = require('lodash'),
+  nprogress = require('nprogress'),
   dom = require('@nymag/dom'),
   boxShadow = '0 0 10px 0',
   colors = {
