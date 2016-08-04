@@ -15,17 +15,44 @@ var _ = require('lodash'),
   kilnHideClass = 'kiln-hide';
 
 /**
+ * add a disabled class to disabled tabs
+ * @param {boolean} isDisabled
+ * @returns {string}
+ */
+function setDisabled(isDisabled) {
+  return isDisabled ? 'disabled' : '';
+}
+
+/**
  * create pane
- * @param {string} header
- * @param {Element|DocumentFragment} innerEl
+ * @param {array} tabs
+ * @param {object} [dynamicTab]
  * @returns {Element}
  */
-function createPane(header, innerEl) {
-  var el = tpl.get('.kiln-pane-template');
+function createPane(tabs, dynamicTab) {
+  var el = tpl.get('.kiln-pane-template'),
+    tabsEl = dom.find(el, '.pane-tabs'),
+    tabsInnerEl = dom.find(el, '.pane-tabs-inner'),
+    innerEl = dom.find(el, '.pane-inner');
 
-  // add header and contents
-  el.querySelector('.pane-header').innerHTML = header;
-  el.querySelector('.pane-inner').appendChild(innerEl);
+  // loop through the tabs, adding the tab and contents
+  _.each(tabs, function (tab, index) {
+    var index1 = index + 1, // 1-indexed, for easier debugging
+      contentWrapper = dom.create(`<div id="pane-content-${index1}" class="pane-content ${setDisabled(tab.disabled)}"></div>`);
+
+    tabsInnerEl.appendChild(dom.create(`<span id="pane-tab-${index1}" data-content-id="pane-content-${index1}" class="pane-tab ${setDisabled(tab.disabled)}">${tab.header}</span>`));
+    contentWrapper.appendChild(tab.content);
+    innerEl.appendChild(contentWrapper);
+  });
+
+  // lastly, add the dynamic tab if it exists
+  if (dynamicTab) {
+    let contentWrapper = dom.create(`<div id="pane-content-dynamic" class="pane-content ${setDisabled(dynamicTab.disabled)}"></div>`);
+
+    tabsEl.appendChild(dom.create(`<span id="pane-tab-dynamic" data-content-id="pane-content-dynamic" class="pane-tab-dynamic ${setDisabled(dynamicTab.disabled)}">${dynamicTab.header}</span>`));
+    contentWrapper.appendChild(dynamicTab.content);
+    innerEl.appendChild(contentWrapper);
+  }
 
   return el;
 }
@@ -41,31 +68,45 @@ function close() {
   }
 }
 
+function findActiveTab(el, tabs, dynamicTab) {
+  // it's faster to check the dynamic tab first, then iterate through the tabs
+  if (dynamicTab && dynamicTab.active) {
+    return {
+      header: 'pane-tab-dynamic',
+      content: 'pane-content-dynamic'
+    };
+  } else if (_.find(tabs, (tab) => tab.active)) {
+    let active = _.findIndex(tabs, (tab) => tab.active) + 1; // 1-indexed
+
+    return {
+      header: `pane-tab-${active}`,
+      content: `pane-content-${active}`
+    };
+  }
+}
+
 /**
  * open a pane
- * @param {string} header will display at the top of the pane, html accepted
- * @param {Element} innerEl will display inside the pane
- * @param {string} [modifier] optional css class name for modifying the pane
+ * @param {array} tabs with `tab` and `content`
+ * @param {object} dynamicTab will display at the right of the tabs
  * @returns {Element} pane
  */
-function open(header, innerEl, modifier) {
+function open(tabs, dynamicTab) {
   var toolbar = dom.find('.kiln-toolbar'),
-    el = createPane(header, innerEl),
+    el = createPane(tabs, dynamicTab),
+    active = findActiveTab(el, tabs, dynamicTab), // find active tab, if any
     pane, paneWrapper;
 
   close(); // close any other panes before opening a new one
   dom.insertBefore(toolbar, el);
   paneWrapper = toolbar.previousElementSibling; // now grab a reference to the dom
-  // init controller for pane background
+  // init controller for pane background, setting active tab if it exists
   ds.controller('paneWrapper', paneController);
-  ds.get('paneWrapper', paneWrapper);
+  ds.get('paneWrapper', paneWrapper, active);
   // trick browser into doing a repaint, to force the animation
   setTimeout(function () {
     pane = dom.find(paneWrapper, '.kiln-toolbar-pane');
     pane.classList.add('on');
-    if (modifier) {
-      pane.classList.add(modifier);
-    }
   }, 0);
   return paneWrapper;
 }
@@ -107,11 +148,25 @@ function createUndoActions(res) {
 
 /**
  * create validation messages
- * @param {array} [warnings]
+ * @param {object} validation
  * @returns {Element}
  */
-function createPublishValidation(warnings) {
-  if (warnings.length) {
+function createPublishValidation(validation) {
+  var errors = validation.errors,
+    warnings = validation.warnings;
+
+  if (errors.length) {
+    let el = document.createDocumentFragment(),
+      messagesEl = tpl.get('.publish-error-message-template'),
+      errorsEl = addErrorsOrWarnings(errors),
+      warningsEl = addErrorsOrWarnings(warnings, 'publish-warning');
+
+    el.appendChild(messagesEl);
+    el.appendChild(errorsEl);
+    el.appendChild(warningsEl);
+
+    return el;
+  } else if (warnings.length) {
     let el = document.createDocumentFragment(),
       messageEl = tpl.get('.publish-warning-message-template'),
       // same way the error pane does it
@@ -124,6 +179,27 @@ function createPublishValidation(warnings) {
   } else {
     return tpl.get('.publish-valid-template');
   }
+}
+
+/**
+ * create the health dynamic pane header
+ * @param {object} validation
+ * @returns {string}
+ */
+function createHealthHeader(validation) {
+  var header = tpl.get('.health-header-template'),
+    errors = validation.errors,
+    warnings = validation.warnings;
+
+  if (errors.length) {
+    dom.find(header, '.errors').classList.remove(kilnHideClass);
+  } else if (warnings.length) {
+    dom.find(header, '.warnings').classList.remove(kilnHideClass);
+  } else {
+    dom.find(header, '.valid').classList.remove(kilnHideClass);
+  }
+
+  return header.firstElementChild.innerHTML;
 }
 
 /**
@@ -205,23 +281,53 @@ function createPublishActions(res) {
 
 /**
  * open publish pane
- * @param {array} [warnings]
+ * @param {object} validation
+ * @param {Object[]} validation.errors
+ * @param {Object[]} validation.warnings
  * @returns {Promise}
  */
-function openPublish(warnings) {
-  var header = 'Schedule Publish',
-    innerEl = document.createDocumentFragment(),
-    el;
+function openPublish(validation) {
+  var pubHeader = 'Publish',
+    pubContent = document.createDocumentFragment(),
+    healthContent = document.createDocumentFragment(),
+    healthHeader, el;
 
   return state.get().then(function (res) {
-    // append validation, message, and actions to the doc fragment
-    innerEl.appendChild(createUndoActions(res));
-    innerEl.appendChild(createPublishValidation(warnings));
-    innerEl.appendChild(createPublishMessages(res));
-    innerEl.appendChild(createPublishActions(res));
+    // append message and actions to the doc fragment
+    pubContent.appendChild(createUndoActions(res));
+    pubContent.appendChild(createPublishMessages(res));
+    pubContent.appendChild(createPublishActions(res));
 
-    // create the root pane element
-    el = open(header, innerEl);
+    // add dynamic pane with validation
+    healthContent.appendChild(createPublishValidation(validation));
+    healthHeader = createHealthHeader(validation);
+
+    // if there are errors, make the health tab active when the pane opens
+    // and disable the publish tab
+    if (_.get(validation, 'errors.length')) {
+      // create the root pane element
+      el = open([{
+        header: pubHeader,
+        content: pubContent,
+        disabled: true
+      }], {
+        // dynamic health tab
+        header: healthHeader,
+        content: healthContent,
+        active: true
+      });
+    } else {
+      // create the root pane element like normal
+      el = open([{
+        header: pubHeader,
+        content: pubContent
+      }], {
+        // dynamic health tab
+        header: healthHeader,
+        content: healthContent
+      });
+    }
+
     // init controller for publish pane
     ds.controller('publish-pane', publishPaneController);
     ds.get('publish-pane', el);
@@ -264,7 +370,7 @@ function openNewPage() {
       // append actions to the doc fragment
       innerEl.appendChild(populatedActionsEl);
       // create the root pane element
-      el = open(header, innerEl, 'medium');
+      el = open([{header: header, content: innerEl}]);
       // init controller for publish pane
       ds.controller('pane-new-page', newPagePaneController);
       ds.get('pane-new-page', el);
@@ -300,7 +406,7 @@ function openPreview() {
   // append actions to the doc fragment
   innerEl.appendChild(pageActionsSubTemplate);
   // create the root pane element
-  open(header, innerEl);
+  open([{header: header, content: innerEl}]);
 }
 
 /**
@@ -345,25 +451,6 @@ function addErrorsOrWarnings(errors, modifier) {
   }, document.createDocumentFragment());
 }
 
-/**
- * open validation error pane
- * @param {object} validation
- * @param {Object[]} validation.errors
- * @param {Object[]} validation.warnings
- */
-function openValidationErrors(validation) {
-  var header = 'Before you can publish&hellip;',
-    messagesEl = tpl.get('.publish-error-message-template'),
-    errorsEl = addErrorsOrWarnings(validation.errors),
-    warningsEl = addErrorsOrWarnings(validation.warnings, 'publish-warning'),
-    innerEl = document.createDocumentFragment();
-
-  innerEl.appendChild(messagesEl);
-  innerEl.appendChild(errorsEl);
-  innerEl.appendChild(warningsEl);
-  open(header, innerEl);
-}
-
 function addFilteredItems(items) {
   var wrapper = tpl.get('.filtered-items-template'),
     listEl = dom.find(wrapper, 'ul');
@@ -396,7 +483,7 @@ function openAddComponent(components, options) {
 
   innerEl.appendChild(inputEl);
   innerEl.appendChild(itemsEl);
-  el = open(header, innerEl);
+  el = open([{header: header, content: innerEl}]);
   // init controller for add component pane
   ds.controller('add-component-pane', addComponentPaneController);
   ds.get('add-component-pane', el.querySelector('.kiln-toolbar-pane'), options);
@@ -417,7 +504,7 @@ function takeOffEveryZig() {
   innerEl.appendChild(messageEl);
   innerEl.appendChild(errorsEl);
 
-  open(header, innerEl);
+  open([{header: header, content: innerEl}]);
 }
 
 module.exports.close = close;
@@ -425,6 +512,5 @@ module.exports.open = open;
 module.exports.openNewPage = openNewPage;
 module.exports.openPublish = openPublish;
 module.exports.openPreview = openPreview;
-module.exports.openValidationErrors = openValidationErrors;
 module.exports.openAddComponent = openAddComponent;
 module.exports.takeOffEveryZig = takeOffEveryZig;
