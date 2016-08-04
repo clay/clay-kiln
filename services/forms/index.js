@@ -219,7 +219,7 @@ function close() {
       removeCurrentForm(container);
       setEditingStatus(false); // Status as saved.
       cleanMediumEditorDom();
-      window.kiln.trigger('form:close'); // closing form with no data
+      window.kiln.trigger('form:close', data);
     }
   }
   return Promise.resolve();

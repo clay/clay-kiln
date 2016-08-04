@@ -66,16 +66,16 @@ window.kiln.plugins['my-plugin'] = function () {
 
 **Events:**
 
-* `save` - after a component is saved
-* `schedule`
-* `unschedule`
-* `publish`
-* `unpublish`
-* `select` - after a component is selected
-* `unselect`
-* `add-selector` - after a selector is added to a component
-* `form:open` - after a form is opened
-* `form:close` - after a form is closed (whether or not data was changed)
+* `save` (api response) — after a component is saved
+* `schedule` (api response) — after a component/page is scheduled
+* `unschedule` (api response) — after a component/page is unscheduled
+* `publish` (api response) — after a page is published
+* `unpublish` (api response) — after a page is unpublished
+* `select` (selected component) — after a component is selected
+* `unselect` (previously selected component) — after a component is unselected
+* `add-selector` (el, options, parent data) — after a selector is added to a component
+* `form:open` (created form) — after a form is opened
+* `form:close` (form data) — after a form is closed (whether or not data was changed/saved)
 
 ## Contributing
 
