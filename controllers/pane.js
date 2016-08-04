@@ -93,7 +93,13 @@ module.exports = function () {
         oldTab = dom.find(el, '.pane-tab.active') || dom.find(el, '.pane-tab-dynamic.active'),
         oldContent = dom.find(el, '.pane-content.active') || dom.find(el, '.pane-content-dynamic.active');
 
-      // e.stopPropagation();
+      // if the tab we clicked is disabled, don't switch to it
+      if (activeTab.classList.contains('disabled')) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+
       // unset currently active tabs/contents
       if (oldTab) {
         oldTab.classList.remove('active');
