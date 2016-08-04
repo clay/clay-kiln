@@ -33,10 +33,14 @@ module.exports = function () {
     return parseInt(getComputedStyle(pane).height, 10) - parseInt(getComputedStyle(paneTabs).height, 10);
   }
 
-  function constructor(el) {
-    var firstTab = dom.find(el, '.pane-tab'),
-      firstContent = dom.find(el, '.pane-content'),
-      pane = dom.find(el, '.kiln-toolbar-pane'),
+  /**
+   * pane controller
+   * note: if no active tab is passed in, the first tab will be active
+   * @param {Element} el (of the pane overlay)
+   * @param {object} [active] tab to make active when pane opens
+   */
+  function constructor(el, active) {
+    var pane = dom.find(el, '.kiln-toolbar-pane'),
       paneTabs = dom.find(el, '.pane-tabs'),
       paneInner = dom.find(el, '.pane-inner');
 
@@ -47,9 +51,15 @@ module.exports = function () {
       // since we're switching between panes very quickly
     }, 0);
 
-    // set first tab + content active
-    firstTab.classList.add('active');
-    firstContent.classList.add('active');
+    // set active tab
+    if (active) {
+      dom.find(el, `#${active.header}`).classList.add('active');
+      dom.find(el, `#${active.content}`).classList.add('active');
+    } else {
+      // if no active tab passed in, first tab is activated
+      dom.find(el, '.pane-tab').classList.add('active');
+      dom.find(el, '.pane-content').classList.add('active');
+    }
 
     // set the inner height so when we filter/switch tabs the pane won't jump around
     // note: we set inner height because that's what should scroll, not the whole pane.
