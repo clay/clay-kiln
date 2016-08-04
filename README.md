@@ -45,8 +45,37 @@ Kiln has a simple client-side api that is used to extend its functionality. It c
 * [Behaviors](https://github.com/nymag/clay-kiln/tree/master/behaviors#behaviors) — run on each field when opening forms
 * [Decorators](https://github.com/nymag/clay-kiln/tree/master/decorators#decorators) — run on each field (elements with `data-editable`) when the page is loaded
 * [Validators](https://github.com/nymag/clay-kiln/tree/master/validators#validators) — run when opening the `PUBLISH` pane and returns errors and warnings
+* [Plugins](https://github.com/nymag/clay-kiln/tree/master/README.md#plugins) — run before kiln code is initialized, and can hook into events and call kiln services.
 
-To add custom `behaviors`, `decorators`, and `validators`, simply add them to the `kiln` object before the page's `DOMContentLoaded` event fires.
+To add custom `behaviors`, `decorators`, `validators`, and `plugins` simply add them to the `kiln` object before the page's `DOMContentLoaded` event fires.
+
+#### Plugins
+
+Plugins are added to the global `window.kiln.plugins` object. They are initialized _before_ kiln services run, so they can add event listeners for things like saving, publishing, adding component selectors, etc. They may also call certain exported `window.kiln.services`.
+
+```js
+// my-plugin.js
+
+window.kiln.plugins['my-plugin'] = function () {
+  // you can add event handlers
+  window.kiln.on('save', function (data) {
+    console.log(window.kiln.services.label(data.name)); // and call kiln services
+  });
+}
+```
+
+**Events:**
+
+* `save` - after a component is saved
+* `schedule`
+* `unschedule`
+* `publish`
+* `unpublish`
+* `select` - after a component is selected
+* `unselect`
+* `add-selector` - after a selector is added to a component
+* `form:open` - after a form is opened
+* `form:close` - after a form is closed (whether or not data was changed)
 
 ## Contributing
 

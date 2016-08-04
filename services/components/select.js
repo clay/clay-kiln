@@ -73,6 +73,7 @@ function select(el) {
   if (parent) {
     parent.classList.add('selected-parent');
   }
+  window.kiln.trigger('select', component);
 }
 
 /**
@@ -104,6 +105,7 @@ function unselect() {
   }
 
   removeClasses(current, parent);
+  window.kiln.trigger('unselect', current);
   currentSelected = null;
 }
 
@@ -431,6 +433,7 @@ function handler(el, options) {
 
     // add selector to the component el, BEHIND the component's children
     dom.prependChild(el, selector);
+    window.kiln.trigger('add-selector', el, options);
     return el;
   });
 }

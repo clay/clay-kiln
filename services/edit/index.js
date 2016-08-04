@@ -109,6 +109,7 @@ function save(data) {
       return cache.saveForHTML(data)
         .then(function (savedData) {
           progress.done();
+          window.kiln.trigger('save', data);
           return savedData;
         })
         .catch(function () {
@@ -170,6 +171,7 @@ function publishPage() {
     // pages don't have schemas or validation
     return db.save(pageUri + '@published', _.omit(pageData, '_ref'));
   }).then(function (publishedPageData) {
+    window.kiln.trigger('publish', publishedPageData);
     // note: when putting to page@published, amphora will add the uri to /uris/
     return publishedPageData.url;
   });
@@ -205,7 +207,10 @@ function unpublishPage() {
     // change url into uri
     var uri = db.urlToUri(pageData.url);
 
-    return removeUri(uri);
+    return removeUri(uri).then(function (res) {
+      window.kiln.trigger('unpublish', res);
+      return res;
+    });;
   });
 }
 
@@ -580,7 +585,11 @@ function addMultipleToParentList(opts) {
 function schedulePublish(data) {
   var prefix = site.get('prefix');
 
-  return db.create(prefix + scheduleRoute, data);
+  return db.create(prefix + scheduleRoute, data)
+    .then(function (res) {
+      window.kiln.trigger('schedule', res);
+      return res;
+    });
 }
 
 /**
@@ -593,7 +602,11 @@ function unschedulePublish(uri) {
 
   // see if it's currently scheduled, and if it is remove it
   return db.get(scheduled).then(function (res) {
-    return db.remove(res._ref); // _ref points to the /schedule entry
+    return db.remove(res._ref) // _ref points to the /schedule entry
+      .then(function (removed) {
+        window.kiln.trigger('unschedule', removed);
+        return removed;
+      });
   }).catch(_.noop);
 }
 
