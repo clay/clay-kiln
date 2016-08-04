@@ -205,3 +205,4 @@ module.exports.toggleScheduled = toggleScheduled;
 module.exports.formatTime = formatTime;
 module.exports.timeout = timeout;
 module.exports.openDynamicSchedule = openDynamicSchedule;
+_.set(window, 'kiln.services[page-state]', module.exports); // export for plugins

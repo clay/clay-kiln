@@ -39,3 +39,4 @@ module.exports = {
     return result && result[1];
   }
 };
+_.set(window, 'kiln.services.references', module.exports); // export for plugins

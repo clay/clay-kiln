@@ -29,3 +29,5 @@ module.exports = function (name, schema) {
     return dropClay(name).split('-').map(_.startCase).join(' '); // split on hyphens
   }
 };
+
+_.set(window, 'kiln.services.label', module.exports); // export for plugins

@@ -12,3 +12,5 @@ function getTemplate(selector) {
 }
 
 module.exports.get = getTemplate;
+
+_.set(window, 'kiln.services.tpl', module.exports); // export for plugins

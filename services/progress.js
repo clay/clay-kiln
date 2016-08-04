@@ -108,3 +108,5 @@ module.exports.close = close;
 
 // for testing
 module.exports.timeoutMilliseconds = timeoutMilliseconds;
+
+_.set(window, 'kiln.services.progress', module.exports); // export for plugins

@@ -438,10 +438,12 @@ function handler(el, options) {
   });
 }
 
-// focus and unfocus
+// select and unselect
 module.exports.select = select;
 module.exports.unselect = unselect;
 
 // decorators
 module.exports.when = when;
 module.exports.handler = handler;
+
+_.set(window, 'kiln.services.select', module.exports); // export for plugins

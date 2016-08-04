@@ -514,3 +514,4 @@ module.exports.openPublish = openPublish;
 module.exports.openPreview = openPreview;
 module.exports.openAddComponent = openAddComponent;
 module.exports.takeOffEveryZig = takeOffEveryZig;
+_.set(window, 'kiln.services.pane', module.exports); // export for plugins

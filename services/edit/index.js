@@ -675,3 +675,5 @@ module.exports = {
   getDataOnly: getDataOnly,
   getSchema: cache.getSchema // No one should _ever_ be editing this, so pass them the read-only.  Kill them dead.
 };
+
+_.set(window, 'kiln.services.edit', module.exports); // export for plugins
