@@ -1,4 +1,5 @@
-var dom = require('@nymag/dom');
+var dom = require('@nymag/dom'),
+  _ = require('lodash');
 
 /**
  * grab templates from the dom
@@ -12,3 +13,5 @@ function getTemplate(selector) {
 }
 
 module.exports.get = getTemplate;
+
+_.set(window, 'kiln.services.tpl', module.exports); // export for plugins

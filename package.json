@@ -36,6 +36,7 @@
     "dollar-slice": "^2.1.0",
     "domify": "^1.3.3",
     "dragula": "^3.5.4",
+    "eventify": "^2.0.0",
     "flatpickr": "^1.9.1",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.0.1",

@@ -10,6 +10,8 @@ var nodeUrl = require('url'),
   progress = require('./services/progress'),
   Konami = require('konami-js'),
   pane = require('./services/pane'),
+  plugins = require('./services/plugins'),
+  eventify = require('eventify'),
   connectionLostMessage = 'Connection Lost. Changes will <strong>NOT</strong> be saved.';
 
 // manually add built-in behaviors
@@ -48,6 +50,9 @@ document.addEventListener('DOMContentLoaded', function () {
   var parsed = nodeUrl.parse(location.href, true, true);
 
   if (parsed.query.edit) {
+    window.kiln = window.kiln || {}; // make sure global kiln object exists
+    eventify.enable(window.kiln); // enable events on global kiln object, so plugins can add listeners
+    plugins.init(); // initialize plugins before adding handlers
     render.addComponentsHandlers(document);
     return new EditorToolbar(dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"]'));
   }

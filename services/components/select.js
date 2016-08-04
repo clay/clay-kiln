@@ -73,6 +73,7 @@ function select(el) {
   if (parent) {
     parent.classList.add('selected-parent');
   }
+  window.kiln.trigger('select', component);
 }
 
 /**
@@ -104,6 +105,7 @@ function unselect() {
   }
 
   removeClasses(current, parent);
+  window.kiln.trigger('unselect', current);
   currentSelected = null;
 }
 
@@ -431,14 +433,17 @@ function handler(el, options) {
 
     // add selector to the component el, BEHIND the component's children
     dom.prependChild(el, selector);
+    window.kiln.trigger('add-selector', el, options, parent);
     return el;
   });
 }
 
-// focus and unfocus
+// select and unselect
 module.exports.select = select;
 module.exports.unselect = unselect;
 
 // decorators
 module.exports.when = when;
 module.exports.handler = handler;
+
+_.set(window, 'kiln.services.select', module.exports); // export for plugins

@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 module.exports = {
   editableAttribute: 'data-editable', // indicates el is editable when clicked. value is path to data
   placeholderAttribute: 'data-placeholder', // indicates el should have placeholder, but is NOT editable when clicked
@@ -39,3 +41,4 @@ module.exports = {
     return result && result[1];
   }
 };
+_.set(window, 'kiln.services.references', module.exports); // export for plugins

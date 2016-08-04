@@ -1,4 +1,5 @@
-var nprogress = require('nprogress'),
+var _ = require('lodash'),
+  nprogress = require('nprogress'),
   dom = require('@nymag/dom'),
   boxShadow = '0 0 10px 0',
   colors = {
@@ -108,3 +109,5 @@ module.exports.close = close;
 
 // for testing
 module.exports.timeoutMilliseconds = timeoutMilliseconds;
+
+_.set(window, 'kiln.services.progress', module.exports); // export for plugins
