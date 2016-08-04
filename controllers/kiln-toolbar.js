@@ -109,10 +109,9 @@ EditorToolbar.prototype = {
         return validation.validate(rules).then(function (results) {
           if (results.errors.length) {
             progress.done('error');
-            pane.openValidationErrors(results);
-          } else {
-            pane.openPublish(results.warnings);
           }
+
+          pane.openPublish(results);
         });
       })
       .catch(function () {

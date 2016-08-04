@@ -70,6 +70,7 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 
 .kiln-toolbar-pane .pane-tabs-inner {
   align-items: flex-start;
+  cursor: auto;
   display: flex;
   flex: 1 0 auto;
   justify-content: flex-start;
@@ -93,9 +94,8 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   }
 
   &.disabled {
-    color: $grey;
-    cursor: default;
-    pointer-events: none;
+    color: $black-25;
+    cursor: not-allowed;
   }
 }
 
@@ -149,9 +149,8 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   }
 
   &.disabled {
-    color: $grey;
-    cursor: default;
-    pointer-events: none;
+    color: $black-25;
+    cursor: not-allowed;
   }
 }
 
