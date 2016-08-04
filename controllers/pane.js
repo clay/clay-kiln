@@ -23,9 +23,22 @@ module.exports = function () {
     getHtmlClassList().remove(noScrollClass);
   }
 
+  /**
+   * calculate pane inner height
+   * @param {Element} pane
+   * @param {Element} paneTabs
+   * @returns {number}
+   */
+  function calculateHeight(pane, paneTabs) {
+    return parseInt(getComputedStyle(pane).height, 10) - parseInt(getComputedStyle(paneTabs).height, 10);
+  }
+
   function constructor(el) {
     var firstTab = dom.find(el, '.pane-tab'),
-      firstContent = dom.find(el, '.pane-content');
+      firstContent = dom.find(el, '.pane-content'),
+      pane = dom.find(el, '.kiln-toolbar-pane'),
+      paneTabs = dom.find(el, '.pane-tabs'),
+      paneInner = dom.find(el, '.pane-inner');
 
     dom.onRemove(el, enableScroll);
     setTimeout(function () {
@@ -37,6 +50,11 @@ module.exports = function () {
     // set first tab + content active
     firstTab.classList.add('active');
     firstContent.classList.add('active');
+
+    // set the inner height so when we filter/switch tabs the pane won't jump around
+    // note: we set inner height because that's what should scroll, not the whole pane.
+    // the tabs stay at the top
+    paneInner.style.height = calculateHeight(pane, paneTabs) + 'px';
 
     this.el = el;
   }

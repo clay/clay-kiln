@@ -31,7 +31,7 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   display: flex;
   flex-direction: column;
   height: auto;
-  justify-content: center;
+  justify-content: flex-start;
   margin: 0;
   max-height: 100 - $pane-margin;
   max-width: 375px;
@@ -156,6 +156,7 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 }
 
 .kiln-toolbar-pane .pane-inner {
+  overflow-y: scroll;
   width: 100%;
 }
 
