@@ -22,6 +22,9 @@ settings = {
         presets: ['es2015']
       }),
       istanbul({
+        instrumenterConfig: {
+          embedSource: true
+        },
         ignore: [
           '**/*.test.js',
           '**/*.md',
