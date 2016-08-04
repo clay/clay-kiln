@@ -22,6 +22,8 @@ settings = {
         presets: ['es2015']
       }),
       istanbul({
+        // this config fixes the following:
+        // https://github.com/karma-runner/karma-coverage/issues/157
         instrumenterConfig: {
           embedSource: true
         },
