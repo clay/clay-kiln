@@ -433,7 +433,7 @@ function handler(el, options) {
 
     // add selector to the component el, BEHIND the component's children
     dom.prependChild(el, selector);
-    window.kiln.trigger('add-selector', el, options);
+    window.kiln.trigger('add-selector', el, options, parent);
     return el;
   });
 }
