@@ -7,7 +7,7 @@
     "lint": "node_modules/.bin/eslint client.js behaviors controllers services decorators validators",
     "test": "npm run lint && node_modules/.bin/karma start",
     "test-local": "npm run lint && node_modules/.bin/karma start karma.local.conf.js",
-    "prepublish": "node_modules/.bin/gulp --once"
+    "prepublish": "gulp --once"
   },
   "repository": {
     "type": "git",
