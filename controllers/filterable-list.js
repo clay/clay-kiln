@@ -1,8 +1,6 @@
-var edit = require('../services/edit'),
-  dom = require('@nymag/dom'),
+var dom = require('@nymag/dom'),
   keyCode = require('keycode'),
   _ = require('lodash'),
-  progress = require('../services/progress'),
   pane = require('../services/pane');
 
 /**
@@ -39,7 +37,9 @@ function getAvailable(items) {
  * @param {NodeList} list
  */
 function focusFirst(list) {
-  list[0].focus();
+  if (list[0]) {
+    list[0].focus();
+  }
 }
 
 /**
@@ -68,26 +68,8 @@ function focusPrev(current, list) {
   }
 }
 
-/**
- * create a new page based on the provided ID
- * note: if successful, will redirect to the new page.
- * otherwise, will display an error message
- * @param {string} id
- * @returns {Promise}
- */
-function createPageByType(id) {
-  return edit.createPage(id)
-    .then(function (url) {
-      location.href = url;
-    })
-    .catch(function () {
-      progress.done('error');
-      progress.open('error', 'Error creating new page', true);
-    });
-}
-
 module.exports = function () {
-  function constructor(el) {
+  function constructor(el, options) {
     // useful elements
     this.input = dom.find(el, '.filtered-input');
     this.list = dom.find(el, '.filtered-items'),
@@ -98,6 +80,9 @@ module.exports = function () {
 
     // set the height so when we filter it won't jump around
     this.list.style.height = getComputedStyle(this.list).height;
+
+    // make the options available to event handlers
+    this.options = options;
   }
 
   constructor.prototype = {
@@ -135,7 +120,7 @@ module.exports = function () {
       } else if (key === 'enter' && available.length === 1) {
         available[0].classList.remove('active');
         e.preventDefault();
-        createPageByType(available[0].getAttribute('data-item-name'));
+        this.options.click(available[0].getAttribute('data-item-name'));
       } else if (key === 'enter') {
         input.classList.add('kiln-shake');
         setTimeout(() => input.classList.remove('kiln-shake'), 301); // length of the animation + 1
@@ -180,13 +165,13 @@ module.exports = function () {
         pane.close();
       } else if (key === 'enter') {
         e.preventDefault();
-        createPageByType(currentItem.getAttribute('data-item-name'));
+        this.options.click(currentItem.getAttribute('data-item-name'));
       }
     },
 
     onItemClick: function (e) {
       e.preventDefault();
-      createPageByType(e.target.getAttribute('data-item-name'));
+      this.options.click(e.target.getAttribute('data-item-name'));
     }
   };
   return constructor;

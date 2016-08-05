@@ -3,13 +3,14 @@ var _ = require('lodash'),
   dom = require('@nymag/dom'),
   ds = require('dollar-slice'),
   edit = require('./edit'),
+  progress = require('./progress'),
   state = require('./page-state'),
   site = require('./site'),
   label = require('./label'),
   tpl = require('./tpl'),
   datepicker = require('./field-helpers/datepicker'),
   paneController = require('../controllers/pane'),
-  newPagePaneController = require('../controllers/new-page-pane'),
+  filterableList = require('./filterable-list'),
   publishPaneController = require('../controllers/publish-pane'),
   addComponentPaneController = require('../controllers/add-component-pane'),
   kilnHideClass = 'kiln-hide';
@@ -335,31 +336,43 @@ function openPublish(validation) {
 }
 
 /**
+ * create a new page based on the provided ID
+ * note: if successful, will redirect to the new page.
+ * otherwise, will display an error message
+ * @param {string} id
+ * @returns {Promise}
+ */
+function createPageByType(id) {
+  return edit.createPage(id)
+    .then(function (url) {
+      location.href = url;
+    })
+    .catch(function () {
+      progress.done('error');
+      progress.open('error', 'Error creating new page', true);
+    });
+}
+
+/**
  * open new page/edit layout dialog pane
  * @returns {Promise}
  */
 function openNewPage() {
-  var newPageHeader = 'New Page',
-    newPageInput = tpl.get('.filtered-input-template');
-
   // /lists/new-pages contains a site-specific array of pages that should be available
   // to clone, each one having a `id` (the page id) and `title` (the button title) property
   return edit.getDataOnly(`${site.get('prefix')}/lists/new-pages`)
-    .then(addFilteredItems)
-    .then(function (itemsEl) {
-      var innerEl = document.createDocumentFragment(),
-        el;
-
-      innerEl.appendChild(newPageInput);
-      innerEl.appendChild(itemsEl);
+    .then(function (items) {
+      var innerEl = filterableList.create(items, {
+        click: createPageByType
+      });
 
       // create pane
-      el = open([{header: newPageHeader, content: innerEl}]);
-      // init controller
-      ds.controller('pane-new-page', newPagePaneController);
-      ds.get('pane-new-page', el);
-      return el;
-    });
+      return open([{header: 'New Page', content: innerEl}]);
+      // // init controller
+      // ds.controller('pane-new-page', newPagePaneController);
+      // ds.get('pane-new-page', el);
+      // return el;
+    }).catch(function (e) { console.log(e); });
 }
 
 function addPreview(preview) {
