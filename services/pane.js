@@ -367,11 +367,7 @@ function openNewPage() {
 
       // create pane
       return open([{header: 'New Page', content: innerEl}]);
-      // // init controller
-      // ds.controller('pane-new-page', newPagePaneController);
-      // ds.get('pane-new-page', el);
-      // return el;
-    }).catch(function (e) { console.log(e); });
+    });
 }
 
 function addPreview(preview) {
