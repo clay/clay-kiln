@@ -1,4 +1,4 @@
-var dom = require('@nymag/dom'),
+const dom = require('@nymag/dom'),
   keyCode = require('keycode'),
   _ = require('lodash'),
   pane = require('../services/pane');
