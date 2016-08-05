@@ -3,7 +3,8 @@ var dirname = __dirname.split('/').pop(),
   lib = require('./filterable-list'),
   ds = require('dollar-slice'),
   tpl = require('./tpl'),
-  dom = require('@nymag/dom');
+  dom = require('@nymag/dom'),
+  _ = require('lodash');
 
 describe(dirname, function () {
   describe(filename, function () {
