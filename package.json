@@ -25,6 +25,7 @@
   },
   "files": [
     "dist",
+    "media",
     "template.nunjucks"
   ],
   "homepage": "https://github.com/nymag/clay-kiln",
