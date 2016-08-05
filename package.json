@@ -1,6 +1,6 @@
 {
   "name": "clay-kiln",
-  "version": "0.25.0",
+  "version": "0.25.1",
   "description": "Editor tools for Clay",
   "template": "template.nunjucks",
   "scripts": {
@@ -24,7 +24,7 @@
     "url": "https://github.com/nymag/clay-kiln/issues"
   },
   "files": [
-      "dist"
+    "dist"
   ],
   "homepage": "https://github.com/nymag/clay-kiln",
   "dependencies": {
