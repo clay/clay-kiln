@@ -353,6 +353,8 @@ function openNewPage() {
       innerEl.appendChild(newPageInput);
       innerEl.appendChild(itemsEl);
 
+      console.log(itemsEl)
+
       // create pane
       el = open([{header: newPageHeader, content: innerEl}]);
       // init controller

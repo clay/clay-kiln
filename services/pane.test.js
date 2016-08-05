@@ -78,7 +78,6 @@ describe(dirname, function () {
       getTemplate.withArgs('.publish-undo-template').returns(stubUndoTemplate());
       getTemplate.withArgs('.publish-messages-template').returns(stubMessageTemplate());
       getTemplate.withArgs('.publish-actions-template').returns(stubPublishTemplate());
-      getTemplate.withArgs('.new-page-actions-template').returns(dom.create('<div><div class="new-page-actions actions"></div></div>')); // wrapper divs to simulate doc fragments
       getTemplate.withArgs('.preview-actions-template').returns(stubPreviewActionsTemplate());
       getTemplate.withArgs('.publish-error-message-template').returns(dom.create('<div>ERROR MESSAGE</div>'));
       getTemplate.withArgs('.publish-warning-message-template').returns(dom.create('<div>WARNING MESSAGE</div>'));
@@ -292,20 +291,17 @@ describe(dirname, function () {
         sandbox.restore();
       });
 
-      it('opens a new page pane with two possible pages', function () {
-        function expectButtons() {
-          expect(document.querySelector('#pane-tab-1').innerHTML).to.equal('New Page');
-          expect(document.querySelectorAll('.new-page-actions button').length).to.equal(2);
+      it('opens a a new page pane', function () {
+        function expectNewPageItems(el) {
+          expect(el.querySelector('#pane-tab-1').innerHTML).to.equal('New Page');
+          expect(el.querySelectorAll('.pane-inner li.filtered-item').length).to.equal(1);
         }
         edit.getDataOnly.returns(Promise.resolve([{
           id: 'new',
           title: 'New Page'
-        }, {
-          id: 'new-other',
-          title: 'Other New Page'
         }]));
         lib.close();
-        return fn().then(expectButtons);
+        return fn().then(expectNewPageItems);
       });
     });
 
