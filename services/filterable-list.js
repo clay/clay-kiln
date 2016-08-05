@@ -45,8 +45,10 @@ function create(items, options) {
     itemsEl = addFilteredItems(items), // todo: remove, reorder, settings options
     el = dom.create('<div class="filterable-list-wrapper"></div>');
 
-  if (!options.click) {
-    throw new Error('Filterable Lists need a click function!');
+  if (!_.isArray(items) || !_.isObject(options)) {
+    throw new Error('Filterable lists need items and an options object!');
+  } else if (!options.click) {
+    throw new Error('Filterable lists need a click function!');
   }
 
   el.appendChild(inputEl);
