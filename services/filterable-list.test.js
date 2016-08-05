@@ -3,8 +3,7 @@ var dirname = __dirname.split('/').pop(),
   lib = require('./filterable-list'),
   ds = require('dollar-slice'),
   tpl = require('./tpl'),
-  dom = require('@nymag/dom'),
-  filterableListController = require('../controllers/filterable-list');
+  dom = require('@nymag/dom');
 
 describe(dirname, function () {
   describe(filename, function () {
@@ -13,7 +12,6 @@ describe(dirname, function () {
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
       sandbox.stub(ds);
-      sandbox.stub(filterableListController);
       sandbox.stub(tpl, 'get');
       tpl.get.withArgs('.filtered-input-template').returns(dom.create('<input class="filtered-input" />'));
       tpl.get.withArgs('.filtered-items-template').returns(dom.create('<div><ul class="filtered-items"></div>')); // wrapper divs to simulate doc fragments
@@ -57,6 +55,26 @@ describe(dirname, function () {
         var el = fn(['foo'], { click: _.noop });
 
         expect(dom.findAll(el, '.filtered-item').length).to.equal(1);
+      });
+
+      it('creates labels for string arrays', function () {
+        var el = fn(['foo-bar'], { click: _.noop });
+
+        expect(dom.find(el, '.filtered-item').innerHTML).to.equal('Foo Bar');
+        expect(dom.find(el, '.filtered-item').getAttribute('data-item-id')).to.equal('foo-bar');
+      });
+
+      it('uses title and id of object arrays', function () {
+        var el = fn([{ title: 'Foo Bar', id: 'foo-bar' }], { click: _.noop });
+
+        expect(dom.find(el, '.filtered-item').innerHTML).to.equal('Foo Bar');
+        expect(dom.find(el, '.filtered-item').getAttribute('data-item-id')).to.equal('foo-bar');
+      });
+
+      it('allows html in title', function () {
+        var el = fn([{ title: 'Foo <em>Bar</em>', id: 'foo-bar' }], { click: _.noop });
+
+        expect(dom.find(el, '.filtered-item').innerHTML).to.equal('Foo <em>Bar</em>');
       });
     });
   });

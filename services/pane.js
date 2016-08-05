@@ -6,13 +6,12 @@ var _ = require('lodash'),
   progress = require('./progress'),
   state = require('./page-state'),
   site = require('./site'),
-  label = require('./label'),
   tpl = require('./tpl'),
   datepicker = require('./field-helpers/datepicker'),
   paneController = require('../controllers/pane'),
   filterableList = require('./filterable-list'),
   publishPaneController = require('../controllers/publish-pane'),
-  addComponentPaneController = require('../controllers/add-component-pane'),
+  addComponent = require('./components/add-component'),
   kilnHideClass = 'kiln-hide';
 
 /**
@@ -450,52 +449,21 @@ function addErrorsOrWarnings(errors, modifier) {
 }
 
 /**
- * add filtered items
- * note: items may be an array of strings, or objects with id and title
- * @param {array} items
- * @returns {Element}
- */
-function addFilteredItems(items) {
-  var wrapper = tpl.get('.filtered-items-template'),
-    listEl = dom.find(wrapper, 'ul');
-
-  _.each(items, function (item) {
-    var itemEl = tpl.get('.filtered-item-template'),
-      listItem = dom.find(itemEl, 'li');
-
-    // add name and label to each list item
-    if (_.isString(item)) {
-      listItem.innerHTML = label(item);
-      listItem.setAttribute('data-item-name', item);
-    } else {
-      listItem.innerHTML = item.title;
-      listItem.setAttribute('data-item-name', item.id);
-    }
-    // add it to the list
-    listEl.appendChild(itemEl);
-  });
-
-  return wrapper;
-}
-
-/**
  * open the add component pane
  * @param {array} components
- * @param {object} options to pass to controller (used for calling addComponent)
+ * @param {object} options to call addComponent with
+ * @returns {Element}
  */
 function openAddComponent(components, options) {
   var header = 'Add Component',
-    inputEl = tpl.get('.filtered-input-template'),
-    itemsEl = addFilteredItems(components),
-    innerEl = document.createDocumentFragment(),
-    el;
+    innerEl = filterableList.create(components, {
+      click: function (id) {
+        return addComponent(options.pane, options.field, id, options.prevRef)
+          .then(() => close()); // only close pane if we added successfully
+      }
+    });
 
-  innerEl.appendChild(inputEl);
-  innerEl.appendChild(itemsEl);
-  el = open([{header: header, content: innerEl}]);
-  // init controller for add component pane
-  ds.controller('add-component-pane', addComponentPaneController);
-  ds.get('add-component-pane', el.querySelector('.kiln-toolbar-pane'), options);
+  return open([{header: header, content: innerEl}]);
 }
 
 function takeOffEveryZig() {

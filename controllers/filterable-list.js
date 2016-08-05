@@ -11,7 +11,7 @@ var dom = require('@nymag/dom'),
 function filter(val, items) {
   _.each(items, function (item) {
     var label = item.textContent.toLowerCase(),
-      name = item.getAttribute('data-item-name').toLowerCase();
+      name = item.getAttribute('data-item-id').toLowerCase();
 
     val = val.toLowerCase();
 
@@ -120,7 +120,7 @@ module.exports = function () {
       } else if (key === 'enter' && available.length === 1) {
         available[0].classList.remove('active');
         e.preventDefault();
-        this.options.click(available[0].getAttribute('data-item-name'));
+        this.options.click(available[0].getAttribute('data-item-id'));
       } else if (key === 'enter') {
         input.classList.add('kiln-shake');
         setTimeout(() => input.classList.remove('kiln-shake'), 301); // length of the animation + 1
@@ -165,13 +165,13 @@ module.exports = function () {
         pane.close();
       } else if (key === 'enter') {
         e.preventDefault();
-        this.options.click(currentItem.getAttribute('data-item-name'));
+        this.options.click(currentItem.getAttribute('data-item-id'));
       }
     },
 
     onItemClick: function (e) {
       e.preventDefault();
-      this.options.click(e.target.getAttribute('data-item-name'));
+      this.options.click(e.target.getAttribute('data-item-id'));
     }
   };
   return constructor;

@@ -22,10 +22,10 @@ function addFilteredItems(items) {
     // add name and label to each list item
     if (_.isString(item)) {
       listItem.innerHTML = label(item);
-      listItem.setAttribute('data-item-name', item);
+      listItem.setAttribute('data-item-id', item);
     } else {
       listItem.innerHTML = item.title;
-      listItem.setAttribute('data-item-name', item.id);
+      listItem.setAttribute('data-item-id', item.id);
     }
     // add it to the list
     listEl.appendChild(itemEl);
