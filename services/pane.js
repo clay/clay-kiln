@@ -335,45 +335,30 @@ function openPublish(validation) {
 }
 
 /**
- * add new pages buttons
- * @param {Element} actionsEl
- * @returns {Function}
- */
-function addNewPageButtons(actionsEl) {
-  return function (pages) {
-    _.each(pages, function (page) {
-      var button = dom.create(`<button class="primary-action" data-page-id="${page.id}">${page.title}</button>`);
-
-      actionsEl.appendChild(button);
-    });
-
-    return actionsEl;
-  };
-}
-
-/**
- * open new page type dialog pane
+ * open new page/edit layout dialog pane
  * @returns {Promise}
  */
 function openNewPage() {
-  var header = 'New Page',
-    innerEl = document.createDocumentFragment(),
-    actionsTpl = tpl.get('.new-page-actions-template'),
-    actionsEl = dom.find(actionsTpl, '.new-page-actions'),
-    el;
+  var newPageHeader = 'New Page',
+    newPageInput = tpl.get('.filtered-input-template');
 
   // /lists/new-pages contains a site-specific array of pages that should be available
   // to clone, each one having a `id` (the page id) and `title` (the button title) property
   return edit.getDataOnly(`${site.get('prefix')}/lists/new-pages`)
-    .then(addNewPageButtons(actionsEl))
-    .then(function (populatedActionsEl) {
-      // append actions to the doc fragment
-      innerEl.appendChild(populatedActionsEl);
-      // create the root pane element
-      el = open([{header: header, content: innerEl}]);
-      // init controller for publish pane
+    .then(addFilteredItems)
+    .then(function (itemsEl) {
+      var innerEl = document.createDocumentFragment(),
+        el;
+
+      innerEl.appendChild(newPageInput);
+      innerEl.appendChild(itemsEl);
+
+      // create pane
+      el = open([{header: newPageHeader, content: innerEl}]);
+      // init controller
       ds.controller('pane-new-page', newPagePaneController);
       ds.get('pane-new-page', el);
+      return el;
     });
 }
 
@@ -451,6 +436,12 @@ function addErrorsOrWarnings(errors, modifier) {
   }, document.createDocumentFragment());
 }
 
+/**
+ * add filtered items
+ * note: items may be an array of strings, or objects with id and title
+ * @param {array} items
+ * @returns {Element}
+ */
 function addFilteredItems(items) {
   var wrapper = tpl.get('.filtered-items-template'),
     listEl = dom.find(wrapper, 'ul');
@@ -459,9 +450,14 @@ function addFilteredItems(items) {
     var itemEl = tpl.get('.filtered-item-template'),
       listItem = dom.find(itemEl, 'li');
 
-    // add component name and label to each list item
-    listItem.innerHTML = label(item);
-    listItem.setAttribute('data-item-name', item);
+    // add name and label to each list item
+    if (_.isString(item)) {
+      listItem.innerHTML = label(item);
+      listItem.setAttribute('data-item-name', item);
+    } else {
+      listItem.innerHTML = item.title;
+      listItem.setAttribute('data-item-name', item.id);
+    }
     // add it to the list
     listEl.appendChild(itemEl);
   });

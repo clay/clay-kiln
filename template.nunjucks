@@ -119,13 +119,6 @@
       </div>
     </template>
 
-    {# new page actions #}
-    <template class="new-page-actions-template">
-      <div class="new-page-actions actions">
-        {# new page buttons get added here #}
-      </div>
-    </template>
-
     {# preview link #}
     <template class="preview-actions-template">
       <div class="info-message">Share the link below to preview the latest version of this page before publishing</div>
