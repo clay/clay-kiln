@@ -27,7 +27,7 @@
           </button>
           <button class="kiln-toolbar-button preview">
             <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
-              <span class="icon">{% include 'public/media/components/clay-kiln/eyecon.svg' %}</span>
+              <span class="icon">{% include 'public/media/components/clay-kiln/new-tab.svg' %}</span>
             </div>
           </button>
           <button class="kiln-toolbar-button history">
@@ -35,9 +35,18 @@
               <span class="icon">{% include 'public/media/components/clay-kiln/history-icon.svg' %}</span>
             </div>
           </button>
-          <button class="kiln-toolbar-button publish">
-            <div class="button-flex-inner">
-              <span class="icon">{% include 'public/media/components/clay-kiln/paper-plane.svg' %}</span>
+          <button class="kiln-toolbar-button publish draft">
+            <div class="button-flex-inner publish-draft">
+              <span class="icon">{% include 'public/media/components/clay-kiln/draft.svg' %}</span>
+              <span class="text">Draft</span>
+            </div>
+            <div class="button-flex-inner publish-published">
+              <span class="icon">{% include 'public/media/components/clay-kiln/published.svg' %}</span>
+              <span class="text">Published</span>
+            </div>
+            <div class="button-flex-inner publish-scheduled">
+              <span class="icon">{% include 'public/media/components/clay-kiln/scheduled.svg' %}</span>
+              <span class="text">Scheduled</span>
             </div>
           </button>
         </div>

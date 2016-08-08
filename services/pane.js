@@ -128,7 +128,7 @@ function createUndoActions(res) {
 
   // unscheduling
   if (res.scheduled) {
-    state.toggleScheduled(true); // just in case someone else scheduled this page
+    state.toggleButton('scheduled', true); // just in case someone else scheduled this page
     unschedule = dom.find(undo, '.unschedule');
     if (unschedule) {
       unschedule.classList.remove(kilnHideClass);
@@ -137,6 +137,7 @@ function createUndoActions(res) {
 
   // unpublish (only affects page)
   if (res.published) {
+    state.toggleButton('published', true); // just in case someone else published this page
     unpublish = dom.find(undo, '.unpublish');
     if (unpublish) {
       unpublish.classList.remove(kilnHideClass);

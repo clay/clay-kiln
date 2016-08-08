@@ -4,11 +4,11 @@ var _ = require('lodash'),
   boxShadow = '0 0 10px 0',
   colors = {
     // these are taken from styleguide/_colors.scss
-    save: '#1782A9',
+    save: '#a17355',
     publish: '#149524',
     offline: '#888',
     error: '#DD2F1C',
-    schedule: '#E07313'
+    schedule: '#cc8e28'
   },
   timeoutMilliseconds = 3500; // should be the same timeout for every status message
 

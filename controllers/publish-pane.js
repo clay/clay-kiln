@@ -69,7 +69,8 @@ module.exports = function () {
 
             progress.done();
             progress.open('publish', `Published! <a href="${url}" target="_blank">View Page</a>`);
-            state.toggleScheduled(false);
+            state.toggleButton('scheduled', false);
+            state.toggleButton('published', true);
           })
           .catch(function () {
             // note: the Error passed into this doesn't have a message, so we use a custom one
@@ -140,7 +141,7 @@ module.exports = function () {
         .then(function () {
           progress.done();
           progress.open('schedule', 'Unscheduled!', true);
-          state.toggleScheduled(false);
+          state.toggleButton('scheduled', false);
         })
         .catch(function () {
           // note: the Error passed into this doesn't have a message, so we use a custom one
