@@ -82,3 +82,46 @@
 
 // scheduled button
 // $orange (filled only)
+
+// mixin for creating the selector icons and list icons
+@mixin icon-button($fill, $size) {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin: 0;
+  outline: none;
+  color: $fill;
+  padding: 6px 8px;
+
+  // set icon sizes
+  svg {
+    width: $size;
+    height: $size;
+  }
+
+  // set fill color
+  svg,
+  svg * {
+    fill: $fill;
+    transition: 150ms fill ease-out;
+  }
+
+  // subtle hover state
+  &:hover svg,
+  &:hover svg * {
+    fill: darken($fill, 5%);
+    transition: 150ms fill ease-out;
+  }
+
+  // subtle active state
+  &:active svg,
+  &:active svg * {
+    fill: darken($fill, 10%);
+    transition: 50ms fill ease-out;
+  }
+
+  // note: hover and active states are different than our regular outlined buttons,
+  // since the border-radius is applied to their parent elements
+  // (which means we can't set the background-color for each button without
+  // doing a bunch of logic to set their border radii)
+}
