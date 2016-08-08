@@ -6,6 +6,14 @@ var dirname = __dirname.split('/').pop(),
   dom = require('@nymag/dom'),
   _ = require('lodash');
 
+function stubFilterableItemTemplate() {
+  // wrapper divs to simulate doc fragments
+  return dom.create(`<div><li class="filtered-item">
+    <span class="filtered-item-title"></span>
+    <button class="filtered-item-remove kiln-hide" title="Remove">X</button>
+  </li></div>`);
+}
+
 describe(dirname, function () {
   describe(filename, function () {
     var sandbox;
@@ -16,7 +24,7 @@ describe(dirname, function () {
       sandbox.stub(tpl, 'get');
       tpl.get.withArgs('.filtered-input-template').returns(dom.create('<input class="filtered-input" />'));
       tpl.get.withArgs('.filtered-items-template').returns(dom.create('<div><ul class="filtered-items"></div>')); // wrapper divs to simulate doc fragments
-      tpl.get.withArgs('.filtered-item-template').returns(dom.create('<div><li class="filtered-item"></div>')); // wrapper divs to simulate doc fragments
+      tpl.get.withArgs('.filtered-item-template').returns(stubFilterableItemTemplate());
     });
 
     afterEach(function () {
@@ -61,21 +69,27 @@ describe(dirname, function () {
       it('creates labels for string arrays', function () {
         var el = fn(['foo-bar'], { click: _.noop });
 
-        expect(dom.find(el, '.filtered-item').innerHTML).to.equal('Foo Bar');
+        expect(dom.find(el, '.filtered-item-title').innerHTML).to.equal('Foo Bar');
         expect(dom.find(el, '.filtered-item').getAttribute('data-item-id')).to.equal('foo-bar');
       });
 
       it('uses title and id of object arrays', function () {
         var el = fn([{ title: 'Foo Bar', id: 'foo-bar' }], { click: _.noop });
 
-        expect(dom.find(el, '.filtered-item').innerHTML).to.equal('Foo Bar');
+        expect(dom.find(el, '.filtered-item-title').innerHTML).to.equal('Foo Bar');
         expect(dom.find(el, '.filtered-item').getAttribute('data-item-id')).to.equal('foo-bar');
       });
 
       it('allows html in title', function () {
         var el = fn([{ title: 'Foo <em>Bar</em>', id: 'foo-bar' }], { click: _.noop });
 
-        expect(dom.find(el, '.filtered-item').innerHTML).to.equal('Foo <em>Bar</em>');
+        expect(dom.find(el, '.filtered-item-title').innerHTML).to.equal('Foo <em>Bar</em>');
+      });
+
+      it('adds remove buttons if options.remove is set', function () {
+        var el = fn([{ title: 'Foo <em>Bar</em>', id: 'foo-bar' }], { click: _.noop, remove: _.noop });
+
+        expect(dom.find(el, '.filtered-item-remove')).to.not.equal(null);
       });
     });
   });

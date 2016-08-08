@@ -62,6 +62,14 @@ function stubErrorsTemplate() {
   </div>`);
 }
 
+function stubFilterableItemTemplate() {
+  // wrapper divs to simulate doc fragments
+  return dom.create(`<div><li class="filtered-item">
+    <span class="filtered-item-title"></span>
+    <button class="filtered-item-remove kiln-hide" title="Remove">X</button>
+  </li></div>`);
+}
+
 describe(dirname, function () {
   describe(filename, function () {
     var sandbox, getTemplate;
@@ -84,7 +92,7 @@ describe(dirname, function () {
       getTemplate.withArgs('.publish-errors-template').returns(stubErrorsTemplate());
       getTemplate.withArgs('.filtered-input-template').returns(dom.create('<input class="filtered-input" />'));
       getTemplate.withArgs('.filtered-items-template').returns(dom.create('<div><ul class="filtered-items"></div>')); // wrapper divs to simulate doc fragments
-      getTemplate.withArgs('.filtered-item-template').returns(dom.create('<div><li class="filtered-item"></div>')); // wrapper divs to simulate doc fragments
+      getTemplate.withArgs('.filtered-item-template').returns(stubFilterableItemTemplate());
     });
 
     afterEach(function () {

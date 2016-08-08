@@ -1,32 +1,43 @@
-var _ = require('lodash'),
+const _ = require('lodash'),
   dom = require('@nymag/dom'),
   ds = require('dollar-slice'),
   label = require('./label'),
   tpl = require('./tpl'),
-  filterableListController = require('../controllers/filterable-list');
+  filterableListController = require('../controllers/filterable-list'),
+  kilnHideClass = 'kiln-hide';
 
 /**
  * add filtered items
  * note: items may be an array of strings, or objects with id and title
  * @param {array} items
+ * @param {object} options
  * @returns {Element}
  */
-function addFilteredItems(items) {
+function addFilteredItems(items, options) {
   var wrapper = tpl.get('.filtered-items-template'),
     listEl = dom.find(wrapper, 'ul');
 
   _.each(items, function (item) {
     var itemEl = tpl.get('.filtered-item-template'),
-      listItem = dom.find(itemEl, 'li');
+      listItem = dom.find(itemEl, 'li'),
+      listItemTitle = dom.find(itemEl, '.filtered-item-title');
 
-    // add name and label to each list item
+    // add title and id to each list item
+    // note: title is set inside a specific span, whereas
+    // id is set on the list item itself
     if (_.isString(item)) {
-      listItem.innerHTML = label(item);
+      listItemTitle.innerHTML = label(item);
       listItem.setAttribute('data-item-id', item);
     } else {
-      listItem.innerHTML = item.title;
+      listItemTitle.innerHTML = item.title; // allows html
       listItem.setAttribute('data-item-id', item.id);
     }
+
+    // 'remove' button
+    if (options.remove) {
+      dom.find(listItem, '.filtered-item-remove').classList.remove(kilnHideClass);
+    }
+
     // add it to the list
     listEl.appendChild(itemEl);
   });
@@ -42,14 +53,16 @@ function addFilteredItems(items) {
  */
 function create(items, options) {
   var inputEl = tpl.get('.filtered-input-template'),
-    itemsEl = addFilteredItems(items), // todo: remove, reorder, settings options
-    el = dom.create('<div class="filterable-list-wrapper"></div>');
+    el = dom.create('<div class="filterable-list-wrapper"></div>'),
+    itemsEl;
 
   if (!_.isArray(items) || !_.isObject(options)) {
     throw new Error('Filterable lists need items and an options object!');
   } else if (!options.click) {
     throw new Error('Filterable lists need a click function!');
   }
+
+  itemsEl = addFilteredItems(items, options), // todo: reorder and settings options
 
   el.appendChild(inputEl);
   el.appendChild(itemsEl);

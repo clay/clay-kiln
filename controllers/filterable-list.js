@@ -91,7 +91,9 @@ module.exports = function () {
       '.filtered-input keyup': 'onInputKeyup',
       '.filtered-item keydown': 'onItemKeydown',
       '.filtered-item keyup': 'onItemKeyup',
-      '.filtered-item click': 'onItemClick'
+      '.filtered-item-title click': 'onItemClick',
+      // optional events
+      '.filtered-item-remove click': 'onRemoveClick'
     },
 
     onInputKeydown: function (e) {
@@ -134,14 +136,14 @@ module.exports = function () {
     onItemKeydown: function (e) {
       // simulate active states when pressing enter
       if (keyCode(e) === 'enter') {
-        e.target.classList.add('active');
+        e.currentTarget.classList.add('active');
       }
     },
 
     onItemKeyup: function (e) {
       var key = keyCode(e),
         available = getAvailable(this.items),
-        currentItem = e.target;
+        currentItem = e.currentTarget;
 
       // remove any active state if it exists
       currentItem.classList.remove('active');
@@ -170,8 +172,19 @@ module.exports = function () {
     },
 
     onItemClick: function (e) {
+      var id = e.currentTarget.parentElement.getAttribute('data-item-id');
+
       e.preventDefault();
-      this.options.click(e.target.getAttribute('data-item-id'));
+      this.options.click(id);
+    },
+
+    onRemoveClick: function (e) {
+      var id = e.currentTarget.parentElement.getAttribute('data-item-id'),
+        confirm = window.confirm('Remove from this list?'); // eslint-disable-line
+
+      if (confirm) {
+        this.options.remove(id);
+      }
     }
   };
   return constructor;
