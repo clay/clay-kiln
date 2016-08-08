@@ -60,6 +60,10 @@ EditorToolbar = function (el) {
   });
 
   return state.get().then(function (res) {
+    // toggle the .draft class on the button so that it'll always be available
+    // even if the user unschedules/unpublishes (this prevents a flash of "draft" on already-pubbed/scheduled articles)
+    state.toggleButton('draft', true);
+
     if (res.scheduled) {
       state.openDynamicSchedule(res.scheduledAt, res.publishedUrl);
     } else if (res.published) {
