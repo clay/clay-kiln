@@ -73,7 +73,7 @@ describe(dirname, function () {
       });
     });
 
-    describe('toggleScheduled', function () {
+    describe('toggleButton', function () {
       var fn = lib[this.title],
         button = dom.create('<div class="kiln-toolbar-inner"><button class="publish">Publish</button></div>');
 
@@ -81,14 +81,24 @@ describe(dirname, function () {
         document.body.appendChild(button);
       });
 
-      it('toggles on', function () {
-        fn(true);
+      it('toggles scheduled on', function () {
+        fn('scheduled', true);
         expect(document.querySelector('.kiln-toolbar-inner .publish').classList.contains('scheduled')).to.equal(true);
       });
 
-      it('toggles off', function () {
-        fn(false);
+      it('toggles scheduled off', function () {
+        fn('scheduled', false);
         expect(document.querySelector('.kiln-toolbar-inner .publish').classList.contains('scheduled')).to.equal(false);
+      });
+
+      it('toggles published on', function () {
+        fn('published', true);
+        expect(document.querySelector('.kiln-toolbar-inner .publish').classList.contains('published')).to.equal(true);
+      });
+
+      it('toggles published off', function () {
+        fn('published', false);
+        expect(document.querySelector('.kiln-toolbar-inner .publish').classList.contains('published')).to.equal(false);
       });
     });
 
