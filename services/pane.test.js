@@ -5,7 +5,8 @@ var dirname = __dirname.split('/').pop(),
   dom = require('@nymag/dom'),
   tpl = require('./tpl'),
   edit = require('./edit'),
-  ds = require('dollar-slice');
+  ds = require('dollar-slice'),
+  db = require('./edit/db');
 
 // minimal templates, only what we need to test the logic and functionality
 function stubWrapperTemplate() {
@@ -88,7 +89,7 @@ describe(dirname, function () {
 
       document.body.appendChild(toolbar);
       sandbox = sinon.sandbox.create();
-      sandbox.stub(dom, 'pageUri');
+      sandbox.stub(dom, 'pageUri').returns('domain.com/pages/foo');
       getTemplate = sandbox.stub(tpl, 'get');
       getTemplate.withArgs('.kiln-pane-template').returns(stubWrapperTemplate());
       getTemplate.withArgs('.publish-valid-template').returns(dom.create('<div class="publish-valid">valid</div>'));
@@ -302,7 +303,7 @@ describe(dirname, function () {
       beforeEach(function () {
         sandbox = sinon.sandbox.create();
         sandbox.stub(ds);
-        sandbox.stub(edit, 'getDataOnly');
+        sandbox.stub(db, 'get');
       });
 
       afterEach(function () {
@@ -314,7 +315,7 @@ describe(dirname, function () {
           expect(el.querySelector('#pane-tab-1').innerHTML).to.equal('New Page');
           expect(el.querySelectorAll('.pane-inner li.filtered-item').length).to.equal(1);
         }
-        edit.getDataOnly.returns(Promise.resolve([{
+        db.get.returns(Promise.resolve([{
           id: 'new',
           title: 'New Page'
         }]));
