@@ -1,7 +1,8 @@
 const dom = require('@nymag/dom'),
   keyCode = require('keycode'),
   _ = require('lodash'),
-  pane = require('../services/pane');
+  pane = require('../services/pane'),
+  dragula = require('dragula');
 
 /**
  * filter items in the list, based on the label or name
@@ -68,6 +69,43 @@ function focusPrev(current, list) {
   }
 }
 
+/**
+ * get index of a child element in a container
+ * @param {Element} el
+ * @param {Element} container
+ * @returns {number}
+ */
+function getIndex(el, container) {
+  return _.findIndex(container.children, (child) => child === el);
+}
+
+/**
+ * Add dragula.
+ * @param {Element} el (list item)
+ * @param {Function} reorder
+ */
+function addDragula(el, reorder) {
+  var dropAreaClass = 'dragula-drop-area',
+    dragItemClass = 'dragula-list-item',
+    drag = dragula([el]),
+    oldIndex;
+
+  drag.on('drag', function (selectedItem, container) {
+    selectedItem.classList.add(dragItemClass);
+    container.classList.add(dropAreaClass);
+    oldIndex = getIndex(selectedItem, container);
+  });
+  drag.on('cancel', function (selectedItem, container) {
+    selectedItem.classList.remove(dragItemClass);
+    container.classList.remove(dropAreaClass);
+  });
+  drag.on('drop', function (selectedItem, container) {
+    selectedItem.classList.remove(dragItemClass);
+    container.classList.remove(dropAreaClass);
+    reorder(selectedItem.getAttribute('data-item-id'), getIndex(selectedItem, container), oldIndex);
+  });
+}
+
 module.exports = function () {
   function constructor(el, options) {
     // useful elements
@@ -80,6 +118,11 @@ module.exports = function () {
 
     // set the height so when we filter it won't jump around
     this.list.style.height = getComputedStyle(this.list).height;
+
+    // add drag handler for reordering items
+    if (options.reorder) {
+      addDragula(this.list, options.reorder);
+    }
 
     // make the options available to event handlers
     this.options = options;

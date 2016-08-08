@@ -362,8 +362,7 @@ function openNewPage() {
   return edit.getDataOnly(`${site.get('prefix')}/lists/new-pages`)
     .then(function (items) {
       var innerEl = filterableList.create(items, {
-        click: createPageByType,
-        reorder: _.noop
+        click: createPageByType
       });
 
       // create pane
