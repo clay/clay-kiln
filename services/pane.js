@@ -3,15 +3,15 @@ var _ = require('lodash'),
   dom = require('@nymag/dom'),
   ds = require('dollar-slice'),
   edit = require('./edit'),
+  progress = require('./progress'),
   state = require('./page-state'),
   site = require('./site'),
-  label = require('./label'),
   tpl = require('./tpl'),
   datepicker = require('./field-helpers/datepicker'),
   paneController = require('../controllers/pane'),
-  newPagePaneController = require('../controllers/new-page-pane'),
+  filterableList = require('./filterable-list'),
   publishPaneController = require('../controllers/publish-pane'),
-  addComponentPaneController = require('../controllers/add-component-pane'),
+  addComponent = require('./components/add-component'),
   kilnHideClass = 'kiln-hide';
 
 /**
@@ -335,30 +335,38 @@ function openPublish(validation) {
 }
 
 /**
+ * create a new page based on the provided ID
+ * note: if successful, will redirect to the new page.
+ * otherwise, will display an error message
+ * @param {string} id
+ * @returns {Promise}
+ */
+function createPageByType(id) {
+  return edit.createPage(id)
+    .then(function (url) {
+      location.href = url;
+    })
+    .catch(function () {
+      progress.done('error');
+      progress.open('error', 'Error creating new page', true);
+    });
+}
+
+/**
  * open new page/edit layout dialog pane
  * @returns {Promise}
  */
 function openNewPage() {
-  var newPageHeader = 'New Page',
-    newPageInput = tpl.get('.filtered-input-template');
-
   // /lists/new-pages contains a site-specific array of pages that should be available
   // to clone, each one having a `id` (the page id) and `title` (the button title) property
   return edit.getDataOnly(`${site.get('prefix')}/lists/new-pages`)
-    .then(addFilteredItems)
-    .then(function (itemsEl) {
-      var innerEl = document.createDocumentFragment(),
-        el;
-
-      innerEl.appendChild(newPageInput);
-      innerEl.appendChild(itemsEl);
+    .then(function (items) {
+      var innerEl = filterableList.create(items, {
+        click: createPageByType
+      });
 
       // create pane
-      el = open([{header: newPageHeader, content: innerEl}]);
-      // init controller
-      ds.controller('pane-new-page', newPagePaneController);
-      ds.get('pane-new-page', el);
-      return el;
+      return open([{header: 'New Page', content: innerEl}]);
     });
 }
 
@@ -437,52 +445,21 @@ function addErrorsOrWarnings(errors, modifier) {
 }
 
 /**
- * add filtered items
- * note: items may be an array of strings, or objects with id and title
- * @param {array} items
- * @returns {Element}
- */
-function addFilteredItems(items) {
-  var wrapper = tpl.get('.filtered-items-template'),
-    listEl = dom.find(wrapper, 'ul');
-
-  _.each(items, function (item) {
-    var itemEl = tpl.get('.filtered-item-template'),
-      listItem = dom.find(itemEl, 'li');
-
-    // add name and label to each list item
-    if (_.isString(item)) {
-      listItem.innerHTML = label(item);
-      listItem.setAttribute('data-item-name', item);
-    } else {
-      listItem.innerHTML = item.title;
-      listItem.setAttribute('data-item-name', item.id);
-    }
-    // add it to the list
-    listEl.appendChild(itemEl);
-  });
-
-  return wrapper;
-}
-
-/**
  * open the add component pane
  * @param {array} components
- * @param {object} options to pass to controller (used for calling addComponent)
+ * @param {object} options to call addComponent with
+ * @returns {Element}
  */
 function openAddComponent(components, options) {
   var header = 'Add Component',
-    inputEl = tpl.get('.filtered-input-template'),
-    itemsEl = addFilteredItems(components),
-    innerEl = document.createDocumentFragment(),
-    el;
+    innerEl = filterableList.create(components, {
+      click: function (id) {
+        return addComponent(options.pane, options.field, id, options.prevRef)
+          .then(() => close()); // only close pane if we added successfully
+      }
+    });
 
-  innerEl.appendChild(inputEl);
-  innerEl.appendChild(itemsEl);
-  el = open([{header: header, content: innerEl}]);
-  // init controller for add component pane
-  ds.controller('add-component-pane', addComponentPaneController);
-  ds.get('add-component-pane', el.querySelector('.kiln-toolbar-pane'), options);
+  return open([{header: header, content: innerEl}]);
 }
 
 function takeOffEveryZig() {
