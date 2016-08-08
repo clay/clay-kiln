@@ -133,6 +133,8 @@ function addHandler(button, options, prevRef) {
 
 module.exports = addHandler;
 module.exports.getParentEditableElement = getParentEditableElement;
+_.set(window, 'kiln.services.getAddableComponents', getAddableComponents); // export for plugins
 
 // for testing
 module.exports.getAddableComponents = getAddableComponents;
+

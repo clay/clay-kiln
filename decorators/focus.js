@@ -167,3 +167,5 @@ module.exports.unfocus = unfocus;
 // decorators
 module.exports.when = when;
 module.exports.handler = handler;
+
+_.set(window, 'kiln.services.focus', module.exports); // export for plugins
