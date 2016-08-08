@@ -8,7 +8,9 @@ var _ = require('lodash'),
     publish: '#149524',
     offline: '#888',
     error: '#DD2F1C',
-    schedule: '#cc8e28'
+    schedule: '#cc8e28',
+    page: '#1782A9',
+    layout: '#694C79'
   },
   timeoutMilliseconds = 3500; // should be the same timeout for every status message
 

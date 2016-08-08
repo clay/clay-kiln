@@ -1,4 +1,5 @@
 var _ = require('lodash'),
+  keycode = require('keycode'),
   moment = require('moment'),
   dom = require('@nymag/dom'),
   ds = require('dollar-slice'),
@@ -7,6 +8,7 @@ var _ = require('lodash'),
   state = require('./page-state'),
   site = require('./site'),
   tpl = require('./tpl'),
+  db = require('../services/edit/db'),
   datepicker = require('./field-helpers/datepicker'),
   paneController = require('../controllers/pane'),
   filterableList = require('./filterable-list'),
@@ -354,16 +356,68 @@ function createPageByType(id) {
 }
 
 /**
+ * add the current page to the list of available pages
+ * @param {array} current pages
+ * @returns {Function}
+ */
+function addCurrentPage(current) {
+  return function (el) {
+    var form = dom.create(`<form class="add-page-form">
+        <input type="text" placeholder="Page Name" />
+        <button type="submit">Add Page To List</button>
+      </form>`),
+      input = dom.find(form, 'input');
+
+    input.addEventListener('keydown', function (e) {
+      var key = keycode(e);
+
+      if (key === 'esc') {
+        dom.replaceElement(form, el);
+      }
+    });
+
+    form.addEventListener('submit', function (e) {
+      var value = input.value,
+        id = _.last(dom.pageUri().split('/'));
+
+      e.preventDefault();
+      progress.start('page');
+      current.push({
+        id: id,
+        title: value
+      });
+
+      return db.save(site.get('prefix') + '/lists/new-pages', current)
+      .then(function () {
+        close();
+        progress.done('page');
+        progress.open('page', `<em>${value}</em> added to new pages list`, true);
+      })
+      .catch(function () {
+        progress.done('error');
+        progress.open('error', 'Error creating new page', true);
+      });
+    });
+
+    dom.replaceElement(el, form);
+    input.focus();
+  };
+}
+
+/**
  * open new page/edit layout dialog pane
  * @returns {Promise}
  */
 function openNewPage() {
   // /lists/new-pages contains a site-specific array of pages that should be available
   // to clone, each one having a `id` (the page id) and `title` (the button title) property
-  return edit.getDataOnly(`${site.get('prefix')}/lists/new-pages`)
+  // note: this shouldn't be cached
+  return db.get(`${site.get('prefix')}/lists/new-pages`)
     .then(function (items) {
       var innerEl = filterableList.create(items, {
-        click: createPageByType
+        click: createPageByType,
+        add: addCurrentPage(items),
+        addTitle: 'Add Current Page To List'
       });
 
       // create pane
