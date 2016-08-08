@@ -166,7 +166,7 @@
 
     {# generic filtered list template. used for the add component pane #}
     <template class="filtered-input-template">
-      <input class="filtered-input" />
+      <input class="filtered-input" placeholder="Start typing to filter this list" />
     </template>
 
     <template class="filtered-items-template">
