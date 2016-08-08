@@ -65,6 +65,7 @@ function stubErrorsTemplate() {
 function stubFilterableItemTemplate() {
   // wrapper divs to simulate doc fragments
   return dom.create(`<div><li class="filtered-item">
+    <button class="filtered-item-reorder kiln-hide" title="Reorder">=</button>
     <span class="filtered-item-title"></span>
     <button class="filtered-item-settings kiln-hide" title="Settings">*</button>
     <button class="filtered-item-remove kiln-hide" title="Remove">X</button>

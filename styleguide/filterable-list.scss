@@ -55,6 +55,14 @@
   border-bottom: 2px solid $blue;
 }
 
+.filterable-list-wrapper .filtered-item-reorder {
+  @include icon-button($black-25, 18px);
+
+  flex: 0 0 auto;
+  margin-right: 10px;
+  padding: 0;
+}
+
 .filterable-list-wrapper .filtered-item-title {
   @include primary-text();
 

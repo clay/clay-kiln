@@ -9,6 +9,7 @@ var dirname = __dirname.split('/').pop(),
 function stubFilterableItemTemplate() {
   // wrapper divs to simulate doc fragments
   return dom.create(`<div><li class="filtered-item">
+    <button class="filtered-item-reorder kiln-hide" title="Reorder">=</button>
     <span class="filtered-item-title"></span>
     <button class="filtered-item-settings kiln-hide" title="Settings">*</button>
     <button class="filtered-item-remove kiln-hide" title="Remove">X</button>
@@ -93,10 +94,28 @@ describe(dirname, function () {
         expect(dom.find(el, '.filtered-item-remove').classList.contains('kiln-hide')).to.equal(false);
       });
 
+      it('does not add remove buttons if options.remove is not set', function () {
+        var el = fn([{ title: 'Foo <em>Bar</em>', id: 'foo-bar' }], { click: _.noop });
+
+        expect(dom.find(el, '.filtered-item-remove').classList.contains('kiln-hide')).to.equal(true);
+      });
+
       it('adds settings buttons if options.settings is set', function () {
         var el = fn([{ title: 'Foo <em>Bar</em>', id: 'foo-bar' }], { click: _.noop, settings: _.noop });
 
         expect(dom.find(el, '.filtered-item-settings').classList.contains('kiln-hide')).to.equal(false);
+      });
+
+      it('does not add settings buttons if options.settings is not set', function () {
+        var el = fn([{ title: 'Foo <em>Bar</em>', id: 'foo-bar' }], { click: _.noop });
+
+        expect(dom.find(el, '.filtered-item-settings').classList.contains('kiln-hide')).to.equal(true);
+      });
+
+      it('adds reorder buttons if options.reorder is set', function () {
+        var el = fn([{ title: 'Foo <em>Bar</em>', id: 'foo-bar' }], { click: _.noop, reorder: _.noop });
+
+        expect(dom.find(el, '.filtered-item-reorder').classList.contains('kiln-hide')).to.equal(false);
       });
     });
   });

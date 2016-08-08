@@ -43,6 +43,11 @@ function addFilteredItems(items, options) {
       dom.find(listItem, '.filtered-item-settings').classList.remove(kilnHideClass);
     }
 
+    // 'reorder' button
+    if (options.reorder) {
+      dom.find(listItem, '.filtered-item-reorder').classList.remove(kilnHideClass);
+    }
+
     // add it to the list
     listEl.appendChild(itemEl);
   });
