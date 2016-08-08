@@ -145,11 +145,7 @@ function getPageState() {
 function toggleButton(state, enabled) {
   var el = dom.find('.kiln-toolbar-inner .publish');
 
-  if (enabled) {
-    el.classList.add(state);
-  } else {
-    el.classList.remove(state);
-  }
+  el.classList.toggle(state, enabled);
 }
 
 /**
