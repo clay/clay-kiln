@@ -76,7 +76,7 @@ function getArticleReference(page) {
 }
 
 /**
- * get article date
+ * get article date, if it exists
  * @param {object} pageData
  * @returns {Promise} date
  */
@@ -84,10 +84,10 @@ function getArticleDate(pageData) {
   var article = getArticleReference(pageData);
 
   if (!article) {
-    throw new Error('No article in page!');
+    return null;
+  } else {
+    return edit.getDataOnly(article).then(res => res.date);
   }
-
-  return edit.getDataOnly(article).then(res => res.date);
 }
 
 /**
@@ -111,7 +111,7 @@ function getPublished(publishedUri) {
       });
     })
     .catch(function () {
-      // no url, or the page can't be loaded, or the article has no date
+      // no url, or the page can't be loaded
       // or something else went wrong somewhere!
       return {
         published: false,
