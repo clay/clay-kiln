@@ -76,7 +76,7 @@
 .filterable-list-wrapper .filtered-item-settings,
 .dragula-list-item .filtered-item-remove,
 .dragula-list-item .filtered-item-settings {
-  @include icon-button($black-75, 24px);
+  @include icon-button($black-75, 22px);
 
   flex: 0 0 auto;
   margin-left: 5px;
