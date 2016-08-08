@@ -63,6 +63,7 @@ EditorToolbar = function (el) {
     if (res.scheduled) {
       state.openDynamicSchedule(res.scheduledAt, res.publishedUrl);
     } else if (res.published) {
+      state.toggleButton('published', true);
       progress.open('publish', `Page is currently live: <a href="${res.publishedUrl}" target="_blank">View Page</a>`);
     }
   });

@@ -2,7 +2,7 @@
 @import 'typography';
 @import 'buttons';
 @import 'layers';
-$height: 60px;
+$height: 48px;
 
 .kiln-toolbar-wrapper {
   @include toolbar-layer();
@@ -14,7 +14,7 @@ $height: 60px;
 }
 
 .kiln-toolbar {
-  background-color: $black;
+  background-color: $black-75;
   height: $height;
   left: 0;
   position: absolute;
@@ -33,17 +33,17 @@ body {
   height: 100%;
   left: 0;
   margin: 0 auto;
-  padding: 0 15px;
+  padding: 0;
   position: relative;
   top: 0;
   width: 100%;
 }
 
 .kiln-toolbar-inner .kiln-toolbar-button, {
-  @include button-filled($black-75);
+  @include button-filled-large($black-75);
 
   flex: 0 0 auto;
-  margin: 0 10px 0 0;
+  border-left: 1px solid $black-50;
 }
 
 .kiln-toolbar-inner .button-flex-inner {
@@ -59,23 +59,6 @@ body {
   margin: 0;
   padding: 0;
   width: 18px;
-}
-
-.kiln-toolbar-button.preview .icon,
-.kiln-toolbar-button.preview .icon svg {
-  height: 24px;
-  width: 24px;
-}
-
-.kiln-toolbar-button.preview {
-  fill: none;
-  padding: 7px 8px 6px;
-  stroke: $white;
-}
-
-.kiln-toolbar-button.new,
-.kiln-toolbar-button.publish {
-  fill: $white;
 }
 
 .kiln-toolbar-button .text {
@@ -114,15 +97,53 @@ body {
 }
 
 .kiln-toolbar-inner .publish {
-  @include button-filled($green);
-
   margin-right: 0;
+  min-width: 125px;
   transition: all 200ms ease-in-out;
+
+  .button-flex-inner {
+    display: none;
+  }
 }
 
-.kiln-toolbar-inner .publish.scheduled {
-  @include button-filled($orange);
+.kiln-toolbar-inner .draft {
+  @include button-filled-large($brown);
 
-  margin-right: 0;
-  transition: all 200ms ease-in-out;
+  border-left: none;
+
+  .publish-draft {
+    display: flex;
+  }
+}
+
+.kiln-toolbar-inner .published {
+  @include button-filled-large($green);
+
+  border-left: none;
+
+  .publish-draft {
+    display: none;
+  }
+
+  .publish-published {
+    display: flex;
+  }
+}
+
+.kiln-toolbar-inner .scheduled {
+  @include button-filled-large($orange);
+
+  border-left: none;
+
+  .publish-draft {
+    display: none;
+  }
+
+  .publish-published {
+    display: none;
+  }
+
+  .publish-scheduled {
+    display: flex;
+  }
 }

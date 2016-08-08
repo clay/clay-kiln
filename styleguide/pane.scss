@@ -6,6 +6,7 @@
 @import 'inputs';
 $pane-margin: 30vh;
 $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
+$toolbar-height: 48px;
 
 .kiln-hide {
   @include kiln-hide();
@@ -26,7 +27,7 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   @include primary-text();
 
   background-color: $white;
-  bottom: 60px;
+  bottom: $toolbar-height;
   box-shadow: 0 0 30px 0 $overlay-shadow;
   display: flex;
   flex-direction: column;

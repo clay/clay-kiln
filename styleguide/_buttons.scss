@@ -16,6 +16,20 @@
   width: auto;
 }
 
+@mixin button-large {
+  @include primary-text();
+
+  box-shadow: none;
+  cursor: pointer;
+  float: left;
+  height: 48px;
+  line-height: 16px;
+  margin: 0;
+  outline: none;
+  padding: 7px 16px 6px;
+  width: auto;
+}
+
 // button styles
 
 @mixin button-filled($color: $black-75, $text-color: $white) {
@@ -69,19 +83,34 @@
   }
 }
 
-// semantic buttons
+@mixin button-filled-large($color: $black-75, $text-color: $white) {
+  @include button-large();
 
-// primary - used for publishing, confirmations, "moving forward"
-// $green
+  background-color: $color;
+  border: none;
+  color: $text-color;
+  transition: background-color 150ms ease-out;
 
-// secondary - used for "parallel actions"
-// $blue
+  svg {
+    fill: $text-color;
+  }
 
-// tertiary - used for "parallel actions"
-// $black-75 (default button color)
+  &:hover {
+    background-color: lighten($color, 2%);
+    transition: background-color 150ms ease-out;
+  }
 
-// scheduled button
-// $orange (filled only)
+  &:active {
+    background-color: lighten($color, 5%);
+    transition: background-color 50ms ease-out;
+  }
+
+  &:disabled {
+    background-color: lighten($color, 25%);
+    color: $text-color;
+    transition: all 50ms ease-out;
+  }
+}
 
 // mixin for creating the selector icons and list icons
 @mixin icon-button($fill, $size) {
