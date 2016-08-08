@@ -24,7 +24,8 @@
   width: 100%;
 }
 
-.filterable-list-wrapper .filtered-item {
+.filterable-list-wrapper .filtered-item,
+.dragula-list-item { // .dragula-list-item is the class when dragging items
   align-items: center;
   cursor: pointer;
   display: flex;
@@ -55,19 +56,56 @@
   border-bottom: 2px solid $blue;
 }
 
-.filterable-list-wrapper .filtered-item-title {
+.filterable-list-wrapper .filtered-item-reorder,
+.dragula-list-item .filtered-item-reorder {
+  @include icon-button($black-25, 18px);
+
+  flex: 0 0 auto;
+  margin-right: 10px;
+  padding: 0;
+}
+
+.filterable-list-wrapper .filtered-item-title,
+.dragula-list-item .filtered-item-title {
   @include primary-text();
 
   flex: 1 0 auto;
 }
 
 .filterable-list-wrapper .filtered-item-remove,
-.filterable-list-wrapper .filtered-item-settings {
+.filterable-list-wrapper .filtered-item-settings,
+.dragula-list-item .filtered-item-remove,
+.dragula-list-item .filtered-item-settings {
   @include icon-button($black-75, 24px);
 
   flex: 0 0 auto;
   margin-left: 5px;
   padding: 0;
+}
+
+.filterable-list-wrapper .filtered-add {
+  align-items: center;
+  border-top: 1px solid $black-75;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 15px 0;
+  width: 100%;
+}
+
+.filterable-list-wrapper .filtered-add-button {
+  @include icon-button($black-75, 24px);
+
+  flex: 0 0 auto;
+  margin-right: 10px;
+  padding: 0;
+}
+
+.filterable-list-wrapper .filtered-add-title {
+  @include primary-text();
+
+  flex: 1 0 auto;
 }
 
 // animations

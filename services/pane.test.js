@@ -65,10 +65,18 @@ function stubErrorsTemplate() {
 function stubFilterableItemTemplate() {
   // wrapper divs to simulate doc fragments
   return dom.create(`<div><li class="filtered-item">
+    <button class="filtered-item-reorder kiln-hide" title="Reorder">=</button>
     <span class="filtered-item-title"></span>
     <button class="filtered-item-settings kiln-hide" title="Settings">*</button>
     <button class="filtered-item-remove kiln-hide" title="Remove">X</button>
   </li></div>`);
+}
+
+function stubFilteredAddTemplate() {
+  return dom.create(`<div class="filtered-add">
+    <button class="filtered-add-button" title="Add To List">+</button>
+    <span class="filtered-add-title">Add To List</span>
+  </div>`);
 }
 
 describe(dirname, function () {
@@ -94,6 +102,7 @@ describe(dirname, function () {
       getTemplate.withArgs('.filtered-input-template').returns(dom.create('<input class="filtered-input" />'));
       getTemplate.withArgs('.filtered-items-template').returns(dom.create('<div><ul class="filtered-items"></div>')); // wrapper divs to simulate doc fragments
       getTemplate.withArgs('.filtered-item-template').returns(stubFilterableItemTemplate());
+      getTemplate.withArgs('.filtered-add-template').returns(stubFilteredAddTemplate());
     });
 
     afterEach(function () {

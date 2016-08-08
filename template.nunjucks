@@ -161,8 +161,16 @@
       </ul>
     </template>
 
+    <template class="filtered-add-template">
+      <div class="filtered-add">
+        <button class="filtered-add-button" title="Add To List">{% include 'public/media/components/clay-kiln/add-to-list.svg' %}</button>
+        <span class="filtered-add-title">Add To List</span>
+      </div>
+    </template>
+
     <template class="filtered-item-template">
       <li class="filtered-item" tabindex="0">
+        <button class="filtered-item-reorder kiln-hide" title="Reorder">{% include 'public/media/components/clay-kiln/drag-grip.svg' %}</button>
         <span class="filtered-item-title"></span>
         <button class="filtered-item-settings kiln-hide" title="Settings">{% include 'public/media/components/clay-kiln/component-bar-settings.svg' %}</button>
         <button class="filtered-item-remove kiln-hide" title="Remove">{% include 'public/media/components/clay-kiln/component-bar-delete.svg' %}</button>
