@@ -215,9 +215,9 @@ function createPublishMessages(res) {
   if (res.published) {
     stateMessage = dom.find(messages, '.publish-state-message');
     if (stateMessage && res.publishedAt) {
-      stateMessage.innerHTML = `Published ${state.formatTime(res.publishedAt)}`;
+      stateMessage.innerHTML = `Published ${state.formatTime(res.publishedAt)}.`;
     } else if (stateMessage) {
-      stateMessage.innerHTML = 'Currently published';
+      stateMessage.innerHTML = 'Page is currently published.';
     }
   }
 
