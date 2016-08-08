@@ -22,7 +22,6 @@
 .kiln-status {
   @include primary-text();
 
-  border-bottom: 1px solid $black-60;
   bottom: 100%;
   color: $white;
   left: 0;
