@@ -10,6 +10,7 @@ function stubFilterableItemTemplate() {
   // wrapper divs to simulate doc fragments
   return dom.create(`<div><li class="filtered-item">
     <span class="filtered-item-title"></span>
+    <button class="filtered-item-settings kiln-hide" title="Settings">*</button>
     <button class="filtered-item-remove kiln-hide" title="Remove">X</button>
   </li></div>`);
 }
@@ -89,7 +90,13 @@ describe(dirname, function () {
       it('adds remove buttons if options.remove is set', function () {
         var el = fn([{ title: 'Foo <em>Bar</em>', id: 'foo-bar' }], { click: _.noop, remove: _.noop });
 
-        expect(dom.find(el, '.filtered-item-remove')).to.not.equal(null);
+        expect(dom.find(el, '.filtered-item-remove').classList.contains('kiln-hide')).to.equal(false);
+      });
+
+      it('adds settings buttons if options.settings is set', function () {
+        var el = fn([{ title: 'Foo <em>Bar</em>', id: 'foo-bar' }], { click: _.noop, settings: _.noop });
+
+        expect(dom.find(el, '.filtered-item-settings').classList.contains('kiln-hide')).to.equal(false);
       });
     });
   });

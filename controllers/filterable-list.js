@@ -93,7 +93,8 @@ module.exports = function () {
       '.filtered-item keyup': 'onItemKeyup',
       '.filtered-item-title click': 'onItemClick',
       // optional events
-      '.filtered-item-remove click': 'onRemoveClick'
+      '.filtered-item-remove click': 'onRemoveClick',
+      '.filtered-item-settings click': 'onSettingsClick'
     },
 
     onInputKeydown: function (e) {
@@ -185,6 +186,12 @@ module.exports = function () {
       if (confirm) {
         this.options.remove(id);
       }
+    },
+
+    onSettingsClick: function (e) {
+      var id = e.currentTarget.parentElement.getAttribute('data-item-id');
+
+      this.options.settings(id);
     }
   };
   return constructor;

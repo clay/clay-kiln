@@ -61,10 +61,12 @@
   flex: 1 0 auto;
 }
 
-.filterable-list-wrapper .filtered-item-remove {
+.filterable-list-wrapper .filtered-item-remove,
+.filterable-list-wrapper .filtered-item-settings {
   @include icon-button($black-75, 24px);
 
   flex: 0 0 auto;
+  margin-left: 5px;
   padding: 0;
 }
 

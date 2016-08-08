@@ -38,6 +38,11 @@ function addFilteredItems(items, options) {
       dom.find(listItem, '.filtered-item-remove').classList.remove(kilnHideClass);
     }
 
+    // 'settings' button
+    if (options.settings) {
+      dom.find(listItem, '.filtered-item-settings').classList.remove(kilnHideClass);
+    }
+
     // add it to the list
     listEl.appendChild(itemEl);
   });
@@ -62,7 +67,7 @@ function create(items, options) {
     throw new Error('Filterable lists need a click function!');
   }
 
-  itemsEl = addFilteredItems(items, options), // todo: reorder and settings options
+  itemsEl = addFilteredItems(items, options);
 
   el.appendChild(inputEl);
   el.appendChild(itemsEl);

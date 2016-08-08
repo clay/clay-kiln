@@ -164,6 +164,7 @@
     <template class="filtered-item-template">
       <li class="filtered-item" tabindex="0">
         <span class="filtered-item-title"></span>
+        <button class="filtered-item-settings kiln-hide" title="Settings">{% include 'public/media/components/clay-kiln/component-bar-settings.svg' %}</button>
         <button class="filtered-item-remove kiln-hide" title="Remove">{% include 'public/media/components/clay-kiln/component-bar-delete.svg' %}</button>
       </li>
     </template>
