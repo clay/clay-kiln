@@ -56,6 +56,24 @@ function addFilteredItems(items, options) {
 }
 
 /**
+ * append the add button and title
+ * @param {Element} el
+ * @param {object} options
+ * @param {Function} options.add
+ * @param {string} [options.addTitle]
+ */
+function appendAddButton(el, options) {
+  var addEl = tpl.get('.filtered-add-template');
+
+  if (options.addTitle) {
+    dom.find(addEl, '.filtered-add-button').setAttribute('title', options.addTitle);
+    dom.find(addEl, '.filtered-add-title').innerHTML = options.addTitle;
+  }
+
+  el.appendChild(addEl);
+}
+
+/**
  * create a filterable list
  * @param {array} items
  * @param {object} options
@@ -76,7 +94,10 @@ function create(items, options) {
 
   el.appendChild(inputEl);
   el.appendChild(itemsEl);
-  // todo: add button if it's in the options
+
+  if (options.add) {
+    appendAddButton(el, options);
+  }
 
   // init controller for filterable list
   ds.controller('filterable-list', filterableListController);

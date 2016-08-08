@@ -137,7 +137,8 @@ module.exports = function () {
       '.filtered-item-title click': 'onItemClick',
       // optional events
       '.filtered-item-remove click': 'onRemoveClick',
-      '.filtered-item-settings click': 'onSettingsClick'
+      '.filtered-item-settings click': 'onSettingsClick',
+      '.filtered-add click': 'onAddClick'
     },
 
     onInputKeydown: function (e) {
@@ -235,6 +236,12 @@ module.exports = function () {
       var id = e.currentTarget.parentElement.getAttribute('data-item-id');
 
       this.options.settings(id);
+    },
+
+    onAddClick: function (e) {
+      var addEl = e.currentTarget;
+
+      this.options.add(addEl);
     }
   };
   return constructor;

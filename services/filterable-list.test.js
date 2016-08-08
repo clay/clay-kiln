@@ -16,6 +16,13 @@ function stubFilterableItemTemplate() {
   </li></div>`);
 }
 
+function stubFilteredAddTemplate() {
+  return dom.create(`<div class="filtered-add">
+    <button class="filtered-add-button" title="Add To List">+</button>
+    <span class="filtered-add-title">Add To List</span>
+  </div>`);
+}
+
 describe(dirname, function () {
   describe(filename, function () {
     var sandbox;
@@ -27,6 +34,7 @@ describe(dirname, function () {
       tpl.get.withArgs('.filtered-input-template').returns(dom.create('<input class="filtered-input" />'));
       tpl.get.withArgs('.filtered-items-template').returns(dom.create('<div><ul class="filtered-items"></div>')); // wrapper divs to simulate doc fragments
       tpl.get.withArgs('.filtered-item-template').returns(stubFilterableItemTemplate());
+      tpl.get.withArgs('.filtered-add-template').returns(stubFilteredAddTemplate());
     });
 
     afterEach(function () {
@@ -116,6 +124,32 @@ describe(dirname, function () {
         var el = fn([{ title: 'Foo <em>Bar</em>', id: 'foo-bar' }], { click: _.noop, reorder: _.noop });
 
         expect(dom.find(el, '.filtered-item-reorder').classList.contains('kiln-hide')).to.equal(false);
+      });
+
+      it('adds add buttons if options.add is set', function () {
+        var el = fn([{ title: 'Foo <em>Bar</em>', id: 'foo-bar' }], { click: _.noop, add: _.noop });
+
+        expect(dom.find(el, '.filtered-add-button')).to.not.equal(null);
+      });
+
+      it('does not add add buttons if options.add is not set', function () {
+        var el = fn([{ title: 'Foo <em>Bar</em>', id: 'foo-bar' }], { click: _.noop });
+
+        expect(dom.find(el, '.filtered-add-button')).to.equal(null);
+      });
+
+      it('adds title if options.addTitle is set', function () {
+        var el = fn([{ title: 'Foo <em>Bar</em>', id: 'foo-bar' }], { click: _.noop, add: _.noop, addTitle: 'Add me!' });
+
+        expect(dom.find(el, '.filtered-add-title').innerHTML).to.equal('Add me!');
+        expect(dom.find(el, '.filtered-add-button').getAttribute('title')).to.equal('Add me!');
+      });
+
+      it('uses default title if options.addTitle is not set', function () {
+        var el = fn([{ title: 'Foo <em>Bar</em>', id: 'foo-bar' }], { click: _.noop, add: _.noop });
+
+        expect(dom.find(el, '.filtered-add-title').innerHTML).to.equal('Add To List');
+        expect(dom.find(el, '.filtered-add-button').getAttribute('title')).to.equal('Add To List');
       });
     });
   });
