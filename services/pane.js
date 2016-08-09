@@ -511,7 +511,7 @@ function openAddComponent(components, options) {
   var header = 'Add Component',
     innerEl = filterableList.create(components, {
       click: function (id) {
-        return addComponent(options.pane, options.field, id, options.prevRef)
+        return addComponent(options.pane, options.field, id, options.ref)
           .then(() => close()); // only close pane if we added successfully
       }
     });
