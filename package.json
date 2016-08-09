@@ -4,9 +4,10 @@
   "description": "Editor tools for Clay",
   "template": "template.nunjucks",
   "scripts": {
-    "lint": "node_modules/.bin/eslint client.js behaviors controllers services decorators validators",
-    "test": "npm run lint && node_modules/.bin/karma start",
-    "test-local": "npm run lint && node_modules/.bin/karma start karma.local.conf.js",
+    "lint": "eslint client.js behaviors controllers services decorators validators",
+    "karma": "karma start",
+    "test": "npm run lint && npm run karma",
+    "test-local": "npm run lint && npm run karma -- karma.local.conf.js",
     "prepublish": "gulp --once"
   },
   "repository": {
