@@ -3,6 +3,7 @@ var _ = require('lodash'),
   dom = require('@nymag/dom'),
   references = require('../references'),
   site = require('./../site'),
+  rest = require('./rest'), // todo: use native fetch when safari supports it
   extHtml = '.html',
   editMode = '?edit=true',
   // when we ask for updated component html,
@@ -103,128 +104,87 @@ function addTextHeader(obj) {
 }
 
 /**
- * @param {object} options
- * @returns {Promise}
+ * check status of a request, passing through data on 2xx and 3xx
+ * and erroring on 4xx and 5xx
+ * @param {object} res
+ * @returns {object}
+ * @throws error on non-200/300 response status
  */
-function send(options) {
-  return new Promise(function (resolve, reject) {
-    var request = new XMLHttpRequest();
+function checkStatus(res) {
+  if (res.status >= 200 && res.status < 400) {
+    return res;
+  } else {
+    let error = new Error(res.statusText);
 
-    if (_.isString(options)) {
-      options = {
-        method: 'GET',
-        url: options
-      };
-    }
-
-    request.open(options.method, uriToUrl(options.url), true);
-
-    _.each(options.headers, function (value, key) {
-      request.setRequestHeader(key, value);
-    });
-
-    if (_.isObject(options.data)) {
-      options.data = JSON.stringify(options.data);
-    }
-
-    request.send(options.data);
-    request.addEventListener('load', function (e) {
-      var target = e.currentTarget || e.target;
-
-      if (target.readyState === 4) {
-        try {
-          resolve(target);
-        } catch (err) {
-          reject(err);
-        }
-      }
-    }, false);
-    request.addEventListener('error', function (e) { reject(e); }, false);
-    request.addEventListener('abort', function (e) { reject(e); }, false);
-  });
+    error.response = res;
+    throw error;
+  }
 }
 
 /**
- *
- * @param {Element} target
- * @returns {string|Element}
+ * @param {string|object} options
+ * @returns {Promise}
  */
-function expectTextResult(target) {
-  var statusCodeGroup = target.status.toString()[0];
-
-  if (statusCodeGroup === '2') {
-    return target.responseText;
-  } else if (statusCodeGroup === '4' || statusCodeGroup === '5') {
-    throw new Error(target.status);
-  } else {
-    return target;
+function send(options) {
+  if (_.isString(options)) {
+    options = {
+      method: 'GET',
+      url: options
+    };
   }
+
+  // add credentials. this tells fetch to pass along cookies, incl. auth
+  options.credentials = 'same-origin';
+
+  return rest.send(options.url, options).then(checkStatus);
+}
+
+/**
+ * @param {object} res
+ * @returns {string}
+ */
+function expectTextResult(res) {
+  return res.text();
 }
 
 /**
  * expect something to exist
- * @param {Element} target
+ * note: make sure you call this in the .then() AND .catch() of a promise
+ * @param {object} res
  * @returns {boolean}
  */
-function expectBooleanResult(target) {
-  var statusCodeGroup = target.status.toString()[0];
-
-  if (statusCodeGroup === '2') {
+function expectBooleanResult(res) {
+  if (_.isError(res)) {
+    return false;
+  } else {
     return true;
-  } else if (statusCodeGroup === '4' || statusCodeGroup === '5') {
-    return false; // note: it returns false instead of throwing an error
-  } else {
-    return true; // 304s and such
   }
 }
 
 /**
- * Translate the response into what we expect
- * @param {Element} target
- * @returns {{}|Element}
+ * @param {object} res
+ * @returns {object}
  */
-function expectJSONResult(target) {
-  var statusCodeGroup = target.status.toString()[0];
-
-  if (statusCodeGroup === '2') {
-    return JSON.parse(target.responseText);
-  } else if (statusCodeGroup === '4' || statusCodeGroup === '5') {
-    throw new Error(target.status);
-  } else {
-    return target;
-  }
+function expectJSONResult(res) {
+  return res.json();
 }
 
 /**
- * Translate the response into what we expect
  * @param {string} uri  The returned object probably won't have this because it would be referencing itself, so
  *   we need to remember it and add it.
  * @returns {function}
  */
 function expectHTMLResult(uri) {
-  return function (target, error) {
-    var container, componentEl, statusCodeGroup;
-
-    if (error) {
-      throw error;
-    } else {
-      statusCodeGroup = target.status.toString()[0];
-      if (statusCodeGroup === '2') {
-        container = document.createElement('div');
-        container.innerHTML = target.responseText;
-        // The first element in a component always has the referenceAttribute.
-        componentEl = dom.getFirstChildElement(container);
-        if (!componentEl) {
-          throw new Error('Malformed HTML: ' + target.responseText);
-        }
-        componentEl.setAttribute(references.referenceAttribute, uri);
-        return componentEl;
-      } else if (statusCodeGroup === '4' || statusCodeGroup === '5') {
-        throw new Error(target.status + ': ' + target.statusText);
-      } else {
-        return target;
-      }
-    }
+  return function (res) {
+    return res.text().then(function (body) {
+      // string -> elements
+      return dom.create(body);
+    })
+    .then(function (html) {
+      // add uri
+      html.setAttribute(references.referenceAttribute, uri);
+      return html;
+    });
   };
 }
 
@@ -272,7 +232,7 @@ function getText(uri) {
 function getHead(uri) {
   assertUri(uri);
 
-  return send(uri).then(expectBooleanResult).catch(() => false);
+  return send(uri).then(expectBooleanResult).catch(expectBooleanResult);
 }
 
 /**
