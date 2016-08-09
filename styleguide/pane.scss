@@ -456,3 +456,21 @@ $schedule-item-width: calc(50% - 8px);
   margin: 0;
   padding: 8px 10px 7px;
 }
+
+/* new page pane */
+
+.add-page-form {
+  border-top: 1px solid $black-75;
+  width: 100%;
+}
+
+.add-page-form input {
+  @include input();
+
+  margin: 10px 0;
+}
+
+.add-page-form button {
+  @include button-outlined();
+  @include full-width();
+}
