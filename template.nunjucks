@@ -27,7 +27,7 @@
           </button>
           <button class="kiln-toolbar-button preview">
             <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
-              <span class="icon">{% include 'public/media/components/clay-kiln/eyecon.svg' %}</span>
+              <span class="icon">{% include 'public/media/components/clay-kiln/new-tab.svg' %}</span>
             </div>
           </button>
           <button class="kiln-toolbar-button history">
@@ -36,8 +36,22 @@
             </div>
           </button>
           <button class="kiln-toolbar-button publish">
-            <div class="button-flex-inner">
-              <span class="icon">{% include 'public/media/components/clay-kiln/paper-plane.svg' %}</span>
+            <div class="button-flex-inner publish-loading">
+              {# loading status indicator, replaces with draft/scheduled/published after we get the page state #}
+              <span class="icon">{% include 'public/media/components/clay-kiln/draft.svg' %}</span>
+              <span class="text">Loading&hellip;</span>
+            </div>
+            <div class="button-flex-inner publish-draft">
+              <span class="icon">{% include 'public/media/components/clay-kiln/draft.svg' %}</span>
+              <span class="text">Draft</span>
+            </div>
+            <div class="button-flex-inner publish-published">
+              <span class="icon">{% include 'public/media/components/clay-kiln/published.svg' %}</span>
+              <span class="text">Published</span>
+            </div>
+            <div class="button-flex-inner publish-scheduled">
+              <span class="icon">{% include 'public/media/components/clay-kiln/scheduled.svg' %}</span>
+              <span class="text">Scheduled</span>
             </div>
           </button>
         </div>
@@ -152,7 +166,7 @@
 
     {# generic filtered list template. used for the add component pane #}
     <template class="filtered-input-template">
-      <input class="filtered-input" />
+      <input class="filtered-input" placeholder="Start typing to filter this list" />
     </template>
 
     <template class="filtered-items-template">
@@ -161,8 +175,20 @@
       </ul>
     </template>
 
+    <template class="filtered-add-template">
+      <div class="filtered-add">
+        <button class="filtered-add-button" title="Add To List">{% include 'public/media/components/clay-kiln/add-to-list.svg' %}</button>
+        <span class="filtered-add-title">Add To List</span>
+      </div>
+    </template>
+
     <template class="filtered-item-template">
-      <li class="filtered-item" tabindex="0"></li>
+      <li class="filtered-item" tabindex="0">
+        <button class="filtered-item-reorder kiln-hide" title="Reorder">{% include 'public/media/components/clay-kiln/drag-grip.svg' %}</button>
+        <span class="filtered-item-title"></span>
+        <button class="filtered-item-settings kiln-hide" title="Settings">{% include 'public/media/components/clay-kiln/component-bar-settings.svg' %}</button>
+        <button class="filtered-item-remove kiln-hide" title="Remove">{% include 'public/media/components/clay-kiln/component-bar-delete.svg' %}</button>
+      </li>
     </template>
 
     {# template: component selector #}

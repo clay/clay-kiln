@@ -6,6 +6,7 @@
 @import 'inputs';
 $pane-margin: 30vh;
 $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
+$toolbar-height: 48px;
 
 .kiln-hide {
   @include kiln-hide();
@@ -26,7 +27,7 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   @include primary-text();
 
   background-color: $white;
-  bottom: 60px;
+  bottom: $toolbar-height;
   box-shadow: 0 0 30px 0 $overlay-shadow;
   display: flex;
   flex-direction: column;
@@ -454,4 +455,22 @@ $schedule-item-width: calc(50% - 8px);
   cursor: initial;
   margin: 0;
   padding: 8px 10px 7px;
+}
+
+/* new page pane */
+
+.add-page-form {
+  border-top: 1px solid $black-75;
+  width: 100%;
+}
+
+.add-page-form input {
+  @include input();
+
+  margin: 10px 0;
+}
+
+.add-page-form button {
+  @include button-outlined();
+  @include full-width();
 }

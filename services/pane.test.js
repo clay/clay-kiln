@@ -5,7 +5,8 @@ var dirname = __dirname.split('/').pop(),
   dom = require('@nymag/dom'),
   tpl = require('./tpl'),
   edit = require('./edit'),
-  ds = require('dollar-slice');
+  ds = require('dollar-slice'),
+  db = require('./edit/db');
 
 // minimal templates, only what we need to test the logic and functionality
 function stubWrapperTemplate() {
@@ -62,6 +63,23 @@ function stubErrorsTemplate() {
   </div>`);
 }
 
+function stubFilterableItemTemplate() {
+  // wrapper divs to simulate doc fragments
+  return dom.create(`<div><li class="filtered-item">
+    <button class="filtered-item-reorder kiln-hide" title="Reorder">=</button>
+    <span class="filtered-item-title"></span>
+    <button class="filtered-item-settings kiln-hide" title="Settings">*</button>
+    <button class="filtered-item-remove kiln-hide" title="Remove">X</button>
+  </li></div>`);
+}
+
+function stubFilteredAddTemplate() {
+  return dom.create(`<div class="filtered-add">
+    <button class="filtered-add-button" title="Add To List">+</button>
+    <span class="filtered-add-title">Add To List</span>
+  </div>`);
+}
+
 describe(dirname, function () {
   describe(filename, function () {
     var sandbox, getTemplate;
@@ -71,7 +89,7 @@ describe(dirname, function () {
 
       document.body.appendChild(toolbar);
       sandbox = sinon.sandbox.create();
-      sandbox.stub(dom, 'pageUri');
+      sandbox.stub(dom, 'pageUri').returns('domain.com/pages/foo');
       getTemplate = sandbox.stub(tpl, 'get');
       getTemplate.withArgs('.kiln-pane-template').returns(stubWrapperTemplate());
       getTemplate.withArgs('.publish-valid-template').returns(dom.create('<div class="publish-valid">valid</div>'));
@@ -84,7 +102,8 @@ describe(dirname, function () {
       getTemplate.withArgs('.publish-errors-template').returns(stubErrorsTemplate());
       getTemplate.withArgs('.filtered-input-template').returns(dom.create('<input class="filtered-input" />'));
       getTemplate.withArgs('.filtered-items-template').returns(dom.create('<div><ul class="filtered-items"></div>')); // wrapper divs to simulate doc fragments
-      getTemplate.withArgs('.filtered-item-template').returns(dom.create('<div><li class="filtered-item"></div>')); // wrapper divs to simulate doc fragments
+      getTemplate.withArgs('.filtered-item-template').returns(stubFilterableItemTemplate());
+      getTemplate.withArgs('.filtered-add-template').returns(stubFilteredAddTemplate());
     });
 
     afterEach(function () {
@@ -284,7 +303,7 @@ describe(dirname, function () {
       beforeEach(function () {
         sandbox = sinon.sandbox.create();
         sandbox.stub(ds);
-        sandbox.stub(edit, 'getDataOnly');
+        sandbox.stub(db, 'get');
       });
 
       afterEach(function () {
@@ -296,7 +315,7 @@ describe(dirname, function () {
           expect(el.querySelector('#pane-tab-1').innerHTML).to.equal('New Page');
           expect(el.querySelectorAll('.pane-inner li.filtered-item').length).to.equal(1);
         }
-        edit.getDataOnly.returns(Promise.resolve([{
+        db.get.returns(Promise.resolve([{
           id: 'new',
           title: 'New Page'
         }]));

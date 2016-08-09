@@ -1,6 +1,6 @@
 {
   "name": "clay-kiln",
-  "version": "0.25.3",
+  "version": "0.26.7",
   "description": "Editor tools for Clay",
   "template": "template.nunjucks",
   "scripts": {
@@ -57,6 +57,7 @@
     "gulp-if": "^2.0.0",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.3.2",
+    "gulp-sass-error": "^1.0.2",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
@@ -91,6 +92,7 @@
     "vinyl-buffer": "^1.0.0",
     "vinyl-map2": "^1.2.1",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.7.0"
+    "watchify": "^3.7.0",
+    "whatwg-fetch": "^1.0.0"
   }
 }

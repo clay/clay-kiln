@@ -1,6 +1,7 @@
 @import 'colors';
 @import 'typography';
 @import 'layers';
+@import 'buttons';
 
 // selector offsets, for the selector outline
 $offset-width: 10px;
@@ -25,49 +26,6 @@ $layout-color: $purple;
 $layout-bg-color: $purple-50;
 $layout-parent-color: $purple-75;
 $layout-parent-bg-color: $purple-25;
-
-// mixin for creating the selector icons
-@mixin selector-icon($fill, $size) {
-  background: none;
-  border: none;
-  cursor: pointer;
-  margin: 0;
-  outline: none;
-  color: $fill;
-  padding: 6px 8px;
-
-  // set icon sizes
-  svg {
-    width: $size;
-    height: $size;
-  }
-
-  // set fill color
-  svg,
-  svg * {
-    fill: $fill;
-    transition: 150ms fill ease-out;
-  }
-
-  // subtle hover state
-  &:hover svg,
-  &:hover svg * {
-    fill: darken($fill, 5%);
-    transition: 150ms fill ease-out;
-  }
-
-  // subtle active state
-  &:active svg,
-  &:active svg * {
-    fill: darken($fill, 10%);
-    transition: 50ms fill ease-out;
-  }
-
-  // note: hover and active states are different than our regular outlined buttons,
-  // since the border-radius is applied to their parent elements
-  // (which means we can't set the background-color for each button without
-  // doing a bunch of logic to set their border radii)
-}
 
 // component element needs to be position: relative for the selectors to display
 .component-selector-wrapper {
@@ -163,24 +121,24 @@ $layout-parent-bg-color: $purple-25;
 .selected-info-parent,
 .selected-action-settings,
 .selected-action-delete {
-  @include selector-icon($layout-color, $action-icon-small);
+  @include icon-button($layout-color, $action-icon-small);
 }
 
 .kiln-page-area .selected-label,
 .kiln-page-area .selected-info-parent,
 .kiln-page-area .selected-action-settings,
 .kiln-page-area .selected-action-delete {
-  @include selector-icon($page-color, $action-icon-small);
+  @include icon-button($page-color, $action-icon-small);
 }
 
 // add button is larger
 .selected-add,
 .selected-replace {
-  @include selector-icon($layout-color, $action-icon-large);
+  @include icon-button($layout-color, $action-icon-large);
 }
 .kiln-page-area .selected-add,
 .kiln-page-area .selected-replace {
-  @include selector-icon($page-color, $action-icon-large);
+  @include icon-button($page-color, $action-icon-large);
 }
 
 // set a border on parent, settings, and delete
@@ -215,7 +173,7 @@ $layout-parent-bg-color: $purple-25;
 
   .selected-label,
   .selected-action-settings {
-    @include selector-icon($layout-parent-color, $action-icon-small);
+    @include icon-button($layout-parent-color, $action-icon-small);
   }
 
   // set a border on settings instead of its container,
@@ -243,7 +201,7 @@ $layout-parent-bg-color: $purple-25;
 
   .selected-label,
   .selected-action-settings {
-    @include selector-icon($page-parent-color, $action-icon-small);
+    @include icon-button($page-parent-color, $action-icon-small);
   }
 
   // set a border on settings instead of its container,

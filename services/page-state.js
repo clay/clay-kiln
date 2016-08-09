@@ -76,7 +76,7 @@ function getArticleReference(page) {
 }
 
 /**
- * get article date
+ * get article date, if it exists
  * @param {object} pageData
  * @returns {Promise} date
  */
@@ -84,10 +84,10 @@ function getArticleDate(pageData) {
   var article = getArticleReference(pageData);
 
   if (!article) {
-    throw new Error('No article in page!');
+    return null;
+  } else {
+    return edit.getDataOnly(article).then(res => res.date);
   }
-
-  return edit.getDataOnly(article).then(res => res.date);
 }
 
 /**
@@ -111,7 +111,7 @@ function getPublished(publishedUri) {
       });
     })
     .catch(function () {
-      // no url, or the page can't be loaded, or the article has no date
+      // no url, or the page can't be loaded
       // or something else went wrong somewhere!
       return {
         published: false,
@@ -139,17 +139,13 @@ function getPageState() {
 
 /**
  * update publish button when scheduled
- * @param {boolean} isScheduled
+ * @param {string} state
+ * @param {boolean} enabled
  */
-function toggleScheduled(isScheduled) {
-  var el = document.querySelector('.kiln-toolbar-inner .publish'),
-    scheduledClass = 'scheduled';
+function toggleButton(state, enabled) {
+  var el = dom.find('.kiln-toolbar-inner .publish');
 
-  if (isScheduled) {
-    el.classList.add(scheduledClass);
-  } else {
-    el.classList.remove(scheduledClass);
-  }
+  el.classList.toggle(state, enabled);
 }
 
 /**
@@ -181,7 +177,7 @@ function timeout(fn, date) {
 function openDynamicSchedule(time, url) {
   // open a schedule status message
   progress.open('schedule', `Scheduled to publish ${formatTime(time)}`);
-  toggleScheduled(true);
+  toggleButton('scheduled', true);
   // set it to dynamically change to publish if the page is still open
   // (or if a new user opens the page) when it's set to publish
   timeout(function () {
@@ -194,14 +190,15 @@ function openDynamicSchedule(time, url) {
     // (without being obtrusive)
     window.setTimeout(function () {
       progress.open('publish', `Published! <a href="${url}@published.html" target="_blank">View Page</a>`);
-      // and remember to untoggle the button
-      toggleScheduled(false);
+      // and remember to toggle the button
+      toggleButton('scheduled', false);
+      toggleButton('published', true);
     }, 250);
   }, time);
 }
 
 module.exports.get = getPageState;
-module.exports.toggleScheduled = toggleScheduled;
+module.exports.toggleButton = toggleButton;
 module.exports.formatTime = formatTime;
 module.exports.timeout = timeout;
 module.exports.openDynamicSchedule = openDynamicSchedule;
