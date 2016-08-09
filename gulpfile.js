@@ -15,10 +15,12 @@ var gulp = require('gulp'),
   concat = require('gulp-concat'),
   sass = require('gulp-sass'),
   sassImport = require('sass-import-modules').importer,
+  gulpSassError  = require('gulp-sass-error').gulpSassError,
   autoprefix = require('gulp-autoprefixer'),
   cssmin = require('gulp-cssmin'),
   prefixOptions = { browsers: ['last 2 versions', 'ie >= 9', 'ios >= 7', 'android >= 4.4.2'] },
   stylesGlob = [
+    'node_modules/codemirror/lib/codemirror.css',
     'node_modules/flatpickr/dist/flatpickr.min.css',
     'styleguide/*.scss',
     'styleguide/*.css',
@@ -28,7 +30,7 @@ var gulp = require('gulp'),
 
 gulp.task('styles', function () {
   return gulp.src(stylesGlob)
-    .pipe(sass({ importer: sassImport({ resolvers: ['local', 'partial', 'node']}) }).on('error', sass.logError))
+    .pipe(sass({ importer: sassImport({ resolvers: ['local', 'partial', 'node']}) }).on('error', gulpSassError(true)))
     .pipe(concat('clay-kiln.css'))
     .pipe(autoprefix(prefixOptions))
     .pipe(cssmin())
