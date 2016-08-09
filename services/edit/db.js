@@ -136,7 +136,7 @@ function send(options) {
   // add credentials. this tells fetch to pass along cookies, incl. auth
   options.credentials = 'same-origin';
 
-  return rest.send(options.url, options).then(checkStatus);
+  return rest.send(uriToUrl(options.url), options).then(checkStatus);
 }
 
 /**
@@ -256,7 +256,7 @@ function save(uri, data) {
   return send(addJsonHeader({
     method: 'PUT',
     url: uri,
-    data: data
+    body: JSON.stringify(data)
   })).then(expectJSONResult);
 }
 
@@ -272,7 +272,7 @@ function saveForHTML(uri, data) {
   return send(addJsonHeader({
     method: 'PUT',
     url: uri + extHtml + editMode,
-    data: data
+    body: JSON.stringify(data)
   })).then(expectHTMLResult(uri));
 }
 
@@ -287,7 +287,7 @@ function saveText(uri, data) {
   return send(addTextHeader({
     method: 'PUT',
     url: uri,
-    data: data
+    body: data
   })).then(expectTextResult);
 }
 
@@ -304,7 +304,7 @@ function create(uri, data) {
   return send(addJsonHeader({
     method: 'POST',
     url: uri,
-    data: data
+    body: JSON.stringify(data)
   })).then(expectJSONResult);
 }
 
