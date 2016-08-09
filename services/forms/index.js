@@ -153,9 +153,17 @@ function open(ref, el, path, e) {
 
       // determine if the form is inline, and call the relevant formCreator method
       if (_.get(data, '_schema.' + references.displayProperty) === 'inline') {
-        return formCreator.createInlineForm(ref, data, el);
+        return formCreator.createInlineForm(ref, data, el)
+          .then(function (res) {
+            window.kiln.trigger('form:open', res);
+            return res;
+          });
       } else {
-        return formCreator.createForm(ref, data);
+        return formCreator.createForm(ref, data)
+          .then(function (res) {
+            window.kiln.trigger('form:open', res);
+            return res;
+          });
       }
     });
   }
@@ -202,6 +210,7 @@ function close() {
         }).then(function () {
           setEditingStatus(false); // Status as saved.
           cleanMediumEditorDom();
+          window.kiln.trigger('form:close', data);
         });
     } else {
       // Nothing changed or the component was removed, so do not reload.
@@ -210,6 +219,7 @@ function close() {
       removeCurrentForm(container);
       setEditingStatus(false); // Status as saved.
       cleanMediumEditorDom();
+      window.kiln.trigger('form:close', data);
     }
   }
   return Promise.resolve();

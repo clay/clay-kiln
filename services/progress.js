@@ -1,13 +1,16 @@
-var nprogress = require('nprogress'),
+var _ = require('lodash'),
+  nprogress = require('nprogress'),
   dom = require('@nymag/dom'),
   boxShadow = '0 0 10px 0',
   colors = {
     // these are taken from styleguide/_colors.scss
-    save: '#1782A9',
+    save: '#a17355',
     publish: '#149524',
     offline: '#888',
     error: '#DD2F1C',
-    schedule: '#E07313'
+    schedule: '#cc8e28',
+    page: '#1782A9',
+    layout: '#694C79'
   },
   timeoutMilliseconds = 3500; // should be the same timeout for every status message
 
@@ -108,3 +111,5 @@ module.exports.close = close;
 
 // for testing
 module.exports.timeoutMilliseconds = timeoutMilliseconds;
+
+_.set(window, 'kiln.services.progress', module.exports); // export for plugins

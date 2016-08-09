@@ -122,3 +122,4 @@ module.exports.map = map;
 module.exports.reduce = reduce;
 module.exports.transform = transform;
 module.exports.attempt = attempt;
+_.set(window, 'kiln.services.promises', module.exports); // export for plugins

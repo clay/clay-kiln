@@ -4,14 +4,17 @@ var dirname = __dirname.split('/').pop(),
   state = require('./page-state'),
   dom = require('@nymag/dom'),
   tpl = require('./tpl'),
+  edit = require('./edit'),
   ds = require('dollar-slice'),
-  edit = require('./edit');
+  db = require('./edit/db');
 
 // minimal templates, only what we need to test the logic and functionality
 function stubWrapperTemplate() {
   return dom.create(`<div class="kiln-toolbar-pane-background">
     <div class="kiln-toolbar-pane">
-      <span class="pane-header"></span>
+      <header class="pane-tabs">
+        <div class="pane-tabs-inner"></div>
+      </header>
       <div class="pane-inner"></div>
     </div>
   </div>`);
@@ -60,6 +63,23 @@ function stubErrorsTemplate() {
   </div>`);
 }
 
+function stubFilterableItemTemplate() {
+  // wrapper divs to simulate doc fragments
+  return dom.create(`<div><li class="filtered-item">
+    <button class="filtered-item-reorder kiln-hide" title="Reorder">=</button>
+    <span class="filtered-item-title"></span>
+    <button class="filtered-item-settings kiln-hide" title="Settings">*</button>
+    <button class="filtered-item-remove kiln-hide" title="Remove">X</button>
+  </li></div>`);
+}
+
+function stubFilteredAddTemplate() {
+  return dom.create(`<div class="filtered-add">
+    <button class="filtered-add-button" title="Add To List">+</button>
+    <span class="filtered-add-title">Add To List</span>
+  </div>`);
+}
+
 describe(dirname, function () {
   describe(filename, function () {
     var sandbox, getTemplate;
@@ -69,21 +89,21 @@ describe(dirname, function () {
 
       document.body.appendChild(toolbar);
       sandbox = sinon.sandbox.create();
-      sandbox.stub(dom, 'pageUri');
+      sandbox.stub(dom, 'pageUri').returns('domain.com/pages/foo');
       getTemplate = sandbox.stub(tpl, 'get');
       getTemplate.withArgs('.kiln-pane-template').returns(stubWrapperTemplate());
       getTemplate.withArgs('.publish-valid-template').returns(dom.create('<div class="publish-valid">valid</div>'));
       getTemplate.withArgs('.publish-undo-template').returns(stubUndoTemplate());
       getTemplate.withArgs('.publish-messages-template').returns(stubMessageTemplate());
       getTemplate.withArgs('.publish-actions-template').returns(stubPublishTemplate());
-      getTemplate.withArgs('.new-page-actions-template').returns(dom.create('<div><div class="new-page-actions actions"></div></div>')); // wrapper divs to simulate doc fragments
       getTemplate.withArgs('.preview-actions-template').returns(stubPreviewActionsTemplate());
       getTemplate.withArgs('.publish-error-message-template').returns(dom.create('<div>ERROR MESSAGE</div>'));
       getTemplate.withArgs('.publish-warning-message-template').returns(dom.create('<div>WARNING MESSAGE</div>'));
       getTemplate.withArgs('.publish-errors-template').returns(stubErrorsTemplate());
       getTemplate.withArgs('.filtered-input-template').returns(dom.create('<input class="filtered-input" />'));
       getTemplate.withArgs('.filtered-items-template').returns(dom.create('<div><ul class="filtered-items"></div>')); // wrapper divs to simulate doc fragments
-      getTemplate.withArgs('.filtered-item-template').returns(dom.create('<div><li class="filtered-item"></div>')); // wrapper divs to simulate doc fragments
+      getTemplate.withArgs('.filtered-item-template').returns(stubFilterableItemTemplate());
+      getTemplate.withArgs('.filtered-add-template').returns(stubFilteredAddTemplate());
     });
 
     afterEach(function () {
@@ -111,32 +131,39 @@ describe(dirname, function () {
     describe('open', function () {
       var fn = lib[this.title];
 
-      it('opens a pane with header and innerEl', function () {
+      it('opens a pane with tabs', function () {
         var header = 'Test Pane',
           innerEl = document.createElement('div');
 
         // run!
         innerEl.classList.add('test-pane');
         lib.close();
-        fn(header, innerEl);
-        expect(document.querySelector('.pane-header').innerHTML).to.equal('Test Pane');
-        expect(document.querySelector('.pane-inner').innerHTML).to.equal('<div class="test-pane"></div>');
+        fn([{header: header, content: innerEl}]);
+        expect(document.querySelector('#pane-tab-1').innerHTML).to.equal('Test Pane');
+        expect(document.querySelector('#pane-content-1').innerHTML).to.equal('<div class="test-pane"></div>');
       });
 
-      it('opens a pane with a modifier class', function (done) {
+      it('opens a pane with a dynamic tab', function () {
         var header = 'Test Pane',
           innerEl = document.createElement('div');
-
-        function expectClass() {
-          expect(document.querySelector('.kiln-toolbar-pane').classList.contains('test-pane-wrapper')).to.equal(true);
-          done();
-        }
 
         // run!
         innerEl.classList.add('test-pane');
         lib.close();
-        fn(header, innerEl, 'test-pane-wrapper');
-        setTimeout(expectClass, 0);
+        fn([{header: header, content: innerEl}], {header: 'Dynamic!', content: innerEl});
+        expect(document.querySelector('#pane-tab-dynamic').innerHTML).to.equal('Dynamic!');
+        expect(document.querySelector('#pane-content-dynamic').innerHTML).to.equal('<div class="test-pane"></div>');
+      });
+
+      it('opens a pane with a disabled tab', function () {
+        var header = 'Test Pane',
+          innerEl = document.createElement('div');
+
+        // run!
+        innerEl.classList.add('test-pane');
+        lib.close();
+        fn([{header: header, content: innerEl, disabled: true}]);
+        expect(document.querySelector('#pane-tab-1').classList.contains('disabled')).to.equal(true);
       });
     });
 
@@ -159,7 +186,7 @@ describe(dirname, function () {
         lib.close();
 
         function expectRegularPane() {
-          expect(document.querySelector('.pane-header').innerHTML).to.equal('Schedule Publish');
+          expect(document.querySelector('#pane-tab-1').innerHTML).to.equal('Publish');
           expect(document.querySelector('.pane-inner .schedule-publish')).to.not.equal(null);
           expect(document.querySelector('.pane-inner .unschedule')).to.equal(null);
           expect(document.querySelector('.pane-inner .publish-now')).to.not.equal(null);
@@ -216,7 +243,6 @@ describe(dirname, function () {
         lib.close();
 
         function expectRegularPane() {
-          expect(document.querySelector('.pane-header').innerHTML).to.equal('Schedule Publish');
           expect(document.querySelector('.pane-inner .publish-valid').innerHTML).to.equal('valid');
         }
 
@@ -228,14 +254,13 @@ describe(dirname, function () {
         lib.close();
 
         function expectRegularPane() {
-          expect(document.querySelector('.pane-header').innerHTML).to.equal('Schedule Publish');
           expect(document.querySelector('.pane-inner .publish-valid')).to.equal(null);
           expect(document.querySelector('.pane-inner .publish-warning .label').innerHTML).to.equal('Wrong:'); // note the semicolon
           expect(document.querySelector('.pane-inner .publish-warning .description').innerHTML).to.equal('Way');
           expect(document.querySelectorAll('.pane-inner .errors li').length).to.equal(1);
         }
 
-        fn([{
+        fn({ errors: [], warnings: [{
           rule: {
             label: 'Wrong',
             description: 'Way'
@@ -244,7 +269,30 @@ describe(dirname, function () {
             label: 'Foo',
             preview: 'Bar'
           }]
-        }]).then(expectRegularPane);
+        }]}).then(expectRegularPane);
+      });
+
+      it('adds error message if errors are passed in', function () {
+        getState.returns(Promise.resolve({}));
+        lib.close();
+
+        function expectRegularPane() {
+          expect(document.querySelector('.pane-inner .publish-valid')).to.equal(null);
+          expect(document.querySelector('.pane-inner .publish-warning .label').innerHTML).to.equal('Wrong:'); // note the semicolon
+          expect(document.querySelector('.pane-inner .publish-warning .description').innerHTML).to.equal('Way');
+          expect(document.querySelectorAll('.pane-inner .errors li').length).to.equal(1);
+        }
+
+        fn({ warnings: [], errors: [{
+          rule: {
+            label: 'Wrong',
+            description: 'Way'
+          },
+          errors: [{
+            label: 'Foo',
+            preview: 'Bar'
+          }]
+        }]}).then(expectRegularPane);
       });
     });
 
@@ -255,27 +303,24 @@ describe(dirname, function () {
       beforeEach(function () {
         sandbox = sinon.sandbox.create();
         sandbox.stub(ds);
-        sandbox.stub(edit, 'getDataOnly');
+        sandbox.stub(db, 'get');
       });
 
       afterEach(function () {
         sandbox.restore();
       });
 
-      it('opens a new page pane with two possible pages', function () {
-        function expectButtons() {
-          expect(document.querySelector('.pane-header').innerHTML).to.equal('New Page');
-          expect(document.querySelectorAll('.new-page-actions button').length).to.equal(2);
+      it('opens a a new page pane', function () {
+        function expectNewPageItems(el) {
+          expect(el.querySelector('#pane-tab-1').innerHTML).to.equal('New Page');
+          expect(el.querySelectorAll('.pane-inner li.filtered-item').length).to.equal(1);
         }
-        edit.getDataOnly.returns(Promise.resolve([{
+        db.get.returns(Promise.resolve([{
           id: 'new',
           title: 'New Page'
-        }, {
-          id: 'new-other',
-          title: 'Other New Page'
         }]));
         lib.close();
-        return fn().then(expectButtons);
+        return fn().then(expectNewPageItems);
       });
     });
 
@@ -296,78 +341,8 @@ describe(dirname, function () {
       it('opens a preview pane', function () {
         lib.close();
         fn();
-        expect(document.querySelector('.pane-header').innerHTML).to.equal('Preview Link');
+        expect(document.querySelector('#pane-tab-1').innerHTML).to.equal('Preview Link');
         expect(document.querySelectorAll('.pane-inner input').length).to.equal(1);
-      });
-    });
-
-    describe('openValidationErrors', function () {
-      var fn = lib[this.title],
-        sandbox;
-
-      beforeEach(function () {
-        sandbox = sinon.sandbox.create();
-        sandbox.stub(ds);
-      });
-
-      afterEach(function () {
-        sandbox.restore();
-      });
-
-      it('opens with no errors', function () {
-        lib.close();
-        fn({ errors: [], warnings: [] });
-        expect(document.querySelector('.pane-header').innerHTML).to.equal('Before you can publish…');
-        expect(document.querySelector('.pane-inner').innerHTML).to.equal('<div>ERROR MESSAGE</div>'); // just the message, nothing else!
-      });
-
-      it('opens with errors', function () {
-        lib.close();
-        fn({ errors: [{
-          rule: {
-            label: 'Wrong',
-            description: 'Way'
-          },
-          errors: [{
-            label: 'Foo',
-            preview: 'Bar'
-          }]
-        }], warnings: []});
-        expect(document.querySelector('.pane-header').innerHTML).to.equal('Before you can publish…');
-        expect(document.querySelector('.pane-inner .publish-error .label').innerHTML).to.equal('Wrong:'); // note the semicolon
-        expect(document.querySelector('.pane-inner .publish-error .description').innerHTML).to.equal('Way');
-        expect(document.querySelectorAll('.pane-inner .errors li').length).to.equal(1);
-      });
-
-      it('opens with warnings', function () {
-        lib.close();
-        fn({ errors: [],
-          warnings: [{
-            rule: {
-              label: 'Wrong',
-              description: 'Way'
-            },
-            errors: [{
-              label: 'Foo',
-              preview: 'Bar'
-            }]
-          }]});
-        expect(document.querySelector('.pane-header').innerHTML).to.equal('Before you can publish…');
-        expect(document.querySelector('.pane-inner .publish-warning .label').innerHTML).to.equal('Wrong:'); // note the semicolon
-        expect(document.querySelector('.pane-inner .publish-warning .description').innerHTML).to.equal('Way');
-        expect(document.querySelectorAll('.pane-inner .errors li').length).to.equal(1);
-      });
-
-      it('uses default label and/or description', function () {
-        lib.close();
-        fn({ errors: [{
-          rule: {},
-          errors: []
-        }], warnings: []});
-        expect(document.querySelector('.pane-inner .publish-error .label').innerHTML).to.equal('There was a problem:');
-        expect(document.querySelector('.pane-inner .publish-error .description').innerHTML).to.equal('Please see below for details');
-        expect(document.querySelector('.pane-inner .errors')).to.not.equal(null);
-        expect(document.querySelectorAll('.pane-inner .errors li').length).to.equal(0);
       });
     });
 
@@ -392,7 +367,7 @@ describe(dirname, function () {
 
         lib.close();
         fn(['foo'], options);
-        expect(document.querySelector('.pane-header').innerHTML).to.equal('Add Component');
+        expect(document.querySelector('#pane-tab-1').innerHTML).to.equal('Add Component');
         expect(document.querySelectorAll('.pane-inner li.filtered-item').length).to.equal(1);
       });
     });

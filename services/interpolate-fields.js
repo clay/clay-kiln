@@ -41,3 +41,5 @@ function replaceFieldName(componentData) {
 module.exports = function (str, componentData) {
   return str.replace(pattern, replaceFieldName(componentData));
 };
+
+_.set(window, 'kiln.services[interpolate-fields]', module.exports); // export for plugins

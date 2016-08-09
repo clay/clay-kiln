@@ -6,6 +6,7 @@
 @import 'inputs';
 $pane-margin: 30vh;
 $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
+$toolbar-height: 48px;
 
 .kiln-hide {
   @include kiln-hide();
@@ -26,12 +27,12 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   @include primary-text();
 
   background-color: $white;
-  bottom: 60px;
+  bottom: $toolbar-height;
   box-shadow: 0 0 30px 0 $overlay-shadow;
   display: flex;
   flex-direction: column;
   height: auto;
-  justify-content: center;
+  justify-content: flex-start;
   margin: 0;
   max-height: 100 - $pane-margin;
   max-width: 375px;
@@ -55,48 +56,146 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
     transform: translateY(0);
     transition: transform 350ms $easeOutExpo;
   }
-
-  &.medium {
-    max-width: 300px;
-  }
 }
 
-.kiln-toolbar-pane header {
+// regular tabs
+.kiln-toolbar-pane .pane-tabs {
   align-items: flex-start;
   border-bottom: 1px solid $grey;
   display: flex;
   flex: 0 0 auto;
-  padding: 13px 20px;
+  justify-content: flex-start;
+  padding: 0;
   width: 100%;
 }
 
-.kiln-toolbar-pane .pane-header {
-  @include header();
-
-  flex: 1 1 auto;
-  margin-top: 9px;
+.kiln-toolbar-pane .pane-tabs-inner {
+  align-items: flex-start;
+  cursor: auto;
+  display: flex;
+  flex: 1 0 auto;
+  justify-content: flex-start;
 }
 
-.kiln-toolbar-pane .close {
-  @include button();
+.kiln-toolbar-pane .pane-tab {
+  @include input-text(); // larger than kiln-copy
 
-  background-color: $white;
-  border: none;
+  cursor: pointer;
   flex: 0 0 auto;
-  margin-left: 30px;
-  margin-right: 0;
-  padding-right: 0;
+  padding: 20px;
+  position: relative;
+
+  &:after {
+    bottom: 14px;
+    content: '';
+    left: 20px;
+    opacity: 0;
+    position: absolute;
+    transition: opacity 200ms ease-out;
+    width: calc(100% - 40px);
+  }
+
+  &:hover:after {
+    border-bottom: 6px solid $grey;
+    opacity: 1;
+  }
+
+  &.active:after {
+    border-bottom: 6px solid $black-25;
+    opacity: 1;
+  }
+
+  &.disabled {
+    color: $black-25;
+    cursor: not-allowed;
+  }
+}
+
+.kiln-toolbar-pane .pane-tab-dynamic {
+  @include input-text(); // larger than kiln-copy
+
+  align-items: center;
+  border-left: 1px solid $grey;
+  cursor: pointer;
+  display: flex;
+  flex: 0 0 auto;
+  height: 59px; // set height instead of padding, because we want icons and such available
+  padding: 0 20px; // set left and right padding only
+  position: relative;
+
+  // special active styles for health tab
+  .health-icon {
+    height: 22px;
+    margin-right: 5px;
+    width: auto;
+
+    svg {
+      width: auto;
+      height: 22px;
+    }
+
+    &.valid svg {
+      fill: $green;
+    }
+
+    &.warnings svg {
+      fill: $orange;
+    }
+
+    &.errors svg {
+      fill: $red;
+    }
+  }
+
+  .health-header {
+    position: relative; // for the active state
+
+    &:after {
+      content: '';
+      left: 0;
+      opacity: 0;
+      position: absolute;
+      transition: opacity 200ms ease-out;
+      top: 100%;
+      width: 100%;
+    }
+  }
+
+  &:hover .health-header:after {
+    border-bottom: 6px solid $grey;
+    opacity: 1;
+  }
+
+  &.active .health-header:after {
+    border-bottom: 6px solid $black-25;
+    opacity: 1;
+  }
+
+  &.disabled {
+    color: $black-25;
+    cursor: not-allowed;
+  }
 }
 
 .kiln-toolbar-pane .pane-inner {
+  overflow-y: scroll;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .pane-content,
+.kiln-toolbar-pane .pane-content-dynamic {
   align-content: stretch;
   align-items: stretch;
-  display: flex;
+  display: none;
   flex: 0 1 auto;
   flex-flow: row wrap;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   padding: 20px 20px 40px;
+
+  &.active {
+    display: flex;
+  }
 }
 
 @mixin pane-border-before {
@@ -159,42 +258,8 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   // will space buttons when both are visible, otherwise will space bottom border
 }
 
-// validation messages
-.kiln-toolbar-pane .publish-valid {
-  align-items: center;
-  display: flex;
-  padding: 20px 0;
-}
-
-.kiln-toolbar-pane .kiln-hide + .publish-valid {
-  padding: 0 0 20px; // if undo is hidden, we don't need top padding
-}
-
-.kiln-toolbar-pane .undo:not(.kiln-hide) + .warning-message {
-  padding: 20px 0 20px; // if undo is shown, we need extra padding
-  // note: we can't just check for .kiln-hide because warnings also appear
-  // in the errors pane
-}
-
-.kiln-toolbar-pane .publish-valid-icon {
-  margin-right: 16px;
-}
-
-.publish-valid-icon svg {
-  display: inline-block;
-  fill: $green;
-  height: 24px;
-  width: 24px;
-}
-
-.publish-valid-message {
-  color: $green;
-  margin: 4px 0; // vertically center with the icon (24px - 16px)
-}
-
 // info / status messages
 .kiln-toolbar-pane .messages {
-  @include pane-border-before(); // will display after validation or warnings
   @include full-width();
 
   padding: 20px 0;
@@ -204,6 +269,11 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
     margin: 0;
     padding: 0;
   }
+}
+
+
+.kiln-toolbar-pane .kiln-hide + .messages {
+  padding: 0 0 20px; // if undo is hidden, we don't need top padding
 }
 
 // publish now
@@ -269,6 +339,29 @@ $schedule-item-width: calc(50% - 8px);
   @include full-width();
 
   margin-top: 20px;
+}
+
+/* validation */
+.kiln-toolbar-pane .publish-valid {
+  align-items: center;
+  display: flex;
+  padding: 0;
+}
+
+.kiln-toolbar-pane .publish-valid-icon {
+  margin-right: 16px;
+}
+
+.publish-valid-icon svg {
+  display: inline-block;
+  fill: $green;
+  height: 24px;
+  width: 24px;
+}
+
+.publish-valid-message {
+  color: $green;
+  margin: 4px 0; // vertically center with the icon (24px - 16px)
 }
 
 /* validation errors */
@@ -366,69 +459,18 @@ $schedule-item-width: calc(50% - 8px);
 
 /* new page pane */
 
-// note: this will use the filtered item styles in the future
-.kiln-toolbar-pane .primary-action {
-  @include button-outlined($green, $white);
-
-  margin: 15px 0 0;
+.add-page-form {
+  border-top: 1px solid $black-75;
   width: 100%;
 }
 
-/* filtered item search pane (add component, possibly new page in the future) */
-
-.kiln-toolbar-pane .filtered-input {
+.add-page-form input {
   @include input();
 
-  margin: 0;
-  position: relative;
-  width: 100%;
+  margin: 10px 0;
 }
 
-.kiln-toolbar-pane .filtered-items {
-  margin: 0;
-  padding: 0;
-  position: relative;
-  width: 100%;
-}
-
-.kiln-toolbar-pane .filtered-item {
-  @include primary-text();
-
-  cursor: pointer;
-  line-height: 16px;
-  list-style: none;
-  margin: 0;
-  padding: 15px 0;
-  width: 100%;
-}
-
-.kiln-toolbar-pane .filtered-item.filtered {
-  display: none;
-}
-
-.kiln-toolbar-pane .filtered-item:not(.filtered) {
-  border-bottom: 1px solid $grey;
-  transition: 200ms border-bottom-color ease-out;
-}
-
-.kiln-toolbar-pane .filtered-item:focus {
-  border-bottom: 1px solid $blue;
-  outline: none;
-  transition: 200ms border-bottom-color ease-out;
-}
-
-.kiln-toolbar-pane .filtered-item.active {
-  border-bottom: 2px solid $blue;
-}
-
-@keyframes shake {
-  0%, 100% {transform: translateX(0);}
-  20%, 60% {transform: translateX(-5px);}
-  40%, 80% {transform: translateX(5px);}
-}
-
-.kiln-shake {
-  animation-name: shake;
-  animation-duration: 300ms;
-  animation-fill-mode: both;
+.add-page-form button {
+  @include button-outlined();
+  @include full-width();
 }

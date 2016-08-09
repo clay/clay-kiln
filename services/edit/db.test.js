@@ -1,16 +1,24 @@
 var lib = require('./db'),
   sinon = require('sinon'),
-  site = require('./../site');
+  site = require('./../site'),
+  rest = require('./rest');
 
 describe('db service', function () {
   var sandbox;
 
   function respond(data) {
-    sandbox.server.respondWith(function (req) { req.respond(200, null, data); });
+    rest.send.returns(Promise.resolve({
+      status: 200,
+      json: () => Promise.resolve(JSON.parse(data)),
+      text: () => Promise.resolve(data)
+    }));
   }
 
   function respondError(code) {
-    sandbox.server.respondWith(function (req) { req.respond(code, null, ''); });
+    rest.send.returns(Promise.resolve({
+      status: code,
+      statusText: 'nope'
+    }));
   }
 
   /**
@@ -60,8 +68,7 @@ describe('db service', function () {
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
-    sandbox.useFakeServer();
-    sandbox.server.autoRespond = true;
+    sandbox.stub(rest, 'send');
 
     sandbox.stub(site);
     site.addProtocol.returnsArg(0);

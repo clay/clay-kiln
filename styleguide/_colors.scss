@@ -1,4 +1,4 @@
-// blue - used for page-specific components, saving
+// blue - used for page-specific components
 $blue-10: #F0F7F9;
 $blue-25: #C5E0E9;
 $blue-50: #8BC0D4;
@@ -6,12 +6,18 @@ $blue-75: #51A2BF;
 $blue-100: #1782A9;
 $blue: $blue-100;
 
+// brown - used for drafts and saving
+$brown-10: #ffb687;
+$brown-25: #e9a77b;
+$brown-50: #d69971;
+$brown-75: #b98462;
+$brown-100: #a17355;
+$brown: $brown-100;
+
 // orange - used for scheduling
-$orange-10: #FBF1E7;
-$orange-25: #F7DCC4;
-$orange-50: #EFB989;
-$orange-75: #E8964E;
-$orange-100: #E07313;
+$orange-50: #f0bd5f;
+$orange-75: #efa72f;
+$orange-100: #cc8e28;
 $orange: $orange-100;
 
 // purple - used for layout-specific components
@@ -44,6 +50,7 @@ $grey: #f4f4f4;
 $black-10: #E7E7E7;
 $black-25: #C3C3C3;
 $black-50: #888;
+$black-60: #666;
 $black-75: #4D4D4D;
 $black-100: #111111;
 $black: $black-100;

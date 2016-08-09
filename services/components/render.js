@@ -5,7 +5,8 @@ var componentEdit = require('../../controllers/component-edit'),
   ds = require('dollar-slice'),
   edit = require('../edit'),
   references = require('../references'),
-  select = require('./select');
+  select = require('./select'),
+  _ = require('lodash');
 
 /**
  * Test if element is a component and not the toolbar.
@@ -112,3 +113,4 @@ function reloadComponent(ref, html) {
 
 exports.addComponentsHandlers = addComponentsHandlers;
 exports.reloadComponent = reloadComponent;
+_.set(window, 'kiln.services.render', exports); // export for plugins
