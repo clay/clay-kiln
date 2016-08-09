@@ -219,4 +219,45 @@
       </div>
     </template>
   </div>
+{% else %}
+  <style>
+  @keyframes fadeInKilnLogo {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  .clay-kiln-logo {
+    background-color: rgba(17, 17, 17, .2);
+    display: none;
+    height: 100vh;
+    left: 0;
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    z-index: 99999;
+  }
+
+  .clay-kiln-logo.show {
+    animation: 200ms ease forwards fadeInKilnLogo;
+    display: block;
+  }
+
+  .clay-kiln-logo svg {
+    box-sizing: border-box;
+    height: 110px;
+    left: calc(50vw - 155px);
+    position: fixed;
+    top: calc(50vh - 55px);
+    width: 310px;
+  }
+  </style>
+  <div class="clay-kiln-logo">{% include 'public/media/components/clay-kiln/clay-logo.svg' %}</div>
+  {# secret code to enter edit mode #}
+  <script>
+    {{ ('node_modules/clay-kiln/dist/clay-kiln-view.js')|includeFile }}
+  </script>
 {% endif %}
