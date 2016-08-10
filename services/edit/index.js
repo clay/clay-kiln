@@ -47,7 +47,7 @@ function validate(data, schema) {
     groupFields = schema._groups && Object.keys(schema._groups) || [],
     fields = Object.keys(schema).concat(knownExtraFields).concat(groupFields),
     foundBannedFields = _.intersection(bannedFields, keys),
-    unknownFields = _.select(keys, function (key) { return !_.contains(fields, key); });
+    unknownFields = _.filter(keys, function (key) { return !_.includes(fields, key); });
 
   if (!uri) {
     errors.push(new Error('Cannot save data without ' + refProp));
@@ -74,7 +74,7 @@ function validate(data, schema) {
       value = data[fieldName];
 
     // everything that is not a schemaKeyword must be object-like (object, array, etc.)
-    if (!_.contains(schemaKeywords, fieldName) && typeof value !== 'object') {
+    if (!_.includes(schemaKeywords, fieldName) && typeof value !== 'object') {
       str = 'Amphora-style data (raw value) found in ' + fieldName + '; please use ClayKiln style (value, _schema) instead.';
       errors.push(new Error(str));
     }

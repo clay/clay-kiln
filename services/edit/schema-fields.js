@@ -11,7 +11,7 @@ function addSchemaToData(schema, data) {
     var propertyExists = _.has(data, key),
       value = data[key];
 
-    if (_.isObject(schemaPart) && !_.contains(schemaKeywords, key)) {
+    if (_.isObject(schemaPart) && !_.includes(schemaKeywords, key)) {
       // if the key doesn't exist (value not just undefined, but the key as well) or value is any non-object
       if (!propertyExists || !_.isObject(value)) {
         data[key] = {

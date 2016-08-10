@@ -43,7 +43,7 @@ function removeExtras(uri, data) {
  */
 function addNameToFieldsOfSchema(schema) {
   _.each(schema, function (definition, name) {
-    if (!_.contains(schemaKeywords, name) && _.isObject(definition)) {
+    if (!_.includes(schemaKeywords, name) && _.isObject(definition)) {
       definition._name = name;
     }
   });

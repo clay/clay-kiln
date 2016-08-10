@@ -19,7 +19,7 @@ module.exports = function () {
    * @returns {boolean}
    */
   function insideCurrentComponent(path, el) {
-    return _.contains(path, el);
+    return _.includes(path, el);
   }
 
   /**

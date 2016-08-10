@@ -1,5 +1,5 @@
 var keycode = require('keycode'),
-  _includes = require('lodash/collection').includes, // todo: require(lodash/method) when we upgrade to lodash 4
+  _includes = require('lodash/includes').includes,
   secretKilnKey = '';
 
 function toggleEdit() {
