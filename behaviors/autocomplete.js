@@ -13,8 +13,8 @@ import cid from '@nymag/cid';
  * @returns {[string]}
  */
 function flattenText(items) {
-  var pluckedText = _.compact(_.pluck(items, textProp)),
-    hasTextProp = _.isString(_.first(pluckedText));
+  var pluckedText = _.compact(_.map(items, textProp)),
+    hasTextProp = _.isString(_.head(pluckedText));
 
   return hasTextProp ? pluckedText : items;
 }

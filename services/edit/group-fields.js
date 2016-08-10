@@ -22,7 +22,7 @@ function hasFields(value) {
 function addGroupFieldsToData(data, schema) {
   // only groups that have fields are valid (avoid the if statement)
   var groupFields,
-    groups = _.pick(schema[references.groupsProperty], hasFields);
+    groups = _.pickBy(schema[references.groupsProperty], hasFields);
 
   groupFields = _.transform(groups, function (obj, group, name) {
     obj[name] = {
@@ -31,7 +31,7 @@ function addGroupFieldsToData(data, schema) {
       }),
       _schema: _.assign({ _name: name }, group)
     };
-  });
+  }, {});
 
   return _.assign(groupFields, data);
 }
