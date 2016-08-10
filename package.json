@@ -86,7 +86,7 @@
     "rollupify": "^0.2.0",
     "sass-import-modules": "^2.1.0",
     "selection-range": "^1.0.1",
-    "sinon": "^1.17.2",
+    "sinon": "^1.17.4",
     "speakingurl": "^9.0.0",
     "striptags": "^2.1.1",
     "text-model": "^0.2.1",
