@@ -7,7 +7,7 @@ var dirname = __dirname.split('/').pop(),
 
 describe(dirname, function () {
   describe(filename, function () {
-    var options = ['apple', 'banana', 'cantaloupe'],
+    var options = ['squishy-apple', 'mushy banana', 'cantaloupe'],
       sandbox;
 
     beforeEach(function () {
@@ -50,8 +50,8 @@ describe(dirname, function () {
       expect(select.getAttribute('rv-field')).to.eql('foo');
       expect(select.getAttribute('rv-value')).to.eql('foo.data.value');
       expect(selectOptions.length).to.eql(3);
-      expect(firstOption.value).to.eql('apple');
-      expect(firstOption.textContent).to.eql('Apple');
+      expect(firstOption.value).to.eql('squishy-apple');
+      expect(firstOption.textContent).to.eql('Squishy-Apple');
     });
 
     it('matches site slug', function () {
