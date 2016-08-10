@@ -82,7 +82,7 @@
     "mocha": "^2.2.5",
     "moment": "^2.10.6",
     "nprogress": "^0.2.0",
-    "rivets": "^0.8.1",
+    "rivets": "^0.9.2",
     "rollupify": "^0.2.0",
     "sass-import-modules": "^2.1.0",
     "selection-range": "^1.0.1",
