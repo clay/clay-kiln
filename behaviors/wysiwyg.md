@@ -6,7 +6,7 @@ _Note:_ When this behavior is added to a field, it will replace any previous ele
 
 ## Arguments
 
-* **buttons** _(optional)_  array of button names (strings) for text styling. defaults to "remove formatting"
+* **buttons** _(optional)_  array of button names (strings) or custom buttons (objects) for text styling. defaults to "remove formatting"
 * **styled** _(optional)_   style the content editable element like our `text` and `textarea` inputs.
 * **enableKeyboardExtras** _(optional)_  enable creating new components on enter, and appending text to previous components on delete, etc
 
@@ -16,6 +16,7 @@ The buttons allowed in our wysiwyg behavior are:
 * italic
 * strikethrough
 * anchor
+* phrase - uses [Medium Editor Phrase](https://github.com/nymag/medium-editor-phrase) and takes [documented options](https://github.com/nymag/medium-editor-phrase#initialization-options). See the example below for a full example.
 
 By default, wysiwyg fields will use the styles of the containing component. To use our kiln input styling, set `styled` to `true`.
 
@@ -27,3 +28,22 @@ By default, wysiwyg fields will use the styles of the containing component. To u
 * hitting <kbd>shift+enter</kbd> will insert a soft break
 
 _Note:_ All pasted text gets run through [text-model](https://github.com/nymag/text-model). Pasting in multiple paragraphs will create multiple instances of the current component with the respective paragraphs of text added to each instance.
+
+## Example
+```
+text:
+  _has:
+    -
+      fn: wysiwyg
+      buttons:
+        - bold
+        - italic
+        - strikethrough
+        - anchor
+        - phrase:
+            aria: annotate
+            name: annotate
+            contentDefault: A¹
+            phraseClassList: ['clay-annotated']
+            phraseTagName: span
+```
