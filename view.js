@@ -1,5 +1,5 @@
 var keycode = require('keycode'),
-  _includes = require('lodash/includes').includes,
+  _includes = require('lodash/includes'),
   secretKilnKey = '';
 
 function toggleEdit() {
