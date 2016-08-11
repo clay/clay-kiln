@@ -49,6 +49,7 @@ $white: #fff; // note - we may make this slightly darker at some point
 $grey: #f4f4f4;
 $black-10: #E7E7E7;
 $black-25: #C3C3C3;
+$black-30: #aaa;
 $black-50: #888;
 $black-60: #666;
 $black-75: #4D4D4D;
@@ -58,7 +59,7 @@ $black: $black-100;
 // overlays and shadows
 $overlay-background: rgba(17, 17, 17, .5);
 $overlay-shadow: rgba(0, 0, 0, .07);
-$input-shadow: rgba(0, 0, 0, .3);
+$input-shadow: rgba(0, 0, 0, .4);
 $drag-shadow: rgba(0, 0, 0, .3); // different use case than input-shadow
 $drag-error: rgba(215, 39, 39, .41);
 $drag-saving: rgba($blue-75, .41);
