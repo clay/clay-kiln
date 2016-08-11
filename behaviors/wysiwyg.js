@@ -106,8 +106,8 @@ function toggleTieredToolbar(html) {
 /**
  * create new medium editor
  * @param {Element} field
- * @param {[string|object]} buttonsWithOptions  array containing strings and objects
- * @returns {Element}
+ * @param {Array} buttonsWithOptions  array containing strings and objects
+ * @returns {object}
  */
 function createEditor(field, buttonsWithOptions) {
   var extensions = {
