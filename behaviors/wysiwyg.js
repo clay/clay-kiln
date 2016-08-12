@@ -2,6 +2,8 @@ var _ = require('lodash'),
   select = require('selection-range'),
   MediumEditor = require('medium-editor'),
   MediumButton = require('@yoshokatana/medium-button'),
+  MediumEditorPhrase = require('medium-editor-phrase'),
+  safeAttribute = require('../services/field-helpers/safe-attribute'),
   dom = require('@nymag/dom'),
   db = require('../services/edit/db'),
   render = require('../services/components/render'),
@@ -104,10 +106,30 @@ function toggleTieredToolbar(html) {
 /**
  * create new medium editor
  * @param {Element} field
- * @param {array} buttons
- * @returns {Element}
+ * @param {Array} buttonsWithOptions  array containing strings and objects
+ * @returns {object}
  */
-function createEditor(field, buttons) {
+function createEditor(field, buttonsWithOptions) {
+  var extensions = {
+      tieredToolbar: new MediumButton({
+        label: '&hellip;',
+        action: toggleTieredToolbar
+      })
+    },
+    buttons = buttonsWithOptions.map(button => {
+      let type, settings;
+
+      if (_.isObject(button)) { // button is an object with settings
+        type = Object.keys(button)[0];
+        settings = button[type];
+        if (type === 'phrase') {
+          extensions[settings.name] = new MediumEditorPhrase(settings); // add button to extensions
+        }
+        return settings.name;
+      }
+      return button; // button is a string
+    });
+
   // add "remove formatting" button to the end
   buttons.push('removeFormat');
 
@@ -156,12 +178,7 @@ function createEditor(field, buttons) {
     targetBlank: true,
     disableReturn: true,
     placeholder: false, // the placeholder isn't native
-    extensions: {
-      tieredToolbar: new MediumButton({
-        label: '&hellip;',
-        action: toggleTieredToolbar
-      })
-    }
+    extensions: extensions
   });
 }
 
@@ -496,7 +513,7 @@ function initWysiwygBinder(enableKeyboardExtras) {
     publish: true,
     bind: function (el) {
       // this is called when the binder initializes
-      var toolbarButtons = el.getAttribute('data-wysiwyg-buttons').split(','),
+      var toolbarButtons = safeAttribute.readAttrObject(el, 'data-wysiwyg-buttons'),
         observer = this.observer,
         data = observer.value() || '', // don't print 'undefined' if there's no data
         editor = createEditor(el, toolbarButtons),
@@ -541,7 +558,7 @@ function initWysiwygBinder(enableKeyboardExtras) {
 
         if (paragraphs.length === 1) {
           // we're only pasting one paragraph! add it inside the current paragraph
-          let fragment = model.toElement(_.first(paragraphs)),
+          let fragment = model.toElement(_.head(paragraphs)),
             caret = select(editable); // get current caret position
 
           dom.clearChildren(editable); // clear the current children
@@ -550,13 +567,13 @@ function initWysiwygBinder(enableKeyboardExtras) {
 
           select(editable, caret); // set caret after pasted stuff
         } else if (paragraphs.length > 1) {
-          let fragment = model.toElement(_.first(paragraphs));
+          let fragment = model.toElement(_.head(paragraphs));
 
           dom.clearChildren(editable); // clear the current children
           editable.appendChild(fragment); // add the first paragraph
           observer.setValue(editable.innerHTML); // set the value, so when we unfocus this'll be saved
 
-          return addComponents(editable, _.rest(paragraphs));
+          return addComponents(editable, _.tail(paragraphs));
         }
       });
 
@@ -591,8 +608,8 @@ function initWysiwygBinder(enableKeyboardExtras) {
 /**
  * Create WYSIWYG text editor.
  * @param {{name: string, el: Element, binders: {}}} result
- * @param {{buttons: [string], styled: boolean, enableKeyboardExtras: boolean}} args  Described in detail below:
- * @param {[string]} args.buttons  array of button names (strings) for tooltip
+ * @param {{buttons: Array, styled: boolean, enableKeyboardExtras: boolean}} args  Described in detail below:
+ * @param {Array} args.buttons  array of button names (strings) for tooltip, buttons with options are objects rather than strings
  * @param {boolean}  args.styled   apply input styles to contenteditable element
  * @param {boolean}  args.enableKeyboardExtras  enable creating new components on enter, and appending text to previous components on delete, etc
  * @returns {{}}
@@ -604,7 +621,7 @@ module.exports = function (result, args) {
     styled = args.styled,
     enableKeyboardExtras = args.enableKeyboardExtras,
     field = dom.create(`<label class="input-label">
-      <p class="wysiwyg-input${ addStyledClass(styled) }" rv-field="${name}" rv-wysiwyg="${name}.data.value" data-wysiwyg-buttons="${buttons.join(',')}"></p>
+      <p class="wysiwyg-input${ addStyledClass(styled) }" rv-field="${name}" rv-wysiwyg="${name}.data.value" ${safeAttribute.writeObjectAsAttr('data-wysiwyg-buttons', buttons)}></p>
     </label>`);
 
   // if more than 5 buttons, put the rest on the second tier

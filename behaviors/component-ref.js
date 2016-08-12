@@ -43,7 +43,7 @@ function findCommentsWithName(name) {
     node;
 
   while (node = walker.nextNode()) {
-    if (_.contains(node.data, componentWithName(name)) && getUriFromComment(node.data)) {
+    if (_.includes(node.data, componentWithName(name)) && getUriFromComment(node.data)) {
       matches.push(getUriFromComment(node.data));
     }
   }

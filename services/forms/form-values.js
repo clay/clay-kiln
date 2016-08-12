@@ -13,8 +13,8 @@ function removeBehaviorMeta(value) {
   if (_.isArray(value)) {
     return _.map(value, removeBehaviorMeta);
   } else if (_.isObject(value)) {
-    return _.omit(value, function (val, key) {
-      return key !== '_schema' && _.contains(key, '_');
+    return _.omitBy(value, function (val, key) {
+      return key !== '_schema' && _.includes(key, '_');
     });
   } else {
     return value;

@@ -148,7 +148,7 @@ module.exports = function (result, args) {
       function hasRepeatedValue(value, data) {
         var oldItems = _.map(data, item => item.text.toLowerCase());
 
-        return !allowRepeat && _.contains(oldItems, value.toLowerCase());
+        return !allowRepeat && _.includes(oldItems, value.toLowerCase());
       }
 
       // add new item from the add-items field

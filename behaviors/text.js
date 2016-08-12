@@ -108,7 +108,7 @@ module.exports = function (result, args) {
     name = result.name,
     type = args.type || 'text';
 
-  if (_.contains(invalidTypes, type)) {
+  if (_.includes(invalidTypes, type)) {
     throw new Error('Input type is invalid: ' + type);
   }
 

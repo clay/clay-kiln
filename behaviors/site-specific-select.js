@@ -9,7 +9,7 @@ var _ = require('lodash'),
  */
 function createOptions(options) {
   return _.map(options, function (option) {
-    return `<option value="${option}">${ _.startCase(option) || 'None' }</option>`;
+    return `<option value="${option}">${ startCase(option) || 'None' }</option>`;
   }).join('\n');
 }
 
@@ -27,6 +27,19 @@ function createField(name, options) {
       </select>
     </label>
   `);
+}
+
+/**
+ * Capitalize first character of a string while persisting dash separator
+ * @param {string} str
+ * @return {string}
+ */
+function startCase(str) {
+  return _.reduce(_.words(str), function (result, value) {
+    var separator = str[str.indexOf(value) - 1] || '';
+
+    return result + separator + _.upperFirst(value);
+  }, '');
 }
 
 /**
