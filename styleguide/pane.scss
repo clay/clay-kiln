@@ -413,6 +413,22 @@ $schedule-item-width: calc(50% - 8px);
   margin-left: 5px;
 }
 
+/* location tab */
+.kiln-toolbar-pane .custom-url-message {
+  @include secondary-text();
+}
+
+.kiln-toolbar-pane .custom-url-input {
+  @include input();
+
+  margin: 10px 0;
+}
+
+.kiln-toolbar-pane .custom-url-submit {
+  @include button-outlined();
+  @include full-width();
+}
+
 /* easter egg pane */
 
 .kiln-toolbar-pane .cats-ayb {

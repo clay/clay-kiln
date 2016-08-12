@@ -5,6 +5,7 @@ var moment = require('moment'),
   dom = require('@nymag/dom'),
   state = require('../services/page-state'),
   db = require('../services/edit/db'),
+  site = require('../services/site'),
   _ = require('lodash');
 
 /**
@@ -47,6 +48,7 @@ function unschedulePageAndLayout() {
 module.exports = function () {
   function constructor(el) {
     this.form = dom.find(el, '.schedule');
+    this.customUrlForm = dom.find(el, '.custom-url-form');
   }
 
   constructor.prototype = {
@@ -54,7 +56,8 @@ module.exports = function () {
       '.publish-now click': 'onPublishNow',
       '.unpublish click': 'onUnpublish',
       '.schedule submit': 'onSchedule',
-      '.unschedule click': 'onUnschedule'
+      '.unschedule click': 'onUnschedule',
+      '.custom-url-form submit': 'onCustomUrl'
     },
 
     onPublishNow: function () {
@@ -147,6 +150,29 @@ module.exports = function () {
           // note: the Error passed into this doesn't have a message, so we use a custom one
           progress.done('error');
           progress.open('error', 'Server errored when unscheduling, please try again.', true);
+        });
+    },
+
+    onCustomUrl: function (e) {
+      var val = dom.find(this.customUrlForm, 'input').value,
+        url = db.uriToUrl(site.get('prefix') + val);
+
+      e.preventDefault(); // stop form submit
+      pane.close();
+      progress.start('page');
+
+      return db.get(dom.pageUri())
+        .then(function (page) {
+          page.customUrl = url;
+          return db.save(dom.pageUri(), page);
+        })
+        .then(function () {
+          progress.done('page');
+          progress.open('page', 'Saved custom page url', true);
+        })
+        .catch(function () {
+          progress.done('error');
+          progress.open('error', 'Server errored when saving page url, please try again.', true);
         });
     }
   };
