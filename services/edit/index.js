@@ -442,6 +442,7 @@ function removeFromParentList(opts) {
  * @param {object} options
  * @param {string} options.ref new component ref
  * @param {string} [options.prevRef] (optionally) insert the new component after this ref
+ * @param {string} [options.above] (optionally) insert the new component above the element specified in the prevRef
  * @param {string} options.parentField
  * @param {string} options.parentRef
  * @returns {Promise} Promise resolves to new component Element.
@@ -449,6 +450,7 @@ function removeFromParentList(opts) {
 function addToComponentList(parentData, options) {
   var ref = options.ref,
     prevRef = options.prevRef,
+    above = options.above,
     parentField = options.parentField,
     prevIndex,
     prevItem = {},
@@ -456,11 +458,16 @@ function addToComponentList(parentData, options) {
 
   parentData = _.cloneDeep(parentData);
   item[refProp] = ref;
-  if (prevRef) {
+  if (prevRef && !above) {
     // Add to specific position in the list.
     prevItem[refProp] = prevRef;
     prevIndex = _.findIndex(parentData[parentField], prevItem);
     parentData[parentField].splice(prevIndex + 1, 0, item);
+  } else if(prevRef && above) {
+    // Add above a specific position in the list
+    prevItem[refProp] = prevRef;
+    prevIndex = _.findIndex(parentData[parentField], prevItem);
+    parentData[parentField].splice(prevIndex, 0, item);
   } else {
     // Add to end of list.
     parentData[parentField].push(item);
@@ -650,6 +657,14 @@ function getComponentRef(uri) {
   }
 }
 
+function getHTML(ref) {
+  return db.getHTML(ref);
+}
+
+function getHTMLWithQuery(ref, query) {
+  return db.getHTMLWithQuery(ref, query);
+}
+
 // Expose main actions (alphabetical!)
 module.exports = {
   // Please use these.  They should be discrete actions that should be well tested.
@@ -669,6 +684,8 @@ module.exports = {
   schedulePublish: schedulePublish,
   unschedulePublish: unschedulePublish,
   getComponentRef: getComponentRef,
+  getHTMLWithQuery: getHTMLWithQuery,
+  getHTML: getHTML,
 
   // Please stop using these.  If you use these, we don't trust you.  Do you trust yourself?
   getData: getData,
