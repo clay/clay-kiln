@@ -247,6 +247,17 @@ function getHTML(uri) {
 
 /**
  * @param {string} uri
+ * @param {string} queries
+ * @return {Promise}
+ */
+function getHTMLWithQuery(uri, queries) {
+  var queryUrl = uri + extHtml + editMode + queries;
+
+  return send(queryUrl).then(expectHTMLResult(uri));
+}
+
+/**
+ * @param {string} uri
  * @param {object} data
  * @returns {Promise}
  */
@@ -339,6 +350,7 @@ module.exports.get = getObject;
 module.exports.getText = getText;
 module.exports.getHead = getHead;
 module.exports.getHTML = getHTML;
+module.exports.getHTMLWithQuery = getHTMLWithQuery;
 module.exports.save = save;
 module.exports.saveForHTML = saveForHTML;
 module.exports.saveText = saveText;
