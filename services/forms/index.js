@@ -253,6 +253,7 @@ function isFormValid() {
 exports.open = open;
 exports.close = close;
 exports.isFormValid = isFormValid;
+_.set(window, 'kiln.services.forms', module.exports); // export for plugins
 
 // for tests:
 exports.dataChanged = dataChanged;
