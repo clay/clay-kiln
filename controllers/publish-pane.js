@@ -155,9 +155,26 @@ module.exports = function () {
 
     onCustomUrl: function (e) {
       var val = dom.find(this.customUrlForm, 'input').value,
-        url = db.uriToUrl(site.get('prefix') + val);
+        url;
 
       e.preventDefault(); // stop form submit
+
+      // make sure we're not adding the site prefix twice!
+      // handle both /paths and http://full-urls
+      if (val.match(/^http/i)) {
+        // full url
+        url = val;
+      } else if (val.match(/^\/\S/i)) {
+        // already starts with a slash
+        url = db.uriToUrl(site.get('prefix') + val);
+      } else if (val.match(/^\S/i)) {
+        // add the slash ourselves
+        url = db.uriToUrl(site.get('prefix') + '/' + val);
+      } else if (val === '') {
+        // unset custom url
+        url === '';
+      }
+
       pane.close();
       progress.start('page');
 

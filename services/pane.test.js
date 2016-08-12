@@ -47,6 +47,14 @@ function stubPublishTemplate() {
   </div>`);
 }
 
+function stubCustomUrlTemplate() {
+  return dom.create(`<form class="custom-url-form">
+    <label for="custom-url" class="custom-url-message">Designate a custom URL for this page. This should only be used for special cases.</p>
+    <input id="custom-url" class="custom-url-input" type="text" placeholder="/special-page.html" />
+    <button type="submit" class="custom-url-submit">Save Location</button>
+  </form>`);
+}
+
 function stubPreviewActionsTemplate() {
   return dom.create(`<div class="preview-actions actions">
     <form class="preview-link">
@@ -100,6 +108,7 @@ describe(dirname, function () {
       getTemplate.withArgs('.publish-error-message-template').returns(dom.create('<div>ERROR MESSAGE</div>'));
       getTemplate.withArgs('.publish-warning-message-template').returns(dom.create('<div>WARNING MESSAGE</div>'));
       getTemplate.withArgs('.publish-errors-template').returns(stubErrorsTemplate());
+      getTemplate.withArgs('.custom-url-form-template').returns(stubCustomUrlTemplate());
       getTemplate.withArgs('.filtered-input-template').returns(dom.create('<input class="filtered-input" />'));
       getTemplate.withArgs('.filtered-items-template').returns(dom.create('<div><ul class="filtered-items"></div>')); // wrapper divs to simulate doc fragments
       getTemplate.withArgs('.filtered-item-template').returns(stubFilterableItemTemplate());
@@ -293,6 +302,18 @@ describe(dirname, function () {
             preview: 'Bar'
           }]
         }]}).then(expectRegularPane);
+      });
+
+      it('adds custom url if it exists', function () {
+        getState.returns(Promise.resolve({ customUrl: 'http://domain.com/foo' }));
+        lib.close();
+
+        function expectCustomUrl() {
+          expect(document.querySelector('#pane-tab-2').innerHTML).to.equal('Location');
+          expect(document.querySelector('.pane-inner .custom-url-input').value).to.equal('/foo');
+        }
+
+        fn().then(expectCustomUrl);
       });
     });
 

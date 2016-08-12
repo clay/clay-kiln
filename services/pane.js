@@ -294,7 +294,9 @@ function createLocationForm(res) {
     val = res.customUrl;
 
   if (val) {
-    dom.find(form, '.custom-url-input').value = val;
+    // remove the site prefix when displaying the url in the form
+    // it'll be added when saving the form
+    dom.find(form, '.custom-url-input').value = val.replace(db.uriToUrl(site.get('prefix')), '');
   }
 
   return form;
