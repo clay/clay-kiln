@@ -523,6 +523,7 @@ function addToPageList(options) {
  * @param {object} opts
  * @param {string} opts.ref
  * @param {string} [opts.prevRef]     The ref of the item to insert after.
+ * * @param {string} [options.above] (optionally) insert the new component above the element specified in the prevRef
  * @param {string} opts.parentField
  * @param {string} opts.parentRef
  * @returns {Promise} Promise resolves to new component Element.

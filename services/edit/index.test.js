@@ -113,6 +113,16 @@ describe('edit service', function () {
       });
     });
 
+    it('adds the item to the list data above the component that triggered the add', function () {
+      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'}));
+      cache.saveThrough.returns(resolveReadOnly({}));
+      cache.saveForHTML.returns(Promise.resolve('some html'));
+
+      return fn({ref: 'newRef', prevRef: 'b', parentField: 'a', parentRef: 'd', above: true}).then(function () {
+        expectSavedAs({a: [{_ref: 'newRef'}, {_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'});
+      });
+    });
+
     it('adds the item to the end of the list data', function () {
       cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'}));
       cache.saveThrough.returns(resolveReadOnly({}));
@@ -394,8 +404,6 @@ describe('edit service', function () {
     var fn = lib[this.title],
       url = 'fake/uri/to/component',
       query = '?query=foobar';
-
-
 
     it('throws error if not passing in a query', function () {
       function result() {
