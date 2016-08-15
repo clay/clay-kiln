@@ -412,7 +412,7 @@ describe('edit service', function () {
       }
 
       result().then(function (resp) {
-        expect(result).to.equal('some html');
+        expect(resp).to.equal('some html');
       });
     });
   });
