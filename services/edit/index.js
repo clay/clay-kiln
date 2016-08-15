@@ -659,13 +659,13 @@ function getComponentRef(uri) {
 }
 
 /**
- * get the components HTML and pass along any query paramaters
- * that may need to be exposed to the component in it's server.js
+ * get the component's HTML and pass along any query parameters
+ * that may need to be exposed to the component in its server.js
  * file. This is handy for passing the current page URL to the
  * component for re-rendering when in edit mode.
  *
  * TODO: Currently this is ONLY used for the Space component because
- * querying for artile tags is limited. There is a pending update
+ * querying for article tags is limited. There is a pending update
  * to our elastic indices that should make this unecessary. At that
  * point this should be removed.
  *
