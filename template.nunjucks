@@ -164,6 +164,14 @@
       <div class="warning-message">This page has some warnings. Please review before publishing.</div>
     </template>
 
+    <template class="custom-url-form-template">
+      <form class="custom-url-form">
+        <label for="custom-url" class="custom-url-message">Designate a custom URL for this page. This should only be used for special cases.</p>
+        <input id="custom-url" class="custom-url-input" type="text" placeholder="/special-page.html" />
+        <button type="submit" class="custom-url-submit">Save Location</button>
+      </form>
+    </template>
+
     {# generic filtered list template. used for the add component pane #}
     <template class="filtered-input-template">
       <input class="filtered-input" placeholder="Start typing to filter this list" />

@@ -285,6 +285,24 @@ function createPublishActions(res) {
 }
 
 /**
+ * create the form to set a custom url
+ * @param {object} res which may contain customUrl
+ * @returns {Element}
+ */
+function createLocationForm(res) {
+  const form = tpl.get('.custom-url-form-template'),
+    val = res.customUrl;
+
+  if (val) {
+    // remove the site prefix when displaying the url in the form
+    // it'll be added when saving the form
+    dom.find(form, '.custom-url-input').value = val.replace(db.uriToUrl(site.get('prefix')), '');
+  }
+
+  return form;
+}
+
+/**
  * open publish pane
  * @param {object} validation
  * @param {Object[]} validation.errors
@@ -292,46 +310,57 @@ function createPublishActions(res) {
  * @returns {Promise}
  */
 function openPublish(validation) {
-  var pubHeader = 'Publish',
-    pubContent = document.createDocumentFragment(),
-    healthContent = document.createDocumentFragment(),
-    healthHeader, el;
+  var pubContent = document.createDocumentFragment(),
+    locationContent = document.createDocumentFragment(),
+    healthContent = document.createDocumentFragment();
 
   return state.get().then(function (res) {
-    // append message and actions to the doc fragment
+    var tabs, dynamicTab, el;
+
+    // append publish message and actions to the doc fragment
     pubContent.appendChild(createUndoActions(res));
     pubContent.appendChild(createPublishMessages(res));
     pubContent.appendChild(createPublishActions(res));
 
+    locationContent.appendChild(createLocationForm(res));
+
     // add dynamic pane with validation
     healthContent.appendChild(createPublishValidation(validation));
-    healthHeader = createHealthHeader(validation);
 
     // if there are errors, make the health tab active when the pane opens
     // and disable the publish tab
     if (_.get(validation, 'errors.length')) {
-      // create the root pane element
-      el = open([{
-        header: pubHeader,
+      // publish is disabled
+      tabs = [{
+        header: 'Publish',
         content: pubContent,
         disabled: true
-      }], {
-        // dynamic health tab
-        header: healthHeader,
+      }, {
+        header: 'Location',
+        content: locationContent
+      }];
+      dynamicTab = {
+        header: createHealthHeader(validation),
         content: healthContent,
-        active: true
-      });
+        active: true // health tab is active when pane opens
+      };
     } else {
-      // create the root pane element like normal
-      el = open([{
-        header: pubHeader,
-        content: pubContent
-      }], {
-        // dynamic health tab
-        header: healthHeader,
+      tabs = [{
+        header: 'Publish',
+        content: pubContent,
+        active: true // publish tab is active when pane opens
+      }, {
+        header: 'Location',
+        content: locationContent
+      }];
+      dynamicTab = {
+        header: createHealthHeader(validation),
         content: healthContent
-      });
+      };
     }
+
+    // create pane!
+    el = open(tabs, dynamicTab);
 
     // init controller for publish pane
     ds.controller('publish-pane', publishPaneController);

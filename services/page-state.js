@@ -91,6 +91,15 @@ function getArticleDate(pageData) {
 }
 
 /**
+ * get custom url, if it exists
+ * @param {object} pageData
+ * @returns {string|undefined}
+ */
+function getCustomPageUrl(pageData) {
+  return pageData.customUrl || null;
+}
+
+/**
  * get published state
  * @param {string} publishedUri
  * @returns {Promise}
@@ -121,6 +130,15 @@ function getPublished(publishedUri) {
     });
 }
 
+function getLatest(uri) {
+  return db.get(uri)
+    .then(function (pageData) {
+      return {
+        customUrl: getCustomPageUrl(pageData)
+      };
+    });
+}
+
 /**
  * get scheduled/published state of the page
  * used when toolbar inits and when publish pane is opened
@@ -131,9 +149,10 @@ function getPageState() {
 
   return Promise.all([
     getScheduled(pageUri + '@scheduled'),
-    getPublished(pageUri + '@published')
+    getPublished(pageUri + '@published'),
+    getLatest(pageUri)
   ]).then(function (promises) {
-    return _.assign({}, promises[0], promises[1]);
+    return _.assign({}, promises[0], promises[1], promises[2]);
   });
 }
 
