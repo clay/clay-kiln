@@ -41,10 +41,11 @@
 // settings
 $wysiwyg-color: $black;
 $wysiwyg-bgcolor: $white;
+$wysiwyg-hover-color: $black-10;
 $wysiwyg-selected-bgcolor: $blue-25;
-$wysiwyg-button-size: 32px;
-$wysiwyg-border-color: $black-25;
-$wysiwyg-border-radius: 4px;
+$wysiwyg-button-size: 48px;
+$wysiwyg-border-color: $black-30;
+$wysiwyg-border-radius: 0;
 $wysiwyg-boxshadow: 0 0 6px 0 $input-shadow;
 $wysiwyg-dropshadow: 0 0 6px $input-shadow;
 
@@ -54,10 +55,33 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
   top: -8px;
 }
 
+.medium-toolbar-arrow-under:before,
 .medium-toolbar-arrow-under:after {
-  border-color: $wysiwyg-bgcolor transparent transparent transparent;
-  filter: drop-shadow($wysiwyg-dropshadow);
+  border: 1px solid transparent;
+  content: '';
+  display: block;
+  height: 0;
+  left: 50%;
+  pointer-events: none;
+  position: absolute;
   top: $wysiwyg-button-size;
+  width: 0;
+}
+
+.medium-toolbar-arrow-under:before {
+  border-color: transparent;
+  border-top-color: $wysiwyg-bgcolor;
+  border-width: 8px;
+  margin-left: -8px;
+  z-index: 1;
+}
+
+.medium-toolbar-arrow-under:after {
+  border-color: transparent;
+  border-top-color: $wysiwyg-border-color;
+  border-width: 9px;
+  filter: drop-shadow($wysiwyg-dropshadow);
+  margin-left: -9px;
   z-index: -1;
 }
 
@@ -69,7 +93,9 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
   .medium-editor-toolbar-actions,
   .medium-editor-toolbar-form {
     background-color: $wysiwyg-bgcolor;
+    border: 1px solid $wysiwyg-border-color;
     border-radius: $wysiwyg-border-radius;
+    position: relative;
 
     input {
       padding: 6px 6px 6px 10px;
@@ -82,22 +108,26 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
     }
 
     button {
+      align-items: center;
       background-color: transparent;
       border: none;
       color: $wysiwyg-color;
+      display: flex;
       height: $wysiwyg-button-size;
+      justify-content: center;
       line-height: 32px;
       padding: 0;
       text-align: center;
       transition: background-color .2s ease-in;
       width: $wysiwyg-button-size;
-      // todo: do the tooltip buttons have a hover state?
-      // &:hover {
-      //   background-color: #C5E0E9;
-      // }
+
+      &:hover {
+        background-color: $wysiwyg-hover-color;
+      }
     }
 
-    .medium-editor-button-active {
+    .medium-editor-button-active,
+    .medium-editor-button-active:hover {
       background-color: $wysiwyg-selected-bgcolor;
     }
 
@@ -208,6 +238,7 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
 .medium-editor-toolbar.show-all .medium-editor-toolbar-form {
   height: 2 * $wysiwyg-button-size;
 }
+.medium-toolbar-arrow-under.show-all:before,
 .medium-toolbar-arrow-under.show-all:after {
   animation: medium-editor-animate-arrow 200ms forwards linear;
 }
@@ -238,6 +269,7 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
 .medium-editor-toolbar.show-none .medium-editor-toolbar-form {
   height: $wysiwyg-button-size;
 }
+.medium-toolbar-arrow-under.show-none:before,
 .medium-toolbar-arrow-under.show-none:after {
   animation: medium-editor-animate-arrow 200ms backwards linear;
 }
@@ -257,6 +289,5 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
   padding-left: 1px;
 }
 .medium-editor-action-anchor img {
-  margin: 7px;
   width: 18px;
 }

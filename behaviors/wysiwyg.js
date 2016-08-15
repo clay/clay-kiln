@@ -517,19 +517,27 @@ function initWysiwygBinder(enableKeyboardExtras) {
         observer = this.observer,
         data = observer.value() || '', // don't print 'undefined' if there's no data
         editor = createEditor(el, toolbarButtons),
+        boldExtension = _.find(editor.extensions, findExtension('bold')),
         italicExtension = _.find(editor.extensions, findExtension('italic')),
         strikethoughExtension = _.find(editor.extensions, findExtension('strikethrough')),
-        linkExtension = _.find(editor.extensions, findExtension('anchor'));
+        linkExtension = _.find(editor.extensions, findExtension('anchor')),
+        removeFormattingExtension = _.find(editor.extensions, findExtension('removeFormat'));
 
       // apply custom styling to buttons
+      if (boldExtension) {
+        boldExtension.button.innerHTML = `<img src="${site.get('assetPath')}/media/components/clay-kiln/bold.svg" />`;
+      }
       if (italicExtension) {
-        italicExtension.button.innerHTML = '<em>I</em>';
+        italicExtension.button.innerHTML = `<img src="${site.get('assetPath')}/media/components/clay-kiln/italics.svg" />`;
       }
       if (strikethoughExtension) {
-        strikethoughExtension.button.innerHTML = '<s>M</s>';
+        strikethoughExtension.button.innerHTML = `<img src="${site.get('assetPath')}/media/components/clay-kiln/strikethrough.svg" />`;
       }
       if (linkExtension) {
-        linkExtension.button.innerHTML = `<img src="${site.get('assetPath')}/media/components/clay-kiln/link-icon.svg" />`;
+        linkExtension.button.innerHTML = `<img src="${site.get('assetPath')}/media/components/clay-kiln/link.svg" />`;
+      }
+      if (removeFormattingExtension) {
+        removeFormattingExtension.button.innerHTML = `<img src="${site.get('assetPath')}/media/components/clay-kiln/remove-formatting.svg" />`;
       }
 
       // put the initial data into the editor
