@@ -38,6 +38,7 @@ describe('edit service', function () {
     site.addPort.returns('place.com/b');
 
     db.getHTML.returns(document.createElement('div'));
+    db.getHTMLWithQuery.returns(document.createElement('div'));
   });
 
   afterEach(function () {
@@ -109,6 +110,16 @@ describe('edit service', function () {
 
       return fn({ref: 'newRef', prevRef: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
         expectSavedAs({a: [{_ref: 'b'}, {_ref: 'newRef'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'});
+      });
+    });
+
+    it('adds the item to the list data above the component that triggered the add', function () {
+      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'}));
+      cache.saveThrough.returns(resolveReadOnly({}));
+      cache.saveForHTML.returns(Promise.resolve('some html'));
+
+      return fn({ref: 'newRef', prevRef: 'b', parentField: 'a', parentRef: 'd', above: true}).then(function () {
+        expectSavedAs({a: [{_ref: 'newRef'}, {_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'});
       });
     });
 
@@ -385,6 +396,55 @@ describe('edit service', function () {
           expect(ref).to.equal('/components/fakeLayout');
         }
         return fn('/pages/foo').then(expectRef);
+      });
+    });
+  });
+
+  describe('getHTMLWithQuery', function () {
+    var fn = lib[this.title],
+      url = 'fake/uri/to/component',
+      query = '?query=foobar';
+
+    it('throws error if not passing in a query', function () {
+      function result() {
+        return fn(url);
+      }
+      expect(result).to.throw();
+    });
+
+    it('returns html for a component', function () {
+      db.getHTMLWithQuery.returns(Promise.resolve('some html'));
+
+      function result() {
+        return fn(url, query);
+      }
+
+      result().then(function (resp) {
+        expect(resp).to.equal('some html');
+      });
+    });
+  });
+
+  describe('getHTML', function () {
+    var fn = lib[this.title],
+      uri = 'fake/uri/to/component';
+
+    it('throws error if no uri is provided', function () {
+      function result() {
+        return fn();
+      }
+      expect(result).to.throw();
+    });
+
+    it('returns html for a component', function () {
+      db.getHTML.returns(Promise.resolve('some html'));
+
+      function result() {
+        return fn(uri);
+      }
+
+      result().then(function (resp) {
+        expect(resp).to.equal('some html');
       });
     });
   });

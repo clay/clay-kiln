@@ -442,6 +442,7 @@ function removeFromParentList(opts) {
  * @param {object} options
  * @param {string} options.ref new component ref
  * @param {string} [options.prevRef] (optionally) insert the new component after this ref
+ * @param {string} [options.above] (optionally) insert the new component above the element specified in the prevRef
  * @param {string} options.parentField
  * @param {string} options.parentRef
  * @returns {Promise} Promise resolves to new component Element.
@@ -449,6 +450,7 @@ function removeFromParentList(opts) {
 function addToComponentList(parentData, options) {
   var ref = options.ref,
     prevRef = options.prevRef,
+    above = options.above,
     parentField = options.parentField,
     prevIndex,
     prevItem = {},
@@ -456,11 +458,16 @@ function addToComponentList(parentData, options) {
 
   parentData = _.cloneDeep(parentData);
   item[refProp] = ref;
-  if (prevRef) {
+  if (prevRef && !above) {
     // Add to specific position in the list.
     prevItem[refProp] = prevRef;
     prevIndex = _.findIndex(parentData[parentField], prevItem);
     parentData[parentField].splice(prevIndex + 1, 0, item);
+  } else if (prevRef && above) {
+    // Add above a specific position in the list
+    prevItem[refProp] = prevRef;
+    prevIndex = _.findIndex(parentData[parentField], prevItem);
+    parentData[parentField].splice(prevIndex, 0, item);
   } else {
     // Add to end of list.
     parentData[parentField].push(item);
@@ -516,6 +523,7 @@ function addToPageList(options) {
  * @param {object} opts
  * @param {string} opts.ref
  * @param {string} [opts.prevRef]     The ref of the item to insert after.
+ * * @param {string} [options.above] (optionally) insert the new component above the element specified in the prevRef
  * @param {string} opts.parentField
  * @param {string} opts.parentRef
  * @returns {Promise} Promise resolves to new component Element.
@@ -650,6 +658,62 @@ function getComponentRef(uri) {
   }
 }
 
+/**
+ * get the component's HTML and pass along any query parameters
+ * that may need to be exposed to the component in its server.js
+ * file. This is handy for passing the current page URL to the
+ * component for re-rendering when in edit mode.
+ *
+ * TODO: Currently this is ONLY used for the Space component because
+ * querying for article tags is limited. There is a pending update
+ * to our elastic indices that should make this unecessary. At that
+ * point this should be removed.
+ *
+ * @param  {string} uri
+ * @param  {object} query
+ * @return {Promise}
+ */
+function getHTMLWithQuery(uri, query) {
+  var queryString = queryObjectToString(query);
+
+  if (!queryString) {
+    throw new Error('A query param is required to use getHTMLWithQuery');
+  }
+
+  return db.getHTMLWithQuery(uri, encodeURIComponent(queryString));
+}
+
+/**
+ * get a component's HTML
+ * @param  {string} uri
+ * @return {Promise}
+ */
+function getHTML(uri) {
+  if (!uri) {
+    throw new Error('A component uri is required for getHTML');
+  }
+
+  return db.getHTML(uri);
+}
+
+/**
+ * turn an object into query string for getHTMLWithQuery.
+ * Key-value pairs will be separated with `&` but no question
+ * mark is added to the beginning.
+ *
+ * @param  {object} queryObj
+ * @return {string}
+ */
+function queryObjectToString(queryObj) {
+  var string = '';
+
+  _.forIn(queryObj, function (val, key) {
+    string = string + '&' + key + '=' + val;
+  });
+
+  return string;
+}
+
 // Expose main actions (alphabetical!)
 module.exports = {
   // Please use these.  They should be discrete actions that should be well tested.
@@ -669,6 +733,8 @@ module.exports = {
   schedulePublish: schedulePublish,
   unschedulePublish: unschedulePublish,
   getComponentRef: getComponentRef,
+  getHTMLWithQuery: getHTMLWithQuery,
+  getHTML: getHTML,
 
   // Please stop using these.  If you use these, we don't trust you.  Do you trust yourself?
   getData: getData,
