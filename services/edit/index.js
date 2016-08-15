@@ -670,15 +670,35 @@ function getComponentRef(uri) {
  * point this should be removed.
  *
  * @param  {string} uri
- * @param  {string} query
+ * @param  {object} query
  * @return {Promise}
  */
 function getHTMLWithQuery(uri, query) {
-  if (!query) {
-    throw new Error('A query param is required to use this getHTMLWithQuery');
+  var queryString = queryObjectToString(query);
+
+  if (!queryString) {
+    throw new Error('A query param is required to use getHTMLWithQuery');
   }
 
-  return db.getHTMLWithQuery(uri, query);
+  return db.getHTMLWithQuery(uri, encodeURIComponent(queryString));
+}
+
+/**
+ * turn an object into query string for getHTMLWithQuery.
+ * Key-value pairs will be separated with `&` but no question
+ * mark is added to the beginning.
+ *
+ * @param  {object} queryObj
+ * @return {string}
+ */
+function queryObjectToString(queryObj) {
+  var string = '';
+
+  _.forIn(queryObj, function (val, key) {
+    string = string + '&' + key + '=' + val;
+  });
+
+  return string;
 }
 
 // Expose main actions (alphabetical!)
