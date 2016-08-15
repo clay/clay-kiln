@@ -38,6 +38,7 @@ describe('edit service', function () {
     site.addPort.returns('place.com/b');
 
     db.getHTML.returns(document.createElement('div'));
+    db.getHTMLWithQuery.returns(document.createElement('div'));
   });
 
   afterEach(function () {
@@ -385,6 +386,33 @@ describe('edit service', function () {
           expect(ref).to.equal('/components/fakeLayout');
         }
         return fn('/pages/foo').then(expectRef);
+      });
+    });
+  });
+
+  describe('getHTMLWithQuery', function () {
+    var fn = lib[this.title],
+      url = 'fake/uri/to/component',
+      query = '?query=foobar';
+
+
+
+    it('throws error if not passing in a query', function () {
+      function result() {
+        return fn(url);
+      }
+      expect(result).to.throw();
+    });
+
+    it('returns html for a component', function () {
+      db.getHTMLWithQuery.returns(Promise.resolve('some html'));
+
+      function result() {
+        return fn(url, query);
+      }
+
+      result().then(function (resp) {
+        expect(result).to.equal('some html');
       });
     });
   });

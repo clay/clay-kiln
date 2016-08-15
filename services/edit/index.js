@@ -463,7 +463,7 @@ function addToComponentList(parentData, options) {
     prevItem[refProp] = prevRef;
     prevIndex = _.findIndex(parentData[parentField], prevItem);
     parentData[parentField].splice(prevIndex + 1, 0, item);
-  } else if(prevRef && above) {
+  } else if (prevRef && above) {
     // Add above a specific position in the list
     prevItem[refProp] = prevRef;
     prevIndex = _.findIndex(parentData[parentField], prevItem);
@@ -657,12 +657,27 @@ function getComponentRef(uri) {
   }
 }
 
-function getHTML(ref) {
-  return db.getHTML(ref);
-}
+/**
+ * get the components HTML and pass along any query paramaters
+ * that may need to be exposed to the component in it's server.js
+ * file. This is handy for passing the current page URL to the
+ * component for re-rendering when in edit mode.
+ *
+ * TODO: Currently this is ONLY used for the Space component because
+ * querying for artile tags is limited. There is a pending update
+ * to our elastic indices that should make this unecessary. At that
+ * point this should be removed.
+ *
+ * @param  {string} uri
+ * @param  {string} query
+ * @return {Promise}
+ */
+function getHTMLWithQuery(uri, query) {
+  if (!query) {
+    throw new Error('A query param is required to use this getHTMLWithQuery');
+  }
 
-function getHTMLWithQuery(ref, query) {
-  return db.getHTMLWithQuery(ref, query);
+  return db.getHTMLWithQuery(uri, query);
 }
 
 // Expose main actions (alphabetical!)
@@ -685,7 +700,6 @@ module.exports = {
   unschedulePublish: unschedulePublish,
   getComponentRef: getComponentRef,
   getHTMLWithQuery: getHTMLWithQuery,
-  getHTML: getHTML,
 
   // Please stop using these.  If you use these, we don't trust you.  Do you trust yourself?
   getData: getData,

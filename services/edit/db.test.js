@@ -222,6 +222,34 @@ describe('db service', function () {
     });
   });
 
+  describe('getHTMLWithQuery', function () {
+    var fn = lib[this.title];
+
+    createUriBlockTests(fn);
+
+    it('returns html with data-uri', function () {
+      var data = '<span></span>';
+
+      respond(data);
+
+      return fn('foo').then(function (result) {
+        expect(result.getAttribute('data-uri')).to.deep.equal('foo');
+      });
+    });
+
+    it('throws on bad html', function (done) {
+      var data = '<spa';
+
+      respond(data);
+
+      fn('foo').then(function () {
+        done('should throw');
+      }, function () {
+        done();
+      });
+    });
+  });
+
   describe('save', function () {
     var fn = lib[this.title];
 
