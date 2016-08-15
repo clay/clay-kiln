@@ -424,4 +424,28 @@ describe('edit service', function () {
       });
     });
   });
+
+  describe('getHTML', function () {
+    var fn = lib[this.title],
+      uri = 'fake/uri/to/component';
+
+    it('throws error if no uri is provided', function () {
+      function result() {
+        return fn();
+      }
+      expect(result).to.throw();
+    });
+
+    it('returns html for a component', function () {
+      db.getHTML.returns(Promise.resolve('some html'));
+
+      function result() {
+        return fn(uri);
+      }
+
+      result().then(function (resp) {
+        expect(resp).to.equal('some html');
+      });
+    });
+  });
 });

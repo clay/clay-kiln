@@ -684,6 +684,19 @@ function getHTMLWithQuery(uri, query) {
 }
 
 /**
+ * get a component's HTML
+ * @param  {string} uri
+ * @return {Promise}
+ */
+function getHTML(uri) {
+  if (!uri) {
+    throw new Error('A component uri is required for getHTML');
+  }
+
+  return db.getHTML(uri);
+}
+
+/**
  * turn an object into query string for getHTMLWithQuery.
  * Key-value pairs will be separated with `&` but no question
  * mark is added to the beginning.
@@ -721,6 +734,7 @@ module.exports = {
   unschedulePublish: unschedulePublish,
   getComponentRef: getComponentRef,
   getHTMLWithQuery: getHTMLWithQuery,
+  getHTML: getHTML,
 
   // Please stop using these.  If you use these, we don't trust you.  Do you trust yourself?
   getData: getData,
