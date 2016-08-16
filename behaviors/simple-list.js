@@ -158,9 +158,9 @@ module.exports = function (result, args) {
           val = newText.text,
           repeated = hasRepeatedValue(val, data);
 
-        // prevent creating newlines or tabbing out of the field
         if (e) {
-          e.preventDefault();
+          e.preventDefault(); // prevent creating newlines or tabbing out of the field
+          e.stopPropagation(); // prevent closing the form
         }
 
         if (val.length && repeated) {
