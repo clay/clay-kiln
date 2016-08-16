@@ -74,9 +74,28 @@ function appendAddButton(el, options) {
 }
 
 /**
+ * replace the default input placeholder
+ * @param {Element} el
+ * @param {string} text
+ */
+function replaceInputPlaceholder(el, text) {
+  var input = dom.find(el, '.filtered-input');
+
+  input.setAttribute('placeholder', text);
+}
+
+/**
  * create a filterable list
+ * note: add an `active` class to specific list items to apply the "active" styles to that item
  * @param {array} items
  * @param {object} options
+ * @param {function} options.click called with id when users click an item
+ * @param {function} [options.add] if passed in, shows add button below list. called with add button element when clicked
+ * @param {function} [options.remove] if passed in, shows delete button on items. called with id when clicked
+ * @param {function} [options.settings] if passed in, shows settings button on items. called with id when clicked
+ * @param {function} [options.reorder] if passed in, shows grab icon on items and enables drag-drop. called with id, new index, and old index when items are reordered
+ * @param {string} [options.addTitle] if passed in, replaces default add button title
+ * @param {string} [options.inputPlaceholder] if passed in, replaces default input placeholder
  * @returns {Element}
  */
 function create(items, options) {
@@ -97,6 +116,10 @@ function create(items, options) {
 
   if (options.add) {
     appendAddButton(el, options);
+  }
+
+  if (options.inputPlaceholder) {
+    replaceInputPlaceholder(el, options.inputPlaceholder);
   }
 
   // init controller for filterable list
