@@ -290,9 +290,7 @@ describe('db service', function () {
     });
 
     it('throws on bad data', function (done) {
-      var data = 'jkfdlsa';
-
-      respond(data);
+      respond(new Error('bad data'));
 
       fn('foo').then(function () {
         done('should throw');
