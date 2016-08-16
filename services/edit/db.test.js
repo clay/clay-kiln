@@ -281,7 +281,7 @@ describe('db service', function () {
 
     createUriBlockTests(fn);
 
-    it('returns data with schema', function () {
+    it('handles returned html', function () {
       respond('<div>ok</div>');
 
       return fn('foo').then(function (data) {
@@ -289,7 +289,15 @@ describe('db service', function () {
       });
     });
 
-    it('throws on bad data', function (done) {
+    it('handles returned full document', function () {
+      respond('<!DOCTYPE html><html><head></head><body><div>ok</div></body></html>');
+
+      return fn('foo').then(function (data) {
+        expect(data.getAttribute('data-uri')).to.deep.equal('foo');
+      });
+    });
+
+    it('throws if error', function (done) {
       respond(new Error('bad data'));
 
       fn('foo').then(function () {
