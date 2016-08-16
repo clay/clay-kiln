@@ -86,6 +86,7 @@ function replaceInputPlaceholder(el, text) {
 
 /**
  * create a filterable list
+ * note: add an `active` class to specific list items to apply the "active" styles to that item
  * @param {array} items
  * @param {object} options
  * @param {function} options.click called with id when users click an item
