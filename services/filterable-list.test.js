@@ -31,7 +31,7 @@ describe(dirname, function () {
       sandbox = sinon.sandbox.create();
       sandbox.stub(ds);
       sandbox.stub(tpl, 'get');
-      tpl.get.withArgs('.filtered-input-template').returns(dom.create('<input class="filtered-input" />'));
+      tpl.get.withArgs('.filtered-input-template').returns(dom.create('<input class="filtered-input" placeholder="Start typing to filter this list" />'));
       tpl.get.withArgs('.filtered-items-template').returns(dom.create('<div><ul class="filtered-items"></div>')); // wrapper divs to simulate doc fragments
       tpl.get.withArgs('.filtered-item-template').returns(stubFilterableItemTemplate());
       tpl.get.withArgs('.filtered-add-template').returns(stubFilteredAddTemplate());
@@ -150,6 +150,18 @@ describe(dirname, function () {
 
         expect(dom.find(el, '.filtered-add-title').innerHTML).to.equal('Add To List');
         expect(dom.find(el, '.filtered-add-button').getAttribute('title')).to.equal('Add To List');
+      });
+
+      it('adds placeholder if options.inputPlaceholder is set', function () {
+        var el = fn([{ title: 'Foo <em>Bar</em>', id: 'foo-bar' }], { click: _.noop, inputPlaceholder: 'Filter me!' });
+
+        expect(dom.find(el, '.filtered-input').getAttribute('placeholder')).to.equal('Filter me!');
+      });
+
+      it('uses default placeholder if options.inputPlaceholder is not set', function () {
+        var el = fn([{ title: 'Foo <em>Bar</em>', id: 'foo-bar' }], { click: _.noop });
+
+        expect(dom.find(el, '.filtered-input').getAttribute('placeholder')).to.equal('Start typing to filter this list');
       });
     });
   });
