@@ -72,6 +72,13 @@
   flex: 1 0 auto;
 }
 
+.filtered-item.active .filtered-item-title,
+.dragula-list-item.active .filtered-item-title {
+  // some lists allow for denoting an "active" item
+  // e.g. spaces, component finder
+  font-weight: 700;
+}
+
 .filterable-list-wrapper .filtered-item-remove,
 .filterable-list-wrapper .filtered-item-settings,
 .dragula-list-item .filtered-item-remove,
