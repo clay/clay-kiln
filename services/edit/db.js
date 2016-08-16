@@ -178,10 +178,10 @@ function expectHTMLResult(uri) {
   return function (res) {
     return res.text().then(dom.create) // string -> elements
     .then(function (html) {
-      if (html.nodeType === 1) {
+      if (html.nodeType === html.ELEMENT_NODE) {
         // it's an element, add the uri
         html.setAttribute(references.referenceAttribute, uri);
-      } else if (html.nodeType === 11) {
+      } else if (html.nodeType === html.DOCUMENT_FRAGMENT_NODE) {
         // it's a document fragment, add the uri to the first child
         html.firstElementChild.setAttribute(references.referenceAttribute, uri);
       }
