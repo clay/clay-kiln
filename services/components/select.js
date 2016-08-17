@@ -441,6 +441,7 @@ function handler(el, options) {
 // select and unselect
 module.exports.select = select;
 module.exports.unselect = unselect;
+module.exports.scrollToComponent = scrollToComponent;
 
 // decorators
 module.exports.when = when;

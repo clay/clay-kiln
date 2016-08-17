@@ -89,11 +89,11 @@ function replaceInputPlaceholder(el, text) {
  * note: add an `active` class to specific list items to apply the "active" styles to that item
  * @param {array} items
  * @param {object} options
- * @param {function} options.click called with id when users click an item
+ * @param {function} options.click called with id and item element when users click an item
  * @param {function} [options.add] if passed in, shows add button below list. called with add button element when clicked
- * @param {function} [options.remove] if passed in, shows delete button on items. called with id when clicked
- * @param {function} [options.settings] if passed in, shows settings button on items. called with id when clicked
- * @param {function} [options.reorder] if passed in, shows grab icon on items and enables drag-drop. called with id, new index, and old index when items are reordered
+ * @param {function} [options.remove] if passed in, shows delete button on items. called with id and item element when clicked
+ * @param {function} [options.settings] if passed in, shows settings button on items. called with id and item element when clicked
+ * @param {function} [options.reorder] if passed in, shows grab icon on items and enables drag-drop. called with id, new index, old index, and item element when items are reordered
  * @param {string} [options.addTitle] if passed in, replaces default add button title
  * @param {string} [options.inputPlaceholder] if passed in, replaces default input placeholder
  * @returns {Element}

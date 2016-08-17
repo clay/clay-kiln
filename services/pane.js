@@ -13,7 +13,10 @@ var _ = require('lodash'),
   paneController = require('../controllers/pane'),
   filterableList = require('./filterable-list'),
   publishPaneController = require('../controllers/publish-pane'),
+  references = require('./references'),
   addComponent = require('./components/add-component'),
+  select = require('./components/select'),
+  label = require('./label'),
   kilnHideClass = 'kiln-hide';
 
 /**
@@ -566,6 +569,57 @@ function takeOffEveryZig() {
   open([{header: header, content: innerEl}]);
 }
 
+/**
+ * determine if an element is visible on the page
+ * @param {Element} el
+ * @returns {boolean}
+ */
+function showVisible(el) {
+  // checking offsetParent works for all non-fixed elements,
+  // and is much faster than checking getComputedStyle(el).display and visibility
+  return el.offsetParent !== null;
+}
+
+/**
+ * get name of component from the component's element
+ * @param {Element} el
+ * @returns {string}
+ */
+function getName(el) {
+  var ref = el.getAttribute(references.referenceAttribute);
+
+  return {
+    id: ref,
+    title: label(references.getComponentNameFromReference(ref))
+  };
+}
+
+/**
+ * open the component search pane
+ * @returns {Promise}
+ */
+function openComponents() {
+  var searchHeader = 'Components',
+    visibleComponents = _.filter(dom.findAll(`[${references.referenceAttribute}]`), showVisible).map(getName),
+    searchContent = filterableList.create(visibleComponents, {
+      click: function (id, el) {
+        var currentActive = dom.find('.filtered-item.selected'),
+          component = dom.find(`[${references.referenceAttribute}="${id}"]`);
+
+        if (currentActive) {
+          currentActive.classList.remove('selected');
+        }
+
+        select.unselect();
+        select.select(component);
+        select.scrollToComponent(component);
+        el.classList.add('selected');
+      }
+    });
+
+  return open([{header: searchHeader, content: searchContent}]);
+}
+
 module.exports.close = close;
 module.exports.open = open;
 module.exports.openNewPage = openNewPage;
@@ -573,4 +627,5 @@ module.exports.openPublish = openPublish;
 module.exports.openPreview = openPreview;
 module.exports.openAddComponent = openAddComponent;
 module.exports.takeOffEveryZig = takeOffEveryZig;
+module.exports.openComponents = openComponents;
 _.set(window, 'kiln.services.pane', module.exports); // export for plugins

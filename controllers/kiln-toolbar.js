@@ -36,6 +36,7 @@ EditorToolbar = function (el) {
 
   events.add(this.toolbar, {
     '.user-icon click': 'onUserClick',
+    '.components click': 'onComponentsClick',
     '.new click': 'onNewClick',
     '.preview click': 'onPreviewClick',
     '.history click': 'onHistoryClick',
@@ -81,6 +82,15 @@ EditorToolbar.prototype = {
     // nothing yet
     e.preventDefault();
     e.stopPropagation();
+  },
+
+  onComponentsClick: function () {
+    return focus.unfocus()
+      .then(pane.openComponents)
+      .catch(function () {
+        progress.done('error');
+        progress.open('error', 'Data could not be saved. Please review your open form.', true);
+      });
   },
 
   onNewClick: function () {
