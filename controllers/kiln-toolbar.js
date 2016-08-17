@@ -85,12 +85,9 @@ EditorToolbar.prototype = {
   },
 
   onComponentsClick: function () {
-    return focus.unfocus()
-      .then(pane.openComponents)
-      .catch(function () {
-        progress.done('error');
-        progress.open('error', 'Data could not be saved. Please review your open form.', true);
-      });
+    // note: we're explicitly NOT closing any current forms,
+    // because we don't want to unselect a currently selected component
+    return pane.openComponents();
   },
 
   onNewClick: function () {

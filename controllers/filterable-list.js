@@ -221,7 +221,6 @@ module.exports = function () {
         id = currentItem.getAttribute('data-item-id');
 
       e.preventDefault();
-      console.log(e.currentTarget)
       e.stopPropagation();
       this.options.click(id, currentItem);
     },

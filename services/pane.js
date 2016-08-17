@@ -596,18 +596,18 @@ function getName(el) {
 
 /**
  * open the component search pane
- * @returns {Promise}
  */
 function openComponents() {
   var searchHeader = 'Components',
     visibleComponents = _.filter(dom.findAll(`[${references.referenceAttribute}]`), showVisible).map(getName),
+    currentSelected = dom.find('.component-selector-wrapper.selected'),
     searchContent = filterableList.create(visibleComponents, {
       click: function (id, el) {
-        var currentActive = dom.find('.filtered-item.selected'),
+        var currentSelectedItem = dom.find('.filtered-item.selected'),
           component = dom.find(`[${references.referenceAttribute}="${id}"]`);
 
-        if (currentActive) {
-          currentActive.classList.remove('selected');
+        if (currentSelectedItem) {
+          currentSelectedItem.classList.remove('selected');
         }
 
         select.unselect();
@@ -615,9 +615,23 @@ function openComponents() {
         select.scrollToComponent(component);
         el.classList.add('selected');
       }
-    });
+    }),
+    currentItem, el;
 
-  return open([{header: searchHeader, content: searchContent}]);
+  if (currentSelected) {
+    currentItem = dom.find(searchContent, `[data-item-id="${currentSelected.getAttribute(references.referenceAttribute)}"]`);
+
+    currentItem.classList.add('selected');
+  }
+
+  el = open([{header: searchHeader, content: searchContent}]);
+
+  // once the pane is created, make sure it's scrolled so that the current item is visible
+  if (currentSelected) {
+    window.setTimeout(function () {
+      dom.find(el, '.pane-inner').scrollTop = currentItem.offsetTop + currentItem.offsetHeight - 35;
+    }, 300);
+  }
 }
 
 module.exports.close = close;
