@@ -621,13 +621,15 @@ function openComponents() {
   if (currentSelected) {
     currentItem = dom.find(searchContent, `[data-item-id="${currentSelected.getAttribute(references.referenceAttribute)}"]`);
 
-    currentItem.classList.add('selected');
+    if (currentItem) {
+      currentItem.classList.add('selected');
+    }
   }
 
   el = open([{header: searchHeader, content: searchContent}]);
 
   // once the pane is created, make sure it's scrolled so that the current item is visible
-  if (currentSelected) {
+  if (currentSelected && currentItem) {
     window.setTimeout(function () {
       dom.find(el, '.pane-inner').scrollTop = currentItem.offsetTop + currentItem.offsetHeight - 35;
     }, 300);
