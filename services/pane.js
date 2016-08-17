@@ -598,7 +598,7 @@ function getName(el) {
  * open the component search pane
  */
 function openComponents() {
-  var searchHeader = 'Components',
+  var searchHeader = 'Find Component',
     visibleComponents = _.filter(dom.findAll(`[${references.referenceAttribute}]`), showVisible).map(getName),
     currentSelected = dom.find('.component-selector-wrapper.selected'),
     searchContent = filterableList.create(visibleComponents, {
@@ -614,7 +614,8 @@ function openComponents() {
         select.select(component);
         select.scrollToComponent(component);
         el.classList.add('selected');
-      }
+      },
+      inputPlaceholder: 'Search all visible components'
     }),
     currentItem, el;
 
