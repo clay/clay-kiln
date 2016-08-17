@@ -1,12 +1,14 @@
 @import '../styleguide/typography';
 
 .input-checkbox {
+  cursor: pointer;
   margin: 5px 0 10px 2px; // left-margin space to accommodate browser focus display
 }
 
 .checkbox-label {
   @include input-text();
 
+  cursor: pointer;
   margin-left: 10px;
   vertical-align: middle;
 }

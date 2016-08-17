@@ -17,5 +17,6 @@
 .editor-radio-item label {
   @include input-text();
 
+  cursor: pointer;
   vertical-align: baseline;
 }
