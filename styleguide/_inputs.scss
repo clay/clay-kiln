@@ -36,6 +36,7 @@
 }
 
 @mixin checkbox {
+  cursor: pointer;
   height: 16px;
   margin: 0 0 0 3px; // need some left margin to fit the :focus outline
   padding: 0;

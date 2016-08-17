@@ -18,6 +18,7 @@
 .checkbox-group label {
   @include primary-text();
 
+  cursor: pointer;
   padding-left: 4px;
   vertical-align: middle;
 }
