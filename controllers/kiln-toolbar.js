@@ -36,6 +36,7 @@ EditorToolbar = function (el) {
 
   events.add(this.toolbar, {
     '.user-icon click': 'onUserClick',
+    '.components click': 'onComponentsClick',
     '.new click': 'onNewClick',
     '.preview click': 'onPreviewClick',
     '.history click': 'onHistoryClick',
@@ -81,6 +82,12 @@ EditorToolbar.prototype = {
     // nothing yet
     e.preventDefault();
     e.stopPropagation();
+  },
+
+  onComponentsClick: function () {
+    // note: we're explicitly NOT closing any current forms,
+    // because we don't want to unselect a currently selected component
+    return pane.openComponents();
   },
 
   onNewClick: function () {

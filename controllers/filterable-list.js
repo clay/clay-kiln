@@ -102,7 +102,7 @@ function addDragula(el, reorder) {
   drag.on('drop', function (selectedItem, container) {
     selectedItem.classList.remove(dragItemClass);
     container.classList.remove(dropAreaClass);
-    reorder(selectedItem.getAttribute('data-item-id'), getIndex(selectedItem, container), oldIndex);
+    reorder(selectedItem.getAttribute('data-item-id'), getIndex(selectedItem, container), oldIndex, selectedItem);
   });
 }
 
@@ -167,7 +167,7 @@ module.exports = function () {
       } else if (key === 'enter' && available.length === 1) {
         available[0].classList.remove('active');
         e.preventDefault();
-        this.options.click(available[0].getAttribute('data-item-id'));
+        this.options.click(available[0].getAttribute('data-item-id'), available[0]);
       } else if (key === 'enter') {
         input.classList.add('kiln-shake');
         setTimeout(() => input.classList.remove('kiln-shake'), 301); // length of the animation + 1
@@ -212,30 +212,34 @@ module.exports = function () {
         pane.close();
       } else if (key === 'enter') {
         e.preventDefault();
-        this.options.click(currentItem.getAttribute('data-item-id'));
+        this.options.click(currentItem.getAttribute('data-item-id'), currentItem);
       }
     },
 
     onItemClick: function (e) {
-      var id = e.currentTarget.parentElement.getAttribute('data-item-id');
+      var currentItem = e.currentTarget.parentElement,
+        id = currentItem.getAttribute('data-item-id');
 
       e.preventDefault();
-      this.options.click(id);
+      e.stopPropagation();
+      this.options.click(id, currentItem);
     },
 
     onRemoveClick: function (e) {
-      var id = e.currentTarget.parentElement.getAttribute('data-item-id'),
+      var currentItem = e.currentTarget.parentElement,
+        id = currentItem.getAttribute('data-item-id'),
         confirm = window.confirm('Remove from this list?'); // eslint-disable-line
 
       if (confirm) {
-        this.options.remove(id);
+        this.options.remove(id, currentItem);
       }
     },
 
     onSettingsClick: function (e) {
-      var id = e.currentTarget.parentElement.getAttribute('data-item-id');
+      var currentItem = e.currentTarget.parentElement,
+        id = currentItem.getAttribute('data-item-id');
 
-      this.options.settings(id);
+      this.options.settings(id, currentItem);
     },
 
     onAddClick: function (e) {
