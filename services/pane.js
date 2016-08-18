@@ -13,6 +13,7 @@ var _ = require('lodash'),
   paneController = require('../controllers/pane'),
   filterableList = require('./filterable-list'),
   publishPaneController = require('../controllers/publish-pane'),
+  previewController = require('../controllers/preview-pane'),
   references = require('./references'),
   addComponent = require('./components/add-component'),
   select = require('./components/select'),
@@ -474,12 +475,18 @@ function addPreview(preview) {
 function openPreview() {
   var pageUrl = edit.getPageUrl(),
     shareHeader = 'Shareable Link',
-    shareContent = tpl.get('.share-actions-template');
+    shareContent = tpl.get('.share-actions-template'),
+    el;
 
   // set the page url into the share tab
   dom.find(shareContent, '.share-input').setAttribute('value', pageUrl);
 
-  return open([{ header: shareHeader, content: shareContent }]);
+  el = open([{ header: shareHeader, content: shareContent }]);
+
+  // init controller
+  ds.controller('preview-pane', previewController);
+  ds.get('preview-pane', el);
+  return el;
 }
 
 /**

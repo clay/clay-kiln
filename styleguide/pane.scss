@@ -482,6 +482,44 @@ $schedule-item-width: calc(50% - 8px);
   flex: 0 0 auto;
   height: 36px; // bump up the height to match input
   margin: 0 0 0 -1px; // cover the input border
+  position: relative;
+
+  &:before,
+  &:after {
+    @include secondary-text();
+
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    transition: opacity 300ms ease-out;
+    white-space: nowrap;
+  }
+
+  // :before is the success message, :after is the error
+  // this allows us to fade them in (setting the content with the class messes up the animation)
+  &:before {
+    color: $blue;
+    content: 'Copied to clipboard!';
+  }
+
+  &:after {
+    color: $red;
+    content: 'Cannot copy link';
+  }
+
+  &.success:before {
+    opacity: 1;
+  }
+
+  &.error:after {
+    opacity: 1;
+  }
+
+  svg {
+    height: 20px;
+    width: 18px;
+  }
 }
 
 /* new page pane */
