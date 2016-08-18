@@ -452,7 +452,63 @@ $schedule-item-width: calc(50% - 8px);
   padding-top: 20px;
 }
 
-/* preview pane */
+/* preview / share pane */
+
+.kiln-toolbar-pane .preview-actions {
+  list-style: none;
+  margin: -20px -20px 0;
+  padding: 0;
+  position: relative;
+  width: calc(100% + 40px);
+}
+
+.kiln-toolbar-pane .preview-item {
+  border-bottom: 1px solid $grey;
+  margin: 0;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .preview-link {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-start;
+  line-height: 16px;
+  list-style: none;
+  margin: 0;
+  text-decoration: none;
+  width: 100%;
+
+  &:hover,
+  &:active,
+  &:visited {
+    text-decoration: none;
+  }
+}
+
+.kiln-toolbar-pane .preview-link-size {
+  @include icon-button($black-75, 22px);
+
+  flex: 0 0 auto;
+  margin-right: 10px;
+  padding: 0;
+}
+
+.kiln-toolbar-pane .preview-link-text {
+  @include primary-text();
+
+  flex: 1 0 auto;
+  padding: 15px 0;
+}
+
+.kiln-toolbar-pane .preview-link-icon {
+  @include icon-button($black-50, 18px);
+
+  flex: 0 0 auto;
+  margin-left: 5px;
+  padding: 0;
+}
 
 .kiln-toolbar-pane .info-message {
   @include primary-text();
@@ -461,16 +517,65 @@ $schedule-item-width: calc(50% - 8px);
   padding: 0 0 20px;
 }
 
-.kiln-toolbar-pane .preview-actions {
+.kiln-toolbar-pane .share-actions {
+  display: flex;
   width: 100%;
 }
 
-.kiln-toolbar-pane .preview-input {
+.kiln-toolbar-pane .share-input {
   @include input();
 
   cursor: initial;
+  flex: 0 1 auto;
   margin: 0;
   padding: 8px 10px 7px;
+}
+
+.kiln-toolbar-pane .share-copy {
+  @include button-outlined($black-25);
+
+  border-radius: 0;
+  flex: 0 0 auto;
+  height: 36px; // bump up the height to match input
+  margin: 0 0 0 -1px; // cover the input border
+  position: relative;
+
+  &:before,
+  &:after {
+    @include secondary-text();
+
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    transition: opacity 300ms ease-out;
+    white-space: nowrap;
+  }
+
+  // :before is the success message, :after is the error
+  // this allows us to fade them in (setting the content with the class messes up the animation)
+  &:before {
+    color: $blue;
+    content: 'Copied to clipboard!';
+  }
+
+  &:after {
+    color: $red;
+    content: 'Cannot copy link';
+  }
+
+  &.success:before {
+    opacity: 1;
+  }
+
+  &.error:after {
+    opacity: 1;
+  }
+
+  svg {
+    height: 20px;
+    width: 18px;
+  }
 }
 
 /* new page pane */

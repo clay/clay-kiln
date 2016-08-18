@@ -56,10 +56,36 @@ function stubCustomUrlTemplate() {
 }
 
 function stubPreviewActionsTemplate() {
-  return dom.create(`<div class="preview-actions actions">
-    <form class="preview-link">
-      <input class="preview-input" type="url" value="" placeholder=""></input>
-    </form>
+  return dom.create(`<ul class="preview-actions actions">
+    <li class="preview-item">
+      <a class="preview-link small">
+        <span class="preview-link-size">s</span>
+        <span class="preview-link-text">Small</span>
+        <span class="preview-link-icon">↑</span>
+      </a>
+    </li>
+    <li class="preview-item">
+      <a class="preview-link medium">
+        <span class="preview-link-size">m</span>
+        <span class="preview-link-text">Medium</span>
+        <span class="preview-link-icon">↑</span>
+      </a>
+    </li>
+    <li class="preview-item">
+      <a class="preview-link large">
+        <span class="preview-link-size">l</span>
+        <span class="preview-link-text">Large</span>
+        <span class="preview-link-icon">↑</span>
+      </a>
+    </li>
+  </ul>`);
+}
+
+function stubShareActionsTemplate() {
+  return dom.create(`<div class="info-message">Share the link below to preview the latest version of this page.</div>
+  <div class="share-actions actions">
+    <input class="share-input"></input>
+    <button class="share-copy">{% include 'public/media/components/clay-kiln/copy.svg' %}</button>
   </div>`);
 }
 
@@ -105,6 +131,7 @@ describe(dirname, function () {
       getTemplate.withArgs('.publish-messages-template').returns(stubMessageTemplate());
       getTemplate.withArgs('.publish-actions-template').returns(stubPublishTemplate());
       getTemplate.withArgs('.preview-actions-template').returns(stubPreviewActionsTemplate());
+      getTemplate.withArgs('.share-actions-template').returns(stubShareActionsTemplate());
       getTemplate.withArgs('.publish-error-message-template').returns(dom.create('<div>ERROR MESSAGE</div>'));
       getTemplate.withArgs('.publish-warning-message-template').returns(dom.create('<div>WARNING MESSAGE</div>'));
       getTemplate.withArgs('.publish-errors-template').returns(stubErrorsTemplate());
@@ -362,7 +389,8 @@ describe(dirname, function () {
       it('opens a preview pane', function () {
         lib.close();
         fn();
-        expect(document.querySelector('#pane-tab-1').innerHTML).to.equal('Preview Link');
+        expect(document.querySelector('#pane-tab-1').innerHTML).to.equal('Preview');
+        expect(document.querySelector('#pane-tab-2').innerHTML).to.equal('Shareable Link');
         expect(document.querySelectorAll('.pane-inner input').length).to.equal(1);
       });
     });

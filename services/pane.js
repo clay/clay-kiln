@@ -13,6 +13,7 @@ var _ = require('lodash'),
   paneController = require('../controllers/pane'),
   filterableList = require('./filterable-list'),
   publishPaneController = require('../controllers/publish-pane'),
+  previewController = require('../controllers/preview-pane'),
   references = require('./references'),
   addComponent = require('./components/add-component'),
   select = require('./components/select'),
@@ -468,27 +469,31 @@ function addPreview(preview) {
 }
 
 /**
- * open preview dialog pane
+ * open preview + share pane
+ * @returns {Element}
  */
 function openPreview() {
-  var header = 'Preview Link',
-    innerEl = document.createDocumentFragment(),
-    previewUrl = edit.getPageUrl(),
-    pageActionsSubTemplate = tpl.get('.preview-actions-template'),
-    previewInput;
+  var pageUrl = edit.getPageUrl(),
+    previewHeader = 'Preview',
+    previewContent = tpl.get('.preview-actions-template'),
+    shareHeader = 'Shareable Link',
+    shareContent = tpl.get('.share-actions-template'),
+    el;
 
-  if (pageActionsSubTemplate) {
-    previewInput = dom.find(pageActionsSubTemplate, '.preview-input');
-  }
+  // set the page url into the responsive preview items
+  _.each(dom.findAll(previewContent, 'a'), function (link) {
+    link.setAttribute('href', pageUrl);
+  });
 
-  if (previewInput) {
-    previewInput.setAttribute('value', previewUrl);
-  }
+  // set the page url into the share tab
+  dom.find(shareContent, '.share-input').setAttribute('value', pageUrl);
 
-  // append actions to the doc fragment
-  innerEl.appendChild(pageActionsSubTemplate);
-  // create the root pane element
-  open([{header: header, content: innerEl}]);
+  el = open([{ header: previewHeader, content: previewContent }, { header: shareHeader, content: shareContent }]);
+
+  // init controller
+  ds.controller('preview-pane', previewController);
+  ds.get('preview-pane', el);
+  return el;
 }
 
 /**
