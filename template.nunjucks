@@ -19,12 +19,12 @@
         data-components="{{ _components }}">
         <div class="kiln-toolbar-inner">
           <button class="user-icon">{% include 'public/media/components/clay-kiln/user-icon.svg' %}</button>
-          <div class="flex-span"></div>
-          <button class="kiln-toolbar-button components">
+          <button class="kiln-toolbar-button kiln-toolbar-button-left components">
             <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
               <span class="icon">{% include 'public/media/components/clay-kiln/component-finder.svg' %}</span>
             </div>
           </button>
+          <div class="flex-span"></div>
           <button class="kiln-toolbar-button new">
             <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
               <span class="icon">{% include 'public/media/components/clay-kiln/new-page.svg' %}</span>
