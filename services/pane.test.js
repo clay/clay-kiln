@@ -362,7 +362,8 @@ describe(dirname, function () {
       it('opens a preview pane', function () {
         lib.close();
         fn();
-        expect(document.querySelector('#pane-tab-1').innerHTML).to.equal('Shareable Link');
+        expect(document.querySelector('#pane-tab-1').innerHTML).to.equal('Preview');
+        expect(document.querySelector('#pane-tab-2').innerHTML).to.equal('Shareable Link');
         expect(document.querySelectorAll('.pane-inner input').length).to.equal(1);
       });
     });

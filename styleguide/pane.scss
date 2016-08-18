@@ -454,6 +454,62 @@ $schedule-item-width: calc(50% - 8px);
 
 /* preview / share pane */
 
+.kiln-toolbar-pane .preview-actions {
+  list-style: none;
+  margin: -20px -20px 0;
+  padding: 0;
+  position: relative;
+  width: calc(100% + 40px);
+}
+
+.kiln-toolbar-pane .preview-item {
+  border-bottom: 1px solid $grey;
+  margin: 0;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .preview-link {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-start;
+  line-height: 16px;
+  list-style: none;
+  margin: 0;
+  text-decoration: none;
+  width: 100%;
+
+  &:hover,
+  &:active,
+  &:visited {
+    text-decoration: none;
+  }
+}
+
+.kiln-toolbar-pane .preview-link-size {
+  @include icon-button($black-75, 22px);
+
+  flex: 0 0 auto;
+  margin-right: 10px;
+  padding: 0;
+}
+
+.kiln-toolbar-pane .preview-link-text {
+  @include primary-text();
+
+  flex: 1 0 auto;
+  padding: 15px 0;
+}
+
+.kiln-toolbar-pane .preview-link-icon {
+  @include icon-button($black-50, 18px);
+
+  flex: 0 0 auto;
+  margin-left: 5px;
+  padding: 0;
+}
+
 .kiln-toolbar-pane .info-message {
   @include primary-text();
 

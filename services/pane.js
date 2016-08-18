@@ -474,14 +474,21 @@ function addPreview(preview) {
  */
 function openPreview() {
   var pageUrl = edit.getPageUrl(),
+    previewHeader = 'Preview',
+    previewContent = tpl.get('.preview-actions-template'),
     shareHeader = 'Shareable Link',
     shareContent = tpl.get('.share-actions-template'),
     el;
 
+  // set the page url into the responsive preview items
+  _.each(dom.findAll(previewContent, 'a'), function (link) {
+    link.setAttribute('href', pageUrl);
+  });
+
   // set the page url into the share tab
   dom.find(shareContent, '.share-input').setAttribute('value', pageUrl);
 
-  el = open([{ header: shareHeader, content: shareContent }]);
+  el = open([{ header: previewHeader, content: previewContent }, { header: shareHeader, content: shareContent }]);
 
   // init controller
   ds.controller('preview-pane', previewController);

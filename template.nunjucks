@@ -138,6 +138,33 @@
       </div>
     </template>
 
+    {# preview items #}
+    <template class="preview-actions-template">
+      <ul class="preview-actions actions">
+        <li class="preview-item">
+          <a class="preview-link small">
+            <span class="preview-link-size">{% include 'public/media/components/clay-kiln/preview-small.svg' %}</span>
+            <span class="preview-link-text">Small</span>
+            <span class="preview-link-icon">{% include 'public/media/components/clay-kiln/new-tab.svg' %}</span>
+          </a>
+        </li>
+        <li class="preview-item">
+          <a class="preview-link medium">
+            <span class="preview-link-size">{% include 'public/media/components/clay-kiln/preview-medium.svg' %}</span>
+            <span class="preview-link-text">Medium</span>
+            <span class="preview-link-icon">{% include 'public/media/components/clay-kiln/new-tab.svg' %}</span>
+          </a>
+        </li>
+        <li class="preview-item">
+          <a class="preview-link large">
+            <span class="preview-link-size">{% include 'public/media/components/clay-kiln/preview-large.svg' %}</span>
+            <span class="preview-link-text">Large</span>
+            <span class="preview-link-icon">{% include 'public/media/components/clay-kiln/new-tab.svg' %}</span>
+          </a>
+        </li>
+      </ul>
+    </template>
+
     {# share link #}
     <template class="share-actions-template">
       <div class="info-message">Share the link below to preview the latest version of this page.</div>
