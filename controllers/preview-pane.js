@@ -1,14 +1,31 @@
-var dom = require('@nymag/dom');
+const dom = require('@nymag/dom'),
+  _ = require('lodash'),
+  previewSizes = {
+    small: { w: 375, h: 660 },
+    medium: { w: 768, h: 1024 },
+    large: { w: 1024, h: 768 }
+  };
 
 module.exports = function () {
   function Constructor(el) {
+    // share elements
     this.link = dom.find(el, '.share-input');
     this.button = dom.find(el, '.share-copy');
   }
 
   Constructor.prototype = {
     events: {
+      '.preview-link click': 'onPreview',
       '.share-copy click': 'onCopy',
+    },
+
+    onPreview: function (e) {
+      var link = e.currentTarget,
+        url = link.getAttribute('href'),
+        size = _.find(Object.keys(previewSizes), (s) => link.classList.contains(s));
+
+      e.preventDefault();
+      window.open(url, `Preview${size}`, `resizable=yes,scrollbars=yes,width=${previewSizes[size].w},height=${previewSizes[size].h}`);
     },
 
     onCopy: function () {
