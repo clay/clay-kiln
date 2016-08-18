@@ -55,6 +55,32 @@ function stubCustomUrlTemplate() {
   </form>`);
 }
 
+function stubPreviewActionsTemplate() {
+  return dom.create(`<ul class="preview-actions actions">
+    <li class="preview-item">
+      <a class="preview-link small">
+        <span class="preview-link-size">s</span>
+        <span class="preview-link-text">Small</span>
+        <span class="preview-link-icon">↑</span>
+      </a>
+    </li>
+    <li class="preview-item">
+      <a class="preview-link medium">
+        <span class="preview-link-size">m</span>
+        <span class="preview-link-text">Medium</span>
+        <span class="preview-link-icon">↑</span>
+      </a>
+    </li>
+    <li class="preview-item">
+      <a class="preview-link large">
+        <span class="preview-link-size">l</span>
+        <span class="preview-link-text">Large</span>
+        <span class="preview-link-icon">↑</span>
+      </a>
+    </li>
+  </ul>`);
+}
+
 function stubShareActionsTemplate() {
   return dom.create(`<div class="info-message">Share the link below to preview the latest version of this page.</div>
   <div class="share-actions actions">
@@ -104,6 +130,7 @@ describe(dirname, function () {
       getTemplate.withArgs('.publish-undo-template').returns(stubUndoTemplate());
       getTemplate.withArgs('.publish-messages-template').returns(stubMessageTemplate());
       getTemplate.withArgs('.publish-actions-template').returns(stubPublishTemplate());
+      getTemplate.withArgs('.preview-actions-template').returns(stubPreviewActionsTemplate());
       getTemplate.withArgs('.share-actions-template').returns(stubShareActionsTemplate());
       getTemplate.withArgs('.publish-error-message-template').returns(dom.create('<div>ERROR MESSAGE</div>'));
       getTemplate.withArgs('.publish-warning-message-template').returns(dom.create('<div>WARNING MESSAGE</div>'));
