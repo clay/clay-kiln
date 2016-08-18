@@ -225,8 +225,8 @@
       <li class="filtered-item" tabindex="0">
         <button class="filtered-item-reorder kiln-hide" title="Reorder">{% include 'public/media/components/clay-kiln/drag-grip.svg' %}</button>
         <span class="filtered-item-title"></span>
-        <button class="filtered-item-settings kiln-hide" title="Settings">{% include 'public/media/components/clay-kiln/component-bar-settings.svg' %}</button>
-        <button class="filtered-item-remove kiln-hide" title="Remove">{% include 'public/media/components/clay-kiln/component-bar-delete.svg' %}</button>
+        <button class="filtered-item-settings kiln-hide" title="Settings">{% include 'public/media/components/clay-kiln/settings.svg' %}</button>
+        <button class="filtered-item-remove kiln-hide" title="Remove">{% include 'public/media/components/clay-kiln/delete.svg' %}</button>
       </li>
     </template>
 
@@ -236,11 +236,11 @@
         <aside class="component-selector-top">
           <div class="selected-info">
             <span class="selected-label"></span>
-            <button class="selected-info-parent kiln-hide" title="Select Parent">{% include 'public/media/components/clay-kiln/component-bar-parent.svg' %}</button>
+            <button class="selected-info-parent kiln-hide" title="Select Parent">{% include 'public/media/components/clay-kiln/parent.svg' %}</button>
           </div>
           <div class="selected-actions">
-            <button class="selected-action-settings kiln-hide" title="Component Settings">{% include 'public/media/components/clay-kiln/component-bar-settings.svg' %}</button>
-            <button class="selected-action-delete kiln-hide" title="Delete Component">{% include 'public/media/components/clay-kiln/component-bar-delete.svg' %}</button>
+            <button class="selected-action-settings kiln-hide" title="Component Settings">{% include 'public/media/components/clay-kiln/settings.svg' %}</button>
+            <button class="selected-action-delete kiln-hide" title="Delete Component">{% include 'public/media/components/clay-kiln/delete.svg' %}</button>
           </div>
         </aside>
         <aside class="component-selector-bottom kiln-hide">

@@ -4,16 +4,14 @@
 @import 'buttons';
 
 // selector offsets, for the selector outline
-$offset-width: 10px;
+$offset-width: 8px;
 $offset-width-half: $offset-width / 2;
-$offset-height: 30px;
+$offset-height: 8px;
 $offset-height-half: $offset-height / 2;
-$offset-height-menu: $offset-height-half - 1; // 1px less, so the menu border always displays
 $parent-offset: 4px; // how much wider should parent outline be (each side)
 
 // icon sizes
-$action-icon-small: 16px;
-$action-icon-large: 22px;
+$action-icon-small: 18px;
 
 // selector colors
 $page-color: $blue;
@@ -69,23 +67,21 @@ $layout-parent-bg-color: $purple-25;
   border-color: transparent;
   border-width: 1px;
   border-style: solid;
-  border-radius: 10px;
-  box-shadow: 1px 1px 20px -9px $black; // even subtler shadow for the menus
-  right: $offset-width-half;
+  right: -1px; // align borders
   position: absolute;
 }
 
 // place the top and bottom menus bisecting the outline vertically
 .component-selector-top {
   border-color: $layout-bg-color;
-  bottom: calc(100% - #{$offset-height-menu});
+  bottom: 100%;
 }
 
 // bottom menu is more offset, since it concerns actions that don't
 // affect the component itself (but rather things around it, e.g. adding new components)
 .component-selector-bottom {
   border-color: $layout-bg-color;
-  top: calc(100% - #{$offset-height-menu / 2});
+  top: 100%;
 }
 
 .kiln-page-area .component-selector-top,
@@ -112,7 +108,6 @@ $layout-parent-bg-color: $purple-25;
   font-size: 14px;
   line-height: $action-icon-small; // same vertical space as the icons
   margin: 0;
-  padding: 6px 8px;
   white-space: nowrap;
 }
 
@@ -122,6 +117,8 @@ $layout-parent-bg-color: $purple-25;
 .selected-action-settings,
 .selected-action-delete {
   @include icon-button($layout-color, $action-icon-small);
+
+  padding: 14px;
 }
 
 .kiln-page-area .selected-label,
@@ -129,28 +126,22 @@ $layout-parent-bg-color: $purple-25;
 .kiln-page-area .selected-action-settings,
 .kiln-page-area .selected-action-delete {
   @include icon-button($page-color, $action-icon-small);
+
+  padding: 14px;
 }
 
 // add button is larger
 .selected-add,
 .selected-replace {
-  @include icon-button($layout-color, $action-icon-large);
+  @include icon-button($layout-color, $action-icon-small);
+
+  padding: 14px;
 }
 .kiln-page-area .selected-add,
 .kiln-page-area .selected-replace {
-  @include icon-button($page-color, $action-icon-large);
-}
+  @include icon-button($page-color, $action-icon-small);
 
-// set a border on parent, settings, and delete
-.selected-info-parent,
-.selected-action-settings,
-.selected-action-delete {
-  border-left: 1px solid $layout-bg-color;
-}
-.kiln-page-area .selected-info-parent,
-.kiln-page-area .selected-action-settings,
-.kiln-page-area .selected-action-delete {
-  border-left: 1px solid $page-bg-color;
+  padding: 14px;
 }
 
 // selected parent
@@ -174,13 +165,8 @@ $layout-parent-bg-color: $purple-25;
   .selected-label,
   .selected-action-settings {
     @include icon-button($layout-parent-color, $action-icon-small);
-  }
 
-  // set a border on settings instead of its container,
-  // because a parent might only have `delete` and we don't want an empty
-  // `selected-actions` menu with a border and empty space
-  .selected-action-settings {
-    border-left: 1px solid $layout-parent-bg-color;
+    padding: 14px;
   }
 
   // hide extraneous buttons
@@ -202,13 +188,8 @@ $layout-parent-bg-color: $purple-25;
   .selected-label,
   .selected-action-settings {
     @include icon-button($page-parent-color, $action-icon-small);
-  }
 
-  // set a border on settings instead of its container,
-  // because a parent might only have `delete` and we don't want an empty
-  // `selected-actions` menu with a border and empty space
-  .selected-action-settings {
-    border-left: 1px solid $page-parent-bg-color;
+    padding: 14px;
   }
 }
 
