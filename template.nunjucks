@@ -138,13 +138,12 @@
       </div>
     </template>
 
-    {# preview link #}
-    <template class="preview-actions-template">
-      <div class="info-message">Share the link below to preview the latest version of this page before publishing</div>
-      <div class="preview-actions actions">
-        <form class="preview-link">
-          <input class="preview-input" type="url" value="" placeholder=""></input>
-        </form>
+    {# share link #}
+    <template class="share-actions-template">
+      <div class="info-message">Share the link below to preview the latest version of this page.</div>
+      <div class="share-actions actions">
+        <input class="share-input"></input>
+        <button class="share-copy">{% include 'public/media/components/clay-kiln/copy.svg' %}</button>
       </div>
     </template>
 

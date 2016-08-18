@@ -468,27 +468,18 @@ function addPreview(preview) {
 }
 
 /**
- * open preview dialog pane
+ * open preview + share pane
+ * @returns {Element}
  */
 function openPreview() {
-  var header = 'Preview Link',
-    innerEl = document.createDocumentFragment(),
-    previewUrl = edit.getPageUrl(),
-    pageActionsSubTemplate = tpl.get('.preview-actions-template'),
-    previewInput;
+  var pageUrl = edit.getPageUrl(),
+    shareHeader = 'Shareable Link',
+    shareContent = tpl.get('.share-actions-template');
 
-  if (pageActionsSubTemplate) {
-    previewInput = dom.find(pageActionsSubTemplate, '.preview-input');
-  }
+  // set the page url into the share tab
+  dom.find(shareContent, '.share-input').setAttribute('value', pageUrl);
 
-  if (previewInput) {
-    previewInput.setAttribute('value', previewUrl);
-  }
-
-  // append actions to the doc fragment
-  innerEl.appendChild(pageActionsSubTemplate);
-  // create the root pane element
-  open([{header: header, content: innerEl}]);
+  return open([{ header: shareHeader, content: shareContent }]);
 }
 
 /**
