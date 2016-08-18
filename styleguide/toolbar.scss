@@ -46,6 +46,11 @@ body {
   border-left: 1px solid $black-50;
 }
 
+.kiln-toolbar-inner .kiln-toolbar-button-left {
+  border-left: none;
+  border-right: 1px solid $black-50;
+}
+
 .kiln-toolbar-inner .button-flex-inner {
   align-items: center;
   display: flex;
