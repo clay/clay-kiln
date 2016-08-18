@@ -5,8 +5,8 @@
 
 .kiln-placeholder {
   align-items: center;
-  background-color: $grey;
-  border: 1px dashed $black-25;
+  background-color: $purple-10;
+  border: 1px dashed $purple-50;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -16,12 +16,22 @@
   width: 100%;
 }
 
+.kiln-page-area .kiln-placeholder {
+  background-color: $blue-10;
+  border: 1px dashed $blue-50;
+}
+
 .kiln-placeholder,
 .kiln-placeholder .placeholder-label {
   @include secondary-text();
 
-  color: $black-50;
+  color: $purple-75;
   text-align: center;
+}
+
+.kiln-page-area .kiln-placeholder,
+.kiln-page-area .kiln-placeholder .placeholder-label {
+  color: $blue-75;
 }
 
 // permanent placeholder - always displays, even when there is data in fields
@@ -29,7 +39,7 @@
 .kiln-permanent-placeholder {
   align-items: center;
   background-color: $grey;
-  border: 1px dashed $black-25;
+  border: 1px dotted $black-25;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -49,7 +59,6 @@
 }
 
 // add component button - added to placeholders of empty component lists
-.kiln-placeholder .placeholder-add-component,
 .kiln-permanent-placeholder .placeholder-add-component {
   margin-top: 5px;
   padding: 10px;
@@ -72,5 +81,49 @@
   &:active svg * {
     fill: darken($black-25, 10%);
     transition: 50ms fill ease-out;
+  }
+}
+
+.kiln-placeholder .placeholder-add-component {
+  margin-top: 5px;
+  padding: 10px;
+
+  svg,
+  svg * {
+    fill: $purple-50;
+    transition: 150ms fill ease-out;
+  }
+
+  // subtle hover style
+  &:hover svg,
+  &:hover svg * {
+    fill: darken($purple-50, 5%);
+    transition: 150ms fill ease-out;
+  }
+
+  // subtle active style
+  &:active svg,
+  &:active svg * {
+    fill: darken($purple-50, 10%);
+    transition: 50ms fill ease-out;
+  }
+}
+
+.kiln-page-area .kiln-placeholder .placeholder-add-component {
+  svg,
+  svg * {
+    fill: $blue-50;
+  }
+
+  // subtle hover style
+  &:hover svg,
+  &:hover svg * {
+    fill: darken($blue-50, 5%);
+  }
+
+  // subtle active style
+  &:active svg,
+  &:active svg * {
+    fill: darken($blue-50, 10%);
   }
 }

@@ -96,9 +96,15 @@ function validate(data, schema) {
  */
 function save(data) {
   var uri = data[refProp],
-    schemaPromise = data._schema && Promise.resolve(data._schema) || cache.getSchema(uri);
+    schemaPromise = data._schema && Promise.resolve(data._schema) || cache.getSchema(uri),
+    el = dom.find(`[${references.referenceAttribute}="${uri}"]`);
 
-  progress.start('save');
+  if (el && dom.closest(el, '.kiln-page-area')) {
+    progress.start('page');
+  } else {
+    progress.start('layout');
+  }
+
   // get the schema and validate data
   return schemaPromise.then(function (schema) {
     var validationErrors = validate(data, schema);

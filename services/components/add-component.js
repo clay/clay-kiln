@@ -108,7 +108,11 @@ function addToProp(args, pane) {
  * @returns {Promise}
  */
 function addComponent(pane, field, name, prevRef) {
-  progress.start('save');
+  if (dom.closest(pane, '.kiln-page-area')) {
+    progress.start('page');
+  } else {
+    progress.start('layout');
+  }
   removeParentPlaceholder(field);
   return Promise.all([edit.createComponent(name), edit.getData(field.ref)])
     .then(function (promises) {
@@ -132,7 +136,7 @@ function addComponent(pane, field, name, prevRef) {
         return render.addComponentsHandlers(newEl).then(function () {
           focus.unfocus();
           select.unselect();
-          progress.done('save');
+          progress.done();
           return select.select(newEl);
         });
       });

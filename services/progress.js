@@ -4,7 +4,7 @@ var _ = require('lodash'),
   boxShadow = '0 0 10px 0',
   colors = {
     // these are taken from styleguide/_colors.scss
-    save: '#a17355',
+    draft: '#a17355',
     publish: '#149524',
     offline: '#888',
     error: '#DD2F1C',
