@@ -14,7 +14,7 @@ $height: 48px;
 }
 
 .kiln-toolbar {
-  background-color: $black-60;
+  background-color: $toolbar-view;
   height: $height;
   left: 0;
   position: absolute;
@@ -40,15 +40,15 @@ body {
 }
 
 .kiln-toolbar-inner .kiln-toolbar-button, {
-  @include button-filled-large($black-60);
+  @include button-filled-large($toolbar-view);
 
   flex: 0 0 auto;
-  border-left: 1px solid $black-50;
+  border-left: 1px solid $toolbar-view-border;
 }
 
 .kiln-toolbar-inner .kiln-toolbar-button-left {
   border-left: none;
-  border-right: 1px solid $black-50;
+  border-right: 1px solid $toolbar-view-border;
 }
 
 .kiln-toolbar-inner .button-flex-inner {
