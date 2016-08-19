@@ -148,7 +148,7 @@ body {
 }
 
 .kiln-toolbar-inner .scheduled {
-  @include button-filled-large($published);
+  @include button-filled-large($scheduled);
 
   border-left: none;
 

@@ -139,7 +139,7 @@ $toolbar-height: 48px;
     }
 
     &.warnings svg {
-      fill: $published;
+      fill: $scheduled;
     }
 
     &.errors svg {
@@ -335,7 +335,7 @@ $schedule-item-width: calc(50% - 8px);
 }
 
 .kiln-toolbar-pane .schedule-publish {
-  @include button-outlined($published, $white);
+  @include button-outlined($scheduled, $white);
   @include full-width();
 
   margin-top: 20px;
@@ -396,13 +396,13 @@ $schedule-item-width: calc(50% - 8px);
 
 // special color for warnings
 .kiln-toolbar-pane .publish-warning .label {
-  color: $published;
+  color: $scheduled;
 }
 
 .kiln-toolbar-pane .warning-message {
   @include primary-text();
 
-  color: $published;
+  color: $scheduled;
   padding: 0 0 20px;
 }
 
