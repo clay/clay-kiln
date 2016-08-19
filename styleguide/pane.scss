@@ -135,11 +135,11 @@ $toolbar-height: 48px;
     }
 
     &.valid svg {
-      fill: $green;
+      fill: $published;
     }
 
     &.warnings svg {
-      fill: $orange;
+      fill: $scheduled;
     }
 
     &.errors svg {
@@ -282,7 +282,7 @@ $toolbar-height: 48px;
 }
 
 .kiln-toolbar-pane .publish-now {
-  @include button-outlined($green, $white);
+  @include button-outlined($published, $white);
   @include full-width();
 }
 
@@ -335,7 +335,7 @@ $schedule-item-width: calc(50% - 8px);
 }
 
 .kiln-toolbar-pane .schedule-publish {
-  @include button-outlined($orange, $white);
+  @include button-outlined($scheduled, $white);
   @include full-width();
 
   margin-top: 20px;
@@ -354,13 +354,13 @@ $schedule-item-width: calc(50% - 8px);
 
 .publish-valid-icon svg {
   display: inline-block;
-  fill: $green;
+  fill: $published;
   height: 24px;
   width: 24px;
 }
 
 .publish-valid-message {
-  color: $green;
+  color: $published;
   margin: 4px 0; // vertically center with the icon (24px - 16px)
 }
 
@@ -396,13 +396,13 @@ $schedule-item-width: calc(50% - 8px);
 
 // special color for warnings
 .kiln-toolbar-pane .publish-warning .label {
-  color: $orange;
+  color: $scheduled;
 }
 
 .kiln-toolbar-pane .warning-message {
   @include primary-text();
 
-  color: $orange;
+  color: $scheduled;
   padding: 0 0 20px;
 }
 
