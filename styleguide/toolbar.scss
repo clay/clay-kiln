@@ -119,7 +119,7 @@ body {
 }
 
 .kiln-toolbar-inner .draft {
-  @include button-filled-large($brown);
+  @include button-filled-large($draft);
 
   border-left: none;
 
@@ -133,7 +133,7 @@ body {
 }
 
 .kiln-toolbar-inner .published {
-  @include button-filled-large($green);
+  @include button-filled-large($published);
 
   border-left: none;
 
@@ -148,7 +148,7 @@ body {
 }
 
 .kiln-toolbar-inner .scheduled {
-  @include button-filled-large($orange);
+  @include button-filled-large($published);
 
   border-left: none;
 

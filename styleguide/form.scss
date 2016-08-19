@@ -52,7 +52,7 @@
 }
 
 .editor .save {
-  @include button-outlined($brown);
+  @include button-outlined($draft);
 
   flex: 0 0 auto;
   margin-left: 30px;
