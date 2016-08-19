@@ -15,6 +15,7 @@ $height: 48px;
 
 .kiln-toolbar {
   background-color: $toolbar-view;
+  border-top: 1px solid $toolbar-view-border;
   height: $height;
   left: 0;
   position: absolute;
