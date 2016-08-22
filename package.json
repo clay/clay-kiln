@@ -85,6 +85,7 @@
     "nprogress": "^0.2.0",
     "rivets": "^0.9.3",
     "rollupify": "^0.2.0",
+    "routable": "0.0.5",
     "sass-import-modules": "^2.1.0",
     "selection-range": "^1.0.1",
     "sinon": "^1.17.2",
