@@ -1,122 +1,16 @@
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
-  lib = require('./pane'),
-  state = require('./page-state'),
+  lib = require('./'),
+  state = require('../page-state'),
   dom = require('@nymag/dom'),
-  tpl = require('./tpl'),
-  edit = require('./edit'),
+  tpl = require('../tpl'),
+  edit = require('../edit'),
   ds = require('dollar-slice'),
-  db = require('./edit/db');
-
-// minimal templates, only what we need to test the logic and functionality
-function stubWrapperTemplate() {
-  return dom.create(`<div class="kiln-toolbar-pane-background">
-    <div class="kiln-toolbar-pane">
-      <header class="pane-tabs">
-        <div class="pane-tabs-inner"></div>
-      </header>
-      <div class="pane-inner"></div>
-    </div>
-  </div>`);
-}
-
-function stubUndoTemplate() {
-  return dom.create(`<div class="publish-undo undo kiln-hide">
-    <button class="unpublish kiln-hide">Unpublish Page</button>
-    <button class="unschedule kiln-hide">Unschedule</button>
-  </div>`);
-}
-
-function stubMessageTemplate() {
-  return dom.create(`<div class="publish-messages messages">
-    <p class="publish-state-message">In Draft.</p>
-    <p class="publish-schedule-message kiln-hide">Scheduled to publish</p>
-  </div>`);
-}
-
-function stubPublishTemplate() {
-  return dom.create(`<div class="publish-actions actions">
-    <button class="publish-now">Publish Now</button>
-    <form class="schedule">
-      <label class="schedule-label" for="schedule-date">Date</label>
-      <input id="schedule-date" class="schedule-input" type="date" min="" value="" placeholder=""></input>
-      <label class="schedule-label" for="schedule-time">Time</label>
-      <input id="schedule-time" class="schedule-input" type="time" value="" placeholder=""></input>
-      <button class="schedule-publish">Schedule Publish</button>
-    </form>
-  </div>`);
-}
-
-function stubCustomUrlTemplate() {
-  return dom.create(`<form class="custom-url-form">
-    <label for="custom-url" class="custom-url-message">Designate a custom URL for this page. This should only be used for special cases.</p>
-    <input id="custom-url" class="custom-url-input" type="text" placeholder="/special-page.html" />
-    <button type="submit" class="custom-url-submit">Save Location</button>
-  </form>`);
-}
-
-function stubPreviewActionsTemplate() {
-  return dom.create(`<ul class="preview-actions actions">
-    <li class="preview-item">
-      <a class="preview-link small">
-        <span class="preview-link-size">s</span>
-        <span class="preview-link-text">Small</span>
-        <span class="preview-link-icon">↑</span>
-      </a>
-    </li>
-    <li class="preview-item">
-      <a class="preview-link medium">
-        <span class="preview-link-size">m</span>
-        <span class="preview-link-text">Medium</span>
-        <span class="preview-link-icon">↑</span>
-      </a>
-    </li>
-    <li class="preview-item">
-      <a class="preview-link large">
-        <span class="preview-link-size">l</span>
-        <span class="preview-link-text">Large</span>
-        <span class="preview-link-icon">↑</span>
-      </a>
-    </li>
-  </ul>`);
-}
-
-function stubShareActionsTemplate() {
-  return dom.create(`<div class="info-message">Share the link below to preview the latest version of this page.</div>
-  <div class="share-actions actions">
-    <input class="share-input"></input>
-    <button class="share-copy">{% include 'public/media/components/clay-kiln/copy.svg' %}</button>
-  </div>`);
-}
-
-function stubErrorsTemplate() {
-  return dom.create(`<div class="publish-error">
-    <span class="label">There was a problem:</span>
-    <span class="description">Please see below for details</span>
-    <ul class="errors"></ul>
-  </div>`);
-}
-
-function stubFilterableItemTemplate() {
-  // wrapper divs to simulate doc fragments
-  return dom.create(`<div><li class="filtered-item">
-    <button class="filtered-item-reorder kiln-hide" title="Reorder">=</button>
-    <span class="filtered-item-title"></span>
-    <button class="filtered-item-settings kiln-hide" title="Settings">*</button>
-    <button class="filtered-item-remove kiln-hide" title="Remove">X</button>
-  </li></div>`);
-}
-
-function stubFilteredAddTemplate() {
-  return dom.create(`<div class="filtered-add">
-    <button class="filtered-add-button" title="Add To List">+</button>
-    <span class="filtered-add-title">Add To List</span>
-  </div>`);
-}
+  fixture = require('../../test/fixtures/tpl');
 
 describe(dirname, function () {
   describe(filename, function () {
-    var sandbox, getTemplate;
+    var sandbox;
 
     beforeEach(function () {
       var toolbar = dom.create('<div class="kiln-toolbar"></div>');
@@ -124,22 +18,24 @@ describe(dirname, function () {
       document.body.appendChild(toolbar);
       sandbox = sinon.sandbox.create();
       sandbox.stub(dom, 'pageUri').returns('domain.com/pages/foo');
-      getTemplate = sandbox.stub(tpl, 'get');
-      getTemplate.withArgs('.kiln-pane-template').returns(stubWrapperTemplate());
-      getTemplate.withArgs('.publish-valid-template').returns(dom.create('<div class="publish-valid">valid</div>'));
-      getTemplate.withArgs('.publish-undo-template').returns(stubUndoTemplate());
-      getTemplate.withArgs('.publish-messages-template').returns(stubMessageTemplate());
-      getTemplate.withArgs('.publish-actions-template').returns(stubPublishTemplate());
-      getTemplate.withArgs('.preview-actions-template').returns(stubPreviewActionsTemplate());
-      getTemplate.withArgs('.share-actions-template').returns(stubShareActionsTemplate());
-      getTemplate.withArgs('.publish-error-message-template').returns(dom.create('<div>ERROR MESSAGE</div>'));
-      getTemplate.withArgs('.publish-warning-message-template').returns(dom.create('<div>WARNING MESSAGE</div>'));
-      getTemplate.withArgs('.publish-errors-template').returns(stubErrorsTemplate());
-      getTemplate.withArgs('.custom-url-form-template').returns(stubCustomUrlTemplate());
-      getTemplate.withArgs('.filtered-input-template').returns(dom.create('<input class="filtered-input" />'));
-      getTemplate.withArgs('.filtered-items-template').returns(dom.create('<div><ul class="filtered-items"></div>')); // wrapper divs to simulate doc fragments
-      getTemplate.withArgs('.filtered-item-template').returns(stubFilterableItemTemplate());
-      getTemplate.withArgs('.filtered-add-template').returns(stubFilteredAddTemplate());
+      sandbox.stub(tpl, 'get');
+      fixture.stubAll([
+        '.kiln-pane-template',
+        '.publish-valid-template',
+        '.publish-undo-template',
+        '.publish-messages-template',
+        '.publish-actions-template',
+        '.preview-actions-template',
+        '.share-actions-template',
+        '.publish-error-message-template',
+        '.publish-warning-message-template',
+        '.publish-errors-template',
+        '.custom-url-form-template',
+        '.filtered-input-template',
+        '.filtered-items-template',
+        '.filtered-item-template',
+        '.filtered-add-template'
+      ], tpl);
     });
 
     afterEach(function () {
@@ -341,34 +237,6 @@ describe(dirname, function () {
         }
 
         fn().then(expectCustomUrl);
-      });
-    });
-
-    describe('openNewPage', function () {
-      var fn = lib[this.title],
-        sandbox;
-
-      beforeEach(function () {
-        sandbox = sinon.sandbox.create();
-        sandbox.stub(ds);
-        sandbox.stub(db, 'get');
-      });
-
-      afterEach(function () {
-        sandbox.restore();
-      });
-
-      it('opens a a new page pane', function () {
-        function expectNewPageItems(el) {
-          expect(el.querySelector('#pane-tab-1').innerHTML).to.equal('New Page');
-          expect(el.querySelectorAll('.pane-inner li.filtered-item').length).to.equal(1);
-        }
-        db.get.returns(Promise.resolve([{
-          id: 'new',
-          title: 'New Page'
-        }]));
-        lib.close();
-        return fn().then(expectNewPageItems);
       });
     });
 
