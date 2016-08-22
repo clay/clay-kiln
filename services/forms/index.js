@@ -122,7 +122,7 @@ function dataChanged(serverData, formData) {
 /**
  * Open a form.
  * @param {string} ref
- * @param {Element} el    The element that has `data-editable`, not always the parent of the form.
+ * @param {Element} [el]    The element that has `data-editable`, only required for inline forms
  * @param {string} [path]
  * @param {MouseEvent} [e]
  * @return {Promise|undefined}
