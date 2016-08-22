@@ -16,6 +16,7 @@
         data-site-path="{{ site.path}}"
         data-site-assetpath="{{ site.assetPath }}"
         data-site-slug="{{ site.slug }}"
+        data-routes="{{ locals.routes }}"
         data-components="{{ _components }}">
         <div class="kiln-toolbar-inner">
           <button class="user-icon">{% include 'public/media/components/clay-kiln/user-icon.svg' %}</button>

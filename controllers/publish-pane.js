@@ -1,4 +1,4 @@
-var moment = require('moment'),
+const moment = require('moment'),
   pane = require('../services/pane'),
   edit = require('../services/edit'),
   progress = require('../services/progress'),
@@ -6,7 +6,10 @@ var moment = require('moment'),
   state = require('../services/page-state'),
   db = require('../services/edit/db'),
   site = require('../services/site'),
-  _ = require('lodash');
+  _ = require('lodash'),
+  Routable = require('routable'),
+  // grab available routes from the toolbar
+  availableRoutes = dom.find('.kiln-toolbar').getAttribute('data-routes').split(',');
 
 /**
  * schedule page and layout publishing in parallel
@@ -45,18 +48,32 @@ function unschedulePageAndLayout() {
   });
 }
 
+/**
+ * test to see if a url is routable on the current site
+ * @param {string} val
+ * @returns {boolean}
+ */
+function isValidUrl(val) {
+  return !!_.find(availableRoutes, function (route) {
+    var r = new Routable(route);
+
+    return r.test(val) || r.test('/' + val); // test with and without the beginning slash
+  });
+}
+
 module.exports = function () {
-  function constructor(el) {
+  function Constructor(el) {
     this.form = dom.find(el, '.schedule');
     this.customUrlForm = dom.find(el, '.custom-url-form');
   }
 
-  constructor.prototype = {
+  Constructor.prototype = {
     events: {
       '.publish-now click': 'onPublishNow',
       '.unpublish click': 'onUnpublish',
       '.schedule submit': 'onSchedule',
       '.unschedule click': 'onUnschedule',
+      '.custom-url-input input': 'onCustomUrlInput',
       '.custom-url-form submit': 'onCustomUrl'
     },
 
@@ -153,6 +170,20 @@ module.exports = function () {
         });
     },
 
+    onCustomUrlInput: function (e) {
+      var input = e.currentTarget,
+        val = input.value;
+
+      // validate that what the user typed in is routable
+      // note: if it's empty string, catch it early (removing custom urls is totally valid)
+      // note: if it's a full url, assume the user knows what they're doing and say it's valid
+      if (val === '' || val.match(/^http/i) || isValidUrl(val)) {
+        input.setCustomValidity('');
+      } else {
+        input.setCustomValidity('Custom URL must match an available route!');
+      }
+    },
+
     onCustomUrl: function (e) {
       var val = dom.find(this.customUrlForm, 'input').value,
         url;
@@ -185,7 +216,13 @@ module.exports = function () {
         })
         .then(function () {
           progress.done('page');
-          progress.open('page', 'Saved custom page url', true);
+          if (url === '') {
+            // if we're explicitly removing a custom url, say that
+            progress.open('page', 'Removed custom page url', true);
+          } else {
+            // if we're saving, say that
+            progress.open('page', 'Saved custom page url', true);
+          }
         })
         .catch(function () {
           progress.done('error');
@@ -193,5 +230,5 @@ module.exports = function () {
         });
     }
   };
-  return constructor;
+  return Constructor;
 };
