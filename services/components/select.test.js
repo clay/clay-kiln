@@ -7,7 +7,7 @@ var dirname = __dirname.split('/').pop(),
   focus = require('../../decorators/focus'),
   site = require('../site'),
   tpl = require('../tpl'),
-  dom = require('@nymag/dom'),
+  fixture = require('../../test/fixtures/tpl'),
   lib = require('./select'),
   hidden = 'kiln-hide';
 
@@ -121,24 +121,7 @@ describe(dirname, function () {
       beforeEach(function () {
         sandbox = sinon.sandbox.create();
         sandbox.stub(site);
-        sandbox.stub(tpl, 'get').returns(dom.create(`<aside class="component-selector">
-          <aside class="component-selector-top">
-            <div class="selected-info">
-              <span class="selected-label"></span>
-              <button class="selected-info-parent kiln-hide" title="Select Parent"></button>
-            </div>
-            <div class="selected-actions kiln-hide">
-              <button class="selected-action-settings kiln-hide" title="Component Settings"></button>
-              <button class="selected-action-delete kiln-hide" title="Delete Component"></button>
-            </div>
-          </aside>
-          <aside class="component-selector-bottom kiln-hide">
-            <button class="selected-add kiln-hide" title="Add Component">
-              <span class="add-inner">+</span>
-            </button>
-            <button class="selected-replace kiln-hide">replace</button>
-          </aside>
-        </aside>`));
+        sandbox.stub(tpl, 'get').returns(fixture['.component-selector-template']());
       });
 
       afterEach(function () {
