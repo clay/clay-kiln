@@ -228,12 +228,12 @@ module.exports = function () {
         })
         .then(function () {
           progress.done('page');
-          if (url === '' || url === undefined) {
-            // if we're explicitly removing a custom url, say that
-            progress.open('page', 'Removed custom page url', true);
-          } else {
+          if (url) {
             // if we're saving, say that
             progress.open('page', 'Saved custom page url', true);
+          } else {
+            // if we're explicitly removing a custom url, say that
+            progress.open('page', 'Removed custom page url', true);
           }
         })
         .catch(function () {
