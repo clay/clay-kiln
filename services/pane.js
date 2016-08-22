@@ -18,6 +18,7 @@ var _ = require('lodash'),
   addComponent = require('./components/add-component'),
   select = require('./components/select'),
   label = require('./label'),
+  invisibleList = require('./components/invisible-list'),
   kilnHideClass = 'kiln-hide';
 
 /**
@@ -632,14 +633,16 @@ function openComponents() {
     }
   }
 
-  el = open([{header: searchHeader, content: searchContent}]);
+  return invisibleList.getListTabs().then(function (invisibleTabs) {
+    el = open([{header: searchHeader, content: searchContent}].concat(invisibleTabs));
 
-  // once the pane is created, make sure it's scrolled so that the current item is visible
-  if (currentSelected && currentItem) {
-    window.setTimeout(function () {
-      dom.find(el, '.pane-inner').scrollTop = currentItem.offsetTop + currentItem.offsetHeight - 35;
-    }, 300);
-  }
+    // once the pane is created, make sure it's scrolled so that the current item is visible
+    if (currentSelected && currentItem) {
+      window.setTimeout(function () {
+        dom.find(el, '.pane-inner').scrollTop = currentItem.offsetTop + currentItem.offsetHeight - 35;
+      }, 300);
+    }
+  });
 }
 
 module.exports.close = close;
