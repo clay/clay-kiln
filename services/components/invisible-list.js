@@ -16,7 +16,17 @@ const label = require('../label'),
  * @returns {boolean}
  */
 function isComponentListStart(node) {
-  return node && node.nodeType === node.COMMENT_NODE && node.data.match(/data-editable="(.*?)"/);
+  return !!node && node.nodeType === node.COMMENT_NODE && !!node.data.match(/data-editable="(.*?)"/);
+}
+
+/**
+ * get path from a component list start comment
+ * note: assumes we've already checked this node with isComponentListStart()
+ * @param {Node} node
+ * @returns {string}
+ */
+function getComponentListPath(node) {
+  return node.data.match(/data-editable="(.*?)"/)[1];
 }
 
 /**
@@ -37,23 +47,13 @@ function getComponentListStart(path) {
 }
 
 /**
- * get path from a component list start comment
- * note: assumes we've already checked this node with isComponentListStart()
- * @param {Node} node
- * @returns {string}
- */
-function getComponentListPath(node) {
-  return node.data.match(/data-editable="(.*?)"/)[1];
-}
-
-/**
  * determine if a node ends a component list. they look like:
  * <!-- data-editable-end -->
  * @param {Node} node
  * @returns {boolean}
  */
 function isComponentListEnd(node) {
-  return node && node.nodeType === node.COMMENT_NODE && node.data.match(/data-editable-end/);
+  return !!node && node.nodeType === node.COMMENT_NODE && !!node.data.match(/data-editable-end/);
 }
 
 /**
@@ -75,7 +75,7 @@ function getComponentListEnd(node) {
  * @returns {string}
  */
 function getComponentRef(node) {
-  return node && node.nodeType === node.COMMENT_NODE && node.data.match(/data-uri="(.*?)"/) && node.data.match(/data-uri="(.*?)"/)[1];
+  return !!node && node.nodeType === node.COMMENT_NODE && !!node.data.match(/data-uri="(.*?)"/) && node.data.match(/data-uri="(.*?)"/)[1];
 }
 
 /**
@@ -116,7 +116,7 @@ function getComponentEnd(node) {
 function removeComponentFromDOM(node) {
   var endNode = getComponentEnd(node),
     currentNode = node,
-    clones = document.createElement('div');
+    clones = document.createDocumentFragment();
 
   while (currentNode !== endNode) {
     let clone = currentNode.cloneNode(true),
@@ -370,3 +370,15 @@ function getListTabs(path) {
 
 module.exports.getListTabs = getListTabs;
 module.exports.getComponentListEnd = getComponentListEnd;
+
+// for testing
+module.exports.isComponentListStart = isComponentListStart;
+module.exports.getComponentListPath = getComponentListPath;
+// note: getComponentListEnd isn't tested, since it relies on document.head
+module.exports.isComponentListEnd = isComponentListEnd;
+// note: getComponentListEnd is above, since it's actually used by other modules
+module.exports.getComponentRef = getComponentRef;
+// note: getComponentNode isn't tested, since it relies on document.head
+module.exports.getComponentEnd = getComponentEnd;
+module.exports.removeComponentFromDOM = removeComponentFromDOM;
+module.exports.insertAfter = insertAfter;
