@@ -2,12 +2,7 @@ const _ = require('lodash'),
   dom = require('@nymag/dom'),
   ds = require('dollar-slice'),
   tpl = require('../tpl'),
-  paneController = require('../../controllers/pane'),
-  filterableList = require('../filterable-list'),
-  references = require('../references'),
-  select = require('../components/select'),
-  label = require('../label'),
-  invisibleList = require('../components/invisible-list');
+  paneController = require('../../controllers/pane');
 
 /**
  * add a disabled class to disabled tabs
@@ -106,80 +101,6 @@ function open(tabs, dynamicTab) {
   return paneWrapper;
 }
 
-/**
- * determine if an element is visible on the page
- * @param {Element} el
- * @returns {boolean}
- */
-function showVisible(el) {
-  // checking offsetParent works for all non-fixed elements,
-  // and is much faster than checking getComputedStyle(el).display and visibility
-  return el.offsetParent !== null;
-}
-
-/**
- * get name of component from the component's element
- * @param {Element} el
- * @returns {string}
- */
-function getName(el) {
-  var ref = el.getAttribute(references.referenceAttribute);
-
-  return {
-    id: ref,
-    title: label(references.getComponentNameFromReference(ref))
-  };
-}
-
-/**
- * open the component search pane
- * @returns {Promise}
- */
-function openComponents() {
-  var searchHeader = 'Find Component',
-    visibleComponents = _.filter(dom.findAll(`[${references.referenceAttribute}]`), showVisible).map(getName),
-    currentSelected = dom.find('.component-selector-wrapper.selected'),
-    searchContent = filterableList.create(visibleComponents, {
-      click: function (id, el) {
-        var currentSelectedItem = dom.find('.filtered-item.selected'),
-          component = dom.find(`[${references.referenceAttribute}="${id}"]`);
-
-        if (currentSelectedItem) {
-          currentSelectedItem.classList.remove('selected');
-        }
-
-        select.unselect();
-        select.select(component);
-        select.scrollToComponent(component);
-        el.classList.add('selected');
-      },
-      inputPlaceholder: 'Search all visible components'
-    }),
-    currentItem, el;
-
-  if (currentSelected) {
-    currentItem = dom.find(searchContent, `[data-item-id="${currentSelected.getAttribute(references.referenceAttribute)}"]`);
-
-    if (currentItem) {
-      currentItem.classList.add('selected');
-    }
-  }
-
-  return invisibleList.getListTabs().then(function (invisibleTabs) {
-    el = open([{header: searchHeader, content: searchContent}].concat(invisibleTabs));
-
-    // once the pane is created, make sure it's scrolled so that the current item is visible
-    if (currentSelected && currentItem) {
-      window.setTimeout(function () {
-        dom.find(el, '.pane-inner').scrollTop = currentItem.offsetTop + currentItem.offsetHeight - 35;
-      }, 300);
-    }
-  });
-}
-
 module.exports.close = close;
 module.exports.open = open;
 _.set(window, 'kiln.services.pane', module.exports); // export for plugins
-
-// todo: split these out into separate files
-module.exports.openComponents = openComponents;
