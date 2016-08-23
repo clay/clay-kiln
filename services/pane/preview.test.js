@@ -17,10 +17,10 @@ describe(dirname, function () {
 
       document.body.appendChild(toolbar);
       sandbox = sinon.sandbox.create();
-      sandbox.stub(dom, 'pageUri').returns('domain.com/pages/foo');
       sandbox.stub(tpl, 'get');
       sandbox.stub(ds);
       sandbox.stub(edit);
+      edit.getPageUrl.returns('http://domain.com/pages/foo.html');
       fixture.stubAll([
         '.kiln-pane-template',
         '.preview-actions-template',
@@ -38,6 +38,12 @@ describe(dirname, function () {
       expect(document.querySelector('#pane-tab-1').innerHTML).to.equal('Preview');
       expect(document.querySelector('#pane-tab-2').innerHTML).to.equal('Shareable Link');
       expect(document.querySelectorAll('.pane-inner input').length).to.equal(1);
+    });
+
+    it('generates shareable link', function () {
+      pane.close();
+      lib();
+      expect(document.querySelector('.share-input').value).to.equal('http://domain.com/pages/foo.html');
     });
   });
 });

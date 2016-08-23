@@ -29,7 +29,7 @@ describe(dirname, function () {
       sandbox.restore();
     });
 
-    it('opens a an add component pane', function () {
+    it('opens an add component pane', function () {
       var options = {
         field: { ref: null, path: null}, // parent data, passed to addComponent (we don't care about it here)
         pane: document.createElement('div') // pane element, passed to addComponent (we don't care about it here)

@@ -75,6 +75,8 @@ function openComponents() {
         dom.find(el, '.pane-inner').scrollTop = currentItem.offsetTop + currentItem.offsetHeight - 35;
       }, 300);
     }
+
+    return el;
   });
 }
 
