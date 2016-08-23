@@ -3,8 +3,10 @@ const label = require('../label'),
   filterableList = require('../filterable-list'),
   references = require('../references'),
   edit = require('../edit'),
+  db = require('../edit/db'),
   forms = require('../forms'),
   dom = require('@nymag/dom'),
+  progress = require('../progress'),
   getAvailableComponents = require('./available-components');
 
 /**
@@ -15,6 +17,23 @@ const label = require('../label'),
  */
 function isComponentListStart(node) {
   return node && node.nodeType === node.COMMENT_NODE && node.data.match(/data-editable="(.*?)"/);
+}
+
+/**
+ * get component list start from a path
+ * @param {string} path
+ * @returns {Node}
+ */
+function getComponentListStart(path) {
+  const walker = document.createTreeWalker(document.head, NodeFilter.SHOW_COMMENT);
+
+  let node;
+
+  while (node = walker.nextNode()) {
+    if (isComponentListStart(node) && getComponentListPath(node) === path) {
+      return node;
+    }
+  }
 }
 
 /**
@@ -57,6 +76,73 @@ function getComponentListEnd(node) {
  */
 function getComponentRef(node) {
   return node && node.nodeType === node.COMMENT_NODE && node.data.match(/data-uri="(.*?)"/) && node.data.match(/data-uri="(.*?)"/)[1];
+}
+
+/**
+ * get component node from a ref
+ * @param {string} ref
+ * @returns {Node}
+ */
+function getComponentNode(ref) {
+  const walker = document.createTreeWalker(document.head, NodeFilter.SHOW_COMMENT);
+
+  let node;
+
+  while (node = walker.nextNode()) {
+    if (getComponentRef(node) === ref) {
+      return node;
+    }
+  }
+}
+
+/**
+ * get the last node in a component, given any node in the component
+ * @param {Node} node
+ * @returns {Node}
+ */
+function getComponentEnd(node) {
+  if (node.nextSibling && (isComponentListEnd(node.nextSibling) || getComponentRef(node.nextSibling))) {
+    return node;
+  } else if (node.nextSibling) {
+    return getComponentEnd(node.nextSibling);
+  }
+}
+
+/**
+ * given the first (data-uri) node of a component, remove it from the dom
+ * @param {Node} node
+ * @returns {Element} fragment containing clone of the removed nodes
+ */
+function removeComponentFromDOM(node) {
+  var endNode = getComponentEnd(node),
+    currentNode = node,
+    clones = document.createElement('div');
+
+  while (currentNode !== endNode) {
+    let clone = currentNode.cloneNode(true),
+      nextNode = currentNode.nextSibling;
+
+    dom.removeElement(currentNode);
+    clones.appendChild(clone);
+    currentNode = nextNode;
+  }
+
+  return clones;
+}
+
+/**
+ * iterate through a fragment, adding nodes after a specified node
+ * @param {Node} node
+ * @param {Element} fragment
+ */
+function insertAfter(node, fragment) {
+  var currentNode = node,
+    parent = node.parentNode;
+
+  _.each(fragment.childNodes, function (child) {
+    parent.insertBefore(child.cloneNode(true), currentNode.nextSibling);
+    currentNode = currentNode.nextSibling;
+  });
 }
 
 /**
@@ -116,8 +202,6 @@ function getListsInHead() {
     addList(node, walker, lists);
   }
 
-  console.log(lists[0].components.map((i) => i.title))
-
   return lists;
 }
 
@@ -152,10 +236,69 @@ function addComponentToList(options) {
 }
 
 /**
+ * Save the order of the items as found in the DOM.
+ * @param {string} ref of the parent
+ * @param {string} path of the list
+ * @param {object} data
+ * @returns {function}
+ */
+function updateOrder(ref, path, data) {
+  return function (id, newIndex) {
+    var node = getComponentNode(id),
+      listStart = getComponentListStart(path),
+      clone = removeComponentFromDOM(node),
+      list = getList(listStart).map((item) => item.id); // list of components without the reordered one
+
+    // first, remove the component from its old place in the dom
+    // (keeping a clone of it)
+    // then, add the clone into its new place
+    if (newIndex === 0) {
+      insertAfter(listStart, clone);
+    } else {
+      // find out the component at the new index - 1, then add this component after it
+      let prevRef = list[newIndex - 1];
+
+      // add the (cloned) component after the last node of the previous component
+      insertAfter(getComponentEnd(getComponentNode(prevRef)), clone);
+    }
+
+    // add the reordered component back into the list
+    list.splice(newIndex, 0, id);
+
+    // save it into the page or layout
+    if (_.isArray(data[path])) {
+      // component list is in the layout. swap it and save
+      data[path] = list.map(function (ref) {
+        return { _ref: ref }; // array of objects with _ref
+      });
+      return edit.save(data);
+    } else {
+      let pageUri = dom.pageUri();
+
+      // component list is in the page. swap it and save
+      progress.start('page'); // set progress manually
+      return edit.getDataOnly(pageUri).then(function (pageData) {
+        pageData[path] = list; // array of refs
+        return db.save(pageUri, _.omit(pageData, '_ref'))
+          .then(function () {
+            progress.done();
+            window.kiln.trigger('save', data);
+          })
+          .catch(function (e) {
+            console.error(e.message, e.stack);
+            progress.done('error');
+            progress.open('error', 'A server error occured. Please try again.', true);
+          });
+      });
+    }
+  };
+}
+
+/**
  * create a pane tab with a filterable list from a list of components
  * @param {string} layoutRef
  * @param {object} data from layout
- * @param {string} [path]
+ * @param {string} [path] if we want to open a specific list as the active tab
  * @returns {function}
  */
 function createTabFromList(layoutRef, data, path) {
@@ -168,7 +311,7 @@ function createTabFromList(layoutRef, data, path) {
         addTitle: `Add component to ${label(list.path)} list`,
         inputPlaceholder: `Search ${label(list.path)} components`,
         remove: _.noop,
-        reorder: _.noop
+        reorder: updateOrder(layoutRef, list.path, data)
       });
 
     if (list.path === path) {
