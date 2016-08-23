@@ -116,24 +116,6 @@ function open(tabs, dynamicTab) {
   return paneWrapper;
 }
 
-/**
- * open the add component pane
- * @param {array} components
- * @param {object} options to call addComponent with
- * @returns {Element}
- */
-function openAddComponent(components, options) {
-  var header = 'Add Component',
-    innerEl = filterableList.create(components, {
-      click: function (id) {
-        return addComponent(options.pane, options.field, id, options.ref)
-          .then(() => close()); // only close pane if we added successfully
-      }
-    });
-
-  return open([{header: header, content: innerEl}]);
-}
-
 function takeOffEveryZig() {
   var header = '<span class="ayb-header">HOW ARE YOU GENTLEMEN <em>!!</em></span>',
     messageEl = dom.create(`
@@ -228,6 +210,5 @@ module.exports.open = open;
 _.set(window, 'kiln.services.pane', module.exports); // export for plugins
 
 // todo: split these out into separate files
-module.exports.openAddComponent = openAddComponent;
 module.exports.takeOffEveryZig = takeOffEveryZig;
 module.exports.openComponents = openComponents;
