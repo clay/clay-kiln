@@ -3,7 +3,6 @@ var dirname = __dirname.split('/').pop(),
   lib = require('./'),
   dom = require('@nymag/dom'),
   tpl = require('../tpl'),
-  edit = require('../edit'),
   ds = require('dollar-slice'),
   fixture = require('../../test/fixtures/tpl');
 
@@ -87,29 +86,6 @@ describe(dirname, function () {
         lib.close();
         fn([{header: header, content: innerEl, disabled: true}]);
         expect(document.querySelector('#pane-tab-1').classList.contains('disabled')).to.equal(true);
-      });
-    });
-
-    describe('openPreview', function () {
-      var fn = lib[this.title],
-        sandbox;
-
-      beforeEach(function () {
-        sandbox = sinon.sandbox.create();
-        sandbox.stub(ds);
-        sandbox.stub(edit);
-      });
-
-      afterEach(function () {
-        sandbox.restore();
-      });
-
-      it('opens a preview pane', function () {
-        lib.close();
-        fn();
-        expect(document.querySelector('#pane-tab-1').innerHTML).to.equal('Preview');
-        expect(document.querySelector('#pane-tab-2').innerHTML).to.equal('Shareable Link');
-        expect(document.querySelectorAll('.pane-inner input').length).to.equal(1);
       });
     });
 

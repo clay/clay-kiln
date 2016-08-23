@@ -116,42 +116,6 @@ function open(tabs, dynamicTab) {
   return paneWrapper;
 }
 
-function addPreview(preview) {
-  if (preview) {
-    return `<span class="error-preview">${preview}</span>`;
-  } else {
-    return '';
-  }
-}
-
-/**
- * open preview + share pane
- * @returns {Element}
- */
-function openPreview() {
-  var pageUrl = edit.getPageUrl(),
-    previewHeader = 'Preview',
-    previewContent = tpl.get('.preview-actions-template'),
-    shareHeader = 'Shareable Link',
-    shareContent = tpl.get('.share-actions-template'),
-    el;
-
-  // set the page url into the responsive preview items
-  _.each(dom.findAll(previewContent, 'a'), function (link) {
-    link.setAttribute('href', pageUrl);
-  });
-
-  // set the page url into the share tab
-  dom.find(shareContent, '.share-input').setAttribute('value', pageUrl);
-
-  el = open([{ header: previewHeader, content: previewContent }, { header: shareHeader, content: shareContent }]);
-
-  // init controller
-  ds.controller('preview-pane', previewController);
-  ds.get('preview-pane', el);
-  return el;
-}
-
 /**
  * open the add component pane
  * @param {array} components
@@ -264,7 +228,6 @@ module.exports.open = open;
 _.set(window, 'kiln.services.pane', module.exports); // export for plugins
 
 // todo: split these out into separate files
-module.exports.openPreview = openPreview;
 module.exports.openAddComponent = openAddComponent;
 module.exports.takeOffEveryZig = takeOffEveryZig;
 module.exports.openComponents = openComponents;
