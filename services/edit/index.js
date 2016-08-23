@@ -392,7 +392,9 @@ function removeFromComponentList(parentData, options) {
   item[refProp] = ref;
   index = _.findIndex(parentData[parentField], item);
   parentData[parentField].splice(index, 1); // remove component from parent data
-  dom.removeElement(el); // remove component from DOM
+  if (el && el.nodeType === el.ELEMENT_NODE) {
+    dom.removeElement(el); // remove component from DOM (note: head components are removed manually)
+  }
   return save(parentData);
 }
 
@@ -415,7 +417,9 @@ function removeFromPageList(options) {
     pageData = _.cloneDeep(pageData);
     index = pageData[parentField].indexOf(ref);
     pageData[parentField].splice(index, 1); // remove component from parent data
-    dom.removeElement(el); // remove component from DOM
+    if (el && el.nodeType === el.ELEMENT_NODE) {
+      dom.removeElement(el); // remove component from DOM (note: head components are removed manually)
+    }
     return db.save(pageUri, _.omit(pageData, '_ref'));
   });
 }

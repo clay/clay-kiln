@@ -295,6 +295,30 @@ function updateOrder(ref, path, data) {
 }
 
 /**
+ * Remove component from a head component list
+ * @param {string} ref of the parent
+ * @param {string} path of the list
+ * @returns {function}
+ */
+function removeComponentFromList(ref, path) {
+  return function (id) {
+    var node = getComponentNode(id);
+
+    progress.start('layout');
+    removeComponentFromDOM(node);
+    return edit.removeFromParentList({
+      el: node,
+      ref: id,
+      parentRef: ref,
+      parentField: path
+    }).then(function () {
+      progress.done();
+      return require('../pane/components')(path); // avoid circular reference
+    });
+  };
+}
+
+/**
  * create a pane tab with a filterable list from a list of components
  * @param {string} layoutRef
  * @param {object} data from layout
@@ -310,7 +334,7 @@ function createTabFromList(layoutRef, data, path) {
         add: addComponentToList({ ref: layoutRef, path: list.path, list: _.get(data, `${list.path}._schema._componentList`), start: list.start }),
         addTitle: `Add component to ${label(list.path)} list`,
         inputPlaceholder: `Search ${label(list.path)} components`,
-        remove: _.noop,
+        remove: removeComponentFromList(layoutRef, list.path, data),
         reorder: updateOrder(layoutRef, list.path, data)
       });
 

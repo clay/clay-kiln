@@ -146,6 +146,7 @@ function addComponent(pane, field, name, prevRef) {
             return select.select(newEl);
           });
         } else {
+          progress.done();
           return openComponents(field.path);
         }
       });
