@@ -1,23 +1,13 @@
-var _ = require('lodash'),
-  moment = require('moment'),
+const _ = require('lodash'),
   dom = require('@nymag/dom'),
   ds = require('dollar-slice'),
-  edit = require('../edit'),
-  state = require('../page-state'),
-  site = require('../site'),
   tpl = require('../tpl'),
-  db = require('../edit/db'),
-  datepicker = require('../field-helpers/datepicker'),
   paneController = require('../../controllers/pane'),
   filterableList = require('../filterable-list'),
-  publishPaneController = require('../../controllers/publish-pane'),
-  previewController = require('../../controllers/preview-pane'),
   references = require('../references'),
-  addComponent = require('../components/add-component'),
   select = require('../components/select'),
   label = require('../label'),
-  invisibleList = require('../components/invisible-list'),
-  kilnHideClass = 'kiln-hide';
+  invisibleList = require('../components/invisible-list');
 
 /**
  * add a disabled class to disabled tabs
@@ -116,24 +106,6 @@ function open(tabs, dynamicTab) {
   return paneWrapper;
 }
 
-function takeOffEveryZig() {
-  var header = '<span class="ayb-header">HOW ARE YOU GENTLEMEN <em>!!</em></span>',
-    messageEl = dom.create(`
-      <img class="cats-ayb" src="${site.get('assetPath')}/media/components/clay-kiln/cats.png" />
-      <div class="error-message ayb">ALL YOUR BASE ARE BELONG TO US</div>
-    `),
-    errorsEl = dom.create(`<div class="publish-error">
-      <div class="label">YOU ARE ON THE WAY TO DESTRUCTION</div>
-      <div class="description ayb">YOU HAVE NO CHANCE TO SURVIVE MAKE YOUR TIME</div>
-    </div>`),
-    innerEl = document.createDocumentFragment();
-
-  innerEl.appendChild(messageEl);
-  innerEl.appendChild(errorsEl);
-
-  open([{header: header, content: innerEl}]);
-}
-
 /**
  * determine if an element is visible on the page
  * @param {Element} el
@@ -210,5 +182,4 @@ module.exports.open = open;
 _.set(window, 'kiln.services.pane', module.exports); // export for plugins
 
 // todo: split these out into separate files
-module.exports.takeOffEveryZig = takeOffEveryZig;
 module.exports.openComponents = openComponents;
