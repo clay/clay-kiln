@@ -144,7 +144,7 @@ function addComponent(pane, field, name, prevRef) {
 }
 
 module.exports = addComponent;
-_.set(window, 'kiln.services["add-component"]', addComponent); // export for plugins
+_.set(window, 'kiln.services[\'add-component\']', addComponent); // export for plugins
 
 // for testing
 module.exports.getRemovablePlaceholder = getRemovablePlaceholder; // this function contains the logic that removeParentPlaceholder uses
