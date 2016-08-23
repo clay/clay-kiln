@@ -22,4 +22,4 @@ function takeOffEveryZig() {
 }
 
 module.exports = takeOffEveryZig;
-_.set(window, 'kiln.services.pane.takeOffEveryZig', module.exports);
+_.set(window, 'kiln.services.panes.takeOffEveryZig', module.exports);

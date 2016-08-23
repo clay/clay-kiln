@@ -80,4 +80,4 @@ function openComponents() {
 
 
 module.exports = openComponents;
-_.set(window, 'kiln.services.pane.openComponents', module.exports);
+_.set(window, 'kiln.services.panes.openComponents', module.exports);

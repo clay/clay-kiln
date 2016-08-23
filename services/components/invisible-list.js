@@ -149,7 +149,7 @@ function addComponentToList(options) {
 
     console.log('open add components pane with', available)
 
-    // return pane.openAddComponent(available, { pane: options.start, field: { ref: options.ref, path: options.path} });
+    // return openAddComponent(available, { pane: options.start, field: { ref: options.ref, path: options.path} });
   };
 }
 

@@ -22,4 +22,4 @@ function openAddComponent(components, options) {
 }
 
 module.exports = openAddComponent;
-_.set(window, 'kiln.services.pane.openAddComponent', module.exports);
+_.set(window, 'kiln.services.panes.openAddComponent', module.exports);

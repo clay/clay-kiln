@@ -97,4 +97,4 @@ function openNewPage() {
 }
 
 module.exports = openNewPage;
-_.set(window, 'kiln.services.pane.openNewPage', module.exports);
+_.set(window, 'kiln.services.panes.openNewPage', module.exports);

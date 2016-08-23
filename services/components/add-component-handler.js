@@ -1,7 +1,7 @@
 var references = require('../references'),
   dom = require('@nymag/dom'),
   _ = require('lodash'),
-  paneService = require('../pane'),
+  openAddComponent = require('../pane/add-component'),
   addComponent = require('./add-component'),
   getAvailableComponents = require('./available-components');
 
@@ -61,7 +61,7 @@ function addHandler(button, options, prevRef) {
       addComponent(pane, field, currentAvailable[0], prevRef);
     } else {
       // open the add components pane
-      paneService.openAddComponent(currentAvailable, { pane: pane, field: field, ref: prevRef });
+      openAddComponent(currentAvailable, { pane: pane, field: field, ref: prevRef });
     }
   });
 

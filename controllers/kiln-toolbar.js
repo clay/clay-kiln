@@ -1,11 +1,14 @@
 const dom = require('@nymag/dom'),
   events = require('../services/events'),
   focus = require('../decorators/focus'),
-  pane = require('../services/pane'),
   state = require('../services/page-state'),
   progress = require('../services/progress'),
   rules = require('../validators'),
-  validation = require('../services/publish-validation');
+  validation = require('../services/publish-validation'),
+  openNewPage = require('../services/pane/new-page'),
+  openComponents = require('../services/pane/components'),
+  openPreview = require('../services/pane/preview'),
+  openPublish = require('../services/pane/publish');
 
 let EditorToolbar;
 
@@ -16,7 +19,7 @@ let EditorToolbar;
  */
 function createPage() {
   return focus.unfocus()
-    .then(pane.openNewPage)
+    .then(openNewPage)
     .catch(function () {
       progress.done('error');
       progress.open('error', 'Issue with opening page options.', true);
@@ -87,7 +90,7 @@ EditorToolbar.prototype = {
   onComponentsClick: function () {
     // note: we're explicitly NOT closing any current forms,
     // because we don't want to unselect a currently selected component
-    return pane.openComponents();
+    return openComponents();
   },
 
   onNewClick: function () {
@@ -102,7 +105,7 @@ EditorToolbar.prototype = {
 
   onPreviewClick: function () {
     return focus.unfocus()
-      .then(pane.openPreview)
+      .then(openPreview)
       .catch(function () {
         progress.done('error');
         progress.open('error', 'Data could not be saved. Please review your open form.', true);
@@ -123,7 +126,7 @@ EditorToolbar.prototype = {
             progress.done('error');
           }
 
-          pane.openPublish(results);
+          openPublish(results);
         });
       })
       .catch(function () {

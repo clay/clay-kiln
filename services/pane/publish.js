@@ -309,4 +309,4 @@ function openPublish(validation) {
 }
 
 module.exports = openPublish;
-_.set(window, 'kiln.services.pane.openPublish', module.exports);
+_.set(window, 'kiln.services.panes.openPublish', module.exports);

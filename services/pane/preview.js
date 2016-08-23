@@ -35,4 +35,4 @@ function openPreview() {
 }
 
 module.exports = openPreview;
-_.set(window, 'kiln.services.pane.openPreview', module.exports);
+_.set(window, 'kiln.services.panes.openPreview', module.exports);
