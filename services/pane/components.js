@@ -34,9 +34,10 @@ function getName(el) {
 
 /**
  * open the component search pane
+ * @param {string} [path] optional path to a head component list that should be active
  * @returns {Promise}
  */
-function openComponents() {
+function openComponents(path) {
   var searchHeader = 'Find Component',
     visibleComponents = _.filter(dom.findAll(`[${references.referenceAttribute}]`), showVisible).map(getName),
     currentSelected = dom.find('.component-selector-wrapper.selected'),
@@ -66,7 +67,7 @@ function openComponents() {
     }
   }
 
-  return invisibleList.getListTabs().then(function (invisibleTabs) {
+  return invisibleList.getListTabs(path).then(function (invisibleTabs) {
     el = pane.open([{header: searchHeader, content: searchContent}].concat(invisibleTabs));
 
     // once the pane is created, make sure it's scrolled so that the current item is visible

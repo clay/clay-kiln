@@ -6,7 +6,9 @@ var references = require('../references'),
   select = require('./select'),
   progress = require('../progress'),
   db = require('../edit/db'),
-  _ = require('lodash');
+  _ = require('lodash'),
+  openComponents = require('../pane/components'),
+  invisibleList = require('./invisible-list');
 
 /**
  * find placeholders to remove from the parent
@@ -64,9 +66,12 @@ function addToList(args, pane, prevRef) {
 
         // insert it right after the previous component
         dom.insertAfter(prev, newEl);
-      } else {
+      } else if (pane.nodeType === pane.ELEMENT_NODE) {
         // insert it at the end of the component list
         dom.find(pane, '.component-list-inner').appendChild(newEl);
+      } else if (pane.nodeType === pane.COMMENT_NODE) {
+        // head component! find the end of the list and insert it
+        dom.insertBefore(invisibleList.getComponentListEnd(pane), newEl);
       }
       return newEl;
     });
@@ -133,12 +138,16 @@ function addComponent(pane, field, name, prevRef) {
       }
 
       return newElPromise.then(function (newEl) {
-        return render.addComponentsHandlers(newEl).then(function () {
-          focus.unfocus();
-          select.unselect();
-          progress.done();
-          return select.select(newEl);
-        });
+        if (newEl.nodeType === newEl.ELEMENT_NODE) {
+          return render.addComponentsHandlers(newEl).then(function () {
+            focus.unfocus();
+            select.unselect();
+            progress.done();
+            return select.select(newEl);
+          });
+        } else {
+          return openComponents(field.path);
+        }
       });
     });
 }

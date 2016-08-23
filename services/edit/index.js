@@ -99,6 +99,7 @@ function save(data) {
     schemaPromise = data._schema && Promise.resolve(data._schema) || cache.getSchema(uri),
     el = dom.find(`[${references.referenceAttribute}="${uri}"]`);
 
+  // todo: this doesn't handle component lists in the head
   if (el && dom.closest(el, '.kiln-page-area')) {
     progress.start('page');
   } else {

@@ -6,9 +6,6 @@ const label = require('../label'),
   forms = require('../forms'),
   dom = require('@nymag/dom'),
   getAvailableComponents = require('./available-components');
-  // todo: when we split up the panes, call the add component pane directly
-  // since this is currently a circular reference
-  // pane = require('../pane');
 
 /**
  * determine if a node begins a component list. they look like:
@@ -119,6 +116,8 @@ function getListsInHead() {
     addList(node, walker, lists);
   }
 
+  console.log(lists[0].components.map((i) => i.title))
+
   return lists;
 }
 
@@ -147,9 +146,8 @@ function addComponentToList(options) {
       available = getAvailableComponents(allComponents, exclude);
     }
 
-    console.log('open add components pane with', available)
-
-    // return openAddComponent(available, { pane: options.start, field: { ref: options.ref, path: options.path} });
+    // note: need to require it here because otherwise it's a circular reference
+    return require('../pane/add-component')(available, { pane: options.start, field: { ref: options.ref, path: options.path} });
   };
 }
 
@@ -157,9 +155,10 @@ function addComponentToList(options) {
  * create a pane tab with a filterable list from a list of components
  * @param {string} layoutRef
  * @param {object} data from layout
+ * @param {string} [path]
  * @returns {function}
  */
-function createTabFromList(layoutRef, data) {
+function createTabFromList(layoutRef, data, path) {
   return function (list) {
     var header = label(list.path), // todo: use a _label for this list, if it exists
       content = filterableList.create(list.components, {
@@ -172,25 +171,35 @@ function createTabFromList(layoutRef, data) {
         reorder: _.noop
       });
 
-    return {
-      header: header,
-      content: content
-    };
+    if (list.path === path) {
+      return {
+        header: header,
+        content: content,
+        active: true
+      };
+    } else {
+      return {
+        header: header,
+        content: content
+      };
+    }
   };
 }
 
 /**
  * generate tabs of invisible components, using filterable list
+ * @param {string} [path] optional path for a component list to make active
  * @returns {Promise} array
  */
-function getListTabs() {
+function getListTabs(path) {
   var lists = getListsInHead();
 
   return edit.getLayout().then(function (layoutRef) {
     return edit.getData(layoutRef).then(function (data) {
-      return _.map(lists, createTabFromList(layoutRef, data));
+      return _.map(lists, createTabFromList(layoutRef, data, path));
     });
   });
 }
 
 module.exports.getListTabs = getListTabs;
+module.exports.getComponentListEnd = getComponentListEnd;
