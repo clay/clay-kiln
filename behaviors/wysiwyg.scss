@@ -46,6 +46,7 @@ $wysiwyg-selected-bgcolor: $blue-25;
 $wysiwyg-button-size: 48px;
 $wysiwyg-border-color: $black-30;
 $wysiwyg-border-radius: 0;
+$wysiwyg-border-width: 1px;
 $wysiwyg-boxshadow: 0 0 6px 0 $input-shadow;
 $wysiwyg-dropshadow: 0 0 6px $input-shadow;
 
@@ -57,7 +58,7 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
 
 .medium-toolbar-arrow-under:before,
 .medium-toolbar-arrow-under:after {
-  border: 1px solid transparent;
+  border: $wysiwyg-border-width solid transparent;
   content: '';
   display: block;
   height: 0;
@@ -93,7 +94,7 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
   .medium-editor-toolbar-actions,
   .medium-editor-toolbar-form {
     background-color: $wysiwyg-bgcolor;
-    border: 1px solid $wysiwyg-border-color;
+    border: $wysiwyg-border-width solid $wysiwyg-border-color;
     border-radius: $wysiwyg-border-radius;
     position: relative;
 
@@ -143,7 +144,7 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
   }
 
   li + li {
-    border-left: 1px solid $wysiwyg-border-color;
+    border-left: $wysiwyg-border-width solid $wysiwyg-border-color;
   }
 }
 
@@ -204,7 +205,7 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
 }
 
 .medium-editor-toolbar-actions {
-  max-width: ($wysiwyg-button-size * 6) + 5;
+  max-width: ($wysiwyg-button-size * 6) + ($wysiwyg-border-width * 7);
 }
 
 // show the first 6 items (tier 1)
@@ -254,7 +255,7 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
 .medium-editor-toolbar.show-all li:nth-child(4),
 .medium-editor-toolbar.show-all li:nth-child(5),
 .medium-editor-toolbar.show-all li:nth-child(6) {
-  border-bottom: 1px solid $wysiwyg-border-color;
+  border-bottom: $wysiwyg-border-width solid $wysiwyg-border-color;
 }
 
 // hide items in the second row
