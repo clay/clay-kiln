@@ -9,7 +9,7 @@ var nodeUrl = require('url'),
   render = require('./services/components/render'),
   progress = require('./services/progress'),
   Konami = require('konami-js'),
-  pane = require('./services/pane'),
+  takeOffEveryZig = require('./services/pane/move-zig'),
   plugins = require('./services/plugins'),
   eventify = require('eventify'),
   connectionLostMessage = 'Connection Lost. Changes will <strong>NOT</strong> be saved.';
@@ -77,4 +77,4 @@ window.addEventListener('offline', function () {
   progress.open('offline', connectionLostMessage);
 });
 
-new Konami(pane.takeOffEveryZig);
+new Konami(takeOffEveryZig);
