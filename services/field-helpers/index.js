@@ -7,7 +7,7 @@ function getField(el) {
 }
 
 function getInput(el) {
-  return dom.find(el, '.checkbox-group') || dom.find(el, 'input') || dom.find(el, 'textarea') || dom.find(el, '.wysiwyg-input');
+  return dom.find(el, '.checkbox-group') || dom.find(el, '.segmented-button-group') || dom.find(el, 'input') || dom.find(el, 'textarea') || dom.find(el, '.wysiwyg-input');
 }
 
 function isInput(el) {

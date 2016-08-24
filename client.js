@@ -37,6 +37,7 @@ behaviors.add('page-ref', require('./behaviors/page-ref'));
 behaviors.add('magic-button', require('./behaviors/magic-button'));
 behaviors.add('codemirror', require('./behaviors/codemirror'));
 behaviors.add('site-specific-select', require('./behaviors/site-specific-select'));
+behaviors.add('segmented-button-group', require('./behaviors/segmented-button-group'));
 
 // add default decorators
 decorators.add(require('./decorators/placeholder'));
