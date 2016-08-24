@@ -23,10 +23,10 @@ function stubHealthTemplate() {
 }
 
 function stubUndoTemplate() {
-  return dom.create(`<div class="publish-undo undo kiln-hide">
+  return dom.create(`<div><div class="publish-undo undo kiln-hide">
     <button class="unpublish kiln-hide">Unpublish Page</button>
     <button class="unschedule kiln-hide">Unschedule</button>
-  </div>`);
+  </div></div>`);
 }
 
 function stubValidTemplate() {

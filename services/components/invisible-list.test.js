@@ -42,6 +42,17 @@ describe(dirname, function () {
       });
     });
 
+    describe('getComponentListStart', function () {
+      const fn = lib[this.title];
+
+      it('gets first node in a component list', function () {
+        var listNode = document.createComment('data-editable="foo-1-2-3"');
+
+        document.head.appendChild(listNode);
+        expect(fn('foo-1-2-3')).to.equal(listNode);
+      });
+    });
+
     describe('isComponentListEnd', function () {
       const fn = lib[this.title];
 
@@ -103,6 +114,17 @@ describe(dirname, function () {
 
       it('returns reference for a component', function () {
         expect(fn(document.createComment('data-uri="foo"'))).to.equal('foo');
+      });
+    });
+
+    describe('getComponentNode', function () {
+      const fn = lib[this.title];
+
+      it('gets first node in a specified component', function () {
+        var node = document.createComment('data-uri="domain.com/components/foo-1-2/instances/bar-1-2"');
+
+        document.head.appendChild(node);
+        expect(fn('domain.com/components/foo-1-2/instances/bar-1-2')).to.equal(node);
       });
     });
 
@@ -192,6 +214,34 @@ describe(dirname, function () {
         expect(wrapper.childNodes.length).to.equal(1);
         fn(wrapper.firstChild, fragment);
         expect(wrapper.childNodes.length).to.equal(3);
+      });
+    });
+
+    describe('getList', function () {
+      const fn = lib[this.title];
+
+      it('gets a list of components', function () {
+        var start = document.createComment('data-editable="foo-2-3"'),
+          mid = document.createElement('meta'),
+          end = document.createComment('data-editable-end'),
+          component1 = document.createComment('data-uri="domain.com/components/1/instances/1"'),
+          component2 = document.createComment('data-uri="domain.com/components/2/instances/2"'),
+          component3 = document.createComment('data-uri="domain.com/components/3/instances/3"');
+
+        document.head.appendChild(start);
+        document.head.appendChild(component1);
+        document.head.appendChild(mid);
+        document.head.appendChild(component2);
+        document.head.appendChild(mid);
+        document.head.appendChild(component3);
+        document.head.appendChild(mid);
+        document.head.appendChild(end);
+
+        function getTitle(item) {
+          return item.title;
+        }
+
+        expect(fn(start).map(getTitle)).to.deep.equal(['1', '2', '3']);
       });
     });
   });

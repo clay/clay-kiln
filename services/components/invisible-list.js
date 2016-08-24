@@ -374,11 +374,12 @@ module.exports.getComponentListEnd = getComponentListEnd;
 // for testing
 module.exports.isComponentListStart = isComponentListStart;
 module.exports.getComponentListPath = getComponentListPath;
-// note: getComponentListEnd isn't tested, since it relies on document.head
+module.exports.getComponentListStart = getComponentListStart;
 module.exports.isComponentListEnd = isComponentListEnd;
 // note: getComponentListEnd is above, since it's actually used by other modules
 module.exports.getComponentRef = getComponentRef;
-// note: getComponentNode isn't tested, since it relies on document.head
+module.exports.getComponentNode = getComponentNode;
 module.exports.getComponentEnd = getComponentEnd;
 module.exports.removeComponentFromDOM = removeComponentFromDOM;
 module.exports.insertAfter = insertAfter;
+module.exports.getList = getList;
