@@ -2,16 +2,20 @@ var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   fixture = require('../test/fixtures/behavior')({}),
   dom = require('@nymag/dom'),
-  lib = require('./segmented-button.js'); // static-analysis means this must be string, not `('./' + filename)`
+  lib = require('./segmented-button-group');
 
 describe(dirname, function () {
   describe(filename, function () {
 
-    var options = [
-      {icon: 'mock-icon', text: 'mock-text', value: 'mock-value'},
-      {text: 'mock-text-no-icon', value: 'mock-value-no-icon'},
-      {value: 'mock-value-no-text'}
-    ];
+    var values = [
+        {icon: 'mock-icon', text: 'mock-text', value: 'mock-value'},
+        {text: 'mock-text-no-icon', value: 'mock-value-no-icon'},
+        {value: 'mock-value-no-text'}
+      ],
+      options = [
+        { title: 'First', values: values },
+        { title: 'Second', values: values}
+      ];
 
     it('replaces the result.el', function () { // We could call this a "root" behavior
       var result,
@@ -25,15 +29,15 @@ describe(dirname, function () {
     it('makes a list of buttons', function () {
       var result = lib(fixture, {options: options}),
         label = result.el,
-        buttonContainer = label.querySelector('.segmented-button'),
+        buttonContainer = label.querySelector('.segmented-button-group'),
         buttons = buttonContainer.querySelectorAll('input[type="radio"]'),
         firstButton = buttons[0];
 
       expect(label.className).to.eql('input-label');
-      expect(buttonContainer.className).to.eql('segmented-button');
-      expect(buttons.length).to.eql(3);
+      expect(buttonContainer.className).to.eql('segmented-button-group');
+      expect(buttons.length).to.eql(6);
       expect(firstButton.name).to.eql('foo');
-      expect(firstButton.getAttribute('rv-field')).to.eql('foo');
+      expect(buttonContainer.getAttribute('rv-field')).to.eql('foo');
       expect(firstButton.getAttribute('rv-checked')).to.eql('foo.data.value');
       expect(firstButton.getAttribute('value')).to.eql('mock-value');
       expect(firstButton.getAttribute('id')).to.eql('foo-mock-value-0');
