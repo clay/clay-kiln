@@ -1,6 +1,7 @@
 var files, settings,
   istanbul = require('browserify-istanbul'),
   babelify = require('babelify'),
+  isparta = require('isparta'),
   _ = require('lodash');
 
 files = [
@@ -18,12 +19,10 @@ settings = {
   browserify: {
     transform: [
       'rollupify', // this needs to happen before babelify
-      babelify.configure({
-        presets: ['es2015']
-      }),
       istanbul({
         // this config fixes the following:
         // https://github.com/karma-runner/karma-coverage/issues/157
+        instrumenter: isparta,
         instrumenterConfig: {
           embedSource: true
         },
@@ -34,7 +33,10 @@ settings = {
           '**/controllers/**' // none of these have tests
         ],
         defaultIgnore: true // ignores node_modules, /test/, json files
-      })
+      }),
+      babelify.configure({
+        presets: ['es2015']
+      }),
     ]
   },
   coverageReporter: {
