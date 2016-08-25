@@ -161,11 +161,19 @@ function isComponentList(options) {
 
 /**
  * determine if a component list is empty
- * @param {object} data
+ * @param {object} options
  * @returns {boolean}
  */
-function isComponentListEmpty(data) {
-  return data.length === 0;
+function isComponentListEmpty(options) {
+  const data = options.data;
+
+  if (_.isArray(data)) {
+    // list in a component, incl. layout
+    return data.length === 0;
+  } else {
+    // list in a page
+    return !options.pageData[options.path] || options.pageData[options.path].length === 0;
+  }
 }
 
 /**
@@ -196,7 +204,7 @@ function getListEl(el, path) {
  * @returns {object|undefined}
  */
 function getPlaceholderList(el, options) {
-  if (isComponentList(options) && isComponentListEmpty(options.data)) {
+  if (isComponentList(options) && isComponentListEmpty(options)) {
     return {
       ref: options.ref,
       path: options.path,
@@ -309,7 +317,7 @@ function hasPlaceholder(el, options) {
   } else if (isPlaceholder && isGroup) {
     return isGroupEmpty(options.data);
   } else if (isPlaceholder && isComponentList(options)) {
-    return isComponentListEmpty(options.data);
+    return isComponentListEmpty(options);
   } else {
     return false; // not a placeholder
   }

@@ -61,7 +61,7 @@
 // add component button - added to placeholders of empty component lists
 .kiln-permanent-placeholder .placeholder-add-component {
   margin-top: 5px;
-  padding: 10px;
+  padding: 10px 10px 0; // rely on bottom padding from placeholder
 
   svg,
   svg * {
@@ -86,7 +86,7 @@
 
 .kiln-placeholder .placeholder-add-component {
   margin-top: 5px;
-  padding: 10px;
+  padding: 10px 10px 0;
 
   svg,
   svg * {
