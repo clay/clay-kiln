@@ -107,22 +107,11 @@ $layout-parent-bg-color: $purple-25;
 .selected-label {
   @include label();
 
+  color: $selector-icon;
   font-size: 14px;
   line-height: $action-icon-small; // same vertical space as the icons
   margin: 0;
   white-space: nowrap;
-}
-
-// regular button styles
-.selected-label,
-.selected-info-parent,
-.selected-action-settings,
-.selected-action-delete,
-.selected-add,
-.selected-replace {
-  @include icon-button($selector-icon, $action-icon-small);
-
-  padding: 14px;
 }
 
 // selected parent
