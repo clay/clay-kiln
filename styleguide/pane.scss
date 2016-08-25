@@ -8,10 +8,6 @@ $pane-margin: 30vh;
 $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
 $toolbar-height: 48px;
 
-.kiln-hide {
-  @include kiln-hide();
-}
-
 .kiln-toolbar-pane-background {
   background-color: $overlay-background;
   display: block;
