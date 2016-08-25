@@ -165,7 +165,9 @@ function isComponentList(options) {
  * @returns {boolean}
  */
 function isComponentListEmpty(options) {
-  if (_.isArray(options.data)) {
+  const data = options.data;
+
+  if (_.isArray(data)) {
     // list in a component, incl. layout
     return data.length === 0;
   } else {

@@ -29,6 +29,7 @@ describe(dirname, function () {
       sandbox.stub(edit, 'getData').returns(Promise.resolve({
         title: data
       }));
+      sandbox.stub(edit, 'getDataOnly').returns(Promise.resolve({}));
     }
 
     describe('decorate', function () {
