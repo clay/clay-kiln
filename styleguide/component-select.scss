@@ -93,9 +93,10 @@ $layout-parent-bg-color: $purple-25;
 }
 
 .selected-info {
-  border-left-width: 10px;
-  border-left-style: solid;
+  // we're explicitly overriding the color below
   border-left-color: $layout-color;
+  border-left-style: solid;
+  border-left-width: 10px;
   height: 48px;
 }
 
