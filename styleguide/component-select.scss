@@ -4,22 +4,22 @@
 @import 'buttons';
 
 // selector offsets, for the selector outline
-$offset-width: 8px;
+$offset-width: 16px;
 $offset-width-half: $offset-width / 2;
-$offset-height: 8px;
+$offset-height: 16px;
 $offset-height-half: $offset-height / 2;
-$parent-offset: 4px; // how much wider should parent outline be (each side)
+$parent-offset: 8px; // how much wider should parent outline be (each side)
 
 // icon sizes
 $action-icon-small: 18px;
 
-// selector colors
+// page-specific
 $page-color: $blue;
 $page-bg-color: $blue-50;
 $page-parent-color: $blue-75;
 $page-parent-bg-color: $blue-25;
 
-// todo: in the future layout-specific selectors use these colors
+// layout-specific
 $layout-color: $purple;
 $layout-bg-color: $purple-50;
 $layout-parent-color: $purple-75;
@@ -39,7 +39,7 @@ $layout-parent-bg-color: $purple-25;
   // visual jump when animating them in
   // (technically the parent DOES jump, but it's a lot less noticible than the
   // selected component. plus, the colors are similar enough that you don't see it)
-  border-color: $layout-bg-color;
+  border-color: $selector-border;
   // subtle shadow to create more visual distinction between selectors and the
   // stuff behind them
   box-shadow: 1px 1px 20px -11px $black;
@@ -56,14 +56,10 @@ $layout-parent-bg-color: $purple-25;
   z-index: -1; // should be less than any element in the component itself
 }
 
-.kiln-page-area .component-selector {
-  border-color: $page-bg-color;
-}
-
 // menus
 .component-selector-top,
 .component-selector-bottom {
-  background: rgba(255, 255, 255, .9); // todo: maybe blur the backgrounds in the future?
+  background: $selector-bg;
   border-color: transparent;
   border-width: 1px;
   border-style: solid;
@@ -73,20 +69,15 @@ $layout-parent-bg-color: $purple-25;
 
 // place the top and bottom menus bisecting the outline vertically
 .component-selector-top {
-  border-color: $layout-bg-color;
+  border-color: $selector-border;
   bottom: 100%;
 }
 
 // bottom menu is more offset, since it concerns actions that don't
 // affect the component itself (but rather things around it, e.g. adding new components)
 .component-selector-bottom {
-  border-color: $layout-bg-color;
+  border-color: $selector-border;
   top: 100%;
-}
-
-.kiln-page-area .component-selector-top,
-.kiln-page-area .component-selector-bottom {
-  border-color: $page-bg-color;
 }
 
 // all menus use flex to align their buttons
@@ -99,6 +90,17 @@ $layout-parent-bg-color: $purple-25;
   display: flex;
   flex-flow: row;
   justify-content: flex-start;
+}
+
+.selected-info {
+  border-left-width: 10px;
+  border-left-style: solid;
+  border-left-color: $layout-color;
+  height: 48px;
+}
+
+.kiln-page-area .selected-info {
+  border-left-color: $page-color;
 }
 
 // current component label
@@ -115,31 +117,10 @@ $layout-parent-bg-color: $purple-25;
 .selected-label,
 .selected-info-parent,
 .selected-action-settings,
-.selected-action-delete {
-  @include icon-button($layout-color, $action-icon-small);
-
-  padding: 14px;
-}
-
-.kiln-page-area .selected-label,
-.kiln-page-area .selected-info-parent,
-.kiln-page-area .selected-action-settings,
-.kiln-page-area .selected-action-delete {
-  @include icon-button($page-color, $action-icon-small);
-
-  padding: 14px;
-}
-
-// add button is larger
+.selected-action-delete,
 .selected-add,
 .selected-replace {
-  @include icon-button($layout-color, $action-icon-small);
-
-  padding: 14px;
-}
-.kiln-page-area .selected-add,
-.kiln-page-area .selected-replace {
-  @include icon-button($page-color, $action-icon-small);
+  @include icon-button($selector-icon, $action-icon-small);
 
   padding: 14px;
 }
@@ -156,17 +137,8 @@ $layout-parent-bg-color: $purple-25;
   transition: 250ms opacity ease-out; // fade in slower than the current component
 
   // override colors
-  border-color: $layout-parent-bg-color;
-
-  .component-selector-top {
+  .selected-info {
     border-color: $layout-parent-bg-color;
-  }
-
-  .selected-label,
-  .selected-action-settings {
-    @include icon-button($layout-parent-color, $action-icon-small);
-
-    padding: 14px;
   }
 
   // hide extraneous buttons
@@ -179,17 +151,8 @@ $layout-parent-bg-color: $purple-25;
 
 .kiln-page-area .component-selector-wrapper.selected-parent > .component-selector {
   // override colors
-  border-color: $page-parent-bg-color;
-
-  .component-selector-top {
+  .selected-info {
     border-color: $page-parent-bg-color;
-  }
-
-  .selected-label,
-  .selected-action-settings {
-    @include icon-button($page-parent-color, $action-icon-small);
-
-    padding: 14px;
   }
 }
 
