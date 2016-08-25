@@ -48,6 +48,19 @@ function createUndoActions(res) {
 }
 
 /**
+ * add error preview, e.g. excerpt of the data that contains errors
+ * @param {string} preview
+ * @returns {string}
+ */
+function addPreview(preview) {
+  if (preview) {
+    return `<span class="error-preview">${preview}</span>`;
+  } else {
+    return '';
+  }
+}
+
+/**
  * format and assemble error messages
  * @param {Object[]} errors (or warnings)
  * @param {string} [modifier] modifier class for warnings, info, etc
