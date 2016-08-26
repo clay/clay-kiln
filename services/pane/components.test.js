@@ -4,6 +4,7 @@ var dirname = __dirname.split('/').pop(),
   lib = require('./components'),
   dom = require('@nymag/dom'),
   tpl = require('../tpl'),
+  head = require('../components/head-components'),
   invisibleList = require('../components/invisible-list'),
   select = require('../components/select'),
   fixture = require('../../test/fixtures/tpl');
@@ -38,7 +39,8 @@ describe(dirname, function () {
       sandbox = sinon.sandbox.create();
       sandbox.stub(tpl, 'get');
       sandbox.stub(dom, 'findAll');
-      sandbox.stub(invisibleList, 'getListTabs');
+      sandbox.stub(head, 'getListTabs').returns(Promise.resolve([]));
+      sandbox.stub(invisibleList, 'getListTabs').returns(Promise.resolve([]));
       sandbox.stub(select);
       fixture.stubAll([
         '.kiln-pane-template',
@@ -57,7 +59,6 @@ describe(dirname, function () {
       dom.findAll.returns([
         stubComponent()
       ]);
-      invisibleList.getListTabs.returns(Promise.resolve([]));
       pane.close();
       return lib().then(function (el) {
         expect(el.querySelector('#pane-tab-1').innerHTML).to.equal('Find Component');
@@ -71,7 +72,6 @@ describe(dirname, function () {
         stubHiddenComponent(),
         stubHiddenComponent()
       ]);
-      invisibleList.getListTabs.returns(Promise.resolve([]));
       pane.close();
       return lib().then(function (el) {
         expect(el.querySelector('#pane-tab-1').innerHTML).to.equal('Find Component');

@@ -78,17 +78,17 @@ $toolbar-height: 48px;
 
   cursor: pointer;
   flex: 0 0 auto;
-  padding: 20px;
+  padding: 20px 10px;
   position: relative;
 
   &:after {
     bottom: 14px;
     content: '';
-    left: 20px;
+    left: 10px;
     opacity: 0;
     position: absolute;
     transition: opacity 200ms ease-out;
-    width: calc(100% - 40px);
+    width: calc(100% - 20px);
   }
 
   &:hover:after {
@@ -104,6 +104,23 @@ $toolbar-height: 48px;
   &.disabled {
     color: $black-25;
     cursor: not-allowed;
+  }
+}
+
+.kiln-toolbar-pane .pane-tab:first-child {
+  padding-left: 20px;
+
+  &:after {
+    left: 20px;
+    width: calc(100% - 30px);
+  }
+}
+
+.kiln-toolbar-pane .pane-tab:last-child {
+  padding-right: 20px;
+
+  &:after {
+    width: calc(100% - 30px);
   }
 }
 

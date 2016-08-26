@@ -5,6 +5,8 @@ const _ = require('lodash'),
   select = require('../components/select'),
   label = require('../label'),
   invisibleList = require('../components/invisible-list'),
+  head = require('../components/head-components'),
+  promises = require('../promises'),
   pane = require('./');
 
 /**
@@ -67,8 +69,11 @@ function openComponents(path) {
     }
   }
 
-  return invisibleList.getListTabs(path).then(function (invisibleTabs) {
-    el = pane.open([{header: searchHeader, content: searchContent}].concat(invisibleTabs));
+  return promises.props({
+    head: head.getListTabs(path),
+    invisible: invisibleList.getListTabs(path)
+  }).then(function (resolved) {
+    el = pane.open([{header: searchHeader, content: searchContent}].concat(resolved.head, resolved.invisible));
 
     // once the pane is created, make sure it's scrolled so that the current item is visible
     if (currentSelected && currentItem) {

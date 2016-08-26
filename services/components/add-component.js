@@ -107,7 +107,7 @@ function addToProp(args, pane) {
 /**
  * Add a component to a specified list
  * @param {Element} pane (component list element)
- * @param {{ref: string, path: string}} field (parent data)
+ * @param {{ref: string, path: string, invisible: boolean}} field (parent data)
  * @param {string} name of the component
  * @param {string} [prevRef] uri of the component to insert new component after
  * @returns {Promise}
@@ -138,16 +138,16 @@ function addComponent(pane, field, name, prevRef) {
       }
 
       return newElPromise.then(function (newEl) {
-        if (newEl.nodeType === newEl.ELEMENT_NODE) {
+        if (field.invisible) {
+          progress.done();
+          return openComponents(field.path);
+        } else {
           return render.addComponentsHandlers(newEl).then(function () {
             focus.unfocus();
             select.unselect();
             progress.done();
             return select.select(newEl);
           });
-        } else {
-          progress.done();
-          return openComponents(field.path);
         }
       });
     });
