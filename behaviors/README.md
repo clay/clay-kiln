@@ -164,6 +164,39 @@ sidebar:
     page: true
 ```
 
+#### Head Component Lists
+
+Components that live in the `<head>` of a page are somewhat special, as `<meta>` tags are different than other tags. They cannot contain other components, and some `<meta>` tags get messed up if you add arbitrary attributes (like our `data-uri` which denotes components). To get around this, we use html comments to denote both components and the lists they live inside.
+
+```html
+<!-- data-editable="listPath" -->
+<!-- data-uri="domain.com/components/foo/instances/bar" -->
+<meta name="some-tag" content="some-content">
+<meta name="some-other-tag" content="some-other-content">
+<!-- data-editable-end -->
+```
+
+As you can see above, component lists are simply denoted with `<!-- data-editable -->`, the same way we use the `data-editable` attribute in elements. In head component lists, you must also add a `<!-- data-editable-end -->` comment after the last component in the list. This allows us to add, remove, reorder, and re-render components inside the list.
+
+Components themselves are denoted with `<!-- data-uri -->`, similarly to the `data-uri` attribute in elements. Components do _not_ need a comment after them, but they need to live in a component list if you want to edit them.
+
+Head component lists get added as tabs to the `Components` pane in Kiln automatically, allowing them to be edited.
+
+#### Invisible Component Lists
+
+It's useful to have a component list for various components that might not have reader-facing visual elements, such as tracking scripts, affiliate marketing scripts, pixels, modals, etc. If these components have actual elements (i.e. they're not just `<meta>` tags in the `<head>`), you can add a property to the component list to make them appear as tabs in the `Components` pane, similar to Head Component Lists.
+
+```yaml
+footerMetadata:
+  _component:
+    include:
+      - pixel-tracker
+      - gpt-script
+    invisible: true
+```
+
+Like the Page Area property, this only works in a layout's component lists.
+
 **Note:** In the future you will be able to [specify a minimum and maximum number of components](https://github.com/nymag/clay-kiln/issues/298) in your component lists.
 
 #### Defining Display
