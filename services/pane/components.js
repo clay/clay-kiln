@@ -56,6 +56,7 @@ function openComponents(path) {
         select.select(component);
         select.scrollToComponent(component);
         el.classList.add('selected');
+        pane.close(); // Close the pane so user can interact with component
       },
       inputPlaceholder: 'Search all visible components'
     }),
