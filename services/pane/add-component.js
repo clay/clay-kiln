@@ -14,7 +14,7 @@ function openAddComponent(components, options) {
     innerEl = filterableList.create(components, {
       click: function (id) {
         return addComponent(options.pane, options.field, id, options.ref)
-          .then(() => close()); // only close pane if we added successfully
+          .then(() => pane.close()); // only close pane if we added successfully
       }
     });
 
