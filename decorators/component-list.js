@@ -75,6 +75,7 @@ function addDragula(el, options) {
     dragItemClass = 'dragula-item',
     dragItemUnsavedClass = 'dragula-not-saved',
     drag = dragula([el], {
+      deadzone: 10,
       ignoreInputTextSelection: true, // allow selecting text in draggable components
       moves: function (selectedItem, container, handle) {
         // only allow direct child components of a list to be dragged
