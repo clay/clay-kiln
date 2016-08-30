@@ -87,7 +87,7 @@ function getIndex(el, container) {
 function addDragula(el, reorder) {
   var dropAreaClass = 'dragula-drop-area',
     dragItemClass = 'dragula-list-item',
-    drag = dragula([el]),
+    drag = dragula([el], { deadzone: 10 }),
     oldIndex;
 
   drag.on('drag', function (selectedItem, container) {
