@@ -45,7 +45,7 @@ function addComponentToList(options) {
     if (include && include.length) {
       available = getAvailableComponents(include, exclude);
     } else {
-      available = getAvailableComponents(allComponents, exclude);
+      available = getAvailableComponents(allComponents(), exclude);
     }
 
     // note: need to require it here because otherwise it's a circular reference
