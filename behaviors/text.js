@@ -87,6 +87,18 @@ function addDateBinder(name, type) {
 }
 
 /**
+ * create a new date string in a given format. If no
+ * value is passed in returns an empty string
+ * @param  {string} value   A date string in a format supported by Moment
+ * @param  {string} format  The format of the returned date string
+ * @return {string}
+ */
+function newMomentWithFormat(value, format) {
+  // If value then instantiate with the value in proper format
+  return value ? moment(value).format(format) : '';
+}
+
+/**
  * Replace result.el with input.
  * @param {{name: string, bindings: {}}} result
  * @param {{}} args   defined in detail below:
@@ -143,26 +155,33 @@ module.exports = function (result, args) {
     result.binders.datepicker = {
       publish: true,
       bind: function (el) {
-        var observer = this.observer;
+        var observer = this.observer,
+          value = observer.value();
 
         // when instantiating, convert from the ISO format (what we save) to firefox's format (what the datepicker needs)
         if (!datepicker.hasNativePicker()) {
-          el.value = moment(observer.value()).format(firefoxDateFormat);
+          // Get proper value at instantiation
+          el.value = newMomentWithFormat(value, firefoxDateFormat);
           datepicker.init(el, { onChange: function (date) {
             // when the datepicker changes, convert it back to ISO format
             observer.setValue(moment(date).toISOString());
           }});
         } else {
-          // use iso format
-          el.value = moment(observer.value()).format(defaultDateFormat);
+          // Get proper value at instantiation
+          el.value = newMomentWithFormat(value, defaultDateFormat);
         }
       },
       routine: function (el, value) {
+        // If no value (usually on instantiation) then don't
+        // run the update functions
+        if (!value) {
+          return;
+        }
         // every time the data updates, display the NEW data in firefox's format
         if (!datepicker.hasNativePicker()) {
-          el.value = moment(value).format(firefoxDateFormat);
+          el.value = newMomentWithFormat(value, firefoxDateFormat);
         } else {
-          el.value = moment(value).format(defaultDateFormat);
+          el.value = newMomentWithFormat(value, defaultDateFormat);
         }
       }
     };
