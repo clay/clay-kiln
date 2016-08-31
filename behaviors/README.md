@@ -188,7 +188,7 @@ It's useful to have a component list for various components that might not have 
 
 ```yaml
 footerMetadata:
-  _component:
+  _componentList:
     include:
       - pixel-tracker
       - gpt-script
@@ -196,6 +196,28 @@ footerMetadata:
 ```
 
 Like the Page Area property, this only works in a layout's component lists.
+
+#### Fuzzy Component Lists and Properties
+
+By default, component lists and properties allow strict whitelisting and blacklisting with `include` and `exclude`. This is appropriate for most situations, but there are certain scenarios where you might want to be less strict. For example, the body of an article might be paragraphs and images 99% of the time, but you still want to allow your interactives team to create one-off components and add them to articles.
+
+You can accomplish this by adding `fuzzy: true` to your component list / property. This will add a "View all components" button to the bottom of the component list in the add-components pane. When a user clicks the button, it'll open a different add-components pane with a list of all available components.
+
+```yaml
+articleBody:
+  _componentList:
+    include:
+      - paragraph
+      - image
+    fuzzy: true # to allow one-off infographics, etc
+
+header:
+  _component:
+    include:
+      - generic-header
+      - site-specific-header
+    fuzzy: true # to allow one-off headers, etc
+```
 
 **Note:** In the future you will be able to [specify a minimum and maximum number of components](https://github.com/nymag/clay-kiln/issues/298) in your component lists.
 
