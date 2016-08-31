@@ -5,6 +5,7 @@ const label = require('../label'),
   edit = require('../edit'),
   forms = require('../forms'),
   dom = require('@nymag/dom'),
+  allComponents = require('./all-components'),
   getAvailableComponents = require('./available-components');
 
 
@@ -36,9 +37,7 @@ function getComponentsInList(listEl) {
  */
 function addComponentToList(options) {
   return function () {
-    var toolbar = dom.find('.kiln-toolbar'),
-      allComponents = toolbar && toolbar.getAttribute('data-components') && toolbar.getAttribute('data-components').split(',').sort() || [],
-      include = _.get(options, 'list.include'),
+    var include = _.get(options, 'list.include'),
       exclude = _.get(options, 'list.exclude'),
       available;
 
