@@ -277,6 +277,7 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
 
 // toolbar buttons
 .medium-editor-toolbar li button {
+  display: block;
   font-size: 18px;
 }
 .medium-editor-action-bold b {
