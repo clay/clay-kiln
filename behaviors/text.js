@@ -14,7 +14,7 @@ var dom = require('@nymag/dom'),
     'submit' // unsupported form-level input (i.e. we already have submit buttons)
   ],
   firefoxDateFormat = 'YYYY-MM-DD hh:mm A',
-  defaultDateFormat = 'YYYY-MM-DDThh:mm:ss';
+  defaultDateFormat = 'YYYY-MM-DDThh:mm';
 
 /**
  * get attribute value of boolean fields
