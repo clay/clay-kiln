@@ -109,13 +109,10 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
     }
 
     button {
-      align-items: center;
       background-color: transparent;
       border: none;
       color: $wysiwyg-color;
-      display: flex;
       height: $wysiwyg-button-size;
-      justify-content: center;
       line-height: 32px;
       padding: 0;
       text-align: center;
@@ -124,6 +121,10 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
 
       &:hover {
         background-color: $wysiwyg-hover-color;
+      }
+
+      img {
+        vertical-align: middle;
       }
     }
 
