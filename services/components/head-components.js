@@ -7,6 +7,7 @@ const label = require('../label'),
   forms = require('../forms'),
   dom = require('@nymag/dom'),
   progress = require('../progress'),
+  allComponents = require('./all-components'),
   getAvailableComponents = require('./available-components');
 
 /**
@@ -217,9 +218,7 @@ function getListsInHead() {
  */
 function addComponentToList(options) {
   return function () {
-    var toolbar = dom.find('.kiln-toolbar'),
-      allComponents = toolbar && toolbar.getAttribute('data-components') && toolbar.getAttribute('data-components').split(',').sort() || [],
-      include = _.get(options, 'list.include'),
+    var include = _.get(options, 'list.include'),
       exclude = _.get(options, 'list.exclude'),
       available;
 
@@ -227,7 +226,7 @@ function addComponentToList(options) {
     if (include && include.length) {
       available = getAvailableComponents(include, exclude);
     } else {
-      available = getAvailableComponents(allComponents, exclude);
+      available = getAvailableComponents(allComponents(), exclude);
     }
 
     // note: need to require it here because otherwise it's a circular reference

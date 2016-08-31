@@ -1,6 +1,7 @@
 var references = require('../references'),
   dom = require('@nymag/dom'),
   _ = require('lodash'),
+  allComponents = require('./all-components'),
   openAddComponent = require('../pane/add-component'),
   addComponent = require('./add-component'),
   getAvailableComponents = require('./available-components');
@@ -32,18 +33,17 @@ function getParentEditableElement(el, path) {
  * @returns {Element}
  */
 function addHandler(button, options, prevRef) {
-  var toolbar = dom.find('.kiln-toolbar'),
-    allComponents = toolbar && toolbar.getAttribute('data-components') && toolbar.getAttribute('data-components').split(',').sort() || [],
-    include = _.get(options, 'list.include') || _.get(options, 'prop.include'),
+  var include = _.get(options, 'list.include') || _.get(options, 'prop.include'),
     exclude = _.get(options, 'list.exclude') || _.get(options, 'prop.exclude'),
     pane = options.listEl || options.propEl,
+    isFuzzy = _.get(options, 'list.fuzzy') || _.get(options, 'prop.fuzzy'),
     available;
 
   // figure out what components should be available for adding
   if (include && include.length) {
     available = getAvailableComponents(include, exclude);
   } else {
-    available = getAvailableComponents(allComponents, exclude);
+    available = getAvailableComponents(allComponents(), exclude);
   }
 
   // add those components to the button
@@ -61,7 +61,7 @@ function addHandler(button, options, prevRef) {
       addComponent(pane, field, currentAvailable[0], prevRef);
     } else {
       // open the add components pane
-      openAddComponent(currentAvailable, { pane: pane, field: field, ref: prevRef });
+      openAddComponent(currentAvailable, { pane: pane, field: field, ref: prevRef, isFuzzy: isFuzzy });
     }
   });
 

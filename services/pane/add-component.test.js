@@ -40,5 +40,17 @@ describe(dirname, function () {
       expect(document.querySelector('#pane-tab-1').innerHTML).to.equal('Add Component');
       expect(document.querySelectorAll('.pane-inner li.filtered-item').length).to.equal(1);
     });
+
+    it('adds a button to view all components when passed isFuzzy', function () {
+      var options = {
+        field: { ref: null, path: null}, // parent data, passed to addComponent (we don't care about it here)
+        pane: document.createElement('div'), // pane element, passed to addComponent (we don't care about it here)
+        isFuzzy: true
+      };
+
+      pane.close();
+      lib(['foo'], options);
+      expect(document.querySelector('.filtered-add-title').innerHTML).to.equal('View all components');
+    });
   });
 });
