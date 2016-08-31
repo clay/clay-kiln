@@ -113,7 +113,8 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
       background-color: transparent;
       border: none;
       color: $wysiwyg-color;
-      display: flex;
+      display: block;
+      font-size: 18px;
       height: $wysiwyg-button-size;
       justify-content: center;
       line-height: 32px;
@@ -276,10 +277,6 @@ $wysiwyg-dropshadow: 0 0 6px $input-shadow;
 }
 
 // toolbar buttons
-.medium-editor-toolbar li button {
-  display: block;
-  font-size: 18px;
-}
 .medium-editor-action-bold b {
   padding-left: 2px;
 }
