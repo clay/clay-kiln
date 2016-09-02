@@ -67,7 +67,7 @@
 
     {# scripts #}
     <script>
-    {{ ('node_modules/clay-kiln/dist/clay-kiln.js')|includeFile }}
+    {{ ('node_modules/clay-kiln/dist/clay-kiln-edit.js')|includeFile }}
     </script>
 
     {# template wrappers #}

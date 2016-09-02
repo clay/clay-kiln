@@ -14,6 +14,12 @@ var nodeUrl = require('url'),
   eventify = require('eventify'),
   connectionLostMessage = 'Connection Lost. Changes will <strong>NOT</strong> be saved.';
 
+// Require all scss/css files needed
+require('codemirror-css');
+require('flatpickr-css');
+require.context('./styleguide', true, /^.*\.(scss|css)$/);
+require.context('./behaviors', true, /^.*\.(scss|css)$/);
+
 // manually add built-in behaviors
 // since browserify's require() uses static analysis
 behaviors.add('component-ref', require('./behaviors/component-ref'));
