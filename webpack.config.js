@@ -1,4 +1,5 @@
 var ExtractTextPlugin = require('extract-text-webpack-plugin'),
+  autoprefixer = require('autoprefixer'),
   path = require('path');
 
 module.exports = {
@@ -23,12 +24,15 @@ module.exports = {
       test: /\.scss|.css$/,
       loader: ExtractTextPlugin.extract(
         'style', // backup loader when not building .css file
-        'css!sass' // loaders to preprocess CSS
+        'css!!postcss-loader!sass' // loaders to preprocess CSS
       )
     }],
     noParse: [
       path.resolve('./node_modules/dollar-slice')
     ]
+  },
+  postcss: function () {
+    return [autoprefixer];
   },
   resolve: {
     alias: {
