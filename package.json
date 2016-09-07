@@ -8,7 +8,9 @@
     "karma": "karma start",
     "test": "npm run lint && npm run karma",
     "test-local": "npm run lint && npm run karma -- karma.local.conf.js",
-    "prepublish": "gulp --once"
+    "build": "webpack",
+    "watch": "webpack -w",
+    "prepublish": "webpack -p"
   },
   "repository": {
     "type": "git",
@@ -73,7 +75,6 @@
     "medium-editor-phrase": "^1.0.0",
     "mocha": "^2.2.5",
     "moment": "^2.10.6",
-    "node-sass": "^3.8.0",
     "nprogress": "^0.2.0",
     "postcss-loader": "^0.11.1",
     "rivets": "^0.9.3",
