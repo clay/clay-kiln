@@ -155,13 +155,13 @@ function open(ref, el, path, e) {
       if (_.get(data, '_schema.' + references.displayProperty) === 'inline') {
         return formCreator.createInlineForm(ref, data, el)
           .then(function (res) {
-            window.kiln.trigger('form:open', res);
+            window.kiln.trigger('form:open', res, ref);
             return res;
           });
       } else {
         return formCreator.createForm(ref, data)
           .then(function (res) {
-            window.kiln.trigger('form:open', res);
+            window.kiln.trigger('form:open', res, ref);
             return res;
           });
       }
