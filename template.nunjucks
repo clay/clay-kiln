@@ -2,7 +2,7 @@
   <div data-uri="{{ _ref or _self }}" class="clay-kiln">
     {# styles #}
     <style>
-    {{ ('node_modules/clay-kiln/dist/clay-kiln.css')|includeFile }}
+    {{ ('node_modules/clay-kiln/dist/clay-kiln.css')|includeFile|safe }}
     </style>
 
     {# toolbar #}
@@ -67,7 +67,7 @@
 
     {# scripts #}
     <script>
-    {{ ('node_modules/clay-kiln/dist/clay-kiln-edit.js')|includeFile }}
+    {{ ('node_modules/clay-kiln/dist/clay-kiln-edit.js')|includeFile|safe }}
     </script>
 
     {# template wrappers #}
@@ -298,6 +298,6 @@
   <div class="clay-kiln-logo">{% include 'public/media/components/clay-kiln/clay-logo.svg' %}</div>
   {# secret code to enter edit mode #}
   <script>
-    {{ ('node_modules/clay-kiln/dist/clay-kiln-view.js')|includeFile }}
+    {{ ('node_modules/clay-kiln/dist/clay-kiln-view.js')|includeFile|safe }}
   </script>
 {% endif %}
