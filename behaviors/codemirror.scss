@@ -1,7 +1,5 @@
 @import '../styleguide/inputs';
 @import '~codemirror/lib/codemirror.css';
-// note: since codemirror is css rather than scss, it's imported
-// manually in our gulpfile
 
 .CodeMirror {
   @include input();
