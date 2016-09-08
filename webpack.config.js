@@ -34,12 +34,6 @@ module.exports = {
   postcss: function () {
     return [autoprefixer({browsers: ['last 2 versions', 'ie >= 9', 'ios >= 7', 'android >= 4.4.2']})];
   },
-  resolve: {
-    alias: {
-      'codemirror-css': path.resolve('node_modules/codemirror/lib/codemirror.css'),
-      'flatpickr-css': path.resolve('node_modules/flatpickr/dist/flatpickr.min.css')
-    }
-  },
   plugins: [
     new ExtractTextPlugin('clay-kiln.css')
   ]

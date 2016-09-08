@@ -1,6 +1,7 @@
 @import 'layers';
 @import 'typography';
 @import 'colors';
+@import '~flatpickr/dist/flatpickr.min.css';
 
 .flatpickr-wrapper.inline .flatpickr-calendar,
 .flatpickr-wrapper.open .flatpickr-calendar {

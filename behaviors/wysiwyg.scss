@@ -1,6 +1,6 @@
 @import '../styleguide/colors';
 @import '../styleguide/inputs';
-@import '../node_modules/medium-editor/src/sass/medium-editor';
+@import '~medium-editor/src/sass/medium-editor';
 
 .wysiwyg-input {
   @include normal-text();
