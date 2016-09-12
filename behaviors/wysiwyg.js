@@ -150,7 +150,8 @@ function createEditor(field, buttonsWithOptions) {
         'style',
         'img',
         'object',
-        'iframe'
+        'iframe',
+        'table'
       ],
       preCleanReplacements: [
         [/&lt;(.*?)&gt;/ig, '<$1>'], // catch any html trying to be sent in as escaped strings,
