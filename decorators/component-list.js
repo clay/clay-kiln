@@ -2,6 +2,7 @@ var _ = require('lodash'),
   references = require('../services/references'),
   dom = require('@nymag/dom'),
   edit = require('../services/edit'),
+  db = require('../services/edit/db'),
   dragula = require('dragula');
 
 /**
@@ -16,19 +17,34 @@ function updateOrder(el, options) {
 
   // refresh the data from the server first, in case any non-list properties have changed
   return edit.getData(options.ref).then(function (data) {
-    var currentElements = el.querySelectorAll(':scope > [' + refAttr + ']'), // only get direct children of the list
-      newData = _.map(currentElements, function (item) {
+    var currentElements = el.querySelectorAll(':scope > [' + refAttr + ']'); // only get direct children of the list
+
+    if (_.isArray(data[options.path])) {
+      // data is in the current component. save it!
+      let newData = _.map(currentElements, function (item) {
         var newItem = {};
 
         newItem[refProp] = item.getAttribute(refAttr);
         return newItem;
       });
 
+      data[options.path] = newData;
+      return edit.save(data);
+    } else {
+      // data is actually in the page
+      let pageUri = dom.pageUri(),
+        newData = _.map(currentElements, (item) => item.getAttribute(refAttr));
+
+      return edit.getDataOnly(pageUri).then(function (pageData) {
+        pageData[options.path] = newData;
+        return db.save(pageUri, _.omit(pageData, '_ref'));
+        // call db.save directly, since edit.save is for components
+      });
+    }
+
     // note: when we deal with multi-user editing, add logic to add list items
     // that have been added by other people, rather than simply
     // persisting whatever's in the dom to the server :-)
-    data[options.path] = newData;
-    return edit.save(data);
   });
 }
 

@@ -2,6 +2,7 @@ var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   references = require('../services/references'),
   edit = require('../services/edit'),
+  db = require('../services/edit/db'),
   lib = require('./component-list');
 
 describe(dirname, function () {
@@ -76,12 +77,20 @@ describe(dirname, function () {
           expect(edit.save.calledWith({
             content: []
           })).to.equal(true);
+        },
+        expectPageData = function () {
+          expect(db.save.calledWith({
+            content: [{
+              _ref: 'fakeItemRef'
+            }]
+          })).to.equal(true);
         };
 
       beforeEach(function () {
         item.setAttribute(references.referenceAttribute, 'fakeItemRef');
         sandbox.stub(edit, 'getData').returns(Promise.resolve({}));
         sandbox.stub(edit, 'save', sandbox.spy());
+        sandbox.stub(db, 'save');
       });
 
       it('gets rid of removed components', function () {
@@ -118,6 +127,11 @@ describe(dirname, function () {
         el.appendChild(item);
         fn(el, options).then(expectData).then(dontExpectSubData);
         // should only expect fakeItemRef, not fakeSubItemRef
+      });
+
+      it('works for components in the page data', function () {
+        edit.getData.returns(Promise.resolve({ content: 'content' }));
+        fn(el, options).then(expectPageData);
       });
     });
   });
