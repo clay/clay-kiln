@@ -3,12 +3,22 @@
 @import 'colors';
 @import '~flatpickr/dist/flatpickr.min.css';
 
+.flatpickr-wrapper.static {
+  display: block; // always show the inputs
+}
+
 .flatpickr-wrapper.inline .flatpickr-calendar,
 .flatpickr-wrapper.open .flatpickr-calendar {
   @include datepicker-layer();
 
   // not the full kiln-copy (no sizes, overrides, etc)
   font-family: $system-fonts;
+}
+
+// right align the time picker, preventing overflow to the right of the pane
+.schedule-input[type='time'] + .flatpickr-calendar {
+  left: auto;
+  right: 0;
 }
 
 .flatpickr-month {
