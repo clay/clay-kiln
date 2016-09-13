@@ -14,6 +14,17 @@ var _ = require('lodash'),
   site = require('../services/site'),
   refAttr = references.referenceAttribute;
 
+// pass config actions to text-model
+model.updateSameAs({
+  // all headings should be converted to bold text
+  H1: 'STRONG',
+  H2: 'STRONG',
+  H3: 'STRONG',
+  H4: 'STRONG',
+  H5: 'STRONG',
+  H6: 'STRONG'
+});
+
 /**
  * whan that sellection, with his ranges soote
  * the finalle node hath perced to the roote
