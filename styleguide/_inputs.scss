@@ -28,6 +28,14 @@
     transition: border 150ms ease-out;
   }
 
+  &:disabled,
+  &.disabled {
+    color: $black-50;
+    cursor: pointer;
+    pointer-events: none;
+    user-select: none;
+  }
+
   &:not([type=checkbox]):not([type=radio]) {
     // remove things that mobile safari adds to inputs:
     // rounded borders, untoggleable inset shadows, etc
