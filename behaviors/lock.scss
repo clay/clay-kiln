@@ -1,0 +1,61 @@
+@import '../styleguide/buttons';
+
+@keyframes jiggle {
+  0%, 100% {transform: rotate(0deg);}
+  20%, 60% {transform: rotate(-10deg);}
+  40%, 80% {transform: rotate(10deg);}
+}
+
+.lock-button {
+  @include button-outlined($black-25, $white);
+
+  border-bottom-left-radius: 0;
+  border-left: none;
+  border-top-left-radius: 0;
+  clear: right;
+  float: right;
+  height: 41px; // to match inputs
+  margin: 5px 0 0 0;
+  padding: 6px 10px 4px;
+  position: relative;
+  right: 0;
+  top: 0; // allow 1px for border
+  width: 44px; // explicit width, see below
+
+  svg {
+    height: 24px;
+    width: 17px;
+  }
+
+  .locked {
+    display: block;
+  }
+
+  .unlocked {
+    display: none;
+  }
+
+  &.unlocked {
+    padding-top: 4px;
+
+    .locked {
+      display: none;
+    }
+
+    .unlocked {
+      display: block;
+    }
+  }
+
+  &.jiggle .locked {
+    animation-name: jiggle;
+    animation-duration: 600ms;
+    animation-fill-mode: both;
+  }
+}
+
+.has-lock-button {
+  // the previous element before the lock button (e.g. input, wysiwyg) should
+  // move over so the lock button can live after it (on the same line)
+  width: calc(100% - 44px) !important;
+}

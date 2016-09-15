@@ -251,6 +251,14 @@
       </aside>
     </template>
 
+    {# template: lock button - used by lock behavior #}
+    <template class="lock-button-template">
+      <button class="lock-button">
+        <span class="locked">{% include 'public/media/components/clay-kiln/locked.svg' %}</span>
+        <span class="unlocked">{% include 'public/media/components/clay-kiln/unlocked.svg' %}</span>
+      </button>
+    </template>
+
     {# template: placeholders #}
     <template class="placeholder-template">
       <div> {# this gets a .kiln-placeholder or .kiln-permanent-placeholder class #}
