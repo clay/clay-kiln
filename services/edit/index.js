@@ -241,6 +241,18 @@ function getNewPageUrl(uri) {
 }
 
 /**
+ * Get the default data for a component.
+ *
+ * @param  {string} name
+ * @return {Promise}
+ */
+function getDefaultData(name) {
+  var base = `${site.get('prefix')}/components/${name}`;
+
+  return cache.getDataOnly(base);
+}
+
+/**
  * Create a new page, cloning the current page
  * @param {string} pageType to create ('new', 'new-sponsored', etc.)
  * @returns {Promise}
@@ -747,6 +759,7 @@ module.exports = {
   getComponentRef: getComponentRef,
   getHTMLWithQuery: getHTMLWithQuery,
   getHTML: getHTML,
+  getDefaultData: getDefaultData,
 
   // Please stop using these.  If you use these, we don't trust you.  Do you trust yourself?
   getData: getData,
