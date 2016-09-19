@@ -247,7 +247,7 @@ These are not hard and fast rules, so feel free to experiment!
 
 #### Defining Placeholders
 
-By default, placeholders are displayed when a field is empty. If you would like the placeholder to _always_ appear (e.g. for components with no visible aspects, or for things like ads which rely on client-side js which is suppressed in edit mode), add `permanent: true` to the placeholder object. This will give the placeholder a slightly different styling and prevent it from disappearing when data is added.
+By default, placeholders are displayed when a field is empty. If you would like the placeholder to _always_ appear (e.g. for components with no visible aspects, or for things like ads which rely on client-side js which is suppressed in edit mode), add `permanent: true` to the placeholder object. This will give the placeholder a more subtle styling and prevent it from disappearing when data is added.
 
 ```yaml
 adName:
@@ -258,7 +258,7 @@ adName:
     permanent: true
 ```
 
-Placeholders can display the value of a field, which is useful for components not visible during edit mode, e.g. third-party JavaScript. The syntax for displaying a value in the placeholder text is `${fieldName}`, which is similar to JavaScript [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals). Note that `permanent: true` must be set. Example schemas:
+Placeholders can display the value of a field, which is useful for components not visible during edit mode, e.g. third-party embeds. The syntax for displaying a value in the placeholder text is `${fieldName}`, which is similar to JavaScript [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals). Note that `permanent: true` must be set.
 
 ```yaml
 # single field with value in placeholder text
@@ -282,10 +282,13 @@ Placeholders will display when you add `data-editable="fieldName"` in your compo
 
 When deciding how to add placeholders, keep these things in mind:
 
-* You can add newlines into placeholder text, either by using yaml's [multiline strings](http://stackoverflow.com/questions/3790454/in-yaml-how-do-i-break-a-string-over-multiple-lines) or by adding `\n`, e.g. `text: ARTICLE BODY\n\nClick to add #content`
 * Placeholder height should reflect how the component will look when data is added to the field. A single line of text will be short, while a component list will probably be taller.
 * Placeholder height is a string, so you may specify different units if applicable.
+* If you specify a placeholder height below **50px**, it will use more compact _single line_ styling.
 * Placeholders are specified in the component schema, so all instances of that component will have the same placeholder text, height, and logic.
+* That being said, you can override the height on a per-instance basis by setting different `height` styles on the component element itself.
+* You can specify that the data in a field might be required by setting `required: true` in the placeholder. This displays "required" to the right of the placeholder text.
+* Placeholders will "this page" / "multiple pages" based on where the component lives. The latter denotes a component living inside a layout.
 
 ### Groups
 
