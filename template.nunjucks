@@ -262,8 +262,17 @@
     {# template: placeholders #}
     <template class="placeholder-template">
       <div> {# this gets a .kiln-placeholder or .kiln-permanent-placeholder class #}
-        <span class="placeholder-label"></span>
-        <span class="placeholder-add-component kiln-hide" title="Add Component To List">{% include 'public/media/components/clay-kiln/add-icon.svg' %}</span>
+        <div class="placeholder-top">
+          <span class="placeholder-label"></span>
+          <span class="placeholder-location">
+            <span class="placeholder-this-page kiln-hide">{% include 'public/media/components/clay-kiln/this-page.svg' %} This Page</span>
+            <span class="placeholder-many-pages">{% include 'public/media/components/clay-kiln/many-pages.svg' %} Multiple Pages</span>
+          </span>
+          <span class="placeholder-required kiln-hide">Required</span>
+        </div>
+        <div class="placeholder-bottom kiln-hide">
+          <span class="placeholder-add-component" title="Add Components">Add Components</span>
+        </div>
       </div>
     </template>
   </div>

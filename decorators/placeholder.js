@@ -4,7 +4,8 @@ var _ = require('lodash'),
   dom = require('@nymag/dom'),
   tpl = require('../services/tpl'),
   addComponentHandler = require('../services/components/add-component-handler'),
-  interpolate = require('../services/interpolate-fields');
+  interpolate = require('../services/interpolate-fields'),
+  kilnHideClass = 'kiln-hide';
 
 /**
  * given an array of fields, find the field that matches a certain name
@@ -215,12 +216,12 @@ function getPlaceholderList(el, options) {
 }
 
 /**
- * convert newlines to line breaks
- * @param {string} text
- * @returns {string}
+ * determine if a placeholder is required
+ * @param {object} schema
+ * @returns {boolean}
  */
-function convertNewLines(text) {
-  return text.replace(/(?:\r\n|\r|\n|\\n)/g, '<br />');
+function isRequired(schema) {
+  return !!_.get(schema, '_placeholder.required');
 }
 
 /**
@@ -256,7 +257,7 @@ function addPlaceholderHeight(placeholder, height) {
  * @param {string} text
  */
 function addPlaceholderText(placeholder, text) {
-  dom.find(placeholder, '.placeholder-label').innerHTML = convertNewLines(text);
+  dom.find(placeholder, '.placeholder-label').innerHTML = text;
 }
 
 /**
@@ -266,10 +267,24 @@ function addPlaceholderText(placeholder, text) {
  */
 function addPlaceholderList(placeholder, list) {
   if (list) {
-    let button = dom.find(placeholder, '.placeholder-add-component');
+    let bottom = dom.find(placeholder, '.placeholder-bottom'),
+      button = dom.find(bottom, '.placeholder-add-component');
 
-    button.classList.remove('kiln-hide');
+    bottom.classList.remove(kilnHideClass);
     addComponentHandler(button, list);
+  }
+}
+
+/**
+ * add 'required' to placeholders with the 'required' argument
+ * @param {Element} placeholder
+ * @param {boolean} isRequired
+ */
+function addPlaceholderRequired(placeholder, isRequired) {
+  if (isRequired) {
+    let required = dom.find(placeholder, '.placeholder-required');
+
+    required.classList.remove(kilnHideClass);
   }
 }
 
@@ -288,6 +303,7 @@ function addPlaceholderDom(node, obj) {
   addPlaceholderHeight(placeholder, obj.height);
   addPlaceholderText(placeholder, obj.text);
   addPlaceholderList(placeholder, list);
+  addPlaceholderRequired(placeholder, obj.required);
 
   node.appendChild(placeholder);
   return node;
@@ -336,7 +352,8 @@ function addPlaceholder(el, options) {
     text: getPlaceholderText(path, options.data, options.componentData),
     height: getPlaceholderHeight(el, schema),
     permanent: getPlaceholderPermanence(schema),
-    list: getPlaceholderList(el, options)
+    list: getPlaceholderList(el, options),
+    required: isRequired(schema)
   });
 }
 
@@ -347,4 +364,3 @@ module.exports.handler = addPlaceholder;
 module.exports.getPlaceholderText = getPlaceholderText;
 module.exports.getPlaceholderHeight = getPlaceholderHeight;
 module.exports.isFieldEmpty = isFieldEmpty;
-module.exports.convertNewLines = convertNewLines;

@@ -160,26 +160,6 @@ describe(dirname, function () {
       });
     });
 
-    describe('convertNewLines', function () {
-      var fn = lib[this.title];
-
-      it('passes through strings', function () {
-        expect(fn('foo')).to.equal('foo');
-      });
-
-      it('converts real newlines to line breaks', function () {
-        expect(fn('foo\nbar')).to.equal('foo<br />bar');
-      });
-
-      it('converts more than one newline to line breaks', function () {
-        expect(fn('foo\n\nbar')).to.equal('foo<br /><br />bar');
-      });
-
-      it('converts escaped newlines to line breaks', function () {
-        expect(fn('foo\\nbar')).to.equal('foo<br />bar');
-      });
-    });
-
     function stubNode() {
       var node = document.createElement('div');
 
