@@ -61,9 +61,17 @@
 
   // single line styles (when placeholders are not tall enough to fit multiple lines)
   &.single-line {
+    flex-direction: row;
+
     .placeholder-top {
       flex-flow: row; // no wrap
       justify-content: flex-start;
+    }
+
+    .placeholder-bottom {
+      flex-flow: row; // no wrap
+      justify-content: flex-start;
+      min-width: 0;
     }
 
     .placeholder-this-page,
@@ -91,6 +99,10 @@
       margin-left: 4px;
       order: 3;
       text-align: left;
+    }
+
+    .placeholder-add-component {
+      margin: 0;
     }
   }
 }
