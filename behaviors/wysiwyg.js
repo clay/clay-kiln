@@ -144,6 +144,26 @@ function createEditor(field, buttonsWithOptions) {
   // add "remove formatting" button to the end
   buttons.push('removeFormat');
 
+  // extend anchor so that URL's are not urlEncoded
+  MediumEditor.extensions.anchor = MediumEditor.extensions.anchor.extend({
+    checkLinkFormat: function (value) {
+      // Matches any alphabetical characters followed by ://
+      // Matches protocol relative "//"
+      // Matches common external protocols "mailto:" "tel:" "maps:"
+      // Matches relative hash link, begins with "#"
+      var urlSchemeRegex = /^([a-z]+:)?\/\/|^(mailto|tel|maps):|^\#/i,
+        // var te is a regex for checking if the string is a telephone number
+        telRegex = /^\+?\s?\(?(?:\d\s?\-?\)?){3,20}$/;
+
+      if (telRegex.test(value)) {
+        return 'tel:' + value;
+      } else {
+        // Check for URL scheme and default to http:// if none found
+        return (urlSchemeRegex.test(value) ? '' : 'http://') + value; // here we deviate from the default
+      }
+    }
+  });
+
   return new MediumEditor(field, {
     toolbar: {
       // buttons that go in the toolbar
