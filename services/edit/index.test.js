@@ -448,4 +448,22 @@ describe('edit service', function () {
       });
     });
   });
+
+  describe('getDefaultData', function () {
+    var fn = lib[this.title],
+      componentName = 'my-component',
+      defaultData = {title: 'My Component'};
+
+    it('returns default data for a component', function () {
+      cache.getDataOnly.returns(Promise.resolve({title: 'My Component'}));
+
+      function result() {
+        return fn(componentName);
+      }
+
+      result().then(function (resp) {
+        expect(resp).to.equal(defaultData);
+      });
+    });
+  });
 });
