@@ -50,6 +50,28 @@ $system-fonts: Helvetica, Arial, sans-serif;
   margin-bottom: 5px;
 }
 
+// placeholder typography
+@mixin placeholder-primary {
+  font-family: $system-fonts;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 17px;
+  text-align: left;
+  text-decoration: none;
+}
+
+@mixin placeholder-secondary {
+  font-family: $system-fonts;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 14px;
+  text-align: left;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
 // used as kiln text in panes and forms
 @mixin primary-text {
   @include kiln-copy();
