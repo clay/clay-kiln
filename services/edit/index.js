@@ -240,7 +240,6 @@ function getNewPageUrl(uri) {
   return site.addProtocol(site.addPort(uri + '.html?edit=true'));
 }
 
-
 /**
  * Get the default data for a component.
  *
