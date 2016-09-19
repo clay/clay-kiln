@@ -132,7 +132,7 @@
 
   svg,
   svg * {
-    fill: $placeholder-border;
+    fill: $placeholder-label-border;
   }
 
   .placeholder-label {
@@ -163,7 +163,7 @@
 
   svg,
   svg * {
-    fill: $permanent-placeholder-label;
+    fill: $permanent-placeholder-label-border;
   }
 
   .placeholder-label {
