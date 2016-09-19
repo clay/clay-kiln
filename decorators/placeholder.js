@@ -5,7 +5,8 @@ var _ = require('lodash'),
   tpl = require('../services/tpl'),
   addComponentHandler = require('../services/components/add-component-handler'),
   interpolate = require('../services/interpolate-fields'),
-  kilnHideClass = 'kiln-hide';
+  kilnHideClass = 'kiln-hide',
+  SINGLE_LINE_HEIGHT = 50;
 
 /**
  * given an array of fields, find the field that matches a certain name
@@ -248,7 +249,16 @@ function addPlaceholderClass(placeholder, isPermanentPlaceholder) {
  * @param {string} height
  */
 function addPlaceholderHeight(placeholder, height) {
-  placeholder.firstElementChild.style.minHeight = height;
+  var el = placeholder.firstElementChild;
+
+  el.style.minHeight = height;
+
+  // if the height is less than the height of the regular placeholder styling,
+  // we have to set it to use single-line styling
+  // note: change this height if the placeholder styles substantially change the height
+  if (parseInt(height, 10) < SINGLE_LINE_HEIGHT) {
+    el.classList.add('single-line');
+  }
 }
 
 /**

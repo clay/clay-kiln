@@ -17,6 +17,16 @@ $selector-border: #9b9b9b;
 $selector-icon: #727272;
 $selector-bg: rgba(255, 255, 255, .95);
 
+// placeholder colors
+$placeholder-label: $selector-icon;
+$placeholder-label-border: #abdaee;
+$permanent-placeholder-label: #a6a6a6;
+$permanent-placeholder-label-border: #ccc;
+$placeholder-border: #229ed3;
+$placeholder-background: #eff8fc;
+$permanent-placeholder-border: $selector-border;
+$permanent-placeholder-background: #f5f5f5;
+
 // blue - used for page-specific components
 $blue-10: #f6fdff;
 $blue-25: #7edbfc;
