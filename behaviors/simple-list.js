@@ -146,6 +146,8 @@ module.exports = function (result, args) {
       // returns false if repitition is allowed
       // returns false if repitition is disallowed and items don't repeat
       function hasRepeatedValue(value, data) {
+        //if data is undefined make it an empty array
+        var data = !data ? [] : data;
         var oldItems = _.map(data, item => item.text.toLowerCase());
 
         return !allowRepeat && _.includes(oldItems, value.toLowerCase());
