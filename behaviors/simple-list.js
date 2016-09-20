@@ -139,7 +139,7 @@ module.exports = function (result, args) {
       // this is called when the binder initializes
       var addEl = dom.find(boundEl, '.simple-list-add'),
         allowRepeat = !!(addEl.getAttribute('data-allow-repeat') === 'true'),
-        //if data is undefined make it an empty array
+        // if data is undefined make it an empty array
         data = !data ? [] : data,
         observer = this.observer;
 
