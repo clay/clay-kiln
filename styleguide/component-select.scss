@@ -3,56 +3,67 @@
 @import 'layers';
 @import 'buttons';
 
-// selector offsets, for the selector outline
-$offset-width: 16px;
-$offset-width-half: $offset-width / 2;
-$offset-height: 16px;
-$offset-height-half: $offset-height / 2;
-$parent-offset: 8px; // how much wider should parent outline be (each side)
-
-// icon sizes
-$action-icon-small: 18px;
-
-// page-specific
-$page-color: $blue;
-$page-bg-color: $blue-50;
-$page-parent-color: $blue-75;
-$page-parent-bg-color: $blue-25;
-
-// layout-specific
-$layout-color: $purple;
-$layout-bg-color: $purple-50;
-$layout-parent-color: $purple-75;
-$layout-parent-bg-color: $purple-25;
+// positioning - how much wider/taller should selectors be than components?
+$selector-offset: 16px;
+// amount of padding between component edges and selector border
+$half-selector-offset: $selector-offset / 2;
+$icon-size: 18px;
+$menu-size: 48px;
+$selector-fade-time: 150ms;
+$selector-fade-easing: linear;
 
 // component element needs to be position: relative for the selectors to display
 .component-selector-wrapper {
+  padding: $half-selector-offset;
   position: relative;
+}
+
+.component-selector-wrapper.selected {
+  padding: $half-selector-offset;
+}
+
+// fade things behind the component
+.component-selector-wrapper:before {
+  animation: prevent-flash 200ms linear 200ms forwards;
+  background: $selector-overlay;
+  content: '';
+  height: 100vh;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: fixed;
+  transition: opacity $selector-fade-time $selector-fade-easing;
+  top: 0;
+  visibility: hidden;
+  width: 100vw;
+  z-index: -1;
+}
+
+// these overlays need to be visible so they can animate, but will flash
+// the screen if they're visible when the page loads. this sets them to
+// be hidden for the first 400ms, then make themselves visible
+@keyframes prevent-flash {
+  0% { visibility: hidden; }
+  100% { visibility: visible; }
+}
+
+.component-selector-wrapper.selected:before {
+  opacity: 1;
 }
 
 // selector outlines
 .component-selector {
-  border-style: solid;
-  border-width: 1px;
-  // selector colors are set for the selected component by default,
-  // then overridden for the selected-parent. this is so we don't get a
-  // visual jump when animating them in
-  // (technically the parent DOES jump, but it's a lot less noticible than the
-  // selected component. plus, the colors are similar enough that you don't see it)
-  border-color: $selector-border;
-  // subtle shadow to create more visual distinction between selectors and the
-  // stuff behind them
-  box-shadow: 1px 1px 20px -11px $black;
-  height: calc(100% + #{$offset-height});
-  left: -$offset-width-half;
+  border: 1px solid $selector-border;
+  height: 100%;
+  left: 0;
   opacity: 0;
   // because we're just setting opacity to show/hide, don't allow child selectors to be clicked
-  // note: selected-parent and selected both set this to `all` so current selectors can be clicked
+  // note: .selected sets this to `all` so current selectors can be clicked
   pointer-events: none;
   position: absolute;
-  top: -$offset-height-half;
-  transition: 50ms opacity linear; // fade out quickly
-  width: calc(100% + #{$offset-width});
+  top: 0;
+  transition: opacity $selector-fade-time $selector-fade-easing;
+  width: 100%;
   z-index: -1; // should be less than any element in the component itself
 }
 
@@ -60,23 +71,18 @@ $layout-parent-bg-color: $purple-25;
 .component-selector-top,
 .component-selector-bottom {
   background: $selector-bg;
-  border-color: transparent;
-  border-width: 1px;
-  border-style: solid;
+  border: 1px solid $selector-border;
+  height: $menu-size;
+  min-width: calc(100% + 2px); // include border on both sides
   right: -1px; // align borders
   position: absolute;
 }
 
-// place the top and bottom menus bisecting the outline vertically
 .component-selector-top {
-  border-color: $selector-border;
   bottom: 100%;
 }
 
-// bottom menu is more offset, since it concerns actions that don't
-// affect the component itself (but rather things around it, e.g. adding new components)
 .component-selector-bottom {
-  border-color: $selector-border;
   top: 100%;
 }
 
@@ -84,63 +90,80 @@ $layout-parent-bg-color: $purple-25;
 .component-selector-top,
 .component-selector-bottom,
 .selected-info,
+.selector-location,
 .selected-actions,
-.component-selector-bottom {
+.selector-navigation {
   align-items: center;
   display: flex;
   flex-flow: row;
   justify-content: flex-start;
 }
 
+// smaller menu areas need to flex
 .selected-info {
-  border-left: 10px solid $layout-color;
-  height: 48px;
+  flex: 1 0 auto;
 }
 
-.kiln-page-area .selected-info {
-  border-left-color: $page-color;
+.selector-location {
+  flex: 0 0 auto;
+  margin-left: 14px;
 }
 
-// current component label
+.selected-actions {
+  flex: 0 0 auto;
+}
+
+.selector-navigation {
+  flex: 1 0 auto;
+}
+
+// component location
+.selector-location svg {
+  fill: $selector-icon;
+  height: 11px;
+  margin: 0;
+  width: 11px;
+
+  * {
+    // fill for paths and groups inside the icons
+    fill: $selector-icon;
+  }
+}
+
+// multi-page / single-page toggle
+.selector-this-page {
+  display: none;
+}
+
+.selector-many-pages {
+  display: flex;
+}
+
+.kiln-page-area .selector-this-page {
+  display: flex;
+}
+
+.kiln-page-area .selector-many-pages {
+  display: none;
+}
+
+// component label
 .selected-label {
   @include label();
 
-  color: $selector-icon;
+  color: $selector-text;
+  flex: 1 0 auto;
   font-size: 14px;
-  line-height: $action-icon-small; // same vertical space as the icons
+  line-height: $icon-size; // same vertical space as the icons
   margin: 0;
+  text-align: left;
   white-space: nowrap;
 }
 
-// selected parent
-.component-selector-wrapper.selected-parent > .component-selector {
-  // include overrides for outline offset (width only)
-  left: -#{$offset-width-half + $parent-offset};
-  width: calc(100% + #{$offset-width + $parent-offset * 2});
-
-  // show selector
-  opacity: 1;
-  pointer-events: all;
-  transition: 250ms opacity ease-out; // fade in slower than the current component
-
-  // override colors
-  .selected-info {
-    border-color: $layout-parent-bg-color;
-  }
-
-  // hide extraneous buttons
-  .selected-info-parent,
-  .selected-action-delete,
-  .component-selector-bottom {
-    display: none;
-  }
-}
-
-.kiln-page-area .component-selector-wrapper.selected-parent > .component-selector {
-  // override colors
-  .selected-info {
-    border-color: $page-parent-bg-color;
-  }
+// bottom add/replace button should have border
+.selected-add,
+.selected-replace {
+  border-left: 1px solid $selector-border;
 }
 
 // selected component
@@ -148,34 +171,20 @@ $layout-parent-bg-color: $purple-25;
   // show selector
   opacity: 1;
   pointer-events: all;
-  transition: 150ms opacity ease-out; // fade relatively quickly
 }
 
 // z-index setting
 // needs to be:
-// 1. selected parent (to appear above other page elements)
-// 2. components inside selected parent (so you can click into them)
-// 3. selected component (to appear above its siblings)
-// 4. components inside selected component (so you can click into them)
-
-.component-selector-wrapper.selected-parent {
-  z-index: 1  !important;
-}
-
-// parent component: siblings of the selected component need a higher z-index
-// than the parent selector, but a lower index than the current selector
-.component-selector-wrapper.selected-parent [data-uri] {
-  z-index: 2;
-}
-
+// 1. selected component (to appear above its siblings)
+// 2. components inside selected component (so you can click into them)
 .component-selector-wrapper.selected {
-  z-index: 3 !important;
+  z-index: 1 !important;
 }
 
 // selected component: components inside the selected component ALSO needs a higher z-index
 // so we can click into them when the parent is selected
 .component-selector-wrapper.selected [data-uri] {
-  z-index: 4;
+  z-index: 2;
 }
 
 // all editable elements should have some kind of ux showing they can be edited

@@ -13,9 +13,11 @@ $toolbar-edit-border: #b7b9ba;
 
 // selector borders
 // note: other greys will be phased out in favor of semantic grey colors
-$selector-border: #9b9b9b;
-$selector-icon: #727272;
-$selector-bg: rgba(255, 255, 255, .95);
+$selector-border: #727272;
+$selector-icon: $selector-border;
+$selector-text: $selector-border;
+$selector-bg: rgba(255, 255, 255, .95); // background of selector menus
+$selector-overlay: rgba(255, 255, 255, .8); // fade other components
 
 // placeholder colors
 $placeholder-label: $selector-icon;

@@ -62,50 +62,28 @@ function getParentField(componentEl, parentSchema, property) {
  * @param {MouseEvent} e
  */
 function select(el) {
-  var component = getComponentEl(el),
-    parent = getParentEl(component);
+  var component = getComponentEl(el);
 
   // selected component gets .selected, parent gets .selected-parent
   if (component) {
     component.classList.add('selected');
     currentSelected = component;
   }
-  if (parent) {
-    parent.classList.add('selected-parent');
-  }
-  window.kiln.trigger('select', component);
-}
 
-/**
- * remove selected classes on current and parent component
- * @param {Element} [el]
- * @param {Element} [parent]
- */
-function removeClasses(el, parent) {
-  if (el) {
-    el.classList.remove('selected');
-  }
-  if (parent) {
-    parent.classList.remove('selected-parent');
-  }
+  window.kiln.trigger('select', component);
 }
 
 /**
  * remove selection
  */
 function unselect() {
-  var current, parent;
+  var current = currentSelected || dom.find('.selected');
 
-  if (currentSelected) {
-    current = currentSelected;
-    parent = dom.closest(currentSelected.parentNode, '[' + references.referenceAttribute + ']');
-  } else {
-    current = dom.find('.selected');
-    parent = dom.find('.selected-parent');
+  if (current) {
+    current.classList.remove('selected');
+    window.kiln.trigger('unselect', current);
   }
 
-  removeClasses(current, parent);
-  window.kiln.trigger('unselect', current);
   currentSelected = null;
 }
 
@@ -230,29 +208,6 @@ function addLabel(selector, name) {
 }
 
 /**
- * add parent arrow and handler if parent exists
- * @param {Element} selector
- * @param {object} parent
- */
-function addParentHandler(selector, parent) {
-  var button = dom.find(selector, '.selected-info-parent');
-
-  if (parent.el) {
-    // if parent exists at all, add the handler
-    button.classList.remove(hidden);
-    button.addEventListener('click', function (e) {
-      e.stopPropagation();
-      // Select the parent.
-      return focus.unfocus().then(function () {
-        unselect();
-        select(parent.el);
-        scrollToComponent(parent.el);
-      }).catch(_.noop);
-    });
-  }
-}
-
-/**
  * determine if a component has settings
  * @param {object} options
  * @returns {boolean}
@@ -325,17 +280,6 @@ function addDeleteHandler(selector, parent, el, options) {
 }
 
 /**
- * unhide bottom menu if add component is available
- * @param {Element} selector
- * @param {object} parent
- */
-function unhideBottomMenu(selector, parent) {
-  if (parent.isComponentList || parent.isComponentProp) {
-    dom.find(selector, '.component-selector-bottom').classList.remove(hidden);
-  }
-}
-
-/**
  * unhide and add handler for add component (to list)
  * @param {Element} selector
  * @param {object} parent
@@ -400,17 +344,12 @@ function handler(el, options) {
     // add options to the component selector
     // set component label
     addLabel(selector, name);
-    // if parent, unhide + add handler
-    addParentHandler(selector, parent);
 
     // if settings, unhide + add handler
     addSettingsHandler(selector, options);
     // if delete, unhide + add handler
     addDeleteHandler(selector, parent, el, options);
 
-    // if component lives in a list or property, unhide bottom
-    // note: more options might exist in the bottom menu in the future
-    unhideBottomMenu(selector, parent);
     // if list, unhide + add handler
     addAddHandler(selector, parent, options);
     // if property, unhide + add handler
