@@ -6,7 +6,7 @@
 // positioning - how much wider/taller should selectors be than components?
 $selector-offset: 16px;
 // amount of padding between component edges and selector border
-$half-selector-offset: $selector-offset / 2;
+$half-selector-offset: $selector-offset / 2 + 2; // 1px on each side to show border
 $icon-size: 18px;
 $menu-size: 48px;
 $selector-fade-time: 150ms;
@@ -14,12 +14,7 @@ $selector-fade-easing: linear;
 
 // component element needs to be position: relative for the selectors to display
 .component-selector-wrapper {
-  padding: $half-selector-offset;
   position: relative;
-}
-
-.component-selector-wrapper.selected {
-  padding: $half-selector-offset;
 }
 
 // fade things behind the component
@@ -54,16 +49,16 @@ $selector-fade-easing: linear;
 // selector outlines
 .component-selector {
   border: 1px solid $selector-border;
-  height: 100%;
-  left: 0;
+  height: calc(100% + 2px);
+  left: -1px; // to display border around components which might have backgrounds/borders
   opacity: 0;
   // because we're just setting opacity to show/hide, don't allow child selectors to be clicked
   // note: .selected sets this to `all` so current selectors can be clicked
   pointer-events: none;
   position: absolute;
-  top: 0;
+  top: -1px; // to display border around components which might have backgrounds/borders
   transition: opacity $selector-fade-time $selector-fade-easing;
-  width: 100%;
+  width: calc(100% + 2px);
   z-index: -1; // should be less than any element in the component itself
 }
 
