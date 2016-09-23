@@ -14,6 +14,7 @@ var _ = require('lodash'),
   scrollToY = require('../scroll').toY,
   addComponentHandler = require('./add-component-handler'),
   hidden = 'kiln-hide',
+  selectorHeight = 56, // selector menus are 48px tall, offset is 8px
   currentSelected;
 
 /**
@@ -56,6 +57,50 @@ function getParentField(componentEl, parentSchema, property) {
 }
 
 /**
+ * get the top and bottom offset of an element
+ * @param {Element} el
+ * @returns {object}
+ */
+function getOffset(el) {
+  var rect = el.getBoundingClientRect(),
+    body = document.body,
+    doc = document.documentElement,
+    bodyHeight = body.getBoundingClientRect().height,
+    scrollTop = window.pageYOffset || doc.scrollTop || body.scrollTop,
+    clientTop = doc.clientTop || body.clientTop || 0,
+    top  = rect.top +  scrollTop - clientTop,
+    bottom =  bodyHeight - (rect.bottom + scrollTop - clientTop);
+
+  return { top: Math.round(top), bottom: Math.round(bottom) };
+}
+
+/**
+ * add padding to top/bottom of document to account for selector menu overflow
+ * note: this assumes document.body has NO padding normally
+ * @param {Element} el that was selected
+ */
+function addPadding(el) {
+  var offset = getOffset(el);
+
+  // check top overflow
+  if (offset.top < selectorHeight) {
+    document.body.style['padding-top'] = `${selectorHeight - offset.top}px`;
+  }
+
+  if (offset.bottom < selectorHeight) {
+    document.body.style['padding-bottom'] = `${selectorHeight - offset.bottom}px`;
+  }
+}
+
+/**
+ * remove top/bottom padding from body
+ */
+function removePadding() {
+  document.body.style['padding-top'] = '0px';
+  document.body.style['padding-bottom'] = '0px';
+}
+
+/**
  * set selection on a component
  * @param {Element} el editable element or component el
  * @param {{ref: string, path: string, data: object}} options
@@ -65,8 +110,9 @@ function select(el) {
   var component = getComponentEl(el);
 
   // selected component gets .selected, parent gets .selected-parent
-  if (component) {
+  if (component && component.tagName !== 'HTML') {
     component.classList.add('selected');
+    addPadding(component);
     currentSelected = component;
   }
 
@@ -81,6 +127,7 @@ function unselect() {
 
   if (current) {
     current.classList.remove('selected');
+    removePadding();
     window.kiln.trigger('unselect', current);
   }
 
