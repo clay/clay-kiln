@@ -6,7 +6,7 @@
 // positioning - how much wider/taller should selectors be than components?
 $selector-offset: 16px;
 // amount of padding between component edges and selector border
-$half-selector-offset: $selector-offset / 2 + 2; // 1px on each side to show border
+$half-selector-offset: $selector-offset / 2;
 $icon-size: 18px;
 $menu-size: 48px;
 $selector-fade-time: 150ms;
@@ -18,8 +18,7 @@ $selector-fade-easing: linear;
 }
 
 // fade things behind the component
-.component-selector-wrapper:before {
-  animation: prevent-flash 200ms linear 200ms forwards;
+.component-selector:before {
   background: $selector-overlay;
   content: '';
   height: 100vh;
@@ -29,56 +28,58 @@ $selector-fade-easing: linear;
   position: fixed;
   transition: opacity $selector-fade-time $selector-fade-easing;
   top: 0;
-  visibility: hidden;
   width: 100vw;
   z-index: -1;
 }
 
-// these overlays need to be visible so they can animate, but will flash
-// the screen if they're visible when the page loads. this sets them to
-// be hidden for the first 400ms, then make themselves visible
-@keyframes prevent-flash {
-  0% { visibility: hidden; }
-  100% { visibility: visible; }
-}
-
-.component-selector-wrapper.selected:before {
-  opacity: 1;
-}
-
 // selector outlines
 .component-selector {
-  border: 1px solid $selector-border;
-  height: calc(100% + 2px);
-  left: -1px; // to display border around components which might have backgrounds/borders
+  height: 100%;
+  left: 0;
   opacity: 0;
   // because we're just setting opacity to show/hide, don't allow child selectors to be clicked
   // note: .selected sets this to `all` so current selectors can be clicked
   pointer-events: none;
   position: absolute;
-  top: -1px; // to display border around components which might have backgrounds/borders
+  top: 0;
   transition: opacity $selector-fade-time $selector-fade-easing;
-  width: calc(100% + 2px);
-  z-index: -1; // should be less than any element in the component itself
+  width: 100%;
 }
 
 // menus
 .component-selector-top,
 .component-selector-bottom {
+  @include component-toolbar-layer();
+
   background: $selector-bg;
   border: 1px solid $selector-border;
   height: $menu-size;
-  min-width: calc(100% + 2px); // include border on both sides
-  right: -1px; // align borders
-  position: absolute;
+  width: 100%;
+  right: 0;
+  position: fixed;
+
+  @media screen and (min-width: 600px) {
+    min-width: 100%;
+    position: absolute;
+    width: auto;
+  }
 }
 
 .component-selector-top {
-  bottom: 100%;
+  top: 0;
+
+  @media screen and (min-width: 600px) {
+    bottom: calc(100% + #{$half-selector-offset});
+    top: auto;
+  }
 }
 
 .component-selector-bottom {
-  top: 100%;
+  top: calc(100% - 96px); // account for toolbar
+
+  @media screen and (min-width: 600px) {
+    top: calc(100% + #{$half-selector-offset});
+  }
 }
 
 // all menus use flex to align their buttons
@@ -166,6 +167,11 @@ $selector-fade-easing: linear;
   // show selector
   opacity: 1;
   pointer-events: all;
+
+  // fade other components
+  &:before {
+    opacity: 1;
+  }
 }
 
 // z-index setting
