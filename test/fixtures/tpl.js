@@ -140,19 +140,24 @@ function stubComponentSelectorTemplate() {
   return dom.create(`<aside class="component-selector">
     <aside class="component-selector-top">
       <div class="selected-info">
-        <span class="selected-label"></span>
-        <button class="selected-info-parent kiln-hide" title="Select Parent"></button>
+        <span class="selector-location">
+          <span class="selector-this-page" title="This Page"></span>
+          <span class="selector-many-pages" title="Multiple Pages"></span>
+        </span>
+        <span class="selector-button selected-label"></span>
       </div>
-      <div class="selected-actions kiln-hide">
-        <button class="selected-action-settings kiln-hide" title="Component Settings"></button>
-        <button class="selected-action-delete kiln-hide" title="Delete Component"></button>
+      <div class="selected-actions">
+        <button class="selector-button selected-action-settings kiln-hide" title="Component Settings"></button>
+        <button class="selector-button selected-action-delete kiln-hide" title="Delete Component"></button>
       </div>
     </aside>
-    <aside class="component-selector-bottom kiln-hide">
-      <button class="selected-add kiln-hide" title="Add Component">
-        <span class="add-inner">+</span>
-      </button>
-      <button class="selected-replace kiln-hide">replace</button>
+    <aside class="component-selector-bottom">
+      <div class="selector-navigation">
+        <button class="selector-button selector-nav-up" title="Previous Visible Component"></button>
+        <button class="selector-button selector-nav-down" title="Next Visible Component"></button>
+      </div>
+      <button class="selector-button selected-add kiln-hide" title="Add Component"></button>
+      <button class="selector-button selected-replace kiln-hide" title="Replace Component"></button>
     </aside>
   </aside>`);
 }
