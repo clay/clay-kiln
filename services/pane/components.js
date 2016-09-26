@@ -4,21 +4,11 @@ const _ = require('lodash'),
   references = require('../references'),
   select = require('../components/select'),
   label = require('../label'),
+  visibleComponents = require('../components/visible-components'),
   invisibleList = require('../components/invisible-list'),
   head = require('../components/head-components'),
   promises = require('../promises'),
   pane = require('./');
-
-/**
- * determine if an element is visible on the page
- * @param {Element} el
- * @returns {boolean}
- */
-function showVisible(el) {
-  // checking offsetParent works for all non-fixed elements,
-  // and is much faster than checking getComputedStyle(el).display and visibility
-  return el.offsetParent !== null;
-}
 
 /**
  * get name of component from the component's element
@@ -41,9 +31,9 @@ function getName(el) {
  */
 function openComponents(path) {
   var searchHeader = 'Find Component',
-    visibleComponents = _.filter(dom.findAll(`[${references.referenceAttribute}]`), showVisible).map(getName),
     currentSelected = dom.find('.component-selector-wrapper.selected'),
-    searchContent = filterableList.create(visibleComponents, {
+    visibleList = visibleComponents.list().map(getName),
+    searchContent = filterableList.create(visibleList, {
       click: function (id, el) {
         var currentSelectedItem = dom.find('.filtered-item.selected'),
           component = dom.find(`[${references.referenceAttribute}="${id}"]`);

@@ -13,6 +13,7 @@ var _ = require('lodash'),
   label = require('../label'),
   scrollToY = require('../scroll').toY,
   addComponentHandler = require('./add-component-handler'),
+  visibleComponents = require('./visible-components'),
   hidden = 'kiln-hide',
   selectorHeight = 56, // selector menus are 48px tall, offset is 8px
   currentSelected;
@@ -363,6 +364,44 @@ function addReplaceHandler(selector, parent, options) {
 }
 
 /**
+ * navigate to prev/next visible component
+ * @param {Element} el of current component
+ * @param {string} direction ('prev' or 'next')
+ * @returns {Function}
+ */
+function navigateComponents(el, direction) {
+  return function (e) {
+    var component = direction === 'prev' ? visibleComponents.getPrev(el) : visibleComponents.getNext(el);
+
+    e.stopPropagation();
+
+    if (component) {
+      return focus.unfocus().then(function () {
+        unselect();
+        select(component);
+        scrollToComponent(component);
+      }).catch(_.noop);
+    }
+  };
+}
+
+/**
+ * navigate to prev/next (and parent/child) components
+ * @param {Element} selector
+ * @param {Element} el
+ */
+function addNavHandler(selector, el) {
+  var prevButton = dom.find(selector, '.selector-nav-up'),
+    nextButton = dom.find(selector, '.selector-nav-down');
+
+  prevButton.addEventListener('click', navigateComponents(el, 'prev'));
+  nextButton.addEventListener('click', navigateComponents(el, 'next'));
+
+  // note: client.js sets up a global keyboard handler that also
+  // calls navigateComponents on ↑ / ↓ key press
+}
+
+/**
  * add drag within a component list.
  * @param {Element} el (component element, not the selector)
  * @param {object} parent
@@ -402,6 +441,9 @@ function handler(el, options) {
     // if property, unhide + add handler
     addReplaceHandler(selector, parent, options);
 
+    // add prev/next navigation handlers
+    addNavHandler(selector, el);
+
     // if drag, add class
     // note: this adds a class to the component itself,
     // not the selector
@@ -424,10 +466,25 @@ function handler(el, options) {
   });
 }
 
+/**
+ * see if there's a currently selected component,
+ * useful for keyboard component navigation
+ * @returns {Element|undefined|null}
+ */
+function getCurrentSelected() {
+  return currentSelected;
+}
+
 // select and unselect
 module.exports.select = select;
 module.exports.unselect = unselect;
 module.exports.scrollToComponent = scrollToComponent;
+
+// get current selected component
+module.exports.getCurrentSelected = getCurrentSelected;
+
+// navigate to prev/next component
+module.exports.navigateComponents = navigateComponents;
 
 // decorators
 module.exports.when = when;
