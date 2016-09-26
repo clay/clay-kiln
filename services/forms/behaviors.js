@@ -101,3 +101,4 @@ function run(context) {
 exports.add = add;
 exports.run = run;
 exports.getExpandedBehaviors = getExpandedBehaviors;
+_.set(window, 'kiln.services.register-behavior', module.exports.add); // export for plugins
