@@ -10,7 +10,10 @@ const _ = require('lodash'),
 function showVisible(el) {
   // checking offsetParent works for all non-fixed elements,
   // and is much faster than checking getComputedStyle(el).display and visibility
-  return el.offsetParent !== null;
+  // note: [data-kiln-hidden] is a special attribute you can add to your
+  // component's root element to hide it from the visible component list
+  // and selector-based component navigation
+  return el.offsetParent !== null && !el.getAttribute('data-kiln-hidden');
 }
 
 /**
