@@ -110,6 +110,9 @@ function removePadding() {
 function select(el) {
   var component = getComponentEl(el);
 
+  // only one component can be selected at a time
+  unselect();
+
   // selected component gets .selected, parent gets .selected-parent
   if (component && component.tagName !== 'HTML') {
     component.classList.add('selected');
@@ -124,7 +127,7 @@ function select(el) {
  * remove selection
  */
 function unselect() {
-  var current = currentSelected || dom.find('.selected');
+  var current = currentSelected || dom.find('.component-selector-wrapper.selected');
 
   if (current) {
     current.classList.remove('selected');
@@ -157,7 +160,6 @@ function componentClickHandler(el, e) {
     e.stopSelection = true;
 
     if (!el.classList.contains('selected')) {
-      unselect();
       select(el);
     }
   }
@@ -377,7 +379,6 @@ function navigateComponents(el, direction) {
 
     if (component) {
       return focus.unfocus().then(function () {
-        unselect();
         select(component);
         scrollToComponent(component);
       }).catch(_.noop);

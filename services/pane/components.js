@@ -42,7 +42,6 @@ function openComponents(path) {
           currentSelectedItem.classList.remove('selected');
         }
 
-        select.unselect();
         select.select(component);
         select.scrollToComponent(component);
         el.classList.add('selected');
