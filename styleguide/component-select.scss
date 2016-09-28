@@ -45,6 +45,8 @@ $selector-fade-easing: linear;
   top: 0;
   transition: opacity $selector-fade-time $selector-fade-easing;
   width: 100%;
+  z-index: -1; // when unselected
+  // so clicking into a component will set caret to proper position for inline forms
 }
 
 // menus
