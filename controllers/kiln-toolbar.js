@@ -1,6 +1,8 @@
 const dom = require('@nymag/dom'),
+  keyCode = require('keycode'),
   events = require('../services/events'),
   focus = require('../decorators/focus'),
+  select = require('../services/components/select'),
   state = require('../services/page-state'),
   progress = require('../services/progress'),
   rules = require('../validators'),
@@ -53,13 +55,14 @@ EditorToolbar = function (el) {
     }
   });
 
-  // close ANY open forms if user hits ESC
+  // when the user hits ESC,
+  // if a form is open, close it
+  // else if a component is selected, unselect it (don't close form AND unselect)
   document.addEventListener('keydown', function (e) {
-    if (e.keyCode === 27) {
-      focus.unfocus();
-      // note: this will work even if there isn't a current form open
-      // fun fact: it'll unselect components as well, in case the user has a form closed
-      // but a component selected, and they don't want that
+    var key = keyCode(e);
+
+    if (key === 'esc') {
+      return focus.hasCurrentFocus() ? focus.unfocus() : select.unselect();
     }
   });
 
