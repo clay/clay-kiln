@@ -1,3 +1,4 @@
+/* eslint max-nested-callbacks: [1, 5] */
 var dirname = __dirname.split('/').pop(),
   filename = __filename.split('/').pop().split('.').shift(),
   references = require('../references'),
@@ -48,42 +49,11 @@ describe(dirname, function () {
         expect(component.classList.contains('selected')).to.equal(true);
       });
 
-      it('adds .selected-parent class when parent component exists', function () {
-        var el = stubEditableElement(),
-          component = stubComponent(),
-          parent = stubComponent();
-
-        parent.appendChild(component);
-        component.appendChild(el);
-
-        fn(el);
-        expect(parent.classList.contains('selected-parent')).to.equal(true);
-      });
-
       it('adds .selected class when element is component', function () {
         var el = stubEditableComponent();
 
         fn(el);
         expect(el.classList.contains('selected')).to.equal(true);
-      });
-
-      it('adds .selected-parent class when parent component exists and elemnent is component', function () {
-        var el = stubEditableComponent(),
-          parent = stubComponent();
-
-        parent.appendChild(el);
-
-        fn(el);
-        expect(parent.classList.contains('selected-parent')).to.equal(true);
-      });
-
-      it('throws error if element is not inside a component', function () {
-        var el = stubEditableElement(),
-          result = function () {
-            return fn(el);
-          };
-
-        expect(result).to.throw(Error);
       });
     });
 
@@ -156,64 +126,6 @@ describe(dirname, function () {
         sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
         return fn(el, options).then(function (res) {
           expect(res.querySelector('.component-selector .selected-label').textContent).to.equal('Fake Name');
-        });
-      });
-
-      it('adds the parent label if the component has a parent', function () {
-        var el = stubComponent(),
-          parent = stubComponent(),
-          options = {ref: 'fakeRef', data: {}, path: 'fakePath'};
-
-        // Setup: Create a parent component and selected child component.
-        el.setAttribute(references.referenceAttribute, options.ref);
-        parent.setAttribute(references.referenceAttribute, 'parentRef');
-        parent.appendChild(el);
-        sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
-        sandbox.stub(focus, 'unfocus').returns(Promise.resolve());
-        sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
-        return fn(el, options).then(function (res) {
-          expect(res.querySelector('.component-selector .selected-info-parent').classList.contains(hidden)).to.equal(false); // parent label was added
-        });
-      });
-
-      it('does not add the parent label if component does not have parent', function () {
-        var el = stubComponent(),
-          options = {ref: 'fakeRef', data: {}, path: 'fakePath'};
-
-        sandbox.stub(references, 'getComponentNameFromReference').returns('fake-name');
-        sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
-        return fn(el, options).then(function (res) {
-          expect(res.querySelector('.component-selector .selected-info-parent').classList.contains(hidden)).to.equal(true);
-        });
-      });
-
-      it('will select the parent component if parent label in the component selector is clicked', function (done) {
-        var el = stubComponent(),
-          parent = stubComponent(),
-          options = {ref: 'fakeRef', data: {}, path: 'fakePath'};
-
-        // Setup: Create a parent component and selected child component.
-        el.setAttribute(references.referenceAttribute, options.ref);
-        parent.setAttribute(references.referenceAttribute, 'parentRef');
-        parent.appendChild(el);
-        sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
-        sandbox.stub(focus, 'unfocus').returns(Promise.resolve());
-        sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
-
-        function expectSelected() {
-          expect(parent.classList.contains('selected')).to.equal(true); // Parent is selected.
-          expect(el.classList.contains('selected')).to.equal(false); // Child is not selected.
-          done();
-        }
-
-        fn(el, options).then(function () {
-          expect(parent.classList.contains('selected')).to.equal(false); // Parent is not selected.
-
-          // Trigger click on parent label in the component's bar.
-          el.querySelector('.component-selector .selected-info-parent').dispatchEvent(new Event('click'));
-
-          // wait for repaint before checking
-          setTimeout(expectSelected, 0);
         });
       });
 

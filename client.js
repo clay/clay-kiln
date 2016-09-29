@@ -7,6 +7,9 @@ var nodeUrl = require('url'),
   dom = require('@nymag/dom'),
   EditorToolbar = require('./controllers/kiln-toolbar'),
   render = require('./services/components/render'),
+  keyCode = require('keycode'),
+  select = require('./services/components/select'),
+  focus = require('./decorators/focus'),
   progress = require('./services/progress'),
   Konami = require('konami-js'),
   takeOffEveryZig = require('./services/pane/move-zig'),
@@ -84,3 +87,20 @@ window.addEventListener('offline', function () {
 });
 
 new Konami(takeOffEveryZig);
+
+// navigate components when hitting ↑ / ↓ arrows (if there's a component selected)
+document.addEventListener('keydown', function (e) {
+  const current = select.getCurrentSelected();
+
+  if (current && !focus.hasCurrentFocus()) {
+    let key = keyCode(e);
+
+    if (key === 'up') {
+      e.preventDefault();
+      return select.navigateComponents(current, 'prev')(e);
+    } else if (key === 'down') {
+      e.preventDefault();
+      return select.navigateComponents(current, 'next')(e);
+    }
+  }
+});

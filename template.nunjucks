@@ -236,15 +236,22 @@
       <aside class="component-selector">
         <aside class="component-selector-top">
           <div class="selected-info">
+            <span class="selector-location">
+              <span class="selector-this-page" title="This Page">{% include 'public/media/components/clay-kiln/this-page.svg' %}</span>
+              <span class="selector-many-pages" title="Multiple Pages">{% include 'public/media/components/clay-kiln/many-pages.svg' %}</span>
+            </span>
             <span class="selector-button selected-label"></span>
-            <button class="selector-button selected-info-parent kiln-hide" title="Select Parent">{% include 'public/media/components/clay-kiln/parent.svg' %}</button>
           </div>
           <div class="selected-actions">
             <button class="selector-button selected-action-settings kiln-hide" title="Component Settings">{% include 'public/media/components/clay-kiln/settings.svg' %}</button>
             <button class="selector-button selected-action-delete kiln-hide" title="Delete Component">{% include 'public/media/components/clay-kiln/delete.svg' %}</button>
           </div>
         </aside>
-        <aside class="component-selector-bottom kiln-hide">
+        <aside class="component-selector-bottom">
+          <div class="selector-navigation">
+            <button class="selector-button selector-nav-up" title="Previous Visible Component">{% include 'public/media/components/clay-kiln/up.svg' %}</button>
+            <button class="selector-button selector-nav-down" title="Next Visible Component">{% include 'public/media/components/clay-kiln/down.svg' %}</button>
+          </div>
           <button class="selector-button selected-add kiln-hide" title="Add Component">{% include 'public/media/components/clay-kiln/add-icon.svg' %}</button>
           <button class="selector-button selected-replace kiln-hide" title="Replace Component">{% include 'public/media/components/clay-kiln/replace-icon.svg' %}</button>
         </aside>
@@ -265,8 +272,8 @@
         <div class="placeholder-top">
           <span class="placeholder-label"></span>
           <span class="placeholder-location">
-            <span class="placeholder-this-page">{% include 'public/media/components/clay-kiln/this-page.svg' %}<span class="placeholder-location-text"> This Page</span></span>
-            <span class="placeholder-many-pages">{% include 'public/media/components/clay-kiln/many-pages.svg' %}<span class="placeholder-location-text"> Multiple Pages</span></span>
+            <span class="placeholder-this-page" title="This Page">{% include 'public/media/components/clay-kiln/this-page.svg' %}<span class="placeholder-location-text"> This Page</span></span>
+            <span class="placeholder-many-pages" title="Multiple Pages">{% include 'public/media/components/clay-kiln/many-pages.svg' %}<span class="placeholder-location-text"> Multiple Pages</span></span>
           </span>
           <span class="placeholder-required kiln-hide">Required</span>
         </div>

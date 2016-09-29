@@ -74,7 +74,6 @@ function hasCurrentFocus() {
  */
 function unfocus() {
   if (forms.isFormValid()) {
-    select.unselect();
     currentFocus = null;
     return forms.close();
   } else {

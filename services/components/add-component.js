@@ -144,7 +144,6 @@ function addComponent(pane, field, name, prevRef) {
         } else {
           return render.addComponentsHandlers(newEl).then(function () {
             focus.unfocus();
-            select.unselect();
             progress.done();
             return select.select(newEl);
           });

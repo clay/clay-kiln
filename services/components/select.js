@@ -13,7 +13,9 @@ var _ = require('lodash'),
   label = require('../label'),
   scrollToY = require('../scroll').toY,
   addComponentHandler = require('./add-component-handler'),
+  visibleComponents = require('./visible-components'),
   hidden = 'kiln-hide',
+  selectorHeight = 56, // selector menus are 48px tall, offset is 8px
   currentSelected;
 
 /**
@@ -56,56 +58,83 @@ function getParentField(componentEl, parentSchema, property) {
 }
 
 /**
+ * get the top and bottom offset of an element
+ * @param {Element} el
+ * @returns {object}
+ */
+function getOffset(el) {
+  var rect = el.getBoundingClientRect(),
+    body = document.body,
+    doc = document.documentElement,
+    bodyHeight = body.getBoundingClientRect().height,
+    scrollTop = window.pageYOffset || doc.scrollTop || body.scrollTop,
+    clientTop = doc.clientTop || body.clientTop || 0,
+    top  = rect.top +  scrollTop - clientTop,
+    bottom =  bodyHeight - (rect.bottom + scrollTop - clientTop);
+
+  return { top: Math.round(top), bottom: Math.round(bottom) };
+}
+
+/**
+ * add padding to top/bottom of document to account for selector menu overflow
+ * note: this assumes document.body has NO padding normally
+ * @param {Element} el that was selected
+ */
+function addPadding(el) {
+  var offset = getOffset(el);
+
+  // check top overflow
+  if (offset.top < selectorHeight) {
+    document.body.style['padding-top'] = `${selectorHeight - offset.top}px`;
+  }
+
+  if (offset.bottom < selectorHeight) {
+    document.body.style['padding-bottom'] = `${selectorHeight - offset.bottom}px`;
+  }
+}
+
+/**
+ * remove top/bottom padding from body
+ */
+function removePadding() {
+  document.body.style['padding-top'] = '0px';
+  document.body.style['padding-bottom'] = '0px';
+}
+
+/**
  * set selection on a component
  * @param {Element} el editable element or component el
  * @param {{ref: string, path: string, data: object}} options
  * @param {MouseEvent} e
  */
 function select(el) {
-  var component = getComponentEl(el),
-    parent = getParentEl(component);
+  var component = getComponentEl(el);
+
+  // only one component can be selected at a time
+  unselect();
 
   // selected component gets .selected, parent gets .selected-parent
-  if (component) {
+  if (component && component.tagName !== 'HTML') {
     component.classList.add('selected');
+    addPadding(component);
     currentSelected = component;
   }
-  if (parent) {
-    parent.classList.add('selected-parent');
-  }
-  window.kiln.trigger('select', component);
-}
 
-/**
- * remove selected classes on current and parent component
- * @param {Element} [el]
- * @param {Element} [parent]
- */
-function removeClasses(el, parent) {
-  if (el) {
-    el.classList.remove('selected');
-  }
-  if (parent) {
-    parent.classList.remove('selected-parent');
-  }
+  window.kiln.trigger('select', component);
 }
 
 /**
  * remove selection
  */
 function unselect() {
-  var current, parent;
+  var current = currentSelected || dom.find('.component-selector-wrapper.selected');
 
-  if (currentSelected) {
-    current = currentSelected;
-    parent = dom.closest(currentSelected.parentNode, '[' + references.referenceAttribute + ']');
-  } else {
-    current = dom.find('.selected');
-    parent = dom.find('.selected-parent');
+  if (current) {
+    current.classList.remove('selected');
+    removePadding();
+    window.kiln.trigger('unselect', current);
   }
 
-  removeClasses(current, parent);
-  window.kiln.trigger('unselect', current);
   currentSelected = null;
 }
 
@@ -131,7 +160,6 @@ function componentClickHandler(el, e) {
     e.stopSelection = true;
 
     if (!el.classList.contains('selected')) {
-      unselect();
       select(el);
     }
   }
@@ -230,29 +258,6 @@ function addLabel(selector, name) {
 }
 
 /**
- * add parent arrow and handler if parent exists
- * @param {Element} selector
- * @param {object} parent
- */
-function addParentHandler(selector, parent) {
-  var button = dom.find(selector, '.selected-info-parent');
-
-  if (parent.el) {
-    // if parent exists at all, add the handler
-    button.classList.remove(hidden);
-    button.addEventListener('click', function (e) {
-      e.stopPropagation();
-      // Select the parent.
-      return focus.unfocus().then(function () {
-        unselect();
-        select(parent.el);
-        scrollToComponent(parent.el);
-      }).catch(_.noop);
-    });
-  }
-}
-
-/**
  * determine if a component has settings
  * @param {object} options
  * @returns {boolean}
@@ -325,17 +330,6 @@ function addDeleteHandler(selector, parent, el, options) {
 }
 
 /**
- * unhide bottom menu if add component is available
- * @param {Element} selector
- * @param {object} parent
- */
-function unhideBottomMenu(selector, parent) {
-  if (parent.isComponentList || parent.isComponentProp) {
-    dom.find(selector, '.component-selector-bottom').classList.remove(hidden);
-  }
-}
-
-/**
  * unhide and add handler for add component (to list)
  * @param {Element} selector
  * @param {object} parent
@@ -372,6 +366,43 @@ function addReplaceHandler(selector, parent, options) {
 }
 
 /**
+ * navigate to prev/next visible component
+ * @param {Element} el of current component
+ * @param {string} direction ('prev' or 'next')
+ * @returns {Function}
+ */
+function navigateComponents(el, direction) {
+  return function (e) {
+    var component = direction === 'prev' ? visibleComponents.getPrev(el) : visibleComponents.getNext(el);
+
+    e.stopPropagation();
+
+    if (component) {
+      return focus.unfocus().then(function () {
+        select(component);
+        scrollToComponent(component);
+      }).catch(_.noop);
+    }
+  };
+}
+
+/**
+ * navigate to prev/next (and parent/child) components
+ * @param {Element} selector
+ * @param {Element} el
+ */
+function addNavHandler(selector, el) {
+  var prevButton = dom.find(selector, '.selector-nav-up'),
+    nextButton = dom.find(selector, '.selector-nav-down');
+
+  prevButton.addEventListener('click', navigateComponents(el, 'prev'));
+  nextButton.addEventListener('click', navigateComponents(el, 'next'));
+
+  // note: client.js sets up a global keyboard handler that also
+  // calls navigateComponents on ↑ / ↓ key press
+}
+
+/**
  * add drag within a component list.
  * @param {Element} el (component element, not the selector)
  * @param {object} parent
@@ -400,21 +431,19 @@ function handler(el, options) {
     // add options to the component selector
     // set component label
     addLabel(selector, name);
-    // if parent, unhide + add handler
-    addParentHandler(selector, parent);
 
     // if settings, unhide + add handler
     addSettingsHandler(selector, options);
     // if delete, unhide + add handler
     addDeleteHandler(selector, parent, el, options);
 
-    // if component lives in a list or property, unhide bottom
-    // note: more options might exist in the bottom menu in the future
-    unhideBottomMenu(selector, parent);
     // if list, unhide + add handler
     addAddHandler(selector, parent, options);
     // if property, unhide + add handler
     addReplaceHandler(selector, parent, options);
+
+    // add prev/next navigation handlers
+    addNavHandler(selector, el);
 
     // if drag, add class
     // note: this adds a class to the component itself,
@@ -438,10 +467,25 @@ function handler(el, options) {
   });
 }
 
+/**
+ * see if there's a currently selected component,
+ * useful for keyboard component navigation
+ * @returns {Element|undefined|null}
+ */
+function getCurrentSelected() {
+  return currentSelected;
+}
+
 // select and unselect
 module.exports.select = select;
 module.exports.unselect = unselect;
 module.exports.scrollToComponent = scrollToComponent;
+
+// get current selected component
+module.exports.getCurrentSelected = getCurrentSelected;
+
+// navigate to prev/next component
+module.exports.navigateComponents = navigateComponents;
 
 // decorators
 module.exports.when = when;
