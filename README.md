@@ -76,6 +76,9 @@ window.kiln.plugins['my-plugin'] = function () {
 * `add-selector` (el, options, parent data) — after a selector is added to a component
 * `form:open` (created form) — after a form is opened
 * `form:close` (form data) — after a form is closed (whether or not data was changed/saved)
+* `pane:open` (created pane, active tab) — right before a pane is opened
+* `pane:close` (pane) — after a pane is closed
+* `component-pane:create-invisible-tab` (pane content, invisible list object, layoutRef) - after one tab of content for the Component Pane has been created for an invisible component list
 
 ## Contributing
 

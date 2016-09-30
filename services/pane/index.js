@@ -54,7 +54,10 @@ function close() {
   var pane = dom.find('.kiln-toolbar-pane-background');
 
   if (pane) {
+    // Remove pane element
     dom.removeElement(pane);
+    // Fire close event
+    window.kiln.trigger('pane:close', pane);
   }
 }
 
@@ -93,6 +96,8 @@ function open(tabs, dynamicTab) {
   // init controller for pane background, setting active tab if it exists
   ds.controller('paneWrapper', paneController);
   ds.get('paneWrapper', paneWrapper, active);
+  // Fire an event for pane open, pass along the content of the pane
+  window.kiln.trigger('pane:open', paneWrapper, active);
   // trick browser into doing a repaint, to force the animation
   setTimeout(function () {
     pane = dom.find(paneWrapper, '.kiln-toolbar-pane');
