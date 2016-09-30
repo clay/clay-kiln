@@ -41,6 +41,11 @@ module.exports = function () {
     },
 
     close: function (e) {
+      // prevent clicks INSIDE the form from bubbling up to other stuff
+      // and clicks OUTSIDE the form from causing side effects beyond unfocusing
+      // prevents unselecting and such
+      e.stopPropagation();
+
       if (e.target === e.currentTarget) {
         // we clicked on the overlay itself
         focus.unfocus().catch(_.noop);
