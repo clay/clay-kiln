@@ -162,6 +162,10 @@ module.exports = function () {
       // if it's anything else, try to filter the list
       // note: tab will work natively
 
+      e.stopPropagation();
+      // don't bubble ↑/↓/etc events up, because they
+      // do specific things in the filterable list
+
       if (key === 'down') {
         focusFirst(available); // focus on first available item in list
       } else if (key === 'enter' && available.length === 1) {
@@ -172,6 +176,7 @@ module.exports = function () {
         input.classList.add('kiln-shake');
         setTimeout(() => input.classList.remove('kiln-shake'), 301); // length of the animation + 1
       } else if (key === 'esc') {
+        // explicitly close the pane, since we're stopping propagation
         pane.close();
       } else {
         filter(input.value, this.items);

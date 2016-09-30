@@ -43,6 +43,7 @@ function addCurrentPage(current) {
       var key = keycode(e);
 
       if (key === 'esc') {
+        e.stopPropagation(); // don't close pane when esc is hit
         dom.replaceElement(form, el);
       }
     });
