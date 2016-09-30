@@ -1,7 +1,7 @@
 const dom = require('@nymag/dom'),
   keyCode = require('keycode'),
   events = require('../services/events'),
-  focus = require('../decorators/focus'),
+  forms = require('../services/forms'),
   select = require('../services/components/select'),
   state = require('../services/page-state'),
   progress = require('../services/progress'),
@@ -21,7 +21,7 @@ let EditorToolbar;
  * @returns {Promise}
  */
 function createPage() {
-  return focus.unfocus()
+  return forms.close()
     .then(openNewPage)
     .catch(function () {
       progress.done('error');
@@ -51,7 +51,7 @@ EditorToolbar = function (el) {
 
   // stop users from leaving the page if they have an unsaved form open!
   window.addEventListener('beforeunload', function (e) {
-    if (focus.hasCurrentFocus()) {
+    if (forms.hasOpenForm()) {
       e.returnValue = 'Are you sure you want to leave this page? Your data may not be saved.';
     }
   });
@@ -66,8 +66,8 @@ EditorToolbar = function (el) {
     if (key === 'esc') {
       if (pane.hasOpenPane()) {
         pane.close();
-      } else if (focus.hasCurrentFocus()) {
-        focus.unfocus();
+      } else if (forms.hasOpenForm()) {
+        forms.close();
       } else {
         select.unselect();
       }
@@ -105,7 +105,7 @@ EditorToolbar.prototype = {
   },
 
   onNewClick: function () {
-    if (focus.hasCurrentFocus()) {
+    if (forms.hasOpenForm()) {
       if(window.confirm('Are you sure you want to create a new page? Your data on this page may not be saved.')) { // eslint-disable-line
         return createPage();
       } // else don't leave
@@ -115,7 +115,7 @@ EditorToolbar.prototype = {
   },
 
   onPreviewClick: function () {
-    return focus.unfocus()
+    return forms.close()
       .then(openPreview)
       .catch(function () {
         progress.done('error');
@@ -129,7 +129,7 @@ EditorToolbar.prototype = {
 
   // open the publish pane if it's not already open (close other panes first)
   onPublishClick: function () {
-    return focus.unfocus()
+    return forms.close()
       .then(function () {
         // validate before opening the publish pane
         return validation.validate(rules).then(function (results) {
