@@ -14,7 +14,7 @@ var _ = require('lodash'),
  * Check if a form is currently open. Only one form can be open at a time.
  * @returns {boolean}
  */
-function isFormOpen() {
+function hasOpenForm() {
   return !!currentForm.ref;
 }
 
@@ -129,7 +129,7 @@ function dataChanged(serverData, formData) {
  */
 function open(ref, el, path, e) {
   // first, check if a form is already open
-  if (!isFormOpen()) {
+  if (!hasOpenForm()) {
     if (e) {
       // if there's a click event, stop it from bubbling up or doing weird things
       e.stopPropagation();
@@ -192,7 +192,7 @@ function cleanMediumEditorDom() {
 function close() {
   var container, form, ref, data;
 
-  if (isFormOpen()) {
+  if (hasOpenForm()) {
     container = findFormContainer();
     form = container && dom.find(container, 'form');
     ref = currentForm.ref;
@@ -250,10 +250,11 @@ function isFormValid() {
   }
 }
 
-exports.open = open;
-exports.close = close;
-exports.isFormValid = isFormValid;
+module.exports.open = open;
+module.exports.close = close;
+module.exports.isFormValid = isFormValid;
+module.exports.hasOpenForm = hasOpenForm;
 _.set(window, 'kiln.services.forms', module.exports); // export for plugins
 
 // for tests:
-exports.dataChanged = dataChanged;
+module.exports.dataChanged = dataChanged;
