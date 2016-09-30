@@ -10,7 +10,8 @@ const dom = require('@nymag/dom'),
   openNewPage = require('../services/pane/new-page'),
   openComponents = require('../services/pane/components'),
   openPreview = require('../services/pane/preview'),
-  openPublish = require('../services/pane/publish');
+  openPublish = require('../services/pane/publish'),
+  pane = require('../services/pane');
 
 let EditorToolbar;
 
@@ -56,13 +57,20 @@ EditorToolbar = function (el) {
   });
 
   // when the user hits ESC,
-  // if a form is open, close it
+  // if a pane is open, close it
+  // else if a form is open, close it
   // else if a component is selected, unselect it (don't close form AND unselect)
   document.addEventListener('keydown', function (e) {
     var key = keyCode(e);
 
     if (key === 'esc') {
-      return focus.hasCurrentFocus() ? focus.unfocus() : select.unselect();
+      if (pane.hasOpenPane()) {
+        pane.close();
+      } else if (focus.hasCurrentFocus()) {
+        focus.unfocus();
+      } else {
+        select.unselect();
+      }
     }
   });
 

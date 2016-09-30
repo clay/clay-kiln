@@ -106,6 +106,15 @@ function open(tabs, dynamicTab) {
   return paneWrapper;
 }
 
+/**
+ * see if a pane is currently open
+ * @returns {boolean}
+ */
+function hasOpenPane() {
+  return !!dom.find('.kiln-toolbar-pane-background');
+}
+
 module.exports.close = close;
 module.exports.open = open;
+module.exports.hasOpenPane = hasOpenPane;
 _.set(window, 'kiln.services.pane', module.exports); // export for plugins
