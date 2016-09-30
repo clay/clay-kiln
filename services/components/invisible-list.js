@@ -139,6 +139,12 @@ function createTabFromList(layoutRef, data, path) {
         reorder: updateOrder(list.path, list.el, data)
       });
 
+    // Trigger an event for plugins to interact with the
+    // filterable list HTML of an invisible component list
+    window.kiln.trigger('component-pane:create-invisible-tab', {
+      content, list, layoutRef
+    });
+
     if (list.path === path) {
       return {
         header: header,
