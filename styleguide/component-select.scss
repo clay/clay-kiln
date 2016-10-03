@@ -71,6 +71,7 @@ $selector-fade-easing: linear;
 }
 
 // show selector menus on hover
+// todo: use pointer media query when firefox supports it https://bugzilla.mozilla.org/show_bug.cgi?id=1035774
 .component-selector-wrapper:hover > .component-selector > .component-selector-top,
 .component-selector-wrapper:hover > .component-selector > .component-selector-bottom {
   @media screen and (min-width: 600px) {
