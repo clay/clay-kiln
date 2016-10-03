@@ -54,7 +54,7 @@
     "eslint": "^3.2.2",
     "eventify": "^2.0.0",
     "extract-text-webpack-plugin": "^1.0.1",
-    "flatpickr": "^1.9.1",
+    "flatpickr": "^2.0.0",
     "he": "^1.1.0",
     "isparta": "^4.0.0",
     "karma": "^0.13.15",
