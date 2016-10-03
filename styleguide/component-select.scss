@@ -63,8 +63,18 @@ $selector-fade-easing: linear;
 
   @media screen and (min-width: 600px) {
     min-width: 100%;
+    opacity: 0;
     position: absolute;
+    transition: opacity 200ms linear;
     width: auto;
+  }
+}
+
+// show selector menus on hover
+.component-selector-wrapper:hover > .component-selector > .component-selector-top,
+.component-selector-wrapper:hover > .component-selector > .component-selector-bottom {
+  @media screen and (min-width: 600px) {
+    opacity: 1;
   }
 }
 
