@@ -140,8 +140,10 @@ module.exports = function (result, args) {
       var addEl = dom.find(boundEl, '.simple-list-add'),
         allowRepeat = !!(addEl.getAttribute('data-allow-repeat') === 'true'),
         // if data is undefined make it an empty array
-        data = !data ? [] : data,
+        data = data || [],
         observer = this.observer;
+
+      observer.setValue(data);
 
       // check repeated items
       // returns true if repitition is disallowed and items repeat
