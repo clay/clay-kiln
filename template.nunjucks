@@ -133,7 +133,7 @@
             <label class="schedule-label" for="schedule-time">Time</label>
             <input id="schedule-time" class="schedule-input" type="time" value="" placeholder=""></input>
           </div>
-          <button class="schedule-publish">Schedule Publish</button>
+          <button class="schedule-publish" disabled>Schedule Publish</button>
         </form>
 
       </div>
