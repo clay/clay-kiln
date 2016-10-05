@@ -192,14 +192,17 @@ function createPublishMessages(res) {
  * @param {object} res
  * @param {boolean} [res.scheduled]
  * @param {string} [res.scheduledAt]
- * @returns {object}
+ * @returns {object|undefined}
  */
 function getScheduledValues(res) {
-  var at = res.scheduled ? moment(res.scheduledAt) : moment(),
-    date = at.format('YYYY-MM-DD'),
-    time = at.format('HH:mm');
+  if (res.scheduled) {
+    let at = moment(res.scheduledAt);
 
-  return { date, time };
+    return {
+      date: at.format('YYYY-MM-DD'),
+      time: at.format('HH:mm')
+    };
+  }
 }
 
 /**
@@ -218,13 +221,13 @@ function createPublishActions(res) {
     scheduleDate = dom.find(actions, '#schedule-date');
     scheduleTime = dom.find(actions, '#schedule-time');
 
-    if (scheduleDate) {
+    if (scheduleDate && val) {
       scheduleDate.setAttribute('min', val.date);
       scheduleDate.setAttribute('value', val.date);
       scheduleDate.setAttribute('placeholder', val.date);
     }
 
-    if (scheduleTime) {
+    if (scheduleTime && val) {
       scheduleTime.setAttribute('value', val.time);
       scheduleTime.setAttribute('placeholder', val.time);
     }

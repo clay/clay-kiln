@@ -82,6 +82,8 @@ module.exports = function () {
     events: {
       '.publish-now click': 'onPublishNow',
       '.unpublish click': 'onUnpublish',
+      '.schedule-input input': 'onScheduleInput',
+      '.flatpickr-input input': 'onScheduleInput', // firefox
       '.schedule submit': 'onSchedule',
       '.unschedule click': 'onUnschedule',
       '.custom-url-input input': 'onCustomUrlInput',
@@ -129,6 +131,20 @@ module.exports = function () {
           progress.done('error');
           progress.open('error', 'Server errored when unpublishing, please try again.', true);
         });
+    },
+
+    onScheduleInput: function () {
+      var form = this.form,
+        date = dom.find(form, 'input[type=date]').value,
+        time = dom.find(form, 'input[type=time]').value,
+        submit = dom.find(form, '.schedule-publish');
+
+      // only enable the schedule button if both date and time are set
+      if (date && time) {
+        submit.removeAttribute('disabled');
+      } else {
+        submit.setAttribute('disabled', true);
+      }
     },
 
     onSchedule: function (e) {
