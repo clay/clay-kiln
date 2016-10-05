@@ -9,7 +9,7 @@ var nodeUrl = require('url'),
   render = require('./services/components/render'),
   keyCode = require('keycode'),
   select = require('./services/components/select'),
-  focus = require('./decorators/focus'),
+  form = require('./services/forms'),
   progress = require('./services/progress'),
   Konami = require('konami-js'),
   takeOffEveryZig = require('./services/pane/move-zig'),
@@ -92,7 +92,7 @@ new Konami(takeOffEveryZig);
 document.addEventListener('keydown', function (e) {
   const current = select.getCurrentSelected();
 
-  if (current && !focus.hasCurrentFocus()) {
+  if (current && !form.hasOpenForm()) {
     let key = keyCode(e);
 
     if (key === 'up') {
