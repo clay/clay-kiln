@@ -139,11 +139,15 @@ module.exports = function (result, args) {
       // this is called when the binder initializes
       var addEl = dom.find(boundEl, '.simple-list-add'),
         allowRepeat = !!(addEl.getAttribute('data-allow-repeat') === 'true'),
-        // if data is undefined make it an empty array
-        data = data || [],
         observer = this.observer;
 
-      observer.setValue(data);
+      // check that the observed data is an array, if not make a blank array.
+      // if the component data is undefined, observer.value() will return an
+      // object with a _schema property, which breaks the simple-list behavior,
+      // since simple-list expects an array NOT an object
+      if (!observer.value().length) {
+        observer.setValue([]);
+      }
 
       // check repeated items
       // returns true if repitition is disallowed and items repeat
