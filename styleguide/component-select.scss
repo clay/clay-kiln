@@ -104,7 +104,7 @@ $selector-fade-easing: linear;
 
 // to determine if an element is being hovered at the time it's selected,
 // we add an otherwise-unused css rule to that element on :hover
-// we have to do this because there's no way to determine this other than
+// we have to do this because there's no way to determine mouse position other than
 // adding a WHOLE BUNCH of mouse events to the dom, which is gross and nonperformant
 .component-selector-wrapper:hover {
   @media screen and (hover:hover) {
