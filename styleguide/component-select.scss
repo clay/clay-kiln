@@ -12,6 +12,13 @@ $menu-size: 48px;
 $selector-fade-time: 150ms;
 $selector-fade-easing: linear;
 
+@keyframes initialFadeInOut {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 // component element needs to be position: relative for the selectors to display
 .component-selector-wrapper {
   position: relative;
@@ -61,7 +68,7 @@ $selector-fade-easing: linear;
   right: 0;
   position: fixed;
 
-  @media screen and (min-width: 600px) {
+  @media screen and (hover:hover) {
     min-width: 100%;
     opacity: 0;
     position: absolute;
@@ -70,30 +77,65 @@ $selector-fade-easing: linear;
   }
 }
 
+// firefox shim, see below for bug ticket
+.kiln-default-hover .component-selector-top,
+.kiln-default-hover .component-selector-bottom {
+  min-width: 100%;
+  opacity: 0;
+  position: absolute;
+  transition: opacity 200ms linear;
+  width: auto;
+}
+
+// briefly display selectors when selecting the component
+.selected > .component-selector > .component-selector-top,
+.selected > .component-selector > .component-selector-bottom {
+  animation-name: initialFadeInOut;
+  animation-duration: 1.2s;
+  animation-fill-mode: none;
+}
+
 // show selector menus on hover
 // todo: use pointer media query when firefox supports it https://bugzilla.mozilla.org/show_bug.cgi?id=1035774
 .component-selector-wrapper:hover > .component-selector > .component-selector-top,
 .component-selector-wrapper:hover > .component-selector > .component-selector-bottom {
-  @media screen and (min-width: 600px) {
+  @media screen and (hover:hover) {
     opacity: 1;
   }
+}
+
+// firefox shim, see above for bug ticket
+.kiln-default-hover .component-selector-wrapper:hover > .component-selector > .component-selector-top,
+.kiln-default-hover .component-selector-wrapper:hover > .component-selector > .component-selector-bottom {
+  opacity: 1;
 }
 
 .component-selector-top {
   top: 0;
 
-  @media screen and (min-width: 600px) {
+  @media screen and (hover:hover) {
     bottom: calc(100% + #{$half-selector-offset});
     top: auto;
   }
 }
 
+// firefox shim, see above for bug ticket
+.kiln-default-hover .component-selector-top {
+  bottom: calc(100% + #{$half-selector-offset});
+  top: auto;
+}
+
 .component-selector-bottom {
   top: calc(100% - 96px); // account for toolbar
 
-  @media screen and (min-width: 600px) {
+  @media screen and (hover:hover) {
     top: calc(100% + #{$half-selector-offset});
   }
+}
+
+// firefox shim, see above for bug ticket
+.kiln-default-hover .component-selector-bottom {
+  top: calc(100% + #{$half-selector-offset});
 }
 
 // all menus use flex to align their buttons
