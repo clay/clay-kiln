@@ -113,6 +113,11 @@ function select(el) {
   // only one component can be selected at a time
   unselect();
 
+  // if we're clicking into element directly, don't run the initialFadeInOut animation
+  if (getComputedStyle(component).getPropertyValue('backface-visibility') === 'hidden') {
+    component.classList.add('kiln-suppress-animation');
+  }
+
   // selected component gets .selected, parent gets .selected-parent
   if (component && component.tagName !== 'HTML') {
     component.classList.add('selected');
@@ -130,6 +135,7 @@ function unselect() {
   var current = currentSelected || dom.find('.component-selector-wrapper.selected');
 
   if (current) {
+    current.classList.remove('kiln-suppress-animation'); // unsuppress initialFadeInOut animation
     current.classList.remove('selected');
     removePadding();
     window.kiln.trigger('unselect', current);
