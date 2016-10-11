@@ -61,7 +61,7 @@ $selector-fade-easing: linear;
   right: 0;
   position: fixed;
 
-  @media screen and (min-width: 600px) {
+  @media screen and (hover:hover) {
     min-width: 100%;
     opacity: 0;
     position: absolute;
@@ -74,7 +74,7 @@ $selector-fade-easing: linear;
 // todo: use pointer media query when firefox supports it https://bugzilla.mozilla.org/show_bug.cgi?id=1035774
 .component-selector-wrapper:hover > .component-selector > .component-selector-top,
 .component-selector-wrapper:hover > .component-selector > .component-selector-bottom {
-  @media screen and (min-width: 600px) {
+  @media screen and (hover:hover) {
     opacity: 1;
   }
 }
@@ -82,7 +82,7 @@ $selector-fade-easing: linear;
 .component-selector-top {
   top: 0;
 
-  @media screen and (min-width: 600px) {
+  @media screen and (hover:hover) {
     bottom: calc(100% + #{$half-selector-offset});
     top: auto;
   }
@@ -91,7 +91,7 @@ $selector-fade-easing: linear;
 .component-selector-bottom {
   top: calc(100% - 96px); // account for toolbar
 
-  @media screen and (min-width: 600px) {
+  @media screen and (hover:hover) {
     top: calc(100% + #{$half-selector-offset});
   }
 }
