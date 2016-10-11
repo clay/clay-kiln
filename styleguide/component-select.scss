@@ -91,7 +91,7 @@ $selector-fade-easing: linear;
 .selected > .component-selector > .component-selector-top,
 .selected > .component-selector > .component-selector-bottom {
   animation-name: initialFadeInOut;
-  animation-duration: 1s;
+  animation-duration: 1.2s;
   animation-fill-mode: none;
 }
 
