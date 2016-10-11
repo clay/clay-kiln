@@ -95,6 +95,28 @@ $selector-fade-easing: linear;
   animation-fill-mode: none;
 }
 
+// suppress initialFadeInOut animation if we're currently hovered over an element
+// when selecting it
+.kiln-suppress-animation.selected > .component-selector > .component-selector-top,
+.kiln-suppress-animation.selected > .component-selector > .component-selector-bottom {
+  animation: none;
+}
+
+// to determine if an element is being hovered at the time it's selected,
+// we add an otherwise-unused css rule to that element on :hover
+// we have to do this because there's no way to determine mouse position other than
+// adding a WHOLE BUNCH of mouse events to the dom, which is gross and nonperformant
+.component-selector-wrapper:hover {
+  @media screen and (hover:hover) {
+    backface-visibility: hidden; // unused style to test if mouse is inside element
+  }
+}
+
+// firefox shim, see below for bug ticket
+.kiln-default-hover .component-selector-wrapper:hover {
+  backface-visibility: hidden; // unused style to test if mouse is inside element
+}
+
 // show selector menus on hover
 // todo: use pointer media query when firefox supports it https://bugzilla.mozilla.org/show_bug.cgi?id=1035774
 .component-selector-wrapper:hover > .component-selector > .component-selector-top,
