@@ -1,4 +1,5 @@
 'use strict'; // eslint-disable-line
+
 // note: use strict above is applied to the whole browserified doc
 var nodeUrl = require('url'),
   references = require('./services/references'),
@@ -67,9 +68,27 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-// handle connection loss
+/**
+ * determine if a browser supports the (hover) media query, in any form
+ * @returns {boolean}
+ */
+function hasHoverMediaQuery() {
+  const HOVER_NONE = '(hover: none),(-moz-hover: none),(-ms-hover: none),(-webkit-hover: none)',
+    HOVER_ON_DEMAND = '(hover: on-demand),(-moz-hover: on-demand),(-ms-hover: on-demand),(-webkit-hover: on-demand)',
+    HOVER_HOVER = '(hover: hover),(-moz-hover: hover),(-ms-hover: hover),(-webkit-hover: hover)';
 
+  return window.matchMedia(`${HOVER_NONE},${HOVER_ON_DEMAND},${HOVER_HOVER}`).matches;
+}
+
+// handle connection loss and hoverability
 window.addEventListener('load', function () {
+  if (!hasHoverMediaQuery()) {
+    // firefox (and older browsers) doesn't currently support the hover media query,
+    // so we want to default to simply using old :hover
+    // rather than dynamically checking the capabilities of the browser
+    document.body.classList.add('kiln-default-hover');
+  }
+
   // test connection loss on page load
   if (!navigator.onLine) {
     // we're offline!

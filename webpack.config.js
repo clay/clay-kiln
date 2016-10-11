@@ -9,8 +9,8 @@ module.exports = {
     view: './view.js'
   },
   output: {
-    path: path.join(__dirname, "dist"),
-    filename: "clay-kiln-[name].js"
+    path: path.join(__dirname, 'dist'),
+    filename: 'clay-kiln-[name].js'
   },
   module: {
     loaders: [{
