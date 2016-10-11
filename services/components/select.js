@@ -114,6 +114,8 @@ function select(el) {
   unselect();
 
   // if we're clicking into element directly, don't run the initialFadeInOut animation
+  // note: we're adding an otherwise-unused css rule on :hover, which we check
+  // when selecting to see if the mouse/pointer is currently hovering over the element
   if (getComputedStyle(component).getPropertyValue('backface-visibility') === 'hidden') {
     component.classList.add('kiln-suppress-animation');
   }
