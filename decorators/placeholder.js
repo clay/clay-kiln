@@ -33,7 +33,9 @@ function getPlaceholderText(path, data, componentData) {
     placeholder = schema[references.placeholderProperty];
 
   if (_.isObject(placeholder) && placeholder.text) {
-    return interpolate(placeholder.text, componentData);
+    let interpolated = interpolate(placeholder.text, componentData) || '';
+
+    return interpolated.split(' ').map(_.capitalize).join(' ');
   } else {
     return label(path, schema);
   }
