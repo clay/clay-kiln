@@ -51,7 +51,7 @@ describe(dirname, function () {
           },
           componentData = { mockProp: { value: 'some value' }};
 
-        expect(fn('mockProp', mockData, componentData)).to.equal('Value is some value');
+        expect(fn('mockProp', mockData, componentData)).to.equal('Value Is Some Value');
       });
 
       it('uses values from a group in placeholder text if values exist', function () {
@@ -78,7 +78,7 @@ describe(dirname, function () {
             propB: { value: 'another value' }
           };
 
-        expect(fn('mockGroup', mockGroupData, componentData)).to.equal('A is some value and B is another value');
+        expect(fn('mockGroup', mockGroupData, componentData)).to.equal('A Is Some Value And B Is Another Value');
       });
 
       it('uses empty string in placeholder text if value does not exist', function () {
@@ -95,7 +95,7 @@ describe(dirname, function () {
             mockProp: { value: null }
           };
 
-        expect(fn('mockProp', mockData, componentData)).to.equal('Value is ');
+        expect(fn('mockProp', mockData, componentData)).to.equal('Value Is ');
       });
     });
 
