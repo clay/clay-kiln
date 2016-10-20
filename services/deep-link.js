@@ -1,9 +1,53 @@
-const focus = require('../decorators/focus'),
-  select = require('./components/select'),
+const select = require('./components/select'),
+  focus = require('../decorators/focus'),
   forms = require('./forms'),
   dom = require('@nymag/dom'),
   references = require('./references'),
+  _ = require('lodash'),
   hashSeperator = '::';
+
+/**
+ * get group that a field is inside, or return undefined
+ * @param {string} field
+ * @param {object} data
+ * @returns {string|undefined}
+ */
+function getGroupFromField(field, data) {
+  const groups = _.get(data, '_schema._groups');
+
+  if (groups) {
+    return _.findKey(groups, function (val) {
+      return _.includes(val.fields, field);
+    });
+  } // otherwise return undefined
+}
+
+/**
+ * get settings group if the field has _display: settings, or return undefined
+ * @param {string} field
+ * @param {object} [data]
+ * @returns {string|undefined}
+ */
+function getSettingsFromField(field, data) {
+  if (_.get(data, `${field}._schema._display`) === 'settings') {
+    return field;
+  }
+}
+
+/**
+ * validation errors give us the component ref and field,
+ * but we need to figure out what form to open based on the field.
+ * note: if a field is in multiple groups/forms, it'll get the first one
+ * @param  {string} field
+ * @param  {object} data
+ * @return {string|undefined}
+ */
+function getPathFromField(field, data) {
+  // if it's in a group, return the group name
+  // else if it has _display: settings, return settings
+  // else return the field name itself
+  return getGroupFromField(field, data) || getSettingsFromField(field, data) || field;
+}
 
 /**
  * find component element on the page
@@ -81,17 +125,22 @@ function unset() {
 
 /**
  * navigate to a form based on the hash
- * @param {string} [hash]
+ * note: pass in a ref and path, or it'll get them from the hash
+ * @param {string} [ref]
+ * @param {string} [path]
+ * @param {Event} [e]
  * @returns {Promise|undefined}
  */
-function navigate() {
-  const options = fromHash(window.location.hash),
+function navigate(ref, path, e) {
+  const options = ref && path ? {ref, path} : fromHash(window.location.hash),
     field = findField(options),
     component = findComponent(options.ref);
 
+  // open form
   if (field) {
-    return focus.focus(field, options);
-  } else if (component) {
+    return focus.focus(field, options, e);
+  } else {
+    // select the component
     select.select(component);
     return forms.open(options.ref);
   }
@@ -100,3 +149,4 @@ function navigate() {
 module.exports.set = set;
 module.exports.unset = unset;
 module.exports.navigate = navigate;
+module.exports.getPathFromField = getPathFromField;

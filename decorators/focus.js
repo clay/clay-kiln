@@ -73,7 +73,9 @@ function hasCurrentFocus() {
  * @returns {Promise}
  */
 function unfocus() {
-  if (forms.isFormValid()) {
+  if (!forms.hasOpenForm()) {
+    return Promise.resolve(); // no forms currently open, continue
+  } else if (forms.hasOpenForm() && forms.isFormValid()) {
     currentFocus = null;
     return forms.close();
   } else {

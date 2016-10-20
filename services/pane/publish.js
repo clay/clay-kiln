@@ -9,6 +9,7 @@ const _ = require('lodash'),
   pane = require('./'),
   datepicker = require('../field-helpers/datepicker'),
   publishPaneController = require('../../controllers/publish-pane'),
+  link = require('../deep-link'),
   kilnHideClass = 'kiln-hide';
 
 /**
@@ -61,6 +62,24 @@ function addPreview(preview) {
 }
 
 /**
+ * navigate to form when clicking validation errors
+ * note: only works for validation errors that link to a specific form
+ * @param {Event} e
+ * @returns {Promise}
+ */
+function navigateToForm(e) {
+  const el = e.currentTarget,
+    ref = el.getAttribute('data-error-ref'),
+    path = el.getAttribute('data-error-path');
+
+  // stop click from propagating up and closing the form right after we open it
+  e.stopPropagation();
+
+  pane.close();
+  return link.navigate(ref, path, e);
+}
+
+/**
  * format and assemble error messages
  * @param {Object[]} errors (or warnings)
  * @param {string} [modifier] modifier class for warnings, info, etc
@@ -88,7 +107,17 @@ function addErrorsOrWarnings(errors, modifier) {
 
     // add each place where the error/warning occurs
     _.each(error.errors, function (item) {
-      var itemEl = dom.create(`<li><span class="error-label">${item.label}</span>${addPreview(item.preview)}</li>`);
+      let itemEl;
+
+      if (item.fieldName && item.data) {
+        // add a link to open the specific form to update the data
+        itemEl = dom.create(`<li data-error-ref="${item.ref}" data-error-path="${link.getPathFromField(item.fieldName, item.data)}"><span class="error-label error-label-link">${item.label}</span>${addPreview(item.preview)}</li>`);
+
+        itemEl.addEventListener('click', navigateToForm);
+      } else {
+        // don't add any link
+        itemEl = dom.create(`<li><span class="error-label">${item.label}</span>${addPreview(item.preview)}</li>`);
+      }
 
       list.appendChild(itemEl);
     });

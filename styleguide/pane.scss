@@ -405,6 +405,11 @@ $schedule-item-width: calc(50% - 8px);
       margin-top: 5px;
     }
   }
+
+  // errors that link to forms get special styling
+  .error-label-link {
+    text-decoration: underline;
+  }
 }
 
 // special color for warnings
