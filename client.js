@@ -16,6 +16,7 @@ var nodeUrl = require('url'),
   takeOffEveryZig = require('./services/pane/move-zig'),
   plugins = require('./services/plugins'),
   eventify = require('eventify'),
+  link = require('./services/deep-link'),
   connectionLostMessage = 'Connection Lost. Changes will <strong>NOT</strong> be saved.';
 
 // Require all scss/css files needed
@@ -63,8 +64,16 @@ document.addEventListener('DOMContentLoaded', function () {
     window.kiln = window.kiln || {}; // make sure global kiln object exists
     eventify.enable(window.kiln); // enable events on global kiln object, so plugins can add listeners
     plugins.init(); // initialize plugins before adding handlers
-    render.addComponentsHandlers(document);
-    return new EditorToolbar(dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"]'));
+    return render.addComponentsHandlers(document).then(function () {
+      // if you're opening a page with a deep link in the hash,
+      // go directly to the specified form.
+      // note: this should happen after handlers are added (including placeholders)
+      if (window.location.hash) {
+        link.navigate();
+      }
+
+      return new EditorToolbar(dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"]'));
+    });
   }
 });
 

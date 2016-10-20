@@ -6,6 +6,7 @@ var _ = require('lodash'),
   render = require('../components/render'),
   formValues = require('./form-values'),
   groups = require('../components/groups'),
+  link = require('../deep-link'),
   inlineSelector = '.editor-inline',
   overlaySelector = '.editor-overlay-background',
   currentForm = {}; // used to track if changes have been made.
@@ -155,12 +156,14 @@ function open(ref, el, path, e) {
       if (_.get(data, '_schema.' + references.displayProperty) === 'inline') {
         return formCreator.createInlineForm(ref, data, el)
           .then(function (res) {
+            link.set(ref, path);
             window.kiln.trigger('form:open', res, ref);
             return res;
           });
       } else {
         return formCreator.createForm(ref, data)
           .then(function (res) {
+            link.set(ref, path);
             window.kiln.trigger('form:open', res, ref);
             return res;
           });
@@ -210,6 +213,7 @@ function close() {
         }).then(function () {
           setEditingStatus(false); // Status as saved.
           cleanMediumEditorDom();
+          link.unset();
           window.kiln.trigger('form:close', data);
         });
     } else {
@@ -219,6 +223,7 @@ function close() {
       removeCurrentForm(container);
       setEditingStatus(false); // Status as saved.
       cleanMediumEditorDom();
+      link.unset();
       window.kiln.trigger('form:close', data);
     }
   }
