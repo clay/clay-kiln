@@ -13,6 +13,16 @@ var dom = require('@nymag/dom'),
     'search', // unsupported, not needed for input
     'submit' // unsupported form-level input (i.e. we already have submit buttons)
   ],
+  typesSupportingMinMax = [ // from https://www.w3.org/TR/html-markup/input.html
+    'datetime',
+    'datetime-local',
+    'date',
+    'month',
+    'time',
+    'week',
+    'number',
+    'range'
+  ],
   firefoxDateFormat = 'YYYY-MM-DD hh:mm A',
   defaultDateFormat = 'YYYY-MM-DDThh:mm';
 
@@ -69,6 +79,38 @@ function addStep(args) {
 
   if (type === 'number' && step) {
     return `step="${step}"`;
+  } else {
+    return '';
+  }
+}
+
+/**
+ * add min if it exists and we're dealing with an input type that supports it
+ * @param {object} args
+ * @returns {string}
+ */
+function addMin(args) {
+  var min = args.min,
+    type = args.type;
+
+  if (_.includes(typesSupportingMinMax, type) && min) {
+    return `min="${min}"`;
+  } else {
+    return '';
+  }
+}
+
+/**
+ * add Max if it exists and we're dealing with an input type that supports it
+ * @param {object} args
+ * @returns {string}
+ */
+function addMax(args) {
+  var max = args.max,
+    type = args.type;
+
+  if (_.includes(typesSupportingMinMax, type) && max) {
+    return `max="${min}"`;
   } else {
     return '';
   }
@@ -139,6 +181,8 @@ module.exports = function (result, args) {
           type="${type}"
           ${addDateBinder(name, type)}
           ${addStep(args)}
+          ${addMin(args)}
+          ${addMax(args)}
           ${addAutocomplete(args)}
           ${addAutocapitalize(args)}
           rv-required="${name}.required"

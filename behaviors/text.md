@@ -14,6 +14,8 @@ _Note:_ When this behavior is added to a field, it will replace any previous ele
 * **placeholder** _(optional)_ placeholder that will display in the input
 * **autocomplete** _(optional)_ enable/disable autocomplete on field (defaults to true)
 * **step** _(optional)_ define step increments (for number type)
+* **min** _(optional)_ define a minimum value (for number, date-related, and time-related types)
+* **max** _(optional)_ define a maximum value (for number, date-related, and time-related  type)
 * **autocapitalize** _(optional)_ enable/disable auto-capitalize on field (defaults to true). if set to "words" it will capitalize the first letter of each word
 
 _Note:_ All of the arguments marked `(blocking)` will block saving if the input is invalid.
