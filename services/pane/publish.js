@@ -111,9 +111,9 @@ function addErrorsOrWarnings(errors, modifier) {
 
       if (item.fieldName && item.data) {
         // add a link to open the specific form to update the data
-        itemEl = dom.create(`<li data-error-ref="${item.ref}" data-error-path="${link.getPathFromField(item.fieldName, item.data)}"><span class="error-label error-label-link">${item.label}</span>${addPreview(item.preview)}</li>`);
+        itemEl = dom.create(`<li><button class="error-button" data-error-ref="${item.ref}" data-error-path="${link.getPathFromField(item.fieldName, item.data)}"><span class="error-label error-label-link">${item.label}</span></button>${addPreview(item.preview)}</li>`);
 
-        itemEl.addEventListener('click', navigateToForm);
+        itemEl.firstElementChild.addEventListener('click', navigateToForm);
       } else {
         // don't add any link
         itemEl = dom.create(`<li><span class="error-label">${item.label}</span>${addPreview(item.preview)}</li>`);
