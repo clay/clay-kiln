@@ -105,6 +105,10 @@ describe(dirname, function () {
       it('removes resolution', function () {
         expect(fn('http://pixel.nymag.com/imgs/daily/science/2016/05/27/27-toilet-paper-baby.2x.jpg')).to.equal('daily/science/2016/05/27/27-toilet-paper-baby.jpg');
       });
+
+      it('removes nocrop value', function () {
+        expect(fn('http://pixel.nymag.com/imgs/daily/science/2016/05/27/27-toilet-paper-baby.nocrop.jpg')).to.equal('daily/science/2016/05/27/27-toilet-paper-baby.jpg');
+      });
     });
 
     describe('transforms » getComponentInstance', function () {
