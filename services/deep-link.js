@@ -113,14 +113,14 @@ function fromHash(hash) {
  */
 function set(ref, path) {
   path = path || 'settings';
-  window.location.hash = toHash(ref, path);
+  window.history.replaceState(null, null, toHash(ref, path));
 }
 
 /**
  * unset the hash (when closing forms)
  */
 function unset() {
-  window.location.hash = '';
+  window.history.replaceState(null, null, '#');
 }
 
 /**
