@@ -21,7 +21,7 @@ const _ = require('lodash'),
       // remove rendition stuff
       let barePath = path.replace(/\.w\d+/, ''); // remove width
 
-      barePath = barePath.repalce(/\.nocrop/, ''); // remove nocrop
+      barePath = barePath.replace(/\.nocrop/, ''); // remove nocrop
       barePath = barePath.replace(/\.h\d+/, ''); // remove height
       barePath = barePath.replace('.2x', ''); // remove resolution
 
