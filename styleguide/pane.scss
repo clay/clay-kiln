@@ -54,11 +54,11 @@ $toolbar-height: 48px;
   }
 }
 
-.kiln-toolbar-pane .align-left {
+.kiln-toolbar-pane.align-left {
   left: 0;
 }
 
-.kiln-toolbar-pane .align-right {
+.kiln-toolbar-pane.align-right {
   // default alignment
   right: 0;
 }
