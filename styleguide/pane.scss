@@ -623,3 +623,61 @@ $schedule-item-width: calc(50% - 8px);
   @include button-outlined();
   @include full-width();
 }
+
+/* clay menu pane */
+.kiln-toolbar-pane .settings-tab-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .settings-tab-item {
+  margin: 10px 0;
+  padding: 0;
+}
+
+.kiln-toolbar-pane .people {
+  @include button-outlined();
+  @include full-width();
+}
+
+/* people pane */
+.kiln-toolbar-pane .my-name-message,
+.kiln-toolbar-pane .my-title-message {
+  @include label();
+
+  width: 100%;
+}
+
+.kiln-toolbar-pane .my-name-input,
+.kiln-toolbar-pane .my-title-input {
+  @include input();
+
+  margin: 10px 0 20px;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .myself-submit {
+  @include button-outlined();
+  @include full-width();
+}
+
+.kiln-toolbar-pane .my-user-info {
+  margin: 20px 0;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .my-image {
+  height: auto;
+  max-height: 30px;
+  width: 30px;
+}
+
+.kiln-toolbar-pane .my-username {
+  @include primary-text();
+}
+
+.kiln-toolbar-pane .my-provider {
+  @include secondary-text();
+}

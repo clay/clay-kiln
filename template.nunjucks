@@ -17,9 +17,14 @@
         data-site-assetpath="{{ site.assetPath }}"
         data-site-slug="{{ site.slug }}"
         data-routes="{{ locals.routes }}"
-        data-components="{{ locals.components }}">
+        data-components="{{ locals.components }}"
+        data-current-user="{{ locals.user.username }}@{{ locals.user.provider }}">
         <div class="kiln-toolbar-inner">
-          <button class="user-icon">{% include 'public/media/components/clay-kiln/user-icon.svg' %}</button>
+          <button class="kiln-toolbar-button kiln-toolbar-button-left clay-menu-button">
+            <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
+              <span class="icon">{% include 'public/media/components/clay-kiln/clay-menu.svg' %}</span>
+            </div>
+          </button>
           <button class="kiln-toolbar-button kiln-toolbar-button-left components">
             <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
               <span class="icon">{% include 'public/media/components/clay-kiln/component-finder.svg' %}</span>
@@ -202,6 +207,34 @@
         <input id="custom-url" class="custom-url-input" type="text" placeholder="/special-page.html" />
         <button type="submit" class="custom-url-submit">Save Location</button>
       </form>
+    </template>
+
+    {# clay menu settings #}
+    <template class="settings-tab-template">
+      <ul class="settings-tab-items">
+        <li class="settings-item"><button class="people">People</button></li>
+      </ul>
+    </template>
+
+    <template class="myself-template">
+      <form class="myself-form">
+        <label for="my-name" class="my-name-message">Name</label>
+        <input id="my-name" class="my-name-input" type="text" />
+
+        <label for="my-title" class="my-title-message">Title</label>
+        <input id="my-title" class="my-title-input" type="text" />
+
+        <button type="submit" class="myself-submit">Save Info</button>
+      </form>
+
+      <div class="my-user-info">
+        {% if locals.user.imageUrl %}
+          <img class="my-image" src="{{ locals.user.imageUrl }}" />
+        {% endif %}
+
+        <span class="my-username">{{ locals.user.username }}</span>
+        <span class="my-provider">on {{ locals.user.provider }}</span>
+      </div>
     </template>
 
     {# generic filtered list template. used for the add component pane #}
