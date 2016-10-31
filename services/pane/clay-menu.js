@@ -8,7 +8,7 @@ function openClayMenu() {
     header: 'Settings',
     content: tpl.get('.settings-tab-template'),
     active: true // todo: in the future, default to "My Pages"
-  });
+  }, 'left');
 
   ds.controller('clay-menu', clayMenuController);
   ds.get('clay-menu', el);

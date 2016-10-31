@@ -12,7 +12,7 @@ function formatUserListItem(user) {
   var item = `<span class="user-item-name">${user.name}</span>`;
 
   if (user.title) {
-    item += `<span class="user-item-title">${user.title}</span>`;
+    item += `<br /><span class="user-item-title">${user.title}</span>`;
   }
 
   return item;
@@ -70,7 +70,7 @@ function openPeople() {
       }], {
         header: 'Log Out',
         content: dom.create('<div></div>') // no content, since we're hijacking the logout click controller
-      });
+      }, 'left');
 
     ds.controller('people-pane', peoplePaneController);
     ds.get('people-pane', el);

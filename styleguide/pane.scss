@@ -37,7 +37,6 @@ $toolbar-height: 48px;
   min-width: 200px;
   padding: 0;
   position: absolute;
-  right: 0;
   transform: translateY(100%);
   width: 100%;
 
@@ -53,6 +52,15 @@ $toolbar-height: 48px;
     transform: translateY(0);
     transition: transform 350ms $easeOutExpo;
   }
+}
+
+.kiln-toolbar-pane .align-left {
+  left: 0;
+}
+
+.kiln-toolbar-pane .align-right {
+  // default alignment
+  right: 0;
 }
 
 // regular tabs
@@ -643,6 +651,7 @@ $schedule-item-width: calc(50% - 8px);
 }
 
 /* people pane */
+
 .kiln-toolbar-pane .my-name-message,
 .kiln-toolbar-pane .my-title-message {
   @include label();
@@ -680,4 +689,17 @@ $schedule-item-width: calc(50% - 8px);
 
 .kiln-toolbar-pane .my-provider {
   @include secondary-text();
+}
+
+/* people list */
+.kiln-toolbar-pane .user-item-name {
+  @include primary-text();
+}
+
+.kiln-toolbar-pane .user-item-title {
+  @include secondary-text();
+
+  font-size: 12px;
+  line-height: 16px;
+  text-transform: uppercase;
 }
