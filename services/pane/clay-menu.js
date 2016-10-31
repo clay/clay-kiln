@@ -1,4 +1,5 @@
 const ds = require('dollar-slice'),
+  _ = require('lodash'),
   tpl = require('../tpl'),
   pane = require('./'),
   clayMenuController = require('../../controllers/clay-menu');

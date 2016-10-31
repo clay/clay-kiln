@@ -169,6 +169,12 @@ function stubPlaceholderTemplate() {
   </div>`);
 }
 
+function stubSettingsTabTemplate() {
+  return dom.create(`<ul class="settings-tab-items">
+    <li class="settings-item"><button class="people">People</button></li>
+  </ul>`);
+}
+
 /**
  * stub all arguments provided
  * @param {array} args
@@ -199,5 +205,6 @@ module.exports = {
   '.filtered-item-template': stubFilteredItemTemplate,
   '.component-selector-template': stubComponentSelectorTemplate,
   '.placeholder-template': stubPlaceholderTemplate,
+  '.settings-tab-template': stubSettingsTabTemplate,
   stubAll: stubAll
 };
