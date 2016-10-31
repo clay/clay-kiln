@@ -63,7 +63,7 @@ function openComponents(path) {
     head: head.getListTabs(path),
     invisible: invisibleList.getListTabs(path)
   }).then(function (resolved) {
-    el = pane.open([{header: searchHeader, content: searchContent}].concat(resolved.head, resolved.invisible));
+    el = pane.open([{header: searchHeader, content: searchContent}].concat(resolved.head, resolved.invisible), null, 'left');
 
     // once the pane is created, make sure it's scrolled so that the current item is visible
     if (currentSelected && currentItem) {

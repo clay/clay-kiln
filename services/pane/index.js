@@ -14,16 +14,30 @@ function setDisabled(isDisabled) {
 }
 
 /**
+ * align panes left or right
+ * @param {Element} el
+ * @param {string} align
+ */
+function alignPane(el, align) {
+  var paneEl = dom.find(el, '.kiln-toolbar-pane');
+
+  paneEl.classList.add(`align-${align}`);
+}
+
+/**
  * create pane
  * @param {array} tabs
  * @param {object} [dynamicTab]
+ * @param {string} [align]
  * @returns {Element}
  */
-function createPane(tabs, dynamicTab) {
+function createPane(tabs, dynamicTab, align) {
   var el = tpl.get('.kiln-pane-template'),
     tabsEl = dom.find(el, '.pane-tabs'),
     tabsInnerEl = dom.find(el, '.pane-tabs-inner'),
     innerEl = dom.find(el, '.pane-inner');
+
+  align = align || 'right';
 
   // loop through the tabs, adding the tab and contents
   _.each(tabs, function (tab, index) {
@@ -43,6 +57,8 @@ function createPane(tabs, dynamicTab) {
     contentWrapper.appendChild(dynamicTab.content);
     innerEl.appendChild(contentWrapper);
   }
+
+  alignPane(el, align);
 
   return el;
 }
@@ -81,12 +97,13 @@ function findActiveTab(el, tabs, dynamicTab) {
 /**
  * open a pane
  * @param {array} tabs with `tab` and `content`
- * @param {object} dynamicTab will display at the right of the tabs
+ * @param {object} [dynamicTab] will display at the right of the tabs
+ * @param {string} [align] defaults to `right`, but you can also align panes `left`
  * @returns {Element} pane
  */
-function open(tabs, dynamicTab) {
+function open(tabs, dynamicTab, align) {
   var toolbar = dom.find('.kiln-toolbar'),
-    el = createPane(tabs, dynamicTab),
+    el = createPane(tabs, dynamicTab, align),
     active = findActiveTab(el, tabs, dynamicTab), // find active tab, if any
     pane, paneWrapper;
 

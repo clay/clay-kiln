@@ -11,6 +11,7 @@ const dom = require('@nymag/dom'),
   openComponents = require('../services/pane/components'),
   openPreview = require('../services/pane/preview'),
   openPublish = require('../services/pane/publish'),
+  openClayMenu = require('../services/pane/clay-menu'),
   pane = require('../services/pane');
 
 let EditorToolbar;
@@ -41,7 +42,7 @@ EditorToolbar = function (el) {
   this.toolbar = dom.find(el, '.kiln-toolbar');
 
   events.add(this.toolbar, {
-    '.user-icon click': 'onUserClick',
+    '.clay-menu-button click': 'onClayMenuClick',
     '.components click': 'onComponentsClick',
     '.new click': 'onNewClick',
     '.preview click': 'onPreviewClick',
@@ -92,10 +93,8 @@ EditorToolbar = function (el) {
  * @lends EditorToolbar#
  */
 EditorToolbar.prototype = {
-  onUserClick: function (e) {
-    // nothing yet
-    e.preventDefault();
-    e.stopPropagation();
+  onClayMenuClick: function () {
+    return openClayMenu();
   },
 
   onComponentsClick: function () {

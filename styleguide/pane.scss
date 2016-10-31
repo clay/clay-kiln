@@ -37,7 +37,6 @@ $toolbar-height: 48px;
   min-width: 200px;
   padding: 0;
   position: absolute;
-  right: 0;
   transform: translateY(100%);
   width: 100%;
 
@@ -53,6 +52,15 @@ $toolbar-height: 48px;
     transform: translateY(0);
     transition: transform 350ms $easeOutExpo;
   }
+}
+
+.kiln-toolbar-pane .align-left {
+  left: 0;
+}
+
+.kiln-toolbar-pane .align-right {
+  // default alignment
+  right: 0;
 }
 
 // regular tabs
@@ -622,4 +630,82 @@ $schedule-item-width: calc(50% - 8px);
 .add-page-form button {
   @include button-outlined();
   @include full-width();
+}
+
+/* clay menu pane */
+.kiln-toolbar-pane .settings-tab-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .settings-tab-item {
+  margin: 10px 0;
+  padding: 0;
+}
+
+.kiln-toolbar-pane .directory {
+  @include button-outlined();
+  @include full-width();
+}
+
+/* directory pane */
+
+.kiln-toolbar-pane .my-name-message,
+.kiln-toolbar-pane .my-title-message {
+  @include label();
+
+  width: 100%;
+}
+
+.kiln-toolbar-pane .my-name-input,
+.kiln-toolbar-pane .my-title-input {
+  @include input();
+
+  margin: 10px 0 20px;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .myself-submit {
+  @include button-outlined();
+  @include full-width();
+}
+
+.kiln-toolbar-pane .my-user-info {
+  margin: 20px 0;
+  width: 100%;
+}
+
+.kiln-toolbar-pane .my-image {
+  height: auto;
+  max-height: 30px;
+  width: 30px;
+}
+
+.kiln-toolbar-pane .my-username {
+  @include primary-text();
+}
+
+.kiln-toolbar-pane .my-user-at {
+  @include secondary-text();
+}
+
+.kiln-toolbar-pane .my-provider {
+  @include primary-text();
+
+  text-transform: uppercase;
+}
+
+/* directory list */
+.kiln-toolbar-pane .user-item-name {
+  @include primary-text();
+}
+
+.kiln-toolbar-pane .user-item-title {
+  @include secondary-text();
+
+  font-size: 12px;
+  line-height: 16px;
+  text-transform: uppercase;
 }
