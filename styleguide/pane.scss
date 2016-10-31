@@ -645,12 +645,12 @@ $schedule-item-width: calc(50% - 8px);
   padding: 0;
 }
 
-.kiln-toolbar-pane .people {
+.kiln-toolbar-pane .directory {
   @include button-outlined();
   @include full-width();
 }
 
-/* people pane */
+/* directory pane */
 
 .kiln-toolbar-pane .my-name-message,
 .kiln-toolbar-pane .my-title-message {
@@ -697,7 +697,7 @@ $schedule-item-width: calc(50% - 8px);
   text-transform: uppercase;
 }
 
-/* people list */
+/* directory list */
 .kiln-toolbar-pane .user-item-name {
   @include primary-text();
 }

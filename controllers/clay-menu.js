@@ -1,16 +1,16 @@
-const openPeoplePane = require('../services/pane/people');
+const openDirectory = require('../services/pane/directory');
 
 module.exports = function () {
   function Constructor() {}
 
   Constructor.prototype = {
     events: {
-      '.people click': 'onPeopleClick'
+      '.directory click': 'onDirectoryClick'
       // todo: add more click handlers when we add more settings buttons
     },
 
-    onPeopleClick: function () {
-      return openPeoplePane();
+    onDirectoryClick: function () {
+      return openDirectory();
     }
   };
   return Constructor;

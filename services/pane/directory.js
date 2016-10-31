@@ -3,7 +3,7 @@ const _ = require('lodash'),
   dom = require('@nymag/dom'),
   tpl = require('../tpl'),
   pane = require('./'),
-  peoplePaneController = require('../../controllers/people-pane'),
+  directoryPaneController = require('../../controllers/directory-pane'),
   filterableList = require('../filterable-list'),
   site = require('../site'),
   db = require('../edit/db');
@@ -26,7 +26,7 @@ function getMyData() {
   return db.get(`${site.get('prefix')}/users/${encoded}`);
 }
 
-function getPeopleList() {
+function getDirectoryList() {
   return db.get(`${site.get('prefix')}/users`)
     .then((refs) => Promise.all(_.map(refs, (ref) => db.get(ref)))) // asynchronously get data for all users
     .then((users) => _.map(users, function (user) {
@@ -54,17 +54,17 @@ function getMyselfPane(myData) {
   return el;
 }
 
-function openPeople() {
-  return Promise.all([getMyData(), getPeopleList()]).then(function generatePeopleTabs(promises) {
+function openDirectory() {
+  return Promise.all([getMyData(), getDirectoryList()]).then(function generateDirectoryTabs(promises) {
     var myData = promises[0],
-      peopleList = promises[1],
+      directoryList = promises[1],
       el = pane.open([{
         header: 'Me',
         content: getMyselfPane(myData)
       }, {
-        header: 'People',
-        content: filterableList.create(peopleList, {
-          inputPlaceholder: 'Search People',
+        header: 'Directory',
+        content: filterableList.create(directoryList, {
+          inputPlaceholder: `Search People on ${site.get('name')}`,
           click: _.noop
         })
       }], {
@@ -72,10 +72,10 @@ function openPeople() {
         content: dom.create('<div></div>') // no content, since we're hijacking the logout click controller
       }, 'left');
 
-    ds.controller('people-pane', peoplePaneController);
-    ds.get('people-pane', el);
+    ds.controller('directory-pane', directoryPaneController);
+    ds.get('directory-pane', el);
   });
 }
 
-module.exports = openPeople;
-_.set(window, 'kiln.services.panes.openPeople', module.exports);
+module.exports = openDirectory;
+_.set(window, 'kiln.services.panes.openDirectory', module.exports);

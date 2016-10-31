@@ -171,7 +171,7 @@ function stubPlaceholderTemplate() {
 
 function stubSettingsTabTemplate() {
   return dom.create(`<ul class="settings-tab-items">
-    <li class="settings-item"><button class="people">People</button></li>
+    <li class="settings-item"><button class="directory">Directory</button></li>
   </ul>`);
 }
 

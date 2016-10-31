@@ -16,6 +16,7 @@
         data-site-path="{{ site.path}}"
         data-site-assetpath="{{ site.assetPath }}"
         data-site-slug="{{ site.slug }}"
+        data-site-name="{{ site.name }}"
         data-routes="{{ locals.routes }}"
         data-components="{{ locals.components }}"
         data-current-user="{{ locals.user.username }}@{{ locals.user.provider }}">
@@ -212,7 +213,7 @@
     {# clay menu settings #}
     <template class="settings-tab-template">
       <ul class="settings-tab-items">
-        <li class="settings-item"><button class="people">People</button></li>
+        <li class="settings-item"><button class="directory">Directory</button></li>
       </ul>
     </template>
 
