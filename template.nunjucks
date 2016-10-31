@@ -231,9 +231,9 @@
         {% if locals.user.imageUrl %}
           <img class="my-image" src="{{ locals.user.imageUrl }}" />
         {% endif %}
-
         <span class="my-username">{{ locals.user.username }}</span>
-        <span class="my-provider">on {{ locals.user.provider }}</span>
+        <span class="my-user-at">@</span>
+        <span class="my-provider">{{ locals.user.provider }}</span>
       </div>
     </template>
 

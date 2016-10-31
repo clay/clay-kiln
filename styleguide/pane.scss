@@ -687,8 +687,14 @@ $schedule-item-width: calc(50% - 8px);
   @include primary-text();
 }
 
-.kiln-toolbar-pane .my-provider {
+.kiln-toolbar-pane .my-user-at {
   @include secondary-text();
+}
+
+.kiln-toolbar-pane .my-provider {
+  @include primary-text();
+
+  text-transform: uppercase;
 }
 
 /* people list */

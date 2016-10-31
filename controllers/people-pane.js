@@ -1,6 +1,7 @@
 const dom = require('@nymag/dom'),
   progress = require('../services/progress'),
   site = require('../services/site'),
+  pane = require('../services/pane'),
   db = require('../services/edit/db');
 
 function getUserID() {
@@ -37,6 +38,7 @@ module.exports = function () {
           _.assign(data, { name: name, title: title });
           return db.save(uri, data)
             .then(function () {
+              pane.close();
               progress.done();
               progress.open('page', 'User Updated!', true);
             });
