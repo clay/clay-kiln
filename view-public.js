@@ -1,21 +1,11 @@
 'use strict'; // eslint-disable-line
-
-// note: use strict above is applied to the whole browserified doc
-const references = require('./services/references'),
-  dom = require('@nymag/dom'),
-  EditorToolbar = require('./controllers/kiln-toolbar'),
-  keycode = require('keycode'),
-  _ = require('lodash'); // todo: when we have webpack 2, use es6 w/ tree-shaking
+const keycode = require('keycode'),
+  _includes = require('lodash/includes');
 
 let secretKilnKey = '';
 
-// Require all scss/css files needed
-require.context('./styleguide', true, /^.*\.(scss|css)$/);
-
-// kick off controller loading when DOM is ready
-document.addEventListener('DOMContentLoaded', function () {
-  return new EditorToolbar(dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"]'));
-});
+// load logo styles
+require('./styleguide/logo.scss');
 
 /**
  * show clay logo
@@ -58,7 +48,7 @@ function toggleEdit() {
 document.addEventListener('keydown', function (e) {
   var key = keycode(e);
 
-  if (_.includes(['c', 'l', 'a', 'y'], key) && e.shiftKey === true) {
+  if (_includes(['c', 'l', 'a', 'y'], key) && e.shiftKey === true) {
     secretKilnKey += key;
   } else {
     // if we hit any other character, reset the key
@@ -68,7 +58,7 @@ document.addEventListener('keydown', function (e) {
   // check secret key
   if (secretKilnKey === 'clay') {
     showLogo();
-  } else if (secretKilnKey.length > 4 && _.includes(secretKilnKey, 'clay')) {
+  } else if (secretKilnKey.length > 4 && _includes(secretKilnKey, 'clay')) {
     toggleEdit();
   } else if (secretKilnKey.length > 4) {
     // if we hit more than four characters, reset the key

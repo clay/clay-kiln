@@ -5,8 +5,9 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin'),
 module.exports = {
   target: 'web',
   entry: {
-    edit: './client.js',
-    view: './view.js'
+    edit: './edit.js',
+    view: './view.js',
+    'view-public': './view-public.js'
   },
   output: {
     path: path.join(__dirname, 'dist'),
@@ -35,6 +36,6 @@ module.exports = {
     return [autoprefixer({browsers: ['last 2 versions', 'ie >= 9', 'ios >= 7', 'android >= 4.4.2']})];
   },
   plugins: [
-    new ExtractTextPlugin('clay-kiln.css')
+    new ExtractTextPlugin('clay-kiln-[name].css')
   ]
 };

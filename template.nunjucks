@@ -1,8 +1,14 @@
-{%- if locals.edit -%}
+{%- if locals.user -%}
+  {# if a user is logged in, we display either the view-mode or edit-mode toolbar, and associated scripts, styles, and templates #}
   <div data-uri="{{ _ref or _self }}" class="clay-kiln">
-    {# styles #}
+
+    {# show different styles in view/edit mode #}
     <style>
-    {{ ('node_modules/clay-kiln/dist/clay-kiln.css')|includeFile|safe }}
+      {%- if locals.edit -%}
+        {{ ('node_modules/clay-kiln/dist/clay-kiln-edit.css')|includeFile|safe }}
+      {%- else -%}
+        {{ ('node_modules/clay-kiln/dist/clay-kiln-view.css')|includeFile|safe }}
+      {%- endif -%}
     </style>
 
     {# toolbar #}
@@ -10,7 +16,7 @@
       <div class="kiln-status"></div>
       <div class="kiln-progress-wrapper"></div>
       {# note: toolbar pane gets added before kiln-toolbar #}
-      <section class="kiln-toolbar"
+      <section class="kiln-toolbar {{ 'edit-mode' if locals.edit else 'view-mode'}}"
         {# the editor needs some stuff from the backend #}
         data-site-host="{{ site.host }}"
         data-site-path="{{ site.path}}"
@@ -71,12 +77,16 @@
       </section>
     </div>
 
-    {# scripts #}
+    {# show different scripts in view/edit mode #}
     <script>
-    {{ ('node_modules/clay-kiln/dist/clay-kiln-edit.js')|includeFile|safe }}
+      {%- if locals.edit -%}
+        {{ ('node_modules/clay-kiln/dist/clay-kiln-edit.js')|includeFile|safe }}
+      {%- else -%}
+        {{ ('node_modules/clay-kiln/dist/clay-kiln-view.js')|includeFile|safe }}
+      {%- endif -%}
     </script>
 
-    {# template wrappers #}
+    {# there are shared templates between view mode and edit mode #}
     <template class="kiln-pane-template">
       <div class="kiln-toolbar-pane-background">
         <div class="kiln-toolbar-pane">
@@ -141,7 +151,6 @@
           </div>
           <button class="schedule-publish" disabled>Schedule Publish</button>
         </form>
-
       </div>
     </template>
 
@@ -229,9 +238,9 @@
       </form>
 
       <div class="my-user-info">
-        {% if locals.user.imageUrl %}
+        {%- if locals.user.imageUrl -%}
           <img class="my-image" src="{{ locals.user.imageUrl }}" />
-        {% endif %}
+        {%- endif -%}
         <span class="my-username">{{ locals.user.username }}</span>
         <span class="my-user-at">@</span>
         <span class="my-provider">{{ locals.user.provider }}</span>
@@ -316,46 +325,20 @@
         </div>
       </div>
     </template>
+
+    {%- if not locals.edit -%}
+      {# logo to display when going into edit mode #}
+      <div class="clay-kiln-logo">{% include 'public/media/components/clay-kiln/clay-logo.svg' %}</div>
+    {%- endif -%}
   </div>
-{% else %}
+{%- else -%}
+  {# if no user is logged in, only have the toggle to enter edit mode #}
   <style>
-  @keyframes fadeInKilnLogo {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-  .clay-kiln-logo {
-    background-color: rgba(255, 255, 255, .8);
-    display: none;
-    height: 100vh;
-    left: 0;
-    opacity: 0;
-    position: fixed;
-    top: 0;
-    width: 100vw;
-    z-index: 99999;
-  }
-
-  .clay-kiln-logo.show {
-    animation: 200ms ease forwards fadeInKilnLogo;
-    display: block;
-  }
-
-  .clay-kiln-logo svg {
-    box-sizing: border-box;
-    height: 110px;
-    left: calc(50vw - 155px);
-    position: fixed;
-    top: calc(50vh - 55px);
-    width: 310px;
-  }
+    {{ ('node_modules/clay-kiln/dist/clay-kiln-view-public.css')|includeFile|safe }}
   </style>
   <div class="clay-kiln-logo">{% include 'public/media/components/clay-kiln/clay-logo.svg' %}</div>
   {# secret code to enter edit mode #}
   <script>
-    {{ ('node_modules/clay-kiln/dist/clay-kiln-view.js')|includeFile|safe }}
+    {{ ('node_modules/clay-kiln/dist/clay-kiln-view-public.js')|includeFile|safe }}
   </script>
-{% endif %}
+{%- endif -%}
