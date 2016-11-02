@@ -3,8 +3,11 @@
 // note: use strict above is applied to the whole browserified doc
 const references = require('./services/references'),
   dom = require('@nymag/dom'),
-  EditorToolbar = require('./controllers/kiln-toolbar'),
+  EditorToolbar = require('./controllers/kiln-toolbar-view'),
   keycode = require('keycode'),
+  toggleEdit = require('./services/toggle-edit'),
+  eventify = require('eventify'),
+  plugins = require('./services/plugins'),
   _ = require('lodash'); // todo: when we have webpack 2, use es6 w/ tree-shaking
 
 let secretKilnKey = '';
@@ -14,6 +17,9 @@ require.context('./styleguide', true, /^.*\.(scss|css)$/);
 
 // kick off controller loading when DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
+  window.kiln = window.kiln || {}; // make sure global kiln object exists
+  eventify.enable(window.kiln); // enable events on global kiln object, so plugins can add listeners
+  plugins.init(); // initialize plugins before adding handlers
   return new EditorToolbar(dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"]'));
 });
 
@@ -26,29 +32,6 @@ function showLogo() {
   if (logo) {
     logo.classList.add('show');
   }
-}
-
-/**
- * enter edit mode
- */
-function toggleEdit() {
-  var url = location.href,
-    query = '?edit=true',
-    endQuery = '&edit=true',
-    queryIndex = url.indexOf(query),
-    endQueryIndex = url.indexOf(endQuery);
-
-  if (queryIndex > -1) {
-    url =  url.substring(0, queryIndex);
-  } else if (endQueryIndex > -1) {
-    url = url.substring(0, endQueryIndex);
-  } else if (url.indexOf('?') > -1) {
-    url = url + endQuery;
-  } else {
-    url = url + query;
-  }
-
-  location.href = url;
 }
 
 /**

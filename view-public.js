@@ -1,5 +1,6 @@
 'use strict'; // eslint-disable-line
 const keycode = require('keycode'),
+  toggleEdit = require('./services/toggle-edit'),
   _includes = require('lodash/includes');
 
 let secretKilnKey = '';
@@ -16,29 +17,6 @@ function showLogo() {
   if (logo) {
     logo.classList.add('show');
   }
-}
-
-/**
- * enter edit mode
- */
-function toggleEdit() {
-  var url = location.href,
-    query = '?edit=true',
-    endQuery = '&edit=true',
-    queryIndex = url.indexOf(query),
-    endQueryIndex = url.indexOf(endQuery);
-
-  if (queryIndex > -1) {
-    url =  url.substring(0, queryIndex);
-  } else if (endQueryIndex > -1) {
-    url = url.substring(0, endQueryIndex);
-  } else if (url.indexOf('?') > -1) {
-    url = url + endQuery;
-  } else {
-    url = url + query;
-  }
-
-  location.href = url;
 }
 
 /**

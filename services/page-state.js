@@ -3,6 +3,7 @@ const _ = require('lodash'),
   edit = require('./edit'),
   db = require('./edit/db'),
   dom = require('@nymag/dom'),
+  references = require('./references'),
   progress = require('./progress');
 
 
@@ -148,8 +149,8 @@ function getPageState() {
   var pageUri = dom.pageUri();
 
   return Promise.all([
-    getScheduled(pageUri + '@scheduled'),
-    getPublished(pageUri + '@published'),
+    getScheduled(references.replaceVersion(pageUri, 'scheduled')),
+    getPublished(references.replaceVersion(pageUri, 'published')),
     getLatest(pageUri)
   ]).then(function (promises) {
     return _.assign({}, promises[0], promises[1], promises[2]);
@@ -162,7 +163,7 @@ function getPageState() {
  * @param {boolean} enabled
  */
 function toggleButton(state, enabled) {
-  var el = dom.find('.kiln-toolbar-inner .publish');
+  var el = dom.find('.kiln-toolbar .publish');
 
   el.classList.toggle(state, enabled);
 }

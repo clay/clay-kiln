@@ -93,7 +93,7 @@ function openNewPage() {
       });
 
       // create pane
-      return pane.open([{header: 'New Page', content: innerEl}]);
+      return pane.open([{header: 'New Page', content: innerEl}], null, 'left');
     });
 }
 
