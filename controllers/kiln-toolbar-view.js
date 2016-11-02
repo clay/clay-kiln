@@ -46,17 +46,11 @@ EditorToolbar = function (el) {
  * @lends EditorToolbar#
  */
 EditorToolbar.prototype = {
-  onClayMenuClick: function () {
-    return openClayMenu();
-  },
+  onClayMenuClick: openClayMenu,
 
-  onNewClick: function () {
-    return openNewPage();
-  },
+  onNewClick: openNewPage,
 
-  onEditClick: function () {
-    return toggleEdit();
-  },
+  onEditClick: toggleEdit,
 
   // open the publish pane if it's not already open (close other panes first)
   onPublishClick: function () {
