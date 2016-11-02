@@ -14,7 +14,10 @@ $height: 48px;
 }
 
 .kiln-toolbar {
+  align-items: center;
   background-color: $toolbar-view;
+  cursor: auto;
+  display: flex;
   height: $height;
   left: 0;
   position: absolute;
@@ -29,29 +32,73 @@ body {
 
 .kiln-toolbar-inner {
   align-items: center;
+  background-color: $toolbar-edit;
   display: flex;
   height: 100%;
-  left: 0;
-  margin: 0 auto;
-  padding: 0;
+  margin: 0 0 0 -3px;
+  padding: 0 0 0 6px;
   position: relative;
   top: 0;
-  width: 100%;
 }
 
-.kiln-toolbar-inner .kiln-toolbar-button, {
+// full width inner toolbar in edit mode
+.edit-mode .kiln-toolbar-inner {
+  flex: 1 1 auto;
+  left: 0;
+  width: auto;
+}
+
+// short inner toolbar in view mode
+.view-mode .kiln-toolbar-inner {
+  flex: 0 1 auto;
+  right: 0;
+  width: auto;
+}
+
+.kiln-toolbar-inner:before {
+  background-color: $toolbar-view;
+  content: '';
+  height: 100%;
+  position: absolute;
+  right: 100%;
+  top: 0;
+  transform: skewX(-14deg) translateX(6px);
+  width: 12px;
+}
+
+.kiln-toolbar-button {
   @include button-filled-large($toolbar-view);
 
   flex: 0 0 auto;
-  border-left: 1px solid $toolbar-view-border;
 }
 
-.kiln-toolbar-inner .kiln-toolbar-button-left {
-  border-left: none;
+.kiln-toolbar-inner .kiln-toolbar-button {
+  @include button-filled-large($toolbar-edit);
+}
+
+// button borders
+.kiln-toolbar .clay-menu-button {
   border-right: 1px solid $toolbar-view-border;
 }
 
-.kiln-toolbar-inner .button-flex-inner {
+// edit mode doesn't have a border on this button
+.kiln-toolbar.view-mode .new {
+  border-right: 1px solid $toolbar-view-border;
+}
+
+.kiln-toolbar .view-button {
+  border-right: 1px solid $toolbar-edit-border;
+}
+
+.kiln-toolbar .components {
+  border-right: 1px solid $toolbar-edit-border;
+}
+
+.kiln-toolbar .preview {
+  border-left: 1px solid $toolbar-edit-border;
+}
+
+.button-flex-inner {
   align-items: center;
   display: flex;
   height: 100%;
@@ -76,32 +123,11 @@ body {
   }
 }
 
-.kiln-toolbar-inner .user-icon {
-  @include button();
-
-  background-color: transparent;
-  border: none;
-  color: $white;
-  display: none; // todo: show this when we add user stuff
-  padding: 6px 0 0;
-
-  svg {
-    height: 24px;
-    margin: 0;
-    padding: 0;
-    width: 32px;
-  }
-}
-
-.kiln-toolbar-inner .flex-span {
+.kiln-toolbar .flex-span {
   flex: 1 1 auto;
 }
 
-.kiln-toolbar-inner .history {
-  display: none; // todo: show this when we add user stuff
-}
-
-.kiln-toolbar-inner .publish {
+.kiln-toolbar .publish {
   margin-right: 0;
   transition: all 200ms ease-in-out;
 
@@ -118,7 +144,7 @@ body {
   }
 }
 
-.kiln-toolbar-inner .draft {
+.kiln-toolbar .draft {
   @include button-filled-large($draft);
 
   border-left: none;
@@ -132,7 +158,7 @@ body {
   }
 }
 
-.kiln-toolbar-inner .published {
+.kiln-toolbar .published {
   @include button-filled-large($published);
 
   border-left: none;
@@ -147,7 +173,7 @@ body {
   }
 }
 
-.kiln-toolbar-inner .scheduled {
+.kiln-toolbar .scheduled {
   @include button-filled-large($scheduled);
 
   border-left: none;

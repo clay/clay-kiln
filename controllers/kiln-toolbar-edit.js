@@ -12,7 +12,8 @@ const dom = require('@nymag/dom'),
   openPreview = require('../services/pane/preview'),
   openPublish = require('../services/pane/publish'),
   openClayMenu = require('../services/pane/clay-menu'),
-  pane = require('../services/pane');
+  pane = require('../services/pane'),
+  toggleEdit = require('../services/toggle-edit');
 
 let EditorToolbar;
 
@@ -36,7 +37,6 @@ function createPage() {
  * @property {Element} el
  */
 EditorToolbar = function (el) {
-
   this.statusEl = dom.find(el, '.kiln-status');
   this.progressEl = dom.find(el, '.kiln-progress');
   this.toolbar = dom.find(el, '.kiln-toolbar');
@@ -46,7 +46,7 @@ EditorToolbar = function (el) {
     '.components click': 'onComponentsClick',
     '.new click': 'onNewClick',
     '.preview click': 'onPreviewClick',
-    '.history click': 'onHistoryClick',
+    '.view-button click': 'onViewClick',
     '.publish click': 'onPublishClick'
   }, this);
 
@@ -93,15 +93,11 @@ EditorToolbar = function (el) {
  * @lends EditorToolbar#
  */
 EditorToolbar.prototype = {
-  onClayMenuClick: function () {
-    return openClayMenu();
-  },
+  onClayMenuClick: openClayMenu,
 
-  onComponentsClick: function () {
-    // note: we're explicitly NOT closing any current forms,
-    // because we don't want to unselect a currently selected component
-    return openComponents();
-  },
+  // note: we're explicitly NOT closing any current forms,
+  // because we don't want to unselect a currently selected component
+  onComponentsClick: openComponents,
 
   onNewClick: function () {
     if (forms.hasOpenForm()) {
@@ -122,9 +118,7 @@ EditorToolbar.prototype = {
       });
   },
 
-  onHistoryClick: function openHistoryPane() {
-    // open the history pane if it's not already open (close other panes first)
-  },
+  onViewClick: toggleEdit,
 
   // open the publish pane if it's not already open (close other panes first)
   onPublishClick: function () {

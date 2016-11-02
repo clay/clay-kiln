@@ -298,6 +298,25 @@ $toolbar-height: 48px;
   padding: 0 0 20px; // if undo is hidden, we don't need top padding
 }
 
+// in view-mode, the publish pane has a section for going into edit mode
+.kiln-toolbar-pane .publish-edit-section {
+  @include full-width();
+  @include pane-border-before();
+
+  padding: 20px 0 0;
+}
+
+.kiln-toolbar-pane .publish-edit-message {
+  color: $black-50;
+  margin: 0;
+  padding: 0 0 20px;
+}
+
+.kiln-toolbar-pane .publish-edit-toggle {
+  @include button-outlined($black-75, $white);
+  @include full-width();
+}
+
 // publish now
 .kiln-toolbar-pane .actions {
   @include full-width();

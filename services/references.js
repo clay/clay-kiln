@@ -39,6 +39,21 @@ module.exports = {
     var result = /\/components\/.+?\/instances\/(.+)/.exec(ref);
 
     return result && result[1];
+  },
+
+  replaceVersion: function (ref, version) {
+    if (!_.isString(ref)) {
+      throw new TypeError('Uri must be a string, not ' + typeof ref);
+    }
+
+    if (version) {
+      ref = ref.split('@')[0] + '@' + version;
+    } else {
+      // no version is still a kind of version
+      ref = ref.split('@')[0];
+    }
+
+    return ref;
   }
 };
 _.set(window, 'kiln.services.references', module.exports); // export for plugins

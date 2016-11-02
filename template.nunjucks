@@ -1,8 +1,14 @@
-{%- if locals.edit -%}
+{%- if locals.user -%}
+  {# if a user is logged in, we display either the view-mode or edit-mode toolbar, and associated scripts, styles, and templates #}
   <div data-uri="{{ _ref or _self }}" class="clay-kiln">
-    {# styles #}
+
+    {# show different styles in view/edit mode #}
     <style>
-    {{ ('node_modules/clay-kiln/dist/clay-kiln.css')|includeFile|safe }}
+      {%- if locals.edit -%}
+        {{ ('node_modules/clay-kiln/dist/clay-kiln-edit.css')|includeFile|safe }}
+      {%- else -%}
+        {{ ('node_modules/clay-kiln/dist/clay-kiln-view.css')|includeFile|safe }}
+      {%- endif -%}
     </style>
 
     {# toolbar #}
@@ -10,7 +16,7 @@
       <div class="kiln-status"></div>
       <div class="kiln-progress-wrapper"></div>
       {# note: toolbar pane gets added before kiln-toolbar #}
-      <section class="kiln-toolbar"
+      <section class="kiln-toolbar {{ 'edit-mode' if locals.edit else 'view-mode'}}"
         {# the editor needs some stuff from the backend #}
         data-site-host="{{ site.host }}"
         data-site-path="{{ site.path}}"
@@ -20,63 +26,77 @@
         data-routes="{{ locals.routes }}"
         data-components="{{ locals.components }}"
         data-current-user="{{ locals.user.username }}@{{ locals.user.provider }}">
+        <button class="kiln-toolbar-button clay-menu-button">
+          <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
+            <span class="icon">{% include 'public/media/components/clay-kiln/clay-menu.svg' %}</span>
+            <span class="text">Clay</span>
+          </div>
+        </button>
+        <button class="kiln-toolbar-button new">
+          <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
+            <span class="icon">{% include 'public/media/components/clay-kiln/new-page.svg' %}</span>
+            <span class="text">New Page</span>
+          </div>
+        </button>
+        <div class="flex-span flex-span-outer {{ 'kiln-hide' if locals.edit }}"></div>
+        {# kiln-toolbar-inner is the lighter inner toolbar #}
         <div class="kiln-toolbar-inner">
-          <button class="kiln-toolbar-button kiln-toolbar-button-left clay-menu-button">
+          <button class="kiln-toolbar-button view-button {{ 'kiln-hide' if not locals.edit }}">
             <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
-              <span class="icon">{% include 'public/media/components/clay-kiln/clay-menu.svg' %}</span>
+              <span class="icon">{% include 'public/media/components/clay-kiln/close-edit.svg' %}</span>
             </div>
           </button>
-          <button class="kiln-toolbar-button kiln-toolbar-button-left components">
+          <button class="kiln-toolbar-button components {{ 'kiln-hide' if not locals.edit }}">
             <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
-              <span class="icon">{% include 'public/media/components/clay-kiln/component-finder.svg' %}</span>
+              <span class="icon">{% include 'public/media/components/clay-kiln/search-page.svg' %}</span>
+              <span class="text">Components</span>
             </div>
           </button>
-          <div class="flex-span"></div>
-          <button class="kiln-toolbar-button new">
-            <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
-              <span class="icon">{% include 'public/media/components/clay-kiln/new-page.svg' %}</span>
-            </div>
-          </button>
-          <button class="kiln-toolbar-button preview">
+          <div class="flex-span flex-span-inner {{ 'kiln-hide' if not locals.edit }}"></div>
+          <button class="kiln-toolbar-button preview {{ 'kiln-hide' if not locals.edit }}">
             <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
               <span class="icon">{% include 'public/media/components/clay-kiln/new-tab.svg' %}</span>
+              <span class="text">Preview</span>
             </div>
           </button>
-          <button class="kiln-toolbar-button history">
-            <div class="button-flex-inner">
-              <span class="icon">{% include 'public/media/components/clay-kiln/history-icon.svg' %}</span>
-            </div>
-          </button>
-          <button class="kiln-toolbar-button publish">
-            <div class="button-flex-inner publish-loading">
-              {# loading status indicator, replaces with draft/scheduled/published after we get the page state #}
-              <span class="icon">{% include 'public/media/components/clay-kiln/draft.svg' %}</span>
-              <span class="text">Loading&hellip;</span>
-            </div>
-            <div class="button-flex-inner publish-draft">
-              <span class="icon">{% include 'public/media/components/clay-kiln/draft.svg' %}</span>
-              <span class="text">Draft</span>
-            </div>
-            <div class="button-flex-inner publish-published">
-              <span class="icon">{% include 'public/media/components/clay-kiln/published.svg' %}</span>
-              <span class="text">Published</span>
-            </div>
-            <div class="button-flex-inner publish-scheduled">
-              <span class="icon">{% include 'public/media/components/clay-kiln/scheduled.svg' %}</span>
-              <span class="text">Scheduled</span>
+          <button class="kiln-toolbar-button edit-button {{ 'kiln-hide' if locals.edit }}">
+            <div class="button-flex-inner">{# we need this because firefox cannot make buttons display: flex #}
+              <span class="icon">{% include 'public/media/components/clay-kiln/edit.svg' %}</span>
             </div>
           </button>
         </div>
-        <div>
+        <button class="kiln-toolbar-button publish">
+          <div class="button-flex-inner publish-loading">
+            {# loading status indicator, replaces with draft/scheduled/published after we get the page state #}
+            <span class="icon">{% include 'public/media/components/clay-kiln/draft.svg' %}</span>
+            <span class="text">Loading&hellip;</span>
+          </div>
+          <div class="button-flex-inner publish-draft">
+            <span class="icon">{% include 'public/media/components/clay-kiln/draft.svg' %}</span>
+            <span class="text">Draft</span>
+          </div>
+          <div class="button-flex-inner publish-published">
+            <span class="icon">{% include 'public/media/components/clay-kiln/published.svg' %}</span>
+            <span class="text">Published</span>
+          </div>
+          <div class="button-flex-inner publish-scheduled">
+            <span class="icon">{% include 'public/media/components/clay-kiln/scheduled.svg' %}</span>
+            <span class="text">Scheduled</span>
+          </div>
+        </button>
       </section>
     </div>
 
-    {# scripts #}
+    {# show different scripts in view/edit mode #}
     <script>
-    {{ ('node_modules/clay-kiln/dist/clay-kiln-edit.js')|includeFile|safe }}
+      {%- if locals.edit -%}
+        {{ ('node_modules/clay-kiln/dist/clay-kiln-edit.js')|includeFile|safe }}
+      {%- else -%}
+        {{ ('node_modules/clay-kiln/dist/clay-kiln-view.js')|includeFile|safe }}
+      {%- endif -%}
     </script>
 
-    {# template wrappers #}
+    {# there are shared templates between view mode and edit mode #}
     <template class="kiln-pane-template">
       <div class="kiln-toolbar-pane-background">
         <div class="kiln-toolbar-pane">
@@ -141,7 +161,6 @@
           </div>
           <button class="schedule-publish" disabled>Schedule Publish</button>
         </form>
-
       </div>
     </template>
 
@@ -229,9 +248,9 @@
       </form>
 
       <div class="my-user-info">
-        {% if locals.user.imageUrl %}
+        {%- if locals.user.imageUrl -%}
           <img class="my-image" src="{{ locals.user.imageUrl }}" />
-        {% endif %}
+        {%- endif -%}
         <span class="my-username">{{ locals.user.username }}</span>
         <span class="my-user-at">@</span>
         <span class="my-provider">{{ locals.user.provider }}</span>
@@ -316,46 +335,20 @@
         </div>
       </div>
     </template>
+
+    {%- if not locals.edit -%}
+      {# logo to display when going into edit mode #}
+      <div class="clay-kiln-logo">{% include 'public/media/components/clay-kiln/clay-logo.svg' %}</div>
+    {%- endif -%}
   </div>
-{% else %}
+{%- else -%}
+  {# if no user is logged in, only have the toggle to enter edit mode #}
   <style>
-  @keyframes fadeInKilnLogo {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-  .clay-kiln-logo {
-    background-color: rgba(255, 255, 255, .8);
-    display: none;
-    height: 100vh;
-    left: 0;
-    opacity: 0;
-    position: fixed;
-    top: 0;
-    width: 100vw;
-    z-index: 99999;
-  }
-
-  .clay-kiln-logo.show {
-    animation: 200ms ease forwards fadeInKilnLogo;
-    display: block;
-  }
-
-  .clay-kiln-logo svg {
-    box-sizing: border-box;
-    height: 110px;
-    left: calc(50vw - 155px);
-    position: fixed;
-    top: calc(50vh - 55px);
-    width: 310px;
-  }
+    {{ ('node_modules/clay-kiln/dist/clay-kiln-view-public.css')|includeFile|safe }}
   </style>
   <div class="clay-kiln-logo">{% include 'public/media/components/clay-kiln/clay-logo.svg' %}</div>
   {# secret code to enter edit mode #}
   <script>
-    {{ ('node_modules/clay-kiln/dist/clay-kiln-view.js')|includeFile|safe }}
+    {{ ('node_modules/clay-kiln/dist/clay-kiln-view-public.js')|includeFile|safe }}
   </script>
-{% endif %}
+{%- endif -%}

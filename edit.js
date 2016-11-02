@@ -1,12 +1,11 @@
 'use strict'; // eslint-disable-line
 
 // note: use strict above is applied to the whole browserified doc
-var nodeUrl = require('url'),
-  references = require('./services/references'),
+var references = require('./services/references'),
   behaviors = require('./services/forms/behaviors'),
   decorators = require('./services/components/decorators'),
   dom = require('@nymag/dom'),
-  EditorToolbar = require('./controllers/kiln-toolbar'),
+  EditorToolbar = require('./controllers/kiln-toolbar-edit'),
   render = require('./services/components/render'),
   keyCode = require('keycode'),
   select = require('./services/components/select'),
@@ -58,23 +57,19 @@ decorators.add(require('./decorators/component-list'));
 // note: external behaviors, decorators, and validation rules should already be added
 // when this event fires
 document.addEventListener('DOMContentLoaded', function () {
-  var parsed = nodeUrl.parse(location.href, true, true);
+  window.kiln = window.kiln || {}; // make sure global kiln object exists
+  eventify.enable(window.kiln); // enable events on global kiln object, so plugins can add listeners
+  plugins.init(); // initialize plugins before adding handlers
+  return render.addComponentsHandlers(document).then(function () {
+    // if you're opening a page with a deep link in the hash,
+    // go directly to the specified form.
+    // note: this should happen after handlers are added (including placeholders)
+    if (window.location.hash) {
+      link.navigate();
+    }
 
-  if (parsed.query.edit) {
-    window.kiln = window.kiln || {}; // make sure global kiln object exists
-    eventify.enable(window.kiln); // enable events on global kiln object, so plugins can add listeners
-    plugins.init(); // initialize plugins before adding handlers
-    return render.addComponentsHandlers(document).then(function () {
-      // if you're opening a page with a deep link in the hash,
-      // go directly to the specified form.
-      // note: this should happen after handlers are added (including placeholders)
-      if (window.location.hash) {
-        link.navigate();
-      }
-
-      return new EditorToolbar(dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"]'));
-    });
-  }
+    return new EditorToolbar(dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"]'));
+  });
 });
 
 /**
