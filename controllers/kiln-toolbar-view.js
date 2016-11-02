@@ -5,7 +5,7 @@ const dom = require('@nymag/dom'),
   rules = require('../validators'),
   validation = require('../services/publish-validation'),
   openNewPage = require('../services/pane/new-page'),
-  openPublish = require('../services/pane/publish'),
+  openPublish = require('../services/pane/publish-view'),
   openClayMenu = require('../services/pane/clay-menu'),
   toggleEdit = require('../services/toggle-edit');
 
