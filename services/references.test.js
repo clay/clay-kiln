@@ -88,4 +88,20 @@ describe('references service', function () {
       expect(references.getInstanceIdFromReference('/components/base/instances/0.html')).to.not.equal('0');
     });
   });
+
+  describe('replaceVersion', function () {
+    const fn = references[this.title];
+
+    it('adds version to base', function () {
+      expect(fn('domain.com/pages/foo', 'bar')).to.equal('domain.com/pages/foo@bar');
+    });
+
+    it('replaces version', function () {
+      expect(fn('domain.com/pages/foo@bar', 'baz')).to.equal('domain.com/pages/foo@baz');
+    });
+
+    it('removes version', function () {
+      expect(fn('domain.com/pages/foo@bar')).to.equal('domain.com/pages/foo');
+    });
+  });
 });
