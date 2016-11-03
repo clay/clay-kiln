@@ -275,6 +275,7 @@ $selector-fade-easing: linear;
 // (this will display properly if their parents are either flexed OR box)
 .component-list-inner {
   display: inherit;
-  flex-flow: row wrap;
+  flex-direction: inherit;
+  flex-wrap: inherit;
   flex: 1 1 100%;
 }
