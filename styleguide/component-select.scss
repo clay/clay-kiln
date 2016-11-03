@@ -276,5 +276,7 @@ $selector-fade-easing: linear;
 .component-list-inner {
   display: inherit;
   flex-flow: row wrap;
+  flex-direction: inherit;
+  flex-wrap: inherit;
   flex: 1 1 100%;
 }
