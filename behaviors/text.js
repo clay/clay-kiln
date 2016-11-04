@@ -93,7 +93,7 @@ function addMin(args) {
   var min = args.min,
     type = args.type;
 
-  if (_.includes(typesSupportingMinMax, type) && min) {
+  if (_.includes(typesSupportingMinMax, type) && _.isNumber(min)) {
     return `min="${min}"`;
   } else {
     return '';
@@ -109,8 +109,8 @@ function addMax(args) {
   var max = args.max,
     type = args.type;
 
-  if (_.includes(typesSupportingMinMax, type) && max) {
-    return `max="${min}"`;
+  if (_.includes(typesSupportingMinMax, type) && _.isNumber(max)) {
+    return `max="${max}"`;
   } else {
     return '';
   }
@@ -125,6 +125,8 @@ function addMax(args) {
 function addDateBinder(name, type) {
   if (_.includes(['datetime-local', 'date', 'time'], type)) {
     return `rv-datepicker="${name}.data.value"`;
+  } else {
+    return '';
   }
 }
 
