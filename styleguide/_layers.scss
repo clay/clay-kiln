@@ -6,12 +6,12 @@
   z-index: 1000;
 }
 
-@mixin toolbar-layer {
-  z-index: 1010;
-}
-
 @mixin overlay-layer {
   z-index: 1020;
+}
+
+@mixin toolbar-layer {
+  z-index: 1021;
 }
 
 @mixin datepicker-layer {
