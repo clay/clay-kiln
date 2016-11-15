@@ -657,6 +657,11 @@ $schedule-item-width: calc(50% - 8px);
 }
 
 /* clay menu pane */
+.kiln-toolbar-pane .fakey {
+  height: 368px;
+  margin: 0 auto;
+  width: 321px;
+}
 .kiln-toolbar-pane .settings-tab-items {
   list-style: none;
   margin: 0;
