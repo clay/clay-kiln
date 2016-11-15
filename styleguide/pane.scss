@@ -291,6 +291,11 @@ $toolbar-height: 48px;
     margin: 0;
     padding: 0;
   }
+
+  &.view-mode {
+    // because we don't show the undo buttons in view mode, remove some padding
+    padding: 0 0 20px;
+  }
 }
 
 

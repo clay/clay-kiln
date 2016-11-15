@@ -10,42 +10,6 @@ const _ = require('lodash'),
   kilnHideClass = 'kiln-hide';
 
 /**
- * create actions for undoing scheduling and publishing
- * @param {object} res
- * @returns {Element}
- */
-function createUndoActions(res) {
-  const undo = tpl.get('.publish-undo-template');
-
-  let unpublish, unschedule;
-
-  // show undo actions if either are available
-  if (res.scheduled || res.published) {
-    dom.find(undo, '.undo').classList.remove(kilnHideClass);
-  }
-
-  // unscheduling
-  if (res.scheduled) {
-    state.toggleButton('scheduled', true); // just in case someone else scheduled this page
-    unschedule = dom.find(undo, '.unschedule');
-    if (unschedule) {
-      unschedule.classList.remove(kilnHideClass);
-    }
-  }
-
-  // unpublish (only affects page)
-  if (res.published) {
-    state.toggleButton('published', true); // just in case someone else published this page
-    unpublish = dom.find(undo, '.unpublish');
-    if (unpublish) {
-      unpublish.classList.remove(kilnHideClass);
-    }
-  }
-
-  return undo;
-}
-
-/**
  * add error preview, e.g. excerpt of the data that contains errors
  * @param {string} preview
  * @returns {string}
@@ -193,6 +157,8 @@ function createPublishMessages(res) {
   var messages = tpl.get('.publish-messages-template'),
     scheduleMessage, stateMessage;
 
+  messages.firstElementChild.classList.add('view-mode');
+
   if (res.published) {
     stateMessage = dom.find(messages, '.publish-state-message');
     if (stateMessage && res.publishedAt) {
@@ -242,7 +208,6 @@ function openPublishView(validation) {
     var tabs, dynamicTab, el;
 
     // append publish message and actions to the doc fragment
-    pubContent.appendChild(createUndoActions(res));
     pubContent.appendChild(createPublishMessages(res));
     pubContent.appendChild(createEditButton());
 
