@@ -721,6 +721,10 @@ $schedule-item-width: calc(50% - 8px);
   @include primary-text();
 }
 
+.kiln-toolbar-pane .user-item-no-login {
+  @include secondary-text();
+}
+
 .kiln-toolbar-pane .user-item-title {
   @include secondary-text();
 

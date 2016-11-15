@@ -9,7 +9,15 @@ const _ = require('lodash'),
   db = require('../edit/db');
 
 function formatUserListItem(user) {
-  var item = `<span class="user-item-name">${user.name}</span>`;
+  var item = '<span class="user-item-name">';
+
+  if (user.name) {
+    item += `${user.name}</span>`;
+  } else {
+    // user hasn't logged in for the first time, thus we haven't grabbed their name
+    // from their provider (or the name might be blank)
+    item += `${user.username} <span class="user-item-no-login">(has never logged in)</span></span>`;
+  }
 
   if (user.title) {
     item += `<br /><span class="user-item-title">${user.title}</span>`;
