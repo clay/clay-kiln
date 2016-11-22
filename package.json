@@ -84,7 +84,7 @@
     "routable": "0.0.5",
     "sass-loader": "^4.0.1",
     "selection-range": "^1.0.1",
-    "sinon": "^1.17.2",
+    "sinon": "^1.17.4",
     "speakingurl": "^9.0.0",
     "striptags": "^2.1.1",
     "style-loader": "^0.13.1",
