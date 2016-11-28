@@ -1,0 +1,6 @@
+_description: |
+  Kiln is a component that allows editing of pages in Clay.
+
+  * On public-facing pages (when no user is logged in), it simply adds a keyboard handler to track when shift+CLAY is typed.
+  * When logged in (but in view mode), it displays a stripped-down toolbar with basic page info and actions.
+  * In edit mode, it displays a toolbar and handles the editing of components and pages.
