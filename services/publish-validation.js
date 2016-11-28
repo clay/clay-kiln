@@ -21,9 +21,11 @@ function isRuleEnabled(rule) {
  * @returns {Array}
  */
 function getLatestRefMap() {
-  return _.uniq(_.map(dom.findAll(refAtrrSelector), function (el) {
-    return el.getAttribute(refAttr);
-  }));
+  return _(dom.findAll(refAtrrSelector))
+    .map((el) => el.getAttribute(refAttr))
+    .filter((ref) => _.includes(ref, '/components/')) // filter out page ref
+    .uniq()
+    .value();
 }
 
 /**
