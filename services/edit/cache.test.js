@@ -48,6 +48,7 @@ describe('cache service', function () {
     });
 
     it('gets deep data with deep schema', function () {
+      lib.clearSchemaCache();
       db.get.returns(Promise.resolve({some: {more: 'things'}}));
       db.getSchema.returns(Promise.resolve({some: {more: {_things: 'to know'}}}));
       return fn('foo').then(function (data) {
@@ -88,6 +89,7 @@ describe('cache service', function () {
     var fn = lib[this.title];
 
     it('gets schema', function () {
+      lib.clearSchemaCache();
       db.get.returns(Promise.resolve({foo: 'bar'}));
       db.getSchema.returns(Promise.resolve({foo: 'bar'}));
       return fn('foo').then(function (data) {
@@ -96,6 +98,7 @@ describe('cache service', function () {
     });
 
     it('returns read-only data', function () {
+      lib.clearSchemaCache();
       db.get.returns(Promise.resolve({foo: 'bar'}));
       db.getSchema.returns(Promise.resolve({foo: 'bar'}));
       return fn('foo').then(function (data) {

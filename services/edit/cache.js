@@ -12,7 +12,14 @@ var _ = require('lodash'),
   groupFields = require('./group-fields'),
   schemaFields = require('./schema-fields'),
   control = require('./control'),
-  schemaKeywords = ['_groups', '_description'];
+  schemaKeywords = ['_groups', '_description'],
+  schemaCache = {},
+  componentRoute = '/components/',
+  schemaEndpoint = '/schema';
+
+// schemaCache is populated as schemas are loaded from the server.
+// because schemas are only changed on server restart, we can heavily cache them
+// client-side, and load from the cache whenever possible
 
 /**
  * Convert to plain data (no groups, no schema, no _ref, no _description).
@@ -93,10 +100,20 @@ function getData(uri) {
  * @returns {Promise}
  */
 function getSchema(uri) {
-  return db.getSchema(uri).then(function (schema) {
-    addNameToFieldsOfSchema(schema);
-    return schema;
-  });
+  var prefix = uri.substr(0, uri.indexOf(componentRoute)) + componentRoute,
+    name = references.getComponentNameFromReference(uri),
+    schemaUri = prefix + name + schemaEndpoint;
+
+  if (schemaCache[schemaUri]) {
+    return Promise.resolve(schemaCache[schemaUri]); // includes _name in fields
+  } else {
+    return db.getSchema(schemaUri).then(function (schema) {
+      addNameToFieldsOfSchema(schema);
+      // populate cache
+      schemaCache[schemaUri] = schema;
+      return schema;
+    });
+  }
 }
 
 /**
@@ -176,3 +193,8 @@ exports.getSchema = control.memoizePromise(getSchema);
 exports.saveThrough = saveThrough;
 exports.saveForHTML = saveForHTML;
 exports.createThrough = createThrough;
+
+// for testing
+exports.clearSchemaCache = function () {
+  schemaCache = {};
+};
