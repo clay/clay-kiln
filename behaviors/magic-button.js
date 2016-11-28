@@ -59,6 +59,23 @@ const _ = require('lodash'),
           _: '-' // convert underscores to hyphens
         }
       });
+    },
+
+    /**
+     * Use the provided format with the data field to create a url. Converts data
+     * to lower case, hyphen-delineated text.
+     * @param {string} data
+     * @param {string} format the format to use, with a placeholder of '$DATAFIELD'
+     * @returns {string}
+     */
+    formatUrl: function (data, format) {
+      var datafield = toPlainText(data).toLowerCase().replace(/ /g, '-');
+
+      if (_.isString(format) && !_.isEmpty(format)) {
+        return format.replace(/\$DATAFIELD/g, datafield);
+      } else {
+        return '';
+      }
     }
   };
 
@@ -203,7 +220,7 @@ function doMoreMagic(data, options) {
     transformed, promise;
 
   if (!_.isEmpty(transform)) {
-    transformed = transformers[transform](data);
+    transformed = transformers[transform](data, options.transformArg);
   } else {
     // if a transform isn't specified, just use the data from the field directly
     transformed = data;
@@ -238,6 +255,7 @@ function doMagic(e, bindings, testEl) {
     field = el.getAttribute('data-magic-field'),
     component = el.getAttribute('data-magic-component'),
     transform = el.getAttribute('data-magic-transform'),
+    transformArg = el.getAttribute('data-magic-transformArg'),
     property = el.getAttribute('data-magic-property'),
     moreMagicString = el.getAttribute('data-magic-moremagic') || '',
     // object-based element attribute values require escaping double quotes
@@ -262,6 +280,7 @@ function doMagic(e, bindings, testEl) {
   // apply an optional transform, call an optional url
   promise = doMoreMagic(data, {
     transform: transform,
+    transformArg: transformArg,
     url: url,
     property: property
   });
@@ -279,6 +298,29 @@ function doMagic(e, bindings, testEl) {
 }
 
 /**
+ * Extract properties from the supplied args with appropriate defaults where necessary.
+ *
+ * @param {string} name
+ * @param {object} args
+ * @returns {object}
+ */
+function getMagicProperties(name, args) {
+  var magicProps = {};
+
+  magicProps.name = name;
+  magicProps.field = args.field || '';
+  magicProps.component = args.component || '';
+  magicProps.transform = args.transform || '';
+  magicProps.transformArg = args.transformArg || '';
+  magicProps.url = args.url || '';
+  magicProps.property = args.property || '';
+  // object-based element attribute values require escaping double quotes
+  magicProps.moreMagic = args.moreMagic ? JSON.stringify(args.moreMagic).replace(/"/g,'\"') : '';
+
+  return magicProps;
+}
+
+/**
  * Create magic button.
  *
  * @param {{name: string, bindings: {}}} result
@@ -286,30 +328,24 @@ function doMagic(e, bindings, testEl) {
  * @param {string} [args.field] grab the value of this field
  * @param {string} [args.component] find the first component on the page that matches this name
  * @param {string} [args.transform] key of the transform to apply to the value
+ * @param {string} [args.transformArg] optional argument to be passed to the transform
  * @param {string} [args.url] to get data from
  * @param {string} [args.property] to get from the returned data
  * @param {array} [args.moreMagic] an array of objects with optional transforms, urls, and properties
  * @returns {{}}
  */
 module.exports = function (result, args) {
-  var name = result.name,
+  var magicProps = getMagicProperties(result.name, args),
     el = result.el,
-    field = args.field || '',
-    component = args.component || '',
-    transform = args.transform || '',
-    url = args.url || '',
-    property = args.property || '',
-    // object-based element attribute values require escaping double quotes
-    moreMagic = args.moreMagic ? JSON.stringify(args.moreMagic).replace(/"/g,'\"') : '',
     input = getInput(el),
-    button = dom.create(`<a class="magic-button" rv-on-click="${name}.doMagic" data-magic-currentField="${name}" data-magic-field="${field}" data-magic-component="${component}" data-magic-transform="${transform}" data-magic-url="${url}" data-magic-property="${property}">
-      <img class="magic-button-inner" src="${site.get('assetPath')}/media/components/clay-kiln/magic-button.svg" alt="Magic Button">
-    </a>`);
+    button = dom.create(`<button class="magic-button" rv-on-click="${magicProps.name}.doMagic" data-magic-currentField="${magicProps.name}" data-magic-field="${magicProps.field}" data-magic-component="${magicProps.component}" data-magic-transform="${magicProps.transform}" data-magic-transformArg="${magicProps.transformArg}" data-magic-url="${magicProps.url}" data-magic-property="${magicProps.property}">
+    <img class="magic-button-inner" src="${site.get('assetPath')}/media/components/clay-kiln/magic-button.svg" alt="Magic Button">
+  </button>`);
 
   // magic that lives in an object isn't treated kindly by template strings with dom.create()
   // instead, add object-based magic once the dom element has been created
-  if (moreMagic) {
-    button.setAttribute('data-magic-moremagic', moreMagic);
+  if (magicProps.moreMagic) {
+    button.setAttribute('data-magic-moremagic', magicProps.moreMagic);
   }
 
   // add the button right before the input

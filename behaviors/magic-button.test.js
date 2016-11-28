@@ -75,6 +75,17 @@ describe(dirname, function () {
           .then(expectData);
       });
 
+      it('uses a transform with an argument on the data', function () {
+        var bindings = { magicTest1: { data: { value: '' }}};
+
+        function expectData() {
+          expect(bindings.magicTest1.data.value).to.equal('http://nymag.com/tags/hello/');
+        }
+
+        fn(null, bindings, dom.create('<a class="magic-button" data-magic-currentField="magicTest1" data-magic-field="magicTest2" data-magic-transform="formatUrl" data-magic-transformArg="http://nymag.com/tags/$DATAFIELD/"></a>'))
+          .then(expectData);
+      });
+
       it('calls a url', function () {
         var bindings = { magicTest1: { data: { value: '' }}};
 
@@ -148,6 +159,23 @@ describe(dirname, function () {
 
       it('passes through speakingurl', function () {
         expect(fn('Don\'t Blink')).to.equal('dont-blink');
+      });
+    });
+
+    describe('transforms » formatUrl', function () {
+      var fn = lib.transformers.formatUrl,
+        format = 'http://pixel.nymag.com/imgs/custom/tvrecaps/recaps-$DATAFIELD-160x160.png';
+
+      it('returns an empty string if no format is provided', function () {
+        expect(fn('TV Show')).to.equal('');
+      });
+
+      it('replaces placeholder with data field', function () {
+        expect(fn('TV Show', format)).to.equal('http://pixel.nymag.com/imgs/custom/tvrecaps/recaps-tv-show-160x160.png');
+      });
+
+      it('removes html tags', function () {
+        expect(fn('Foo<br /> <h1>Bar</h1>', format)).to.equal('http://pixel.nymag.com/imgs/custom/tvrecaps/recaps-foo-bar-160x160.png');
       });
     });
   });
