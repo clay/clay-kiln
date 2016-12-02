@@ -338,9 +338,9 @@ module.exports = function (result, args) {
   var magicProps = getMagicProperties(result.name, args),
     el = result.el,
     input = getInput(el),
-    button = dom.create(`<button class="magic-button" rv-on-click="${magicProps.name}.doMagic" data-magic-currentField="${magicProps.name}" data-magic-field="${magicProps.field}" data-magic-component="${magicProps.component}" data-magic-transform="${magicProps.transform}" data-magic-transformArg="${magicProps.transformArg}" data-magic-url="${magicProps.url}" data-magic-property="${magicProps.property}">
+    button = dom.create(`<a class="magic-button" rv-on-click="${magicProps.name}.doMagic" data-magic-currentField="${magicProps.name}" data-magic-field="${magicProps.field}" data-magic-component="${magicProps.component}" data-magic-transform="${magicProps.transform}" data-magic-transformArg="${magicProps.transformArg}" data-magic-url="${magicProps.url}" data-magic-property="${magicProps.property}">
     <img class="magic-button-inner" src="${site.get('assetPath')}/media/components/clay-kiln/magic-button.svg" alt="Magic Button">
-  </button>`);
+  </a>`);
 
   // magic that lives in an object isn't treated kindly by template strings with dom.create()
   // instead, add object-based magic once the dom element has been created
