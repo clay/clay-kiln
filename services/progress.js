@@ -111,7 +111,10 @@ function open(color, message, action, permanent) {
  * close status message
  */
 function close() {
-  getStatusEl().classList.remove('on');
+  var statusEl = getStatusEl();
+
+  statusEl.innerHTML = ''; // clear any message/action from before
+  statusEl.classList.remove('on');
 }
 
 /**
