@@ -105,13 +105,12 @@ function addTextHeader(obj) {
 
 /**
  * handle errors thrown by fetch itself, e.g. connection refused
- * @param  {string} url    url we're trying to fetch
  * @param  {string} method
  * @return {object}        with `statusText` for checkStatus to handle
  */
-function checkError(url, method) {
-  return function () {
-    return { statusText: `Cannot ${method} ${url}` };
+function checkError(method) {
+  return function apiError() {
+    return { statusText: `Cannot ${method === 'GET' ? 'get' : 'send'} data` };
   };
 }
 
@@ -149,7 +148,7 @@ function send(options) {
   options.credentials = 'same-origin';
 
   return rest.send(uriToUrl(options.url), options)
-    .catch(checkError(uriToUrl(options.url), options.method))
+    .catch(checkError(options.method))
     .then(checkStatus);
 }
 
