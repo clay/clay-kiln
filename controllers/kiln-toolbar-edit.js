@@ -25,10 +25,7 @@ let EditorToolbar;
 function createPage() {
   return forms.close()
     .then(openNewPage)
-    .catch(function () {
-      progress.done('error');
-      progress.open('error', 'Issue with opening page options.', true);
-    });
+    .catch(progress.error('Error opening new pages list'));
 }
 
 /**
@@ -84,9 +81,8 @@ EditorToolbar = function (el) {
       state.openDynamicSchedule(res.scheduledAt, res.publishedUrl);
     } else if (res.published) {
       state.toggleButton('published', true);
-      progress.open('publish', `Page is currently published: <a href="${res.publishedUrl}" target="_blank">View Page</a>`);
     }
-  });
+  }).catch(progress.error('Error getting page state'));
 };
 
 /**
@@ -112,10 +108,7 @@ EditorToolbar.prototype = {
   onPreviewClick: function () {
     return forms.close()
       .then(openPreview)
-      .catch(function () {
-        progress.done('error');
-        progress.open('error', 'Data could not be saved. Please review your open form.', true);
-      });
+      .catch(progress.error('Error opening preview'));
   },
 
   onViewClick: toggleEdit,
@@ -128,16 +121,12 @@ EditorToolbar.prototype = {
         return validation.validate(rules).then(function (results) {
           if (results.errors.length) {
             progress.done('error');
+            progress.open('error', 'Error opening publish', results.errors.join(', '));
           }
 
-          openPublish(results);
+          return openPublish(results);
         });
-      })
-      .catch(function () {
-        // if we can't unfocus the current form...
-        progress.done('error');
-        progress.open('error', 'Data could not be saved. Please review your open form.', true);
-      });
+      }).catch(progress.error('Error opening publish'));
   }
 };
 

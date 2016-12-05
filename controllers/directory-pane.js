@@ -41,12 +41,9 @@ module.exports = function () {
             .then(function () {
               pane.close();
               progress.done();
-              progress.open('page', 'User Updated!', true);
+              progress.open('save', 'User Updated!');
             });
-        }).catch(function (e) {
-          progress.done('error');
-          progress.open('error', `Error saving user: ${e.message}`, true);
-        });
+        }).catch(progress.error('Error saving user'));
     },
 
     onLogout: function (e) {

@@ -194,22 +194,23 @@ function timeout(fn, date) {
 }
 
 // convenience method for dynamic schedule message
-function openDynamicSchedule(time, url) {
-  // open a schedule status message
-  progress.open('schedule', `Scheduled to publish ${formatTime(time)}`);
+function openDynamicSchedule(time, url, showStatusMessage) {
   toggleButton('scheduled', true);
-  // set it to dynamically change to publish if the page is still open
+  if (showStatusMessage) {
+    progress.open('schedule', 'Scheduled', `<a href="${url}.html" target="_blank">Preview</a>`);
+  }
+  // set button to dynamically change to publish if the page is still open
   // (or if a new user opens the page) when it's set to publish
   timeout(function () {
     progress.close();
-    // close the schedule status, wait a beat (drawing the eye of the user), then open the published status
+    // Wait a beat (drawing the eye of the user), then open the published status
     // Normally, transitions between status messages happen instantaneously,
     // because they're initiated by user actions (e.g. a published page being scheduled to re-publish).
     // Because this specific transition happens without user action (rather, it's on a timeout),
     // we need to draw the user's eye and allow them to grasp what's going on
     // (without being obtrusive)
     window.setTimeout(function () {
-      progress.open('publish', `Published! <a href="${url}@published.html" target="_blank">View Page</a>`);
+      progress.open('publish', 'Published', `<a href="${url}@published.html" target="_blank">View</a>`);
       // and remember to toggle the button
       toggleButton('scheduled', false);
       toggleButton('published', true);

@@ -5,8 +5,8 @@ var _ = require('lodash'),
   colors = {
     // these are taken from styleguide/_colors.scss
     draft: '#c8b585',
-    scheduled: '#d39d22',
-    published: '#149524',
+    schedule: '#d29c31',
+    publish: '#599f61',
     offline: '#888',
     error: '#a86667',
     save: '#229ed3'
@@ -79,17 +79,30 @@ function done(color) {
 /**
  * open status message
  * @param {string} color
- * @param {string} message (note: this can be a string of html)
- * @param {boolean} [timeout] optional timeout to automatically close status
+ * @param {string} message on the left (note: this can be html)
+ * @param {string} [action] on the right (note: this can be html)
+ * @param {boolean} [permanent] disable the timeout in special circumstances
  */
-function open(color, message, timeout) {
+function open(color, message, action, permanent) {
   var statusEl = getStatusEl();
 
+  statusEl.innerHTML = ''; // clear any message/action from before
+
+  // set status message and/or action
+  if (message) {
+    statusEl.appendChild(dom.create(`<div class="kiln-status-message">${message}</div>`));
+  }
+
+  if (action) {
+    statusEl.appendChild(dom.create(`<div class="kiln-status-action">${action}</div>`));
+  }
+
+  // set the color and show status message
   setColor(statusEl, color);
-  statusEl.innerHTML = message;
   statusEl.classList.add('on');
 
-  if (timeout) {
+  // if permanent is undefined or otherwise falsy, set the timeout
+  if (permanent !== true) {
     setTimeout(close, timeoutMilliseconds);
   }
 }
@@ -101,12 +114,30 @@ function close() {
   getStatusEl().classList.remove('on');
 }
 
+/**
+ * convenience function to close the progress bar and display an error message
+ * @param  {string} message
+ * @return {function}
+ */
+function error(message) {
+  return function (e) {
+    // centralize error logging right here
+    console.error(e);
+    done('error');
+    open('error', `${message}: ${e.message}`);
+    // note: "Failed to fetch" is a common error message which means an API call failed.
+    // check the console to see which calls are giving issues.
+    return e;
+  };
+}
+
 // progress bars
 module.exports.start = start;
 module.exports.done = done;
 // status messages
 module.exports.open = open;
 module.exports.close = close;
+module.exports.error = error;
 
 // for testing
 module.exports.timeoutMilliseconds = timeoutMilliseconds;

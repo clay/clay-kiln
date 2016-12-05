@@ -114,11 +114,7 @@ function save(data) {
           window.kiln.trigger('save', data);
           return savedData;
         })
-        .catch(function (e) {
-          console.error(e.message, e.stack);
-          progress.done('error');
-          progress.open('error', 'A server error occured. Please try again.', true);
-        });
+        .catch(progress.error('Error saving component'));
     }
   });
 }

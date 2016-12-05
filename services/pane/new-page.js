@@ -20,10 +20,7 @@ function createPageByType(id) {
     .then(function (url) {
       location.href = url;
     })
-    .catch(function () {
-      progress.done('error');
-      progress.open('error', 'Error creating new page', true);
-    });
+    .catch(progress.error('Error creating new page'));
 }
 
 /**
@@ -65,10 +62,7 @@ function addCurrentPage(current) {
         progress.done();
         progress.open('page', `<em>${value}</em> added to new pages list`, true);
       })
-      .catch(function () {
-        progress.done('error');
-        progress.open('error', 'Error creating new page', true);
-      });
+      .catch(progress.error('Error adding current page'));
     });
 
     dom.replaceElement(el, form);

@@ -96,7 +96,7 @@ window.addEventListener('load', function () {
   // test connection loss on page load
   if (!navigator.onLine) {
     // we're offline!
-    progress.open('offline', connectionLostMessage);
+    progress.open('offline', connectionLostMessage, null, true);
   }
 });
 
@@ -106,7 +106,7 @@ window.addEventListener('online', function () {
 
 window.addEventListener('offline', function () {
   progress.done('offline'); // turn any progress indicators to grey and end them
-  progress.open('offline', connectionLostMessage);
+  progress.open('offline', connectionLostMessage, null, true);
 });
 
 new Konami(takeOffEveryZig);
