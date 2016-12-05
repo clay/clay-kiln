@@ -113,11 +113,7 @@ function addToProp(args, pane) {
  * @returns {Promise}
  */
 function addComponent(pane, field, name, prevRef) {
-  if (dom.closest(pane, '.kiln-page-area')) {
-    progress.start('page');
-  } else {
-    progress.start('layout');
-  }
+  progress.start('save');
   removeParentPlaceholder(field);
   return Promise.all([edit.createComponent(name), edit.getData(field.ref)])
     .then(function (promises) {

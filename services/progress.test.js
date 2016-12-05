@@ -72,7 +72,7 @@ describe(dirname, function () {
       var fn = lib[this.title];
 
       it('opens status message', function () {
-        var message = '<span>hello</span>';
+        var message = 'hello';
 
         function expectNull() {
           expect(document.querySelector('.kiln-status').classList.contains('on')).to.equal(false);
@@ -81,9 +81,26 @@ describe(dirname, function () {
         }
 
         stubStatus();
-        fn('save', message, true);
+        fn('save', message);
         expect(document.querySelector('.kiln-status').classList.contains('on')).to.equal(true);
-        expect(document.querySelector('.kiln-status').innerHTML).to.equal(message);
+        expect(document.querySelector('.kiln-status').innerHTML).to.equal(`<div class="kiln-status-message">${message}</div>`);
+        setTimeout(expectNull, lib.timeoutMilliseconds);
+      });
+
+      it('opens status message with an action', function () {
+        var message = 'hello',
+          action = '<a href="http://google.com">ok google</a>';
+
+        function expectNull() {
+          expect(document.querySelector('.kiln-status').classList.contains('on')).to.equal(false);
+          lib.close();
+          done();
+        }
+
+        stubStatus();
+        fn('save', message, action);
+        expect(document.querySelector('.kiln-status').classList.contains('on')).to.equal(true);
+        expect(document.querySelector('.kiln-status').innerHTML).to.equal(`<div class="kiln-status-message">${message}</div><div class="kiln-status-action">${action}</div>`);
         setTimeout(expectNull, lib.timeoutMilliseconds);
       });
     });

@@ -104,6 +104,17 @@ function addTextHeader(obj) {
 }
 
 /**
+ * handle errors thrown by fetch itself, e.g. connection refused
+ * @param  {string} method
+ * @return {object}        with `statusText` for checkStatus to handle
+ */
+function checkError(method) {
+  return function apiError() {
+    return { statusText: `Cannot ${method === 'GET' ? 'get' : 'send'} data` };
+  };
+}
+
+/**
  * check status of a request, passing through data on 2xx and 3xx
  * and erroring on 4xx and 5xx
  * @param {object} res
@@ -111,7 +122,7 @@ function addTextHeader(obj) {
  * @throws error on non-200/300 response status
  */
 function checkStatus(res) {
-  if (res.status >= 200 && res.status < 400) {
+  if (res.status && res.status >= 200 && res.status < 400) {
     return res;
   } else {
     let error = new Error(res.statusText);
@@ -136,7 +147,9 @@ function send(options) {
   // add credentials. this tells fetch to pass along cookies, incl. auth
   options.credentials = 'same-origin';
 
-  return rest.send(uriToUrl(options.url), options).then(checkStatus);
+  return rest.send(uriToUrl(options.url), options)
+    .catch(checkError(options.method))
+    .then(checkStatus);
 }
 
 /**

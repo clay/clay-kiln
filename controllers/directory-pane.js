@@ -33,7 +33,7 @@ module.exports = function () {
 
       e.preventDefault();
 
-      progress.start('page');
+      progress.start('save');
       return db.get(uri)
         .then(function (data) {
           _.assign(data, { name: name, title: title });
@@ -41,12 +41,9 @@ module.exports = function () {
             .then(function () {
               pane.close();
               progress.done();
-              progress.open('page', 'User Updated!', true);
+              progress.open('save', 'User Updated!');
             });
-        }).catch(function (e) {
-          progress.done('error');
-          progress.open('error', `Error saving user: ${e.message}`, true);
-        });
+        }).catch(progress.error('Error saving user'));
     },
 
     onLogout: function (e) {

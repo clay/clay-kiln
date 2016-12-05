@@ -101,15 +101,11 @@ module.exports = function () {
             var url = promises[0];
 
             progress.done();
-            progress.open('publish', `Published! <a href="${url}" target="_blank">View Page</a>`);
+            progress.open('publish', 'Published', `<a href="${url}" target="_blank">View</a>`);
             state.toggleButton('scheduled', false);
             state.toggleButton('published', true);
           })
-          .catch(function () {
-            // note: the Error passed into this doesn't have a message, so we use a custom one
-            progress.done('error');
-            progress.open('error', 'Server errored when publishing, please try again.', true);
-          });
+          .catch(progress.error('Error publishing'));
       });
     },
 
@@ -126,11 +122,7 @@ module.exports = function () {
           // per #304, reload the page at the page url, not the published url
           window.location.href = db.uriToUrl(pageUri) + '.html?edit=true';
         })
-        .catch(function () {
-          // note: the Error passed into this doesn't have a message, so we use a custom one
-          progress.done('error');
-          progress.open('error', 'Server errored when unpublishing, please try again.', true);
-        });
+        .catch(progress.error('Error unpublishing'));
     },
 
     onScheduleInput: function () {
@@ -170,13 +162,9 @@ module.exports = function () {
         return schedulePageAndLayout(timestamp)
           .then(function () {
             progress.done();
-            state.openDynamicSchedule(timestamp, db.uriToUrl(pageUri));
+            state.openDynamicSchedule(timestamp, db.uriToUrl(pageUri), true);
           })
-          .catch(function () {
-            // note: the Error passed into this doesn't have a message, so we use a custom one
-            progress.done('error');
-            progress.open('error', 'Server errored when scheduling, please try again.', true);
-          });
+          .catch(progress.error('Error scheduling'));
       });
     },
 
@@ -187,14 +175,10 @@ module.exports = function () {
       return unschedulePageAndLayout()
         .then(function () {
           progress.done();
-          progress.open('schedule', 'Unscheduled!', true);
+          progress.open('schedule', 'Unscheduled');
           state.toggleButton('scheduled', false);
         })
-        .catch(function () {
-          // note: the Error passed into this doesn't have a message, so we use a custom one
-          progress.done('error');
-          progress.open('error', 'Server errored when unscheduling, please try again.', true);
-        });
+        .catch(progress.error('Error unscheduling'));
     },
 
     onCustomUrlInput: function (e) {
@@ -235,7 +219,7 @@ module.exports = function () {
       }
 
       pane.close();
-      progress.start('page');
+      progress.start('save');
 
       return db.get(dom.pageUri())
         .then(function (page) {
@@ -243,19 +227,16 @@ module.exports = function () {
           return db.save(dom.pageUri(), page);
         })
         .then(function () {
-          progress.done('page');
+          progress.done();
           if (url) {
             // if we're saving, say that
-            progress.open('page', 'Saved custom page url', true);
+            progress.open('save', 'Saved custom page url');
           } else {
             // if we're explicitly removing a custom url, say that
-            progress.open('page', 'Removed custom page url', true);
+            progress.open('save', 'Removed custom page url');
           }
         })
-        .catch(function () {
-          progress.done('error');
-          progress.open('error', 'Server errored when saving page url, please try again.', true);
-        });
+        .catch(progress.error('Error saving custom page url'));
     }
   };
   return Constructor;

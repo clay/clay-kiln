@@ -275,7 +275,7 @@ function updateOrder(ref, path, data) {
       let pageUri = dom.pageUri();
 
       // component list is in the page. swap it and save
-      progress.start('page'); // set progress manually
+      progress.start('save'); // set progress manually
       return edit.getDataOnly(pageUri).then(function (pageData) {
         pageData[path] = list; // array of refs
         return db.save(pageUri, _.omit(pageData, '_ref'))
@@ -283,11 +283,7 @@ function updateOrder(ref, path, data) {
             progress.done();
             window.kiln.trigger('save', data);
           })
-          .catch(function (e) {
-            console.error(e.message, e.stack);
-            progress.done('error');
-            progress.open('error', 'A server error occured. Please try again.', true);
-          });
+          .catch(progress.error('Error saving head components'));
       });
     }
   };
@@ -303,7 +299,7 @@ function removeComponentFromList(ref, path) {
   return function (id) {
     var node = getComponentNode(id);
 
-    progress.start('layout');
+    progress.start('save');
     removeComponentFromDOM(node);
     return edit.removeFromParentList({
       el: node,

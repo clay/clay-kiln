@@ -96,15 +96,10 @@ function validate(data, schema) {
  */
 function save(data) {
   var uri = data[refProp],
-    schemaPromise = data._schema && Promise.resolve(data._schema) || cache.getSchema(uri),
-    el = dom.find(`[${references.referenceAttribute}="${uri}"]`);
+    schemaPromise = data._schema && Promise.resolve(data._schema) || cache.getSchema(uri);
 
   // todo: this doesn't handle component lists in the head
-  if (el && dom.closest(el, '.kiln-page-area')) {
-    progress.start('page');
-  } else {
-    progress.start('layout');
-  }
+  progress.start('save');
 
   // get the schema and validate data
   return schemaPromise.then(function (schema) {
@@ -119,11 +114,7 @@ function save(data) {
           window.kiln.trigger('save', data);
           return savedData;
         })
-        .catch(function (e) {
-          console.error(e.message, e.stack);
-          progress.done('error');
-          progress.open('error', 'A server error occured. Please try again.', true);
-        });
+        .catch(progress.error('Error saving component'));
     }
   });
 }

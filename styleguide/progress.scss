@@ -22,13 +22,16 @@
 .kiln-status {
   @include primary-text();
 
+  align-items: center;
   bottom: 100%;
   color: $white;
+  display: flex;
+  justify-content: space-between;
   left: 0;
-  padding: 4px 10px;
+  padding: 15px;
   position: absolute;
   text-align: center;
-  transform: translateY(30px);
+  transform: translateY(50px);
   transition: transform 150ms ease-out;
   width: 100%;
 
