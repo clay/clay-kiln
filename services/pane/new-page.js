@@ -53,7 +53,7 @@ function addCurrentPage(current) {
         id = _.last(dom.pageUri().split('/'));
 
       e.preventDefault();
-      progress.start('page');
+      progress.start('save');
       current.push({
         id: id,
         title: value
@@ -62,7 +62,7 @@ function addCurrentPage(current) {
       return db.save(site.get('prefix') + '/lists/new-pages', current)
       .then(function () {
         pane.close();
-        progress.done('page');
+        progress.done();
         progress.open('page', `<em>${value}</em> added to new pages list`, true);
       })
       .catch(function () {

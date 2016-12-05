@@ -33,7 +33,7 @@ module.exports = function () {
 
       e.preventDefault();
 
-      progress.start('page');
+      progress.start('save');
       return db.get(uri)
         .then(function (data) {
           _.assign(data, { name: name, title: title });

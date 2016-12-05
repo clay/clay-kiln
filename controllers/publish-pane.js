@@ -235,7 +235,7 @@ module.exports = function () {
       }
 
       pane.close();
-      progress.start('page');
+      progress.start('save');
 
       return db.get(dom.pageUri())
         .then(function (page) {
@@ -243,7 +243,7 @@ module.exports = function () {
           return db.save(dom.pageUri(), page);
         })
         .then(function () {
-          progress.done('page');
+          progress.done();
           if (url) {
             // if we're saving, say that
             progress.open('page', 'Saved custom page url', true);
