@@ -104,6 +104,18 @@ function addTextHeader(obj) {
 }
 
 /**
+ * handle errors thrown by fetch itself, e.g. connection refused
+ * @param  {string} url    url we're trying to fetch
+ * @param  {string} method
+ * @return {object}        with `statusText` for checkStatus to handle
+ */
+function checkError(url, method) {
+  return function () {
+    return { statusText: `Cannot ${method} ${url}` };
+  };
+}
+
+/**
  * check status of a request, passing through data on 2xx and 3xx
  * and erroring on 4xx and 5xx
  * @param {object} res
@@ -136,7 +148,9 @@ function send(options) {
   // add credentials. this tells fetch to pass along cookies, incl. auth
   options.credentials = 'same-origin';
 
-  return rest.send(uriToUrl(options.url), options).then(checkStatus);
+  return rest.send(uriToUrl(options.url), options)
+    .catch(checkError(uriToUrl(options.url), options.method))
+    .then(checkStatus);
 }
 
 /**
