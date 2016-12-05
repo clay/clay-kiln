@@ -122,7 +122,7 @@ function checkError(method) {
  * @throws error on non-200/300 response status
  */
 function checkStatus(res) {
-  if (res.status >= 200 && res.status < 400) {
+  if (res.status && res.status >= 200 && res.status < 400) {
     return res;
   } else {
     let error = new Error(res.statusText);
