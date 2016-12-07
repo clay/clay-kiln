@@ -121,7 +121,7 @@ EditorToolbar.prototype = {
         return validation.validate(rules).then(function (results) {
           if (results.errors.length) {
             progress.done('error');
-            progress.open('error', 'Error opening publish', results.errors.join(', '));
+            // no status message, only finish the progress bar
           }
 
           return openPublish(results);
