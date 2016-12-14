@@ -34,63 +34,84 @@ function selectAfter(node) {
   var range = document.createRange(),
     selection = window.getSelection();
 
-  range.setStartAfter(node); // set the caret after this node
-  range.collapse(true);
-  selection.removeAllRanges();
-  selection.addRange(range);
-  // Of the DOM, to inputte's end they wende
-  // the hooly blisful caret for to seke
-  // that hem hath holpen, when that they were pasted
+  if (node && node.nodeType === 1) {
+    range.setStartAfter(node); // set the caret after this node
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    // Of the DOM, to inputte's end they wende
+    // the hooly blisful caret for to seke
+    // that hem hath holpen, when that they were pasted
+  }
 }
 
 /**
- * split innerHTML into paragraphs
+ * split innerHTML into paragraphs based on closing <p>/<div> and line breaks
+ * trim the resulting strings to get rid of any extraneous whitespace
  * @param {string} str
  * @returns {array}
  */
 function splitParagraphs(str) {
-  return str.split(/<\/(?:p|div)>/ig); // split on paragraphs
-  // splitting on the closing tag allows us to grab ALL the paragraphs from
+  return _.map(str.split(/(?:<\/(?:p|div|h[1-9])>|<br(?:\s?\/)?>)/ig), function (s) {
+    s = s.replace('\n', ' ');
+    return s.trim();
+  });
+  // splitting on the closing p/div/header allows us to grab ALL the paragraphs from
   // google docs, since when you paste from there the last paragraph
   // isn't wrapped in a <p> tag. weird, right?
   // splitting on closing <div> tags allows us to support some weird
   // google docs situations (lots of line breaks with embedded media),
   // as well as "plaintext" editors like IA Writer
+  // splitting on line breaks allows us to catch a few edge cases in other editors
 }
 
 /**
- * generate text models for paragraphs
- * @param {array} rawParagraphs
+ * match components from strings of random pasted input
+ * note: paragraphs (and other components with rules that specify sanitization)
+ * will have their values returned as text models instead of strings
+ * @param  {array} strings
+ * @param {array} rules chain of responsibility for paste rules
  * @returns {array}
  */
-function generateTextModels(rawParagraphs) {
-  return _.map(rawParagraphs, function (str) {
-    str = str.replace(/<(?:p|div)>/ig, ''); // remove extraneous opening <p> and <div tags
-    return model.fromElement(dom.create(str));
-  });
-}
+function matchComponents(strings, rules) {
+  return _(strings).map(function (str) {
+    var cleanStr = str.replace(/^\s?<(?:p|div|br)(?:\s?\/)?>/ig, ''), // remove extraneous opening <p>, <div>, and <br> tags
+      matchedRule = _.find(rules, function matchRule(rule) {
+        return rule.match.exec(cleanStr);
+      }),
+      matchedObj, matchedValue;
 
-/**
- * filter out any paragraphs that are blank (filled with empty spaces)
- * this happens when paragraphs really only contain <p> tags, <div>s, or extra spaces
- * we filter AFTER generating text models because the generation gets rid of
- * tags that paragraphs can't handle
- * @param  {array} paragraphs
- * @returns {array}
- */
-function removeEmpties(paragraphs) {
-  return _.filter(paragraphs, function (p) {
-    return p.text.match(/\w/);
-  });
-}
+    if (!matchedRule) {
+      throw new Error('No matching paste rule for ' + cleanStr);
+    }
 
-/**
- * get an array of paragraph models from an innerHTML string
- * @param {string} str
- * @returns {array}
- */
-function getParagraphModels(str) {
-  return removeEmpties(generateTextModels(splitParagraphs(str)));
+    // grab stuff from matched rule, incl. component, field, sanitize
+    matchedObj = _.assign({}, matchedRule);
+
+    // find actual matched value for component
+    // note: rules need to grab _some value_ from the string
+    matchedValue = matchedRule.match.exec(cleanStr)[1];
+
+    if (matchedRule.sanitize) {
+      // if a rule says the value needs sanitization, pass it through text-model
+      matchedValue = model.fromElement(dom.create(matchedValue));
+    }
+
+    // finally, add the potentially-sanitized value into the matched obj
+    matchedObj.value = matchedValue;
+
+    return matchedObj;
+  }).filter(function filterMatches(component) {
+    var val = component.value;
+
+    // filter out any components that are blank (filled with empty spaces)
+    // this happens a lot when paragraphs really only contain <p> tags, <div>s, or extra spaces
+    // we filter AFTER generating text models because the generation gets rid of tags that paragraphs can't handle
+
+    // return true if the string contains words,
+    // or if it's a text-model that contains words
+    return _.isString(val) && val.match(/\S/) || _.isString(val.text) && val.text.match(/\S/);
+  }).value();
 }
 
 /**
@@ -159,7 +180,6 @@ function createEditor(field, buttonsWithOptions) {
         'meta',
         'script',
         'style',
-        'img',
         'object',
         'iframe',
         'table'
@@ -169,7 +189,6 @@ function createEditor(field, buttonsWithOptions) {
         // thus allowing cleanTags (above) or text-model to manage them
         [/<h[1-9]>/ig, '<h2>'],
         [/<\/h[1-9]>/ig, '</h2>'], // force all headers to the same level
-        [/<\/?blockquote(.*?)>/ig, ''], // unwrap blockquotes
         // decode SPECIFIC html entities (not all of them, as that's a security hole)
         ['&amp;', '&'],
         ['&nbsp;', ' '],
@@ -379,42 +398,55 @@ function addComponent(el, text) {
 
 /**
  * add MULTIPLE components after the current component
- * @param {Element} el
- * @param {array} components (array of text models)
+ * note: does nothing if components array is empty
+ * @param {object} parent
+ * @param {array} components (array of matched components)
+ * @param {object} [current] (if undefined, will add components to end of list)
  * @returns {Promise}
  */
-function addComponents(el, components) {
-  var current = getCurrent(el),
-    parent = getParent(current.component);
+function addComponents(parent, components, current) {
+  var currentRef = current && current.ref; // undefined if no current component
 
-  // create the new components
+  // first, create the new components
   return Promise.all(_.map(components, function (component) {
-    var throwawayDiv = document.createElement('div'),
-      fragment = model.toElement(component);
+    var newComponentData = {};
 
-    throwawayDiv.appendChild(fragment);
+    if (_.isString(component.value)) {
+      newComponentData[component.field] = component.value;
+    } else if (_.get(component, 'value.text') && component.sanitize) {
+      // text model!
+      let throwawayDiv = document.createElement('div'),
+        fragment = model.toElement(component.value);
 
-    return edit.createComponent(current.name, {
-      text: throwawayDiv.innerHTML
-    });
+      throwawayDiv.appendChild(fragment);
+      newComponentData[component.field] = throwawayDiv.innerHTML;
+    } // note: value might be null if we're not passing any actual data into the new component
+
+    return edit.createComponent(component.component, newComponentData);
   })).then(function (newComponents) {
-    var newRefs = _.map(newComponents, c => c._ref);
+    if (!_.isEmpty(newComponents)) {
+      let newRefs = _.map(newComponents, c => c._ref);
 
-    return edit.addMultipleToParentList({refs: newRefs, prevRef: current.ref, parentField: parent.field, parentRef: parent.ref})
-      .then(focus.unfocus) // save the current component before re-rendering the parent
-      .then(function (newEl) {
-        return render.reloadComponent(parent.ref, newEl)
-          .then(function () {
-            var lastNewComponentRef = _.last(newRefs),
-              lastNewComponent = dom.find('[' + refAttr + '="' + lastNewComponentRef + '"]');
+      return edit.addMultipleToParentList({refs: newRefs, prevRef: currentRef, parentField: parent.field, parentRef: parent.ref})
+        .then(focus.unfocus) // save the current component before re-rendering the parent
+        .then(function (newEl) {
+          return render.reloadComponent(parent.ref, newEl)
+            .then(function () {
+              var lastNewComponentRef = _.last(newRefs),
+                lastNewComponent = dom.find('[' + refAttr + '="' + lastNewComponentRef + '"]'),
+                lastField = _.last(components).field,
+                lastGroup = _.last(components).group;
 
-            // // focus on the same field in the new component
-            focus.focus(lastNewComponent, { ref: lastNewComponentRef, path: current.field }).then(function (editable) {
-              selectAfter(editable.lastChild);
-              return lastNewComponentRef;
+              if (lastField) {
+                // focus on the same field (or group, if specified) in the new component
+                focus.focus(lastNewComponent, { ref: lastNewComponentRef, path: lastGroup || lastField }).then(function (editable) {
+                  selectAfter(editable.lastChild);
+                  return lastNewComponentRef;
+                });
+              }
             });
-          });
-      });
+        });
+    }
   });
 }
 
@@ -518,9 +550,10 @@ function findExtension(extname) {
 /**
  * Add binders
  * @param {boolean} enableKeyboardExtras
+ * @param {array} pasteRules
  * @returns {{publish: boolean, bind: Function}}
  */
-function initWysiwygBinder(enableKeyboardExtras) {
+function initWysiwygBinder(enableKeyboardExtras, pasteRules) {
   return {
     publish: true,
     bind: function (el) {
@@ -552,6 +585,30 @@ function initWysiwygBinder(enableKeyboardExtras) {
         removeFormattingExtension.button.innerHTML = `<img src="${site.get('assetPath')}/media/components/clay-kiln/remove-formatting.svg" />`;
       }
 
+      // generate regex from paste rules
+      pasteRules = _.map(pasteRules, function (rule) {
+        var pre = '^(?:<a(?:.*?)>)?',
+          post = '(?:</a>)?$';
+
+        // regex rule assumptions
+        // 1. match EVERYTHING in a string, e.g. wrap rule in ^ and $
+        // 2. match rule AND a link with the rule as its text
+        // this allows us to deal with urls that other editors make into links automatically
+        if (!rule.match) {
+          throw new Error('Paste rule needs regex! ', rule);
+        }
+
+        // create regex
+        try {
+          rule.match = new RegExp(`${pre}${rule.match}${post}`);
+        } catch (e) {
+          console.error(e);
+          throw e;
+        }
+
+        return rule;
+      });
+
       // put the initial data into the editor
       el.innerHTML = data;
 
@@ -574,11 +631,27 @@ function initWysiwygBinder(enableKeyboardExtras) {
 
       // persist editor data to data model on paste
       editor.subscribe('editablePaste', function onEditablePaste(e, editable) {
-        var paragraphs = getParagraphModels(editable.innerHTML);
+        var currentComponent = getCurrent(editable),
+          parentComponent = getParent(currentComponent.component),
+          components, firstComponent;
 
-        if (paragraphs.length === 1) {
-          // we're only pasting one paragraph! add it inside the current paragraph
-          let fragment = model.toElement(_.head(paragraphs)),
+        if (_.isEmpty(pasteRules)) {
+          // create a fake paste component that'll put the pasted text into the current component
+          components = [{
+            component: currentComponent.name,
+            field: currentComponent.field,
+            value: model.fromElement(dom.create(editable.innerHTML)) // sanitize by default
+          }];
+        } else {
+          components = matchComponents(splitParagraphs(editable.innerHTML), pasteRules);
+        }
+
+        // now grab the first component
+        firstComponent = _.head(components);
+
+        // first component is the same as current component (or if there's already text in the current component)
+        if (firstComponent.component === currentComponent.name) {
+          let fragment = model.toElement(firstComponent.value),
             caret = select(editable); // get current caret position
 
           dom.clearChildren(editable); // clear the current children
@@ -586,14 +659,16 @@ function initWysiwygBinder(enableKeyboardExtras) {
           observer.setValue(editable.innerHTML);
 
           select(editable, caret); // set caret after pasted stuff
-        } else if (paragraphs.length > 1) {
-          let fragment = model.toElement(_.head(paragraphs));
 
-          dom.clearChildren(editable); // clear the current children
-          editable.appendChild(fragment); // add the first paragraph
-          observer.setValue(editable.innerHTML); // set the value, so when we unfocus this'll be saved
-
-          return addComponents(editable, _.tail(paragraphs));
+          // we already handled the first component above, so just insert the rest of them
+          // note: if there are no other components, this does nothing
+          return addComponents(parentComponent, _.tail(components), currentComponent);
+        } else {
+          // remove current component, then add components from the paste
+          return removeCurrentFromParent(currentComponent, parentComponent)
+            .then(function () {
+              return addComponents(parentComponent, components);
+            });
         }
       });
 
@@ -632,6 +707,7 @@ function initWysiwygBinder(enableKeyboardExtras) {
  * @param {Array} args.buttons  array of button names (strings) for tooltip, buttons with options are objects rather than strings
  * @param {boolean}  args.styled   apply input styles to contenteditable element
  * @param {boolean}  args.enableKeyboardExtras  enable creating new components on enter, and appending text to previous components on delete, etc
+ * @param {Array} args.paste chain of responsibility for parsing pasted content
  * @returns {{}}
  */
 module.exports = function (result, args) {
@@ -640,6 +716,7 @@ module.exports = function (result, args) {
     buttons = args.buttons,
     styled = args.styled,
     enableKeyboardExtras = args.enableKeyboardExtras,
+    pasteRules = args.paste || [],
     field = dom.create(`<label class="input-label">
       <p class="wysiwyg-input${ addStyledClass(styled) }" rv-field="${name}" rv-wysiwyg="${name}.data.value" ${safeAttribute.writeObjectAsAttr('data-wysiwyg-buttons', buttons)}></p>
     </label>`);
@@ -653,7 +730,7 @@ module.exports = function (result, args) {
   result.el = field;
 
   // add the binder
-  binders.wysiwyg = initWysiwygBinder(enableKeyboardExtras);
+  binders.wysiwyg = initWysiwygBinder(enableKeyboardExtras, pasteRules);
 
   return result;
 };
