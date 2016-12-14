@@ -399,13 +399,13 @@ function addComponent(el, text) {
 /**
  * add MULTIPLE components after the current component
  * note: does nothing if components array is empty
- * @param {Element} el
+ * @param {object} parent
  * @param {array} components (array of matched components)
+ * @param {object} [current] (if undefined, will add components to end of list)
  * @returns {Promise}
  */
-function addComponents(el, components) {
-  var current = getCurrent(el),
-    parent = getParent(current.component);
+function addComponents(parent, components, current) {
+  var currentRef = current && current.ref; // undefined if no current component
 
   // first, create the new components
   return Promise.all(_.map(components, function (component) {
@@ -427,7 +427,7 @@ function addComponents(el, components) {
     if (!_.isEmpty(newComponents)) {
       let newRefs = _.map(newComponents, c => c._ref);
 
-      return edit.addMultipleToParentList({refs: newRefs, prevRef: current.ref, parentField: parent.field, parentRef: parent.ref})
+      return edit.addMultipleToParentList({refs: newRefs, prevRef: currentRef, parentField: parent.field, parentRef: parent.ref})
         .then(focus.unfocus) // save the current component before re-rendering the parent
         .then(function (newEl) {
           return render.reloadComponent(parent.ref, newEl)
@@ -632,6 +632,7 @@ function initWysiwygBinder(enableKeyboardExtras, pasteRules) {
       // persist editor data to data model on paste
       editor.subscribe('editablePaste', function onEditablePaste(e, editable) {
         var currentComponent = getCurrent(editable),
+          parentComponent = getParent(currentComponent.component),
           components, firstComponent;
 
         if (_.isEmpty(pasteRules)) {
@@ -661,14 +662,13 @@ function initWysiwygBinder(enableKeyboardExtras, pasteRules) {
 
           // we already handled the first component above, so just insert the rest of them
           // note: if there are no other components, this does nothing
-          return addComponents(editable, _.tail(components));
+          return addComponents(parentComponent, _.tail(components), currentComponent);
         } else {
-          // todo: remove the current component so we can replace it with whatever the first
-          // pasted component should be
-          dom.clearChildren(editable); // clear the currently pasted thing
-          observer.setValue(editable.innerHTML); // and save the empty value
-          // insert all new components after the current one
-          return addComponents(editable, components);
+          // remove current component, then add components from the paste
+          return removeCurrentFromParent(currentComponent, parentComponent)
+            .then(function () {
+              return addComponents(parentComponent, components);
+            });
         }
       });
 
