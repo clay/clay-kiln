@@ -410,7 +410,7 @@ function addComponents(parent, components, options) {
   var currentRef, insertIndex;
 
   options = options || {};
-  currentRef = options.current && current && current.ref; // undefined if no current component
+  currentRef = options.current && options.current.ref; // undefined if no current component
   insertIndex = options.insertIndex;
 
   // first, create the new components

@@ -563,7 +563,7 @@ function addToParentList(opts) {
  * @param {object} opts
  * @param {array} opts.refs
  * @param {string} [opts.prevRef]     The ref of the item to insert after.
- * @param {number} [insertIndex] actual index to insert first item into (allows adding multiple components above existing components)
+ * @param {number} [opts.insertIndex] actual index to insert first item into (allows adding multiple components above existing components)
  * @param {string} opts.parentField
  * @param {string} opts.parentRef
  * @returns {Promise} Promise resolves to new parent Element.
@@ -585,7 +585,7 @@ function addMultipleToParentList(opts) {
       });
 
     parentData = _.cloneDeep(parentData);
-    if (_.isNumber(insertIndex)) {
+    if (_.isNumber(insertIndex)) { // insertIndex might be 0, hence no truthy checking
       // add to specific starting position in list
       parentData[parentField].splice(insertIndex, 0, items); // note: this creates a deep array
       parentData[parentField] = _.flatten(parentData[parentField]); // so flatten it afterwards
