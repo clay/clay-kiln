@@ -397,15 +397,21 @@ function addComponent(el, text) {
 }
 
 /**
- * add MULTIPLE components after the current component
+ * add MULTIPLE components after the current component, or at a specific index
  * note: does nothing if components array is empty
  * @param {object} parent
  * @param {array} components (array of matched components)
- * @param {object} [current] (if undefined, will add components to end of list)
+ * @param {object} [options]
+ * @param {object} [options.current] add after current component
+ * @param {number} [options.insertIndex] add at a specific index (wins over options.current)
  * @returns {Promise}
  */
-function addComponents(parent, components, current) {
-  var currentRef = current && current.ref; // undefined if no current component
+function addComponents(parent, components, options) {
+  var currentRef, insertIndex;
+
+  options = options || {};
+  currentRef = options.current && options.current.ref; // undefined if no current component
+  insertIndex = options.insertIndex;
 
   // first, create the new components
   return Promise.all(_.map(components, function (component) {
@@ -425,9 +431,20 @@ function addComponents(parent, components, current) {
     return edit.createComponent(component.component, newComponentData);
   })).then(function (newComponents) {
     if (!_.isEmpty(newComponents)) {
-      let newRefs = _.map(newComponents, c => c._ref);
+      let newRefs = _.map(newComponents, c => c._ref),
+        addOptions = {
+          refs: newRefs,
+          parentField: parent.field,
+          parentRef: parent.ref
+        };
 
-      return edit.addMultipleToParentList({refs: newRefs, prevRef: currentRef, parentField: parent.field, parentRef: parent.ref})
+      if (_.isNumber(insertIndex)) {
+        addOptions.insertIndex = insertIndex;
+      } else if (currentRef) {
+        addOptions.prevRef = currentRef;
+      } // otherwise add to the end of the list
+
+      return edit.addMultipleToParentList(addOptions)
         .then(focus.unfocus) // save the current component before re-rendering the parent
         .then(function (newEl) {
           return render.reloadComponent(parent.ref, newEl)
@@ -662,13 +679,16 @@ function initWysiwygBinder(enableKeyboardExtras, pasteRules) {
 
           // we already handled the first component above, so just insert the rest of them
           // note: if there are no other components, this does nothing
-          return addComponents(parentComponent, _.tail(components), currentComponent);
+          return addComponents(parentComponent, _.tail(components), { current: currentComponent });
         } else {
-          // remove current component, then add components from the paste
-          return removeCurrentFromParent(currentComponent, parentComponent)
-            .then(function () {
-              return addComponents(parentComponent, components);
-            });
+          // get index of the current component, so we can insert new components starting there
+          return edit.getDataOnly(parentComponent.ref).then(function (parentData) {
+            var insertIndex = _.findIndex(parentData[parentComponent.field], item => item._ref === currentComponent.ref);
+
+            // remove current component, then add components from the paste
+            return removeCurrentFromParent(currentComponent, parentComponent)
+              .then(() => addComponents(parentComponent, components, { insertIndex: insertIndex }));
+          });
         }
       });
 

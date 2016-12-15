@@ -171,12 +171,21 @@ describe('edit service', function () {
   describe('addMultipleToParentList', function () {
     var fn = lib[this.title];
 
-    it('adds items to the list data', function () {
+    it('adds items after a specific item', function () {
       cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'}));
       cache.saveForHTML.returns(Promise.resolve('some html'));
 
       return fn({refs: ['newRef', 'otherRef'], prevRef: 'b', parentField: 'a', parentRef: 'd'}).then(function () {
         expectSavedAs({a: [{_ref: 'b'}, {_ref: 'newRef'}, {_ref: 'otherRef'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'});
+      });
+    });
+
+    it('adds items at a specific index', function () {
+      cache.getData.returns(resolveReadOnly({a: [{_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'}));
+      cache.saveForHTML.returns(Promise.resolve('some html'));
+
+      return fn({refs: ['newRef', 'otherRef'], insertIndex: 0, parentField: 'a', parentRef: 'd'}).then(function () {
+        expectSavedAs({a: [{_ref: 'newRef'}, {_ref: 'otherRef'}, {_ref: 'b'}, {_ref: 'c'}], _schema: {a: {}}, _ref: 'd'});
       });
     });
 
