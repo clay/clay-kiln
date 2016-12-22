@@ -267,7 +267,7 @@ $selector-fade-easing: linear;
 }
 
 // all editable elements should have some kind of ux showing they can be edited
-[data-editable] {
+.component-selector-wrapper *[data-editable] {
   cursor: pointer;
 }
 
