@@ -55,6 +55,18 @@ describe(dirname, function () {
         fn(el);
         expect(el.classList.contains('selected')).to.equal(true);
       });
+
+      it('adds .selected-parent class to parent component', function () {
+        var el = stubEditableElement(),
+          parent = stubComponent(),
+          component = stubComponent();
+
+        component.appendChild(el);
+        parent.appendChild(component);
+
+        fn(el);
+        expect(parent.classList.contains('selected-parent')).to.equal(true);
+      });
     });
 
     describe('unselect', function () {
@@ -69,6 +81,19 @@ describe(dirname, function () {
         lib.select(el);
         fn(); // unselect
         expect(component.classList.contains('selected')).to.equal(false);
+      });
+
+      it('removed .selected-parent class from component parent', function () {
+        var el = stubEditableElement(),
+          component = stubComponent(),
+          parent = stubComponent();
+
+        component.appendChild(el);
+        parent.appendChild(component);
+
+        lib.select(el);
+        fn(); // unselect
+        expect(parent.classList.contains('selected-parent')).to.equal(false);
       });
     });
 
