@@ -16,7 +16,8 @@ var _ = require('lodash'),
   visibleComponents = require('./visible-components'),
   hidden = 'kiln-hide',
   selectorHeight = 56, // selector menus are 48px tall, offset is 8px
-  currentSelected;
+  currentSelected,
+  currentSelectedParent;
 
 /**
  * Get the closest component element from the DOM. Checks self and then parents.
@@ -108,7 +109,8 @@ function removePadding() {
  * @param {MouseEvent} e
  */
 function select(el) {
-  var component = getComponentEl(el);
+  var component = getComponentEl(el),
+    parent = getParentEl(component);
 
   // only one component can be selected at a time
   unselect();
@@ -123,8 +125,10 @@ function select(el) {
   // selected component gets .selected, parent gets .selected-parent
   if (component && component.tagName !== 'HTML') {
     component.classList.add('selected');
+    parent.classList.add('selected-parent');
     addPadding(component);
     currentSelected = component;
+    currentSelectedParent = parent;
   }
 
   window.kiln.trigger('select', component);
@@ -134,7 +138,8 @@ function select(el) {
  * remove selection
  */
 function unselect() {
-  var current = currentSelected || dom.find('.component-selector-wrapper.selected');
+  var current = currentSelected || dom.find('.component-selector-wrapper.selected'),
+    currentParent = current ? currentSelectedParent || getParentEl(current) : null;
 
   if (current) {
     current.classList.remove('kiln-suppress-animation'); // unsuppress initialFadeInOut animation
@@ -143,7 +148,12 @@ function unselect() {
     window.kiln.trigger('unselect', current);
   }
 
+  if (currentParent) {
+    currentParent.classList.remove('selected-parent');
+  }
+
   currentSelected = null;
+  currentSelectedParent = null;
 }
 
 /**
