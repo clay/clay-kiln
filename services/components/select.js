@@ -122,12 +122,16 @@ function select(el) {
     component.classList.add('kiln-suppress-animation');
   }
 
-  // selected component gets .selected, parent gets .selected-parent
+  // selected component gets .selected
   if (component && component.tagName !== 'HTML') {
     component.classList.add('selected');
-    parent.classList.add('selected-parent');
     addPadding(component);
     currentSelected = component;
+  }
+
+  // if there's a parent it gets .selected-parent
+  if (parent) {
+    parent.classList.add('selected-parent');
     currentSelectedParent = parent;
   }
 
