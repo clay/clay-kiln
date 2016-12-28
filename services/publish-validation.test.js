@@ -14,6 +14,7 @@ describe('publish-validation service', function () {
     sandbox.spy(dom, 'create');
     sandbox.stub(dom, 'find');
     sandbox.stub(dom, 'findAll');
+    sandbox.stub(document.documentElement, 'getAttribute'),
     sandbox.stub(edit);
   });
 
@@ -76,9 +77,19 @@ describe('publish-validation service', function () {
 
       dom.findAll.withArgs('[data-uri]').returns([dom.create('<section data-uri="' + ref + '" />')]);
       edit.getData.withArgs(ref).returns(Promise.resolve(data));
+      document.documentElement.getAttribute.withArgs('data-layout-uri').returns('localhost/selectall/components/layout/instances/article');
+      edit.getData.withArgs('localhost/selectall/components/layout/instances/article').returns(Promise.resolve({foo: 'bar'}));
 
       return fn(rules).then(function () {
-        expect(spy.args[0][0]).to.deep.equal({refs: {'/components/a': {}}, components: ['a']});
+        expect(spy.args[0][0]).to.deep.equal({
+          refs: {
+            '/components/a': {}
+          },
+          components: ['a'],
+          layout: {
+            foo: 'bar'
+          }
+        });
       });
     });
   });
