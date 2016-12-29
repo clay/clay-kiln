@@ -14,7 +14,7 @@ A longer description that explains the validation error.
 
 ### validate
 
-A function that returns an array of warnings/errors (return an empty array if all rules pass). It receives a frozen `state` object with refs and components. For example, the following validator warns when `tk` exists in article headlines and paragraphs:
+A function that returns an array of warnings/errors (return an empty array if all rules pass). It receives a frozen `state` object with refs, components, and the page's layout object. For example, the following validator warns when `tk` exists in article headlines and paragraphs:
 
 ```js
 var label = 'TKs';
@@ -25,8 +25,11 @@ var label = 'TKs';
   };
 
 /**
- * @param {{refs: object, components: Array}} state
- * @returns {[object]} errors
+ * @param {Object} state
+ * @param {Object} state.refs
+ * @param {Array} state.components
+ * @param {Object} state.layout
+ * @returns {Object[]} errors
  */
 function validate(state) {
   var errors = [],

@@ -94,12 +94,17 @@ function mapRules(rules, state) {
  */
 function validate(rules) {
   var refs = getLatestRefMap(),
-    components = getComponentMap(refs);
+    components = getComponentMap(refs),
+    layoutRef = document.documentElement.getAttribute('data-layout-uri');
 
   // run rules async
-  return promises.join(getLatestRefDataMap(refs), components)
+  return promises.join(getLatestRefDataMap(refs), components, edit.getData(layoutRef))
     .then(function (result) {
-      var state = control.setReadOnly({ refs: result[0], components: result[1] });
+      var state = control.setReadOnly({
+        refs: result[0],
+        components: result[1],
+        layout: result[2]
+      });
 
       return mapRules(rules, state);
     });
