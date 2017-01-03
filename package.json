@@ -90,6 +90,6 @@
     "style-loader": "^0.13.1",
     "text-model": "^0.3.0",
     "webpack": "^1.13.2",
-    "whatwg-fetch": "^1.0.0"
+    "whatwg-fetch": "^2.0.0"
   }
 }
