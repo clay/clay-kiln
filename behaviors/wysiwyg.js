@@ -16,7 +16,7 @@ var _ = require('lodash'),
 
 // pass config actions to text-model
 model.updateSameAs({
-  // all headings should be converted to bold text
+  // all headings (inside the current component) should be converted to bold text
   H1: 'STRONG',
   H2: 'STRONG',
   H3: 'STRONG',
@@ -52,17 +52,16 @@ function selectAfter(node) {
  * @returns {array}
  */
 function splitParagraphs(str) {
-  return _.map(str.split(/(?:<\/(?:p|div|h[1-9])>|<br(?:\s?\/)?>)/ig), function (s) {
-    s = s.replace('\n', ' ');
-    return s.trim();
-  });
+  // </p>, </div>, </h1> through </h9>, or two (interchangeable) <br> or newlines
+  // note: <br> tags may contain closing slashes, and there may be spaces around stuff
+  return _.map(str.split(/(?:<\/(?:p|div|h[1-9])>|(?:\s?<br(?:\s?\/)?>\s?|\s?\n\s?){2})/ig), s => s.trim());
   // splitting on the closing p/div/header allows us to grab ALL the paragraphs from
   // google docs, since when you paste from there the last paragraph
   // isn't wrapped in a <p> tag. weird, right?
   // splitting on closing <div> tags allows us to support some weird
   // google docs situations (lots of line breaks with embedded media),
   // as well as "plaintext" editors like IA Writer
-  // splitting on line breaks allows us to catch a few edge cases in other editors
+  // splitting on double line breaks/<br> tags allows us to catch a few edge cases in other editors
 }
 
 /**
@@ -75,7 +74,9 @@ function splitParagraphs(str) {
  */
 function matchComponents(strings, rules) {
   return _(strings).map(function (str) {
-    var cleanStr = str.replace(/^\s?<(?:p|div|br)(?:\s?\/)?>/ig, ''), // remove extraneous opening <p>, <div>, and <br> tags
+    // remove extraneous opening <p>, <div>, and <br> tags
+    // note: some google docs pastes might have `<p><br>`
+    var cleanStr = str.replace(/^\s?<(?:p><br|p|div|br)(?:\s?\/)?>\s?/ig, ''),
       matchedRule = _.find(rules, function matchRule(rule) {
         return rule.match.exec(cleanStr);
       }),
@@ -108,9 +109,9 @@ function matchComponents(strings, rules) {
     // this happens a lot when paragraphs really only contain <p> tags, <div>s, or extra spaces
     // we filter AFTER generating text models because the generation gets rid of tags that paragraphs can't handle
 
-    // return true if the string contains words,
-    // or if it's a text-model that contains words
-    return _.isString(val) && val.match(/\S/) || _.isString(val.text) && val.text.match(/\S/);
+    // return true if the string contains words (anything that isn't whitespace, but not just a single closing tag),
+    // or if it's a text-model that contains words (anything that isn't whitespace, but not just a single closing tag)
+    return _.isString(val) && val.match(/\S/) && !val.match(/^<\/.*?>$/) || _.isString(val.text) && val.text.match(/\S/) && !val.text.match(/^<\/.*?>$/);
   }).value();
 }
 
@@ -604,15 +605,25 @@ function initWysiwygBinder(enableKeyboardExtras, pasteRules) {
 
       // generate regex from paste rules
       pasteRules = _.map(pasteRules, function (rule) {
-        var pre = '^(?:<a(?:.*?)>)?',
-          post = '(?:</a>)?$';
+        var pre = '^',
+          preLink = '(?:<a(?:.*?)>)?',
+          post = '$',
+          postLink = '(?:</a>)?';
 
         // regex rule assumptions
-        // 1. match EVERYTHING in a string, e.g. wrap rule in ^ and $
-        // 2. match rule AND a link with the rule as its text
-        // this allows us to deal with urls that other editors make into links automatically
+        // 1. match FULL STRINGS (not partials), e.g. wrap rule in ^ and $
         if (!rule.match) {
           throw new Error('Paste rule needs regex! ', rule);
+        }
+
+        // if `rule.matchLink` is true, match rule AND a link with the rule as its text
+        // this allows us to deal with urls that other text editors make into links automatically
+        // (e.g. google docs creates links when you paste in urls),
+        // but will only return the stuff INSIDE the link text (e.g. the url).
+        // For embeds (where you want to grab the url) set matchLink to true,
+        // but for components that may contain actual links set matchLink to false
+        if (rule.matchLink) {
+          rule.match = `${preLink}${rule.match}${postLink}`;
         }
 
         // create regex
@@ -653,7 +664,7 @@ function initWysiwygBinder(enableKeyboardExtras, pasteRules) {
           components, firstComponent;
 
         if (_.isEmpty(pasteRules)) {
-          // create a fake paste component that'll put the pasted text into the current component
+          // create a fake paste rule that'll put the pasted text into the current component
           components = [{
             component: currentComponent.name,
             field: currentComponent.field,
