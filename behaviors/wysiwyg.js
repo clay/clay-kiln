@@ -74,8 +74,9 @@ function splitParagraphs(str) {
  */
 function matchComponents(strings, rules) {
   return _(strings).map(function (str) {
-    // remove extraneous opening <p> and <div> tags
-    var cleanStr = str.replace(/^\s?<(?:p|div)(?:\s?\/)?>/ig, ''),
+    // remove extraneous opening <p>, <div>, and <br> tags
+    // note: some google docs pastes might have `<p><br>`
+    var cleanStr = str.replace(/^\s?<(?:p><br|p|div|br)(?:\s?\/)?>\s?/ig, ''),
       matchedRule = _.find(rules, function matchRule(rule) {
         return rule.match.exec(cleanStr);
       }),
@@ -108,9 +109,9 @@ function matchComponents(strings, rules) {
     // this happens a lot when paragraphs really only contain <p> tags, <div>s, or extra spaces
     // we filter AFTER generating text models because the generation gets rid of tags that paragraphs can't handle
 
-    // return true if the string contains words,
-    // or if it's a text-model that contains words
-    return _.isString(val) && val.match(/\S/) || _.isString(val.text) && val.text.match(/\S/);
+    // return true if the string contains words (anything that isn't whitespace, but not just a single closing tag),
+    // or if it's a text-model that contains words (anything that isn't whitespace, but not just a single closing tag)
+    return _.isString(val) && val.match(/\S/) && !val.match(/^<\/.*?>$/) || _.isString(val.text) && val.text.match(/\S/) && !val.text.match(/^<\/.*?>$/);
   }).value();
 }
 
