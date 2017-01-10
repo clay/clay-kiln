@@ -77,6 +77,7 @@
     "medium-editor-phrase": "^1.0.0",
     "mocha": "^2.2.5",
     "moment": "^2.10.6",
+    "node-sass": "^4.1.1",
     "nprogress": "^0.2.0",
     "postcss-loader": "^0.11.1",
     "rivets": "^0.9.3",
@@ -88,7 +89,7 @@
     "speakingurl": "^9.0.0",
     "striptags": "^2.1.1",
     "style-loader": "^0.13.1",
-    "text-model": "^0.3.0",
+    "text-model": "^1.0.0",
     "webpack": "^1.13.2",
     "whatwg-fetch": "^1.0.0"
   }
