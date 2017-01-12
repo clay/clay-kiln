@@ -45,7 +45,7 @@
     "chai": "^3.4.1",
     "chai-things": "^0.2.0",
     "chalk": "^1.1.1",
-    "codemirror": "^5.14.0",
+    "codemirror": "^5.22.2",
     "coveralls": "^2.11.2",
     "css-loader": "^0.24.0",
     "dollar-slice": "^2.1.0",
