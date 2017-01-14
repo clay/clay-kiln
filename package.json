@@ -57,7 +57,7 @@
     "flatpickr": "^1.9.1",
     "he": "^1.1.0",
     "isparta": "^4.0.0",
-    "karma": "^0.13.15",
+    "karma": "^1.4.0",
     "karma-browserify": "^5.0.1",
     "karma-browserstack-launcher": "^0.1.2",
     "karma-chai": "^0.1.0",
