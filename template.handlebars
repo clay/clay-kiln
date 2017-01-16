@@ -1,0 +1,354 @@
+{{#if locals.user}}
+  {{! if a user is logged in, we display either the view-mode or edit-mode toolbar, and associated scripts, styles, and templates }}
+  <div data-uri="{{ default _ref _self }}" class="clay-kiln">
+
+    {{! show different styles in view/edit mode }}
+    <style>
+      {{#if locals.edit}}
+        {{{ read 'node_modules/clay-kiln/dist/clay-kiln-edit.css' }}}
+      {{else}}
+        {{{ read 'node_modules/clay-kiln/dist/clay-kiln-view.css' }}}
+      {{/if}}
+    </style>
+
+    {{! toolbar }}
+    <div class="kiln-toolbar-wrapper">
+      <div class="kiln-status"></div>
+      <div class="kiln-progress-wrapper"></div>
+      {{! note: toolbar pane gets added before kiln-toolbar }}
+      <section class="kiln-toolbar {{#if locals.edit}}edit-mode{{else}}view-mode{{/if}}"
+        {{! the editor needs some stuff from the backend }}
+        data-site-host="{{ site.host }}"
+        data-site-path="{{ site.path}}"
+        data-site-assetpath="{{ site.assetPath }}"
+        data-site-slug="{{ site.slug }}"
+        data-site-name="{{ site.name }}"
+        data-routes="{{ locals.routes }}"
+        data-components="{{ locals.components }}"
+        data-current-user="{{ locals.user.username }}@{{ locals.user.provider }}">
+        <button class="kiln-toolbar-button clay-menu-button">
+          <div class="button-flex-inner">{{! we need this because firefox cannot make buttons display: flex }}
+            <span class="icon">{{{ read 'node_modules/clay-kiln/media/clay-menu.svg' }}}</span>
+            <span class="text">Clay</span>
+          </div>
+        </button>
+        <button class="kiln-toolbar-button new">
+          <div class="button-flex-inner">{{! we need this because firefox cannot make buttons display: flex }}
+            <span class="icon">{{{ read 'node_modules/clay-kiln/media/new-page.svg' }}}</span>
+            <span class="text">New Page</span>
+          </div>
+        </button>
+        <div class="flex-span flex-span-outer {{#if locals.edit}}kiln-hide{{/if}}"></div>
+        {{! kiln-toolbar-inner is the lighter inner toolbar }}
+        <div class="kiln-toolbar-inner">
+          <button class="kiln-toolbar-button view-button {{#unless locals.edit}}kiln-hide{{/unless}}">
+            <div class="button-flex-inner">{{! we need this because firefox cannot make buttons display: flex }}
+              <span class="icon">{{{ read 'node_modules/clay-kiln/media/close-edit.svg' }}}</span>
+            </div>
+          </button>
+          <button class="kiln-toolbar-button components {{#unless locals.edit}}kiln-hide{{/unless}}">
+            <div class="button-flex-inner">{{! we need this because firefox cannot make buttons display: flex }}
+              <span class="icon">{{{ read 'node_modules/clay-kiln/media/search-page.svg' }}}</span>
+              <span class="text">Components</span>
+            </div>
+          </button>
+          <div class="flex-span flex-span-inner {{#unless locals.edit}}kiln-hide{{/unless}}"></div>
+          <button class="kiln-toolbar-button preview {{#unless locals.edit}}kiln-hide{{/unless}}">
+            <div class="button-flex-inner">{{! we need this because firefox cannot make buttons display: flex }}
+              <span class="icon">{{{ read 'node_modules/clay-kiln/media/new-tab.svg' }}}</span>
+              <span class="text">Preview</span>
+            </div>
+          </button>
+          <button class="kiln-toolbar-button edit-button {{#if locals.edit}}kiln-hide{{/if}}">
+            <div class="button-flex-inner">{{! we need this because firefox cannot make buttons display: flex }}
+              <span class="icon">{{{ read 'node_modules/clay-kiln/media/edit.svg' }}}</span>
+            </div>
+          </button>
+        </div>
+        <button class="kiln-toolbar-button publish">
+          <div class="button-flex-inner publish-loading">
+            {{! loading status indicator, replaces with draft/scheduled/published after we get the page state }}
+            <span class="icon">{{{ read 'node_modules/clay-kiln/media/draft.svg' }}}</span>
+            <span class="text">Loading&hellip;</span>
+          </div>
+          <div class="button-flex-inner publish-draft">
+            <span class="icon">{{{ read 'node_modules/clay-kiln/media/draft.svg' }}}</span>
+            <span class="text">Draft</span>
+          </div>
+          <div class="button-flex-inner publish-published">
+            <span class="icon">{{{ read 'node_modules/clay-kiln/media/published.svg' }}}</span>
+            <span class="text">Published</span>
+          </div>
+          <div class="button-flex-inner publish-scheduled">
+            <span class="icon">{{{ read 'node_modules/clay-kiln/media/scheduled.svg' }}}</span>
+            <span class="text">Scheduled</span>
+          </div>
+        </button>
+      </section>
+    </div>
+
+    {{! show different scripts in view/edit mode }}
+    <script>
+      {{#if locals.edit}}
+        {{{ read 'node_modules/clay-kiln/dist/clay-kiln-edit.js' }}}
+      {{else}}
+        {{{ read 'node_modules/clay-kiln/dist/clay-kiln-view.js' }}}
+      {{/if}}
+    </script>
+
+    {{! there are shared templates between view mode and edit mode }}
+    <template class="kiln-pane-template">
+      <div class="kiln-toolbar-pane-background">
+        <div class="kiln-toolbar-pane">
+          <header class="pane-tabs">
+            <div class="pane-tabs-inner"></div>
+          </header>
+          <div class="pane-inner"></div>
+        </div>
+      </div>
+    </template>
+
+    <template class="health-header-template">
+      <div class="health-header-wrapper">
+        <span class="health-icon valid kiln-hide">{{{ read 'node_modules/clay-kiln/media/health-valid.svg' }}}</span>
+        <span class="health-icon warnings kiln-hide">{{{ read 'node_modules/clay-kiln/media/health-warnings.svg' }}}</span>
+        <span class="health-icon errors kiln-hide">{{{ read 'node_modules/clay-kiln/media/health-errors.svg' }}}</span>
+        <span class="health-header">Health</span>
+      </div>
+    </template>
+
+    {{! sub-templates: undoing scheduling and publishing }}
+    {{! publish undo }}
+    <template class="publish-undo-template">
+      <div class="publish-undo undo kiln-hide">
+        <button class="unpublish kiln-hide">Unpublish Page</button>
+        <button class="unschedule kiln-hide">Unschedule</button>
+      </div>
+    </template>
+
+    {{! sub-template: publishing validation }}
+    {{! valid message }}
+    <template class="publish-valid-template">
+      <div class="publish-valid">
+        <div class="publish-valid-icon">{{{ read 'node_modules/clay-kiln/media/publish-check.svg' }}}</div>
+        <p class="publish-valid-message">Checks pass! This is good to publish.</p>
+      </div>
+    </template>
+
+    {{! sub-templates: messages }}
+    {{! publish messages with default text }}
+    <template class="publish-messages-template">
+      <div class="publish-messages messages">
+        <p class="publish-state-message">In Draft.</p>
+        <p class="publish-schedule-message kiln-hide">Scheduled to publish</p>
+      </div>
+    </template>
+
+    {{! sub-templates: forms and actions }}
+    {{! publish actions }}
+    <template class="publish-actions-template">
+      <div class="publish-actions actions">
+        <button class="publish-now">Publish Now</button>
+        <div class="schedule-border"></div>
+        <form class="schedule">
+          <div class="schedule-item">
+            <label class="schedule-label" for="schedule-date">Date</label>
+            <input id="schedule-date" class="schedule-input" type="date" min="" value="" placeholder=""></input>
+          </div>
+          <div class="schedule-item">
+            <label class="schedule-label" for="schedule-time">Time</label>
+            <input id="schedule-time" class="schedule-input" type="time" value="" placeholder=""></input>
+          </div>
+          <button class="schedule-publish" disabled>Schedule Publish</button>
+        </form>
+      </div>
+    </template>
+
+    {{! preview items }}
+    <template class="preview-actions-template">
+      <ul class="preview-actions actions">
+        <li class="preview-item">
+          <a class="preview-link small">
+            <span class="preview-link-size">{{{ read 'node_modules/clay-kiln/media/preview-small.svg' }}}</span>
+            <span class="preview-link-text">Small</span>
+            <span class="preview-link-icon">{{{ read 'node_modules/clay-kiln/media/new-tab.svg' }}}</span>
+          </a>
+        </li>
+        <li class="preview-item">
+          <a class="preview-link medium">
+            <span class="preview-link-size">{{{ read 'node_modules/clay-kiln/media/preview-medium.svg' }}}</span>
+            <span class="preview-link-text">Medium</span>
+            <span class="preview-link-icon">{{{ read 'node_modules/clay-kiln/media/new-tab.svg' }}}</span>
+          </a>
+        </li>
+        <li class="preview-item">
+          <a class="preview-link large">
+            <span class="preview-link-size">{{{ read 'node_modules/clay-kiln/media/preview-large.svg' }}}</span>
+            <span class="preview-link-text">Large</span>
+            <span class="preview-link-icon">{{{ read 'node_modules/clay-kiln/media/new-tab.svg' }}}</span>
+          </a>
+        </li>
+      </ul>
+    </template>
+
+    {{! share link }}
+    <template class="share-actions-template">
+      <div class="info-message">Share the link below to preview the latest version of this page.</div>
+      <div class="share-actions actions">
+        <input class="share-input"></input>
+        <button class="share-copy">{{{ read 'node_modules/clay-kiln/media/copy.svg' }}}</button>
+      </div>
+    </template>
+
+    {{! sub-templates: errors and warnings }}
+    {{! publish errors and warnings with default text }}
+    <template class="publish-errors-template">
+      <div class="publish-error">
+        {{! note: warnings use the same template, but the parent div gets a .publish-warning class to change the label color }}
+        <span class="label">There was a problem:</span>
+        <span class="description">Please see below for details</span>
+        <ul class="errors">
+          {{! each component that breaks this rule will be added to this list }}
+        </ul>
+      </div>
+    </template>
+
+    <template class="publish-error-message-template">
+      <div class="error-message">This page is missing things needed to publish.<br />Address the following and try publishing again.</div>
+    </template>
+
+    <template class="publish-warning-message-template">
+      <div class="warning-message">This page has some warnings. Please review before publishing.</div>
+    </template>
+
+    <template class="custom-url-form-template">
+      <form class="custom-url-form">
+        <label for="custom-url" class="custom-url-message">Designate a custom URL for this page. This should only be used for special cases.</p>
+        <input id="custom-url" class="custom-url-input" type="text" placeholder="/special-page.html" />
+        <button type="submit" class="custom-url-submit">Save Location</button>
+      </form>
+    </template>
+
+    {{! clay menu settings }}
+    <template class="settings-tab-template">
+      <ul class="settings-tab-items">
+        <li class="settings-item"><button class="directory">Directory</button></li>
+      </ul>
+    </template>
+
+    <template class="myself-template">
+      <form class="myself-form">
+        <label for="my-name" class="my-name-message">Name</label>
+        <input id="my-name" class="my-name-input" type="text" />
+
+        <label for="my-title" class="my-title-message">Title</label>
+        <input id="my-title" class="my-title-input" type="text" />
+
+        <button type="submit" class="myself-submit">Save Info</button>
+      </form>
+
+      <div class="my-user-info">
+        {{#if locals.user.imageUrl}}
+          <img class="my-image" src="{{ locals.user.imageUrl }}" />
+        {{/if}}
+        <span class="my-username">{{ locals.user.username }}</span>
+        <span class="my-user-at">@</span>
+        <span class="my-provider">{{ locals.user.provider }}</span>
+      </div>
+    </template>
+
+    {{! generic filtered list template. used for the add component pane }}
+    <template class="filtered-input-template">
+      <input class="filtered-input" placeholder="Start typing to filter this list" />
+    </template>
+
+    <template class="filtered-items-template">
+      <ul class="filtered-items">
+        {{! filtered items get added using the .filtered-item-template below }}
+      </ul>
+    </template>
+
+    <template class="filtered-add-template">
+      <div class="filtered-add">
+        <button class="filtered-add-button" title="Add To List">{{{ read 'node_modules/clay-kiln/media/add-to-list.svg' }}}</button>
+        <span class="filtered-add-title">Add To List</span>
+      </div>
+    </template>
+
+    <template class="filtered-item-template">
+      <li class="filtered-item" tabindex="0">
+        <button class="filtered-item-reorder kiln-hide" title="Reorder">{{{ read 'node_modules/clay-kiln/media/drag-grip.svg' }}}</button>
+        <span class="filtered-item-title"></span>
+        <button class="filtered-item-settings kiln-hide" title="Settings">{{{ read 'node_modules/clay-kiln/media/settings.svg' }}}</button>
+        <button class="filtered-item-remove kiln-hide" title="Remove">{{{ read 'node_modules/clay-kiln/media/delete.svg' }}}</button>
+      </li>
+    </template>
+
+    {{! template: component selector }}
+    <template class="component-selector-template">
+      <aside class="component-selector">
+        <aside class="component-selector-top">
+          <div class="selected-info">
+            <span class="selector-location">
+              <span class="selector-this-page" title="This Page">{{{ read 'node_modules/clay-kiln/media/this-page.svg' }}}</span>
+              <span class="selector-many-pages" title="Multiple Pages">{{{ read 'node_modules/clay-kiln/media/many-pages.svg' }}}</span>
+            </span>
+            <span class="selector-button selected-label"></span>
+          </div>
+          <div class="selected-actions">
+            <button class="selector-button selected-action-settings kiln-hide" title="Component Settings">{{{ read 'node_modules/clay-kiln/media/settings.svg' }}}</button>
+            <button class="selector-button selected-action-delete kiln-hide" title="Delete Component">{{{ read 'node_modules/clay-kiln/media/delete.svg' }}}</button>
+          </div>
+        </aside>
+        <aside class="component-selector-bottom">
+          <div class="selector-navigation">
+            <button class="selector-button selector-nav-up" title="Previous Visible Component">{{{ read 'node_modules/clay-kiln/media/up.svg' }}}</button>
+            <button class="selector-button selector-nav-down" title="Next Visible Component">{{{ read 'node_modules/clay-kiln/media/down.svg' }}}</button>
+          </div>
+          <button class="selector-button selected-add kiln-hide" title="Add Component">{{{ read 'node_modules/clay-kiln/media/add-icon.svg' }}}</button>
+          <button class="selector-button selected-replace kiln-hide" title="Replace Component">{{{ read 'node_modules/clay-kiln/media/replace-icon.svg' }}}</button>
+        </aside>
+      </aside>
+    </template>
+
+    {{! template: lock button - used by lock behavior }}
+    <template class="lock-button-template">
+      <button class="lock-button">
+        <span class="locked">{{{ read 'node_modules/clay-kiln/media/locked.svg' }}}</span>
+        <span class="unlocked">{{{ read 'node_modules/clay-kiln/media/unlocked.svg' }}}</span>
+      </button>
+    </template>
+
+    {{! template: placeholders }}
+    <template class="placeholder-template">
+      <div> {{! this gets a .kiln-placeholder or .kiln-permanent-placeholder class }}
+        <div class="placeholder-top">
+          <span class="placeholder-label"></span>
+          <span class="placeholder-location">
+            <span class="placeholder-this-page" title="This Page">{{{ read 'node_modules/clay-kiln/media/this-page.svg' }}}<span class="placeholder-location-text"> This Page</span></span>
+            <span class="placeholder-many-pages" title="Multiple Pages">{{{ read 'node_modules/clay-kiln/media/many-pages.svg' }}}<span class="placeholder-location-text"> Multiple Pages</span></span>
+          </span>
+          <span class="placeholder-required kiln-hide">Required</span>
+        </div>
+        <div class="placeholder-bottom kiln-hide">
+          <span class="placeholder-add-component" title="Add Components">Add Components</span>
+        </div>
+      </div>
+    </template>
+
+    {{#unless locals.edit}}
+      {{! logo to display when going into edit mode }}
+      <div class="clay-kiln-logo">{{{ read 'node_modules/clay-kiln/media/clay-logo.svg' }}}</div>
+    {{/unless}}
+  </div>
+{{else}}
+  {{! if no user is logged in, only have the toggle to enter edit mode }}
+  <style>
+    {{{ read 'node_modules/clay-kiln/dist/clay-kiln-view-public.css' }}}
+  </style>
+  <div class="clay-kiln-logo">{{{ read 'node_modules/clay-kiln/media/clay-logo.svg' }}}</div>
+  {{! secret code to enter edit mode }}
+  <script>
+    {{{ read 'node_modules/clay-kiln/dist/clay-kiln-view-public.js' }}}
+  </script>
+{{/if}}

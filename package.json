@@ -2,7 +2,7 @@
   "name": "clay-kiln",
   "version": "0.34.2",
   "description": "Editor tools for Clay",
-  "template": "template.nunjucks",
+  "template": "template.handlebars",
   "scripts": {
     "lint": "eslint client.js behaviors controllers services decorators validators",
     "karma": "karma start",
