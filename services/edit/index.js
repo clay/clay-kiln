@@ -6,6 +6,7 @@ var _ = require('lodash'),
   references = require('../references'),
   site = require('./../site'),
   progress = require('../progress'),
+  label = require('../label'),
   refProp = references.referenceProperty,
   pagesRoute = '/pages/',
   urisRoute = '/uris/',
@@ -371,7 +372,7 @@ function createComponent(name, data) {
     } else {
       return cache.createThrough(instance, defaultData);
     }
-  }).catch(progress.error('Error creating component'));
+  }).catch(progress.error(`Error creating component (${label(name)})`));
 }
 
 /**
