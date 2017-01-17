@@ -84,7 +84,7 @@
     "rivets": "^0.9.3",
     "rollupify": "^0.3.4",
     "routable": "0.0.5",
-    "sass-loader": "^4.0.1",
+    "sass-loader": "^4.1.1",
     "selection-range": "^1.0.1",
     "sinon": "^1.17.2",
     "speakingurl": "^9.0.0",
