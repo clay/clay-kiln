@@ -18,11 +18,11 @@
       {{! note: toolbar pane gets added before kiln-toolbar }}
       <section class="kiln-toolbar {{#if @root.locals.edit}}edit-mode{{else}}view-mode{{/if}}"
         {{! the editor needs some stuff from the backend }}
-        data-site-host="{{ @root.site.host }}"
-        data-site-path="{{ @root.site.path}}"
-        data-site-assetpath="{{ @root.site.assetPath }}"
-        data-site-slug="{{ @root.site.slug }}"
-        data-site-name="{{ @root.site.name }}"
+        data-site-host="{{ @root.locals.site.host }}"
+        data-site-path="{{ @root.locals.site.path}}"
+        data-site-assetpath="{{ @root.locals.site.assetPath }}"
+        data-site-slug="{{ @root.locals.site.slug }}"
+        data-site-name="{{ @root.locals.site.name }}"
         data-routes="{{ @root.locals.routes }}"
         data-components="{{ @root.locals.components }}"
         data-current-user="{{ @root.locals.user.username }}@{{ @root.locals.user.provider }}">
