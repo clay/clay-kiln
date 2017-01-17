@@ -255,7 +255,7 @@ function createPage(pageType) {
   return cache.getDataOnly(newPageUri).then(function (data) {
     return db.create(prefix + pagesRoute, _.omit(data, '_ref')).then(function (res) {
       return getNewPageUrl(res[refProp]);
-    });
+    }).catch(progress.error('Error creating page'));
   });
 }
 
@@ -371,7 +371,7 @@ function createComponent(name, data) {
     } else {
       return cache.createThrough(instance, defaultData);
     }
-  });
+  }).catch(progress.error('Error creating component'));
 }
 
 /**
@@ -600,7 +600,8 @@ function addMultipleToParentList(opts) {
       parentData[parentField] = parentData[parentField].concat(items);
     }
 
-    return save(parentData); // returns parent html
+    return save(parentData) // returns parent html
+      .catch(progress.error('Error adding components'));
   });
 }
 
