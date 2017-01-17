@@ -91,7 +91,7 @@ function stubShareActionsTemplate() {
   return dom.create(`<div class="info-message">Share the link below to preview the latest version of this page.</div>
   <div class="share-actions actions">
     <input class="share-input"></input>
-    <button class="share-copy">{% include 'public/media/components/clay-kiln/copy.svg' %}</button>
+    <button class="share-copy">copy</button>
   </div>`);
 }
 
