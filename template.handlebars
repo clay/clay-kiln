@@ -1,10 +1,10 @@
-{{#if locals.user}}
+{{#if @root.locals.user}}
   {{! if a user is logged in, we display either the view-mode or edit-mode toolbar, and associated scripts, styles, and templates }}
   <div data-uri="{{ default _ref _self }}" class="clay-kiln">
 
     {{! show different styles in view/edit mode }}
     <style>
-      {{#if locals.edit}}
+      {{#if @root.locals.edit}}
         {{{ read 'node_modules/clay-kiln/dist/clay-kiln-edit.css' }}}
       {{else}}
         {{{ read 'node_modules/clay-kiln/dist/clay-kiln-view.css' }}}
@@ -16,16 +16,16 @@
       <div class="kiln-status"></div>
       <div class="kiln-progress-wrapper"></div>
       {{! note: toolbar pane gets added before kiln-toolbar }}
-      <section class="kiln-toolbar {{#if locals.edit}}edit-mode{{else}}view-mode{{/if}}"
+      <section class="kiln-toolbar {{#if @root.locals.edit}}edit-mode{{else}}view-mode{{/if}}"
         {{! the editor needs some stuff from the backend }}
-        data-site-host="{{ site.host }}"
-        data-site-path="{{ site.path}}"
-        data-site-assetpath="{{ site.assetPath }}"
-        data-site-slug="{{ site.slug }}"
-        data-site-name="{{ site.name }}"
-        data-routes="{{ locals.routes }}"
-        data-components="{{ locals.components }}"
-        data-current-user="{{ locals.user.username }}@{{ locals.user.provider }}">
+        data-site-host="{{ @root.site.host }}"
+        data-site-path="{{ @root.site.path}}"
+        data-site-assetpath="{{ @root.site.assetPath }}"
+        data-site-slug="{{ @root.site.slug }}"
+        data-site-name="{{ @root.site.name }}"
+        data-routes="{{ @root.locals.routes }}"
+        data-components="{{ @root.locals.components }}"
+        data-current-user="{{ @root.locals.user.username }}@{{ @root.locals.user.provider }}">
         <button class="kiln-toolbar-button clay-menu-button">
           <div class="button-flex-inner">{{! we need this because firefox cannot make buttons display: flex }}
             <span class="icon">{{{ read 'node_modules/clay-kiln/media/clay-menu.svg' }}}</span>
@@ -38,28 +38,28 @@
             <span class="text">New Page</span>
           </div>
         </button>
-        <div class="flex-span flex-span-outer {{#if locals.edit}}kiln-hide{{/if}}"></div>
+        <div class="flex-span flex-span-outer {{#if @root.locals.edit}}kiln-hide{{/if}}"></div>
         {{! kiln-toolbar-inner is the lighter inner toolbar }}
         <div class="kiln-toolbar-inner">
-          <button class="kiln-toolbar-button view-button {{#unless locals.edit}}kiln-hide{{/unless}}">
+          <button class="kiln-toolbar-button view-button {{#unless @root.locals.edit}}kiln-hide{{/unless}}">
             <div class="button-flex-inner">{{! we need this because firefox cannot make buttons display: flex }}
               <span class="icon">{{{ read 'node_modules/clay-kiln/media/close-edit.svg' }}}</span>
             </div>
           </button>
-          <button class="kiln-toolbar-button components {{#unless locals.edit}}kiln-hide{{/unless}}">
+          <button class="kiln-toolbar-button components {{#unless @root.locals.edit}}kiln-hide{{/unless}}">
             <div class="button-flex-inner">{{! we need this because firefox cannot make buttons display: flex }}
               <span class="icon">{{{ read 'node_modules/clay-kiln/media/search-page.svg' }}}</span>
               <span class="text">Components</span>
             </div>
           </button>
-          <div class="flex-span flex-span-inner {{#unless locals.edit}}kiln-hide{{/unless}}"></div>
-          <button class="kiln-toolbar-button preview {{#unless locals.edit}}kiln-hide{{/unless}}">
+          <div class="flex-span flex-span-inner {{#unless @root.locals.edit}}kiln-hide{{/unless}}"></div>
+          <button class="kiln-toolbar-button preview {{#unless @root.locals.edit}}kiln-hide{{/unless}}">
             <div class="button-flex-inner">{{! we need this because firefox cannot make buttons display: flex }}
               <span class="icon">{{{ read 'node_modules/clay-kiln/media/new-tab.svg' }}}</span>
               <span class="text">Preview</span>
             </div>
           </button>
-          <button class="kiln-toolbar-button edit-button {{#if locals.edit}}kiln-hide{{/if}}">
+          <button class="kiln-toolbar-button edit-button {{#if @root.locals.edit}}kiln-hide{{/if}}">
             <div class="button-flex-inner">{{! we need this because firefox cannot make buttons display: flex }}
               <span class="icon">{{{ read 'node_modules/clay-kiln/media/edit.svg' }}}</span>
             </div>
@@ -89,7 +89,7 @@
 
     {{! show different scripts in view/edit mode }}
     <script>
-      {{#if locals.edit}}
+      {{#if @root.locals.edit}}
         {{{ read 'node_modules/clay-kiln/dist/clay-kiln-edit.js' }}}
       {{else}}
         {{{ read 'node_modules/clay-kiln/dist/clay-kiln-view.js' }}}
@@ -248,12 +248,12 @@
       </form>
 
       <div class="my-user-info">
-        {{#if locals.user.imageUrl}}
-          <img class="my-image" src="{{ locals.user.imageUrl }}" />
+        {{#if @root.locals.user.imageUrl}}
+          <img class="my-image" src="{{ @root.locals.user.imageUrl }}" />
         {{/if}}
-        <span class="my-username">{{ locals.user.username }}</span>
+        <span class="my-username">{{ @root.locals.user.username }}</span>
         <span class="my-user-at">@</span>
-        <span class="my-provider">{{ locals.user.provider }}</span>
+        <span class="my-provider">{{ @root.locals.user.provider }}</span>
       </div>
     </template>
 
@@ -336,7 +336,7 @@
       </div>
     </template>
 
-    {{#unless locals.edit}}
+    {{#unless @root.locals.edit}}
       {{! logo to display when going into edit mode }}
       <div class="clay-kiln-logo">{{{ read 'node_modules/clay-kiln/media/clay-logo.svg' }}}</div>
     {{/unless}}
