@@ -130,7 +130,7 @@ function error(message) {
     open('error', `${message}: ${e.message}`);
     // note: "Failed to fetch" is a common error message which means an API call failed.
     // check the console to see which calls are giving issues.
-    return e;
+    return Promise.reject(e); // reject error rather than returning it
   };
 }
 
