@@ -29,7 +29,7 @@
   "files": [
     "dist",
     "media",
-    "template.nunjucks"
+    "template.handlebars"
   ],
   "homepage": "https://github.com/nymag/clay-kiln",
   "devDependencies": {
