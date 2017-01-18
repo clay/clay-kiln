@@ -11,6 +11,22 @@
       {{/if}}
     </style>
 
+    {{#if @root.locals.edit}}
+      <script>
+        // preload the schemas into the cache
+        // note: this must declare all the levels, since kiln js hasn't loaded yet
+        window.kiln = {
+          services: {
+            schemaCache: {
+              {{#each @root._componentSchemas}}
+                '{{ this.name }}': {{{ stringify this.schema }}},
+              {{/each}}
+            }
+          }
+        }
+      </script>
+    {{/if}}
+
     {{! toolbar }}
     <div class="kiln-toolbar-wrapper">
       <div class="kiln-status"></div>
