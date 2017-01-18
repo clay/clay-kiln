@@ -20,7 +20,7 @@
         window.kiln.services.schemaCache = window.kiln.services.schemaCache || {};
 
         {{#each @root._componentSchemas}}
-          window.kiln.services.schemaCache['{{ this.name }}'] = {{{ stringify this.schema }}};
+          window.kiln.services.schemaCache['{{ this.name }}'] = {{{ stringify (yaml (read this.schema)) }}};
         {{/each}}
       </script>
     {{/if}}
