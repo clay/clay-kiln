@@ -80,7 +80,7 @@
     "moment": "^2.10.6",
     "node-sass": "^4.1.1",
     "nprogress": "^0.2.0",
-    "postcss-loader": "^0.11.1",
+    "postcss-loader": "^1.2.2",
     "rivets": "^0.9.3",
     "rollupify": "^0.3.4",
     "routable": "0.0.5",
