@@ -82,7 +82,7 @@
     "nprogress": "^0.2.0",
     "postcss-loader": "^0.11.1",
     "rivets": "^0.9.3",
-    "rollupify": "^0.3.4",
+    "rollupify": "^0.3.9",
     "routable": "0.0.5",
     "sass-loader": "^4.1.1",
     "selection-range": "^1.0.1",
