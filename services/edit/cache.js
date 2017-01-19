@@ -13,13 +13,18 @@ var _ = require('lodash'),
   schemaFields = require('./schema-fields'),
   control = require('./control'),
   schemaKeywords = ['_groups', '_description'],
-  schemaCache = {},
+  schemaCache = _.get(window, 'kiln.services.schemaCache') || {},
   componentRoute = '/components/',
   schemaEndpoint = '/schema';
 
 // schemaCache is populated as schemas are loaded from the server.
 // because schemas are only changed on server restart, we can heavily cache them
 // client-side, and load from the cache whenever possible
+
+// on load, parse any pre-loaded schemas
+_.forOwn(schemaCache, function (value) {
+  addNameToFieldsOfSchema(value);
+});
 
 /**
  * Convert to plain data (no groups, no schema, no _ref, no _description).
@@ -104,13 +109,13 @@ function getSchema(uri) {
     name = references.getComponentNameFromReference(uri),
     schemaUri = prefix + name + schemaEndpoint;
 
-  if (schemaCache[schemaUri]) {
-    return Promise.resolve(schemaCache[schemaUri]); // includes _name in fields
+  if (schemaCache[name]) {
+    return Promise.resolve(schemaCache[name]); // includes _name in fields
   } else {
     return db.getSchema(schemaUri).then(function (schema) {
       addNameToFieldsOfSchema(schema);
       // populate cache
-      schemaCache[schemaUri] = schema;
+      schemaCache[name] = schema;
       return schema;
     });
   }
@@ -198,3 +203,5 @@ exports.createThrough = createThrough;
 exports.clearSchemaCache = function () {
   schemaCache = {};
 };
+
+_.set(window, 'kiln.services.schemaCache', schemaCache);
