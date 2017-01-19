@@ -69,7 +69,7 @@ const _ = require('lodash'),
      * @returns {string}
      */
     formatUrl: function (data, format) {
-      var datafield = toPlainText(data).toLowerCase().replace(/ /g, '-');
+      var datafield = toPlainText(data).toLowerCase().replace(/[^\w]/g, '-').replace(/--+/g, '-');
 
       if (_.isString(format) && !_.isEmpty(format)) {
         return format.replace(/\$DATAFIELD/g, datafield);
