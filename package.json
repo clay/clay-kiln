@@ -87,7 +87,7 @@
     "sass-loader": "^4.1.1",
     "selection-range": "^1.0.1",
     "sinon": "^1.17.2",
-    "speakingurl": "^9.0.0",
+    "speakingurl": "^11.0.0",
     "striptags": "^2.1.1",
     "style-loader": "^0.13.1",
     "text-model": "^1.0.0",
