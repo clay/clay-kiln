@@ -93,6 +93,6 @@
     "text-model": "^1.0.0",
     "watchify": "^3.8.0",
     "webpack": "^1.13.2",
-    "whatwg-fetch": "^1.0.0"
+    "whatwg-fetch": "^2.0.2"
   }
 }
