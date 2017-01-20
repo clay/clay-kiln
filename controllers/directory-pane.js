@@ -3,7 +3,8 @@ const dom = require('@nymag/dom'),
   progress = require('../services/progress'),
   site = require('../services/site'),
   pane = require('../services/pane'),
-  db = require('../services/edit/db');
+  db = require('../services/edit/db'),
+  queue = require('../services/edit/queue');
 
 function getUserID() {
   var el = dom.find('.kiln-toolbar'),
@@ -37,7 +38,7 @@ module.exports = function () {
       return db.get(uri)
         .then(function (data) {
           _.assign(data, { name: name, title: title });
-          return db.save(uri, data)
+          return queue.add(db.save, [uri, data])
             .then(function () {
               pane.close();
               progress.done();

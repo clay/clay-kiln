@@ -188,7 +188,7 @@ function getLayout() {
  */
 function publishLayout() {
   return getLayout().then(function (layout) {
-    return db.save(layout + '@published'); // PUT @published with empty data
+    return queue.add(db.save, [layout + '@published']); // PUT @published with empty data
   });
 }
 
@@ -250,7 +250,7 @@ function createPage(pageType) {
     newPageUri = prefix + pagesRoute + pageType;
 
   return cache.getDataOnly(newPageUri).then(function (data) {
-    return db.create(prefix + pagesRoute, _.omit(data, '_ref')).then(function (res) {
+    return queue.add(db.create, [prefix + pagesRoute, _.omit(data, '_ref')]).then(function (res) {
       return getNewPageUrl(res[refProp]);
     }).catch(progress.error('Error creating page'));
   });
@@ -335,7 +335,9 @@ function createComponentAndChildren(instance, defaultData, children) {
 
   // once we have the created component refs, we can add them to the current component
   // and save the final component data (including proper child refs)
-  return promise.props(promises).then(addChildRefsToComponent).then(cache.saveThrough);
+  return promise.props(promises).then(addChildRefsToComponent).then(function (newData) {
+    return queue.add(cache.saveThrough, [newData]);
+  });
 }
 
 /**
@@ -420,7 +422,7 @@ function removeFromPageList(options) {
     if (el && el.nodeType === el.ELEMENT_NODE) {
       dom.removeElement(el); // remove component from DOM (note: head components are removed manually)
     }
-    return db.save(pageUri, _.omit(pageData, '_ref'));
+    return queue.add(db.save, [pageUri, _.omit(pageData, '_ref')]);
   });
 }
 
@@ -523,7 +525,7 @@ function addToPageList(options) {
     return Promise.all([
       // save the parent and get the child's html in parallel
       // note: this assumes the child already exists
-      db.save(pageUri, _.omit(pageData, '_ref')), // call db.save directly, not edit.save
+      queue.add(db.save, [pageUri, _.omit(pageData, '_ref')]), // call db.save directly, not edit.save
       // edit.save is only for saving components
       db.getHTML(ref)
     ]).then(results => results[1]); // return the child component's html
