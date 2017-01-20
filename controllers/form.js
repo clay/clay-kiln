@@ -47,8 +47,10 @@ module.exports = function () {
     function outsideClickhandler(e) {
       if (!insideCurrentComponent(e.path, el) && !insideOtherForm(e.path) && !wasTooltipClicked(e)) {
         e.preventDefault();
-        this.removeEventListener('click', outsideClickhandler); // note: self references <html>
-        return focus.unfocus().catch(_.noop);
+        return focus.unfocus().then(function () {
+          // only remove event listener if we unfocused successfully
+          this.removeEventListener('click', outsideClickhandler); // note: self references <html>
+        }).catch(_.noop);
       }
     }
 

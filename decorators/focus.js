@@ -74,8 +74,9 @@ function hasCurrentFocus() {
  */
 function unfocus() {
   if (forms.isFormValid()) {
-    currentFocus = null;
-    return forms.close();
+    return forms.close().then(function () {
+      currentFocus = null;
+    });
   } else {
     return Promise.reject();
   }
