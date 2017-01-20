@@ -34,9 +34,13 @@ EditorToolbar = function (el) {
     state.toggleButton('draft', true);
 
     if (res.scheduled) {
+      progress.done('schedule');
       state.openDynamicSchedule(res.scheduledAt, res.publishedUrl);
     } else if (res.published) {
+      progress.done('publish');
       state.toggleButton('published', true);
+    } else {
+      progress.done('draft');
     }
   });
 };
