@@ -107,7 +107,7 @@ function save(data) {
     if (validationErrors.length) {
       throw new Error(validationErrors);
     } else {
-      return queue.add(cache.saveForHTML, [data])
+      return cache.saveForHTML(data)
         .then(function (savedData) {
           window.kiln.trigger('save', data);
           return savedData;
@@ -150,7 +150,7 @@ function removeUri(uri) {
   base64Uri = btoa(uri);
   targetUri = prefix + urisRoute + base64Uri;
 
-  return queue.add(db.removeText, [targetUri]);
+  return db.removeText(targetUri);
 }
 
 /**
@@ -250,7 +250,7 @@ function createPage(pageType) {
     newPageUri = prefix + pagesRoute + pageType;
 
   return cache.getDataOnly(newPageUri).then(function (data) {
-    return queue.add(db.create, [prefix + pagesRoute, _.omit(data, '_ref')]).then(function (res) {
+    return db.create(prefix + pagesRoute, _.omit(data, '_ref')).then(function (res) {
       return getNewPageUrl(res[refProp]);
     }).catch(progress.error('Error creating page'));
   });
@@ -336,7 +336,7 @@ function createComponentAndChildren(instance, defaultData, children) {
   // once we have the created component refs, we can add them to the current component
   // and save the final component data (including proper child refs)
   return promise.props(promises).then(addChildRefsToComponent).then(function (newData) {
-    return queue.add(cache.saveThrough, [newData]);
+    return cache.saveThrough(newData);
   });
 }
 
