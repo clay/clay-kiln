@@ -44,7 +44,7 @@ function replaceInlineForm(el) {
  * @param {Element} container
  */
 function removeCurrentForm(container) {
-  if (container) {
+  if (container && container.parentNode) {
     replaceInlineForm(container);
     dom.removeElement(container);
   }
