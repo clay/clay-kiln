@@ -44,12 +44,4 @@ function add(fn, args, progressType) {
   }
 }
 
-/**
- * clear the queue
- */
-function clear() {
-  queue.queue = [];
-  queue.pendingPromises = 0;
-};
-
 module.exports.add = add; // resolves when queue finishes
