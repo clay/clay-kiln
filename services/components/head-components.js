@@ -8,6 +8,7 @@ const label = require('../label'),
   dom = require('@nymag/dom'),
   progress = require('../progress'),
   allComponents = require('./all-components'),
+  queue = require('../edit/queue'),
   getAvailableComponents = require('./available-components');
 
 /**
@@ -278,7 +279,7 @@ function updateOrder(ref, path, data) {
       progress.start('save'); // set progress manually
       return edit.getDataOnly(pageUri).then(function (pageData) {
         pageData[path] = list; // array of refs
-        return db.save(pageUri, _.omit(pageData, '_ref'))
+        return queue.add(db.save, [pageUri, _.omit(pageData, '_ref')])
           .then(function () {
             progress.done();
             window.kiln.trigger('save', data);

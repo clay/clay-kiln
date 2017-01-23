@@ -6,6 +6,7 @@ const _ = require('lodash'),
   site = require('../site'),
   db = require('../edit/db'),
   filterableList = require('../filterable-list'),
+  queue = require('../edit/queue'),
   pane = require('./index');
 
 /**
@@ -56,7 +57,7 @@ function addCurrentPage(current) {
         title: value
       });
 
-      return db.save(site.get('prefix') + '/lists/new-pages', current)
+      return queue.add(db.save, [site.get('prefix') + '/lists/new-pages', current])
       .then(function () {
         pane.close();
         progress.done();

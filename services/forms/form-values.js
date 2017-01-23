@@ -74,8 +74,6 @@ function getFormValues(form) {
 
   _.reduce(dom.findAll(form, '[' + references.fieldAttribute + ']'), getValues.bind(null, bindings), data);
   // all bound fields should have a [rv-field] attribute
-  // afterwards, clear the bindings
-  formCreator.clearBindings();
   return data;
 }
 

@@ -47,7 +47,7 @@ describe(dirname, function () {
       var fn = lib[this.title];
 
       it('calls forms.close', function () {
-        sandbox.stub(forms, 'close', sandbox.spy());
+        sandbox.stub(forms, 'close').returns(Promise.resolve());
         fn(stubNode(), {});
         expect(forms.close.callCount).to.equal(1);
       });

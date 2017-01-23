@@ -13,7 +13,8 @@ const dom = require('@nymag/dom'),
   openPublish = require('../services/pane/publish'),
   openClayMenu = require('../services/pane/clay-menu'),
   pane = require('../services/pane'),
-  toggleEdit = require('../services/toggle-edit');
+  toggleEdit = require('../services/toggle-edit'),
+  queue = require('../services/edit/queue');
 
 let EditorToolbar;
 
@@ -49,7 +50,7 @@ EditorToolbar = function (el) {
 
   // stop users from leaving the page if they have an unsaved form open!
   window.addEventListener('beforeunload', function (e) {
-    if (forms.hasOpenForm()) {
+    if (forms.hasOpenForm() || queue.isPending()) {
       e.returnValue = 'Are you sure you want to leave this page? Your data may not be saved.';
     }
   });
@@ -78,9 +79,13 @@ EditorToolbar = function (el) {
     state.toggleButton('draft', true);
 
     if (res.scheduled) {
+      progress.done('schedule');
       state.openDynamicSchedule(res.scheduledAt, res.publishedUrl);
     } else if (res.published) {
+      progress.done('publish');
       state.toggleButton('published', true);
+    } else {
+      progress.done('draft');
     }
   }).catch(progress.error('Error getting page state'));
 };

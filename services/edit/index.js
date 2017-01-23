@@ -7,6 +7,7 @@ var _ = require('lodash'),
   site = require('./../site'),
   progress = require('../progress'),
   label = require('../label'),
+  queue = require('./queue'),
   refProp = references.referenceProperty,
   pagesRoute = '/pages/',
   urisRoute = '/uris/',
@@ -99,9 +100,6 @@ function save(data) {
   var uri = data[refProp],
     schemaPromise = data._schema && Promise.resolve(data._schema) || cache.getSchema(uri);
 
-  // todo: this doesn't handle component lists in the head
-  progress.start('save');
-
   // get the schema and validate data
   return schemaPromise.then(function (schema) {
     var validationErrors = validate(data, schema);
@@ -111,11 +109,9 @@ function save(data) {
     } else {
       return cache.saveForHTML(data)
         .then(function (savedData) {
-          progress.done();
           window.kiln.trigger('save', data);
           return savedData;
-        })
-        .catch(progress.error('Error saving component'));
+        }).catch(progress.error('Error saving component'));
     }
   });
 }
@@ -169,7 +165,7 @@ function publishPage() {
 
   return cache.getDataOnly(pageUri).then(function (pageData) {
     // pages don't have schemas or validation
-    return db.save(pageUri + '@published', _.omit(pageData, '_ref'));
+    return queue.add(db.save, [pageUri + '@published', _.omit(pageData, '_ref')], 'publish');
   }).then(function (publishedPageData) {
     window.kiln.trigger('publish', publishedPageData);
     // note: when putting to page@published, amphora will add the uri to /uris/
@@ -192,7 +188,7 @@ function getLayout() {
  */
 function publishLayout() {
   return getLayout().then(function (layout) {
-    return db.save(layout + '@published'); // PUT @published with empty data
+    return queue.add(db.save, [layout + '@published']); // PUT @published with empty data
   });
 }
 
@@ -339,7 +335,9 @@ function createComponentAndChildren(instance, defaultData, children) {
 
   // once we have the created component refs, we can add them to the current component
   // and save the final component data (including proper child refs)
-  return promise.props(promises).then(addChildRefsToComponent).then(cache.saveThrough);
+  return promise.props(promises).then(addChildRefsToComponent).then(function (newData) {
+    return cache.saveThrough(newData);
+  });
 }
 
 /**
@@ -424,7 +422,7 @@ function removeFromPageList(options) {
     if (el && el.nodeType === el.ELEMENT_NODE) {
       dom.removeElement(el); // remove component from DOM (note: head components are removed manually)
     }
-    return db.save(pageUri, _.omit(pageData, '_ref'));
+    return queue.add(db.save, [pageUri, _.omit(pageData, '_ref')]);
   });
 }
 
@@ -527,7 +525,7 @@ function addToPageList(options) {
     return Promise.all([
       // save the parent and get the child's html in parallel
       // note: this assumes the child already exists
-      db.save(pageUri, _.omit(pageData, '_ref')), // call db.save directly, not edit.save
+      queue.add(db.save, [pageUri, _.omit(pageData, '_ref')]), // call db.save directly, not edit.save
       // edit.save is only for saving components
       db.getHTML(ref)
     ]).then(results => results[1]); // return the child component's html

@@ -8,9 +8,13 @@ const references = require('./services/references'),
   toggleEdit = require('./services/toggle-edit'),
   eventify = require('eventify'),
   plugins = require('./services/plugins'),
+  progress = require('./services/progress'),
   _ = require('lodash'); // todo: when we have webpack 2, use es6 w/ tree-shaking
 
 let secretKilnKey = '';
+
+// show progress indicator as well as "Loading" message
+progress.start('offline');
 
 // Require all scss/css files needed
 require.context('./styleguide', true, /^.*\.(scss|css)$/);

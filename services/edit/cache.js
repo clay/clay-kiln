@@ -12,6 +12,7 @@ var _ = require('lodash'),
   groupFields = require('./group-fields'),
   schemaFields = require('./schema-fields'),
   control = require('./control'),
+  queue = require('./queue'),
   schemaKeywords = ['_groups', '_description'],
   schemaCache = _.get(window, 'kiln.services.schemaCache') || {},
   componentRoute = '/components/',
@@ -130,7 +131,7 @@ function saveThrough(data) {
   var uri = data[references.referenceProperty];
 
   return removeExtras(uri, data).then(function (data) {
-    return db.save(uri, data);
+    return queue.add(db.save, [uri, data]);
   }).then(function (result) {
     // only clear cache if save is successful
     exports.getData.cache = new _.memoize.Cache();
@@ -155,7 +156,7 @@ function saveForHTML(data) {
   var uri = data[references.referenceProperty];
 
   return removeExtras(uri, data).then(function (data) {
-    return db.saveForHTML(uri, data);
+    return queue.add(db.saveForHTML, [uri, data]);
   }).then(function (result) {
     // only clear cache if save is successful
     exports.getData.cache = new _.memoize.Cache();

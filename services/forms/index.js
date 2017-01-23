@@ -202,12 +202,13 @@ function close() {
     data = form && formValues.get(form);
 
     if (data && dataChanged(currentForm.data, data)) { // data is null if the component was removed.
-      // remove currentForm values
-      currentForm = {};
-
       data[references.referenceProperty] = ref;
       return edit.savePartial(data)
         .then(function (html) {
+          // remove currentForm values
+          currentForm = {};
+          // clear the bindings only if the form saves successfully
+          formCreator.clearBindings();
           removeCurrentForm(container);
           return render.reloadComponent(ref, html);
         }).then(function () {

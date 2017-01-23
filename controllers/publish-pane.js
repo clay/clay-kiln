@@ -7,6 +7,7 @@ const moment = require('moment'),
   db = require('../services/edit/db'),
   site = require('../services/site'),
   _ = require('lodash'),
+  queue = require('../services/edit/queue'),
   Routable = require('routable');
 
 /**
@@ -224,7 +225,7 @@ module.exports = function () {
       return db.get(dom.pageUri())
         .then(function (page) {
           page.customUrl = url;
-          return db.save(dom.pageUri(), page);
+          return queue.add(db.save, [dom.pageUri(), page]);
         })
         .then(function () {
           progress.done();

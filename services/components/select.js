@@ -182,7 +182,9 @@ function componentClickHandler(el, e) {
     e.stopSelection = true;
 
     if (!el.classList.contains('selected')) {
-      select(el);
+      focus.unfocus().then(function () {
+        return select(el);
+      });
     }
   }
 }

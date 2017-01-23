@@ -1,6 +1,7 @@
 var _ = require('lodash'),
   lib = require('./cache'),
   db = require('./db'),
+  queue = require('./queue'),
   expect = require('chai').expect,
   sinon = require('sinon');
 
@@ -10,6 +11,7 @@ describe('cache service', function () {
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
     sandbox.stub(db);
+    sandbox.stub(queue);
 
     lib.getData.cache = new _.memoize.Cache();
     lib.getDataOnly.cache = new _.memoize.Cache();
@@ -114,10 +116,10 @@ describe('cache service', function () {
       var data = {_ref: 'foo'};
 
       db.get.returns(Promise.resolve({foo: 'bar'}));
-      db.save.returns(Promise.resolve({foo: 'bar'}));
+      queue.add.returns(Promise.resolve({foo: 'bar'}));
       db.getSchema.returns(Promise.resolve({foo: 'bar'}));
       return fn(data).then(function () {
-        expect(db.save.called).to.equal(true);
+        expect(queue.add.called).to.equal(true);
       });
     });
 
@@ -125,7 +127,7 @@ describe('cache service', function () {
       var data = {_ref: 'foo'};
 
       db.get.returns(Promise.resolve({foo: 'bar'}));
-      db.save.returns(Promise.resolve({foo: 'bar'}));
+      queue.add.returns(Promise.resolve({foo: 'bar'}));
       db.getSchema.returns(Promise.resolve({foo: 'bar'}));
       return fn(data).then(function (result) {
         expect(Object.isFrozen(result)).to.equal(true);
@@ -140,7 +142,7 @@ describe('cache service', function () {
         schema = {foo: 'bar'};
 
       db.get.returns(Promise.resolve(fetched));
-      db.save.returns(Promise.resolve(returnSelf));
+      queue.add.returns(Promise.resolve(returnSelf));
       db.getSchema.returns(Promise.resolve(schema));
       return fn(data).then(function () {
         expect(lib.getDataOnly.cache.get(uri)).to.deep.equal({foo: 'bar2', _ref: uri});
@@ -155,7 +157,7 @@ describe('cache service', function () {
         schema = {foo: 'bar'};
 
       db.get.returns(Promise.resolve(fetched));
-      db.save.returns(Promise.resolve(returnSelf));
+      queue.add.returns(Promise.resolve(returnSelf));
       db.getSchema.returns(Promise.resolve(schema));
       return fn(data).then(function () {
         expect(lib.getData.cache.get(uri)).to.deep.equal({foo: 'bar2', _ref: uri, _schema: schema});
@@ -170,10 +172,10 @@ describe('cache service', function () {
       var data = {_ref: 'foo'};
 
       db.get.returns(Promise.resolve({foo: 'bar'}));
-      db.saveForHTML.returns(Promise.resolve('some html'));
+      queue.add.returns(Promise.resolve('some html'));
       db.getSchema.returns(Promise.resolve({foo: 'bar'}));
       return fn(data).then(function () {
-        expect(db.saveForHTML.called).to.equal(true);
+        expect(queue.add.called).to.equal(true);
       });
     });
 
@@ -181,7 +183,7 @@ describe('cache service', function () {
       var data = {_ref: 'foo'};
 
       db.get.returns(Promise.resolve({foo: 'bar'}));
-      db.saveForHTML.returns(Promise.resolve('some html'));
+      queue.add.returns(Promise.resolve('some html'));
       db.getSchema.returns(Promise.resolve({foo: 'bar'}));
       return fn(data).then(function (result) {
         expect(result).to.equal('some html');

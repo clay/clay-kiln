@@ -18,6 +18,9 @@ var references = require('./services/references'),
   link = require('./services/deep-link'),
   connectionLostMessage = 'Connection Lost. Changes will <strong>NOT</strong> be saved.';
 
+// show progress indicator as well as "Loading" message
+progress.start('offline');
+
 // Require all scss/css files needed
 require.context('./styleguide', true, /^.*\.(scss|css)$/);
 require.context('./behaviors', true, /^.*\.(scss|css)$/);

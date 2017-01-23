@@ -3,6 +3,7 @@ var _ = require('lodash'),
   dom = require('@nymag/dom'),
   edit = require('../services/edit'),
   db = require('../services/edit/db'),
+  queue = require('../services/edit/queue'),
   dragula = require('dragula');
 
 /**
@@ -37,7 +38,7 @@ function updateOrder(el, options) {
 
       return edit.getDataOnly(pageUri).then(function (pageData) {
         pageData[options.path] = newData;
-        return db.save(pageUri, _.omit(pageData, '_ref'));
+        return queue.add(db.save, [pageUri, _.omit(pageData, '_ref')]);
         // call db.save directly, since edit.save is for components
       });
     }
