@@ -50,7 +50,7 @@ EditorToolbar = function (el) {
 
   // stop users from leaving the page if they have an unsaved form open!
   window.addEventListener('beforeunload', function (e) {
-    if (forms.hasOpenForm() || queue.queue && queue.pendingPromises + queue.queue.length > 0) {
+    if (forms.hasOpenForm() || queue.isPending()) {
       e.returnValue = 'Are you sure you want to leave this page? Your data may not be saved.';
     }
   });

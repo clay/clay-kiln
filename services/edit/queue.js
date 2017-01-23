@@ -6,6 +6,14 @@ const Queue = require('promise-queue'),
   queueCache = {}; // make sure we don't do the same api call over and over if it takes too long
 
 /**
+ * see if a queue has anything pendingPromises
+ * @return {Boolean}
+ */
+function isPending() {
+  return queue.queue && queue.queue.length > 0 && queue.pendingPromises > 0;
+}
+
+/**
  * add promise to queue
  * note: each promise is resolved sequentially,
  * but promises may contain async children (e.g. Promise.all([a, few, api, calls]))
@@ -19,7 +27,7 @@ function add(fn, args, progressType) {
 
   let newPromise;
 
-  if (queue.pendingPromises === 0 && queue.queue.length === 0) {
+  if (!isPending()) {
     // queue is empty, and all the promises are here
     progress.start(progressType || 'save');
   }
@@ -35,7 +43,7 @@ function add(fn, args, progressType) {
     return queue.add(newPromise).then(function (res) {
       // after individual promise resolves, remove it from the cache
       delete queueCache[cacheHash];
-      if (queue.pendingPromises === 0 && queue.queue.length === 0) {
+      if (!isPending()) {
         // all queued items are done
         progress.done(progressType || 'save');
       }
@@ -45,3 +53,4 @@ function add(fn, args, progressType) {
 }
 
 module.exports.add = add; // resolves when queue finishes
+module.exports.isPending = isPending;
