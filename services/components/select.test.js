@@ -207,11 +207,19 @@ describe(dirname, function () {
         });
       });
 
-      it('will select a component when component is clicked', function () {
+      it('will select a component when component is clicked', function (done) {
         var el = stubComponent();
 
         sandbox.stub(references, 'getComponentNameFromReference').returns('fakeName');
         sandbox.stub(edit, 'getSchema').returns(Promise.resolve({}));
+        sandbox.stub(focus, 'unfocus').returns(Promise.resolve());
+
+        function expectSelected(res) {
+          // the component should now be selected
+          expect(res.classList.contains('selected')).to.equal(true);
+          done();
+        }
+
         return fn(el, {ref: 'fakeRef'}).then(function (res) {
           // the component shouldn't be selected yet
           expect(res.classList.contains('selected')).to.equal(false);
@@ -219,8 +227,7 @@ describe(dirname, function () {
           // trigger a click on the component
           res.dispatchEvent(new Event('click'));
 
-          // the component should now be selected
-          expect(res.classList.contains('selected')).to.equal(true);
+          setTimeout(expectSelected.bind(null, res), 0);
         });
       });
 
