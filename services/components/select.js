@@ -450,6 +450,11 @@ function handler(el, options) {
   var name = references.getComponentNameFromReference(options.ref),
     selector = tpl.get('.component-selector-template');
 
+  // if a component already has a selector, don't add another
+  if (_.find(el.children, (child) => child.classList.contains('component-selector'))) {
+    return Promise.resolve(el);
+  }
+
   // resolve parent info. if there are no parents this resolves to empty object
   return getParentInfo(el).then(function (parent) {
     // add options to the component selector
