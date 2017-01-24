@@ -34,13 +34,13 @@ function add(fn, args, progressType) {
 
   // every time we add a function to the queue, check to see if it's already added
   if (queueCache[cacheHash]) {
-    return Promise.resolve(queueCache[cacheHash]);
+    return queueCache[cacheHash]; // this will resolve when it's time to resolve
   } else {
     // create a function that returns a promise.
     // it warms the cache and gets passed to the queue
-    newPromise = () => fn.apply(null, args);
+    newPromise = fn.apply(null, args);
     queueCache[cacheHash] = newPromise;
-    return queue.add(newPromise).then(function (res) {
+    return queue.add(() => newPromise).then(function (res) {
       // after individual promise resolves, remove it from the cache
       delete queueCache[cacheHash];
       if (!isPending()) {
