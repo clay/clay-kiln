@@ -5,7 +5,7 @@ var _ = require('lodash'),
   site = require('./../site'),
   rest = require('./rest'), // todo: use native fetch when safari supports it
   extHtml = '.html',
-  editMode = '?edit=true',
+  editMode = '?edit=true&sitecss=false',
   // when we ask for updated component html,
   // make sure the server knows we're in edit mode
   componentRoute = '/components/',

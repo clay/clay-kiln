@@ -34,7 +34,7 @@ function add(fn, args, progressType) {
 
   // every time we add a function to the queue, check to see if it's already added
   if (queueCache[cacheHash]) {
-    return Promise.resolve(queueCache[cacheHash]());
+    return Promise.resolve(queueCache[cacheHash]);
   } else {
     // create a function that returns a promise.
     // it warms the cache and gets passed to the queue
