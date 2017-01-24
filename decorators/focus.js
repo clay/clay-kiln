@@ -38,7 +38,7 @@ function getClickOffset(e) {
     // e.g. regular textnodes, formatted stuff
     _.each(parent.childNodes, function (node) {
       // if it's a text node (type is 3) or ISN'T the component selector, grab the text
-      if (!node.classList || !node.classList.contains('component-selector')) {
+      if (!node.classList || !node.classList.contains('component-selector') && !node.tagName === 'STYLE') {
         parentText += node.textContent;
       }
     });
