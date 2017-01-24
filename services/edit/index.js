@@ -107,6 +107,15 @@ function save(data) {
     if (validationErrors.length) {
       throw new Error(validationErrors);
     } else {
+      let el = dom.find(`[data-uri="${uri}"]`);
+
+      // todo: this is a short term fix for the "double-reloading" issue caused by
+      // the fact that queued items may resolve more than once (which causes the components to be reloaded more than once)
+      // a class is added to components when they're reloaded, which we explicitly REMOVE right before they get saved
+      if (el) {
+        el.classList.remove('kiln-handlers-added');
+      }
+
       return cache.saveForHTML(data)
         .then(function (savedData) {
           window.kiln.trigger('save', data);

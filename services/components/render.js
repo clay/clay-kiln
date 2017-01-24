@@ -87,6 +87,29 @@ function addComponentsHandlers(el) {
 }
 
 /**
+ * determine if a component needs to be re-rendered
+ * note: we need to check it because otherwise queued PUTs might run this twice
+ * @param  {Element} currentEl
+ * @param  {Element} el
+ * @return {Promise}
+ */
+function replaceAndAddHandlers(currentEl, el) {
+  // todo: this is a short term fix for the "double-reloading" issue caused by
+  // the fact that queued items may resolve more than once (which causes the components to be reloaded more than once)
+  // a class is added to components when they're reloaded, which we explicitly REMOVE right before they get saved
+  if (currentEl.classList.contains('kiln-handlers-added')) {
+    // this component was just reloaded (i.e. not saved any time since the last reload),
+    // so resolve immediately with the current element
+    return Promise.resolve(currentEl);
+  } else {
+    // this component was NOT reloaded (i.e. it was either saved, or this was the first time reloading since a page load),
+    // so replace the current element (with the new one) and add the component handlers
+    dom.replaceElement(currentEl, el);
+    el.classList.add('kiln-handlers-added');
+    return addComponentsHandlers(el);
+  }
+}
+/**
  * Reload component with latest HTML from the server.
  * @param {string} ref
  * @param {string} [html]
@@ -103,8 +126,7 @@ function reloadComponent(ref, html) {
         case 0: // Element was already removed from the DOM.
           break;
         case 1: // Normal case.
-          dom.replaceElement(currentEls[0], el);
-          return addComponentsHandlers(el);
+          return replaceAndAddHandlers(currentEls[0], el);
         default: // Edge case (ref used multiple times on one page).
           window.location.reload();
       }
