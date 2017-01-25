@@ -10,7 +10,7 @@ var _ = require('lodash'),
   // make sure the server knows we're in edit mode
   componentRoute = '/components/',
   schemaEndpoint = '/schema',
-  username = dom.find('.kiln-toolbar').getAttribute('data-current-user');
+  username = dom.find('.kiln-toolbar') && dom.find('.kiln-toolbar').getAttribute('data-current-user');
 
 /**
  * True if str is a uri
