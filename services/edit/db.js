@@ -9,7 +9,8 @@ var _ = require('lodash'),
   // when we ask for updated component html,
   // make sure the server knows we're in edit mode
   componentRoute = '/components/',
-  schemaEndpoint = '/schema';
+  schemaEndpoint = '/schema',
+  username = dom.find('.kiln-toolbar') && dom.find('.kiln-toolbar').getAttribute('data-current-user');
 
 /**
  * True if str is a uri
@@ -82,7 +83,8 @@ function uriToUrl(uri) {
 function addJsonHeader(obj) {
   _.assign(obj, {
     headers: {
-      'Content-Type': 'application/json; charset=UTF-8'
+      'Content-Type': 'application/json; charset=UTF-8',
+      'X-Clay-User': username
     }
   });
 
@@ -96,11 +98,27 @@ function addJsonHeader(obj) {
 function addTextHeader(obj) {
   _.assign(obj, {
     headers: {
-      'Content-Type': 'text/plain; charset=UTF-8'
+      'Content-Type': 'text/plain; charset=UTF-8',
+      'X-Clay-User': username
     }
   });
 
   return obj;
+}
+
+/**
+ * add headers to all GET requests
+ * @param {string} url
+ * @returns {object}
+ */
+function addGetHeader(url) {
+  return {
+    method: 'GET',
+    url: url,
+    headers: {
+      'X-Clay-User': username
+    }
+  };
 }
 
 /**
@@ -224,7 +242,7 @@ function getSchema(uri) {
   prefix = uri.substr(0, uri.indexOf(componentRoute)) + componentRoute;
   name = references.getComponentNameFromReference(uri);
 
-  return send(prefix + name + schemaEndpoint).then(expectJSONResult);
+  return send(addGetHeader(prefix + name + schemaEndpoint)).then(expectJSONResult);
 }
 
 /**
@@ -234,7 +252,7 @@ function getSchema(uri) {
 function getObject(uri) {
   assertUri(uri);
 
-  return send(uri).then(expectJSONResult);
+  return send(addGetHeader(uri)).then(expectJSONResult);
 }
 
 /**
@@ -244,7 +262,7 @@ function getObject(uri) {
 function getText(uri) {
   assertUri(uri);
 
-  return send(uri).then(expectTextResult);
+  return send(addGetHeader(uri)).then(expectTextResult);
 }
 
 /**
@@ -255,7 +273,7 @@ function getText(uri) {
 function getHead(uri) {
   assertUri(uri);
 
-  return send(uri).then(expectBooleanResult).catch(expectBooleanResult);
+  return send(addGetHeader(uri)).then(expectBooleanResult).catch(expectBooleanResult);
 }
 
 /**
@@ -265,7 +283,7 @@ function getHead(uri) {
 function getHTML(uri) {
   assertUri(uri);
 
-  return send(uri + extHtml + editMode).then(expectHTMLResult(uri));
+  return send(addGetHeader(uri + extHtml + editMode)).then(expectHTMLResult(uri));
 }
 
 /**
@@ -276,7 +294,7 @@ function getHTML(uri) {
 function getHTMLWithQuery(uri, queries) {
   var queryUrl = uri + extHtml + editMode + queries;
 
-  return send(queryUrl).then(expectHTMLResult(uri));
+  return send(addGetHeader(queryUrl)).then(expectHTMLResult(uri));
 }
 
 /**
