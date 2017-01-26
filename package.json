@@ -29,7 +29,8 @@
   "files": [
     "dist",
     "media",
-    "template.handlebars"
+    "template.handlebars",
+    "schema.yml"
   ],
   "homepage": "https://github.com/nymag/clay-kiln",
   "devDependencies": {
