@@ -14,7 +14,11 @@ var _ = require('lodash'),
   scheduleRoute = '/schedule',
   schemaKeywords = ['_ref', '_groups', '_description'],
   knownExtraFields = ['_ref', '_schema'],
-  bannedFields = ['_self', '_components', '_pageRef', '_pageData', '_version', '_refs', 'layout', 'template'];
+  bannedFields = ['_self', '_components', '_pageRef', '_pageData', '_version', '_refs', 'layout', 'template'],
+  hbs = require('handlebars/dist/handlebars.runtime.min.js');
+
+hbs.registerHelper('default', (a, b) => a || b);
+hbs.registerHelper('unless', (a, options) => !a ? options.fn(this) : options.inverse(this));
 
 /**
  * Cloning removes extra properties like _schema from standard types like Array, because we're doing a bad thing.
@@ -86,6 +90,41 @@ function validate(data, schema) {
 }
 
 /**
+ * save and re-render on the client-side
+ * @param  {string} uri
+ * @param  {object} data
+ * @return {Promise} with re-rendered element
+ */
+function clientSave(uri, data) {
+  // testing fully-client-side rerender
+  const model = window.clayInstagram, // todo: support other models
+    tpl = hbs.template(window.kiln.services.instagramTemplate); // todo: support other templates
+
+  return cache.removeExtras(uri, data)
+    .then(function (cleanData) {
+      return model.save(uri, cleanData);
+    })
+    .then(function (finalData) {
+      db.save(uri, finalData); // do this in the background
+      finalData._ref = uri; // add uri AFTER doing db.save
+      // add new data to cache
+      // control.setReadOnly(finalData);
+      cache.getData.cache = new _.memoize.Cache();
+      cache.getDataOnly.cache = new _.memoize.Cache();
+      cache.getDataOnly.cache.set(uri, finalData);
+      cache.getData(uri); // warm the cache with new data
+      finalData.locals = {
+        edit: true
+      };
+      return dom.create(tpl(finalData));
+    })
+    .then(function (newEl) {
+      window.kiln.trigger('save', data);
+      return newEl;
+    }).catch(progress.error('Error saving component'));
+}
+
+/**
  * Update data for a component. Returns the component's new rendered html
  *
  * Note: try to operate on full objects with schemas so we don't have to lookup the schema for validation.
@@ -116,11 +155,16 @@ function save(data) {
         el.classList.remove('kiln-handlers-added');
       }
 
-      return cache.saveForHTML(data)
-        .then(function (savedData) {
-          window.kiln.trigger('save', data);
-          return savedData;
-        }).catch(progress.error('Error saving component'));
+      if (_.includes(uri, 'clay-instagram')) {
+        // todo: allow more than just this component to rerender client-side
+        return queue.add(clientSave, [uri, data]);
+      } else {
+        return cache.saveForHTML(data)
+          .then(function (savedData) {
+            window.kiln.trigger('save', data);
+            return savedData;
+          }).catch(progress.error('Error saving component'));
+      }
     }
   });
 }

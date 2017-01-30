@@ -61,6 +61,7 @@ decorators.add(require('./decorators/component-list'));
 // when this event fires
 document.addEventListener('DOMContentLoaded', function () {
   window.kiln = window.kiln || {}; // make sure global kiln object exists
+  window.kiln.services = window.kiln.services || {};
   eventify.enable(window.kiln); // enable events on global kiln object, so plugins can add listeners
   plugins.init(); // initialize plugins before adding handlers
   return render.addComponentsHandlers(document).then(function () {

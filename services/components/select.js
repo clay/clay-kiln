@@ -182,9 +182,10 @@ function componentClickHandler(el, e) {
     e.stopSelection = true;
 
     if (!el.classList.contains('selected')) {
-      focus.unfocus().then(function () {
-        return select(el);
-      });
+      // note: don't unfocus before selecting another component
+      // this prevents it from trying to save twice, though users may get into a state
+      // where one component's form is open when another component is selected
+      select(el);
     }
   }
 }

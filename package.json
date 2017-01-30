@@ -81,6 +81,7 @@
     "moment": "^2.10.6",
     "node-sass": "^4.3.0",
     "nprogress": "^0.2.0",
+    "nymag-handlebars": "^1.6.0",
     "postcss-loader": "^1.2.2",
     "promise-queue": "^2.2.3",
     "rivets": "^0.9.6",
