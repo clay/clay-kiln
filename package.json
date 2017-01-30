@@ -84,6 +84,7 @@
     "nymag-handlebars": "^1.6.0",
     "postcss-loader": "^1.2.2",
     "promise-queue": "^2.2.3",
+    "promise-timeout": "^1.0.0",
     "rivets": "^0.9.6",
     "rollupify": "^0.3.9",
     "routable": "0.0.5",

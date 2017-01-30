@@ -15,7 +15,8 @@ var _ = require('lodash'),
   schemaKeywords = ['_ref', '_groups', '_description'],
   knownExtraFields = ['_ref', '_schema'],
   bannedFields = ['_self', '_components', '_pageRef', '_pageData', '_version', '_refs', 'layout', 'template'],
-  hbs = require('handlebars/dist/handlebars.runtime.min.js');
+  hbs = require('handlebars/dist/handlebars.runtime.min.js'),
+  pt = require('promise-timeout');
 
 hbs.registerHelper('default', (a, b) => a || b);
 hbs.registerHelper('unless', (a, options) => !a ? options.fn(this) : options.inverse(this));
@@ -102,10 +103,10 @@ function clientSave(uri, data) {
 
   return cache.removeExtras(uri, data)
     .then(function (cleanData) {
-      return model.save(uri, cleanData);
+      return pt.timeout(model.save(uri, cleanData), 300); // 300ms timeout for models
     })
     .then(function (finalData) {
-      db.save(uri, finalData); // do this in the background
+      queue.add(db.save, [uri, finalData]); // do this in the background
       finalData._ref = uri; // add uri AFTER doing db.save
       // add new data to cache
       // control.setReadOnly(finalData);
@@ -113,6 +114,7 @@ function clientSave(uri, data) {
       cache.getDataOnly.cache = new _.memoize.Cache();
       cache.getDataOnly.cache.set(uri, finalData);
       cache.getData(uri); // warm the cache with new data
+      // todo: add more locals and stuff
       finalData.locals = {
         edit: true
       };
@@ -157,7 +159,7 @@ function save(data) {
 
       if (_.includes(uri, 'clay-instagram')) {
         // todo: allow more than just this component to rerender client-side
-        return queue.add(clientSave, [uri, data]);
+        return clientSave(uri, data);
       } else {
         return cache.saveForHTML(data)
           .then(function (savedData) {
