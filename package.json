@@ -94,7 +94,7 @@
     "style-loader": "^0.13.1",
     "text-model": "^1.0.0",
     "watchify": "^3.8.0",
-    "webpack": "^1.13.2",
+    "webpack": "^2.2.1",
     "whatwg-fetch": "^1.0.0"
   }
 }
