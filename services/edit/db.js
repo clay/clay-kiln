@@ -300,10 +300,16 @@ function getHTMLWithQuery(uri, queries) {
 /**
  * @param {string} uri
  * @param {object} data
+ * @param {boolean} [componenthooks] optional, true by default
  * @returns {Promise}
  */
-function save(uri, data) {
+function save(uri, data, componenthooks) {
   assertUri(uri);
+
+  // set `false` to disable component models from firing their hooks
+  if (componenthooks === false) {
+    uri = uri + '?componenthooks=false';
+  }
 
   return send(addJsonHeader({
     method: 'PUT',

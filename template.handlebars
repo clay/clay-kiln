@@ -23,8 +23,13 @@
           window.kiln.services.schemaCache['{{ this.name }}'] = {{{ stringify (yaml (read this.schema)) }}};
         {{/each}}
 
-        window.kiln.services.instagramModel = {{{ read 'public/js/clay-instagram-model.js' }}}
-        window.kiln.services.instagramTemplate = {{{ replace (read 'public/hbs/clay-instagram.js') '</script>' '<" + "/script>' }}};
+        {{{ read 'public/js/clay-instagram-model.js' }}}
+        {{{ read 'public/js/clay-paragraph-model.js' }}}
+
+        window.kiln.services.componentTemplates = {
+          'clay-instagram': {{{ replace (read 'public/hbs/clay-instagram.js') '</script>' '<" + "/script>' }}},
+          'clay-paragraph': {{{ read 'public/hbs/clay-paragraph.js' }}}
+        };
       </script>
     {{/if}}
 

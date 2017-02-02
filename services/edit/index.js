@@ -15,11 +15,8 @@ var _ = require('lodash'),
   schemaKeywords = ['_ref', '_groups', '_description'],
   knownExtraFields = ['_ref', '_schema'],
   bannedFields = ['_self', '_components', '_pageRef', '_pageData', '_version', '_refs', 'layout', 'template'],
-  hbs = require('handlebars/dist/handlebars.runtime.min.js'),
+  hbs = require('nymag-handlebars')(),
   pt = require('promise-timeout');
-
-hbs.registerHelper('default', (a, b) => a || b);
-hbs.registerHelper('unless', (a, options) => !a ? options.fn(this) : options.inverse(this));
 
 /**
  * Cloning removes extra properties like _schema from standard types like Array, because we're doing a bad thing.
@@ -98,15 +95,16 @@ function validate(data, schema) {
  */
 function clientSave(uri, data) {
   // testing fully-client-side rerender
-  const model = window.clayInstagram, // todo: support other models
-    tpl = hbs.template(window.kiln.services.instagramTemplate); // todo: support other templates
+  const name = references.getComponentNameFromReference(uri),
+    model = window.kiln.services.componentModels[_.camelCase(name)],
+    tpl = hbs.template(window.kiln.services.componentTemplates[name]);
 
   return cache.removeExtras(uri, data)
     .then(function (cleanData) {
-      return pt.timeout(model.save(uri, cleanData), 300); // 300ms timeout for models
+      return pt.timeout(Promise.resolve(model.save(uri, cleanData), 300)); // 300ms timeout for models
     })
     .then(function (finalData) {
-      queue.add(db.save, [uri, finalData]); // do this in the background
+      queue.add(db.save, [uri, finalData, false]); // do this in the background
       finalData._ref = uri; // add uri AFTER doing db.save
       // add new data to cache
       // control.setReadOnly(finalData);
@@ -114,11 +112,32 @@ function clientSave(uri, data) {
       cache.getDataOnly.cache = new _.memoize.Cache();
       cache.getDataOnly.cache.set(uri, finalData);
       cache.getData(uri); // warm the cache with new data
-      // todo: add more locals and stuff
-      finalData.locals = {
-        edit: true
-      };
-      return dom.create(tpl(finalData));
+      return finalData;
+    })
+    .then(function (cachedData) {
+      // todo: add more locals and stuff when we use a full redux store
+      let locals = {
+          edit: true,
+          site: {
+            host: site.get('host'),
+            path: site.get('path'),
+            assetPath: site.get('assetPath'),
+            slug: site.get('slug'),
+            name: site.get('name')
+          }
+        }, promise;
+
+      if (_.isFunction(model.render)) {
+        promise = Promise.resolve(model.render(uri, locals)); // note: right now these don't get passed the data from the db/save() method, but maybe they should?
+      } else {
+        promise = Promise.resolve(cachedData);
+      }
+
+      return promise.then(function (preRenderedData) {
+        preRenderedData.locals = locals;
+
+        return dom.create(tpl(preRenderedData));
+      });
     })
     .then(function (newEl) {
       window.kiln.trigger('save', data);
@@ -143,7 +162,8 @@ function save(data) {
 
   // get the schema and validate data
   return schemaPromise.then(function (schema) {
-    var validationErrors = validate(data, schema);
+    var validationErrors = validate(data, schema),
+      model = window.kiln.services.componentModels[_.camelCase(references.getComponentNameFromReference(uri))];
 
     if (validationErrors.length) {
       throw new Error(validationErrors);
@@ -157,8 +177,8 @@ function save(data) {
         el.classList.remove('kiln-handlers-added');
       }
 
-      if (_.includes(uri, 'clay-instagram')) {
-        // todo: allow more than just this component to rerender client-side
+      if (model && _.isFunction(model.save)) {
+        // note: any component that re-renders client side MUST have a model.js w/ .save(), even if it's a simple passthrough
         return clientSave(uri, data);
       } else {
         return cache.saveForHTML(data)
