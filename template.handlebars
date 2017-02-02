@@ -23,13 +23,9 @@
           window.kiln.services.schemaCache['{{ this.name }}'] = {{{ stringify (yaml (read this.schema)) }}};
         {{/each}}
 
-        {{{ read 'public/js/clay-instagram-model.js' }}}
-        {{{ read 'public/js/clay-paragraph-model.js' }}}
-
-        window.kiln.services.componentTemplates = {
-          'clay-instagram': {{{ replace (read 'public/hbs/clay-instagram.js') '</script>' '<" + "/script>' }}},
-          'clay-paragraph': {{{ read 'public/hbs/clay-paragraph.js' }}}
-        };
+        // add objects for models and templates (injected through resolveMedia)
+        window.kiln.services.componentModels = window.kiln.services.componentModels || {};
+        window.kiln.services.componentTemplates = window.kiln.services.componentTemplates || {};
       </script>
     {{/if}}
 
