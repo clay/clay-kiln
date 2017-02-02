@@ -5,7 +5,8 @@ var lib = require('./'),
   cache = require('./cache'),
   control = require('./control'),
   progress = require('./../progress'),
-  sinon = require('sinon');
+  sinon = require('sinon'),
+  _ = require('lodash');
 
 describe('edit service', function () {
   var sandbox,
@@ -39,6 +40,8 @@ describe('edit service', function () {
 
     db.getHTML.returns(document.createElement('div'));
     db.getHTMLWithQuery.returns(document.createElement('div'));
+
+    _.set(window, 'kiln.services.componentModels', {});
   });
 
   afterEach(function () {
