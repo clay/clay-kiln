@@ -128,7 +128,7 @@ function clientSave(uri, data) {
         }, promise;
 
       if (_.isFunction(model.render)) {
-        promise = Promise.resolve(model.render(uri, locals)); // note: right now these don't get passed the data from the db/save() method, but maybe they should?
+        promise = Promise.resolve(model.render(uri, data, locals));
       } else {
         promise = Promise.resolve(cachedData);
       }
