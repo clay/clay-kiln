@@ -1,9 +1,7 @@
 var _ = require('lodash'),
   lib = require('./cache'),
   db = require('./db'),
-  queue = require('./queue'),
-  expect = require('chai').expect,
-  sinon = require('sinon');
+  queue = require('./queue');
 
 describe('cache service', function () {
   var sandbox;

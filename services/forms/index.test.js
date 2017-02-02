@@ -6,9 +6,7 @@ var _ = require('lodash'),
   render = require('../components/render'),
   formCreator = require('./form-creator'),
   formValues = require('./form-values'),
-  lib = require('./index'),
-  expect = require('chai').expect,
-  assert = require('chai').assert;
+  lib = require('./index');
 
 function resolver() {
   return Promise.resolve();

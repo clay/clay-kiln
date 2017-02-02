@@ -5,7 +5,6 @@ var lib = require('./'),
   cache = require('./cache'),
   control = require('./control'),
   progress = require('./../progress'),
-  sinon = require('sinon'),
   _ = require('lodash');
 
 describe('edit service', function () {

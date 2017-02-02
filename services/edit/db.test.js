@@ -1,5 +1,4 @@
 var lib = require('./db'),
-  sinon = require('sinon'),
   site = require('./../site'),
   rest = require('./rest');
 

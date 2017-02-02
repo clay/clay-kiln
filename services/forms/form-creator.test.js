@@ -29,12 +29,6 @@ describe(dirname, function () {
       return str.trim().replace(/>\W*</g, '><');
     }
 
-    function expectNoLogging() {
-      sandbox.mock(console).expects('log').never();
-      sandbox.mock(console).expects('warn').never();
-      sandbox.mock(console).expects('error').never();
-    }
-
     function expectSingleItemBehavior() {
       var itemEl = document.createElement('div');
 
@@ -53,28 +47,24 @@ describe(dirname, function () {
       var fn = lib[this.title];
 
       it('reference is required', function () {
-        expectNoLogging();
         expect(function () {
           fn('', {}, el);
         }).to.throw(refIsRequired);
       });
 
       it('data is required', function () {
-        expectNoLogging();
         expect(function () {
           fn('ref', null, el);
         }).to.throw(dataIsRequired);
       });
 
       it('_name is required', function () {
-        expectNoLogging();
         expect(function () {
           fn('ref', {_schema: {}}, el);
         }).to.throw(nameIsRequired);
       });
 
       it('can show item in template', function () {
-        expectNoLogging();
         expectSingleItemBehavior();
 
         return fn('ref', singleItem, el).then(function (result) {
@@ -102,14 +92,12 @@ describe(dirname, function () {
       var fn = lib[this.title];
 
       it('ref is required', function () {
-        expectNoLogging();
         expect(function () {
           fn('', {}, el);
         }).to.throw(refIsRequired);
       });
 
       it('name is required', function () {
-        expectNoLogging();
         expect(function () {
           fn('some ref', { _schema: {} }, el);
         }).to.throw(nameIsRequired);
@@ -119,7 +107,6 @@ describe(dirname, function () {
         var childEl = document.createElement('div');
 
         el.appendChild(childEl);
-        expectNoLogging();
         expectSingleItemBehavior('inline');
 
         return fn('ref', singleItem, childEl).then(function (result) {
