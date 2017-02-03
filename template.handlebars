@@ -26,6 +26,8 @@
         // add objects for models and templates (injected through resolveMedia)
         window.kiln.services.componentModels = window.kiln.services.componentModels || {};
         window.kiln.services.componentTemplates = window.kiln.services.componentTemplates || {};
+
+        window.kiln.services.preloadData = {{{ default (stringify @root) '{}' }}};
       </script>
     {{/if}}
 
