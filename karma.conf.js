@@ -18,14 +18,20 @@ const files = [
           loader: 'babel-loader',
           options: {
             presets: ['es2015'],
-            plugins: ['istanbul']
+            cacheDirectory: true,
+            plugins: [['istanbul', {
+              exclude: [
+                '**/*.test.js',
+                'test/**',
+                'controllers/**'
+              ]
+            }]]
           }
         }]
       }
     },
     reporters: ['dots', 'coverage'],
     coverageReporter: {
-      type: 'lcovonly',
       dir: 'coverage/',
       includeAllSources: true,
       watermarks: {
@@ -33,7 +39,8 @@ const files = [
         functions: [50, 75],
         branches: [50, 75],
         lines: [50, 75]
-      }
+      },
+      reporters: [{ type: 'lcovonly' }]
     },
     browserStack: {
       username: process.env.BROWSERSTACK_USERNAME,
