@@ -205,4 +205,6 @@ exports.clearSchemaCache = function () {
   schemaCache = {};
 };
 
+exports.removeExtras = removeExtras; // testing client-side models
+
 _.set(window, 'kiln.services.schemaCache', schemaCache);

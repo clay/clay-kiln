@@ -1,6 +1,8 @@
-// defaults for chai
-chai.config.showDiff = true;
-chai.config.truncateThreshold = 0;
+const testsContext = require.context('../', true, /^\.\/(behaviors|decorators|services|validators)\/.*?\.test\.js$/);
+
 // stub global events
 window.kiln = window.kiln || { trigger: function () {} };
-sinon.stub(window.kiln, 'trigger');
+sinon.stub(console);
+
+// run all tests
+testsContext.keys().forEach(testsContext);

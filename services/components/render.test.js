@@ -1,5 +1,4 @@
 var lib = require('./render'),
-  sinon = require('sinon'),
   ds = require('dollar-slice'),
   edit = require('../edit'),
   select = require('./select'),

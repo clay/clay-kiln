@@ -2,7 +2,7 @@ machine:
   timezone:
     America/New_York
   node:
-    version: 4.0.0
+    version: 6.0.0
 dependencies:
   pre:
     - npm install -g karma-cli

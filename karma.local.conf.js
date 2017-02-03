@@ -2,7 +2,10 @@ var settings = require('./karma.conf.js').settings,
   _ = require('lodash');
 
 // generating code coverage reports for local tests
-settings.coverageReporter.type = 'html';
+settings.coverageReporter.reporters = [
+  { type: 'html', dir: 'coverage/' },
+  { type: 'text-summary' }
+];
 
 module.exports = function (karma) {
   karma.set(_.assign(settings, {

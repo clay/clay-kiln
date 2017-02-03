@@ -1,7 +1,7 @@
 'use strict'; // eslint-disable-line
 
-// note: use strict above is applied to the whole browserified doc
 var references = require('./services/references'),
+  path = require('path'),
   behaviors = require('./services/forms/behaviors'),
   decorators = require('./services/components/decorators'),
   dom = require('@nymag/dom'),
@@ -16,7 +16,9 @@ var references = require('./services/references'),
   plugins = require('./services/plugins'),
   eventify = require('eventify'),
   link = require('./services/deep-link'),
-  connectionLostMessage = 'Connection Lost. Changes will <strong>NOT</strong> be saved.';
+  connectionLostMessage = 'Connection Lost. Changes will <strong>NOT</strong> be saved.',
+  behaviorReq = require.context('./behaviors', false, /^\.\/[\w\-]+\.js$/), // no *.test.js
+  decoratorReq = require.context('./decorators', false, /^\.\/[\w\-]+\.js$/); // no *.test.js
 
 // show progress indicator as well as "Loading" message
 progress.start('offline');
@@ -25,42 +27,21 @@ progress.start('offline');
 require.context('./styleguide', true, /^.*\.(scss|css)$/);
 require.context('./behaviors', true, /^.*\.(scss|css)$/);
 
-// manually add built-in behaviors
-// since browserify's require() uses static analysis
-behaviors.add('component-ref', require('./behaviors/component-ref'));
-behaviors.add('text', require('./behaviors/text'));
-behaviors.add('required', require('./behaviors/required'));
-behaviors.add('soft-maxlength', require('./behaviors/soft-maxlength'));
-behaviors.add('radio', require('./behaviors/radio'));
-behaviors.add('description', require('./behaviors/description'));
-behaviors.add('checkbox', require('./behaviors/checkbox'));
-behaviors.add('checkbox-group', require('./behaviors/checkbox-group'));
-behaviors.add('textarea', require('./behaviors/textarea'));
-behaviors.add('select', require('./behaviors/select'));
-behaviors.add('simple-list', require('./behaviors/simple-list'));
-behaviors.add('simple-list-primary', require('./behaviors/simple-list-primary'));
-behaviors.add('wysiwyg', require('./behaviors/wysiwyg'));
-behaviors.add('autocomplete', require('./behaviors/autocomplete'));
-behaviors.add('drop-image', require('./behaviors/drop-image'));
-behaviors.add('label', require('./behaviors/label'));
-behaviors.add('segmented-button', require('./behaviors/segmented-button'));
-behaviors.add('page-ref', require('./behaviors/page-ref'));
-behaviors.add('magic-button', require('./behaviors/magic-button'));
-behaviors.add('codemirror', require('./behaviors/codemirror'));
-behaviors.add('site-specific-select', require('./behaviors/site-specific-select'));
-behaviors.add('segmented-button-group', require('./behaviors/segmented-button-group'));
-behaviors.add('lock', require('./behaviors/lock'));
+// add behaviors and decorators
+behaviorReq.keys().forEach(function (key) {
+  behaviors.add(path.basename(key, '.js'), behaviorReq(key));
+});
 
-// add default decorators
-decorators.add(require('./decorators/placeholder'));
-decorators.add(require('./decorators/focus'));
-decorators.add(require('./decorators/component-list'));
+decoratorReq.keys().forEach(function (key) {
+  decorators.add(decoratorReq(key));
+});
 
 // kick off controller loading when DOM is ready
 // note: external behaviors, decorators, and validation rules should already be added
 // when this event fires
 document.addEventListener('DOMContentLoaded', function () {
   window.kiln = window.kiln || {}; // make sure global kiln object exists
+  window.kiln.services = window.kiln.services || {};
   eventify.enable(window.kiln); // enable events on global kiln object, so plugins can add listeners
   plugins.init(); // initialize plugins before adding handlers
   return render.addComponentsHandlers(document).then(function () {

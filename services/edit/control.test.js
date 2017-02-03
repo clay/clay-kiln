@@ -1,6 +1,4 @@
-var lib = require('./control'),
-  expect = require('chai').expect,
-  sinon = require('sinon');
+var lib = require('./control');
 
 describe('control service', function () {
   var sandbox;

@@ -11,7 +11,6 @@ describe(dirname, function () {
 
       beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        sandbox.stub(console, 'warn', sandbox.spy());
       });
 
       afterEach(function () {

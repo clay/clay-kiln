@@ -1,9 +1,7 @@
 var _ = require('lodash'),
   lib = require('./cache'),
   db = require('./db'),
-  queue = require('./queue'),
-  expect = require('chai').expect,
-  sinon = require('sinon');
+  queue = require('./queue');
 
 describe('cache service', function () {
   var sandbox;
@@ -222,7 +220,7 @@ describe('cache service', function () {
       db.get.returns(Promise.resolve({foo: 'bar'}));
       db.create.returns(Promise.resolve({foo: 'bar'}));
       db.getSchema.returns(Promise.resolve({foo: 'bar'}));
-      return fn('foo', data).then(function (result) {
+      fn('foo', data).then(function (result) {
         done('should throw: ' + result);
       }, function () {
         done();

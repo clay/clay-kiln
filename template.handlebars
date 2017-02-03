@@ -22,6 +22,10 @@
         {{#each @root._componentSchemas}}
           window.kiln.services.schemaCache['{{ this.name }}'] = {{{ stringify (yaml (read this.schema)) }}};
         {{/each}}
+
+        // add objects for models and templates (injected through resolveMedia)
+        window.kiln.services.componentModels = window.kiln.services.componentModels || {};
+        window.kiln.services.componentTemplates = window.kiln.services.componentTemplates || {};
       </script>
     {{/if}}
 
