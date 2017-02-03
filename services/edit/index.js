@@ -18,11 +18,15 @@ var _ = require('lodash'),
   hbs = require('nymag-handlebars')(),
   pt = require('promise-timeout');
 
+// add precompiled templates as partials (on page load)
 document.addEventListener('DOMContentLoaded', function () {
-  // add precompiled templates as partials (on page load)
-  _.forOwn(window.kiln.services.componentTemplates, function (tpl, name) {
-    hbs.registerPartial(name, hbs.template(tpl));
-  });
+  const templates = _.get(window, 'kiln.services.componentTemplates');
+
+  if (_.isObject(templates) && !_.isEmpty(templates)) {
+    _.forOwn(templates, function (tpl, name) {
+      hbs.registerPartial(name, hbs.template(tpl));
+    });
+  }
 });
 
 /**

@@ -18,7 +18,6 @@ const files = [
           loader: 'babel-loader',
           options: {
             presets: ['es2015'],
-            cacheDirectory: true,
             plugins: [['istanbul', {
               exclude: [
                 '**/*.test.js',
