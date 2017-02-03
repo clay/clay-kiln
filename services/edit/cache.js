@@ -203,7 +203,8 @@ function preloadData(tree) {
 
   if (_.isObject(tree)) {
     _.forOwn(tree, function (val, key) {
-      if (!_.includes(key, '_')) {
+      if (!_.includes(key, '_') && !_.includes(['blockParams', 'filename', 'knownHelpers', 'locals', 'media', 'site', 'state', 'template'])) {
+        // don't iterate through any of the templating/amphora metadata or locals/state
         preloadData(val);
       }
     });
