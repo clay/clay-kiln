@@ -128,7 +128,7 @@ function clientSave(uri, data) {
         }, promise;
 
       if (_.isFunction(model.render)) {
-        promise = Promise.resolve(model.render(uri, data, locals));
+        promise = pt.timeout(Promise.resolve(model.render(uri, data, locals), 300)); // 300ms timeout for models
       } else {
         promise = Promise.resolve(cachedData);
       }
