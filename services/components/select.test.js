@@ -220,7 +220,7 @@ describe(dirname, function () {
           done();
         }
 
-        return fn(el, {ref: 'fakeRef'}).then(function (res) {
+        fn(el, {ref: 'fakeRef'}).then(function (res) {
           // the component shouldn't be selected yet
           expect(res.classList.contains('selected')).to.equal(false);
 

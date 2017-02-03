@@ -220,7 +220,7 @@ describe('cache service', function () {
       db.get.returns(Promise.resolve({foo: 'bar'}));
       db.create.returns(Promise.resolve({foo: 'bar'}));
       db.getSchema.returns(Promise.resolve({foo: 'bar'}));
-      return fn('foo', data).then(function (result) {
+      fn('foo', data).then(function (result) {
         done('should throw: ' + result);
       }, function () {
         done();
