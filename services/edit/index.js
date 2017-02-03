@@ -18,6 +18,13 @@ var _ = require('lodash'),
   hbs = require('nymag-handlebars')(),
   pt = require('promise-timeout');
 
+document.addEventListener('DOMContentLoaded', function () {
+  // add precompiled templates as partials (on page load)
+  _.forOwn(window.kiln.services.componentTemplates, function (tpl, name) {
+    hbs.registerPartial(name, hbs.template(tpl));
+  });
+});
+
 /**
  * Cloning removes extra properties like _schema from standard types like Array, because we're doing a bad thing.
  *
