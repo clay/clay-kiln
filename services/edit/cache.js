@@ -190,6 +190,28 @@ function createThrough(uri, data) {
   });
 }
 
+/**
+ * preload data for components on the page
+ * this iterates through a tree of data and warms the getDataOnly cache for all components found
+ * @param  {*} tree
+ */
+function preloadData(tree) {
+  if (_.isObject(tree) && tree._ref) {
+    // warm cache if we found a component!
+    exports.getDataOnly.cache.set(tree._ref, tree);
+  }
+
+  if (_.isObject(tree)) {
+    _.forOwn(tree, function (val, key) {
+      if (!_.includes(key, '_')) {
+        preloadData(val);
+      }
+    });
+  } else if (_.isArray(tree)) {
+    _.each(tree, preloadData);
+  }
+}
+
 // remembers
 exports.getData = control.memoizePromise(getData);
 exports.getDataOnly = control.memoizePromise(getDataOnly);
@@ -208,3 +230,8 @@ exports.clearSchemaCache = function () {
 exports.removeExtras = removeExtras; // testing client-side models
 
 _.set(window, 'kiln.services.schemaCache', schemaCache);
+
+// preload data on page load
+if (window.kiln.services.preloadData) {
+  preloadData(window.kiln.services.preloadData);
+}
