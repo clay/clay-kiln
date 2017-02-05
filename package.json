@@ -84,7 +84,7 @@
     "sinon": "^1.17.7",
     "sinon-chai": "^2.8.0",
     "speakingurl": "^9.0.0",
-    "striptags": "^2.1.1",
+    "striptags": "^3.0.1",
     "style-loader": "^0.13.1",
     "text-model": "^1.0.0",
     "webpack": "^2.2.1",
