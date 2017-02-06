@@ -1,11 +1,11 @@
 var dom = require('@nymag/dom'),
   db = require('../services/edit/db'),
-  _ = require('lodash'),
   site = require('../services/site'),
   getInput = require('../services/field-helpers').getInput,
   textProp = 'text';
 
 import cid from '@nymag/cid';
+import _ from 'lodash';
 
 /**
  *
@@ -13,7 +13,7 @@ import cid from '@nymag/cid';
  * @returns {[string]}
  */
 function flattenText(items) {
-  var pluckedText = _.compact(_.map(items, textProp)),
+  var pluckedText = _.compact(_.map(items, (item) => item[textProp])),
     hasTextProp = _.isString(_.head(pluckedText));
 
   return hasTextProp ? pluckedText : items;

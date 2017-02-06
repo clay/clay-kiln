@@ -1,6 +1,8 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin'),
   path = require('path'),
-  styles = new ExtractTextPlugin('clay-kiln-[name].css');
+  styles = new ExtractTextPlugin('clay-kiln-[name].css'),
+  webpack = require('webpack'),
+  LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 module.exports = {
   target: 'web',
@@ -19,6 +21,7 @@ module.exports = {
       exclude: /node_modules/,
       loader: 'babel-loader',
       options: {
+        plugins: ['lodash'],
         presets: ['es2015'],
       }
     }, {
@@ -30,6 +33,10 @@ module.exports = {
     }]
   },
   plugins: [
-    styles
+    styles,
+    new LodashModuleReplacementPlugin,
+    new webpack.optimize.OccurrenceOrderPlugin,
+    // new webpack.optimize.UglifyJsPlugin,
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/)
   ]
 };
