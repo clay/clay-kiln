@@ -1,7 +1,9 @@
 'use strict'; // eslint-disable-line
+
+import _ from 'lodash';
+
 const keycode = require('keycode'),
-  toggleEdit = require('./services/toggle-edit'),
-  _includes = require('lodash/includes');
+  toggleEdit = require('./services/toggle-edit');
 
 let secretKilnKey = '';
 
@@ -26,7 +28,7 @@ function showLogo() {
 document.addEventListener('keydown', function (e) {
   var key = keycode(e);
 
-  if (_includes(['c', 'l', 'a', 'y'], key) && e.shiftKey === true) {
+  if (_.includes(['c', 'l', 'a', 'y'], key) && e.shiftKey === true) {
     secretKilnKey += key;
   } else {
     // if we hit any other character, reset the key
@@ -36,7 +38,7 @@ document.addEventListener('keydown', function (e) {
   // check secret key
   if (secretKilnKey === 'clay') {
     showLogo();
-  } else if (secretKilnKey.length > 4 && _includes(secretKilnKey, 'clay')) {
+  } else if (secretKilnKey.length > 4 && _.includes(secretKilnKey, 'clay')) {
     toggleEdit();
   } else if (secretKilnKey.length > 4) {
     // if we hit more than four characters, reset the key

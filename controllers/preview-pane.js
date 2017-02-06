@@ -1,5 +1,6 @@
+import _ from 'lodash';
+
 const dom = require('@nymag/dom'),
-  _ = require('lodash'),
   previewSizes = {
     small: { w: 375, h: 660 },
     medium: { w: 768, h: 1024 },

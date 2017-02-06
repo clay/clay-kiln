@@ -1,6 +1,7 @@
+import _ from 'lodash';
+
 module.exports = function () {
-  var _ = require('lodash'),
-    dom = require('@nymag/dom'),
+  var dom = require('@nymag/dom'),
     focus = require('../decorators/focus'),
     noScrollClass = 'noscroll';
 

@@ -1,9 +1,10 @@
+import _ from 'lodash';
+
 const select = require('./components/select'),
   focus = require('../decorators/focus'),
   forms = require('./forms'),
   dom = require('@nymag/dom'),
   references = require('./references'),
-  _ = require('lodash'),
   hashSeperator = '::';
 
 /**

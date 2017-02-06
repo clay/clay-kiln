@@ -1,5 +1,6 @@
-var _ = require('lodash'),
-  keycode = require('keycode'),
+import _ from 'lodash';
+
+var keycode = require('keycode'),
   dom = require('@nymag/dom'),
   focus = require('../decorators/focus');
 

@@ -1,5 +1,6 @@
-var _ = require('lodash'),
-  dom = require('@nymag/dom'),
+import _ from 'lodash';
+
+var dom = require('@nymag/dom'),
   references = require('../services/references');
 
 /**

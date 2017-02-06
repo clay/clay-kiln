@@ -1,5 +1,6 @@
-var _ = require('lodash'),
-  dom = require('@nymag/dom'),
+import _ from 'lodash';
+
+var dom = require('@nymag/dom'),
   references = require('../references'),
   formCreator = require('./form-creator'),
   edit = require('../edit'),
@@ -88,7 +89,7 @@ function cleanDeepStringValues(data) {
  * @returns {{}}        e.g. {yes: 1}
  */
 function removeMetaProperties(data) {
-  return _.omit(data, function (val, key) { return _.startsWith(key, '_');});
+  return _.omit(data, (val, key) => _.startsWith(key, '_'));
 }
 /**
  * Removes all keys that begin with "_" for all objects within the object.

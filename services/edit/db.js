@@ -1,5 +1,6 @@
-var _ = require('lodash'),
-  urlParse = require('url'),
+import _ from 'lodash';
+
+var urlParse = require('url'),
   dom = require('@nymag/dom'),
   references = require('../references'),
   site = require('./../site'),

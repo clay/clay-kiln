@@ -1,5 +1,6 @@
-var _ = require('lodash'),
-  dom = require('@nymag/dom'),
+import _ from 'lodash';
+
+var dom = require('@nymag/dom'),
   edit = require('./edit'),
   control = require('./edit/control'),
   promises = require('./promises'),
@@ -21,11 +22,8 @@ function isRuleEnabled(rule) {
  * @returns {Array}
  */
 function getLatestRefMap() {
-  return _(dom.findAll(refAtrrSelector))
-    .map((el) => el.getAttribute(refAttr))
-    .filter((ref) => _.includes(ref, '/components/')) // filter out page ref
-    .uniq()
-    .value();
+  // get all components, filter out page ref, find unique values
+  return _.uniq(_.filter(_.map(dom.findAll(refAtrrSelector), (el) => el.getAttribute(refAttr)), (ref) => _.includes(ref, '/components/')));
 }
 
 /**

@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const moment = require('moment'),
   pane = require('../services/pane'),
   edit = require('../services/edit'),
@@ -6,7 +8,6 @@ const moment = require('moment'),
   state = require('../services/page-state'),
   db = require('../services/edit/db'),
   site = require('../services/site'),
-  _ = require('lodash'),
   queue = require('../services/edit/queue'),
   Routable = require('routable');
 

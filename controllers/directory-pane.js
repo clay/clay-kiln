@@ -1,5 +1,6 @@
+import _ from 'lodash';
+
 const dom = require('@nymag/dom'),
-  _ = require('lodash'),
   progress = require('../services/progress'),
   site = require('../services/site'),
   pane = require('../services/pane'),

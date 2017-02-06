@@ -1,5 +1,6 @@
-var _ = require('lodash'),
-  references = require('../services/references'),
+import _ from 'lodash';
+
+var references = require('../services/references'),
   forms = require('../services/forms'),
   select = require('../services/components/select'),
   sr = require('selection-range'),

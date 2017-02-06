@@ -1,5 +1,6 @@
+import _ from 'lodash';
+
 const label = require('../label'),
-  _ = require('lodash'),
   filterableList = require('../filterable-list'),
   references = require('../references'),
   edit = require('../edit'),

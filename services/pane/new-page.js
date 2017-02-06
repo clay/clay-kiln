@@ -1,5 +1,6 @@
-const _ = require('lodash'),
-  keycode = require('keycode'),
+import _ from 'lodash';
+
+const keycode = require('keycode'),
   dom = require('@nymag/dom'),
   edit = require('../edit'),
   progress = require('../progress'),

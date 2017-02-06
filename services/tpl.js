@@ -1,5 +1,6 @@
-var dom = require('@nymag/dom'),
-  _ = require('lodash');
+import _ from 'lodash';
+
+const dom = require('@nymag/dom');
 
 /**
  * grab templates from the dom

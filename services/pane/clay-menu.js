@@ -1,5 +1,6 @@
+import _ from 'lodash';
+
 const ds = require('dollar-slice'),
-  _ = require('lodash'),
   tpl = require('../tpl'),
   pane = require('./'),
   site = require('../site'),

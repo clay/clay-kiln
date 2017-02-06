@@ -1,5 +1,6 @@
+import _ from 'lodash';
+
 var dom = require('@nymag/dom'),
-  _ = require('lodash'),
   moment = require('moment'),
   datepicker = require('../services/field-helpers/datepicker'),
   invalidTypes = [

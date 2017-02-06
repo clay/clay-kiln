@@ -1,5 +1,6 @@
-var _ = require('lodash'),
-  references = require('./references');
+import _ from 'lodash';
+
+const references = require('./references');
 
 /**
  * remove "clay-" from names

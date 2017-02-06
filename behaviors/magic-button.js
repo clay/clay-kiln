@@ -1,5 +1,6 @@
-const _ = require('lodash'),
-  site = require('../services/site'),
+import _ from 'lodash';
+
+const site = require('../services/site'),
   dom = require('@nymag/dom'),
   references = require('../services/references'),
   getInput = require('../services/field-helpers').getInput,

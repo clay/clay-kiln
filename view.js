@@ -1,5 +1,7 @@
 'use strict'; // eslint-disable-line
 
+import _ from 'lodash';
+
 // note: use strict above is applied to the whole browserified doc
 const references = require('./services/references'),
   dom = require('@nymag/dom'),
@@ -8,8 +10,7 @@ const references = require('./services/references'),
   toggleEdit = require('./services/toggle-edit'),
   eventify = require('eventify'),
   plugins = require('./services/plugins'),
-  progress = require('./services/progress'),
-  _ = require('lodash'); // todo: when we have webpack 2, use es6 w/ tree-shaking
+  progress = require('./services/progress');
 
 let secretKilnKey = '';
 

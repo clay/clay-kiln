@@ -1,5 +1,6 @@
-var _ = require('lodash'),
-  dom = require('@nymag/dom');
+import _ from 'lodash';
+
+const dom = require('@nymag/dom');
 
 /**
  * Create list item and input for each option.

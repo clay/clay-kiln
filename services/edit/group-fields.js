@@ -1,5 +1,6 @@
-var _ = require('lodash'),
-  references = require('../references');
+import _ from 'lodash';
+
+var references = require('../references');
 
 /**
  * True if value has a property called fields.

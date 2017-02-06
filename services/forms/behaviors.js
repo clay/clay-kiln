@@ -1,5 +1,6 @@
-var _ = require('lodash'),
-  references = require('../references'),
+import _ from 'lodash';
+
+var references = require('../references'),
   label = require('../label'),
   promises = require('../promises');
 

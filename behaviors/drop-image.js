@@ -1,4 +1,4 @@
-var _ = require('lodash');
+import _ from 'lodash';
 
 /**
  * add dragdrop events to field

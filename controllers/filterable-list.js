@@ -1,6 +1,7 @@
+import _ from 'lodash';
+
 const dom = require('@nymag/dom'),
   keyCode = require('keycode'),
-  _ = require('lodash'),
   pane = require('../services/pane'),
   dragula = require('dragula');
 

@@ -1,5 +1,6 @@
-var _ = require('lodash'),
-  references = require('../services/references');
+import _ from 'lodash';
+
+var references = require('../services/references');
 
 /**
  * match when schema says it's a component property
