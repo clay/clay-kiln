@@ -1,5 +1,6 @@
-const _ = require('lodash'),
-  ds = require('dollar-slice'),
+import _ from 'lodash';
+
+const ds = require('dollar-slice'),
   dom = require('@nymag/dom'),
   tpl = require('../tpl'),
   pane = require('./'),

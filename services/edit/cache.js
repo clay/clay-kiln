@@ -6,8 +6,9 @@
  * @module
  */
 
-var _ = require('lodash'),
-  db = require('./db'),
+import _ from 'lodash';
+
+var db = require('./db'),
   references = require('../references'),
   groupFields = require('./group-fields'),
   schemaFields = require('./schema-fields'),

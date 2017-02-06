@@ -1,5 +1,6 @@
-var _ = require('lodash'),
-  schemaKeywords = ['_ref', '_groups'];
+import _ from 'lodash';
+
+var schemaKeywords = ['_ref', '_groups'];
 
 /**
  * @param {object} schema

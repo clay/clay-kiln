@@ -1,5 +1,6 @@
-const _ = require('lodash'),
-  moment = require('moment'),
+import _ from 'lodash';
+
+const moment = require('moment'),
   dom = require('@nymag/dom'),
   ds = require('dollar-slice'),
   state = require('../page-state'),

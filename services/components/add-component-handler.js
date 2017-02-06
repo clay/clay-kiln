@@ -1,6 +1,7 @@
+import _ from 'lodash';
+
 var references = require('../references'),
   dom = require('@nymag/dom'),
-  _ = require('lodash'),
   allComponents = require('./all-components'),
   openAddComponent = require('../pane/add-component'),
   addComponent = require('./add-component'),

@@ -1,5 +1,6 @@
-var _ = require('lodash'),
-  edit = require('../edit'),
+import _ from 'lodash';
+
+var edit = require('../edit'),
   groups = require('./groups'),
   dom = require('@nymag/dom'),
   promises = require('../promises');

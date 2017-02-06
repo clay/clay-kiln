@@ -1,5 +1,6 @@
-var _ = require('lodash'),
-  path = require('path'),
+import _ from 'lodash';
+
+var path = require('path'),
   dom = require('@nymag/dom'),
   references = require('./references'),
   editorEl = dom.find('[' + references.referenceAttribute + '*="/components/clay-kiln"] .kiln-toolbar'),

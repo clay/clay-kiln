@@ -1,4 +1,4 @@
-var _ = require('lodash');
+import _ from 'lodash';
 
 /**
  * @returns {{resolve: function, reject: function, promise: Promise}}

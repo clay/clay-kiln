@@ -1,5 +1,6 @@
-const _ = require('lodash'),
-  dom = require('@nymag/dom'),
+import _ from 'lodash';
+
+const dom = require('@nymag/dom'),
   site = require('../site'),
   pane = require('./');
 

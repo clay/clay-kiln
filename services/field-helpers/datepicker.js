@@ -1,7 +1,8 @@
 // this is a tiny little service that instantiates date pickers for browsers that
 // don't natively support them
-var flatpickr = require('flatpickr'),
-  _ = require('lodash');
+import _ from 'lodash';
+
+const flatpickr = require('flatpickr');
 
 /**
  * do user agent check to determine if the current browser supports native date pickers

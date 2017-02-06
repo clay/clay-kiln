@@ -1,5 +1,6 @@
-const _ = require('lodash'),
-  allComponents = require('../components/all-components'),
+import _ from 'lodash';
+
+const allComponents = require('../components/all-components'),
   filterableList = require('../filterable-list'),
   addComponent = require('../components/add-component'),
   pane = require('./');

@@ -1,5 +1,6 @@
+import _ from 'lodash';
+
 const label = require('../label'),
-  _ = require('lodash'),
   filterableList = require('../filterable-list'),
   references = require('../references'),
   edit = require('../edit'),
@@ -168,7 +169,7 @@ function createTabFromList(layoutRef, data, path) {
 function getListTabs(path) {
   return edit.getLayout().then(function (layoutRef) {
     return edit.getData(layoutRef).then(function (data) {
-      let lists = _(data).map(function (value, prop) {
+      let lists = _.compact(_.map(data, function (value, prop) {
         let listEl = dom.find(`[data-editable="${prop}"]`);
         // note: finds the first editable thing with this path
         // this could potentially break if you do weird things with your layouts
@@ -182,7 +183,7 @@ function getListTabs(path) {
             el: listEl
           };
         }
-      }).compact().value();
+      }));
 
       return _.map(lists, createTabFromList(layoutRef, data, path));
     });

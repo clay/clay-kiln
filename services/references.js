@@ -1,4 +1,4 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
 module.exports = {
   editableAttribute: 'data-editable', // indicates el is editable when clicked. value is path to data

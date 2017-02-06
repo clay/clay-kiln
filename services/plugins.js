@@ -1,4 +1,4 @@
-var _ = require('lodash');
+import _ from 'lodash';
 
 // object of plugins, added to global
 window.kiln = window.kiln || {}; // create global kiln if it doesn't exist

@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 var componentEdit = require('../../controllers/component-edit'),
   componentEditName = 'component-edit',
   db = require('../edit/db'),
@@ -5,8 +7,7 @@ var componentEdit = require('../../controllers/component-edit'),
   ds = require('dollar-slice'),
   edit = require('../edit'),
   references = require('../references'),
-  select = require('./select'),
-  _ = require('lodash');
+  select = require('./select');
 
 /**
  * Test if element is a component and not the toolbar.

@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 var references = require('../references'),
   dom = require('@nymag/dom'),
   edit = require('../edit'),
@@ -6,7 +8,6 @@ var references = require('../references'),
   select = require('./select'),
   progress = require('../progress'),
   db = require('../edit/db'),
-  _ = require('lodash'),
   openComponents = require('../pane/components'),
   invisibleList = require('./invisible-list');
 

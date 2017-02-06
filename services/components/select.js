@@ -1,8 +1,8 @@
 // all components get decorated with component bars (which are hidden by default)
 // components that are "selected" get their bar (and their parents' bars) shown
+import _ from 'lodash';
 
-var _ = require('lodash'),
-  references = require('../references'),
+var references = require('../references'),
   dom = require('@nymag/dom'),
   tpl = require('../tpl'),
   edit = require('../edit'),

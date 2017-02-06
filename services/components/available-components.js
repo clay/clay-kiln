@@ -1,5 +1,6 @@
-const site = require('../site'),
-  _ = require('lodash');
+import _ from 'lodash';
+
+const site = require('../site');
 
 /**
  * determine if a component is available on the current site, based on logic

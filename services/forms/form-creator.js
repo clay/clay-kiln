@@ -1,5 +1,6 @@
-var _ = require('lodash'),
-  ds = require('dollar-slice'),
+import _ from 'lodash';
+
+var ds = require('dollar-slice'),
   rivets = require('rivets'),
   references = require('../references'),
   label = require('../label'),
