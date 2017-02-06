@@ -1,5 +1,6 @@
-var _ = require('lodash'),
-  select = require('selection-range'),
+import _ from 'lodash';
+
+var select = require('selection-range'),
   MediumEditor = require('medium-editor'),
   MediumButton = require('@yoshokatana/medium-button'),
   MediumEditorPhrase = require('medium-editor-phrase'),
@@ -73,7 +74,7 @@ function splitParagraphs(str) {
  * @returns {array}
  */
 function matchComponents(strings, rules) {
-  return _(strings).map(function (str) {
+  return _.filter(_.map(strings, function (str) {
     // remove extraneous opening <p>, <div>, and <br> tags
     // note: some google docs pastes might have `<p><br>`
     var cleanStr = str.replace(/^\s?<(?:p><br|p|div|br)(?:\s?\/)?>\s?/ig, ''),
@@ -102,7 +103,7 @@ function matchComponents(strings, rules) {
     matchedObj.value = matchedValue;
 
     return matchedObj;
-  }).filter(function filterMatches(component) {
+  }), function filterMatches(component) {
     var val = component.value;
 
     // filter out any components that are blank (filled with empty spaces)
@@ -112,7 +113,7 @@ function matchComponents(strings, rules) {
     // return true if the string contains words (anything that isn't whitespace, but not just a single closing tag),
     // or if it's a text-model that contains words (anything that isn't whitespace, but not just a single closing tag)
     return _.isString(val) && val.match(/\S/) && !val.match(/^<\/.*?>$/) || _.isString(val.text) && val.text.match(/\S/) && !val.text.match(/^<\/.*?>$/);
-  }).value();
+  });
 }
 
 /**

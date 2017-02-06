@@ -13,7 +13,7 @@ import _ from 'lodash';
  * @returns {[string]}
  */
 function flattenText(items) {
-  var pluckedText = _.compact(_.map(items, (item) => item[textProp])),
+  var pluckedText = _.compact(_.map(items, textProp)),
     hasTextProp = _.isString(_.head(pluckedText));
 
   return hasTextProp ? pluckedText : items;

@@ -34,7 +34,14 @@ module.exports = {
   },
   plugins: [
     styles,
-    new LodashModuleReplacementPlugin,
+    new LodashModuleReplacementPlugin({
+      shorthands: true, // allow _.map(collection, prop)
+      cloning: true, // used by edit
+      collections: true, // allow objects in collection methods
+      memoizing: true, // used by cache
+      flattening: true, // allow flattening methods
+      paths: true // allow deep _.get, _.set, _.has
+    }),
     new webpack.optimize.OccurrenceOrderPlugin,
     // new webpack.optimize.UglifyJsPlugin,
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/)

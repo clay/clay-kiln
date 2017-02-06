@@ -1,6 +1,7 @@
-var _ = require('lodash'),
-  dom = require('@nymag/dom'),
+var dom = require('@nymag/dom'),
   references = require('../services/references');
+
+import _ from 'lodash';
 
 /**
  * find components with matching selector
