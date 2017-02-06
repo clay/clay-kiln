@@ -1,6 +1,6 @@
-var dom = require('@nymag/dom');
-
 import _ from 'lodash';
+
+var dom = require('@nymag/dom');
 
 /**
  * Create options for select.

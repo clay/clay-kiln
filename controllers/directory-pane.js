@@ -1,11 +1,11 @@
+import _ from 'lodash';
+
 const dom = require('@nymag/dom'),
   progress = require('../services/progress'),
   site = require('../services/site'),
   pane = require('../services/pane'),
   db = require('../services/edit/db'),
   queue = require('../services/edit/queue');
-
-import _ from 'lodash';
 
 function getUserID() {
   var el = dom.find('.kiln-toolbar'),

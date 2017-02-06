@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const moment = require('moment'),
   pane = require('../services/pane'),
   edit = require('../services/edit'),
@@ -8,8 +10,6 @@ const moment = require('moment'),
   site = require('../services/site'),
   queue = require('../services/edit/queue'),
   Routable = require('routable');
-
-import _ from 'lodash';
 
 /**
  * schedule page and layout publishing in parallel

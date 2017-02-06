@@ -1,9 +1,9 @@
+import _ from 'lodash';
+
 const dom = require('@nymag/dom'),
   keyCode = require('keycode'),
   pane = require('../services/pane'),
   dragula = require('dragula');
-
-import _ from 'lodash';
 
 /**
  * filter items in the list, based on the label or name

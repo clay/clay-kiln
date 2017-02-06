@@ -1,6 +1,6 @@
-var dom = require('@nymag/dom');
-
 import _ from 'lodash';
+
+var dom = require('@nymag/dom');
 
 /**
  * Simple List Primary (used after simple-list)
