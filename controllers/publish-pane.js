@@ -6,9 +6,10 @@ const moment = require('moment'),
   state = require('../services/page-state'),
   db = require('../services/edit/db'),
   site = require('../services/site'),
-  _ = require('lodash'),
   queue = require('../services/edit/queue'),
   Routable = require('routable');
+
+import _ from 'lodash';
 
 /**
  * schedule page and layout publishing in parallel

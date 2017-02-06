@@ -1,10 +1,11 @@
 const dom = require('@nymag/dom'),
-  _ = require('lodash'),
   previewSizes = {
     small: { w: 375, h: 660 },
     medium: { w: 768, h: 1024 },
     large: { w: 1024, h: 768 }
   };
+
+import _ from 'lodash';
 
 module.exports = function () {
   function Constructor(el) {
