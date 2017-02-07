@@ -13,6 +13,7 @@ var select = require('selection-range'),
   edit = require('../services/edit'),
   model = require('text-model'),
   site = require('../services/site'),
+  progress = require('../services/progress'),
   refAttr = references.referenceAttribute;
 
 // pass config actions to text-model
@@ -55,7 +56,9 @@ function selectAfter(node) {
 function splitParagraphs(str) {
   // </p>, </div>, </h1> through </h9>, or two (interchangeable) <br> or newlines
   // note: <br> tags may contain closing slashes, and there may be spaces around stuff
-  return _.map(str.split(/(?:<\/(?:p|div|h[1-9])>|(?:\s?<br(?:\s?\/)?>\s?|\s?\n\s?){2})/ig), s => s.trim());
+  // note: split on both </blockquote> and <blockquote>, since there may be text before/after the quote
+  let paragraphs = _.map(str.split(/(?:<\/(?:p|div|h[1-9])>|(?:\s?<br(?:\s?\/)?>\s?|\s?\n\s?){2})/ig), s => s.trim());
+
   // splitting on the closing p/div/header allows us to grab ALL the paragraphs from
   // google docs, since when you paste from there the last paragraph
   // isn't wrapped in a <p> tag. weird, right?
@@ -63,6 +66,25 @@ function splitParagraphs(str) {
   // google docs situations (lots of line breaks with embedded media),
   // as well as "plaintext" editors like IA Writer
   // splitting on double line breaks/<br> tags allows us to catch a few edge cases in other editors
+
+  // handle inline blockquotes (and, in the future, other inline things)
+  // that should be parsed out as separate components
+  return _.reduce(paragraphs, function (result, graf) {
+    if (_.includes(graf, '<blockquote') || _.includes(graf, '</blockquote')) {
+      let start = graf.indexOf('<blockquote'),
+        end = graf.indexOf('</blockquote>') + 13, // length of that closing tag
+        before = graf.substring(0, start),
+        quote = graf.substring(start, end),
+        after = graf.substring(end);
+
+      result.push(before);
+      result.push(quote); // pass this through so it gets picked up by rules
+      result.push(after);
+    } else {
+      result.push(graf);
+    }
+    return result;
+  }, []);
 }
 
 /**
@@ -71,19 +93,41 @@ function splitParagraphs(str) {
  * will have their values returned as text models instead of strings
  * @param  {array} strings
  * @param {array} rules chain of responsibility for paste rules
+ * @param {Element} el needs to be cleared if it throws an error
  * @returns {array}
  */
-function matchComponents(strings, rules) {
+function matchComponents(strings, rules, el) {
   return _.filter(_.map(strings, function (str) {
+    let cleanStr, matchedRule, matchedObj, matchedValue;
+
     // remove extraneous opening <p>, <div>, and <br> tags
     // note: some google docs pastes might have `<p><br>`
-    var cleanStr = str.replace(/^\s?<(?:p><br|p|div|br)(?:\s?\/)?>\s?/ig, ''),
-      matchedRule = _.find(rules, function matchRule(rule) {
-        return rule.match.exec(cleanStr);
-      }),
-      matchedObj, matchedValue;
+    cleanStr = str.replace(/^\s?<(?:p><br|p|div|br)(?:.*?)>\s?/ig, '');
+    // remove any other <p> or <div> tags, because you cannot put block-level tags inside paragraphs
+    cleanStr = cleanStr.replace(/<(?:p|div).*?>/ig, '');
+    // remove 'line separator' and 'paragraph separator' characters
+    // (not visible in text editors, but get added when pasting from pdfs and old systems)
+    cleanStr = cleanStr.replace(/(\u2028|\u2029)/g, '');
+    // convert tab characters to spaces (pdfs looooove tab characters)
+    cleanStr = cleanStr.replace(/(?:\t|\\t)/g, ' ');
+    // convert nonbreaking spaces to regular spaces
+    cleanStr = cleanStr.replace(/&nbsp;/ig, ' ');
+    // assume newlines that AREN'T between a period and a capital letter (or number) are errors
+    // note: this fixes issues when pasting from pdfs or other sources that automatically
+    // insert newlines at arbitrary places
+    cleanStr = cleanStr.replace(/\.\n[A-Z0-9]/g, '<br>');
+    cleanStr = cleanStr.replace(/\n/g, ' ');
+    // FINALLY, trim the string to catch any of the stuff we converted to spaces above
+    cleanStr = cleanStr.trim();
+
+    matchedRule = _.find(rules, function matchRule(rule) {
+      return rule.match.exec(cleanStr);
+    });
 
     if (!matchedRule) {
+      // remove pasted content from element and display an error
+      dom.clearChildren(el);
+      progress.open('error', `Error pasting text: No rule found for "${_.truncate(cleanStr, { length: 40, omission: '…' })}"`);
       throw new Error('No matching paste rule for ' + cleanStr);
     }
 
@@ -672,7 +716,7 @@ function initWysiwygBinder(enableKeyboardExtras, pasteRules) {
             value: model.fromElement(dom.create(editable.innerHTML)) // sanitize by default
           }];
         } else {
-          components = matchComponents(splitParagraphs(editable.innerHTML), pasteRules);
+          components = matchComponents(splitParagraphs(editable.innerHTML), pasteRules, editable);
         }
 
         // now grab the first component

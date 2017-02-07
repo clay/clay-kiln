@@ -48,7 +48,6 @@ module.exports = {
       // note: we're explicitly not allowing chaining or currying
     }),
     new webpack.optimize.OccurrenceOrderPlugin,
-    new webpack.optimize.UglifyJsPlugin,
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/)
   ]
 };
