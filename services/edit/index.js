@@ -17,7 +17,8 @@ var dom = require('@nymag/dom'),
   knownExtraFields = ['_ref', '_schema'],
   bannedFields = ['_self', '_components', '_pageRef', '_pageData', '_version', '_refs', 'layout', 'template'],
   hbs = require('nymag-handlebars')(),
-  pt = require('promise-timeout');
+  pt = require('promise-timeout'),
+  MODEL_TIMEOUT = 500;
 
 // add precompiled templates as partials (on page load)
 document.addEventListener('DOMContentLoaded', function () {
@@ -113,7 +114,7 @@ function clientSave(uri, data) {
 
   return cache.removeExtras(uri, data)
     .then(function (cleanData) {
-      return pt.timeout(Promise.resolve(model.save(uri, cleanData), 300)); // 300ms timeout for models
+      return pt.timeout(Promise.resolve(model.save(uri, cleanData)), MODEL_TIMEOUT);
     })
     .then(function (finalData) {
       queue.add(db.save, [uri, finalData, false]); // do this in the background
@@ -140,7 +141,7 @@ function clientSave(uri, data) {
         }, promise;
 
       if (_.isFunction(model.render)) {
-        promise = pt.timeout(Promise.resolve(model.render(uri, data, locals), 300)); // 300ms timeout for models
+        promise = pt.timeout(Promise.resolve(model.render(uri, data, locals)), MODEL_TIMEOUT);
       } else {
         promise = Promise.resolve(cachedData);
       }
