@@ -54,7 +54,7 @@ function selectAfter(node) {
  * @returns {array}
  */
 function splitParagraphs(str) {
-  // </p>, </div>, </h1> through </h9>, </blockquote>, or two (interchangeable) <br> or newlines
+  // </p>, </div>, </h1> through </h9>, or two (interchangeable) <br> or newlines
   // note: <br> tags may contain closing slashes, and there may be spaces around stuff
   // note: split on both </blockquote> and <blockquote>, since there may be text before/after the quote
   let paragraphs = _.map(str.split(/(?:<\/(?:p|div|h[1-9])>|(?:\s?<br(?:\s?\/)?>\s?|\s?\n\s?){2})/ig), s => s.trim());
@@ -66,6 +66,9 @@ function splitParagraphs(str) {
   // google docs situations (lots of line breaks with embedded media),
   // as well as "plaintext" editors like IA Writer
   // splitting on double line breaks/<br> tags allows us to catch a few edge cases in other editors
+
+  // handle inline blockquotes (and, in the future, other inline things)
+  // that should be parsed out as separate components
   return _.reduce(paragraphs, function (result, graf) {
     if (_.includes(graf, '<blockquote') || _.includes(graf, '</blockquote')) {
       let start = graf.indexOf('<blockquote'),
