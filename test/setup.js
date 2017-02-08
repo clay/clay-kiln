@@ -1,7 +1,6 @@
-const testsContext = require.context('../', true, /^\.\/(behaviors|decorators|services|validators)\/.*?\.test\.js$/);
+const testsContext = require.context('../', true, /^\.\/(lib)\/.*?\.test\.js$/);
 
-// stub global events
-window.kiln = window.kiln || { trigger: function () {} };
+// don't write to console
 sinon.stub(console);
 
 // run all tests
