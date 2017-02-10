@@ -139,7 +139,10 @@ body {
     display: none;
   }
 
-  .publish-loading {
+  .publish-loading,
+  .publish-draft,
+  .publish-published,
+  .publish-scheduled {
     display: flex;
   }
 }
@@ -149,13 +152,13 @@ body {
 
   border-left: none;
 
-  .publish-loading {
-    display: none;
-  }
-
-  .publish-draft {
-    display: flex;
-  }
+  // .publish-loading {
+  //   display: none;
+  // }
+  //
+  // .publish-draft {
+  //   display: flex;
+  // }
 }
 
 .kiln-toolbar .published {
@@ -163,14 +166,14 @@ body {
 
   border-left: none;
 
-  .publish-loading,
-  .publish-draft {
-    display: none;
-  }
-
-  .publish-published {
-    display: flex;
-  }
+  // .publish-loading,
+  // .publish-draft {
+  //   display: none;
+  // }
+  //
+  // .publish-published {
+  //   display: flex;
+  // }
 }
 
 .kiln-toolbar .scheduled {
@@ -178,13 +181,13 @@ body {
 
   border-left: none;
 
-  .publish-loading,
-  .publish-draft,
-  .publish-published {
-    display: none;
-  }
-
-  .publish-scheduled {
-    display: flex;
-  }
+  // .publish-loading,
+  // .publish-draft,
+  // .publish-published {
+  //   display: none;
+  // }
+  //
+  // .publish-scheduled {
+  //   display: flex;
+  // }
 }
