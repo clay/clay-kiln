@@ -1,5 +1,5 @@
 import store from './lib/core-data/store';
-import preload from './lib/core-data/preload';
+import { preload } from './lib/preloader/actions';
 
 // Require all scss/css files needed
 require.context('./styleguide', true, /^.*\.(scss|css)$/);
@@ -8,5 +8,10 @@ require.context('./styleguide', true, /^.*\.(scss|css)$/);
 // note: preloaded data, external behaviors, decorators, and validation rules should already be added
 // when this event fires
 document.addEventListener('DOMContentLoaded', function () {
-  preload();
+  store.subscribe(() => {
+    console.log('state updated!')
+    console.log(store.getState())
+  })
+
+  store.dispatch(preload());
 });
