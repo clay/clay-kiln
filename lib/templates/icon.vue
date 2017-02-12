@@ -1,5 +1,5 @@
 <template>
-  <div class="kiln-icon" v-html="icon"></div>
+  <span class="icon" v-once v-html="icon"></span>
 </template>
 
 <script>
@@ -15,9 +15,9 @@
       return obj;
     }, {});
 
-  export default{
+  export default {
     props: ['name'],
-    data: function () {
+    data() {
       return {};
     },
     computed: {

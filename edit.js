@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import store from './lib/core-data/store';
-import toolbar from './lib/toolbar/view';
+import toolbar from './lib/templates/edit-toolbar.vue';
 
 // Require all scss/css files needed
 require.context('./styleguide', true, /^.*\.(scss|css)$/);
@@ -9,7 +9,13 @@ require.context('./styleguide', true, /^.*\.(scss|css)$/);
 // note: preloaded data, external behaviors, decorators, and validation rules should already be added
 // when this event fires
 document.addEventListener('DOMContentLoaded', function () {
-  let toolbarView = new Vue(toolbar);
+  new Vue({
+    el: '#kiln-app',
+    store,
+    components: {
+      'edit-toolbar': toolbar
+    }
+  });
 
   store.dispatch('preload');
 });

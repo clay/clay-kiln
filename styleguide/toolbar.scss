@@ -134,60 +134,22 @@ body {
   @media screen and (min-width: 1024px) {
     min-width: 130px; // largest width (scheduled)
   }
-
-  .button-flex-inner {
-    display: none;
-  }
-
-  .publish-loading,
-  .publish-draft,
-  .publish-published,
-  .publish-scheduled {
-    display: flex;
-  }
 }
 
 .kiln-toolbar .draft {
   @include button-filled-large($draft);
 
   border-left: none;
-
-  // .publish-loading {
-  //   display: none;
-  // }
-  //
-  // .publish-draft {
-  //   display: flex;
-  // }
 }
 
 .kiln-toolbar .published {
   @include button-filled-large($published);
 
   border-left: none;
-
-  // .publish-loading,
-  // .publish-draft {
-  //   display: none;
-  // }
-  //
-  // .publish-published {
-  //   display: flex;
-  // }
 }
 
 .kiln-toolbar .scheduled {
   @include button-filled-large($scheduled);
 
   border-left: none;
-
-  // .publish-loading,
-  // .publish-draft,
-  // .publish-published {
-  //   display: none;
-  // }
-  //
-  // .publish-scheduled {
-  //   display: flex;
-  // }
 }
