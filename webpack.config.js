@@ -30,6 +30,12 @@ module.exports = {
         fallback: 'style-loader',
         use: ['css-loader', 'postcss-loader', 'sass-loader']
       })
+    }, {
+      test: /\.svg$/,
+      use: 'raw-loader'
+    }, {
+      test: /\.vue$/,
+      use: 'vue-loader'
     }]
   },
   resolve: {
