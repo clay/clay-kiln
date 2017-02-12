@@ -81,15 +81,15 @@
               <span class="icon">{{{ read 'node_modules/clay-kiln/media/draft.svg' }}}</span>
               <span class="text">Loading&hellip;</span>
             </div>
-            <div class="button-flex-inner publish-scheduled" v-if="pageState.scheduled">
+            <div class="button-flex-inner publish-scheduled" v-else>
               <span class="icon">{{{ read 'node_modules/clay-kiln/media/scheduled.svg' }}}</span>
               <span class="text">Scheduled</span>
             </div>
-            <div class="button-flex-inner publish-published" v-else-if="pageState.published">
+            <div class="button-flex-inner publish-published">
               <span class="icon">{{{ read 'node_modules/clay-kiln/media/published.svg' }}}</span>
               <span class="text">Published</span>
             </div>
-            <div class="button-flex-inner publish-draft" v-else>
+            <div class="button-flex-inner publish-draft">
               <span class="icon">{{{ read 'node_modules/clay-kiln/media/draft.svg' }}}</span>
               <span class="text">Draft</span>
             </div>

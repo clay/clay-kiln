@@ -46,6 +46,7 @@
     "css-loader": "^0.26.1",
     "eslint": "^3.2.2",
     "extract-text-webpack-plugin": "^2.0.0-rc.2",
+    "flatpickr": "^2.3.7",
     "karma": "^1.4.1",
     "karma-browserstack-launcher": "^1.2.0",
     "karma-chrome-launcher": "^2.0.0",

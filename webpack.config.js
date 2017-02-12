@@ -27,8 +27,8 @@ module.exports = {
     }, {
       test: /\.scss|.css$/,
       use: styles.extract({
-        fallbackLoader: 'style-loader',
-        loader: ['css-loader', 'postcss-loader', 'sass-loader']
+        fallback: 'style-loader',
+        use: ['css-loader', 'postcss-loader', 'sass-loader']
       })
     }]
   },
