@@ -11,13 +11,13 @@
   import icon from '../utils/icon.vue';
 
   export default {
-    props: ['iconName', 'click', 'text'],
+    props: ['iconName', 'name', 'text'],
     data() {
       return {};
     },
     methods: {
       handleClick() {
-        this.$emit('click');
+        this.$emit('click', this.name || this.iconName);
       }
     },
     components: {

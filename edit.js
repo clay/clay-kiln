@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function () {
   new Vue({
     strict: true,
     el: '#kiln-app',
+    render(h) {
+      return h('edit-toolbar');
+    },
     store,
     components: {
       'edit-toolbar': toolbar

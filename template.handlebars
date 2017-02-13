@@ -30,13 +30,7 @@
     {{/if}}
 
     {{! always show toolbar when logged in}}
-    <div id="kiln-app">
-      {{#if @root.locals.edit}}
-        <edit-toolbar></edit-toolbar>
-      {{else}}
-        <view-toolbar></view-toolbar>
-      {{/if}}
-    </div>
+    <div id="kiln-app"></div>
 
     {{! show different scripts in view/edit mode }}
     {{#if @root.locals.edit}}
