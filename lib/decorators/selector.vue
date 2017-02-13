@@ -25,6 +25,7 @@
 </template>
 
 <script>
+  import { isEmpty } from 'lodash';
   import { getData, getSchema } from '../core-data/components';
   import label from '../utils/label';
   import { getComponentName } from '../utils/references';
@@ -42,11 +43,24 @@
       hasSettings() {
         const uri = this.$options.uri;
 
-        return getSettingsFields(getData(uri), getSchema(uri));
+        return !isEmpty(getSettingsFields(getData(uri), getSchema(uri)));
       },
-      hasDelete: () => false,
-      hasAddComponent: () => false,
-      hasReplaceComponent: () => false
+      // note: only for components in LISTS! components in properties can be replaced but not deleted (for now)
+      hasDelete() {
+        const parentField = this.$options.parentField;
+
+        return parentField && parentField.type === 'list';
+      },
+      hasAddComponent() {
+        const parentField = this.$options.parentField;
+
+        return parentField && parentField.type === 'list';
+      },
+      hasReplaceComponent() {
+        const parentField = this.$options.parentField;
+
+        return parentField && parentField.type === 'prop';
+      }
     },
     components: {
       icon
