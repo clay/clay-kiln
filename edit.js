@@ -10,6 +10,7 @@ require.context('./styleguide', true, /^.*\.(scss|css)$/);
 // when this event fires
 document.addEventListener('DOMContentLoaded', function () {
   new Vue({
+    strict: true,
     el: '#kiln-app',
     store,
     components: {

@@ -21,7 +21,6 @@
 
 <script>
   import { mapState } from 'vuex';
-  import store from '../core-data/store';
   import { PRELOAD_PENDING, PRELOAD_SUCCESS } from '../preloader/mutationTypes';
   import button from '../templates/toolbar-button.vue';
 

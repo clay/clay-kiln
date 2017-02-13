@@ -16,3 +16,18 @@
     </section>
   </div>
 </template>
+
+<script>
+  import { mapState } from 'vuex';
+  import button from '../templates/toolbar-button.vue';
+
+  export default {
+    computed: mapState({
+      pageState: (state) => state.page.state,
+      isLoading: 'isLoading'
+    }),
+    components: {
+      'toolbar-button': button
+    }
+  };
+</script>
