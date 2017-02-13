@@ -3,8 +3,8 @@
     <aside class="component-selector-top">
       <div class="selected-info">
         <span class="selector-location">
-          <icon v-if="isPageRoot" name="this-page" class="selector-this-page" title="This Page"></icon>
-          <icon v-else name="many-pages" class="selector-many-pages" title="Multiple Pages"></icon>
+          <icon name="this-page" class="selector-this-page" title="This Page"></icon>
+          <icon name="many-pages" class="selector-many-pages" title="Multiple Pages"></icon>
         </span>
         <span class="selector-button selected-label">{{ componentLabel }}</span>
       </div>
@@ -25,31 +25,29 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
-  import store from '../core-data/store';
+  import { getData, getSchema } from '../core-data/components';
   import label from '../utils/label';
   import { getComponentName } from '../utils/references';
+  import { getSettingsFields } from '../core-data/groups';
   import icon from '../utils/icon.vue';
 
   export default {
-    store,
     data() {
       return {};
     },
-    computed: mapState({
-      // todo: how do we instantiate these with a slice of the state?
-      // e.g. pass in tree props, so we know where in the tree we are,
-      // and can pop() the last prop to grab the component data from the components substore
-      // (and grab the name to grab the schema)
+    computed: {
       componentLabel() {
         return label(getComponentName(this.$options.uri));
       },
-      isPageRoot: () => false,
-      hasSettings: () => false,
+      hasSettings() {
+        const uri = this.$options.uri;
+
+        return getSettingsFields(getData(uri), getSchema(uri));
+      },
       hasDelete: () => false,
       hasAddComponent: () => false,
       hasReplaceComponent: () => false
-    }),
+    },
     components: {
       icon
     }
