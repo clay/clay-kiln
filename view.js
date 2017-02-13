@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { pageUri } from '@nymag/dom';
 import addClayListeners from './lib/utils/shift-clay';
 import store from './lib/core-data/store';
-import toolbar from './lib/templates/view-toolbar.vue';
+import toolbar from './lib/toolbar/view-toolbar.vue';
 import getPageState from './lib/page/page-state';
 import { PRELOAD_PENDING, LOADING_SUCCESS } from './lib/preloader/mutationTypes';
 import { UPDATE_PAGESTATE, UPDATE_PAGEURI } from './lib/page/mutationTypes';

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import store from './lib/core-data/store';
-import toolbar from './lib/templates/edit-toolbar.vue';
+import toolbar from './lib/toolbar/edit-toolbar.vue';
 
 // Require all scss/css files needed
 require.context('./styleguide', true, /^.*\.(scss|css)$/);
