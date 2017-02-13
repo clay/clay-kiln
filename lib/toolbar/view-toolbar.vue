@@ -7,7 +7,7 @@
       <toolbar-button class="new" icon-name="new-page" text="New Page"></toolbar-button>
       <div class="flex-span flex-span-outer"></div>
       <div class="kiln-toolbar-inner">
-        <toolbar-button class="edit-button" icon-name="edit"></toolbar-button>
+        <toolbar-button class="edit-button" icon-name="edit" @click="startEditing"></toolbar-button>
       </div>
       <toolbar-button v-if="isLoading" class="publish loading" icon-name="draft" text="Loading&hellip;"></toolbar-button>
       <toolbar-button v-else-if="pageState.scheduled" class="publish scheduled" icon-name="scheduled" text="Scheduled"></toolbar-button>
@@ -19,6 +19,7 @@
 
 <script>
   import { mapState } from 'vuex';
+  import toggleEdit from '../utils/toggle-edit';
   import button from './toolbar-button.vue';
 
   export default {
@@ -28,6 +29,11 @@
     }),
     components: {
       'toolbar-button': button
+    },
+    methods: {
+      startEditing() {
+        toggleEdit();
+      }
     }
   };
 </script>

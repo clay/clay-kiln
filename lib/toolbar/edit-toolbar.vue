@@ -6,7 +6,7 @@
       <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay"></toolbar-button>
       <toolbar-button class="new" icon-name="new-page" text="New Page"></toolbar-button>
       <div class="kiln-toolbar-inner">
-        <toolbar-button class="view-button" name="close" icon-name="close-edit" @click="toggleLoading"></toolbar-button>
+        <toolbar-button class="view-button" name="close" icon-name="close-edit" @click="stopEditing"></toolbar-button>
         <toolbar-button class="components" name="components" icon-name="search-page" text="Components"></toolbar-button>
         <div class="flex-span flex-span-inner"></div>
         <toolbar-button class="preview" name="preview" icon-name="new-tab" text="Preview"></toolbar-button>
@@ -21,7 +21,7 @@
 
 <script>
   import { mapState } from 'vuex';
-  import { PRELOAD_PENDING, PRELOAD_SUCCESS } from '../preloader/mutationTypes';
+  import toggleEdit from '../utils/toggle-edit';
   import button from './toolbar-button.vue';
 
   export default {
@@ -33,12 +33,8 @@
       'toolbar-button': button
     },
     methods: {
-      toggleLoading() {
-        if (!this.$store.state.isLoading) {
-          this.$store.commit(PRELOAD_PENDING);
-        } else {
-          this.$store.commit(PRELOAD_SUCCESS, this.$store.state);
-        }
+      stopEditing() {
+        toggleEdit();
       }
     }
   };
