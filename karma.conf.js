@@ -26,6 +26,12 @@ const files = [
               ]
             }]]
           }
+        }, {
+          test: /\.svg$/,
+          use: 'raw-loader'
+        }, {
+          test: /\.vue$/,
+          use: 'vue-loader'
         }]
       }
     },

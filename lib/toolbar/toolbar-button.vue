@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import icon from './icon.vue';
+  import icon from '../utils/icon.vue';
 
   export default {
     props: ['iconName', 'click', 'text'],
