@@ -3,6 +3,7 @@
     "sourceType": "module",
     "ecmaVersion": 6
   },
+  "plugins": ["html"],
   "env": {
     "browser": true,
     "commonjs": true,
