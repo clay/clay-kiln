@@ -279,3 +279,12 @@ $selector-fade-easing: linear;
   flex-wrap: inherit;
   flex: 1 1 100%;
 }
+
+// overlay div on top of iframes
+.iframe-overlay-div {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
