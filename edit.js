@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import store from './lib/core-data/store';
+import { decorateAll } from './lib/decorators';
 import toolbar from './lib/toolbar/edit-toolbar.vue';
 
 // Require all scss/css files needed
@@ -21,5 +22,5 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  store.dispatch('preload');
+  store.dispatch('preload').then(() => decorateAll());
 });
