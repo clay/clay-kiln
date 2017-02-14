@@ -1,5 +1,6 @@
 <template>
-  <aside class="component-selector">
+  <aside class="component-selector" @click.stop>
+    <!-- stop clicks on the selector from bubbling up -->
     <aside class="component-selector-top">
       <div class="selected-info">
         <span class="selector-location">
