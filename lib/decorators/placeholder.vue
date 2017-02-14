@@ -48,8 +48,8 @@
 
         if (subSchema[placeholderProp].text) {
           // if `text` is specified, interpolate it with the component data
-          // and then capitalize each word
-          return _.words(interpolate(subSchema[placeholderProp].text, componentData)).map(_.upperFirst).join(' ');
+          // and then capitalize the first letter in each word
+          return interpolate(subSchema[placeholderProp].text, componentData).split(' ').map(_.upperFirst).join(' ');
         } else {
           // default to using the label of the path
           return label(this.$options.path, subSchema);
