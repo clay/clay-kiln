@@ -29,8 +29,16 @@ document.addEventListener('DOMContentLoaded', function () {
   document.body.addEventListener('click', (e) => {
     e.stopPropagation();
 
+    // always unselect if clicking out of the current selection
+    // todo: handle panes where we want to stay selected
     if (_.get(store, 'state.ui.currentSelection')) {
       store.dispatch('unselect');
+    }
+
+    // always unfocus if clicking out of the current focus
+    // todo: handle overlay/settings forms so they don't unfocus
+    if (_.get(store, 'state.ui.currentFocus')) {
+      store.dispatch('unfocus');
     }
   });
 });
