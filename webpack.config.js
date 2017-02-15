@@ -1,6 +1,6 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin'),
-  path = require('path'),
-  styles = new ExtractTextPlugin('clay-kiln-[name].css'),
+  docs = new ExtractTextPlugin('behaviors/README.md'),
+  styles = new ExtractTextPlugin('dist/clay-kiln-[name].css'),
   webpack = require('webpack'),
   LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
@@ -12,8 +12,8 @@ module.exports = {
     'view-public': './view-public.js'
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'clay-kiln-[name].js'
+    path: __dirname,
+    filename: 'dist/clay-kiln-[name].js'
   },
   module: {
     rules: [{
@@ -38,13 +38,15 @@ module.exports = {
       loader: 'vue-loader',
       options: {
         loaders: {
-          sass: 'vue-style-loader!css-loader!postcss-loader!sass-loader'
+          sass: 'vue-style-loader!css-loader!postcss-loader!sass-loader',
+          docs: ExtractTextPlugin.extract('raw-loader')
         }
       }
     }]
   },
   plugins: [
     styles,
+    docs,
     new LodashModuleReplacementPlugin({
       shorthands: true, // allow _.map(collection, prop)
       cloning: true, // used by edit
@@ -59,6 +61,6 @@ module.exports = {
       // note: we're explicitly not allowing chaining or currying
     }),
     new webpack.optimize.OccurrenceOrderPlugin,
-    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/)
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
   ]
 };
