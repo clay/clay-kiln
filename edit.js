@@ -1,11 +1,20 @@
+import { basename, extname } from 'path';
 import _ from 'lodash';
 import Vue from 'vue';
 import store from './lib/core-data/store';
 import { decorateAll } from './lib/decorators';
+import { add as addBehavior } from './lib/forms/behaviors';
 import toolbar from './lib/toolbar/edit-toolbar.vue';
+
+const behaviorReq = require.context('./behaviors', false, /\.vue$/);
 
 // Require all scss/css files needed
 require.context('./styleguide', true, /^.*\.(scss|css)$/);
+
+// add behaviors
+behaviorReq.keys().forEach(function (key) {
+  addBehavior(basename(key, extname(key)), behaviorReq(key));
+});
 
 // kick off loading when DOM is ready
 // note: preloaded data, external behaviors, decorators, and validation rules should already be added
