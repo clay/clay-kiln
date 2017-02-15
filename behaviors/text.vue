@@ -76,6 +76,11 @@
       'number',
       'range'
     ],
+    dateTypes = [
+      'datetime-local',
+      'date',
+      'time'
+    ],
     firefoxDateFormat = 'YYYY-MM-DD hh:mm A',
     defaultDateFormat = 'YYYY-MM-DDThh:mm';
 
@@ -102,6 +107,10 @@
     }
   }
 
+  function isDate(type) {
+    return _.includes(dateTypes, type);
+  }
+
   export default {
     props: ['name', 'data', 'schema', 'args'],
     data() {
@@ -113,7 +122,7 @@
         return _.includes(typesSupportingMinMax, this.args.type);
       },
       shouldCapitalize() {
-        const cap = args.autocapitalize;
+        const cap = this.args.autocapitalize;
 
         // set this to the string of "autocapitalize",
         // or fall back to "on" / "off" if it's a boolean
@@ -138,8 +147,10 @@
       }
     },
     mounted() {
-      // initialize datepicker if necessary
-      initDatePicker(this.$el, this.$store, this.name);
+      if (isDate(this.args.type)) {
+        // initialize datepicker if necessary
+        initDatePicker(this.$el, this.$store, this.name);
+      }
     },
     slot: 'main'
   };

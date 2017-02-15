@@ -22,7 +22,6 @@
   import _ from 'lodash';
   import { mapState } from 'vuex';
   import { displayProp, getComponentName } from '../utils/references';
-  import store from '../core-data/store';
   import label from '../utils/label';
   import field from './field.vue';
 
@@ -30,7 +29,6 @@
     data() {
       return {};
     },
-    store,
     computed: mapState({
       hasCurrentModalForm: (state) => !_.isNull(state.ui.currentForm) && state.ui.currentForm.schema[displayProp] !== 'inline',
       label: (state) => label(state.ui.currentForm.path, state.ui.currentForm.schema),
