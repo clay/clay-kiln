@@ -10,19 +10,22 @@ $overlay-margin: 10vh;
   display: block;
   height: 100%;
   left: 0;
-  opacity: 0;
+  opacity: 1;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   position: fixed;
   top: 0;
   transform: translateZ(0); // create a new viewport context
-  transition: opacity 100ms ease-out;
   width: 100%;
+}
 
-  &.on {
-    opacity: 1;
-    transition: opacity 150ms ease-out;
-  }
+// transition
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 100ms ease-out;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 
 .editor-overlay {
