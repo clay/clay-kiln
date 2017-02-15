@@ -1,4 +1,4 @@
-const testsContext = require.context('../', true, /^\.\/(lib)\/.*?\.test\.js$/);
+const testsContext = require.context('../', true, /^\.\/(lib|behaviors)\/.*?\.test\.js$/);
 
 // don't write to console
 sinon.stub(console);

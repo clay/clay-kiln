@@ -21,8 +21,7 @@ const files = [
             plugins: [['istanbul', {
               exclude: [
                 '**/*.test.js',
-                'test/**',
-                'controllers/**'
+                'test/**'
               ]
             }]]
           }
