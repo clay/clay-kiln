@@ -38,6 +38,14 @@
     @input="update"
     :step="args.step"
     :min="supportsMinMax && args.min"
+    :max="supportsMinMax && args.max"
+    :autocomplete="args.autocomplete ? 'on' : 'off'"
+    :autocapitalize="shouldCapitalize"
+    :required="args.required"
+    :pattern="args.pattern"
+    :minLength="args.minLength"
+    :maxLength="args.maxLength"
+    :placeholder="args.placeholder"
   />
 </template>
 
@@ -103,6 +111,19 @@
       // add min/max only if it exists and we're dealing with an input type that supports it
       supportsMinMax() {
         return _.includes(typesSupportingMinMax, this.args.type);
+      },
+      shouldCapitalize() {
+        const cap = args.autocapitalize;
+
+        // set this to the string of "autocapitalize",
+        // or fall back to "on" / "off" if it's a boolean
+        if (_.isString(cap)) {
+          return cap;
+        } else if (!!cap) {
+          return 'on';
+        } else {
+          return 'off';
+        }
       }
     },
     methods: {
