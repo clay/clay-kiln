@@ -7,8 +7,7 @@
   display: block; // always show the inputs
 }
 
-.flatpickr-wrapper.inline .flatpickr-calendar,
-.flatpickr-wrapper.open .flatpickr-calendar {
+.flatpickr-calendar.open {
   @include datepicker-layer();
 
   // not the full kiln-copy (no sizes, overrides, etc)
@@ -27,6 +26,10 @@
 
 .flatpickr-weekdays {
   font-size: 11.5px;
+}
+
+.flatpickr-time {
+  height: auto;
 }
 
 .flatpickr-hour,

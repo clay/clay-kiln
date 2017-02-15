@@ -31,21 +31,94 @@
 </style>
 
 <template>
-  <input class="input-text" :value="data" @input="update" />
+  <input
+    class="input-text"
+    :type="args.type || 'text'"
+    :value="data"
+    @input="update"
+    :step="args.step"
+    :min="supportsMinMax && args.min"
+  />
 </template>
 
 <script>
+  import _ from 'lodash';
+  import moment from 'moment';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
+  import { hasNativePicker, init as initPicker } from '../lib/utils/datepicker';
+
+  const invalidTypes = [
+      'button', // use other behaviors, e.g. segmented-button
+      'checkbox', // use checkbox or checkbox-group behaviors
+      'file', // use custom file uploading behaviors
+      'hidden', // use specific hidden behaviors, e.g. component-ref
+      'image', // unsupported
+      'radio', // use segmented-button, radio, etc behaviors
+      'reset', // unsupported form-level input
+      'search', // unsupported, not needed for input
+      'submit' // unsupported form-level input (i.e. we already have submit buttons)
+    ],
+    typesSupportingMinMax = [ // from https://www.w3.org/TR/html-markup/input.html
+      'datetime',
+      'datetime-local',
+      'date',
+      'month',
+      'time',
+      'week',
+      'number',
+      'range'
+    ],
+    firefoxDateFormat = 'YYYY-MM-DD hh:mm A',
+    defaultDateFormat = 'YYYY-MM-DDThh:mm';
+
+    /**
+   * create a new date string in a given format. If no
+   * value is passed in returns an empty string
+   * @param  {string} value   A date string in a format supported by Moment
+   * @param  {string} format  The format of the returned date string
+   * @return {string}
+   */
+  function newMomentWithFormat(value, format) {
+    // If value then instantiate with the value in proper format
+    return value ? moment(value).format(format) : '';
+  }
+
+  function initDatePicker($el) {
+    if (!hasNativePicker()) {
+      // when instantiating, convert from the ISO format (what we save) to firefox's format (what the datepicker needs)
+      $el.value = newMomentWithFormat($el.value, firefoxDateFormat);
+      initPicker($el);
+    } else {
+      // Get proper value at instantiation
+      $el.value = newMomentWithFormat($el.value, defaultDateFormat);
+    }
+  }
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {};
     },
+    computed: {
+      // add min/max only if it exists and we're dealing with an input type that supports it
+      supportsMinMax() {
+        return _.includes(typesSupportingMinMax, this.args.type);
+      }
+    },
     methods: {
+      // every time the value of the input changes, update the store
       update(e) {
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: e.target.value });
       }
+    },
+    created() {
+      if (_.includes(invalidTypes, this.args.type)) {
+        throw new Error('Input type is invalid: ' + this.args.type);
+      }
+    },
+    mounted() {
+      // initialize datepicker if necessary
+      initDatePicker(this.$el, this.$store, this.name);
     },
     slot: 'main'
   };
