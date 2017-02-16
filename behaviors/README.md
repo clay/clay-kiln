@@ -1,4 +1,12 @@
 
+# description
+
+Appends a description to a field.
+
+## Arguments
+
+* **value** _(required)_ field description, allows html
+
 # label
 
 Appends a label to a field. This is pulled from the field's `_label` property, and falls back to using the key of the field.
