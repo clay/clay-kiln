@@ -42,6 +42,11 @@
         return this.args.value;
       }
     },
+    created() {
+      if (!this.args.value) {
+        throw new Error('Description behavior must have a `value` argument!');
+      }
+    },
     slot: 'before'
   };
 </script>
