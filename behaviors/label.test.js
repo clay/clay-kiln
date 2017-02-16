@@ -1,17 +1,9 @@
-import Vue from 'vue';
 import lib from './label.vue';
 
-describe('references', () => {
-  function render(Component, propsData) {
-    const Ctor = Vue.extend(Component),
-      vm = new Ctor({ propsData }).$mount();
-
-    return vm.$el;
-  }
-
+describe('label behavior', () => {
   it('adds label', () => {
-    expect(render(lib, {
+    expect(renderWithArgs(lib, {
       name: 'test'
-    }).innerText).to.equal('Test');
+    }).$el.innerText).to.equal('Test');
   });
 });

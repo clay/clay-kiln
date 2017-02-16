@@ -8,10 +8,13 @@ settings.coverageReporter.reporters = [
 ];
 
 module.exports = function (karma) {
-  karma.set(_.assign(settings, {
+  let localSettings = _.assign(settings, {
     singleRun: false,
     autoWatch: true,
     autoWatchBatchDelay: 2000,
     browsers: ['Chrome']
-  }));
+  });
+
+  _.set(localSettings, 'webpack.watch', true);
+  karma.set(localSettings);
 };
