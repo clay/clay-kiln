@@ -11,7 +11,7 @@ module.exports = function (karma) {
   karma.set(_.assign(settings, {
     singleRun: false,
     autoWatch: true,
-    autoWatchBatchDelay: 1000,
+    autoWatchBatchDelay: 2000,
     browsers: ['Chrome']
   }));
 };

@@ -1,5 +1,5 @@
 const files = [
-    {pattern: 'test/setup.js', watched: false}
+    {pattern: 'test/setup.js', watched: false, included: true, served: true}
   ],
   settings = {
     autoWatch: false,
@@ -21,7 +21,8 @@ const files = [
             plugins: [['istanbul', {
               exclude: [
                 '**/*.test.js',
-                'test/**'
+                'test/**',
+                '*.md'
               ]
             }]]
           }
@@ -32,7 +33,8 @@ const files = [
           test: /\.vue$/,
           use: 'vue-loader'
         }]
-      }
+      },
+      watch: false
     },
     reporters: ['dots', 'coverage'],
     coverageReporter: {
@@ -86,7 +88,7 @@ const files = [
       // note: mobile safari passes all tests, but runs some of them more than once(!!)
     },
     browsers: ['chromeMac', 'firefoxMac', 'chromeWindows', 'firefoxWindows'],
-    files: files
+    files: files,
   };
 
 module.exports = function (karma) {
