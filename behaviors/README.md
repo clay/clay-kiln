@@ -1,4 +1,21 @@
 
+# checkbox-group
+
+A group of checkboxes, allowing the user to toggle on or off related items.
+
+## Arguments
+
+* **options** _(required)_ an array of checkboxes
+
+Each option should be an object with `name` and `value` properties. Use the bootstrap to specify which should be toggled by default, e.g.
+
+```yaml
+field1:
+  option1: true
+  option2: false
+  option3: false
+```
+
 # description
 
 Appends a description to a field.

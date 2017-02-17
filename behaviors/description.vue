@@ -24,7 +24,6 @@
   .label-description a {
     @include link();
   }
-
 </style>
 
 <template>
