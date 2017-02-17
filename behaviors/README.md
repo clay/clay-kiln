@@ -156,6 +156,14 @@ transformArg: [base image url]/recaps-$DATAFIELD.png ($DATAFIELD is the placehol
 
 ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
 
+# required
+
+Appends "required" to a field's label, to mark that field as required.
+
+## Arguments
+
+_No arguments_
+
 # text
 
 A one-line text input.
