@@ -112,7 +112,133 @@
 </template>
 
 <script>
+  import _ from 'lodash';
+  import { find } from '@nymag/dom';
+  import { refAttr } from '../lib/utils/references';
+  import { send } from '../lib/utils/rest';
+  import { reduce as reducePromise } from '../lib/utils/promises';
+  import { uriToUrl } from '../lib/utils/urls';
+  import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
+  import transformers from './magic-button-transformers';
   import icon from '../lib/utils/icon.vue';
+
+  /**
+   * get data from a field in the current form
+   * @param  {string} field
+   * @return {string}
+   */
+  function getFieldData(field) {
+    return _.get(this, `$store.state.ui.currentForm.fields.${field}`) || '';
+  }
+
+  /**
+   * get the uri of the first component that matches
+   * @param  {string} component name
+   * @return {string}
+   */
+  function findComponent(component) {
+    const firstComponent = find(`[${refAttr}*="/components/${component}"]`);
+
+    if (firstComponent) {
+      return firstComponent.getAttribute(refAttr);
+    } else {
+      return '';
+    }
+  }
+
+  /**
+   * get the initial data from a field or component
+   * @param {string} field
+   * @param {string} component
+   * @returns {string}
+   */
+  function getData(field, component) {
+    // if they specify a field to pull data from, get the data
+    // otherwise, if they specify a component to pull data from, find it on the page
+    // otherwise, return emptystring (it may be transformed)
+    if (!_.isEmpty(field)) {
+      return getFieldData.call(this, field);
+    } else if (!_.isEmpty(component)) {
+      return findComponent(component);
+    } else {
+      return '';
+      // note: to keep things sane when using transforms and api calls,
+      // we're treating "empty" data as emptystring (no matter what type the data might be)
+    }
+  }
+
+  /**
+   * get data from an api
+   * @param  {string} url
+   * @return {Promise}
+   */
+  function getAPI(url) {
+    return send(url).then((res) => res.json());
+  }
+
+  /**
+   * get a slice of the data returned from an api, if a property is set
+   * @param  {string} property
+   * @return {function}
+   */
+  function getProperty(property) {
+    return (data) => {
+      if (_.isString(property) && !_.isEmpty(property)) {
+        return _.get(data, property);
+      } else {
+        return data;
+      }
+    };
+  }
+
+  /**
+   * apply transforms, call urls, and grab properties
+   * @param {string} data
+   * @param {object} options
+   * @returns {Promise}
+   */
+  function doMoreMagic(data, options) {
+    const transform = options.transform,
+      property = options.property;
+
+    let url = options.url, // may have $SITE_PREFIX
+      transformed, promise;
+
+    // if a transform is specified, transform the data!
+    if (!_.isEmpty(transform) && _.isFunction(transformers[transform])) {
+      transformed = transformers[transform](data, options.transformArg);
+    } else if (_.isEmpty(transform)) {
+      // if a transform isn't specified, just pass through the data
+      transformed = data;
+    } else {
+      // they specified a transform, but it's not a function!
+      throw new Error(`Transform '${transform}' is not a function!`);
+    }
+
+    // if a url is specified, call the url and grab a property from the returned data
+    if (!_.isEmpty(url)) {
+      // we allow a single special token in urls, `$SITE_PREFIX`, which tells us
+      // to use the prefix of the current site (with proper port and protocol for api calls)
+      url = url.replace('$SITE_PREFIX', uriToUrl(this.$store.state.site.prefix));
+      // do an api call!
+      promise = getAPI(url + transformed).then(getProperty(property));
+    } else {
+      // if there is no url, simply pass through the data
+      promise = Promise.resolve(transformed);
+    }
+
+    return promise.then((res) => { console.log('from api:', res); return res;});
+  }
+
+  /**
+   * set data into a specified field
+   * @param {obejct} store
+   * @param {string} name
+   * @param {*} data
+   */
+  function setFieldData(store, name, data) {
+    store.commit(UPDATE_FORMDATA, { path: name, data });
+  }
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
@@ -124,7 +250,31 @@
     },
     methods: {
       doMagic() {
-        console.log('☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°')
+        const field = this.args.field,
+          component = this.args.component,
+          transform = this.args.transform,
+          transformArg = this.args.transformArg,
+          url = this.args.url,
+          property = this.args.property,
+          moreMagic = this.args.moreMagic || [],
+          store = this.$store,
+          name = this.name;
+
+        // get the initial data
+        let data = getData.call(this, field, component),
+          // apply an optional transform, call an optional url
+          promise = doMoreMagic.call(this, data, { transform, transformArg, url, property });
+
+        // if there's more magic, iterate through each item transforming the returned value
+        // note: each item in moreMagic is only allowed to have transform, url, and property
+        // (not field, component, or moreMagic)
+        if (moreMagic.length) {
+          return promise.then(function (res) {
+            return reducePromise(moreMagic, doMoreMagic.bind(this), res);
+          }).then((finalRes) => setFieldData(store, name, finalRes));
+        } else {
+          return promise.then((finalRes) => setFieldData(store, name, finalRes));
+        }
       }
     },
     slot: 'main'
