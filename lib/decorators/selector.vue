@@ -28,7 +28,6 @@
 <script>
   import { isEmpty } from 'lodash';
   import store from '../core-data/store';
-  import { FOCUS } from './mutationTypes';
   import { getData, getSchema } from '../core-data/components';
   import label from '../utils/label';
   import { getComponentName } from '../utils/references';
@@ -70,8 +69,7 @@
         const uri = this.$options.uri,
           path = 'settings';
 
-        store.commit(FOCUS, uri, path);
-        store.dispatch('openForm', { uri, path });
+        store.dispatch('focus', { uri, path });
       }
     },
     components: {
