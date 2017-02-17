@@ -110,7 +110,7 @@
         const el = this.$el,
           input = getInput(el);
 
-        if (input.hasAttribute('disabled')) {
+        if (this.locked) {
           // unlock!
           unlock(input);
           this.locked = false;
