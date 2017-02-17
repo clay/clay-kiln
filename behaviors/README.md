@@ -66,6 +66,10 @@ Appends a label to a field. This is pulled from the field's `_label` property, a
 
 _No arguments_
 
+# lock
+
+Append a lock button to an input. The input will be locked until the user clicks the lock button. This provides a small amount of friction before editing important (and rarely-edited) fields, similar to macOS's system preferences.
+
 # text
 
 A one-line text input.

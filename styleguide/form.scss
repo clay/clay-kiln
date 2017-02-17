@@ -104,3 +104,15 @@
 .hidden-submit {
   display: none;
 }
+
+// if the main field has multiple items (e.g. a button before/after an input),
+// set the width so they're all on the same line
+.main-2 > input,
+.main-2 > textarea {
+  width: calc(100% - 44px);
+}
+
+.main-3 > input,
+.main-3 > textarea {
+  width: calc(100% - 88px);
+}
