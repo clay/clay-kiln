@@ -10,7 +10,7 @@
         <span class="selector-button selected-label">{{ componentLabel }}</span>
       </div>
       <div class="selected-actions">
-        <button v-if="hasSettings" class="selector-button selected-action-settings" title="Component Settings"><icon name="settings"></icon></button>
+        <button v-if="hasSettings" class="selector-button selected-action-settings" title="Component Settings" @click="openSettings"><icon name="settings"></icon></button>
         <button v-if="hasDelete" class="selector-button selected-action-delete" title="Delete Component"><icon name="delete"></icon></button>
       </div>
     </aside>
@@ -27,6 +27,8 @@
 
 <script>
   import { isEmpty } from 'lodash';
+  import store from '../core-data/store';
+  import { FOCUS } from './mutationTypes';
   import { getData, getSchema } from '../core-data/components';
   import label from '../utils/label';
   import { getComponentName } from '../utils/references';
@@ -61,6 +63,15 @@
         const parentField = this.$options.parentField;
 
         return parentField && parentField.type === 'prop';
+      }
+    },
+    methods: {
+      openSettings() {
+        const uri = this.$options.uri,
+          path = 'settings';
+
+        store.commit(FOCUS, uri, path);
+        store.dispatch('openForm', { uri, path });
       }
     },
     components: {

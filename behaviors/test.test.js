@@ -12,4 +12,8 @@ describe('text behavior', () => {
       args: { type: 'url' }
     }).$el.getAttribute('type')).to.equal('url');
   });
+
+  it('goes in the main slot', () => {
+    expect(lib.slot).to.equal('main');
+  });
 });

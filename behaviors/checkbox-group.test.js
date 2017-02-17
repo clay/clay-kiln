@@ -28,6 +28,10 @@ describe('checkbox-group behavior', () => {
     }).$el.querySelector('label').textContent).to.eql('foobar');
   });
 
+  it('goes in the main slot', () => {
+    expect(lib.slot).to.equal('main');
+  });
+
   it('throws error if no options arg', () => {
     expect(() => renderWithArgs(lib, { args: {}, data: {} })).to.throw('Checkbox Group behavior must have an `options` argument!');
   });
