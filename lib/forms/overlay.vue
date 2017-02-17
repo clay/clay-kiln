@@ -42,7 +42,7 @@
     },
     methods: {
       save() {
-        this.$store.dispatch('closeForm');
+        this.$store.dispatch('unfocus');
       }
     }
   };
