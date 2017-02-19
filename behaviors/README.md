@@ -156,6 +156,26 @@ transformArg: [base image url]/recaps-$DATAFIELD.png ($DATAFIELD is the placehol
 
 ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
 
+# radio
+
+A group of radio buttons, allowing the user to select one of a few related options.
+
+## Arguments
+
+* **options** _(required)_ an array of strings
+
+Unlike [checkbox-group](https://github.com/nymag/clay-kiln/blob/master/behaviors/checkbox-group.md), each option should be a string rather than an object. The label for each option will simply be the option converted to Start Case.
+
+```yaml
+field1:
+  _has:
+    fn: radio
+    options:
+      - foo # looks like Foo
+      - bar # looks like Bar
+      - baz # looks like Baz
+```
+
 # required
 
 Appends "required" to a field's label, to mark that field as required.
