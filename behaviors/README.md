@@ -311,3 +311,12 @@ A one-line text input.
 _Note:_ All of the arguments marked `(blocking)` will block saving if the input is invalid.
 
 _Note:_ On recent mobile browsers, certain input types will have auto-capitalize disabled, e.g. emails.
+
+# textarea
+
+A multi-line text input.
+
+## Arguments
+
+* **required** _(optional)_ set textarea required (will block saving)
+* **placeholder** _(optional)_ placeholder that will display in the textarea
