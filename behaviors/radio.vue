@@ -49,8 +49,7 @@
   <ul class="editor-radios">
     <li class="editor-radio-item" v-for="option in options">
       <label>
-        <input type="radio" :checked="option.checked" :value="option.value" @change="update" />
-        {{ option.label }}
+        <input type="radio" :checked="option.checked" :value="option.value" @change="update" />{{ option.label }}
       </label>
     </li>
   </ul>
