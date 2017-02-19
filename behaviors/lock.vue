@@ -70,15 +70,8 @@
 </template>
 
 <script>
-  import { closest, find } from '@nymag/dom';
+  import { getInput } from '../lib/forms/field-helpers';
   import icon from '../lib/utils/icon.vue';
-  import { mainBehaviorClass } from '../lib/utils/references';
-
-  function getInput(el) {
-    const parent = closest(el, `.${mainBehaviorClass}`);
-
-    return find(parent, 'input') || find(parent, 'textarea');
-  }
 
   function jiggle(input, el) {
     el.classList.add('jiggle'); // trigger the jiggle animation

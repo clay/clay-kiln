@@ -1,5 +1,5 @@
 <template>
-  <label class="input-label">
+  <label class="kiln-field">
     <div class="field-before">
       <component v-for="behavior in beforeBehaviors" :is="behavior.fn" :name="name" :data="data" :schema="schema" :args="behavior.args"></component>
     </div>

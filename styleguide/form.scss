@@ -81,7 +81,7 @@
 }
 
 /* labels are containers that refer to inputs, textareas, or whatever else */
-.editor .input-label {
+.editor .kiln-field {
   @include clearfix();
 
   flex: 0 0 100%;
@@ -90,7 +90,7 @@
   position: relative;
 }
 
-.editor-inline .input-label {
+.editor-inline .kiln-field {
   margin: 0;
   text-align: left; // override component styling
 }
