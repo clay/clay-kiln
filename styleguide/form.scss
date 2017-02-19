@@ -24,8 +24,7 @@
 
   background-color: $white;
   flex: 0 0 100%;
-  overflow-x: hidden;
-  overflow-y: hidden;
+  overflow: visible;
   padding: 0;
 }
 
@@ -75,8 +74,7 @@
 }
 
 .editor-inline .input-container {
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: visible;
   padding: 0;
 }
 
