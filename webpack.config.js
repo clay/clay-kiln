@@ -38,8 +38,9 @@ module.exports = {
       loader: 'vue-loader',
       options: {
         loaders: {
+          css: 'vue-style-loader!css-loader!postcss-loader',
           sass: 'vue-style-loader!css-loader!postcss-loader!sass-loader',
-          docs: ExtractTextPlugin.extract('raw-loader')
+          docs: docs.extract('raw-loader')
         }
       }
     }]

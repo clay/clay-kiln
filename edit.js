@@ -36,17 +36,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // when clicks bubble up to the document, close the current form or pane / unselect components
   document.body.addEventListener('click', (e) => {
-    e.stopPropagation();
-
     // always unselect if clicking out of the current selection
     // todo: handle panes where we want to stay selected
-    if (_.get(store, 'state.ui.currentSelection')) {
+    if (_.get(store, 'state.ui.currentSelection') && !e.stopSelection) {
+      // note: stopSelection is set in the 'select' action. see the comments there for details
       store.dispatch('unselect');
     }
 
     // always unfocus if clicking out of the current focus
-    // todo: handle overlay/settings forms so they don't unfocus
-    if (_.get(store, 'state.ui.currentFocus')) {
+    if (_.get(store, 'state.ui.currentFocus') && !e.stopFocus) {
       store.dispatch('unfocus');
     }
   });
