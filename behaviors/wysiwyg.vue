@@ -244,17 +244,17 @@
    * check ops for paragraph breaks
    * a paragraph break is two newlines OR two ops next to each other with single newlines
    * @param  {array}  ops
-   * @return {Boolean}
+   * @return {object} with `exists` boolean and `index` number
    */
-  function hasParagraphBreak(ops) {
+  function getParagraphBreak(ops) {
     if (_.find(ops, hasTwoNewlines)) {
-      return true;
+      return { exists: true, index: _.findIndex(ops, hasTwoNewlines) };
     } else if (_.find(ops, hasPrevNewline.bind(null, ops))) {
-      return true;
+      return { exists: true, index: _.findIndex(ops, hasPrevNewline.bind(null, ops)) };
     } else if (_.find(ops, hasNextNewline.bind(null, ops))) {
-      return true;
+      return { exists: true, index: _.findIndex(ops, hasNextNewline.bind(null, ops)) };
     } else {
-      return false;
+      return { exists: false, index: -1 };
     }
   }
 
@@ -265,9 +265,13 @@
    * @return {object}
    */
   function splitParagraphs(node, delta) {
-    if (hasParagraphBreak(delta.ops)) {
-      console.log('!!! new paragraph!', delta, node.innerHTML)
-      return new Delta();
+    const paragraphBreak = getParagraphBreak(delta.ops);
+
+    if (paragraphBreak.exists) {
+      console.log('new paragraph! at pos: ' + paragraphBreak.index, delta, node.innerHTML)
+      const ops = delta.ops.slice(0, paragraphBreak.index);
+
+      return new Delta(ops);
     } else {
       console.log('same paragraph', delta)
       return delta;
