@@ -1,4 +1,12 @@
 
+# text
+
+Autocomplete
+
+# text
+
+Autocomplete
+
 # checkbox-group
 
 A group of checkboxes, allowing the user to toggle on or off related items.
@@ -242,6 +250,14 @@ field1:
       - bar # looks like Bar
       - baz # looks like Baz
 ```
+
+# text
+
+Simple list item
+
+# text
+
+Simple list
 
 # site-specific-select
 

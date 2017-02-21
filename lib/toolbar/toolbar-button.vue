@@ -10,6 +10,7 @@
 <script>
   import icon from '../utils/icon.vue';
 
+
   export default {
     props: ['iconName', 'name', 'text'],
     data() {
@@ -17,6 +18,7 @@
     },
     methods: {
       handleClick() {
+        console.log(this.name || this.iconName);
         this.$emit('click', this.name || this.iconName);
       }
     },
