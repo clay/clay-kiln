@@ -379,7 +379,7 @@ text:
     -
       fn: wysiwyg
       type: 'multi-component'
-      psudoBullet: true
+      pseudoBullet: true
       styled: false
       buttons:
         - bold

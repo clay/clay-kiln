@@ -47,7 +47,7 @@
       -
         fn: wysiwyg
         type: 'multi-component'
-        psudoBullet: true
+        pseudoBullet: true
         styled: false
         buttons:
           - bold
@@ -157,6 +157,7 @@
       const isSingleLine = this.isSingleLine,
         isMultiLine = this.isMultiLine,
         isMultiComponent = this.isMultiComponent,
+        pseudoBullet = this.args.pseudoBullet,
         buttons = this.args.buttons.concat(['clean']),
         formats = _.flatten(_.filter(buttons, (button) => button !== 'clean')),
         editor = new Quill(this.$el, {
@@ -178,10 +179,42 @@
                       // if the caret is at the beginning of a new line, create a new component (sending the text after the caret to the new component)
                       console.log('create new component with', renderDeltas(this.quill.getContents(range.index))) // text after caret, as html string
                       this.quill.deleteText(range.index, this.quill.getLength() - range.index); // remove text after caret
+                      // note: removing the text kicks off the `text-change` event, so the form data is updated automatically while we create a new component
                     } else if (isMultiComponent || isMultiLine) {
                       // multi-component: allow ONE new line before splitting into a new component
                       // multi-line: allow any number of newlines inside the current field
                       return true; // create new line
+                    }
+                  }
+                },
+                backspace: {
+                  key: 'backspace',
+                  shiftKey: null,
+                  shortKey: null,
+                  handler(range) {
+                    if (isMultiComponent && range.index === 0) {
+                      // we're at the start of the field, merge the text after the caret with the previous component
+                      console.log('append to previous component:', renderDeltas(this.quill.getContents(range.index)))
+                    } else {
+                      // normal delete behavior
+                      return true;
+                    }
+                  }
+                },
+                tab: {
+                  key: 'tab',
+                  shiftKey: null,
+                  shortKey: null,
+                  handler(range, context) {
+                    if (pseudoBullet && context.offset === 0) {
+                      // if pseudoBullet is enabled and we're at the start of a line,
+                      // add a bullet followed by a space
+                      this.quill.insertText(range.index, '• ');
+                      // then set the cursor after the space
+                      this.quill.setSelection(range.index + 2);
+                    } else {
+                      // otherwise, do the default tab behavior
+                      return true;
                     }
                   }
                 }
