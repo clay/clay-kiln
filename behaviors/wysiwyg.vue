@@ -121,6 +121,62 @@
   import Quill from 'quill';
   import _ from 'lodash';
 
+  const Delta = Quill.import('delta');
+
+  /**
+   * generate paste rules
+   * @param  {array} pasteRules
+   * @throw {Error} if rule doesn't have a `match` property
+   * @throw {Error} if rule.match isn't parseable as regex
+   * @return {array}
+   */
+  function generatePasteRules(pasteRules) {
+    return _.map(pasteRules, function (rawRule) {
+      const pre = '^',
+        preLink = '(?:<a(?:.*?)>)?',
+        post = '$',
+        postLink = '(?:</a>)?';
+
+      let rule = _.assign({}, rawRule); // don't mutate the raw rule
+
+      // regex rule assumptions
+      // 1. match FULL STRINGS (not partials), e.g. wrap rule in ^ and $
+      if (!rule.match) {
+        throw new Error('Paste rule needs regex! ', rule);
+      }
+
+      // if `rule.matchLink` is true, match rule AND a link with the rule as its text
+      // this allows us to deal with urls that other text editors make into links automatically
+      // (e.g. google docs creates links when you paste in urls),
+      // but will only return the stuff INSIDE the link text (e.g. the url).
+      // For embeds (where you want to grab the url) set matchLink to true,
+      // but for components that may contain actual links set matchLink to false
+      if (rule.matchLink) {
+        rule.match = `${preLink}${rule.match}${postLink}`;
+      }
+
+      // create regex
+      try {
+        rule.match = new RegExp(`${pre}${rule.match}${post}`);
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
+
+      return rule;
+    });
+  }
+
+  /**
+   * parse out paragraphs into line breaks,
+   * then remove extraneous opening/closing tags and other line breaks
+   * @param  {string} html
+   * @return {string}
+   */
+  function removeParagraphs(html) {
+    return html.replace(/<\/p><p>/ig, '<br />').replace(/<\/?p>/ig, '').replace(/<br>/ig, '');
+  }
+
   /**
    * render deltas as html string
    * @param  {object} deltas
@@ -131,7 +187,91 @@
       tempQuill = new Quill(temp);
 
     tempQuill.setContents(deltas);
-    return tempQuill.root.innerHTML;
+    return removeParagraphs(tempQuill.root.innerHTML);
+  }
+
+  /**
+   * completely remove element when pasting
+   * @return {object} empty delta
+   */
+  function removeElement() {
+    return new Delta();
+  }
+
+  /**
+   * check if op is two newlines
+   * @param  {object}  op
+   * @return {Boolean}
+   */
+  function hasTwoNewlines(op) {
+    return op && op.insert === '\n\n';
+  }
+
+  /**
+   * check if op is newline
+   * @param  {object}  op
+   * @return {Boolean}
+   */
+  function hasOneNewline(op) {
+    return op && op.insert === '\n';
+  }
+
+  /**
+   * check if op and prev op are both newlines
+   * @param  {array}  ops
+   * @param  {object}  op
+   * @return {Boolean}
+   */
+  function hasPrevNewline(ops, op) {
+    const index = _.indexOf(ops, op);
+
+    return hasOneNewline(op) && hasOneNewline(ops[index - 1]);
+  }
+
+  /**
+   * check if op and next op are both newlines
+   * @param  {array}  ops
+   * @param  {object}  op
+   * @return {Boolean}
+   */
+  function hasNextNewline(ops, op) {
+    const index = _.indexOf(ops, op);
+
+    return hasOneNewline(op) && hasOneNewline(ops[index + 1]);
+  }
+
+  /**
+   * check ops for paragraph breaks
+   * a paragraph break is two newlines OR two ops next to each other with single newlines
+   * @param  {array}  ops
+   * @return {Boolean}
+   */
+  function hasParagraphBreak(ops) {
+    if (_.find(ops, hasTwoNewlines)) {
+      return true;
+    } else if (_.find(ops, hasPrevNewline.bind(null, ops))) {
+      return true;
+    } else if (_.find(ops, hasNextNewline.bind(null, ops))) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * split paragraphs if we encounter two newlines
+   * @param  {element} node
+   * @param  {object} delta
+   * @return {object}
+   */
+  function splitParagraphs(node, delta) {
+    if (hasParagraphBreak(delta.ops)) {
+      console.log('!!! new paragraph!', delta, node.innerHTML)
+      return new Delta();
+    } else {
+      console.log('same paragraph', delta)
+      return delta;
+    }
   }
 
   export default {
@@ -158,6 +298,7 @@
         isMultiLine = this.isMultiLine,
         isMultiComponent = this.isMultiComponent,
         pseudoBullet = this.args.pseudoBullet,
+        rules = generatePasteRules(this.args.paste),
         buttons = this.args.buttons.concat(['clean']),
         formats = _.flatten(_.filter(buttons, (button) => button !== 'clean')),
         editor = new Quill(this.$el, {
@@ -177,7 +318,7 @@
                       console.log('close form');
                     } else if (isMultiComponent && context.collapsed && context.offset === 0) {
                       // if the caret is at the beginning of a new line, create a new component (sending the text after the caret to the new component)
-                      console.log('create new component with', renderDeltas(this.quill.getContents(range.index))) // text after caret, as html string
+                      console.log(`create new component with "${renderDeltas(this.quill.getContents(range.index))}"`) // text after caret, as html string
                       this.quill.deleteText(range.index, this.quill.getLength() - range.index); // remove text after caret
                       // note: removing the text kicks off the `text-change` event, so the form data is updated automatically while we create a new component
                     } else if (isMultiComponent || isMultiLine) {
@@ -191,10 +332,11 @@
                   key: 'backspace',
                   shiftKey: null,
                   shortKey: null,
-                  handler(range) {
-                    if (isMultiComponent && range.index === 0) {
-                      // we're at the start of the field, merge the text after the caret with the previous component
-                      console.log('append to previous component:', renderDeltas(this.quill.getContents(range.index)))
+                  handler(range, context) {
+                    if (isMultiComponent && context.collapsed && range.index === 0) {
+                      // we're at the start of the field (and don't have stuff highlighted),
+                      // so merge the text after the caret with the previous component
+                      console.log(`append to previous component: "${renderDeltas(this.quill.getContents(range.index))}"`)
                     } else {
                       // normal delete behavior
                       return true;
@@ -219,12 +361,31 @@
                   }
                 }
               }
+            },
+            clipboard: {
+              matchers: [
+                // completely remove certain elements
+                ['META', removeElement],
+                ['SCRIPT', removeElement],
+                ['STYLE', removeElement],
+                ['OBJECT', removeElement],
+                ['IFRAME', removeElement],
+                ['TABLE', removeElement],
+                [Node.ELEMENT_NODE, splitParagraphs]
+              ]
             }
           }
         });
 
       editor.on('text-change', (delta, oldDelta, source) => {
-        console.log('[EDITOR] text change!', editor.root.innerHTML)
+        if (isSingleLine || isMultiComponent) {
+          let str = removeParagraphs(editor.root.innerHTML)
+
+          console.log(`\n[EDITOR] text change! "${str}"`)
+        } else {
+          // update form data without parsing
+          console.log(`\n[EDITOR] text change! "${editor.root.innerHTML}"`)
+        }
       });
     },
     slot: 'main'
