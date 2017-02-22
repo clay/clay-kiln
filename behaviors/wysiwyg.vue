@@ -121,7 +121,173 @@
   import Quill from 'quill';
   import _ from 'lodash';
 
-  const Delta = Quill.import('delta');
+  const Delta = Quill.import('delta'),
+    Clipboard = Quill.import('modules/clipboard');
+
+    /**
+   * split innerHTML into paragraphs based on closing <p>/<div> and line breaks
+   * trim the resulting strings to get rid of any extraneous whitespace
+   * @param {string} str
+   * @returns {array}
+   */
+  function splitParagraphs(str) {
+    // unescape manually-written tags
+    let cleanStr = str.replace(/&lt;(.*?)&gt;/ig, '<$1>'),
+      paragraphs;
+
+    // </p>, </div>, </h1> through </h9>, or two (interchangeable) <br> or newlines
+    // note: <br> tags may contain closing slashes, and there may be spaces around stuff
+    // note: split on both </blockquote> and <blockquote>, since there may be text before/after the quote
+    paragraphs = _.map(cleanStr.split(/(?:<\/(?:p|div|h[1-9])>|(?:\s?<br(?:\s?\/)?>\s?|\s?\n\s?){2})/ig), s => s.trim());
+
+    // splitting on the closing p/div/header allows us to grab ALL the paragraphs from
+    // google docs, since when you paste from there the last paragraph
+    // isn't wrapped in a <p> tag. weird, right?
+    // splitting on closing <div> tags allows us to support some weird
+    // google docs situations (lots of line breaks with embedded media),
+    // as well as "plaintext" editors like IA Writer
+    // splitting on double line breaks/<br> tags allows us to catch a few edge cases in other editors
+
+    // handle inline blockquotes (and, in the future, other inline things)
+    // that should be parsed out as separate components
+    return _.reduce(paragraphs, function (result, graf) {
+      if (_.includes(graf, '<blockquote') || _.includes(graf, '</blockquote')) {
+        let start = graf.indexOf('<blockquote'),
+          end = graf.indexOf('</blockquote>') + 13, // length of that closing tag
+          before = graf.substring(0, start),
+          quote = graf.substring(start, end),
+          after = graf.substring(end);
+
+        result.push(before);
+        result.push(quote); // pass this through so it gets picked up by rules
+        result.push(after);
+      } else {
+        result.push(graf);
+      }
+      return result;
+    }, []);
+  }
+
+  /**
+   * clean elements from strings
+   * @param  {string} str
+   * @return {string}
+   */
+  function cleanElements(str) {
+    let cleanStr;
+
+    // remove span, meta, script, style, object, iframe, and table tags
+    cleanStr = str.replace(/<\/?(?:span|meta|script|style|object|iframe|table).*?>/ig, '');
+    // remove extraneous opening <p>, <div>, and <br> tags
+    // note: some google docs pastes might have `<p><br>`
+    cleanStr = cleanStr.replace(/^\s?<(?:p><br|p|div|br)(?:.*?)>\s?/ig, '');
+    // remove any other <p> or <div> tags, because you cannot put block-level tags inside paragraphs
+    cleanStr = cleanStr.replace(/<(?:p|div).*?>/ig, '');
+    return cleanStr;
+  }
+
+  /**
+   * remove non-whitelisted attributes from string
+   * @param  {string} str
+   * @return {string}
+   */
+  function cleanAttributes(str) {
+    let cleanStr;
+
+    // remove any attributes that aren't href
+    cleanStr = str.replace(/<(\S+)(\shref=".*?")?.*?>/ig, '<$1$2>');
+
+    return cleanStr;
+  }
+
+  /**
+   * clean characters from string
+   * @param  {string} str
+   * @return {string}
+   */
+  function cleanCharacters(str) {
+    let cleanStr;
+
+    // remove 'line separator' and 'paragraph separator' characters
+    // (not visible in text editors, but get added when pasting from pdfs and old systems)
+    cleanStr = str.replace(/(\u2028|\u2029)/g, '');
+    // convert tab characters to spaces (pdfs looooove tab characters)
+    cleanStr = cleanStr.replace(/(?:\t|\\t)/g, ' ');
+    // assume newlines that AREN'T between a period and a capital letter (or number) are errors
+    // note: this fixes issues when pasting from pdfs or other sources that automatically
+    // insert newlines at arbitrary places
+    cleanStr = cleanStr.replace(/\.\n[A-Z0-9]/g, '<br>');
+    cleanStr = cleanStr.replace(/\n/g, ' ');
+    // decode SPECIFIC html entities (not all of them, as that's a security hole)
+    cleanStr = cleanStr.replace(/&amp;/ig, '&');
+    cleanStr = cleanStr.replace(/&nbsp;/ig, ' ');
+    cleanStr = cleanStr.replace(/&ldquo;/ig, '“');
+    cleanStr = cleanStr.replace(/&rdguo;/ig, '”');
+    cleanStr = cleanStr.replace(/&lsquo;/ig, '‘');
+    cleanStr = cleanStr.replace(/&rsquo;/ig, '’');
+    cleanStr = cleanStr.replace(/&hellip;/ig, '…');
+    cleanStr = cleanStr.replace(/&mdash;/ig, '—');
+    cleanStr = cleanStr.replace(/'&ndash;'/ig, '–');
+    return cleanStr;
+  }
+
+  /**
+   * match components from strings of random pasted input
+   * note: paragraphs (and other components with rules that specify sanitization)
+   * will have their values returned as text models instead of strings
+   * @param  {array} strings
+   * @param {array} rules chain of responsibility for paste rules
+   * @returns {array}
+   */
+  function matchComponents(strings, rules) {
+    return _.filter(_.map(strings, function (str) {
+      let cleanStr, matchedRule, matchedObj, matchedValue;
+
+      console.log('\n\nCLEANING STRING', str)
+      cleanStr = cleanElements(str);
+      console.log('elements:', cleanStr)
+      cleanStr = cleanAttributes(cleanStr);
+      console.log('attrs:', cleanStr)
+      cleanStr = cleanCharacters(cleanStr);
+      console.log('chars:', cleanStr)
+
+      // FINALLY, trim the string to catch any of the stuff we converted to spaces above
+      cleanStr = cleanStr.trim();
+
+      console.log('\nclean:', cleanStr)
+
+      matchedRule = _.find(rules, function matchRule(rule) {
+        return rule.match.exec(cleanStr);
+      });
+
+      if (!matchedRule) {
+        progress.open('error', `Error pasting text: No rule found for "${_.truncate(cleanStr, { length: 40, omission: '…' })}"`);
+        throw new Error('No matching paste rule for ' + cleanStr);
+      }
+
+      // grab stuff from matched rule, incl. component, field, sanitize
+      matchedObj = _.assign({}, matchedRule);
+
+      // find actual matched value for component
+      // note: rules need to grab _some value_ from the string
+      matchedValue = matchedRule.match.exec(cleanStr)[1];
+
+      // finally, add the potentially-sanitized value into the matched obj
+      matchedObj.value = matchedValue;
+
+      return matchedObj;
+    }), function filterMatches(component) {
+      var val = component.value;
+
+      // filter out any components that are blank (filled with empty spaces)
+      // this happens a lot when paragraphs really only contain <p> tags, <div>s, or extra spaces
+      // we filter AFTER generating text models because the generation gets rid of tags that paragraphs can't handle
+
+      // return true if the string contains words (anything that isn't whitespace, but not just a single closing tag),
+      // or if it's a text-model that contains words (anything that isn't whitespace, but not just a single closing tag)
+      return _.isString(val) && val.match(/\S/) && !val.match(/^<\/.*?>$/);
+    });
+  }
 
   /**
    * generate paste rules
@@ -186,114 +352,6 @@
     return new Delta();
   }
 
-  /**
-   * check if op is two newlines
-   * @param  {object}  op
-   * @return {Boolean}
-   */
-  function hasTwoNewlines(op) {
-    return op && op.insert === '\n\n';
-  }
-
-  /**
-   * check if op is newline
-   * @param  {object}  op
-   * @return {Boolean}
-   */
-  function hasOneNewline(op) {
-    return op && op.insert === '\n';
-  }
-
-  /**
-   * check if op and prev op are both newlines
-   * @param  {array}  ops
-   * @param  {object}  op
-   * @return {Boolean}
-   */
-  function hasPrevNewline(ops, op) {
-    const index = _.indexOf(ops, op);
-
-    return hasOneNewline(op) && hasOneNewline(ops[index - 1]);
-  }
-
-  /**
-   * check if op and next op are both newlines
-   * @param  {array}  ops
-   * @param  {object}  op
-   * @return {Boolean}
-   */
-  function hasNextNewline(ops, op) {
-    const index = _.indexOf(ops, op);
-
-    return hasOneNewline(op) && hasOneNewline(ops[index + 1]);
-  }
-
-  /**
-   * check ops for paragraph breaks
-   * a paragraph break is two newlines OR two ops next to each other with single newlines
-   * @param  {array}  ops
-   * @return {object} with `exists` boolean and `index` number
-   */
-  function getParagraphBreak(ops) {
-    if (_.find(ops, hasTwoNewlines)) {
-      return { exists: true, index: _.findIndex(ops, hasTwoNewlines) };
-    } else if (_.find(ops, hasPrevNewline.bind(null, ops))) {
-      return { exists: true, index: _.findIndex(ops, hasPrevNewline.bind(null, ops)) };
-    } else if (_.find(ops, hasNextNewline.bind(null, ops))) {
-      return { exists: true, index: _.findIndex(ops, hasNextNewline.bind(null, ops)) };
-    } else {
-      return { exists: false, index: -1 };
-    }
-  }
-
-  function findComponent(rules) {
-    return (op) => {
-      const matchedRule = _.find(rules, (rule) => {
-        if (rule.match && rule.matchAttr) {
-          // match a regex AND the existence of an attribute
-          return _.has(op, `attributes.${rule.matchAttr}`) && rule.match.exec(op.insert);
-        } else if (rule.match && rule.matchLink) {
-          // match regex that's exactly the same as the link attribute
-          return _.has(op, 'attributes.link') && rule.match.exec(op.insert) === rule.match.exec(op.attributes.link);
-        } else {
-          return rule.match.exec(op.insert);
-        }
-      });
-
-      if (!matchedRule) {
-        throw new Error(`No rule found for "${_.truncate(op.insert, { length: 20, omission: '…' })}"`);
-      }
-
-      console.log(matchedRule)
-      let matchedValue = matchedRule.match.exec(op.insert)[1];
-
-      console.log(`matched: ~~~${matchedRule.component}~~~`, matchedValue)
-    }
-  }
-
-  /**
-   * split paragraphs if we encounter two newlines
-   * @param  {array} rules
-   * @return {function}
-   */
-  function splitParagraphs(rules) {
-    return (node, delta) => {
-      const paragraphBreak = getParagraphBreak(delta.ops);
-
-      _.each(delta.ops.filter((op) => op.insert !== '\n' && op.insert !== '\n\n'), findComponent(rules))
-
-      if (paragraphBreak.exists) {
-        // console.log('new paragraph! at pos: ' + paragraphBreak.index, delta, node.innerHTML)
-        const ops = delta.ops.slice(0, paragraphBreak.index);
-
-        return new Delta(ops);
-      } else {
-        // console.log('same paragraph', delta)
-        return delta;
-      }
-    }
-  }
-
   export default {
     props: ['name', 'data', 'schema', 'args'],
     data() {
@@ -320,92 +378,107 @@
         pseudoBullet = this.args.pseudoBullet,
         rules = generatePasteRules(this.args.paste),
         buttons = this.args.buttons.concat(['clean']),
-        formats = _.flatten(_.filter(buttons, (button) => button !== 'clean')).concat(['header', 'blockquote']),
-        editor = new Quill(this.$el, {
-          theme: 'bubble',
-          formats,
-          modules: {
-            toolbar: buttons,
-            keyboard: {
-              bindings: {
-                enter: {
-                  key: 'enter',
-                  shiftKey: null, // don't care if shift is pressed or not
-                  shortKey: null, // don't care if ctrl/⌘ is pressed or not
-                  handler(range, context) {
-                    if (isSingleLine) {
-                      // single-line: never allow newlines, always just close the form
-                      console.log('close form');
-                    } else if (isMultiComponent && context.collapsed && context.offset === 0) {
-                      // if the caret is at the beginning of a new line, create a new component (sending the text after the caret to the new component)
-                      console.log(`create new component with "${renderDeltas(this.quill.getContents(range.index))}"`) // text after caret, as html string
-                      this.quill.deleteText(range.index, this.quill.getLength() - range.index); // remove text after caret
-                      // note: removing the text kicks off the `text-change` event, so the form data is updated automatically while we create a new component
-                    } else if (isMultiComponent || isMultiLine) {
-                      // multi-component: allow ONE new line before splitting into a new component
-                      // multi-line: allow any number of newlines inside the current field
-                      return true; // create new line
-                    }
+        formats = _.flatten(_.filter(buttons, (button) => button !== 'clean')).concat(['header', 'blockquote']);
+
+      let editor;
+
+      class ClayClipboard extends Clipboard {
+        convert(html) {
+          let delta = new Delta();
+
+          if (_.isString(html)) {
+            this.container.innerHTML = html;
+          }
+          console.log('html', html)
+          console.log('container', this.container.innerHTML)
+
+          console.log('\nsplit', matchComponents(splitParagraphs(this.container.innerHTML), rules).map((m) => m.component))
+
+          this.container.innerHTML = '';
+          return delta
+        }
+      }
+
+      Quill.register('modules/clipboard', ClayClipboard, true); // need to do this before creating the editor
+
+      editor = new Quill(this.$el, {
+        theme: 'bubble',
+        formats,
+        modules: {
+          toolbar: buttons,
+          keyboard: {
+            bindings: {
+              enter: {
+                key: 'enter',
+                shiftKey: null, // don't care if shift is pressed or not
+                shortKey: null, // don't care if ctrl/⌘ is pressed or not
+                handler(range, context) {
+                  if (isSingleLine) {
+                    // single-line: never allow newlines, always just close the form
+                    console.log('close form');
+                  } else if (isMultiComponent && context.collapsed && context.offset === 0) {
+                    // if the caret is at the beginning of a new line, create a new component (sending the text after the caret to the new component)
+                    console.log(`create new component with "${renderDeltas(this.quill.getContents(range.index))}"`) // text after caret, as html string
+                    this.quill.deleteText(range.index, this.quill.getLength() - range.index); // remove text after caret
+                    // note: removing the text kicks off the `text-change` event, so the form data is updated automatically while we create a new component
+                  } else if (isMultiComponent || isMultiLine) {
+                    // multi-component: allow ONE new line before splitting into a new component
+                    // multi-line: allow any number of newlines inside the current field
+                    return true; // create new line
                   }
-                },
-                backspace: {
-                  key: 'backspace',
-                  shiftKey: null,
-                  shortKey: null,
-                  handler(range, context) {
-                    if (isMultiComponent && context.collapsed && range.index === 0) {
-                      // we're at the start of the field (and don't have stuff highlighted),
-                      // so merge the text after the caret with the previous component
-                      console.log(`append to previous component: "${renderDeltas(this.quill.getContents(range.index))}"`)
-                    } else {
-                      // normal delete behavior
-                      return true;
-                    }
+                }
+              },
+              backspace: {
+                key: 'backspace',
+                shiftKey: null,
+                shortKey: null,
+                handler(range, context) {
+                  if (isMultiComponent && context.collapsed && range.index === 0) {
+                    // we're at the start of the field (and don't have stuff highlighted),
+                    // so merge the text after the caret with the previous component
+                    console.log(`append to previous component: "${renderDeltas(this.quill.getContents(range.index))}"`)
+                  } else {
+                    // normal delete behavior
+                    return true;
                   }
-                },
-                tab: {
-                  key: 'tab',
-                  shiftKey: null,
-                  shortKey: null,
-                  handler(range, context) {
-                    if (pseudoBullet && context.offset === 0) {
-                      // if pseudoBullet is enabled and we're at the start of a line,
-                      // add a bullet followed by a space
-                      this.quill.insertText(range.index, '• ');
-                      // then set the cursor after the space
-                      this.quill.setSelection(range.index + 2);
-                    } else {
-                      // otherwise, do the default tab behavior
-                      return true;
-                    }
+                }
+              },
+              tab: {
+                key: 'tab',
+                shiftKey: null,
+                shortKey: null,
+                handler(range, context) {
+                  if (pseudoBullet && context.offset === 0) {
+                    // if pseudoBullet is enabled and we're at the start of a line,
+                    // add a bullet followed by a space
+                    this.quill.insertText(range.index, '• ');
+                    // then set the cursor after the space
+                    this.quill.setSelection(range.index + 2);
+                  } else {
+                    // otherwise, do the default tab behavior
+                    return true;
                   }
                 }
               }
-            },
-            clipboard: {
-              matchers: [
-                // completely remove certain elements
-                ['META', removeElement],
-                ['SCRIPT', removeElement],
-                ['STYLE', removeElement],
-                ['OBJECT', removeElement],
-                ['IFRAME', removeElement],
-                ['TABLE', removeElement],
-                [Node.ELEMENT_NODE, splitParagraphs(rules)]
-              ]
             }
+          },
+          clipboard: {
+            matchers: [
+              // completely remove certain elements
+              ['META', removeElement],
+              ['SCRIPT', removeElement],
+              ['STYLE', removeElement],
+              ['OBJECT', removeElement],
+              ['IFRAME', removeElement],
+              ['TABLE', removeElement],
+              // [Node.ELEMENT_NODE, splitParagraphs(rules)]
+            ]
           }
-        });
+        }
+      });
 
       editor.on('text-change', (delta, oldDelta, source) => {
-        if (isSingleLine || isMultiComponent) {
-          let str = removeParagraphs(editor.root.innerHTML)
-
-          console.log(`\n[EDITOR] text change! "${str}"`)
-        } else {
-          // update form data without parsing
-          console.log(`\n[EDITOR] text change! "${editor.root.innerHTML}"`)
-        }
+        console.log(`\n[EDITOR] text change! "${editor.root.innerHTML}"`)
       });
     },
     slot: 'main'
