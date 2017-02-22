@@ -114,7 +114,7 @@
 </style>
 
 <template>
-  <div class="wysiwyg-input" :class="{ styled: isStyled }" :html="data"></div>
+  <div class="wysiwyg-input" :class="{ styled: isStyled }"></div>
 </template>
 
 <script>
@@ -544,6 +544,11 @@
       }
 
       Quill.register('modules/clipboard', ClayClipboard, true); // need to do this before creating the editor
+
+      // manually add data into element when mounting
+      // note: we don't use v-html here because we don't want to update the html
+      // when the form data changes (since quill is handling it)
+      this.$el.innerHTML = this.data;
 
       editor = new Quill(this.$el, {
         theme: 'bubble',
