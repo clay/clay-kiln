@@ -133,9 +133,7 @@
   function generatePasteRules(pasteRules) {
     return _.map(pasteRules, function (rawRule) {
       const pre = '^',
-        preLink = '(?:<a(?:.*?)>)?',
-        post = '$',
-        postLink = '(?:</a>)?';
+        post = '\\n?$';
 
       let rule = _.assign({}, rawRule); // don't mutate the raw rule
 
@@ -143,16 +141,6 @@
       // 1. match FULL STRINGS (not partials), e.g. wrap rule in ^ and $
       if (!rule.match) {
         throw new Error('Paste rule needs regex! ', rule);
-      }
-
-      // if `rule.matchLink` is true, match rule AND a link with the rule as its text
-      // this allows us to deal with urls that other text editors make into links automatically
-      // (e.g. google docs creates links when you paste in urls),
-      // but will only return the stuff INSIDE the link text (e.g. the url).
-      // For embeds (where you want to grab the url) set matchLink to true,
-      // but for components that may contain actual links set matchLink to false
-      if (rule.matchLink) {
-        rule.match = `${preLink}${rule.match}${postLink}`;
       }
 
       // create regex
@@ -258,23 +246,51 @@
     }
   }
 
+  function findComponent(rules) {
+    return (op) => {
+      const matchedRule = _.find(rules, (rule) => {
+        if (rule.match && rule.matchAttr) {
+          // match a regex AND the existence of an attribute
+          return _.has(op, `attributes.${rule.matchAttr}`) && rule.match.exec(op.insert);
+        } else if (rule.match && rule.matchLink) {
+          // match regex that's exactly the same as the link attribute
+          return _.has(op, 'attributes.link') && rule.match.exec(op.insert) === rule.match.exec(op.attributes.link);
+        } else {
+          return rule.match.exec(op.insert);
+        }
+      });
+
+      if (!matchedRule) {
+        throw new Error(`No rule found for "${_.truncate(op.insert, { length: 20, omission: '…' })}"`);
+      }
+
+      console.log(matchedRule)
+      let matchedValue = matchedRule.match.exec(op.insert)[1];
+
+      console.log(`matched: ~~~${matchedRule.component}~~~`, matchedValue)
+    }
+  }
+
   /**
    * split paragraphs if we encounter two newlines
-   * @param  {element} node
-   * @param  {object} delta
-   * @return {object}
+   * @param  {array} rules
+   * @return {function}
    */
-  function splitParagraphs(node, delta) {
-    const paragraphBreak = getParagraphBreak(delta.ops);
+  function splitParagraphs(rules) {
+    return (node, delta) => {
+      const paragraphBreak = getParagraphBreak(delta.ops);
 
-    if (paragraphBreak.exists) {
-      console.log('new paragraph! at pos: ' + paragraphBreak.index, delta, node.innerHTML)
-      const ops = delta.ops.slice(0, paragraphBreak.index);
+      _.each(delta.ops.filter((op) => op.insert !== '\n' && op.insert !== '\n\n'), findComponent(rules))
 
-      return new Delta(ops);
-    } else {
-      console.log('same paragraph', delta)
-      return delta;
+      if (paragraphBreak.exists) {
+        // console.log('new paragraph! at pos: ' + paragraphBreak.index, delta, node.innerHTML)
+        const ops = delta.ops.slice(0, paragraphBreak.index);
+
+        return new Delta(ops);
+      } else {
+        // console.log('same paragraph', delta)
+        return delta;
+      }
     }
   }
 
@@ -304,7 +320,7 @@
         pseudoBullet = this.args.pseudoBullet,
         rules = generatePasteRules(this.args.paste),
         buttons = this.args.buttons.concat(['clean']),
-        formats = _.flatten(_.filter(buttons, (button) => button !== 'clean')),
+        formats = _.flatten(_.filter(buttons, (button) => button !== 'clean')).concat(['header', 'blockquote']),
         editor = new Quill(this.$el, {
           theme: 'bubble',
           formats,
@@ -375,7 +391,7 @@
                 ['OBJECT', removeElement],
                 ['IFRAME', removeElement],
                 ['TABLE', removeElement],
-                [Node.ELEMENT_NODE, splitParagraphs]
+                [Node.ELEMENT_NODE, splitParagraphs(rules)]
               ]
             }
           }
