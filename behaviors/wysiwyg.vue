@@ -104,6 +104,7 @@
   .wysiwyg-input.styled {
     @include input();
 
+    padding: 8.5px 10px; // align to buttons
     white-space: normal;
   }
 
