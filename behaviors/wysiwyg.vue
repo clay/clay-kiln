@@ -120,9 +120,85 @@
 <script>
   import Quill from 'quill';
   import _ from 'lodash';
+  import sanitize from 'sanitize-html';
+  import { getComponentName } from '../lib/utils/references';
+  import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
 
   const Delta = Quill.import('delta'),
-    Clipboard = Quill.import('modules/clipboard');
+    Clipboard = Quill.import('modules/clipboard'),
+    allowedInlineTags = ['strong', 'em', 'a', 'br', 'strike'],
+    allowedBlockTags = allowedInlineTags.concat(['h1', 'h2', 'h3', 'h4', 'p', 'blockquote']),
+    allowedAttributes = {
+      a: ['href']
+    },
+    transformTags = {
+      b: sanitize.simpleTransform('strong'),
+      i: sanitize.simpleTransform('em'),
+      span(tagName, attribs) {
+        const style = attribs.style;
+
+        // we need to convert certain spans to <strong> / <em>,
+        // since google docs uses inline styles instead of semantic tags
+        if (style && _.includes(style, 'font-weight: 700')) {
+          return {
+            tagName: 'strong',
+            attribs: {}
+          };
+        } else if (style && _.includes(style, 'font-style: italic')) {
+          return {
+            tagName: 'em',
+            attribs: {}
+          };
+        } else {
+          // spans will be cleaned up later, since they're
+          // not allowed in the sanitized output
+          return { tagName, attribs };
+        }
+      }
+    },
+    parser = {
+      decodeEntities: true,
+      lowerCaseTags: true
+    };
+
+  /**
+   * unescape manually-written tags before running through sanitizer
+   * @param  {string} str
+   * @return {string}
+   */
+  function unescape(str) {
+    return str.replace(/&lt;(.*?)&gt;/ig, '<$1>');
+  }
+
+  /**
+   * sanitize inline html
+   * note: removes any block-level tags
+   * @param  {string} str
+   * @return {string}
+   */
+  function sanitizeInlineHTML(str) {
+    return sanitize(unescape(str), {
+      allowedTags: allowedInlineTags,
+      allowedAttributes,
+      transformTags,
+      parser
+    });
+  };
+
+  /**
+   * sanitize block html
+   * note: allows block-level tags
+   * @param  {string} str
+   * @return {string}
+   */
+  function sanitizeBlockHTML(str) {
+    return sanitize(unescape(str), {
+      allowedTags: allowedBlockTags,
+      allowedAttributes,
+      transformTags,
+      parser
+    });
+  };
 
     /**
    * split innerHTML into paragraphs based on closing <p>/<div> and line breaks
@@ -131,14 +207,10 @@
    * @returns {array}
    */
   function splitParagraphs(str) {
-    // unescape manually-written tags
-    let cleanStr = str.replace(/&lt;(.*?)&gt;/ig, '<$1>'),
-      paragraphs;
-
     // </p>, </div>, </h1> through </h9>, or two (interchangeable) <br> or newlines
     // note: <br> tags may contain closing slashes, and there may be spaces around stuff
     // note: split on both </blockquote> and <blockquote>, since there may be text before/after the quote
-    paragraphs = _.map(cleanStr.split(/(?:<\/(?:p|div|h[1-9])>|(?:\s?<br(?:\s?\/)?>\s?|\s?\n\s?){2})/ig), s => s.trim());
+    let paragraphs = _.map(str.split(/(?:<\/(?:p|div|h[1-9])>|(?:\s?<br(?:\s?\/)?>\s?|\s?\n\s?){2})/ig), s => s.trim());
 
     // splitting on the closing p/div/header allows us to grab ALL the paragraphs from
     // google docs, since when you paste from there the last paragraph
@@ -169,38 +241,6 @@
   }
 
   /**
-   * clean elements from strings
-   * @param  {string} str
-   * @return {string}
-   */
-  function cleanElements(str) {
-    let cleanStr;
-
-    // remove span, meta, script, style, object, iframe, and table tags
-    cleanStr = str.replace(/<\/?(?:span|meta|script|style|object|iframe|table).*?>/ig, '');
-    // remove extraneous opening <p>, <div>, and <br> tags
-    // note: some google docs pastes might have `<p><br>`
-    cleanStr = cleanStr.replace(/^\s?<(?:p><br|p|div|br)(?:.*?)>\s?/ig, '');
-    // remove any other <p> or <div> tags, because you cannot put block-level tags inside paragraphs
-    cleanStr = cleanStr.replace(/<(?:p|div).*?>/ig, '');
-    return cleanStr;
-  }
-
-  /**
-   * remove non-whitelisted attributes from string
-   * @param  {string} str
-   * @return {string}
-   */
-  function cleanAttributes(str) {
-    let cleanStr;
-
-    // remove any attributes that aren't href
-    cleanStr = str.replace(/<(\S+)(\shref=".*?")?.*?>/ig, '<$1$2>');
-
-    return cleanStr;
-  }
-
-  /**
    * clean characters from string
    * @param  {string} str
    * @return {string}
@@ -218,16 +258,6 @@
     // insert newlines at arbitrary places
     cleanStr = cleanStr.replace(/\.\n[A-Z0-9]/g, '<br>');
     cleanStr = cleanStr.replace(/\n/g, ' ');
-    // decode SPECIFIC html entities (not all of them, as that's a security hole)
-    cleanStr = cleanStr.replace(/&amp;/ig, '&');
-    cleanStr = cleanStr.replace(/&nbsp;/ig, ' ');
-    cleanStr = cleanStr.replace(/&ldquo;/ig, '“');
-    cleanStr = cleanStr.replace(/&rdguo;/ig, '”');
-    cleanStr = cleanStr.replace(/&lsquo;/ig, '‘');
-    cleanStr = cleanStr.replace(/&rsquo;/ig, '’');
-    cleanStr = cleanStr.replace(/&hellip;/ig, '…');
-    cleanStr = cleanStr.replace(/&mdash;/ig, '—');
-    cleanStr = cleanStr.replace(/'&ndash;'/ig, '–');
     return cleanStr;
   }
 
@@ -243,18 +273,17 @@
     return _.filter(_.map(strings, function (str) {
       let cleanStr, matchedRule, matchedObj, matchedValue;
 
-      console.log('\n\nCLEANING STRING', str)
-      cleanStr = cleanElements(str);
-      console.log('elements:', cleanStr)
-      cleanStr = cleanAttributes(cleanStr);
-      console.log('attrs:', cleanStr)
-      cleanStr = cleanCharacters(cleanStr);
-      console.log('chars:', cleanStr)
+      // do some more post-splitting sanitization:
 
+      // remove extraneous opening <p>, <div>, and <br> tags
+      // note: some google docs pastes might have `<p><br>`
+      cleanStr = str.replace(/^\s?<(?:p><br|p|div|br)(?:.*?)>\s?/ig, '');
+      // remove any other <p> or <div> tags, because you cannot put block-level tags inside paragraphs
+      cleanStr = cleanStr.replace(/<(?:p|div).*?>/ig, '');
+      // remove other characters
+      cleanStr = cleanCharacters(cleanStr);
       // FINALLY, trim the string to catch any of the stuff we converted to spaces above
       cleanStr = cleanStr.trim();
-
-      console.log('\nclean:', cleanStr)
 
       matchedRule = _.find(rules, function matchRule(rule) {
         return rule.match.exec(cleanStr);
@@ -290,6 +319,40 @@
   }
 
   /**
+   * handle multi-paragraph paste
+   * @param  {array} components      of matched components
+   * @param  {object} quill
+   * @param  {object} current
+   * @param  {array} elementMatchers
+   * @param  {array} textMatchers
+   * @return {object}                 delta of changes to current component, saved automatically
+   */
+  function handleMultiParagraphPaste(components, { quill, current, elementMatchers, textMatchers }) {
+    const firstComponent = _.head(components),
+      otherComponents = _.tail(components);
+
+    let delta;
+
+    if (_.isEmpty(components)) {
+      // after sanitizing, there's nothing to paste! cool. (⌐■_■)
+      return new Delta();
+    }
+
+    if (firstComponent.component === current.component) {
+      // paste this text into the current component
+      delta = generateDeltas(firstComponent.value, elementMatchers, textMatchers);
+      console.log('add ' + _.map(otherComponents, 'component').join(', '))
+    } else if (quill.getLength() === 1) {
+      // there's no text in the current component, so replace it with the pasted component
+      console.log('replace with ' + firstComponent.component)
+      console.log('then add ' + _.map(otherComponents, 'component').join(', '))
+      delta = new Delta();
+    }
+
+    return delta;
+  }
+
+  /**
    * generate paste rules
    * @param  {array} pasteRules
    * @throw {Error} if rule doesn't have a `match` property
@@ -299,14 +362,26 @@
   function generatePasteRules(pasteRules) {
     return _.map(pasteRules, function (rawRule) {
       const pre = '^',
-        post = '\\n?$';
+        preLink = '(?:<a(?:.*?)>)?',
+        post = '$',
+        postLink = '(?:</a>)?';
 
-      let rule = _.assign({}, rawRule); // don't mutate the raw rule
+      let rule = _.assign({}, rawRule);
 
       // regex rule assumptions
       // 1. match FULL STRINGS (not partials), e.g. wrap rule in ^ and $
       if (!rule.match) {
         throw new Error('Paste rule needs regex! ', rule);
+      }
+
+      // if `rule.matchLink` is true, match rule AND a link with the rule as its text
+      // this allows us to deal with urls that other text editors make into links automatically
+      // (e.g. google docs creates links when you paste in urls),
+      // but will only return the stuff INSIDE the link text (e.g. the url).
+      // For embeds (where you want to grab the url) set matchLink to true,
+      // but for components that may contain actual links set matchLink to false
+      if (rule.matchLink) {
+        rule.match = `${preLink}${rule.match}${postLink}`;
       }
 
       // create regex
@@ -345,11 +420,52 @@
   }
 
   /**
-   * completely remove element when pasting
-   * @return {object} empty delta
+   * traverse nodes, calling matchers
+   * note: this code comes from quill/modules/clipboard
+   * @param  {Node} node
+   * @param  {array} elementMatchers
+   * @param  {array} textMatchers
+   * @return {object}
    */
-  function removeElement() {
-    return new Delta();
+  function traverse(node, elementMatchers, textMatchers) {  // Post-order
+    const DOM_KEY = '__ql-matcher';
+
+    if (node.nodeType === node.TEXT_NODE) {
+      return textMatchers.reduce(function (delta, matcher) {
+        return matcher(node, delta);
+      }, new Delta());
+    } else if (node.nodeType === node.ELEMENT_NODE) {
+      return [].reduce.call(node.childNodes || [], (delta, childNode) => {
+        let childrenDelta = traverse(childNode, elementMatchers, textMatchers);
+
+        if (childNode.nodeType === node.ELEMENT_NODE) {
+          childrenDelta = elementMatchers.reduce(function (childrenDelta, matcher) {
+            return matcher(childNode, childrenDelta);
+          }, childrenDelta);
+          childrenDelta = (childNode[DOM_KEY] || []).reduce(function (childrenDelta, matcher) {
+            return matcher(childNode, childrenDelta);
+          }, childrenDelta);
+        }
+        return delta.concat(childrenDelta);
+      }, new Delta());
+    } else {
+      return new Delta();
+    }
+  }
+
+  /**
+   * generate deltas from html
+   * note: this is the opposite of renderDeltas
+   * @param  {string} html
+   * @param {array} elementMatchers
+   * @param {array} textMatchers
+   * @return {object}
+   */
+  function generateDeltas(html, elementMatchers, textMatchers) {
+    const temp = document.createElement('div');
+
+    temp.innerHTML = html;
+    return traverse(temp, elementMatchers, textMatchers);
   }
 
   export default {
@@ -378,24 +494,52 @@
         pseudoBullet = this.args.pseudoBullet,
         rules = generatePasteRules(this.args.paste),
         buttons = this.args.buttons.concat(['clean']),
-        formats = _.flatten(_.filter(buttons, (button) => button !== 'clean')).concat(['header', 'blockquote']);
+        store = this.$store,
+        name = this.name,
+        formats = _.flatten(_.filter(buttons, (button) => button !== 'clean')).concat(['header', 'blockquote']),
+        // some useful details about the current component, range, etc
+        // to pass into handleMultiParagraphPaste()
+        current = {
+          component: getComponentName(_.get(store, 'state.ui.currentForm.uri'))
+        };
 
       let editor;
 
       class ClayClipboard extends Clipboard {
         convert(html) {
-          let delta = new Delta();
+          let [elementMatchers, textMatchers] = this.prepareMatching(),
+            sanitized, delta, components;
 
           if (_.isString(html)) {
             this.container.innerHTML = html;
           }
-          console.log('html', html)
-          console.log('container', this.container.innerHTML)
 
-          console.log('\nsplit', matchComponents(splitParagraphs(this.container.innerHTML), rules).map((m) => m.component))
+          if (isSingleLine) {
+            // in single-line mode, sanitize and remove paragraph tags
+            sanitized = sanitizeInlineHTML(this.container.innerHTML);
+            // note: the generated delta may contain formats the current editor doesn't support,
+            // e.g. if there's no bold allowed, that'll be inserted as plain text
+            delta = generateDeltas(sanitized, elementMatchers, textMatchers);
+          } else if (isMultiLine) {
+            // in multi-line mode, allow multiple paragraphs but don't run through the paste rules
+            sanitized = sanitizeBlockHTML(this.container.innerHTML);
+            deltas = generateDeltas(sanitized, elementMatchers, textMatchers);
+          } else if (isMultiComponent) {
+            // in multi-component mode, split up paragraphs and run them through the paste rules.
+            // asynchronously trigger component creation if they match things
+            // note: this may also replace the current paragraph if the entirety of the paragraph
+            // is something that matches another component
+            components = matchComponents(splitParagraphs(sanitizeBlockHTML(this.container.innerHTML)), rules);
+            delta = handleMultiParagraphPaste(components, {
+              quill: this.quill,
+              current,
+              elementMatchers,
+              textMatchers
+            });
+          }
 
           this.container.innerHTML = '';
-          return delta
+          return delta;
         }
       }
 
@@ -461,24 +605,23 @@
                 }
               }
             }
-          },
-          clipboard: {
-            matchers: [
-              // completely remove certain elements
-              ['META', removeElement],
-              ['SCRIPT', removeElement],
-              ['STYLE', removeElement],
-              ['OBJECT', removeElement],
-              ['IFRAME', removeElement],
-              ['TABLE', removeElement],
-              // [Node.ELEMENT_NODE, splitParagraphs(rules)]
-            ]
           }
         }
       });
 
-      editor.on('text-change', (delta, oldDelta, source) => {
-        console.log(`\n[EDITOR] text change! "${editor.root.innerHTML}"`)
+      this.$nextTick(() => {
+        editor.focus();
+      });
+
+      editor.on('text-change', () => {
+        const html = sanitizeInlineHTML(editor.root.innerHTML);
+
+        if (html === '<br />') {
+          // empty fields will have a single line break
+          store.commit(UPDATE_FORMDATA, { path: name, data: '' });
+        } else {
+          store.commit(UPDATE_FORMDATA, { path: name, data: html });
+        }
       });
     },
     slot: 'main'
