@@ -422,36 +422,51 @@
 
   /**
    * traverse nodes, calling matchers
-   * note: this code comes from quill/modules/clipboard
    * @param  {Node} node
    * @param  {array} elementMatchers
    * @param  {array} textMatchers
    * @return {object}
    */
   function traverse(node, elementMatchers, textMatchers) {  // Post-order
-    const DOM_KEY = '__ql-matcher';
-
     if (node.nodeType === node.TEXT_NODE) {
-      return textMatchers.reduce(function (delta, matcher) {
-        return matcher(node, delta);
-      }, new Delta());
+      return _.reduce(textMatchers, (delta, matcher) => matcher(node, delta), new Delta());
     } else if (node.nodeType === node.ELEMENT_NODE) {
-      return [].reduce.call(node.childNodes || [], (delta, childNode) => {
-        let childrenDelta = traverse(childNode, elementMatchers, textMatchers);
+      let children = node.childNodes || [];
 
-        if (childNode.nodeType === node.ELEMENT_NODE) {
-          childrenDelta = elementMatchers.reduce(function (childrenDelta, matcher) {
-            return matcher(childNode, childrenDelta);
-          }, childrenDelta);
-          childrenDelta = (childNode[DOM_KEY] || []).reduce(function (childrenDelta, matcher) {
-            return matcher(childNode, childrenDelta);
-          }, childrenDelta);
+      return _.reduce(children, (delta, childNode, index) => {
+        const childDelta = traverse(childNode, elementMatchers, textMatchers);
+
+        // add newlines after paragraphs, unless we're the last paragraph
+        if (childNode.tagName === 'P' && index !== children.length - 1) {
+          let newline = new Delta().insert('\n\n');
+
+          return delta.concat(childDelta).concat(newline);
+        } else {
+          return delta.concat(childDelta);
         }
-        return delta.concat(childrenDelta);
       }, new Delta());
-    } else {
-      return new Delta();
     }
+
+
+    // if (node.nodeType === node.TEXT_NODE) {
+    //   return textMatchers.reduce(function (delta, matcher) {
+    //     return matcher(node, delta);
+    //   }, new Delta());
+    // } else if (node.nodeType === node.ELEMENT_NODE) {
+    //   return [].reduce.call(node.childNodes || [], (delta, childNode) => {
+    //     let childrenDelta = traverse(childNode, elementMatchers, textMatchers);
+    //
+    //     console.log(childrenDelta)
+    //     if (childNode.nodeType === node.ELEMENT_NODE) {
+    //       childrenDelta = elementMatchers.reduce(function (childrenDelta, matcher) {
+    //         return matcher(childNode, childrenDelta);
+    //       }, childrenDelta);
+    //     }
+    //     return delta.concat(childrenDelta);
+    //   }, new Delta());
+    // } else {
+    //   return new Delta();
+    // }
   }
 
   /**
@@ -524,7 +539,7 @@
           } else if (isMultiLine) {
             // in multi-line mode, allow multiple paragraphs but don't run through the paste rules
             sanitized = sanitizeBlockHTML(this.container.innerHTML);
-            deltas = generateDeltas(sanitized, elementMatchers, textMatchers);
+            delta = generateDeltas(sanitized, elementMatchers, textMatchers);
           } else if (isMultiComponent) {
             // in multi-component mode, split up paragraphs and run them through the paste rules.
             // asynchronously trigger component creation if they match things
@@ -620,7 +635,13 @@
       });
 
       editor.on('text-change', () => {
-        const html = sanitizeInlineHTML(editor.root.innerHTML);
+        let html;
+
+        if (isSingleLine || isMultiComponent) {
+          html = sanitizeInlineHTML(editor.root.innerHTML);
+        } else if (isMultiLine) {
+          html = sanitizeBlockHTML(editor.root.innerHTML);
+        }
 
         if (html === '<br />') {
           // empty fields will have a single line break
