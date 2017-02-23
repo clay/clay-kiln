@@ -4,7 +4,7 @@
     <overlay></overlay>
     <div class="kiln-toolbar-wrapper">
       <pane></pane>
-      <div class="kiln-status"></div>
+      <status></status>
       <div class="kiln-progress-wrapper"></div>
       <section class="kiln-toolbar edit-mode">
         <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" centered="false"></toolbar-button>
@@ -21,7 +21,6 @@
         <toolbar-button v-else class="publish draft" name="publish" icon-name="draft" text="Draft"></toolbar-button>
       </section>
     </div>
-
   </div>
 </template>
 
@@ -32,6 +31,7 @@
   import background from './background.vue';
   import overlay from '../forms/overlay.vue';
   import pane from '../panes/pane.vue';
+  import status from './status.vue';
 
   export default {
     computed: mapState({
@@ -42,7 +42,8 @@
       'toolbar-button': button,
       background,
       overlay,
-      pane
+      pane,
+      status
     },
     methods: {
       stopEditing() {
