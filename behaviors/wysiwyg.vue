@@ -124,7 +124,6 @@
   import sanitize from 'sanitize-html';
   import { getComponentName, refAttr } from '../lib/utils/references';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
-  import { UN_FOCUS } from '../lib/decorators/mutationTypes';
   import { getPrevComponent, getNextComponent } from '../lib/utils/component-elements';
   import { isFirstField } from '../lib/forms/field-helpers';
 
@@ -578,8 +577,7 @@
                 handler(range, context) {
                   if (isSingleLine) {
                     // single-line: never allow newlines, always just close the form
-                    store.commit(UN_FOCUS);
-                    store.dispatch('closeForm');
+                    store.dispatch('unfocus');
                   } else if (isMultiComponent && context.collapsed && context.offset === 0) {
                     // if the caret is at the beginning of a new line, create a new component (sending the text after the caret to the new component)
                     console.log(`create new component with "${renderDeltas(this.quill.getContents(range.index))}"`) // text after caret, as html string

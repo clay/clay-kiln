@@ -47,6 +47,7 @@
     "codemirror": "^5.23.0",
     "coveralls": "^2.11.2",
     "css-loader": "^0.26.1",
+    "dragula": "github:gitterhq/dragula#feature/deadzone",
     "eslint": "^3.2.2",
     "eslint-plugin-html": "^2.0.0",
     "extract-text-webpack-plugin": "^2.0.0-rc.2",
