@@ -26,6 +26,7 @@
 
 <script>
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
+  import { setCaret, isFirstField } from '../lib/forms/field-helpers';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
@@ -35,6 +36,15 @@
     methods: {
       update(e) {
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: e.target.value });
+      }
+    },
+    mounted() {
+      if (isFirstField(this.$el)) {
+        const offset = _.get(this, '$store.state.ui.currentForm.initialOffset');
+
+        this.$nextTick(() => {
+          setCaret(this.$el, offset, this.data);
+        });
       }
     },
     slot: 'main'

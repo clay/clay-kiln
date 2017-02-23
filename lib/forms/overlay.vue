@@ -9,7 +9,7 @@
               <button type="submit" class="save" @click.stop="save">Save</button>
             </header>
             <div class="input-container">
-              <field v-for="field in fieldNames" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
+              <field v-for="(field, index) in fieldNames" :class="{ 'first-field': index === 0 }" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
             </div>
           </form>
         </section>

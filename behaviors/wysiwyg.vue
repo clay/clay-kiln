@@ -125,6 +125,7 @@
   import { getComponentName, refAttr } from '../lib/utils/references';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { getPrevComponent, getNextComponent } from '../lib/utils/component-elements';
+  import { isFirstField } from '../lib/forms/field-helpers';
 
   const Delta = Quill.import('delta'),
     Clipboard = Quill.import('modules/clipboard'),
@@ -653,12 +654,13 @@
 
                     if (prev) {
                       store.dispatch('select', prev);
-                      // todo: pass in an offset so it puts the caret at the end
-                      // of the previous component's field
+                      // note: this passes -1 as the offset, which will set the caret
+                      // at the end of the previous text
                       store.dispatch('focus', {
                         uri: prev.getAttribute(refAttr),
                         path: name,
-                        el: prev
+                        el: prev,
+                        offset: -1
                       });
                     }
                   } else {
@@ -695,9 +697,19 @@
         }
       });
 
-      this.$nextTick(() => {
-        editor.focus();
-      });
+      if (isFirstField(this.$el)) {
+        const offset = _.get(this, '$store.state.ui.currentForm.initialOffset'),
+          length = editor.getLength();
+
+        this.$nextTick(() => {
+          if (offset === -1) {
+            // set caret at the end
+            editor.setSelection(length - 1);
+          } else {
+            editor.setSelection(offset);
+          }
+        });
+      }
 
       editor.on('text-change', () => {
         let html;

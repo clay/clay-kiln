@@ -2,7 +2,7 @@
   <section class="editor editor-inline" @click.stop>
     <form @submit.prevent>
       <div class="input-container">
-        <field v-for="field in fieldNames" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
+        <field v-for="(field, index) in fieldNames" :class="{ 'first-field': index === 0 }" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
       </div>
       <button type="submit" class="hidden-submit"></button>
     </form>
