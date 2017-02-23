@@ -122,6 +122,7 @@
   import Quill from 'quill';
   import _ from 'lodash';
   import sanitize from 'sanitize-html';
+  import store from '../lib/core-data/store';
   import { getComponentName, refAttr } from '../lib/utils/references';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { getPrevComponent, getNextComponent } from '../lib/utils/component-elements';
@@ -293,7 +294,7 @@
       });
 
       if (!matchedRule) {
-        progress.open('error', `Error pasting text: No rule found for "${_.truncate(cleanStr, { length: 40, omission: '…' })}"`);
+        store.dispatch('showStatus', { type: 'error', message: `Error pasting text: No rule found for "${_.truncate(cleanStr, { length: 40, omission: '…' })}"`});
         throw new Error('No matching paste rule for ' + cleanStr);
       }
 

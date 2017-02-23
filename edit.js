@@ -6,12 +6,15 @@ import { decorateAll } from './lib/decorators';
 import { add as addBehavior } from './lib/forms/behaviors';
 import { add as addPane } from './lib/forms/panes';
 import toolbar from './lib/toolbar/edit-toolbar.vue';
+import { HIDE_STATUS } from './lib/toolbar/mutationTypes';
 
 // TODO: Figure out saving/closing and reverting in panes
 import { CLOSE_PANE } from './lib/panes/mutationTypes';
 
 const behaviorReq = require.context('./behaviors', false, /\.vue$/),
-  paneReq = require.context('./panes', false, /\.vue$/);
+  paneReq = require.context('./panes', false, /\.vue$/),
+  // todo: in the future, we should queue up the saves
+  connectionLostMessage = 'Connection Lost. Changes will <strong>NOT</strong> be saved.';
 
 // Require all scss/css files needed
 require.context('./styleguide', true, /^.*\.(scss|css)$/);
@@ -42,7 +45,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  store.dispatch('preload').then(() => decorateAll());
+  store.dispatch('preload')
+    .then(() => decorateAll())
+    .then(() => {
+      // test connection loss on page load
+      if (!navigator.onLine) {
+        store.dispatch('showStatus', { type: 'offline', message: connectionLostMessage, isPermanent: true});
+      }
+    });
 
   // when clicks bubble up to the document, close the current form or pane / unselect components
   document.body.addEventListener('click', (e) => {
@@ -62,5 +72,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if (_.get(store, 'state.ui.currentPane')) {
       store.commit(CLOSE_PANE, null);
     }
+  });
+
+  window.addEventListener('online', function () {
+    store.commit(HIDE_STATUS); // in case there are any status messages open, close them
+  });
+
+  window.addEventListener('offline', function () {
+    // todo: turn any progress indicators to grey and end them
+    store.dispatch('showStatus', { type: 'offline', message: connectionLostMessage, isPermanent: true});
   });
 });
