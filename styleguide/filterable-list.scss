@@ -2,39 +2,37 @@
 @import 'typography';
 @import 'inputs';
 @import 'buttons';
-
 .filterable-list {
   padding: 17px;
-
   &-input {
-
     &-field {
       @include input();
-
     }
-
   }
-
-
   &-readout {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
 
-    > * + * {
-      border-top: 1px solid $grey;
-    }
+    &-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
 
-    &-item {
-      appearance: none;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      line-height: 1.4;
-      padding: 15px 0;
-      text-align: left;
-      width: 100%;
+      > * + * {
+        border-top: 1px solid $grey;
+      }
+
+      &-item {
+        appearance: none;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        line-height: 1.4;
+        padding: 15px 0;
+        text-align: left;
+        width: 100%;
+      }
     }
   }
 }
@@ -42,24 +40,19 @@
 // .filterable-list-wrapper {
 //   width: 100%;
 // }
-
 // /* filtered item search pane (add component, possibly new page in the future) */
-
 // .filterable-list-wrapper .filtered-input {
 //   @include input();
-
 //   margin: 0;
 //   position: relative;
 //   width: 100%;
 // }
-
 // .filterable-list-wrapper .filtered-items {
 //   margin: 0;
 //   padding: 0;
 //   position: relative;
 //   width: 100%;
 // }
-
 // .filterable-list-wrapper .filtered-item,
 // .dragula-list-item { // .dragula-list-item is the class when dragging items
 //   align-items: center;
@@ -71,61 +64,49 @@
 //   margin: 0;
 //   width: 100%;
 // }
-
 // .filterable-list-wrapper .filtered-item.filtered {
 //   display: none;
 // }
-
 // .filterable-list-wrapper .filtered-item:not(.filtered) {
 //   border-bottom: 1px solid $grey;
 //   transition: 200ms border-bottom-color ease-out;
 // }
-
 // .filterable-list-wrapper .filtered-item:focus {
 //   border-bottom: 1px solid $blue;
 //   outline: none;
 //   transition: 200ms border-bottom-color ease-out;
 // }
-
 // .filterable-list-wrapper .filtered-item.active {
 //   border-bottom: 2px solid $blue;
 // }
-
 // .filterable-list-wrapper .filtered-item-reorder,
 // .dragula-list-item .filtered-item-reorder {
 //   @include icon-button($black-25, 16px);
-
 //   flex: 0 0 auto;
 //   margin-right: 10px;
 //   padding: 0;
 // }
-
 // .filterable-list-wrapper .filtered-item-title,
 // .dragula-list-item .filtered-item-title {
 //   @include primary-text();
-
 //   flex: 1 1 auto;
 //   padding: 15px 0;
 // }
-
 // .filtered-item.selected .filtered-item-title,
 // .dragula-list-item.selected .filtered-item-title {
 //   // some lists allow for denoting a "selected" item
 //   // e.g. spaces, component finder
 //   font-weight: 700;
 // }
-
 // .filterable-list-wrapper .filtered-item-remove,
 // .filterable-list-wrapper .filtered-item-settings,
 // .dragula-list-item .filtered-item-remove,
 // .dragula-list-item .filtered-item-settings {
 //   @include icon-button($black-50, 18px);
-
 //   flex: 0 0 auto;
 //   margin-left: 10px;
 //   padding: 0;
 // }
-
 // .filterable-list-wrapper .filtered-add {
 //   align-items: center;
 //   border-top: 1px solid $black-50;
@@ -136,30 +117,23 @@
 //   padding: 15px 0;
 //   width: 100%;
 // }
-
 // .filterable-list-wrapper .filtered-add-button {
 //   @include icon-button($black-50, 22px);
-
 //   display: flex;
 //   flex: 0 0 auto;
 //   margin-right: 10px;
 //   padding: 0;
 // }
-
 // .filterable-list-wrapper .filtered-add-title {
 //   @include primary-text();
-
 //   flex: 1 0 auto;
 // }
-
 // // animations
-
 // @keyframes shake {
 //   0%, 100% {transform: translateX(0);}
 //   20%, 60% {transform: translateX(-5px);}
 //   40%, 80% {transform: translateX(5px);}
 // }
-
 // .kiln-shake {
 //   animation-name: shake;
 //   animation-duration: 300ms;
