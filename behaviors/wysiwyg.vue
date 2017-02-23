@@ -124,6 +124,7 @@
   import sanitize from 'sanitize-html';
   import { getComponentName, refAttr } from '../lib/utils/references';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
+  import { UN_FOCUS } from '../lib/decorators/mutationTypes';
   import { getPrevComponent, getNextComponent } from '../lib/utils/component-elements';
   import { isFirstField } from '../lib/forms/field-helpers';
 
@@ -463,27 +464,6 @@
         }
       }, new Delta());
     }
-
-
-    // if (node.nodeType === node.TEXT_NODE) {
-    //   return textMatchers.reduce(function (delta, matcher) {
-    //     return matcher(node, delta);
-    //   }, new Delta());
-    // } else if (node.nodeType === node.ELEMENT_NODE) {
-    //   return [].reduce.call(node.childNodes || [], (delta, childNode) => {
-    //     let childrenDelta = traverse(childNode, elementMatchers, textMatchers);
-    //
-    //     console.log(childrenDelta)
-    //     if (childNode.nodeType === node.ELEMENT_NODE) {
-    //       childrenDelta = elementMatchers.reduce(function (childrenDelta, matcher) {
-    //         return matcher(childNode, childrenDelta);
-    //       }, childrenDelta);
-    //     }
-    //     return delta.concat(childrenDelta);
-    //   }, new Delta());
-    // } else {
-    //   return new Delta();
-    // }
   }
 
   /**
@@ -497,9 +477,7 @@
   function generateDeltas(html, elementMatchers, textMatchers) {
     const temp = document.createElement('div');
 
-    console.log(html)
     temp.innerHTML = html;
-    console.log(traverse(temp, elementMatchers, textMatchers))
     return traverse(temp, elementMatchers, textMatchers);
   }
 
@@ -600,7 +578,8 @@
                 handler(range, context) {
                   if (isSingleLine) {
                     // single-line: never allow newlines, always just close the form
-                    console.log('close form');
+                    store.commit(UN_FOCUS);
+                    store.dispatch('closeForm');
                   } else if (isMultiComponent && context.collapsed && context.offset === 0) {
                     // if the caret is at the beginning of a new line, create a new component (sending the text after the caret to the new component)
                     console.log(`create new component with "${renderDeltas(this.quill.getContents(range.index))}"`) // text after caret, as html string

@@ -3,7 +3,7 @@
     <div class="editor-overlay-background" v-if="hasCurrentModalForm" @click.stop="save">
       <div class="editor-overlay" @click.stop>
         <section class="editor">
-          <form @submit.prevent>
+          <form @submit.prevent="save">
             <header>
               <span class="form-header">{{ label }}</span>
               <button type="submit" class="save" @click.stop="save">Save</button>

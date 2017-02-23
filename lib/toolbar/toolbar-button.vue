@@ -18,7 +18,6 @@
     },
     methods: {
       handleClick() {
-        console.log(this.name || this.iconName);
         this.$emit('click', this.name || this.iconName);
       }
     },
