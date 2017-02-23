@@ -421,6 +421,15 @@
   }
 
   /**
+   * determine if the last delta insert already contains two newlines
+   * @param  {object}  delta
+   * @return {Boolean}
+   */
+  function hasNewline(delta) {
+    return _.last(delta.ops) && _.includes(_.last(delta.ops).insert, '\n\n');
+  }
+
+  /**
    * traverse nodes, calling matchers
    * @param  {Node} node
    * @param  {array} elementMatchers
@@ -429,15 +438,21 @@
    */
   function traverse(node, elementMatchers, textMatchers) {  // Post-order
     if (node.nodeType === node.TEXT_NODE) {
+      // run text matchers for node
       return _.reduce(textMatchers, (delta, matcher) => matcher(node, delta), new Delta());
     } else if (node.nodeType === node.ELEMENT_NODE) {
       let children = node.childNodes || [];
 
       return _.reduce(children, (delta, childNode, index) => {
-        const childDelta = traverse(childNode, elementMatchers, textMatchers);
+        let childDelta = traverse(childNode, elementMatchers, textMatchers);
 
-        // add newlines after paragraphs, unless we're the last paragraph
-        if (childNode.tagName === 'P' && index !== children.length - 1) {
+        // run element matchers for child node
+        if (childNode.nodeType === childNode.ELEMENT_NODE) {
+          childDelta = _.reduce(elementMatchers, (childDelta, matcher) => matcher(childNode, childDelta), childDelta);
+        }
+
+        // add newlines after paragraphs, unless we're the last paragraph (or there are already newlines)
+        if (childNode.tagName === 'P' && index !== children.length - 1 && !hasNewline(delta)) {
           let newline = new Delta().insert('\n\n');
 
           return delta.concat(childDelta).concat(newline);
@@ -480,7 +495,9 @@
   function generateDeltas(html, elementMatchers, textMatchers) {
     const temp = document.createElement('div');
 
+    console.log(html)
     temp.innerHTML = html;
+    console.log(traverse(temp, elementMatchers, textMatchers))
     return traverse(temp, elementMatchers, textMatchers);
   }
 
