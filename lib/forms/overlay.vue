@@ -1,17 +1,21 @@
 <template>
-  <div class="editor-overlay" v-if="hasCurrentModalForm" @click.stop>
-    <section class="editor">
-      <form @submit.prevent>
-        <header>
-          <span class="form-header">{{ label }}</span>
-          <button type="submit" class="save" @click.stop="save">Save</button>
-        </header>
-        <div class="input-container">
-          <field v-for="field in fieldNames" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
-        </div>
-      </form>
-    </section>
-  </div>
+  <transition name="fade">
+    <div class="editor-overlay-background" v-if="hasCurrentModalForm" @click.stop="save">
+      <div class="editor-overlay" @click.stop>
+        <section class="editor">
+          <form @submit.prevent="save">
+            <header>
+              <span class="form-header">{{ label }}</span>
+              <button type="submit" class="save" @click.stop="save">Save</button>
+            </header>
+            <div class="input-container">
+              <field v-for="(field, index) in fieldNames" :class="{ 'first-field': index === 0 }" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+  </transition>
 </template>
 
 <script>

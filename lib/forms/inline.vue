@@ -1,8 +1,8 @@
 <template>
   <section class="editor editor-inline" @click.stop>
-    <form @submit.prevent>
+    <form @submit.prevent="save">
       <div class="input-container">
-        <field v-for="field in fieldNames" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
+        <field v-for="(field, index) in fieldNames" :class="{ 'first-field': index === 0 }" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
       </div>
       <button type="submit" class="hidden-submit"></button>
     </form>
@@ -26,6 +26,11 @@
       schema: (state) => state.ui.currentForm.schema,
       componentSchema: (state) => state.schemas[getComponentName(state.ui.currentForm.uri)]
     }),
+    methods: {
+      save() {
+        store.dispatch('unfocus');
+      }
+    },
     components: {
       field
     },

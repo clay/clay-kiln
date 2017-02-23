@@ -40,7 +40,6 @@
     },
     computed: {
       hasLabel() {
-        console.log(this.schema[fieldProp])
         return !!_.find(expand(this.schema[fieldProp]), (b) => b[behaviorKey] === convertNativeTagName('label'));
       }
     },

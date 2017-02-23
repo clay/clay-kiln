@@ -54,6 +54,7 @@
   import moment from 'moment';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { hasNativePicker, init as initPicker } from '../lib/utils/datepicker';
+  import { setCaret, isFirstField } from '../lib/forms/field-helpers';
 
   const invalidTypes = [
       'button', // use other behaviors, e.g. segmented-button
@@ -150,6 +151,12 @@
       if (isDate(this.args.type)) {
         // initialize datepicker if necessary
         initDatePicker(this.$el, this.$store, this.name);
+      } else if (isFirstField(this.$el)) {
+        const offset = _.get(this, '$store.state.ui.currentForm.initialOffset');
+
+        this.$nextTick(() => {
+          setCaret(this.$el, offset, this.data);
+        });
       }
     },
     slot: 'main'
