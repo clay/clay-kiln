@@ -122,8 +122,9 @@
   import Quill from 'quill';
   import _ from 'lodash';
   import sanitize from 'sanitize-html';
-  import { getComponentName } from '../lib/utils/references';
+  import { getComponentName, refAttr } from '../lib/utils/references';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
+  import { getPrevComponent, getNextComponent } from '../lib/utils/component-elements';
 
   const Delta = Quill.import('delta'),
     Clipboard = Quill.import('modules/clipboard'),
@@ -529,6 +530,7 @@
         buttons = this.args.buttons.concat(['clean']),
         store = this.$store,
         name = this.name,
+        el = this.$el,
         formats = _.flatten(_.filter(buttons, (button) => button !== 'clean')).concat(['header', 'blockquote']),
         // some useful details about the current component, range, etc
         // to pass into handleMultiParagraphPaste()
@@ -581,9 +583,9 @@
       // manually add data into element when mounting
       // note: we don't use v-html here because we don't want to update the html
       // when the form data changes (since quill is handling it)
-      this.$el.innerHTML = this.data;
+      el.innerHTML = this.data;
 
-      editor = new Quill(this.$el, {
+      editor = new Quill(el, {
         theme: 'bubble',
         formats,
         modules: {
@@ -638,6 +640,52 @@
                     this.quill.setSelection(range.index + 2);
                   } else {
                     // otherwise, do the default tab behavior
+                    return true;
+                  }
+                }
+              },
+              upArrow: {
+                key: 'up',
+                handler(range) {
+                  if (isMultiComponent && range.index === 0) {
+                    // we're at the beginning of the field! navigate to the previous component
+                    let prev = getPrevComponent(el, current.component);
+
+                    if (prev) {
+                      store.dispatch('select', prev);
+                      // todo: pass in an offset so it puts the caret at the end
+                      // of the previous component's field
+                      store.dispatch('focus', {
+                        uri: prev.getAttribute(refAttr),
+                        path: name,
+                        el: prev
+                      });
+                    }
+                  } else {
+                    // default arrow behavior for single-line and multi-line
+                    return true;
+                  }
+                }
+              },
+              downArrow: {
+                key: 'down',
+                handler(range) {
+                  if (isMultiComponent && range.index === this.quill.getLength() - 1) {
+                    // we're at the beginning of the field! navigate to the previous component
+                    let next = getNextComponent(el, current.component);
+
+                    if (next) {
+                      store.dispatch('select', next);
+                      // note: since we're focusing at the beginning of the next
+                      // component, we don't need to pass an offset
+                      store.dispatch('focus', {
+                        uri: next.getAttribute(refAttr),
+                        path: name,
+                        el: next
+                      });
+                    }
+                  } else {
+                    // default arrow behavior for single-line and multi-line
                     return true;
                   }
                 }
