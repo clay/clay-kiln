@@ -1,11 +1,13 @@
 <template>
   <div class="kiln-wrapper">
+    <background></background>
     <overlay></overlay>
     <div class="kiln-toolbar-wrapper">
+      <pane></pane>
       <div class="kiln-status"></div>
       <div class="kiln-progress-wrapper"></div>
       <section class="kiln-toolbar edit-mode">
-        <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay"></toolbar-button>
+        <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" centered="false"></toolbar-button>
         <toolbar-button class="new" icon-name="new-page" text="New Page"></toolbar-button>
         <div class="kiln-toolbar-inner">
           <toolbar-button class="view-button" name="close" icon-name="close-edit" @click="stopEditing"></toolbar-button>
@@ -19,6 +21,7 @@
         <toolbar-button v-else class="publish draft" name="publish" icon-name="draft" text="Draft"></toolbar-button>
       </section>
     </div>
+
   </div>
 </template>
 
@@ -26,7 +29,9 @@
   import { mapState } from 'vuex';
   import toggleEdit from '../utils/toggle-edit';
   import button from './toolbar-button.vue';
+  import background from './background.vue';
   import overlay from '../forms/overlay.vue';
+  import pane from '../panes/pane.vue';
 
   export default {
     computed: mapState({
@@ -35,7 +40,9 @@
     }),
     components: {
       'toolbar-button': button,
-      overlay
+      background,
+      overlay,
+      pane
     },
     methods: {
       stopEditing() {

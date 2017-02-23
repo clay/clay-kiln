@@ -4,16 +4,26 @@ import Vue from 'vue';
 import store from './lib/core-data/store';
 import { decorateAll } from './lib/decorators';
 import { add as addBehavior } from './lib/forms/behaviors';
+import { add as addPane } from './lib/forms/panes';
 import toolbar from './lib/toolbar/edit-toolbar.vue';
 
-const behaviorReq = require.context('./behaviors', false, /\.vue$/);
+// TODO: Figure out saving/closing and reverting in panes
+import { CLOSE_PANE } from './lib/panes/mutationTypes';
+
+const behaviorReq = require.context('./behaviors', false, /\.vue$/),
+  paneReq = require.context('./panes', false, /\.vue$/);
 
 // Require all scss/css files needed
 require.context('./styleguide', true, /^.*\.(scss|css)$/);
 
-// add behaviors
+// Add behaviors
 behaviorReq.keys().forEach(function (key) {
   addBehavior(basename(key, extname(key)), behaviorReq(key));
+});
+
+// Add panes
+paneReq.keys().forEach(function (key) {
+  addPane(basename(key, extname(key)), paneReq(key));
 });
 
 // kick off loading when DOM is ready
@@ -46,6 +56,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // always unfocus if clicking out of the current focus
     if (_.get(store, 'state.ui.currentFocus') && !e.stopFocus) {
       store.dispatch('unfocus');
+    }
+
+    // Close a pane
+    if (_.get(store, 'state.ui.currentPane')) {
+      store.commit(CLOSE_PANE, null);
     }
   });
 });

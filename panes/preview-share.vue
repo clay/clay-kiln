@@ -1,15 +1,17 @@
 <template>
-  <div class="info-message">Share the link below to preview the latest version of this page.</div>
-  <div class="share-actions actions">
-    <input class="share-input">{{ url }}</input>
-    <button class="share-copy" @click="copyURL"><icon name="copy"></icon></button>
+  <div>
+    <div class="info-message">Share the link below to preview the latest version of this page.</div>
+    <div class="share-actions actions">
+      <input class="share-input">{{ url }}</input>
+      <button class="share-copy" @click="copyURL"><icon name="copy"></icon></button>
+    </div>
   </div>
 </template>
 
 <script>
-  import icon from './icon.vue';
+  import icon from '../lib/utils/icon.vue';
   import { mapState } from 'vuex';
-  import { uriToUrl } from '../utils/urls';
+  import { uriToUrl } from '../lib/utils/urls';
 
   export default {
     components: {

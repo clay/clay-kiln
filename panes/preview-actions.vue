@@ -25,8 +25,8 @@
 </template>
 
 <script>
-  import { uriToUrl } from '../utils/urls';
-  import icon from './icon.vue';
+  import { uriToUrl } from '../lib/utils/urls';
+  import icon from '../lib/utils/icon.vue';
   import { mapState } from 'vuex';
 
   const previewSizes = {
