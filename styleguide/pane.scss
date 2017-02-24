@@ -35,6 +35,12 @@ $toolbar-height: 48px;
     &.kiln-toolbar-pane-large {
       max-width: 500px;
     }
+
+    &.kiln-toolbar-pane-form {
+      max-width: 600px;
+      left: 50%;
+      margin-left: -300px;
+    }
   }
 
   @media screen and (min-width: 1024px) {

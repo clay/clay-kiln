@@ -48,7 +48,7 @@
           if (currentPaneName) {
             this.$store.dispatch('changePane', paneConfig);
           } else {
-            this.$store.commit(OPEN_PANE, paneConfig);
+            this.$store.dispatch('openPane', paneConfig);
           }
         } else {
           this.$store.commit(CLOSE_PANE, null);

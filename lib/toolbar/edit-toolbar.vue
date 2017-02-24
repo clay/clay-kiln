@@ -1,7 +1,6 @@
 <template>
   <div class="kiln-wrapper">
     <background></background>
-    <overlay></overlay>
     <div class="kiln-toolbar-wrapper">
       <pane></pane>
       <status></status>

@@ -1,8 +1,8 @@
 <template>
   <transition name="pane-slide">
     <div class="kiln-toolbar-pane"
-      v-if="hasCurrentPaneName"
-      v-bind:class="paneSize"
+      v-if="hasPaneOpenState"
+      v-bind:class="{ 'kiln-toolbar-pane-large': largePane, 'kiln-toolbar-pane-form': componentSchema }"
       v-bind:style="{ left: `${paneOffset}px` }" @click.stop>
       <div class="kiln-pane-header">
         <div class="kiln-pane-header-left">
@@ -13,7 +13,9 @@
         </div>
       </div>
       <component :is="nonTabComponent" :content="nonTabContent" v-if="nonTabComponent"></component>
-      <paneTabs :tabs="tabs" :contents="tabContents" v-if="isTabbed"></paneTabs>
+      <pane-tabs :tabs="tabs" :contents="tabContents" v-if="tabs.length"></pane-tabs>
+      <edit-form v-if="componentSchema" :fields="fields" :componentSchema="componentSchema" :fieldNames="fieldNames"></edit-form>
+
     </div>
   </transition>
 </template>
@@ -24,9 +26,14 @@
   import { OPEN_PANE, CLOSE_PANE } from '../panes/mutationTypes'
   import paneTabs from './pane-tabs.vue';
   import icon from '../utils/icon.vue';
-  import paneActions from './pane-actions.vue';
+  import editForm from './edit-form.vue';
+  import { mapState } from 'vuex';
+  import { displayProp, getComponentName } from '../utils/references';
+  import label from '../utils/label';
 
-  const contentPath = 'state.ui.currentPane.options.content';
+  const STATE_PATHS = {
+    CONTENT: 'ui.currentPane.options.content',
+  };
 
   /**
    * Returns a new array with only the desired
@@ -45,45 +52,33 @@
     data() {
       return {};
     },
-    computed: {
-      paneTitle() {
-        var title = _.get(this.$store, 'state.ui.currentPane.options.title', '');
+    computed: mapState({
+      hasPaneOpenState: (state) => (!_.isNull(state.ui.currentForm) && state.ui.currentForm.schema[displayProp] !== 'inline') || !_.isNull(_.get(state, 'ui.currentPane.name', null)),
+      fields: (state) => _.get(state, 'ui.currentForm.fields', null),
+      fieldNames: (state) => {
+        return _.get(state, 'ui.currentForm.schema.fields', [_.get(state, 'ui.currentForm.path')]); // group or single field
+      },
+      schema: (state) => _.get(state, 'ui.currentForm.schema', null),
+      componentSchema: (state) => {
+        var currentFormUri = _.get(state, 'ui.currentForm.uri', null);
 
-        if (!title) {
-          console.warn('Pane has no `title` property set, string "Pane Title" will be displayed as a placeholder.');
-        }
+        return currentFormUri ? _.get(state, `schemas[${getComponentName(currentFormUri)}]`, null) : null;
+      },
+      paneTitle: (state) => {
+        var title = _.get(state, 'ui.currentPane.options.title', null),
+          currentFormPath = _.get(state, 'ui.currentForm.path', null),
+          currentFormSchema = _.get(state, 'ui.currentForm.schema', null);
 
-        return title;
+        return currentFormPath && currentFormSchema ? label(currentFormPath, currentFormSchema) : title;
       },
-      nonTabComponent() {
-        return _.get(this.$store, 'state.ui.currentPane.options.component', '');
-      },
-      nonTabContent() {
-        return _.get(this.$store, 'state.ui.currentPane.options.content', '');
-      },
-      hasCurrentPaneName() {
-        return _.get(this.$store, 'state.ui.currentPane.name', '');
-      },
-      isTabbed() {
-        return _.get(this.$store, 'state.ui.currentPane.options.tabbed', false);
-      },
-      tabs() {
-        return separateContent(_.get(this.$store, contentPath, null), 'title');
-      },
-      tabContents() {
-        return separateContent(_.get(this.$store, contentPath, null), 'tabContent');;
-      },
-      hasPaneActions() {
-        return true;
-      },
-      paneSize() {
-        return {
-          'kiln-toolbar-pane-large' : Boolean(_.get(this.$store, 'state.ui.currentPane.options.large', false))
-        }
-      },
-      paneOffset() {
+      nonTabComponent: (state) => _.get(state, 'ui.currentPane.options.component', ''),
+      nonTabContent: (state) => _.get(state, 'ui.currentPane.options.content', ''),
+      tabs: (state) => separateContent(_.get(state, STATE_PATHS.CONTENT, null), 'title'),
+      tabContents: (state) => separateContent(_.get(state, STATE_PATHS.CONTENT, null), 'tabContent'),
+      largePane: (state) => Boolean(_.get(state, 'ui.currentPane.options.large', false)),
+      paneOffset: (state) => {
         // TODO: Make this work with variable pane widths
-        var offset = _.get(this.$store, 'state.ui.currentPane.paneOffset', ''),
+        var offset = _.get(state, 'ui.currentPane.paneOffset', ''),
           paneWidth = 320,
           rightAlignedOffset = null;
 
@@ -92,8 +87,9 @@
         }
 
         return rightAlignedOffset || offset.left;
-      }
-    },
+      },
+
+    }),
     methods: {
       closePane() {
         var currentPane = _.get(this.$store, 'state.ui.currentPane');
@@ -101,6 +97,6 @@
         this.$store.commit(CLOSE_PANE, null);
       }
     },
-    components: _.assign(window.kiln.panes, { paneTabs, icon, paneActions })
+    components: _.assign(window.kiln.panes, { 'pane-tabs': paneTabs, icon, 'edit-form': editForm })
   };
 </script>

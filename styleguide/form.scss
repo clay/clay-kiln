@@ -3,123 +3,129 @@
 @import 'typography';
 @import 'colors';
 
-.editor {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  margin: 0;
-  max-height: 100%;
-  min-width: 100px;
-  padding: 0;
-  position: relative;
-  z-index: 1;
-}
+.kiln-toolbar-pane-form {
 
-.editor-overlay .editor {
-  height: 100%;
-}
+  .editor {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    margin: 0;
+    max-height: calc(70vh - 44px);
+    min-width: 100px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 0;
+    position: relative;
+    z-index: 1;
+  }
 
-.editor > form {
-  @include clearfix();
+  .editor-overlay .editor {
+    height: 100%;
+  }
 
-  background-color: $white;
-  flex: 0 0 100%;
-  overflow: visible;
-  padding: 0;
-}
+  .editor > form {
+    @include clearfix();
 
-.editor-overlay form {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
+    background-color: $white;
+    flex: 0 0 100%;
+    overflow: visible;
+    padding: 0;
+  }
 
-.editor > form > header {
-  align-items: flex-start;
-  border-bottom: 1px solid $grey;
-  display: flex;
-  flex: 1 0 auto;
-  padding: 13px 20px;
-  width: 100%;
-}
+  // .editor-overlay form {
+  //   display: flex;
+  //   flex-direction: column;
+  //   height: 100%;
+  // }
 
-.editor > form > header .form-header {
-  @include header();
+  // .editor > form > header {
+  //   align-items: flex-start;
+  //   border-bottom: 1px solid $grey;
+  //   display: flex;
+  //   flex: 1 0 auto;
+  //   padding: 13px 20px;
+  //   width: 100%;
+  // }
 
-  flex: 1 1 auto;
-  margin-top: 9px;
-}
+  // .editor > form > header .form-header {
+  //   @include header();
 
-.editor .save {
-  @include button-outlined($draft);
+  //   flex: 1 1 auto;
+  //   margin-top: 9px;
+  // }
 
-  flex: 0 0 auto;
-  margin-left: 30px;
-  margin-right: 0;
-}
+  .editor .save {
+    @include button-outlined($draft);
 
-.editor .input-container {
-  align-content: flex-start;
-  align-items: flex-start;
-  display: flex;
-  flex: 0 0 auto;
-  flex-flow: row wrap;
-  overflow: scroll;
-  padding: 30px 20px 50px;
-}
+    flex: 0 0 auto;
+    margin-left: 30px;
+    margin-right: 0;
+  }
 
-.editor-inline {
-  max-width: 90vw;
-  margin: 0 auto;
-  z-index: 3;
-}
+  .editor .input-container {
+    align-content: flex-start;
+    align-items: flex-start;
+    display: flex;
+    flex: 0 0 auto;
+    flex-flow: row wrap;
+    overflow: scroll;
+    padding: 17px;
+  }
 
-.editor-inline .input-container {
-  overflow: visible;
-  padding: 0;
-}
+  .editor-inline {
+    max-width: 90vw;
+    margin: 0 auto;
+    z-index: 3;
+  }
 
-/* labels are containers that refer to inputs, textareas, or whatever else */
-.editor .kiln-field {
-  @include clearfix();
+  .editor-inline .input-container {
+    overflow: visible;
+    padding: 0;
+  }
 
-  flex: 0 0 100%;
-  margin: 10px 0 20px;
-  min-width: 100px;
-  position: relative;
-}
+  /* labels are containers that refer to inputs, textareas, or whatever else */
+  .editor .kiln-field {
+    @include clearfix();
 
-.editor-inline .kiln-field {
-  margin: 0;
-  text-align: left; // override component styling
-}
+    flex: 0 0 100%;
+    margin: 10px 0 20px;
+    min-width: 100px;
+    position: relative;
+  }
 
-// when inline forms are opened, the other children of the parent element are hidden
-.hidden-wrapped {
-  display: none;
-}
+  .editor-inline .kiln-field {
+    margin: 0;
+    text-align: left; // override component styling
+  }
 
-// hidden submit button that's added to the form if it's not valid
-.hidden-submit {
-  display: none;
-}
+  // when inline forms are opened, the other children of the parent element are hidden
+  .hidden-wrapped {
+    display: none;
+  }
 
-.field-before,
-.field-main,
-.field-after {
-  clear: both;
-}
+  // hidden submit button that's added to the form if it's not valid
+  .hidden-submit {
+    display: none;
+  }
 
-// if the main field has multiple items (e.g. a button before/after an input),
-// set the width so they're all on the same line
-.main-2 > input,
-.main-2 > textarea,
-.main-2 > .wysiwyg-input {
-  width: calc(100% - 44px);
-}
+  .field-before,
+  .field-main,
+  .field-after {
+    clear: both;
+  }
 
-.main-3 > input,
-.main-3 > textarea,
-.main-3 > .wysiwyg-input {
-  width: calc(100% - 88px);
+  // if the main field has multiple items (e.g. a button before/after an input),
+  // set the width so they're all on the same line
+  .main-2 > input,
+  .main-2 > textarea,
+  .main-2 > .wysiwyg-input {
+    width: calc(100% - 44px);
+  }
+
+  .main-3 > input,
+  .main-3 > textarea,
+  .main-3 > .wysiwyg-input {
+    width: calc(100% - 88px);
+  }
+
 }
