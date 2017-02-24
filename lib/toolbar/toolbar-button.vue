@@ -1,5 +1,5 @@
 <template>
-  <button class="kiln-toolbar-button" @click.stop="handleClick">
+  <button class="kiln-toolbar-button" ref="button" @click.stop="handleClick">
     <div class="button-flex-inner">
       <icon :name="iconName"></icon>
       <span class="text" v-if="text" v-html="text"></span>
@@ -8,10 +8,20 @@
 </template>
 
 <script>
-  import { get } from 'lodash'
+  import { get, assign } from 'lodash'
   import paneContent from './pane-content';
   import icon from '../utils/icon.vue';
   import { OPEN_PANE, CLOSE_PANE } from '../panes/mutationTypes';
+
+  function getLeftOffset(el) {
+    var offsetLeft = el.offsetLeft;
+
+    while (el = el.offsetParent) {
+      offsetLeft += el.offsetLeft;
+    }
+
+    return offsetLeft;
+  }
 
   export default {
     props: ['iconName', 'name', 'text'],
@@ -24,7 +34,15 @@
           paneName = this.name || this.iconName;
 
         if (currentPaneName !== paneName) {
-          this.$store.commit(OPEN_PANE, { name: paneName, previous: currentPaneName, options: paneContent[paneName]});
+          this.$store.commit(OPEN_PANE, {
+            name: paneName,
+            previous: currentPaneName,
+            options: paneContent[paneName],
+            paneOffset: {
+              left: getLeftOffset(this.$el),
+              width: this.$el.offsetWidth
+            }
+          });
         } else {
           this.$store.commit(CLOSE_PANE, null);
         }

@@ -1,6 +1,6 @@
 <template>
   <transition name="pane-slide">
-    <div class="kiln-toolbar-pane" v-if="hasCurrentPaneName" @click.stop>
+    <div class="kiln-toolbar-pane" v-if="hasCurrentPaneName" v-bind:style="{ left: `${paneOffset}px` }" @click.stop>
       <div class="kiln-pane-header">
         <div class="kiln-pane-header-left">
           {{ paneTitle || 'Pane Title' }}
@@ -11,9 +11,6 @@
       </div>
       <component :is="nonTabComponent" :content="nonTabContent" v-if="nonTabComponent"></component>
       <paneTabs :tabs="tabs" :contents="tabContents" v-if="isTabbed"></paneTabs>
-      <!-- <div class="kiln-pane-actions" v-if="hasPaneActions">
-        <paneActions></paneActions>
-      </div> -->
     </div>
   </transition>
 </template>
@@ -75,6 +72,18 @@
       },
       hasPaneActions() {
         return true;
+      },
+      paneOffset() {
+        // TODO: Make this work with variable pane widths
+        var offset = _.get(this.$store, 'state.ui.currentPane.paneOffset', ''),
+          paneWidth = 320,
+          rightAlignedOffset = null;
+
+        if (offset && (offset.left + paneWidth > window.innerWidth)) {
+          rightAlignedOffset = (offset.left + offset.width) - paneWidth;
+        }
+
+        return rightAlignedOffset || offset.left;
       }
     },
     methods: {
