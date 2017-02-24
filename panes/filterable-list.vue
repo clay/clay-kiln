@@ -1,8 +1,3 @@
-<style lang="sass">
-
-
-</style>
-
 <template>
   <div class="filterable-list">
     <div class="filterable-list-input">
