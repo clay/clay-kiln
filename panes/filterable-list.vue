@@ -10,18 +10,21 @@
         type="text"
         class="filterable-list-input-field"
         placeholder="Begin typing to filter list"
+        ref="search"
         v-model="query">
     </div>
-    <ul class="filterable-list-readout">
-      <li v-for="item in matches">
-        <button
-          type="button"
-          class="filterable-list-readout-item"
-          @click.stop="onClick(item.id)">
-          {{ item.text }}
-        </button>
-      </li>
-    </ul>
+    <div class="filterable-list-readout">
+      <ul class="filterable-list-readout-list">
+        <li v-for="item in matches">
+          <button
+            type="button"
+            class="filterable-list-readout-list-item"
+            @click.stop="onClick(item.id)">
+            {{ item.title }}
+          </button>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -31,7 +34,7 @@
 
   function filterContent(content, query) {
     return _.filter(content, item => {
-      return _.includes(item.text.toLowerCase(), query.toLowerCase());
+      return _.includes(item.title.toLowerCase(), query.toLowerCase());
     });
   }
 
@@ -46,6 +49,9 @@
       matches() {
         return this.query.length ? filterContent(this.content, this.query): this.content;
       }
+    },
+    mounted() {
+      this.$refs.search.focus();
     }
   };
 </script>
