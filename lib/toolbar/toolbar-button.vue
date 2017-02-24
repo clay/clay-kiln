@@ -34,7 +34,7 @@
           paneName = this.name || this.iconName;
 
         if (currentPaneName !== paneName) {
-          this.$store.commit(OPEN_PANE, {
+          let paneConfig = {
             name: paneName,
             previous: currentPaneName,
             options: paneContent[paneName],
@@ -42,7 +42,14 @@
               left: getLeftOffset(this.$el),
               width: this.$el.offsetWidth
             }
-          });
+          };
+
+          // If a pane is open
+          if (currentPaneName) {
+            this.$store.dispatch('changePane', paneConfig);
+          } else {
+            this.$store.commit(OPEN_PANE, paneConfig);
+          }
         } else {
           this.$store.commit(CLOSE_PANE, null);
         }
