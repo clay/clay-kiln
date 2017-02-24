@@ -19,19 +19,22 @@
         <button class="selector-button selector-nav-up" title="Previous Visible Component"><icon name="up"></icon></button>
         <button class="selector-button selector-nav-down" title="Next Visible Component"><icon name="down"></icon></button>
       </div>
-      <button v-if="hasAddComponent" class="selector-button selected-add" title="Add Component"><icon name="add-icon"></icon></button>
+      <button v-if="hasAddComponent" class="selector-button selected-add" title="Add Component" @click.stop="openAddComponentPane"><icon name="add-icon"></icon></button>
       <button v-if="hasReplaceComponent" class="selector-button selected-replace" title="Replace Component"><icon name="replace-icon"></icon></button>
     </aside>
   </aside>
 </template>
 
 <script>
+  import { map } from 'lodash';
   import { isEmpty } from 'lodash';
   import store from '../core-data/store';
   import { getData, getSchema } from '../core-data/components';
   import label from '../utils/label';
   import { getComponentName } from '../utils/references';
+  import { getParentComponent } from '../utils/component-elements';
   import { getSettingsFields } from '../core-data/groups';
+  import { addComponentPane } from '../utils/panes';
   import icon from '../utils/icon.vue';
 
   export default {
@@ -70,6 +73,16 @@
           path = 'settings';
 
         store.dispatch('focus', { uri, path });
+      },
+      openAddComponentPane() {
+        var component = document.querySelector(`[data-uri="${this.$options.uri}"]`), // Find the component
+          parentUri = getParentComponent(component).getAttribute('data-uri'), // Find the parent component
+          componentListName = component.parentNode.getAttribute('data-editable'), // Find the component list of the parent
+          parentName = getComponentName(parentUri), // Get the name of the parent component from the URI
+          componentList = _.get(store, `state.schemas[${parentName}][${componentListName}]._componentList`, ''); // Grab the included components from the parent's schema
+
+        // Open the pane and send it the component list
+        addComponentPane(componentList.include);
       }
     },
     components: {
