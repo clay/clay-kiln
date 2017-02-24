@@ -1,6 +1,7 @@
 import { basename, extname } from 'path';
 import _ from 'lodash';
 import Vue from 'vue';
+import NProgress from 'vue-nprogress';
 import store from './lib/core-data/store';
 import { decorateAll } from './lib/decorators';
 import { add as addBehavior } from './lib/forms/behaviors';
@@ -14,7 +15,17 @@ import { CLOSE_PANE } from './lib/panes/mutationTypes';
 const behaviorReq = require.context('./behaviors', false, /\.vue$/),
   paneReq = require.context('./panes', false, /\.vue$/),
   // todo: in the future, we should queue up the saves
-  connectionLostMessage = 'Connection Lost. Changes will <strong>NOT</strong> be saved.';
+  connectionLostMessage = 'Connection Lost. Changes will <strong>NOT</strong> be saved.',
+  progressOptions = {
+    parent: '.nprogress-container',
+    template: '<div class="bar" role="bar"></div>',
+    showSpinner: false,
+    easing: 'linear',
+    speed: 500,
+    trickle: false,
+    minimum: 0.001
+  },
+  nprogress = new NProgress(progressOptions);
 
 // Require all scss/css files needed
 require.context('./styleguide', true, /^.*\.(scss|css)$/);
@@ -29,6 +40,12 @@ paneReq.keys().forEach(function (key) {
   addPane(basename(key, extname(key)), paneReq(key));
 });
 
+// add progress bar
+Vue.use(NProgress, {
+  router: false,
+  http: false
+});
+
 // kick off loading when DOM is ready
 // note: preloaded data, external behaviors, decorators, and validation rules should already be added
 // when this event fires
@@ -40,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return h('edit-toolbar');
     },
     store,
+    nprogress,
     components: {
       'edit-toolbar': toolbar
     }
