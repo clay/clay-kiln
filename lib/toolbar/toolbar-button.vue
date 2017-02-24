@@ -1,5 +1,5 @@
 <template>
-  <button class="kiln-toolbar-button" ref="button" @click.stop="handleClick">
+  <button class="kiln-toolbar-button" @click.stop="handleClick">
     <div class="button-flex-inner">
       <icon :name="iconName"></icon>
       <span class="text" v-if="text" v-html="text"></span>
