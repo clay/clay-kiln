@@ -31,19 +31,15 @@ $toolbar-height: 48px;
 
   @media screen and (min-width: 600px) {
     width: 90%;
+
+    &.kiln-toolbar-pane-large {
+      max-width: 500px;
+    }
   }
 
   @media screen and (min-width: 1024px) {
     width: 80%;
   }
-}
-
-.pane-slide-enter, .pane-slide-leave-active {
-  transform: translate3d(0, 100%, 0);
-}
-
-
-.kiln-toolbar-pane {
 
   .kiln-pane-header {
     align-items: center;
@@ -64,9 +60,12 @@ $toolbar-height: 48px;
 
         padding: 17px;
       }
-
     }
   }
+}
+
+.pane-slide-enter, .pane-slide-leave-active {
+  transform: translate3d(0, 100%, 0);
 }
 
 

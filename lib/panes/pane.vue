@@ -1,6 +1,9 @@
 <template>
   <transition name="pane-slide">
-    <div class="kiln-toolbar-pane" v-if="hasCurrentPaneName" v-bind:style="{ left: `${paneOffset}px` }" @click.stop>
+    <div class="kiln-toolbar-pane"
+      v-if="hasCurrentPaneName"
+      v-bind:class="paneSize"
+      v-bind:style="{ left: `${paneOffset}px` }" @click.stop>
       <div class="kiln-pane-header">
         <div class="kiln-pane-header-left">
           {{ paneTitle || 'Pane Title' }}
@@ -72,6 +75,11 @@
       },
       hasPaneActions() {
         return true;
+      },
+      paneSize() {
+        return {
+          'kiln-toolbar-pane-large' : Boolean(_.get(this.$store, 'state.ui.currentPane.options.large', false))
+        }
       },
       paneOffset() {
         // TODO: Make this work with variable pane widths
