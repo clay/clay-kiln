@@ -1,3 +1,50 @@
+<style lang="sass">
+  @import '../../styleguide/colors';
+
+  .pane-tabs-titles-list {
+    border-bottom: 1px solid #D6D6D6;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    justify-content: space-between;
+
+    > * {
+      flex-grow: 1;
+      flex-basis: 25%;
+      text-align: center;
+    }
+
+    &-trigger {
+      appearance: none;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 0;
+      padding: 17px 0;
+      width: 100%;
+
+      &:focus {
+        outline: none;
+      }
+
+      &.active span {
+        border-bottom: 4px solid #727272;
+      }
+    }
+  }
+
+  .more-tabs {
+    position: relative;
+
+    &-popover {
+      position: absolute;
+    }
+  }
+
+</style>
+
 <template>
   <div class="pane-tabs">
     <div class="pane-tabs-titles">
