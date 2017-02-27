@@ -2,7 +2,6 @@
   <filterable-list :content="components" :onClick="itemClick"></filterable-list>
 </template>
 
-
 <script>
   import _ from 'lodash';
   import label from '../lib/utils/label';

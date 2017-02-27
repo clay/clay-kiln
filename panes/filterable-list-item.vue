@@ -31,7 +31,10 @@
 </style>
 
 <template>
-  <li class="filterable-list-item">
+  <li class="filterable-list-item" :data-item-id="item.id">
+    <button type="button" v-if="onReorder">
+      <icon name="drag-grip"></icon>
+    </button>
     <button
       type="button"
       class="filterable-list-item-btn"
@@ -52,7 +55,7 @@
   import icon from '../lib/utils/icon.vue';
 
   export default {
-    props: ['item', 'onClick', 'onSettings', 'onDelete'],
+    props: ['item', 'index', 'onClick', 'onSettings', 'onDelete', 'onReorder'],
     data() {
       return {}
     },

@@ -2,6 +2,7 @@ import { basename, extname } from 'path';
 import _ from 'lodash';
 import Vue from 'vue';
 import NProgress from 'vue-nprogress';
+import VueDragula from 'vue-dragula';
 import keycode from 'keycode';
 import store from './lib/core-data/store';
 import { decorateAll } from './lib/decorators';
@@ -46,6 +47,9 @@ Vue.use(NProgress, {
   router: false,
   http: false
 });
+
+// Use Vue Dragula
+Vue.use(VueDragula);
 
 // kick off loading when DOM is ready
 // note: preloaded data, external behaviors, decorators, and validation rules should already be added
