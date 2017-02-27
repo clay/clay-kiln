@@ -597,9 +597,16 @@
                 shortKey: null,
                 handler(range, context) {
                   if (isMultiComponent && context.collapsed && range.index === 0) {
-                    // we're at the start of the field (and don't have stuff highlighted),
-                    // so merge the text after the caret with the previous component
-                    console.log(`append to previous component: "${renderDeltas(this.quill.getContents(range.index))}"`)
+                    let prev = getPrevComponent(el, current.component);
+
+                    if (prev) {
+                      // we're at the start of the field (and don't have stuff highlighted),
+                      // and there's a previous component to append text to,
+                      // so merge the text after the caret with the previous component
+                      console.log(`append to previous component: "${renderDeltas(this.quill.getContents(range.index))}"`)
+                      store.dispatch('removeComponent', el);
+                      // todo: actually append the text to the previous
+                    } // if there isn't a previous component, don't do ANYTHING
                   } else {
                     // normal delete behavior
                     return true;

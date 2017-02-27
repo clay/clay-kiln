@@ -11,7 +11,7 @@
       </div>
       <div class="selected-actions">
         <button v-if="hasSettings" class="selector-button selected-action-settings" title="Component Settings" @click="openSettings"><icon name="settings"></icon></button>
-        <button v-if="hasDelete" class="selector-button selected-action-delete" title="Delete Component"><icon name="delete"></icon></button>
+        <button v-if="hasRemove" class="selector-button selected-action-delete" title="Remove Component" @click="removeComponent"><icon name="delete"></icon></button>
       </div>
     </aside>
     <aside class="component-selector-bottom">
@@ -50,8 +50,8 @@
 
         return !isEmpty(getSettingsFields(getData(uri), getSchema(uri)));
       },
-      // note: only for components in LISTS! components in properties can be replaced but not deleted (for now)
-      hasDelete() {
+      // note: only for components in LISTS! components in properties can be replaced but not removed (for now)
+      hasRemove() {
         const parentField = this.$options.parentField;
 
         return parentField && parentField.type === 'list';
@@ -83,6 +83,9 @@
 
         // Open the pane and send it the component list
         addComponentPane(componentList.include);
+      },
+      removeComponent() {
+        return store.dispatch('removeComponent', this.$el);
       }
     },
     components: {
