@@ -16,8 +16,8 @@
     </aside>
     <aside class="component-selector-bottom">
       <div class="selector-navigation">
-        <button class="selector-button selector-nav-up" title="Previous Visible Component"><icon name="up"></icon></button>
-        <button class="selector-button selector-nav-down" title="Next Visible Component"><icon name="down"></icon></button>
+        <button class="selector-button selector-nav-up" title="Previous Visible Component" @click="prev"><icon name="up"></icon></button>
+        <button class="selector-button selector-nav-down" title="Next Visible Component" @click="next"><icon name="down"></icon></button>
       </div>
       <button v-if="hasAddComponent" class="selector-button selected-add" title="Add Component" @click.stop="openAddComponentPane"><icon name="add-icon"></icon></button>
       <button v-if="hasReplaceComponent" class="selector-button selected-replace" title="Replace Component"><icon name="replace-icon"></icon></button>
@@ -86,6 +86,12 @@
       },
       removeComponent() {
         return store.dispatch('removeComponent', this.$el);
+      },
+      prev() {
+        return store.dispatch('navigateComponents', 'prev');
+      },
+      next() {
+        return store.dispatch('navigateComponents', 'next');
       }
     },
     components: {
