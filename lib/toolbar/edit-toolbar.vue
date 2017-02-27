@@ -1,3 +1,26 @@
+<style lang="sass">
+  @import '../../styleguide/toolbar';
+
+  body {
+    @include toolbar-padding();
+  }
+
+  .kiln-toolbar-wrapper {
+    @include toolbar-wrapper();
+  }
+
+  .kiln-toolbar {
+    @include toolbar();
+
+    .kiln-toolbar-inner {
+      // full width inner toolbar in edit mode
+      flex: 1 1 auto;
+      left: 0;
+      width: auto;
+    }
+  }
+</style>
+
 <template>
   <div class="kiln-wrapper">
     <background></background>

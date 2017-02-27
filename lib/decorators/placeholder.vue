@@ -1,3 +1,193 @@
+<style lang="sass">
+  @import '../../styleguide/colors';
+  @import '../../styleguide/typography';
+  @import '../../styleguide/buttons';
+
+  // styles shared between regular and permanent placeholders
+  .kiln-placeholder,
+  .kiln-permanent-placeholder {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+    padding: 8px;
+    position: relative;
+    width: 100%;
+
+    .placeholder-top,
+    .placeholder-bottom {
+      display: flex;
+      flex-flow: row wrap;
+      min-width: 60%;
+      width: auto;
+    }
+
+    .placeholder-label {
+      @include placeholder-primary();
+
+      border-bottom-style: solid;
+      border-bottom-width: 4px;
+      flex: 1 1 100%;
+    }
+
+    .placeholder-this-page,
+    .placeholder-many-pages {
+      @include placeholder-secondary();
+
+      align-items: flex-start;
+      flex: 0 1 auto;
+      margin-top: 2px;
+
+      svg {
+        height: 11px;
+        margin: 2px 4px 0 0;
+        width: 11px;
+      }
+    }
+
+    .placeholder-required {
+      @include placeholder-secondary();
+
+      display: block;
+      flex: 1 0 auto;
+      margin-top: 2px;
+      text-align: right;
+    }
+
+    .placeholder-add-component {
+      display: block;
+      flex: 0 0 auto;
+    }
+
+    // single line styles (when placeholders are not tall enough to fit multiple lines)
+    &.single-line {
+      flex-direction: row;
+
+      .placeholder-top {
+        flex-flow: row; // no wrap
+        justify-content: flex-start;
+      }
+
+      .placeholder-bottom {
+        flex-flow: row; // no wrap
+        justify-content: flex-start;
+        min-width: 0;
+      }
+
+      .placeholder-this-page,
+      .placeholder-many-pages {
+        order: 1;
+
+        svg {
+          margin-top: 1px; // slightly less margin-top than multi-line placeholders
+        }
+      }
+
+      .placeholder-location-text {
+        display: none; // hide 'this page' / 'multiple pages'
+      }
+
+      .placeholder-label {
+        border: none;
+        flex: 0 1 auto; // allow word wrapping
+        margin: 0 4px;
+        order: 2;
+      }
+
+      .placeholder-required {
+        flex: 0 0 auto;
+        margin-left: 4px;
+        order: 3;
+        text-align: left;
+      }
+
+      .placeholder-add-component {
+        margin: 0;
+      }
+    }
+  }
+
+  // multi-page / single-page toggle
+  .placeholder-this-page {
+    display: none;
+  }
+
+  .placeholder-many-pages {
+    display: flex;
+  }
+
+  .kiln-page-area .placeholder-this-page {
+    display: flex;
+  }
+
+  .kiln-page-area .placeholder-many-pages {
+    display: none;
+  }
+
+  // regular placeholder - displays when field is empty
+  .kiln-placeholder {
+    background-color: $placeholder-background;
+    border: 1px dashed $placeholder-border;
+
+    svg,
+    svg * {
+      fill: $placeholder-label-border;
+    }
+
+    .placeholder-label {
+      border-bottom-color: $placeholder-label-border;
+      color: $placeholder-label;
+    }
+
+    .placeholder-this-page,
+    .placeholder-many-pages,
+    .placeholder-required {
+      color: $placeholder-border;
+    }
+
+    .placeholder-add-component {
+      @include button-outlined($placeholder-border, $placeholder-background);
+      @include placeholder-secondary();
+
+      margin: 16px auto 0;
+      padding: 8px;
+    }
+  }
+
+  // permanent placeholder - always displays, even when there is data in fields
+  .kiln-permanent-placeholder {
+    background-color: $permanent-placeholder-background;
+    border: 1px dotted $permanent-placeholder-border;
+
+    svg,
+    svg * {
+      fill: $permanent-placeholder-label-border;
+    }
+
+    .placeholder-label {
+      border-bottom-color: $permanent-placeholder-label-border;
+      color: $permanent-placeholder-label;
+    }
+
+    .placeholder-this-page,
+    .placeholder-many-pages,
+    .placeholder-required {
+      color: $permanent-placeholder-label;
+    }
+
+    // permanent placeholders should probably never show this button,
+    // but let's add styles just in case
+    .placeholder-add-component {
+      @include button-outlined($permanent-placeholder-label, $permanent-placeholder-background);
+      @include placeholder-secondary();
+
+      margin: 16px auto 0;
+      padding: 8px;
+    }
+  }
+</style>
+
 <template>
   <div :class="[isPermanent ? permanentClass : temporaryClass, { 'single-line': isSingleLine }]" :style="{ minHeight: placeholderHeight }">
     <div class="placeholder-top">

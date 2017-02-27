@@ -1,3 +1,63 @@
+<style lang="sass">
+  @import '../../styleguide/colors';
+  @import '../../styleguide/layers';
+
+  $box-shadow: 0 0 10px 0;
+
+  // progress bars
+  .nprogress-container {
+    bottom: 100%;
+    left: 0;
+    overflow: visible;
+    pointer-events: none;
+    position: absolute;
+    width: 100%;
+
+    #nprogress .bar {
+      @include toolbar-layer();
+
+      background-color: transparent;
+      bottom: 0;
+      box-shadow: none;
+      height: 6px;
+      left: 0;
+      position: absolute;
+      top: auto;
+      width: 100%;
+    }
+
+    &.draft #nprogress .bar {
+      background-color: $draft;
+      box-shadow: $box-shadow $draft;
+    }
+
+    &.scheduled #nprogress .bar {
+      background-color: $scheduled;
+      box-shadow: $box-shadow $scheduled;
+    }
+
+    &.published #nprogress .bar {
+      background-color: $published;
+      box-shadow: $box-shadow $published;
+    }
+
+    &.offline #nprogress .bar {
+      background-color: $offline;
+      box-shadow: $box-shadow $offline;
+    }
+
+    &.error #nprogress .bar {
+      background-color: $error;
+      box-shadow: $box-shadow $error;
+    }
+
+    &.save #nprogress .bar {
+      background-color: $save;
+      box-shadow: $box-shadow $save;
+    }
+  }
+</style>
+
 <template>
   <nprogress-container :class="progressColor"></nprogress-container>
 </template>

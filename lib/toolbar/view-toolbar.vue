@@ -1,3 +1,31 @@
+<style lang="sass">
+  @import '../../styleguide/toolbar';
+
+  body {
+    @include toolbar-padding();
+  }
+
+  .kiln-toolbar-wrapper {
+    @include toolbar-wrapper();
+  }
+
+  .kiln-toolbar {
+    @include toolbar();
+
+    .kiln-toolbar-inner {
+      // short inner toolbar in view mode
+      flex: 0 1 auto;
+      right: 0;
+      width: auto;
+    }
+  }
+
+  // edit mode doesn't have a border on this button
+  .kiln-toolbar.view-mode .new {
+    border-right: 1px solid $toolbar-view-border;
+  }
+</style>
+
 <template>
   <div class="kiln-toolbar-wrapper">
     <div class="kiln-status"></div>
