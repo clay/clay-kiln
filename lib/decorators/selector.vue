@@ -319,15 +319,13 @@
 </template>
 
 <script>
-  import { map } from 'lodash';
-  import { isEmpty } from 'lodash';
+  import _ from 'lodash';
   import store from '../core-data/store';
   import { getData, getSchema } from '../core-data/components';
   import label from '../utils/label';
   import { getComponentName } from '../utils/references';
   import { getComponentEl, getParentComponent } from '../utils/component-elements';
   import { getSettingsFields } from '../core-data/groups';
-  import { addComponentPane } from '../utils/panes';
   import icon from '../utils/icon.vue';
 
   export default {
@@ -341,7 +339,7 @@
       hasSettings() {
         const uri = this.$options.uri;
 
-        return !isEmpty(getSettingsFields(getData(uri), getSchema(uri)));
+        return !_.isEmpty(getSettingsFields(getData(uri), getSchema(uri)));
       },
       // note: only for components in LISTS! components in properties can be replaced but not removed (for now)
       hasRemove() {
@@ -375,7 +373,14 @@
           componentList = _.get(store, `state.schemas[${parentName}][${componentListName}]._componentList`, ''); // Grab the included components from the parent's schema
 
         // Open the pane and send it the component list
-        addComponentPane(componentList.include);
+        return store.dispatch('openPane', {
+          name: 'add-component',
+          options: {
+            title: 'Add Component',
+            component: 'add-component',
+            content: componentList.include
+          }
+        });
       },
       removeComponent() {
         return store.dispatch('removeComponent', this.$el);

@@ -2,7 +2,7 @@
   @import '../../styleguide/colors';
 
   .pane-tabs-titles-list {
-    border-bottom: 1px solid #D6D6D6;
+    border-bottom: 1px solid #D6D6D6; // todo: pull these colors from the styleguide
     display: flex;
     margin: 0;
     padding: 0;
@@ -50,10 +50,7 @@
     <div class="pane-tabs-titles">
       <ul class="pane-tabs-titles-list">
         <li v-for="(tab, index) in primaryTabs">
-          <button type="button"
-            class="pane-tabs-titles-list-trigger"
-            v-bind:class="{ 'active' : isActive(index) }"
-            @click.stop="selectTab(index)">
+          <button type="button" class="pane-tabs-titles-list-trigger" :class="{ 'active' : isActive(index) }" @click.stop="selectTab(index)">
             <span>{{ tab }}</span>
           </button>
         </li>
