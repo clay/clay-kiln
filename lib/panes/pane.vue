@@ -1,21 +1,65 @@
+<style lang="sass">
+  @import '../../styleguide/typography';
+  @import '../../styleguide/buttons';
+  $pane-margin: 30vh;
+  $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
+  $toolbar-height: 48px;
+
+  .kiln-toolbar-pane {
+    @include primary-text();
+
+    background-color: $white;
+    bottom: 0;
+    box-shadow: 0 0 30px 0 $overlay-shadow;
+    cursor: auto;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    justify-content: flex-start;
+    margin: 0;
+    max-height: 100 - $pane-margin;
+    max-width: 320px;
+    min-height: 400px;
+    min-width: 200px;
+    padding: 0;
+    position: absolute;
+    transition: transform 350ms $easeOutExpo;
+    width: 100%;
+
+    @media screen and (min-width: 600px) {
+      width: 90%;
+
+      &.kiln-toolbar-pane-large {
+        max-width: 500px;
+      }
+
+      &.kiln-toolbar-pane-form {
+        max-width: 600px;
+        left: 50%;
+        margin-left: -300px;
+      }
+    }
+
+    @media screen and (min-width: 1024px) {
+      width: 80%;
+    }
+  }
+
+  .pane-slide-enter, .pane-slide-leave-active {
+    transform: translate3d(0, 100%, 0);
+  }
+</style>
+
 <template>
   <transition name="pane-slide">
     <div class="kiln-toolbar-pane"
       v-if="hasPaneOpenState"
       v-bind:class="{ 'kiln-toolbar-pane-large': largePane, 'kiln-toolbar-pane-form': componentSchema }"
       v-bind:style="{ left: `${paneOffset}px` }" @click.stop>
-      <div class="kiln-pane-header">
-        <div class="kiln-pane-header-left">
-          {{ paneTitle || 'Pane Title' }}
-        </div>
-        <div class="kiln-pane-header-right">
-          <button type="button" class="kiln-pane-header-right-close" @click="closePane"><icon name="close-edit"></icon></button>
-        </div>
-      </div>
+      <pane-header :paneTitle="paneTitle" :buttonClick="closePane" :check="headerIcon"></pane-header>
       <component :is="nonTabComponent" :content="nonTabContent" v-if="nonTabComponent"></component>
       <pane-tabs :tabs="tabs" :contents="tabContents" v-if="tabs.length"></pane-tabs>
       <edit-form v-if="componentSchema" :fields="fields" :componentSchema="componentSchema" :fieldNames="fieldNames"></edit-form>
-
     </div>
   </transition>
 </template>
@@ -24,12 +68,13 @@
 <script>
   import _ from 'lodash';
   import { OPEN_PANE, CLOSE_PANE } from '../panes/mutationTypes'
-  import paneTabs from './pane-tabs.vue';
-  import icon from '../utils/icon.vue';
-  import editForm from './edit-form.vue';
   import { mapState } from 'vuex';
   import { displayProp, getComponentName } from '../utils/references';
   import label from '../utils/label';
+  import paneTabs from './pane-tabs.vue';
+  import icon from '../utils/icon.vue';
+  import editForm from './edit-form.vue';
+  import paneHeader from './pane-header.vue';
 
   const STATE_PATHS = {
     CONTENT: 'ui.currentPane.options.content',
@@ -88,7 +133,9 @@
 
         return rightAlignedOffset || offset.left;
       },
-
+      headerIcon() {
+        return this.componentSchema ? 'publish-check' : 'close-edit';
+      }
     }),
     methods: {
       closePane() {
@@ -97,6 +144,6 @@
         this.$store.dispatch('closePane');
       }
     },
-    components: _.assign(window.kiln.panes, { 'pane-tabs': paneTabs, icon, 'edit-form': editForm })
+    components: _.assign(window.kiln.panes, { 'pane-tabs': paneTabs, icon, 'edit-form': editForm, 'pane-header': paneHeader })
   };
 </script>
