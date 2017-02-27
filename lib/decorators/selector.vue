@@ -32,7 +32,7 @@
   import { getData, getSchema } from '../core-data/components';
   import label from '../utils/label';
   import { getComponentName } from '../utils/references';
-  import { getParentComponent } from '../utils/component-elements';
+  import { getComponentEl, getParentComponent } from '../utils/component-elements';
   import { getSettingsFields } from '../core-data/groups';
   import { addComponentPane } from '../utils/panes';
   import icon from '../utils/icon.vue';
@@ -75,7 +75,7 @@
         store.dispatch('focus', { uri, path });
       },
       openAddComponentPane() {
-        var component = document.querySelector(`[data-uri="${this.$options.uri}"]`), // Find the component
+        var component = getComponentEl(this.$el), // Find the component
           parentUri = getParentComponent(component).getAttribute('data-uri'), // Find the parent component
           componentListName = component.parentNode.getAttribute('data-editable'), // Find the component list of the parent
           parentName = getComponentName(parentUri), // Get the name of the parent component from the URI
