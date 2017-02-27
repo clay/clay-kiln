@@ -7,6 +7,7 @@
   import _ from 'lodash';
   import label from '../lib/utils/label';
   import filterableList from './filterable-list.vue';
+  import getAvailable from '../lib/utils/available-components';
 
   /**
    * Turn a list of component strings into the objects
@@ -17,7 +18,7 @@
    * @return {Array}
    */
   function formatForFilterableList(content) {
-    return _.map(content, item => {
+    return _.map(getAvailable(content), item => {
       return {
         id: item,
         title: label(item)
