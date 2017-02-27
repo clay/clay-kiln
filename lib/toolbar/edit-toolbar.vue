@@ -3,8 +3,8 @@
     <background></background>
     <div class="kiln-toolbar-wrapper">
       <pane></pane>
+      <progress-bar></progress-bar>
       <status></status>
-      <div class="kiln-progress-wrapper"></div>
       <section class="kiln-toolbar edit-mode">
         <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" centered="false"></toolbar-button>
         <toolbar-button class="new" icon-name="new-page" text="New Page"></toolbar-button>
@@ -26,6 +26,7 @@
 <script>
   import { mapState } from 'vuex';
   import toggleEdit from '../utils/toggle-edit';
+  import progressBar from './progress.vue';
   import button from './toolbar-button.vue';
   import background from './background.vue';
   import overlay from '../forms/overlay.vue';
@@ -42,7 +43,8 @@
       background,
       overlay,
       pane,
-      status
+      status,
+      'progress-bar': progressBar
     },
     methods: {
       stopEditing() {
