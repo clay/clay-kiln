@@ -94,7 +94,7 @@
       closePane() {
         var currentPane = _.get(this.$store, 'state.ui.currentPane');
 
-        this.$store.commit(CLOSE_PANE, null);
+        this.$store.dispatch('closePane');
       }
     },
     components: _.assign(window.kiln.panes, { 'pane-tabs': paneTabs, icon, 'edit-form': editForm })
