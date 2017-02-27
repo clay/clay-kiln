@@ -2,6 +2,7 @@ import { basename, extname } from 'path';
 import _ from 'lodash';
 import Vue from 'vue';
 import NProgress from 'vue-nprogress';
+import keycode from 'keycode';
 import store from './lib/core-data/store';
 import { decorateAll } from './lib/decorators';
 import { add as addBehavior } from './lib/forms/behaviors';
@@ -99,5 +100,21 @@ document.addEventListener('DOMContentLoaded', function () {
   window.addEventListener('offline', function () {
     // todo: turn any progress indicators to grey and end them
     store.dispatch('showStatus', { type: 'offline', message: connectionLostMessage, isPermanent: true});
+  });
+
+  // navigate components when hitting ↑ / ↓ arrows (if there's a component selected)
+  document.addEventListener('keydown', function (e) {
+    const key = keycode(e);
+
+    // don't navigate if they have a form open
+    if (_.get(store, 'state.ui.currentFocus')) {
+      return;
+    }
+
+    if (key === 'up') {
+      store.dispatch('navigateComponents', 'prev');
+    } else if (key === 'down') {
+      store.dispatch('navigateComponents', 'next');
+    }
   });
 });

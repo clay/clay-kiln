@@ -564,6 +564,59 @@
       // when the form data changes (since quill is handling it)
       el.innerHTML = this.data;
 
+      /**
+       * navigate to the previous component on ↑ or ←
+       * @param  {object} range
+       * @return {boolean|undefined}
+       */
+      function navigatePrevious(range) {
+        if (isMultiComponent && range.index === 0) {
+          // we're at the beginning of the field! navigate to the previous component
+          let prev = getPrevComponent(el, current.component);
+
+          if (prev) {
+            store.dispatch('select', prev);
+            // note: this passes -1 as the offset, which will set the caret
+            // at the end of the previous text
+            store.dispatch('focus', {
+              uri: prev.getAttribute(refAttr),
+              path: name,
+              el: prev,
+              offset: -1
+            });
+          }
+        } else {
+          // default arrow behavior for single-line and multi-line
+          return true;
+        }
+      }
+
+      /**
+       * navigate to the next component on ↓ or →
+       * @param  {object} range
+       * @return {boolean|undefined}
+       */
+      function navigateNext(range) {
+        if (isMultiComponent && range.index === this.quill.getLength() - 1) {
+          // we're at the beginning of the field! navigate to the previous component
+          let next = getNextComponent(el, current.component);
+
+          if (next) {
+            store.dispatch('select', next);
+            // note: since we're focusing at the beginning of the next
+            // component, we don't need to pass an offset
+            store.dispatch('focus', {
+              uri: next.getAttribute(refAttr),
+              path: name,
+              el: next
+            });
+          }
+        } else {
+          // default arrow behavior for single-line and multi-line
+          return true;
+        }
+      }
+
       editor = new Quill(el, {
         theme: 'bubble',
         formats,
@@ -597,9 +650,16 @@
                 shortKey: null,
                 handler(range, context) {
                   if (isMultiComponent && context.collapsed && range.index === 0) {
-                    // we're at the start of the field (and don't have stuff highlighted),
-                    // so merge the text after the caret with the previous component
-                    console.log(`append to previous component: "${renderDeltas(this.quill.getContents(range.index))}"`)
+                    let prev = getPrevComponent(el, current.component);
+
+                    if (prev) {
+                      // we're at the start of the field (and don't have stuff highlighted),
+                      // and there's a previous component to append text to,
+                      // so merge the text after the caret with the previous component
+                      console.log(`append to previous component: "${renderDeltas(this.quill.getContents(range.index))}"`)
+                      store.dispatch('removeComponent', el);
+                      // todo: actually append the text to the previous
+                    } // if there isn't a previous component, don't do ANYTHING
                   } else {
                     // normal delete behavior
                     return true;
@@ -625,50 +685,19 @@
               },
               upArrow: {
                 key: 'up',
-                handler(range) {
-                  if (isMultiComponent && range.index === 0) {
-                    // we're at the beginning of the field! navigate to the previous component
-                    let prev = getPrevComponent(el, current.component);
-
-                    if (prev) {
-                      store.dispatch('select', prev);
-                      // note: this passes -1 as the offset, which will set the caret
-                      // at the end of the previous text
-                      store.dispatch('focus', {
-                        uri: prev.getAttribute(refAttr),
-                        path: name,
-                        el: prev,
-                        offset: -1
-                      });
-                    }
-                  } else {
-                    // default arrow behavior for single-line and multi-line
-                    return true;
-                  }
-                }
+                handler: navigatePrevious
+              },
+              leftArrow: {
+                key: 'left',
+                handler: navigatePrevious
               },
               downArrow: {
                 key: 'down',
-                handler(range) {
-                  if (isMultiComponent && range.index === this.quill.getLength() - 1) {
-                    // we're at the beginning of the field! navigate to the previous component
-                    let next = getNextComponent(el, current.component);
-
-                    if (next) {
-                      store.dispatch('select', next);
-                      // note: since we're focusing at the beginning of the next
-                      // component, we don't need to pass an offset
-                      store.dispatch('focus', {
-                        uri: next.getAttribute(refAttr),
-                        path: name,
-                        el: next
-                      });
-                    }
-                  } else {
-                    // default arrow behavior for single-line and multi-line
-                    return true;
-                  }
-                }
+                handler: navigateNext
+              },
+              rightArrow: {
+                key: 'right',
+                handler: navigateNext
               }
             }
           }
