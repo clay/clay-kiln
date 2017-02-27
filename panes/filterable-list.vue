@@ -1,3 +1,32 @@
+<style lang="sass">
+  @import '../styleguide/_inputs';
+
+  .filterable-list {
+    padding: 17px;
+    &-input {
+      &-field {
+        @include input();
+      }
+    }
+    &-readout {
+      overflow-y: scroll;
+      overflow-x: hidden;
+      max-height: 600px;
+
+      &-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        > * + * {
+          border-top: 1px solid $grey;
+        }
+      }
+    }
+  }
+
+</style>
+
 <template>
   <div class="filterable-list">
     <div class="filterable-list-input">
@@ -10,14 +39,7 @@
     </div>
     <div class="filterable-list-readout">
       <ul class="filterable-list-readout-list">
-        <li v-for="item in matches">
-          <button
-            type="button"
-            class="filterable-list-readout-list-item"
-            @click.stop="onClick(item.id)">
-            {{ item.title }}
-          </button>
-        </li>
+        <list-item v-for="item in matches" :item="item" :onClick="onClick" :onSettings="onSettings" :onDelete="onDelete"></list-item>
       </ul>
     </div>
   </div>
@@ -26,6 +48,7 @@
 
 <script>
   import _ from 'lodash';
+  import listItem from './filterable-list-item.vue';
 
   function filterContent(content, query) {
     return _.filter(content, item => {
@@ -34,7 +57,7 @@
   }
 
   export default {
-    props: ['content', 'onClick'],
+    props: ['content', 'onClick', 'onSettings', 'onDelete'],
     data() {
       return {
         query: ''
@@ -42,11 +65,14 @@
     },
     computed: {
       matches() {
-        return this.query.length ? filterContent(this.content, this.query): this.content;
+        return this.query.length ? filterContent(this.content, this.query) : this.content;
       }
     },
     mounted() {
       this.$refs.search.focus();
+    },
+    components: {
+      'list-item': listItem
     }
   };
 </script>
