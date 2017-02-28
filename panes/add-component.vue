@@ -25,7 +25,18 @@
     },
     methods: {
       itemClick(id) {
-        console.log(`add component: ${id} to ${this.args.path} in ${this.args.parentURI}`)
+        const self = this;
+
+        this.$store.dispatch('createComponent', { name: id })
+          .then((uri) => {
+            return self.$store.dispatch('addComponent', {
+              currentURI: self.args.currentURI,
+              parentURI: self.args.parentURI,
+              path: self.args.path,
+              uri
+            });
+          })
+          .then(() => self.$nextTick(() => self.$store.dispatch('closePane')));
       }
     },
     components: {
