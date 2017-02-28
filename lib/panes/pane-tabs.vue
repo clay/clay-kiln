@@ -33,7 +33,6 @@
   export default {
     props: ['content'],
     data() {
-      console.log(this.content);
       return {
         activeTab: 0
       };
