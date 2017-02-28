@@ -123,9 +123,9 @@
   import _ from 'lodash';
   import sanitize from 'sanitize-html';
   import store from '../lib/core-data/store';
-  import { getComponentName, refAttr } from '../lib/utils/references';
+  import { getComponentName, refAttr, editAttr } from '../lib/utils/references';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
-  import { getPrevComponent, getNextComponent } from '../lib/utils/component-elements';
+  import { getPrevComponent, getNextComponent, getParentComponent, getComponentEl } from '../lib/utils/component-elements';
   import { isFirstField } from '../lib/forms/field-helpers';
 
   const Delta = Quill.import('delta'),
@@ -510,11 +510,15 @@
         store = this.$store,
         name = this.name,
         el = this.$el,
+        parent = getParentComponent(getComponentEl(_.get(store, 'state.ui.currentForm.el'))),
         formats = _.flatten(_.filter(buttons, (button) => button !== 'clean')).concat(['header', 'blockquote']),
         // some useful details about the current component, range, etc
         // to pass into handleMultiParagraphPaste()
         current = {
-          component: getComponentName(_.get(store, 'state.ui.currentForm.uri'))
+          component: getComponentName(_.get(store, 'state.ui.currentForm.uri')),
+          uri: _.get(store, 'state.ui.currentForm.uri'),
+          parentURI: parent.getAttribute(refAttr),
+          parentPath: getComponentEl(_.get(store, 'state.ui.currentForm.el')).parentNode.getAttribute(editAttr)
         };
 
       let editor;
@@ -633,9 +637,20 @@
                     // single-line: never allow newlines, always just close the form
                     store.dispatch('unfocus');
                   } else if (isMultiComponent && context.collapsed && context.offset === 0) {
+                    const text = renderDeltas(this.quill.getContents(range.index));
+
                     // if the caret is at the beginning of a new line, create a new component (sending the text after the caret to the new component)
-                    console.log(`create new component with "${renderDeltas(this.quill.getContents(range.index))}"`) // text after caret, as html string
                     this.quill.deleteText(range.index, this.quill.getLength() - range.index); // remove text after caret
+                    return store.dispatch('createComponent', { name: current.component, defaultData: { [name]: text } }) // text after caret, as html string
+                      .then((uri) => {
+                        console.log('created', uri)
+                        return store.dispatch('addComponent', {
+                          currentURI: current.uri,
+                          parentURI: current.parentURI,
+                          path: current.parentPath,
+                          uri
+                        });
+                      });
                     // note: removing the text kicks off the `text-change` event, so the form data is updated automatically while we create a new component
                   } else if (isMultiComponent || isMultiLine) {
                     // multi-component: allow ONE new line before splitting into a new component
