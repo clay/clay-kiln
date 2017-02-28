@@ -133,12 +133,12 @@
       toggleComponents(name, button) {
         const options = {
           name,
-          title: 'Find Components',
+          title: 'Components',
           // todo: add content / lists dynamically
           content: [{
-            header: 'Search',
+            header: 'Find Component',
             content: {
-              component: 'placeholder'
+              component: 'find-compoennt'
             }
           }, {
             header: 'Head',
