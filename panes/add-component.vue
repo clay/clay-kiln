@@ -6,38 +6,26 @@
   import _ from 'lodash';
   import label from '../lib/utils/label';
   import filterableList from './filterable-list.vue';
-  import getAvailable from '../lib/utils/available-components';
 
-  /**
-   * Turn a list of component strings into the objects
-   * required by the `filterable list` component. Also
-   * prettify the names of the components using the label
-   * utility
-   * @param  {Array} content
-   * @return {Array}
-   */
-  function formatForFilterableList(content) {
-    return _.map(getAvailable(content), item => {
-      return {
-        id: item,
-        title: label(item)
-      }
-    });
-  }
 
   export default {
-    props: ['content'],
+    props: ['args'],
     data() {
-      return {}
+      return {};
     },
     computed: {
       components() {
-        return formatForFilterableList(this.content);
+        return _.map(this.args.available, (component) => {
+          return {
+            id: component,
+            title: label(component)
+          }; // todo: add fuzzy list
+        });
       }
     },
     methods: {
       itemClick(id) {
-        console.log('Create add component:', id);
+        console.log(`add component: ${id} to ${this.args.path} in ${this.args.parentURI}`)
       }
     },
     components: {

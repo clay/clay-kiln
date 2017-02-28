@@ -17,10 +17,10 @@ $toolbar-height: 48px;
   height: auto;
   justify-content: flex-start;
   margin: 0;
-  max-height: 100 - $pane-margin;
+  max-height: 100vh - $pane-margin;
   max-width: 320px;
-  min-height: 400px;
-  min-width: 200px;
+  min-height: $pane-margin;
+  min-width: 320px;
   padding: 0;
   position: absolute;
   transition: transform 350ms $easeOutExpo;
@@ -29,14 +29,42 @@ $toolbar-height: 48px;
   @media screen and (min-width: 600px) {
     width: 90%;
 
-    &.kiln-toolbar-pane-large {
+    &.small {
+      max-width: 350px;
+    }
+
+    &.medium {
       max-width: 500px;
     }
 
-    &.kiln-toolbar-pane-form {
+    &.large {
       max-width: 600px;
+    }
+
+    &.left {
+      left: 0;
+      right: auto;
+    }
+
+    &.center {
       left: 50%;
-      margin-left: -300px;
+
+      &.small {
+        margin-left: -125px;
+      }
+
+      &.medium {
+        margin-left: -250px;
+      }
+
+      &.large {
+        margin-left: -300px;
+      }
+    }
+
+    &.right {
+      left: auto;
+      right: 0;
     }
   }
 

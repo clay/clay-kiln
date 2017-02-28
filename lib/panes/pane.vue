@@ -29,7 +29,7 @@
 
   // these are the pane widths we support
   const widths = {
-    small: 320,
+    small: 350,
     medium: 500,
     large: 600
   };

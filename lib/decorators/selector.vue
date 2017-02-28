@@ -324,7 +324,6 @@
   import { getData, getSchema } from '../core-data/components';
   import label from '../utils/label';
   import { getComponentName } from '../utils/references';
-  import { getComponentEl, getParentComponent } from '../utils/component-elements';
   import { getSettingsFields } from '../core-data/groups';
   import icon from '../utils/icon.vue';
 
@@ -366,20 +365,14 @@
         store.dispatch('focus', { uri, path });
       },
       openAddComponentPane() {
-        var component = getComponentEl(this.$el), // Find the component
-          parentUri = getParentComponent(component).getAttribute('data-uri'), // Find the parent component
-          componentListName = component.parentNode.getAttribute('data-editable'), // Find the component list of the parent
-          parentName = getComponentName(parentUri), // Get the name of the parent component from the URI
-          componentList = _.get(store, `state.schemas[${parentName}][${componentListName}]._componentList`, ''); // Grab the included components from the parent's schema
+        const currentURI = this.$options.uri,
+          parentURI = this.$options.parentURI,
+          path = this.$options.parentField.path;
 
-        // Open the pane and send it the component list
-        return store.dispatch('openPane', {
-          name: 'add-component',
-          options: {
-            title: 'Add Component',
-            component: 'add-component',
-            content: componentList.include
-          }
+        return store.dispatch('openAddComponents', {
+          currentURI,
+          parentURI,
+          path
         });
       },
       removeComponent() {

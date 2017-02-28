@@ -5,6 +5,7 @@
   .kiln-pane-header {
     align-items: center;
     display: flex;
+    flex: 0 0 auto;
     border-bottom: 1px solid $pane-border;
     justify-content: space-between;
 
