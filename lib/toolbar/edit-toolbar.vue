@@ -138,7 +138,7 @@
           content: [{
             header: 'Find Component',
             content: {
-              component: 'find-compoennt'
+              component: 'find-component'
             }
           }, {
             header: 'Head',
