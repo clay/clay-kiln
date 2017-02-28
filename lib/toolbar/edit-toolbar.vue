@@ -138,7 +138,7 @@
           content: [{
             header: 'Find Component',
             content: {
-              component: 'find-compoennt'
+              component: 'find-component'
             }
           }, {
             header: 'Head',
@@ -165,7 +165,7 @@
           name,
           title: 'Preview',
           content: {
-            component: 'placeholder'
+            component: 'preview-share'
           }
         };
 

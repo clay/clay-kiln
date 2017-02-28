@@ -18,9 +18,9 @@
       </ul>
       <!-- todo: add right arrow for scrolling -->
     </div>
-    <div class="pane-tabs-content" v-for="(content, index) in content" v-if="isActive(index)">
+    <div class="pane-tabs-content" v-for="(item, index) in content" v-if="isActive(index)">
       <keep-alive>
-        <component :is="content.component" :args="content.args"></component>
+        <component :is="item.content.component" :args="item.content.args"></component>
       </keep-alive>
     </div>
   </div>
@@ -33,6 +33,7 @@
   export default {
     props: ['content'],
     data() {
+      console.log(this.content);
       return {
         activeTab: 0
       };
