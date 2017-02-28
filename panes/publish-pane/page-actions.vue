@@ -7,9 +7,12 @@
     &-head {
       align-items: center;
       display: flex;
-      margin-bottom: 20px;
+      justify-content: space-between;
+      margin-bottom: 13px;
 
       &-input {
+        width: 48%;
+
         input {
           @include input();
         }
