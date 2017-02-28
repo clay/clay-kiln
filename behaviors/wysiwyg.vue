@@ -121,6 +121,7 @@
 <script>
   import Quill from 'quill';
   import _ from 'lodash';
+  import { find } from '@nymag/dom';
   import sanitize from 'sanitize-html';
   import store from '../lib/core-data/store';
   import { getComponentName, refAttr, editAttr } from '../lib/utils/references';
@@ -510,6 +511,7 @@
         store = this.$store,
         name = this.name,
         el = this.$el,
+        appendText = _.get(store, 'state.ui.currentForm.appendText'),
         parent = getParentComponent(getComponentEl(_.get(store, 'state.ui.currentForm.el'))),
         formats = _.flatten(_.filter(buttons, (button) => button !== 'clean')).concat(['header', 'blockquote']),
         // some useful details about the current component, range, etc
@@ -566,7 +568,34 @@
       // manually add data into element when mounting
       // note: we don't use v-html here because we don't want to update the html
       // when the form data changes (since quill is handling it)
-      el.innerHTML = this.data;
+      if (appendText) {
+        el.innerHTML = this.data + appendText;
+      } else {
+        el.innerHTML = this.data;
+      }
+
+      /**
+       * focus on the previous component, optiopnally specifying an explicit element and text to append
+       * @param  {number} offset
+       * @param  {element} [prev]
+       * @param  {string} [textAfterCaret]
+       */
+      function focusPreviousComponent(offset, prev, textAfterCaret) {
+        prev = prev || getPrevComponent(el, current.component);
+
+        if (prev) {
+          store.dispatch('select', prev);
+          // note: if you pass -1 as the offset, it will set the caret
+          // at the end of the previous text
+          store.dispatch('focus', {
+            uri: prev.getAttribute(refAttr),
+            path: name,
+            el: prev,
+            offset,
+            appendText: textAfterCaret
+          });
+        }
+      }
 
       /**
        * navigate to the previous component on ↑ or ←
@@ -576,22 +605,25 @@
       function navigatePrevious(range) {
         if (isMultiComponent && range.index === 0) {
           // we're at the beginning of the field! navigate to the previous component
-          let prev = getPrevComponent(el, current.component);
-
-          if (prev) {
-            store.dispatch('select', prev);
-            // note: this passes -1 as the offset, which will set the caret
-            // at the end of the previous text
-            store.dispatch('focus', {
-              uri: prev.getAttribute(refAttr),
-              path: name,
-              el: prev,
-              offset: -1
-            });
-          }
+          focusPreviousComponent(-1);
         } else {
           // default arrow behavior for single-line and multi-line
           return true;
+        }
+      }
+
+      function focusNextComponent(next) {
+        next = next || getNextComponent(el, current.component);
+
+        if (next) {
+          store.dispatch('select', next);
+          // note: since we're focusing at the beginning of the next
+          // component, we don't need to pass an offset
+          store.dispatch('focus', {
+            uri: next.getAttribute(refAttr),
+            path: name,
+            el: next
+          });
         }
       }
 
@@ -603,18 +635,7 @@
       function navigateNext(range) {
         if (isMultiComponent && range.index === this.quill.getLength() - 1) {
           // we're at the beginning of the field! navigate to the previous component
-          let next = getNextComponent(el, current.component);
-
-          if (next) {
-            store.dispatch('select', next);
-            // note: since we're focusing at the beginning of the next
-            // component, we don't need to pass an offset
-            store.dispatch('focus', {
-              uri: next.getAttribute(refAttr),
-              path: name,
-              el: next
-            });
-          }
+          focusNextComponent();
         } else {
           // default arrow behavior for single-line and multi-line
           return true;
@@ -637,21 +658,24 @@
                     // single-line: never allow newlines, always just close the form
                     store.dispatch('unfocus');
                   } else if (isMultiComponent && context.collapsed && context.offset === 0) {
-                    const text = renderDeltas(this.quill.getContents(range.index));
+                    const textAfterCaret = renderDeltas(this.quill.getContents(range.index));
 
                     // if the caret is at the beginning of a new line, create a new component (sending the text after the caret to the new component)
                     this.quill.deleteText(range.index, this.quill.getLength() - range.index); // remove text after caret
-                    return store.dispatch('createComponent', { name: current.component, defaultData: { [name]: text } }) // text after caret, as html string
+                    return store.dispatch('unfocus')
+                      .then(() => store.dispatch('createComponent', { name: current.component, defaultData: { [name]: textAfterCaret } }))
                       .then((uri) => {
-                        console.log('created', uri)
                         return store.dispatch('addComponent', {
                           currentURI: current.uri,
                           parentURI: current.parentURI,
                           path: current.parentPath,
                           uri
+                        })
+                        .then((newComponent) => {
+                          // focus on the BEGINNING of the new element (before any text we may have split into it)
+                          focusNextComponent(newComponent);
                         });
                       });
-                    // note: removing the text kicks off the `text-change` event, so the form data is updated automatically while we create a new component
                   } else if (isMultiComponent || isMultiLine) {
                     // multi-component: allow ONE new line before splitting into a new component
                     // multi-line: allow any number of newlines inside the current field
@@ -665,15 +689,17 @@
                 shortKey: null,
                 handler(range, context) {
                   if (isMultiComponent && context.collapsed && range.index === 0) {
-                    let prev = getPrevComponent(el, current.component);
+                    let prev = getPrevComponent(el, current.component),
+                      textAfterCaret = renderDeltas(this.quill.getContents(range.index)),
+                      currentComponentEl = getComponentEl(el);
 
                     if (prev) {
                       // we're at the start of the field (and don't have stuff highlighted),
                       // and there's a previous component to append text to,
                       // so merge the text after the caret with the previous component
-                      console.log(`append to previous component: "${renderDeltas(this.quill.getContents(range.index))}"`)
-                      store.dispatch('removeComponent', el);
-                      // todo: actually append the text to the previous
+                      store.dispatch('unfocus')
+                        .then(() => store.dispatch('removeComponent', currentComponentEl))
+                        .then((prevComponent) => focusPreviousComponent(-1, prevComponent, textAfterCaret));
                     } // if there isn't a previous component, don't do ANYTHING
                   } else {
                     // normal delete behavior
@@ -720,13 +746,15 @@
       });
 
       if (isFirstField(this.$el)) {
-        const offset = _.get(this, '$store.state.ui.currentForm.initialOffset'),
-          length = editor.getLength();
+        const offset = _.get(this, '$store.state.ui.currentForm.initialOffset');
 
         this.$nextTick(() => {
-          if (offset === -1) {
+          if (offset === -1 && appendText) {
+            // set caret near the end, but BEFORE the appended text
+            editor.setSelection(editor.getLength() - sanitizeInlineHTML(appendText).length - 1);
+          } else if (offset === -1) {
             // set caret at the end
-            editor.setSelection(length - 1);
+            editor.setSelection(editor.getLength() - 1);
           } else {
             editor.setSelection(offset);
           }
