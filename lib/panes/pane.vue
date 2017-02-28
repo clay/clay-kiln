@@ -55,8 +55,9 @@
   <transition name="pane-slide">
     <div class="kiln-toolbar-pane" v-if="hasOpenPane" :class="[ position, size, { 'kiln-pane-form': isForm } ]" :style="{ left: offsetLeft }" @click.stop>
       <pane-header :title="headerTitle" :buttonClick="closePane" :check="headerIcon"></pane-header>
-      <component v-if="singleTab" :is="contents.component" :content="contents.args"></component>
-      <pane-tabs v-else :content="contents"></pane-tabs>
+      <edit-form v-if="isForm"></edit-form>
+      <component v-else-if="singleTab" :is="singleComponent" :args="singleComponentArgs"></component>
+      <pane-tabs v-else :content="content"></pane-tabs>
     </div>
   </transition>
 </template>
@@ -76,7 +77,6 @@
   };
 
   export default {
-    props: [],
     data() {
       return {};
     },
@@ -84,9 +84,9 @@
       hasOpenPane: (state) => !_.isNull(state.ui.currentPane),
       position: (state) => _.get(state, 'ui.currentPane.position') || 'left',
       size: (state) => _.get(state, 'ui.currentPane.size') || 'small',
-      isForm: (state) => _.get(state, 'ui.currentPane.isForm'),
+      isForm: (state) => !_.isNull(state.ui.currentForm),
       offsetLeft(state) {
-        const offset = _.get(state.ui.currentPane.offset) || {};
+        const offset = _.get(state, 'ui.currentPane.offset') || {};
 
         if (this.position === 'left' && offset.left + widths[this.size] > window.innerWidth) {
           return `${offset.left + offset.width - widths[this.size]}px`;
@@ -94,10 +94,15 @@
           return `${offset.left}px`;
         }
       },
-      singleTab(state) {
-        const contents = _.get(state, 'ui.currentPane.contents');
-
-        return !_.isArray(contents);
+      content: (state) => _.get(state, 'ui.currentPane.content'),
+      singleTab() {
+        return !_.isArray(this.content);
+      },
+      singleComponent() {
+        return _.get(this, 'content.component');
+      },
+      singleComponentArgs() {
+        return _.get(this, 'content.args');
       },
       headerTitle: (state) => _.get(state, 'ui.currentPane.title') || 'Pane',
       headerIcon() {
