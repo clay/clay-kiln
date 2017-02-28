@@ -26,6 +26,7 @@
     <background></background>
     <div class="kiln-toolbar-wrapper">
       <pane></pane>
+      <overlay></overlay>
       <progress-bar></progress-bar>
       <status></status>
       <section class="kiln-toolbar edit-mode">

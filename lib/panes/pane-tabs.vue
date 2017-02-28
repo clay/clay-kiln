@@ -1,48 +1,9 @@
 <style lang="sass">
-  @import '../../styleguide/colors';
+  @import '../../styleguide/panes';
 
   .pane-tabs-titles-list {
-    border-bottom: 1px solid #D6D6D6; // todo: pull these colors from the styleguide
-    display: flex;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    justify-content: space-between;
-
-    > * {
-      flex-grow: 1;
-      flex-basis: 25%;
-      text-align: center;
-    }
-
-    &-trigger {
-      appearance: none;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      margin: 0;
-      padding: 17px 0;
-      width: 100%;
-
-      &:focus {
-        outline: none;
-      }
-
-      &.active span {
-        border-bottom: 4px solid #727272;
-      }
-    }
+    @include pane-tab-list();
   }
-
-  .more-tabs {
-    position: relative;
-
-    &-popover {
-      position: absolute;
-    }
-  }
-
 </style>
 
 <template>

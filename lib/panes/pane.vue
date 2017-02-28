@@ -1,49 +1,8 @@
 <style lang="sass">
-  @import '../../styleguide/typography';
-  @import '../../styleguide/buttons';
-
-  $pane-margin: 30vh;
-  $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
-  $toolbar-height: 48px;
+  @import '../../styleguide/panes';
 
   .kiln-toolbar-pane {
-    @include primary-text();
-
-    background-color: $white;
-    bottom: 0;
-    box-shadow: 0 0 30px 0 $overlay-shadow;
-    cursor: auto;
-    display: flex;
-    flex-direction: column;
-    height: auto;
-    justify-content: flex-start;
-    margin: 0;
-    max-height: 100 - $pane-margin;
-    max-width: 320px;
-    min-height: 400px;
-    min-width: 200px;
-    padding: 0;
-    position: absolute;
-    transition: transform 350ms $easeOutExpo;
-    width: 100%;
-
-    @media screen and (min-width: 600px) {
-      width: 90%;
-
-      &.kiln-toolbar-pane-large {
-        max-width: 500px;
-      }
-
-      &.kiln-toolbar-pane-form {
-        max-width: 600px;
-        left: 50%;
-        margin-left: -300px;
-      }
-    }
-
-    @media screen and (min-width: 1024px) {
-      width: 80%;
-    }
+    @include pane();
   }
 
   .pane-slide-enter, .pane-slide-leave-active {
@@ -53,10 +12,9 @@
 
 <template>
   <transition name="pane-slide">
-    <div class="kiln-toolbar-pane" v-if="hasOpenPane" :class="[ position, size, { 'kiln-pane-form': isForm } ]" :style="{ left: offsetLeft }" @click.stop>
-      <pane-header :title="headerTitle" :buttonClick="closePane" :check="headerIcon"></pane-header>
-      <edit-form v-if="isForm"></edit-form>
-      <component v-else-if="singleTab" :is="singleComponent" :args="singleComponentArgs"></component>
+    <div class="kiln-toolbar-pane" v-if="hasOpenPane" :class="[position, size]" :style="{ left: offsetLeft }" @click.stop>
+      <pane-header :title="headerTitle" :buttonClick="closePane" check="close-edit"></pane-header>
+      <component v-if="singleTab" :is="singleComponent" :args="singleComponentArgs"></component>
       <pane-tabs v-else :content="content"></pane-tabs>
     </div>
   </transition>
@@ -84,7 +42,6 @@
       hasOpenPane: (state) => !_.isNull(state.ui.currentPane),
       position: (state) => _.get(state, 'ui.currentPane.position') || 'left',
       size: (state) => _.get(state, 'ui.currentPane.size') || 'small',
-      isForm: (state) => !_.isNull(state.ui.currentForm),
       offsetLeft(state) {
         const offset = _.get(state, 'ui.currentPane.offset') || {};
 
@@ -105,9 +62,6 @@
         return _.get(this, 'content.args');
       },
       headerTitle: (state) => _.get(state, 'ui.currentPane.title') || 'Pane',
-      headerIcon() {
-        return this.isForm ? 'publish-check' : 'close-edit';
-      }
     }),
     methods: {
       closePane() {

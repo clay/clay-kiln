@@ -1,19 +1,40 @@
+<style lang="sass">
+  @import '../../styleguide/panes';
+
+  .kiln-toolbar-pane-form {
+    @include pane();
+  }
+
+  .pane-slide-enter, .pane-slide-leave-active {
+    transform: translate3d(0, 100%, 0);
+  }
+
+  .form-sections-list {
+    @include pane-tab-list();
+  }
+</style>
+
 <template>
-  <transition name="fade">
-    <div class="editor-overlay-background" v-if="hasCurrentModalForm" @click.stop="save">
-      <div class="editor-overlay" @click.stop>
-        <section class="editor">
-          <form @submit.prevent="save">
-            <header>
-              <span class="form-header">{{ label }}</span>
-              <button type="submit" class="save" @click.stop="save">Save</button>
-            </header>
-            <div class="input-container">
-              <field v-for="(field, index) in fieldNames" :class="{ 'first-field': index === 0 }" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
-            </div>
-          </form>
-        </section>
-      </div>
+  <transition name="pane-slide">
+    <div class="kiln-toolbar-pane-form" v-if="hasCurrentModalForm" @click.stop>
+      <pane-header :title="headerTitle" :buttonClick="save" check="publish-check"></pane-header>
+      <section class="editor">
+        <form @submit.prevent="save">
+          <div v-if="hasTabs" class="pane-tabs-titles">
+            <ul class="form-sections-list">
+              <li v-for="(section, index) in sections">
+                <button type="button" class="pane-tabs-titles-list-trigger" :class="{ 'active' : isActive(index) }" @click.stop="selectTab(index)">
+                  <span>{{ section.title }}</span>
+                </button>
+              </li>
+            </ul>
+            <!-- todo: add right arrow for scrolling -->
+          </div>
+          <div class="pane-tabs-content input-container" v-for="(section, index) in sections" v-if="isActive(index)">
+            <field v-for="(field, fieldIndex) in section.fieldNames" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
+          </div>
+        </form>
+      </section>
     </div>
   </transition>
 </template>
@@ -24,25 +45,52 @@
   import { displayProp, getComponentName } from '../utils/references';
   import label from '../utils/label';
   import field from './field.vue';
+  import paneHeader from '../panes/pane-header.vue';
 
   export default {
     data() {
-      return {};
+      return {
+        activeTab: 0
+      };
     },
     computed: mapState({
       hasCurrentModalForm: (state) => !_.isNull(state.ui.currentForm) && state.ui.currentForm.schema[displayProp] !== 'inline',
-      label: (state) => label(state.ui.currentForm.path, state.ui.currentForm.schema),
+      headerTitle: (state) => label(state.ui.currentForm.path, state.ui.currentForm.schema),
+      hasTabs: (state) => !!state.ui.currentForm.sections,
+      sections: (state) => {
+        const sections = _.get(state, 'ui.currentForm.sections');
+
+        if (sections) {
+          return _.map(sections, (section) => {
+            return {
+              title: section.title,
+              fieldNames: section.fields
+            };
+          });
+        } else {
+          // no sections, so return a single "section" with all the fields
+          return [{
+            fieldNames: state.ui.currentForm.schema.fields || [state.ui.currentForm.path], // group or single field
+          }];
+        }
+      },
       fields: (state) => state.ui.currentForm.fields,
-      fieldNames: (state) => state.ui.currentForm.schema.fields || [state.ui.currentForm.path], // group or single field
       schema: (state) => state.ui.currentForm.schema,
       componentSchema: (state) => state.schemas[getComponentName(state.ui.currentForm.uri)]
     }),
     components: {
-      field
+      field,
+      'pane-header': paneHeader
     },
     methods: {
       save() {
         this.$store.dispatch('unfocus');
+      },
+      isActive(index) {
+        return this.activeTab === index;
+      },
+      selectTab(index) {
+        this.activeTab = index;
       }
     }
   };
