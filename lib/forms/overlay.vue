@@ -1,5 +1,6 @@
 <style lang="sass">
   @import '../../styleguide/panes';
+  @import '../../styleguide/forms';
 
   .kiln-toolbar-pane-form {
     @include pane();
@@ -12,13 +13,19 @@
   .form-sections-list {
     @include pane-tab-list();
   }
+
+  .pane-form-wrapper {
+    @include form();
+
+    height: 100%;
+  }
 </style>
 
 <template>
   <transition name="pane-slide">
     <div class="kiln-toolbar-pane-form" v-if="hasCurrentModalForm" @click.stop>
       <pane-header :title="headerTitle" :buttonClick="save" check="publish-check"></pane-header>
-      <section class="editor">
+      <section class="pane-form-wrapper">
         <form @submit.prevent="save">
           <div v-if="hasTabs" class="pane-tabs-titles">
             <ul class="form-sections-list">

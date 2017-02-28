@@ -11,7 +11,7 @@
 <style lang="sass">
   @import '../styleguide/typography';
 
-  .editor .label-inner {
+  .label-inner {
     @include label();
 
     color: $black;

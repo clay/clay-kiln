@@ -1,3 +1,16 @@
+<style lang="sass">
+  @import '../../styleguide/forms';
+
+  .kiln-field {
+    @include field();
+  }
+
+  .editor-inline .kiln-field {
+    margin: 0;
+    text-align: left; // override component styling
+  }
+</style>
+
 <template>
   <label class="kiln-field">
     <div class="field-before">

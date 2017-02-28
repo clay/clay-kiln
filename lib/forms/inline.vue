@@ -1,5 +1,27 @@
+<style lang="sass">
+  @import '../../styleguide/forms';
+
+  .editor-inline {
+    @include form();
+
+    max-width: 90vw;
+    margin: 0 auto;
+    z-index: 3;
+
+    .input-container {
+      overflow: visible;
+      padding: 0;
+    }
+  }
+
+  // when inline forms are opened, the other children of the parent element are hidden
+  .hidden-wrapped {
+    display: none;
+  }
+</style>
+
 <template>
-  <section class="editor editor-inline" @click.stop>
+  <section class="editor-inline" @click.stop>
     <form @submit.prevent="save">
       <div class="input-container">
         <field v-for="(field, index) in fieldNames" :class="{ 'first-field': index === 0 }" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
