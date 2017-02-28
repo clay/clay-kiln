@@ -23,7 +23,7 @@
 
 <template>
   <transition name="pane-slide">
-    <div class="kiln-toolbar-pane-form" v-if="hasCurrentModalForm" @click.stop>
+    <div class="kiln-toolbar-pane-form center large" v-if="hasCurrentModalForm" @click.stop>
       <pane-header :title="headerTitle" :buttonClick="save" check="publish-check"></pane-header>
       <section class="pane-form-wrapper">
         <form @submit.prevent="save">
