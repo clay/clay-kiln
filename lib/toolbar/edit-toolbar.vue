@@ -165,7 +165,7 @@
           name,
           title: 'Preview',
           content: {
-            component: 'placeholder'
+            component: 'preview-share'
           }
         };
 
