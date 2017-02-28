@@ -8,20 +8,7 @@
 </template>
 
 <script>
-  import { get, assign } from 'lodash'
-  import paneContent from './pane-content';
   import icon from '../utils/icon.vue';
-  import { OPEN_PANE, CLOSE_PANE } from '../panes/mutationTypes';
-
-  function getLeftOffset(el) {
-    var offsetLeft = el.offsetLeft;
-
-    while (el = el.offsetParent) {
-      offsetLeft += el.offsetLeft;
-    }
-
-    return offsetLeft;
-  }
 
   export default {
     props: ['iconName', 'name', 'text'],
@@ -30,29 +17,7 @@
     },
     methods: {
       handleClick() {
-        var currentPaneName = get(this.$store, 'state.ui.currentPane.name', null),
-          paneName = this.name || this.iconName;
-
-        if (currentPaneName !== paneName) {
-          let paneConfig = {
-            name: paneName,
-            previous: currentPaneName,
-            options: paneContent[paneName],
-            paneOffset: {
-              left: getLeftOffset(this.$el),
-              width: this.$el.offsetWidth
-            }
-          };
-
-          // If a pane is open
-          if (currentPaneName) {
-            this.$store.dispatch('changePane', paneConfig);
-          } else {
-            this.$store.dispatch('openPane', paneConfig);
-          }
-        } else {
-          this.$store.commit(CLOSE_PANE, null);
-        }
+        this.$emit('click', this.name || this.iconName, this.$el);
       }
     },
     components: {

@@ -26,20 +26,21 @@
     <background></background>
     <div class="kiln-toolbar-wrapper">
       <pane></pane>
+      <overlay></overlay>
       <progress-bar></progress-bar>
       <status></status>
       <section class="kiln-toolbar edit-mode">
-        <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" centered="false"></toolbar-button>
-        <toolbar-button class="new" icon-name="new-page" text="New Page"></toolbar-button>
+        <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" centered="false" @click="toggleMenu"></toolbar-button>
+        <toolbar-button class="new" icon-name="new-page" text="New Page" @click="toggleNewPage"></toolbar-button>
         <div class="kiln-toolbar-inner">
           <toolbar-button class="view-button" name="close" icon-name="close-edit" @click="stopEditing"></toolbar-button>
-          <toolbar-button class="components" name="components" icon-name="search-page" text="Components"></toolbar-button>
+          <toolbar-button class="components" name="components" icon-name="search-page" text="Components" @click="toggleComponents"></toolbar-button>
           <div class="flex-span flex-span-inner"></div>
-          <toolbar-button class="preview" name="preview" icon-name="new-tab" text="Preview"></toolbar-button>
+          <toolbar-button class="preview" name="preview" icon-name="new-tab" text="Preview" @click="togglePreview"></toolbar-button>
         </div>
-        <toolbar-button v-if="isLoading" class="publish loading" name="publish" icon-name="draft" text="Loading&hellip;"></toolbar-button>
-        <toolbar-button v-else-if="pageState.scheduled" class="publish scheduled" name="publish" icon-name="scheduled" text="Scheduled"></toolbar-button>
-        <toolbar-button v-else-if="pageState.published" class="publish published" name="publish" icon-name="published" text="Published"></toolbar-button>
+        <toolbar-button v-if="isLoading" class="publish loading" name="publish" icon-name="draft" text="Loading&hellip;" @click="togglePublish"></toolbar-button>
+        <toolbar-button v-else-if="pageState.scheduled" class="publish scheduled" name="publish" icon-name="scheduled" text="Scheduled" @click="togglePublish"></toolbar-button>
+        <toolbar-button v-else-if="pageState.published" class="publish published" name="publish" icon-name="published" text="Published" @click="togglePublish"></toolbar-button>
         <toolbar-button v-else class="publish draft" name="publish" icon-name="draft" text="Draft"></toolbar-button>
       </section>
     </div>
@@ -72,6 +73,132 @@
     methods: {
       stopEditing() {
         toggleEdit();
+      },
+      // note: these are separate methods because there might be additional
+      // logic that is specific to each button,
+      // e.g. running validation before opening the publish pane
+      toggleMenu(name, button) {
+        const options = {
+          name,
+          title: 'Clay Menu',
+          size: 'large',
+          content: [{
+            header: 'My Pages',
+            content: {
+              component: 'page-list',
+              args: {
+                number: 1
+              }
+            }
+          }, {
+            header: 'All Pages',
+            content: {
+              component: 'placeholder',
+              args: {
+                number: 2
+              }
+            }
+          }, {
+            header: 'Searches',
+            content: {
+              component: 'placeholder',
+              args: {
+                number: 3
+              }
+            }
+          }, {
+            header: 'New Page',
+            content: {
+              component: 'placeholder',
+              args: {
+                number: 4
+              }
+            }
+          }]
+        };
+
+        return this.$store.dispatch('togglePane', { options, button });
+      },
+      toggleNewPage(name, button) {
+        const options = {
+          name,
+          title: 'New Page',
+          content: {
+            component: 'new-page'
+          }
+        };
+
+        return this.$store.dispatch('togglePane', { options, button });
+      },
+      toggleComponents(name, button) {
+        const options = {
+          name,
+          title: 'Find Components',
+          // todo: add content / lists dynamically
+          content: [{
+            header: 'Search',
+            content: {
+              component: 'placeholder'
+            }
+          }, {
+            header: 'Head',
+            content: {
+              component: 'placeholder'
+            }
+          }, {
+            header: 'Head Layout',
+            content: {
+              component: 'placeholder'
+            }
+          }, {
+            header: 'Foot',
+            content: {
+              component: 'placeholder'
+            }
+          }]
+        };
+
+        return this.$store.dispatch('togglePane', { options, button });
+      },
+      togglePreview(name, button) {
+        const options = {
+          name,
+          title: 'Preview',
+          content: {
+            component: 'placeholder'
+          }
+        };
+
+        return this.$store.dispatch('togglePane', { options, button });
+      },
+      togglePublish(name, button) {
+        const options = {
+          name,
+          title: 'Page Status',
+          content: [{
+            header: 'Publish',
+            content: {
+              component: 'edit-publish'
+            }
+          }, {
+            header: 'Health',
+            content: {
+              component: 'placeholder'
+            }
+          }, {
+            header: 'History',
+            content: {
+              component: 'placeholder'
+            }
+          }, {
+            header: 'Location',
+            content: {
+              component: 'placeholder'
+            }
+          }]
+        };
+
+        return this.$store.dispatch('togglePane', { options, button });
       }
     }
   };

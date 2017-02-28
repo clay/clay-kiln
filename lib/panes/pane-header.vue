@@ -1,14 +1,15 @@
 <style lang="sass">
+  @import '../../styleguide/colors';
   @import '../../styleguide/buttons';
 
   .kiln-pane-header {
     align-items: center;
     display: flex;
-    border-bottom: 1px solid #D6D6D6;
+    border-bottom: 1px solid $pane-border;
     justify-content: space-between;
 
     &-left {
-      color: #727272;
+      color: $pane-tab-active;
       font-size: 14px;
       font-weight: bold;
       padding-left: 17px;
@@ -16,7 +17,7 @@
 
     &-right {
       &-close {
-        @include icon-button(#727272, 14px);
+        @include icon-button($pane-tab-active, 14px);
 
         padding: 17px;
       }
@@ -27,7 +28,7 @@
 <template>
   <div class="kiln-pane-header">
     <div class="kiln-pane-header-left">
-      {{ paneTitle || 'Pane Title' }}
+      {{ title }}
     </div>
     <div class="kiln-pane-header-right">
       <button type="button" class="kiln-pane-header-right-close" @click="buttonClick"><icon :name="check"></icon></button>
@@ -36,7 +37,6 @@
 </template>
 
 <script>
-  import _ from 'lodash';
   import icon from '../utils/icon.vue';
 
   /**
@@ -48,12 +48,10 @@
    * @return {Array}
    */
   export default {
-    props: ['paneTitle', 'buttonClick', 'check'],
+    props: ['title', 'buttonClick', 'check'],
     data() {
       return {};
     },
-    computed: {},
-    methods: {},
     components: {
       icon
     }
