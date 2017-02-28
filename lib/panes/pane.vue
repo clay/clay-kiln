@@ -39,7 +39,8 @@
       return {};
     },
     computed: mapState({
-      hasOpenPane: (state) => !_.isNull(state.ui.currentPane),
+      hasOpenPane: (state) => _.isObject(state.ui.currentPane) && !state.ui.currentPane.transitioning,
+      // note: 'transitioning' is a special property that's set when panes are transitioning
       position: (state) => _.get(state, 'ui.currentPane.position') || 'left',
       size: (state) => _.get(state, 'ui.currentPane.size') || 'small',
       offsetLeft(state) {
