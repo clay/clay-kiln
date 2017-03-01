@@ -790,7 +790,6 @@
           const components = [firstComponentToUpdate].concat(otherComponentsToUpdate || []);
 
           // replace current component, and add others if needed
-          console.log('replace current component')
           return store.dispatch('unfocus')
             .then(() => Promise.all(_.map(components, (component) => {
               // create the new components
@@ -814,7 +813,6 @@
             });
         } else if (!_.isEmpty(otherComponentsToUpdate)) {
           // only add other components
-          console.log('add other components')
           return store.dispatch('unfocus')
             .then(() => Promise.all(_.map(otherComponentsToUpdate, (component) => {
               // create the new components
