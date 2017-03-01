@@ -198,7 +198,8 @@
           }]
         };
 
-        return this.$store.dispatch('togglePane', { options, button });
+        return this.$store.dispatch('validate');
+        // return this.$store.dispatch('togglePane', { options, button });
       }
     }
   };

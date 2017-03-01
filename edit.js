@@ -9,6 +9,7 @@ import { add as addBehavior } from './lib/forms/behaviors';
 import { add as addPane } from './lib/forms/panes';
 import toolbar from './lib/toolbar/edit-toolbar.vue';
 import { HIDE_STATUS } from './lib/toolbar/mutationTypes';
+import { init as initValidators } from './lib/validators';
 
 // TODO: Figure out saving/closing and reverting in panes
 import { CLOSE_PANE } from './lib/panes/mutationTypes';
@@ -40,6 +41,9 @@ behaviorReq.keys().forEach(function (key) {
 paneReq.keys().forEach(function (key) {
   addPane(basename(key, extname(key)), paneReq(key));
 });
+
+// init validators
+initValidators();
 
 // add progress bar
 Vue.use(NProgress, {
