@@ -42,6 +42,11 @@
         return _.map(this.content, (item) => item.header);
       }
     },
+    mounted() {
+      // set height for tabbed panes when they mount,
+      // so clicking tabs doesn't change the pane height
+      this.$el.style.height = getComputedStyle(this.$el).height;
+    },
     methods: {
       isActive(index) {
         return this.activeTab === index;
