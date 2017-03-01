@@ -512,15 +512,15 @@
         name = this.name,
         el = this.$el,
         appendText = _.get(store, 'state.ui.currentForm.appendText'),
-        parent = getParentComponent(getComponentEl(_.get(store, 'state.ui.currentForm.el'))),
+        parent = _.get(store, 'state.ui.currentForm.el') && getParentComponent(getComponentEl(_.get(store, 'state.ui.currentForm.el'))),
         formats = _.flatten(_.filter(buttons, (button) => button !== 'clean')).concat(['header', 'blockquote']),
         // some useful details about the current component, range, etc
         // to pass into handleMultiParagraphPaste()
         current = {
           component: getComponentName(_.get(store, 'state.ui.currentForm.uri')),
           uri: _.get(store, 'state.ui.currentForm.uri'),
-          parentURI: parent.getAttribute(refAttr),
-          parentPath: getComponentEl(_.get(store, 'state.ui.currentForm.el')).parentNode.getAttribute(editAttr)
+          parentURI: parent && parent.getAttribute(refAttr),
+          parentPath:  _.get(store, 'state.ui.currentForm.el') && getComponentEl(_.get(store, 'state.ui.currentForm.el')).parentNode.getAttribute(editAttr)
         };
 
       let editor;
