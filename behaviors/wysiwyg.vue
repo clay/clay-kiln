@@ -166,6 +166,11 @@
       lowerCaseTags: true
     };
 
+  // store references for multi-paragraph paste here.
+  // this way, the paste function can set these, and they can be checked
+  // AFTER the generated deltas have been pasted in.
+  let firstComponentToUpdate, otherComponentsToUpdate;
+
   /**
    * unescape manually-written tags before running through sanitizer
    * @param  {string} str
@@ -346,12 +351,13 @@
     if (firstComponent.component === current.component) {
       // paste this text into the current component
       delta = generateDeltas(firstComponent.value, elementMatchers, textMatchers);
-      console.log('add ' + _.map(otherComponents, 'component').join(', '))
+      firstComponentToUpdate = null;
+      otherComponentsToUpdate = otherComponents;
     } else if (quill.getLength() === 1) {
       // there's no text in the current component, so replace it with the pasted component
-      console.log('replace with ' + firstComponent.component)
-      console.log('then add ' + _.map(otherComponents, 'component').join(', '))
-      delta = new Delta();
+      firstComponentToUpdate = firstComponent;
+      otherComponentsToUpdate = otherComponents;
+      delta = new Delta().insert(' '); // add a single space, to trigger text-update so we can replace the current component
     }
 
     return delta;
@@ -512,15 +518,15 @@
         name = this.name,
         el = this.$el,
         appendText = _.get(store, 'state.ui.currentForm.appendText'),
-        parent = getParentComponent(getComponentEl(_.get(store, 'state.ui.currentForm.el'))),
+        parent = _.get(store, 'state.ui.currentForm.el') && getParentComponent(getComponentEl(_.get(store, 'state.ui.currentForm.el'))),
         formats = _.flatten(_.filter(buttons, (button) => button !== 'clean')).concat(['header', 'blockquote']),
         // some useful details about the current component, range, etc
         // to pass into handleMultiParagraphPaste()
         current = {
           component: getComponentName(_.get(store, 'state.ui.currentForm.uri')),
           uri: _.get(store, 'state.ui.currentForm.uri'),
-          parentURI: parent.getAttribute(refAttr),
-          parentPath: getComponentEl(_.get(store, 'state.ui.currentForm.el')).parentNode.getAttribute(editAttr)
+          parentURI: parent && parent.getAttribute(refAttr),
+          parentPath:  _.get(store, 'state.ui.currentForm.el') && getComponentEl(_.get(store, 'state.ui.currentForm.el')).parentNode.getAttribute(editAttr)
         };
 
       let editor;
@@ -612,8 +618,9 @@
         }
       }
 
-      function focusNextComponent(next) {
+      function focusNextComponent(next, path) {
         next = next || getNextComponent(el, current.component);
+        path = path || name;
 
         if (next) {
           store.dispatch('select', next);
@@ -621,7 +628,7 @@
           // component, we don't need to pass an offset
           store.dispatch('focus', {
             uri: next.getAttribute(refAttr),
-            path: name,
+            path,
             el: next
           });
         }
@@ -764,6 +771,7 @@
       editor.on('text-change', () => {
         let html;
 
+        // convert / sanitize output to save
         if (isSingleLine || isMultiComponent) {
           html = sanitizeInlineHTML(editor.root.innerHTML);
         } else if (isMultiLine) {
@@ -775,6 +783,58 @@
           store.commit(UPDATE_FORMDATA, { path: name, data: '' });
         } else {
           store.commit(UPDATE_FORMDATA, { path: name, data: html });
+        }
+
+        // AFTER updating the data, check to see if there are components to paste
+        if (!_.isEmpty(firstComponentToUpdate)) {
+          const components = [firstComponentToUpdate].concat(otherComponentsToUpdate || []);
+
+          // replace current component, and add others if needed
+          return store.dispatch('unfocus')
+            .then(() => Promise.all(_.map(components, (component) => {
+              // create the new components
+              return store.dispatch('createComponent', {
+                name: component.component,
+                defaultData: { [component.field]: sanitizeInlineHTML(component.value) }
+              });
+            })))
+            .then((uris) => {
+              return store.dispatch('replaceComponent', {
+                currentURI: current.uri,
+                parentURI: current.parentURI,
+                path: current.parentPath,
+                uri: uris
+              })
+              .then((newComponent) => {
+                focusNextComponent(newComponent, _.last(otherComponentsToUpdate).field);
+                firstComponentToUpdate = null;
+                otherComponentsToUpdate = null;
+              });
+            });
+        } else if (!_.isEmpty(otherComponentsToUpdate)) {
+          // only add other components
+          return store.dispatch('unfocus')
+            .then(() => Promise.all(_.map(otherComponentsToUpdate, (component) => {
+              // create the new components
+              return store.dispatch('createComponent', {
+                name: component.component,
+                defaultData: { [component.field]: sanitizeInlineHTML(component.value) }
+              });
+            })))
+            .then((uris) => {
+              // add the new components to the parent
+              return store.dispatch('addComponent', {
+                currentURI: current.uri,
+                parentURI: current.parentURI,
+                path: current.parentPath,
+                uri: uris
+              })
+              .then((newComponent) => {
+                // focus on the BEGINNING of the last element (before any text we may have split into it)
+                focusNextComponent(newComponent, _.last(otherComponentsToUpdate).field);
+                otherComponentsToUpdate = null;
+              });
+            });
         }
       });
     },

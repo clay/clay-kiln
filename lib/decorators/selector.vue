@@ -272,6 +272,12 @@
     cursor: pointer;
   }
 
+  // editable TEXT elements should use a caret rather than a pointer through
+  .component-selector-wrapper p[data-editable],
+  .component-selector-wrapper blockquote[data-editable] {
+    cursor: text;
+  }
+
   // inner component lists should always be flexed
   // (this will display properly if their parents are either flexed OR box)
   .component-list-inner {
