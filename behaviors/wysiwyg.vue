@@ -690,15 +690,15 @@
                 handler(range, context) {
                   if (isMultiComponent && context.collapsed && range.index === 0) {
                     let prev = getPrevComponent(el, current.component),
-                      textAfterCaret = renderDeltas(this.quill.getContents(range.index)),
-                      currentComponentEl = getComponentEl(el);
+                      textAfterCaret = renderDeltas(this.quill.getContents(range.index));
 
                     if (prev) {
                       // we're at the start of the field (and don't have stuff highlighted),
                       // and there's a previous component to append text to,
                       // so merge the text after the caret with the previous component
                       store.dispatch('unfocus')
-                        .then(() => store.dispatch('removeComponent', currentComponentEl))
+                        .then(() => find(`[${refAttr}="${current.uri}"]`)) // find the (updated) component in the dom
+                        .then((currentComponentEl) => store.dispatch('removeComponent', currentComponentEl))
                         .then((prevComponent) => focusPreviousComponent(-1, prevComponent, textAfterCaret));
                     } // if there isn't a previous component, don't do ANYTHING
                   } else {
