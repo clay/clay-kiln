@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   store.dispatch('preload')
     .then(() => decorateAll())
+    .then(() => store.dispatch('openHashedForm'))
     .then(() => {
       // test connection loss on page load
       if (!navigator.onLine) {
