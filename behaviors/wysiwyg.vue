@@ -786,27 +786,30 @@
         }
 
         // AFTER updating the data, check to see if there are components to paste
-        if (!_.isEmpty(firstComponentToUpdate) && !_.isEmpty(otherComponentsToUpdate)) {
-          // replace current component and add others after it
-          console.log('replace current component and add others after it')
-        } else if (!_.isEmpty(firstComponentToUpdate)) {
-          // only replace current component (if it's empty)
+        if (!_.isEmpty(firstComponentToUpdate)) {
+          const components = [firstComponentToUpdate].concat(otherComponentsToUpdate || []);
+
+          // replace current component, and add others if needed
           console.log('replace current component')
           return store.dispatch('unfocus')
-            .then(() => store.dispatch('createComponent', {
-              name: firstComponentToUpdate.component,
-              defaultData: { [firstComponentToUpdate.field]: sanitizeInlineHTML(firstComponentToUpdate.value) }
-            }))
-            .then((uri) => {
+            .then(() => Promise.all(_.map(components, (component) => {
+              // create the new components
+              return store.dispatch('createComponent', {
+                name: component.component,
+                defaultData: { [component.field]: sanitizeInlineHTML(component.value) }
+              });
+            })))
+            .then((uris) => {
               return store.dispatch('replaceComponent', {
                 currentURI: current.uri,
                 parentURI: current.parentURI,
                 path: current.parentPath,
-                uri
+                uri: uris
               })
               .then((newComponent) => {
-                focusNextComponent(newComponent, firstComponentToUpdate.field);
+                focusNextComponent(newComponent, _.last(otherComponentsToUpdate).field);
                 firstComponentToUpdate = null;
+                otherComponentsToUpdate = null;
               });
             });
         } else if (!_.isEmpty(otherComponentsToUpdate)) {
