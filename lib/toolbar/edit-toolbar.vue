@@ -173,33 +173,33 @@
       },
       togglePublish(name, button) {
         const options = {
-          name,
-          title: 'Page Status',
-          content: [{
-            header: 'Publish',
-            content: {
-              component: 'edit-publish'
-            }
-          }, {
-            header: 'Health',
-            content: {
-              component: 'placeholder'
-            }
-          }, {
-            header: 'History',
-            content: {
-              component: 'placeholder'
-            }
-          }, {
-            header: 'Location',
-            content: {
-              component: 'placeholder'
-            }
-          }]
-        };
+            name,
+            title: 'Page Status',
+            content: [{
+              header: 'Publish',
+              content: {
+                component: 'edit-publish'
+              }
+            }, {
+              header: 'Health',
+              content: {
+                component: 'placeholder'
+              }
+            }, {
+              header: 'History',
+              content: {
+                component: 'placeholder'
+              }
+            }, {
+              header: 'Location',
+              content: {
+                component: 'placeholder'
+              }
+            }]
+          },
+          store = this.$store;
 
-        return this.$store.dispatch('validate');
-        // return this.$store.dispatch('togglePane', { options, button });
+        return this.$store.dispatch('validate').then(() => store.dispatch('togglePane', { options, button }));
       }
     }
   };
