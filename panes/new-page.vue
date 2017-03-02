@@ -9,25 +9,23 @@
 
 
 <script>
-  import _ from 'lodash';
-  import { getJSON } from '../lib/core-data/api';
-  import { uriToUrl } from '../lib/utils/urls';
+  import { getObject } from '../lib/core-data/api';
   import filterableList from './filterable-list.vue';
 
   export default {
     props: ['content'],
     data() {
-      return {}
+      return {};
     },
     asyncComputed: {
       pages() {
         // Get the JSON response from the API passed in
-        return getJSON(`${uriToUrl(this.$store.state.site.prefix)}/lists/new-pages`);
+        return getObject(`${this.$store.state.site.prefix}/lists/new-pages`);
       }
     },
     methods: {
       itemClick(id) {
-        console.log('Create new page:', id);
+        this.$store.dispatch('createPage', id).then((url) => window.location.href = url);
       }
     },
     components: {
