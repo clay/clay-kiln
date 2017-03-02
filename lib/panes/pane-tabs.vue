@@ -11,8 +11,9 @@
     <div class="pane-tabs-titles">
       <ul class="pane-tabs-titles-list">
         <li v-for="(tab, index) in tabs">
-          <button type="button" class="pane-tabs-titles-list-trigger" :class="{ 'active' : isActive(index) }" @click.stop="selectTab(index)">
-            <span v-html="tab"></span>
+          <button type="button" class="pane-tabs-titles-list-trigger" :class="{ 'active' : isActive(index), 'disabled': tab.disabled }" @click.stop="selectTab(index, tab.disabled)">
+            <span v-if="tab.isString" v-html="tab.header" class="pane-tab-title"></span>
+            <component v-else :is="tab.component"></component>
           </button>
         </li>
       </ul>
@@ -33,13 +34,18 @@
   export default {
     props: ['content'],
     data() {
-      return {
-        activeTab: 0
-      };
+      return {};
     },
     computed: {
       tabs() {
-        return _.map(this.content, (item) => item.header);
+        return _.map(this.content, (item) => {
+          const header = item.header;
+
+          return _.isString(header) ? { header, isString: true, disabled: item.disabled } : { component: header.component, disabled: item.disabled };
+        });
+      },
+      activeTab() {
+        return _.findIndex(this.content, (item) => item.active) || 0;
       }
     },
     mounted() {
@@ -51,8 +57,10 @@
       isActive(index) {
         return this.activeTab === index;
       },
-      selectTab(index) {
-        this.activeTab = index;
+      selectTab(index, isDisabled) {
+        if (!isDisabled) {
+          this.activeTab = index;
+        }
       }
     },
     components: window.kiln.panes

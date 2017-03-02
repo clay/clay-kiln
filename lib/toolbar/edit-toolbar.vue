@@ -172,18 +172,25 @@
         return this.$store.dispatch('togglePane', { options, button });
       },
       togglePublish(name, button) {
-        const options = {
+        const store = this.$store;
+
+        return this.$store.dispatch('validate').then((results) => {
+          const options = {
             name,
             title: 'Page Status',
             content: [{
               header: 'Publish',
+              disabled: results.errors.length > 0,
               content: {
                 component: 'edit-publish'
               }
             }, {
-              header: 'Health',
+              header: {
+                component: 'health-icon'
+              },
+              active: results.errors.length > 0,
               content: {
-                component: 'placeholder'
+                component: 'page-health'
               }
             }, {
               header: 'History',
@@ -196,10 +203,10 @@
                 component: 'placeholder'
               }
             }]
-          },
-          store = this.$store;
+          };
 
-        return this.$store.dispatch('validate').then(() => store.dispatch('togglePane', { options, button }));
+          store.dispatch('togglePane', { options, button });
+        });
       }
     }
   };
