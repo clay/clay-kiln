@@ -18,7 +18,7 @@
 </style>
 
 <template>
-  <label class="kiln-field">
+  <label class="kiln-field" v-if="beforeBehaviors.lenght || mainBehaviors.length || afterBehaviors.length">
     <div class="field-before">
       <component v-for="behavior in beforeBehaviors" :is="behavior.fn" :name="name" :data="data" :schema="schema" :args="behavior.args"></component>
     </div>

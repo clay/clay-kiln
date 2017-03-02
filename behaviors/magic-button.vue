@@ -97,7 +97,7 @@
     border-top-right-radius: 0;
     clear: left;
     left: 0;
-    height: 41px; // to match inputs
+    height: 48px; // to match inputs
     margin: 0;
     padding: 9px 10px 4px;
     position: relative;

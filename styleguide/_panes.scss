@@ -83,21 +83,15 @@ $toolbar-height: 48px;
   list-style: none;
   justify-content: space-between;
 
-  & > * {
-    flex-grow: 1;
-    flex-basis: 25%;
-    text-align: center;
-  }
-
   &-trigger {
     appearance: none;
     background: transparent;
     border: none;
+    color: $pane-tab-title;
     cursor: pointer;
     font-size: 14px;
     margin: 0;
-    padding: 17px 0;
-    width: 100%;
+    padding: 15px 18px;
 
     &:focus {
       outline: none;
