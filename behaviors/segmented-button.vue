@@ -20,7 +20,7 @@
     @include clearfix();
 
     clear: both;
-    margin: 5px 0 10px;
+    // margin: 5px 0 10px;
   }
 
   .segmented-button input[type=radio] {

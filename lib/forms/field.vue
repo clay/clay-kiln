@@ -3,11 +3,21 @@
 
   .kiln-field {
     @include field();
+
+    .field-before {
+      margin-bottom: 5px;
+    }
   }
 
-  .editor-inline .kiln-field {
-    margin: 0;
-    text-align: left; // override component styling
+  .editor-inline {
+
+    .kiln-field {
+      text-align: left; // override component styling
+    }
+
+    .kiln-field + .kiln-field {
+      margin-top: 15px;
+    }
   }
 </style>
 

@@ -13,11 +13,13 @@
   @import '../styleguide/typography';
 
   .label-description {
-    @include secondary-text();
+    @include kiln-copy();
 
+    color: $form-field-description;
     clear: left;
     cursor: default;
-    margin: 0 0 5px;
+    font-size: 13px;
+    margin: 0;
     text-align: left;
   }
 

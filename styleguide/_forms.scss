@@ -32,7 +32,7 @@
     flex: 0 0 auto;
     flex-flow: row wrap;
     overflow: scroll;
-    padding: 17px;
+    padding: 18px;
   }
 
   // hidden submit button that's added to the form if it's not valid
@@ -45,9 +45,13 @@
   @include clearfix();
 
   flex: 0 0 100%;
-  margin: 10px 0 20px;
   min-width: 100px;
   position: relative;
+
+  // Spacing between fields
+  & + & {
+    margin-top: 44px;
+  }
 
   .field-before,
   .field-main,

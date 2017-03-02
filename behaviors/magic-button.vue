@@ -98,12 +98,11 @@
     clear: left;
     left: 0;
     height: 41px; // to match inputs
-    margin: 5px 0 0 0;
+    margin: 0;
     padding: 9px 10px 4px;
     position: relative;
     top: 0; // allow 1px for border
     width: 44px; // explicit width, see below
-
 
     svg {
       height: 22px;

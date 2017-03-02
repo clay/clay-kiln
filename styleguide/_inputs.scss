@@ -2,18 +2,18 @@
 @import 'typography';
 
 @mixin input {
-  @include input-text();
+  @include kiln-copy();
 
   background-color: #fff;
-  border: 1px solid $black-25;
+  border: 1px solid $form-input-border;
   border-radius: 0;
-  box-shadow: inset 1px 1px 8px -3px $input-shadow;
+  box-shadow: inset 0px 1px 2px -3px $input-shadow;
+  color: $form-input;
   cursor: text;
   display: inline-block;
-  font-size: 16px;
+  font-family: $open-sans-semibold, $system-fonts;
   line-height: 19px;
   margin: 0;
-  margin-top: 5px;
   min-height: 34px;
   outline: none;
   padding: 10px;

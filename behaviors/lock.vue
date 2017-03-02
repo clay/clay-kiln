@@ -22,7 +22,7 @@
     clear: right;
     float: right;
     height: 41px; // to match inputs
-    margin: 5px 0 0 0;
+    margin: 0;
     padding: 6px 10px 4px;
     position: relative;
     right: 0;
