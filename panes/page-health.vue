@@ -167,6 +167,9 @@
           el = find(`[${refAttr}="${uri}"][${editAttr}="${path}"]`) || find(`[${refAttr}="${uri}"] [${editAttr}="${path}"]`);
 
         this.$store.dispatch('closePane');
+        if (el && el.nodeType === el.ELEMENT_NODE) {
+          this.$store.dispatch('select', el);
+        }
         this.$store.dispatch('focus', { uri, path, el });
       }
     }
