@@ -3,10 +3,6 @@
 
   .kiln-field {
     @include field();
-
-    .field-before {
-      margin-bottom: 5px;
-    }
   }
 
   .editor-inline {

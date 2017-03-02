@@ -7,6 +7,7 @@
 <style lang="sass">
   @import '../styleguide/colors';
   @import '../styleguide/buttons';
+  @import '../styleguide/inputs';
 
   .simple-list {
     display: flex;
@@ -33,7 +34,7 @@
     border: 0;
     display: inline-block;
     flex: 1 0 135px;
-    height: 34px;
+    height: 48px;
     min-width: 100px;
     outline: none;
     padding: 7px 11px 6px;

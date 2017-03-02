@@ -19,7 +19,7 @@
     clear: left;
     cursor: default;
     font-size: 13px;
-    margin: 0;
+    margin: 0 0 5px;
     text-align: left;
   }
 
