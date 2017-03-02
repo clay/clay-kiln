@@ -54,7 +54,7 @@
         Unpublish
       </button>
       <button type="button" class="page-status-action-btn" v-if="isScheduled" @click="unschedulePage">
-        Unscheduled
+        Unschedule
       </button>
     </div>
   </div>
@@ -62,55 +62,88 @@
 
 
 <script>
-  import _ from 'lodash';
+  import moment from 'moment';
+  import { mapState } from 'vuex';
+  import { uriToUrl } from '../../lib/utils/urls';
+  import { START_PROGRESS, FINISH_PROGRESS } from '../../lib/toolbar/mutationTypes';
 
   export default {
-    props: [],
     data() {
-      return {}
+      return {};
     },
-    computed: {
-      isPublished() {
-        return true;
-      },
-      isScheduled() {
-        return false;
-      },
+    computed: mapState({
+      isPublished: (state) => state.page.state.published,
+      isScheduled: (state) => state.page.state.scheduled,
+      publishedDate: (state) => moment(state.page.state.publishedAt),
+      scheduledDate: (state) => moment(state.page.state.scheduledAt),
       isDraft() {
-        return false;
+        return !this.isPublished && !this.isScheduled;
       },
       stateClass() {
         return {
           published: this.isPublished,
           scheduled: this.isScheduled,
           draft: this.isDraft
-        }
+        };
       },
       message() {
-        var msg = '',
-          time = `WHEN`
-
-        if (this.isPublished) {
-          msg = `Published`;
-        } else if (this.isScheduled) {
-          msg = `Scheduled`;
+        if (this.isScheduled) {
+          return `Scheduled ${this.scheduledDate.fromNow()}`;
+        } if (this.isPublished) {
+          return `Published ${this.publishedDate.fromNow()}`;
         } else {
-          msg = `Draft`;
+          return 'Draft Created';
         }
-
-        return `${msg} ${time}`;
       },
       time() {
-        return `MONTH DAY at TIME`
+        if (this.isScheduled) {
+          return this.scheduledDate.format('MMMM Do [at] h:mm A');
+        } if (this.isPublished) {
+          return this.publishedDate.format('MMMM Do [at] h:mm A');
+        }
       }
-    },
+    }),
     methods: {
       unschedulePage() {
-        console.log('Unschedule');
+        const store = this.$store;
+
+        store.commit(START_PROGRESS, 'schedule');
+        this.$store.dispatch('closePane');
+        this.$store.dispatch('unschedulePage', this.$store.state.page.uri)
+          .catch((e) => {
+            store.commit(FINISH_PROGRESS, 'error');
+            console.error('Error unscheduling page:', e);
+            store.dispatch('showStatus', { type: 'error', message: 'Error unscheduling page!'});
+            throw e;
+          })
+          .then(() => {
+            store.commit(FINISH_PROGRESS, 'schedule');
+            store.dispatch('showStatus', { type: 'schedule', message: 'Unscheduled Page!' });
+          });
       },
       unpublishPage() {
+        const store = this.$store,
+          uri = this.$store.state.page.uri;
+
+        store.commit(START_PROGRESS, 'draft');
         this.$store.dispatch('closePane');
-        this.$store.dispatch('unpublishPage', this.$store.state.page.uri);
+        this.$store.dispatch('unpublishPage', uri)
+          .catch((e) => {
+            store.commit(FINISH_PROGRESS, 'error');
+            console.error('Error unpublishing page:', e);
+            store.dispatch('showStatus', { type: 'error', message: 'Error unpublishing page!'});
+            throw e;
+          })
+          .then(() => {
+            if (_.includes(window.location.href, uriToUrl(uri))) {
+              // if we're already looking at /pages/whatever, display the status message
+              store.commit(FINISH_PROGRESS, 'draft');
+              store.dispatch('showStatus', { type: 'draft', message: 'Unpublished Page!' });
+            } else {
+              // if we're looking at the published page, navigate to the latest version
+              window.location.href = `${uriToUrl(uri)}${htmlExt}${editExt}`;
+            }
+          });
       }
     },
     components: {}

@@ -74,8 +74,7 @@
   import _ from 'lodash';
   import moment from 'moment';
   import { hasNativePicker, init as initPicker } from '../../lib/utils/datepicker';
-
-  const defaultDateFormat = 'YYYY-MM-DDThh:mm';
+  import { START_PROGRESS, FINISH_PROGRESS } from '../../lib/toolbar/mutationTypes';
 
   export default {
     props: [],
@@ -83,7 +82,7 @@
       return {
         dateValue: '',
         timeValue: ''
-      }
+      };
     },
     computed: {
       showSchedule() {
@@ -92,11 +91,32 @@
     },
     methods: {
       onPublishClick() {
+        const store = this.$store;
+
         this.$store.dispatch('closePane');
-        this.$store.dispatch('publishPage', this.$store.state.page.uri);
+        this.$store.dispatch('publishPage', this.$store.state.page.uri)
+          .catch((e) => {
+            console.error('Error publishing page:', e);
+            store.dispatch('showStatus', { type: 'error', message: 'Error publising page!'});
+            throw e;
+          })
+          .then((url) => store.dispatch('showStatus', { type: 'publish', message: 'Published Page!', action: `<a href="${url}">View</a>` }));
       },
       onScheduleClick() {
-        console.log(`Schedule post for ${this.dateValue} at ${this.timeValue}`);
+        // firefox uses a nonstandard AM/PM format, rather than the accepted W3C standard that other browsers use
+        // therefore, check for AM/PM
+        const date = this.dateValue,
+          time = this.timeValue,
+          datetime = _.includes(time, 'M') ? moment(date + ' ' + time, 'YYYY-MM-DD h:mm A') : moment(date + ' ' + time, 'YYYY-MM-DD HH:mm'),
+          timestamp = datetime.valueOf(),
+          store = this.$store;
+
+        this.$store.dispatch('closePane');
+        this.$store.commit(START_PROGRESS, 'schedule');
+        this.$store.dispatch('schedulePage', { uri: this.$store.state.page.uri, timestamp }).then(() => {
+          store.commit(FINISH_PROGRESS, 'schedule');
+          store.dispatch('showStatus', { type: 'schedule', message: `Scheduled to publish ${datetime.calendar()}` });
+        });
       }
     },
     mounted() {
