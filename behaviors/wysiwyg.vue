@@ -137,6 +137,7 @@
       a: ['href']
     },
     transformTags = {
+      div: sanitize.simpleTransform('p'),
       b: sanitize.simpleTransform('strong'),
       i: sanitize.simpleTransform('em'),
       span(tagName, attribs) {
