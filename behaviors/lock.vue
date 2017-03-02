@@ -21,7 +21,7 @@
     border-top-left-radius: 0;
     clear: right;
     float: right;
-    height: 41px; // to match inputs
+    height: 48px; // to match inputs
     margin: 0;
     padding: 6px 10px 4px;
     position: relative;
