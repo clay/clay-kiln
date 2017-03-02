@@ -278,6 +278,12 @@
     cursor: text;
   }
 
+  // everything inside a regular placeholder should use the pointer,
+  // even if that placeholder is inside a paragraph/blockquote
+  .component-selector-wrapper .kiln-placeholder {
+    cursor: pointer;
+  }
+
   // inner component lists should always be flexed
   // (this will display properly if their parents are either flexed OR box)
   .component-list-inner {
