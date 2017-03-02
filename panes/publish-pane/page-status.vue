@@ -109,7 +109,8 @@
         console.log('Unschedule');
       },
       unpublishPage() {
-        console.log('Unpublish');
+        this.$store.dispatch('closePane');
+        this.$store.dispatch('unpublishPage', this.$store.state.page.uri);
       }
     },
     components: {}
