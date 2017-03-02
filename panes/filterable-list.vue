@@ -139,10 +139,6 @@
       if (this.onReorder) {
         addDragula(this.$refs.list, this.onReorder);
       }
-
-      // set height for filterable lists when they mount,
-      // so filtering the list doesn't change the pane height
-      this.$el.style.height = getComputedStyle(this.$el).height;
     },
     beforeDestroy() {
       // Clean up any Dragula event handlers
