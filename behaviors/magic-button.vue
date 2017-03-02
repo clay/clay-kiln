@@ -112,7 +112,7 @@
 </style>
 
 <template>
-  <button class="magic-button" @click="doMagic">
+  <button class="magic-button" @click.prevent="doMagic">
     <icon name="magic-button"></icon>
   </button>
 </template>

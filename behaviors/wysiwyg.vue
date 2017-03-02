@@ -508,6 +508,26 @@
         return this.args.type === 'multi-component';
       }
     },
+    watch: {
+      // we need to watch the data, in case some other behavior needs to modify it
+      // e.g. magic button, drop-image, autocomplete, etc
+      data(val) {
+        let [elementMatchers, textMatchers] = this.editor.clipboard.prepareMatching(),
+          rawHTML = this.editor.root.innerHTML,
+          html;
+
+        if (this.isSingleLine || this.isMultiComponent) {
+          html = sanitizeInlineHTML(rawHTML);
+        } else {
+          html = sanitizeBlockHTML(rawHTML);
+        }
+
+        if (val !== html) {
+          // something else is updating our data! (e.g. magic button)
+          this.editor.setContents(generateDeltas(val, elementMatchers, textMatchers));
+        }
+      }
+    },
     mounted() {
       const isSingleLine = this.isSingleLine,
         isMultiLine = this.isMultiLine,
@@ -752,6 +772,8 @@
           }
         }
       });
+
+      this.editor = editor; // save reference to the editor
 
       if (isFirstField(this.$el)) {
         const offset = _.get(this, '$store.state.ui.currentForm.initialOffset');
