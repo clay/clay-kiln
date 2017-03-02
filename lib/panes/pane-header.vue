@@ -6,21 +6,21 @@
     align-items: center;
     display: flex;
     flex: 0 0 auto;
-    border-bottom: 1px solid $pane-border;
+    border-bottom: 1px solid $pane-header-border;
     justify-content: space-between;
 
     &-left {
       color: $pane-tab-active;
       font-size: 14px;
       font-weight: bold;
-      padding-left: 17px;
+      padding-left: 18px;
     }
 
     &-right {
       &-close {
-        @include icon-button($pane-tab-active, 14px);
+        @include icon-button($pane-tab-active, 12px);
 
-        padding: 17px;
+        padding: 18px;
       }
     }
   }

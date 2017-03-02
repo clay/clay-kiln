@@ -12,16 +12,12 @@
   @import '../styleguide/typography';
 
   .label-inner {
-    @include label();
+    @include input-label();
 
-    color: $black;
     float: left;
     margin-right: 8px;
     text-align: left;
-  }
-
-  .editor-inline .label-inner {
-    margin-top: 10px;
+    margin-bottom: 5px;
   }
 </style>
 

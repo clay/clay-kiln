@@ -13,14 +13,14 @@
   @import '../styleguide/typography';
 
   .label-required {
-    @include secondary-text();
+    @include kiln-copy();
 
-    color: $blue-50;
-    float: left;
-  }
 
-  .editor-inline .label-required {
-    margin-top: 10px; // since the inner label has a 10px margin
+    color: $behavior-required;
+    float: right;
+    font-family: $open-sans-italic, $system-fonts;
+    font-size: 12px;
+    margin-bottom: 5px;
   }
 </style>
 

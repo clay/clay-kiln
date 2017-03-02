@@ -32,9 +32,26 @@ $placeholder-background: #eff8fc;
 $permanent-placeholder-border: $selector-border;
 $permanent-placeholder-background: #f5f5f5;
 
+// forms
+$form-field-label: #727272;
+$form-field-description: #727272;
+$form-input: #585C60;
+$form-input-border: #D6D6D6;
+
+// behaviors
+$behavior-required: #229ed3;
+
 // panes
-$pane-border: #d6d6d6;
+$pane-title: #727272;
+$pane-icon: #727272;
+$pane-header-border: #D6D6D6;
+$pane-border: #979797;
 $pane-tab-active: $selector-border;
+$pane-input-border: #E8E8E8;
+$pane-input-placeholder: #9B9B9B;
+$pane-text: #584C60;
+$pane-list-divier: #F4F4F4;
+
 
 // DEPRECATED COLORS BELOW
 
