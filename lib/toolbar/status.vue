@@ -53,6 +53,10 @@
     background-color: $save;
   }
 
+    .kiln-status.draft {
+      background-color: $draft;
+    }
+
   .kiln-status a {
     @include primary-text();
 

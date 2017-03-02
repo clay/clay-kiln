@@ -92,7 +92,8 @@
     },
     methods: {
       onPublishClick() {
-        console.log('Publish stuff');
+        this.$store.dispatch('closePane');
+        this.$store.dispatch('publishPage', this.$store.state.page.uri);
       },
       onScheduleClick() {
         console.log(`Schedule post for ${this.dateValue} at ${this.timeValue}`);
