@@ -2,7 +2,8 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin'),
   docs = new ExtractTextPlugin('behaviors/README.md'),
   styles = new ExtractTextPlugin('dist/clay-kiln-[name].css'),
   webpack = require('webpack'),
-  LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+  LodashModuleReplacementPlugin = require('lodash-webpack-plugin'),
+  path = require('path');
 
 module.exports = {
   target: 'web',
@@ -43,6 +44,9 @@ module.exports = {
           docs: docs.extract('raw-loader')
         }
       }
+    }, {
+      test: /\.woff2$/,
+      loader: 'url-loader?limit=65000&mimetype=application/font-woff2&name=public/fonts/[name].[ext]'
     }]
   },
   plugins: [
@@ -65,3 +69,4 @@ module.exports = {
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
   ]
 };
+
