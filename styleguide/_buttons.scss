@@ -32,7 +32,7 @@
 
 // button styles
 
-@mixin button-filled($color: $black-75, $text-color: $white) {
+@mixin button-filled($color: $button-outline, $text-color: $toolbar-icons) {
   @include button();
 
   background-color: $color;
@@ -51,13 +51,13 @@
   }
 
   &:disabled {
-    background-color: $black-25;
+    background-color: $button-disabled;
     color: $text-color;
     transition: all 50ms ease-out;
   }
 }
 
-@mixin button-outlined($color: $black-75, $fill: $white) {
+@mixin button-outlined($color: $button-outline, $fill: $toolbar-icons) {
   @include button();
 
   background-color: $fill;
@@ -77,13 +77,13 @@
 
   &:disabled {
     background-color: $fill;
-    border: 1px solid $black-10;
-    color: $black-10;
+    border: 1px solid $button-disabled-light;
+    color: $button-disabled-light;
     transition: all 150ms ease-out;
   }
 }
 
-@mixin button-filled-large($color: $black-75, $text-color: $white) {
+@mixin button-filled-large($color: $button-outline, $text-color: $toolbar-icons) {
   @include button-large();
 
   background-color: $color;

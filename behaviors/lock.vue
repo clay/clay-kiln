@@ -14,7 +14,7 @@
   }
 
   .lock-button {
-    @include button-outlined($black-25, $white);
+    @include button-outlined($button-disabled, $toolbar-icons);
 
     border-bottom-left-radius: 0;
     border-left: none;

@@ -9,7 +9,7 @@
   @import '../styleguide/buttons';
 
   .simple-list-item {
-    @include button-outlined($black-75, $white);
+    @include button-outlined($button-outline, $toolbar-icons);
 
     display: inline-block;
     flex: 0 0 auto;
@@ -19,14 +19,14 @@
   }
 
   .simple-list-item.selected {
-    border: 2px solid $blue;
+    border: 2px solid $save;
   }
 
   .simple-list-item.has-badge {
     border: 2px solid $published;
 
     .badge {
-      background-color: $white;
+      background-color: $toolbar-icons;
       border: 2px solid $published;
       border-radius: 10px;
       display: block;

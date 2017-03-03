@@ -8,7 +8,7 @@ $toolbar-height: 48px;
 @mixin pane {
   @include primary-text();
 
-  background-color: $white;
+  background-color: $toolbar-icons;
   bottom: 0;
   border: 1px solid $pane-border;
   border-bottom: none;
@@ -101,7 +101,7 @@ $toolbar-height: 48px;
     }
 
     &.disabled {
-      color: $black-25;
+      color: $button-disabled;
       cursor: not-allowed;
     }
   }
@@ -118,7 +118,7 @@ $toolbar-height: 48px;
   width: 100%;
 
   &:before {
-    border-top: 1px solid $grey;
+    border-top: 1px solid $pane-list-divider;
     content: '';
     left: -20px;
     position: absolute;
@@ -132,7 +132,7 @@ $toolbar-height: 48px;
   width: 100%;
 
   &:after {
-    border-bottom: 1px solid $grey;
+    border-bottom: 1px solid $pane-list-divider;
     bottom: 0;
     content: '';
     left: -20px;

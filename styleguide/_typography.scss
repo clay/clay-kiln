@@ -13,7 +13,7 @@ $combined-fonts: $open-sans, $system-fonts;
 
 // text that should have the same style as the component it's in
 @mixin normal-text {
-  color: $black;
+  color: $text-color;
   font-family: inherit;
   font-size: inherit;
   word-break: inherit;
@@ -32,7 +32,7 @@ $combined-fonts: $open-sans, $system-fonts;
 @mixin header {
   @include kiln-copy();
 
-  color: $black;
+  color: $text-color;
   font-size: 24px;
 }
 
@@ -40,7 +40,7 @@ $combined-fonts: $open-sans, $system-fonts;
 @mixin input-text {
   @include kiln-copy();
 
-  color: $black;
+  color: $text-color;
 }
 
 // labels, used on component selector
@@ -85,27 +85,27 @@ $combined-fonts: $open-sans, $system-fonts;
 @mixin primary-text {
   @include kiln-copy();
 
-  color: $black;
+  color: $text-color;
 }
 
 // secondary emphasis, used in panes and forms
 @mixin secondary-text {
   @include kiln-copy();
 
-  color: $black-50;
+  color: $disabled-input;
 }
 
 // links
 @mixin link {
   @include kiln-copy();
 
-  color: $blue;
+  color: $save;
   text-decoration: none;
 
   &:hover,
   &:active,
   &:visited {
-    color: $blue;
+    color: $save;
     text-decoration: none;
   }
 }

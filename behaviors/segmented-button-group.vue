@@ -38,7 +38,7 @@
   .segmented-button-group .title {
     @include label();
 
-    color: $black;
+    color: $text-color;
     float: left;
     font-size: 14px;
     line-height: 17px;

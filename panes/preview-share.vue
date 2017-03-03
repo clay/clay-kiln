@@ -11,14 +11,14 @@
       list-style: none;
 
       &-item {
-        border-bottom: 1px solid $grey;
+        border-bottom: 1px solid $button-disabled;
       }
 
       // TODO: Colors & basically re-structure
       .preview-link {
         align-items: center;
         justify-content: space-between;
-        color: #727272;
+        color: $selector-border;
         cursor: pointer;
         display: flex;
         padding: 10px 0;
@@ -38,7 +38,7 @@
         }
 
         svg path {
-          fill: #4A4A4A;
+          fill: $preview-icon;
         }
       }
     }
@@ -55,7 +55,7 @@
       button {
         appearance: none;
         background: none;
-        border: 1px solid $black-25;
+        border: 1px solid $button-disabled;
         border-left: 0;
         height: 41px;
       }

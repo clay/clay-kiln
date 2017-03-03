@@ -42,7 +42,7 @@
   }
 
   .simple-list-add:invalid {
-    border: 1px solid $red;
+    border: 1px solid $bright-error;
   }
 
 </style>

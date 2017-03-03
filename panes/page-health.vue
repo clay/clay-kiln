@@ -28,7 +28,7 @@
   .error-message {
     @include primary-text();
 
-    color: $red;
+    color: $bright-error;
     padding: 0 0 20px;
   }
 
@@ -47,7 +47,7 @@
   }
 
   .error-label {
-    color: $red;
+    color: $bright-error;
     text-transform: uppercase;
   }
 

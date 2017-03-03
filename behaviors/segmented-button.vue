@@ -29,10 +29,10 @@
 
   // labels
   .segmented-button label {
-    background-color: #fff;
-    border-bottom: 1px solid $blue;
-    border-left: 1px solid $blue;
-    border-top: 1px solid $blue;
+    background-color: $toolbar-icons;
+    border-bottom: 1px solid $save;
+    border-left: 1px solid $save;
+    border-top: 1px solid $save;
     cursor: pointer;
     display: block;
     float: left;
@@ -41,7 +41,7 @@
   }
 
   .segmented-button label:last-of-type {
-    border-right: 1px solid $blue;
+    border-right: 1px solid $save;
   }
 
   // rounded borders on first and last button
@@ -59,7 +59,7 @@
 
   // checked style
   .segmented-button label.checked {
-    background-color: $blue-25;
+    background-color: $text-selection;
   }
 
   // icons

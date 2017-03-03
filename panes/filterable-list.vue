@@ -1,5 +1,6 @@
 <style lang="sass">
-  @import '../styleguide/_inputs';
+  @import '../styleguide/inputs';
+  @import '../styleguide/colors';
 
   .filterable-list {
     padding: 17px;
@@ -19,7 +20,7 @@
         padding: 0;
 
         > * + * {
-          border-top: 1px solid $grey;
+          border-top: 1px solid $pane-list-divider;
         }
       }
     }

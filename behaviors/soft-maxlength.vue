@@ -22,14 +22,14 @@
   }
 
   .soft-maxlength.too-long {
-    color: $red;
+    color: $bright-error;
   }
 
   // styles on the input
   .input-text.input-too-long,
   .editor-textarea.input-too-long,
   .wysiwyg-input.styled.input-too-long {
-    border: 1px solid $red;
+    border: 1px solid $bright-error;
   }
 </style>
 
