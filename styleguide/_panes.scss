@@ -107,6 +107,12 @@ $toolbar-height: 48px;
   }
 }
 
+@mixin pane-tab-content {
+  height: 100%;
+  overflow-x: visible;
+  overflow-y: scroll;
+}
+
 @mixin pane-border-before {
   position: relative;
   width: 100%;

@@ -14,6 +14,10 @@
   .pane-tabs-titles-list {
     @include pane-tab-list();
   }
+
+  .pane-tabs-content {
+    @include pane-tab-content();
+  }
 </style>
 
 <template>

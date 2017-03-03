@@ -19,6 +19,10 @@
 
     height: 100%;
   }
+
+  .pane-tabs-content {
+    @include pane-tab-content();
+  }
 </style>
 
 <template>
