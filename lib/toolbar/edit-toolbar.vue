@@ -34,7 +34,8 @@
         <toolbar-button class="new" icon-name="new-page" text="New Page" @click="toggleNewPage"></toolbar-button>
         <div class="kiln-toolbar-inner">
           <toolbar-button class="view-button" name="close" icon-name="close-edit" @click="stopEditing"></toolbar-button>
-          <toolbar-button class="components" name="components" icon-name="search-page" text="Components" @click="toggleComponents"></toolbar-button>
+          <toolbar-button class="components" name="components" icon-name="search-page" text="Search Components" @click="toggleComponents"></toolbar-button>
+          <toolbar-button v-if="hasCurrentSelected" class="add-component-button" name="add-component" icon-name="add-icon" text="Add Component" @click="openAddComponentPane"></toolbar-button>
           <div class="flex-span flex-span-inner"></div>
           <toolbar-button class="preview" name="preview" icon-name="new-tab" text="Preview" @click="togglePreview"></toolbar-button>
         </div>
@@ -50,6 +51,8 @@
 <script>
   import { mapState } from 'vuex';
   import toggleEdit from '../utils/toggle-edit';
+  import { getParentComponent } from '../utils/component-elements';
+  import { refAttr, editAttr } from '../utils/references';
   import progressBar from './progress.vue';
   import button from './toolbar-button.vue';
   import background from './background.vue';
@@ -60,7 +63,8 @@
   export default {
     computed: mapState({
       pageState: (state) => state.page.state,
-      isLoading: 'isLoading'
+      isLoading: 'isLoading',
+      hasCurrentSelected: (state) => !!state.ui.currentSelection
     }),
     components: {
       'toolbar-button': button,
@@ -81,7 +85,7 @@
         const options = {
           name,
           title: 'Clay Menu',
-          size: 'large',
+          size: 'medium',
           content: [{
             header: 'My Pages',
             content: {
@@ -172,18 +176,25 @@
         return this.$store.dispatch('togglePane', { options, button });
       },
       togglePublish(name, button) {
-        const options = {
+        const store = this.$store;
+
+        return this.$store.dispatch('validate').then((results) => {
+          const options = {
             name,
             title: 'Page Status',
             content: [{
               header: 'Publish',
+              disabled: results.errors.length > 0,
               content: {
                 component: 'edit-publish'
               }
             }, {
-              header: 'Health',
+              header: {
+                component: 'health-icon'
+              },
+              active: results.errors.length > 0,
               content: {
-                component: 'placeholder'
+                component: 'page-health'
               }
             }, {
               header: 'History',
@@ -196,10 +207,25 @@
                 component: 'placeholder'
               }
             }]
-          },
-          store = this.$store;
+          };
 
-        return this.$store.dispatch('validate').then(() => store.dispatch('togglePane', { options, button }));
+          store.dispatch('togglePane', { options, button });
+        });
+      },
+      openAddComponentPane() {
+        const currentEl = _.get(this, '$store.state.ui.currentSelection'),
+          currentURI = currentEl && currentEl.getAttribute(refAttr),
+          path = currentEl && currentEl.parentNode && currentEl.parentNode.getAttribute(editAttr),
+          parentComponent = currentEl && getParentComponent(currentEl),
+          parentURI = parentComponent && parentComponent.getAttribute(refAttr);
+
+        if (currentURI && parentURI && path) {
+          return this.$store.dispatch('openAddComponents', {
+            currentURI,
+            parentURI,
+            path
+          });
+        }
       }
     }
   };

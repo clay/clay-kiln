@@ -96,8 +96,48 @@ $toolbar-height: 48px;
       outline: none;
     }
 
-    &.active span {
+    &.active .pane-tab-title {
       border-bottom: 4px solid $pane-tab-active;
     }
+
+    &.disabled {
+      color: $black-25;
+      cursor: not-allowed;
+    }
   }
+}
+
+@mixin pane-border-before {
+  position: relative;
+  width: 100%;
+
+  &:before {
+    border-top: 1px solid $grey;
+    content: '';
+    left: -20px;
+    position: absolute;
+    top: 0;
+    width: calc(100% + 40px);
+  }
+}
+
+@mixin pane-border-after {
+  position: relative;
+  width: 100%;
+
+  &:after {
+    border-bottom: 1px solid $grey;
+    bottom: 0;
+    content: '';
+    left: -20px;
+    position: absolute;
+    width: calc(100% + 40px);
+  }
+}
+
+@mixin full-width {
+  float: none; // overrides button float
+  margin: 0;
+  position: relative;
+  width: 100%;
 }
