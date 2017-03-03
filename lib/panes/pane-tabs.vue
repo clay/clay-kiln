@@ -19,18 +19,12 @@
 <template>
   <div class="pane-tabs">
     <div class="pane-tabs-titles">
-<<<<<<< HEAD
+
       <ul class="pane-tabs-titles-list" ref="tabItemContainer">
         <li v-for="(tab, index) in tabs" ref="tabItems" >
-          <button type="button" class="pane-tabs-titles-list-trigger" :class="{ 'active' : isActive(index) }" @click.stop="selectTab(index)">
-            <span v-html="tab"></span>
-=======
-      <ul class="pane-tabs-titles-list">
-        <li v-for="(tab, index) in tabs">
-          <button type="button" class="pane-tabs-titles-list-trigger" :class="{ 'active' : isActive(index), 'disabled': tab.disabled }" @click.stop="selectTab(index, tab.disabled)">
+          <button type="button" class="pane-tabs-titles-list-trigger" :class="{ 'active' : isActive(index), 'disabled': tab.disabled }" @click.stop="selectTab(index)">
             <span v-if="tab.isString" v-html="tab.header" class="pane-tab-title"></span>
             <component v-else :is="tab.component"></component>
->>>>>>> eb98e7d725038d71c2b58844b9bb77902889e499
           </button>
         </li>
       </ul>
@@ -66,13 +60,18 @@
         });
       }
     },
+    created() {
+      // Find the active index
+      var activeIndex = _.findIndex(this.content, (item) => item.active);
+      // Set active tab when opening
+      this.activeTab = activeIndex < 0 ? 0 : activeIndex;
+    },
     mounted() {
       var lastTabBtn = _.last(this.$refs.tabItems),
         $elComputedStyles = getComputedStyle(this.$el);
 
       // set height for tabbed panes when they mount,
       // so clicking tabs doesn't change the pane height
-<<<<<<< HEAD
       this.$el.style.height = $elComputedStyles.height;
 
       // Use position of the last tab item to define the width of the container
@@ -81,10 +80,7 @@
       this.$refs.tabItemContainer.style.height = this.tabContainerWidth;
 
       this.showArrows();
-=======
-      this.$el.style.height = getComputedStyle(this.$el).height;
-      this.activeTab = _.findIndex(this.content, (item) => item.active) || 0;
->>>>>>> eb98e7d725038d71c2b58844b9bb77902889e499
+
     },
     methods: {
       showArrows() {
