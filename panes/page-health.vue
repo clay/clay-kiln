@@ -3,6 +3,10 @@
   @import '../styleguide/typography';
   @import '../styleguide/panes';
 
+  .health-pane {
+    padding: 15px;
+  }
+
   .publish-valid {
     align-items: center;
     display: flex;
@@ -74,9 +78,8 @@
   }
 
   .validation-item-preview {
-    @include secondary-text();
+    @include tertiary-text();
 
-    font-style: italic;
     margin-left: 5px;
   }
 </style>
