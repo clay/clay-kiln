@@ -4,11 +4,10 @@
 @mixin input {
   @include kiln-copy();
 
-  background-color: $toolbar-icons;
-  border: 1px solid $form-input-border;
+  background-color: $input-background;
+  border: 1px solid $input-border;
   border-radius: 0;
   box-shadow: inset 0px 1px 2px -3px $input-shadow;
-  color: $form-input;
   cursor: text;
   display: inline-block;
   font-family: $open-sans-semibold, $system-fonts;
@@ -30,7 +29,7 @@
 
   &:disabled,
   &.disabled {
-    color: $disabled-input;
+    color: $input-disabled-text;
     cursor: pointer;
     pointer-events: none;
     user-select: none;

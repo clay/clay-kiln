@@ -37,11 +37,10 @@
 
       align-items: flex-start;
       flex: 0 1 auto;
-      margin-top: 2px;
 
       svg {
         height: 11px;
-        margin: 2px 4px 0 0;
+        margin: 4px 4px 0 0;
         width: 11px;
       }
     }
@@ -51,7 +50,6 @@
 
       display: block;
       flex: 1 0 auto;
-      margin-top: 2px;
       text-align: right;
     }
 
@@ -80,7 +78,7 @@
         order: 1;
 
         svg {
-          margin-top: 1px; // slightly less margin-top than multi-line placeholders
+          margin-top: 4px;
         }
       }
 
@@ -97,7 +95,7 @@
 
       .placeholder-required {
         flex: 0 0 auto;
-        margin-left: 4px;
+        margin: 2px 0 0 4px;
         order: 3;
         text-align: left;
       }

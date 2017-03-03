@@ -15,7 +15,7 @@
   .label-description {
     @include kiln-copy();
 
-    color: $form-field-description;
+    color: $text;
     clear: left;
     cursor: default;
     font-size: 13px;

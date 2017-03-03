@@ -13,7 +13,7 @@ $combined-fonts: $open-sans, $system-fonts;
 
 // text that should have the same style as the component it's in
 @mixin normal-text {
-  color: $text-color;
+  color: $text;
   font-family: inherit;
   font-size: inherit;
   word-break: inherit;
@@ -32,7 +32,7 @@ $combined-fonts: $open-sans, $system-fonts;
 @mixin header {
   @include kiln-copy();
 
-  color: $text-color;
+  color: $title;
   font-size: 24px;
 }
 
@@ -40,7 +40,7 @@ $combined-fonts: $open-sans, $system-fonts;
 @mixin input-text {
   @include kiln-copy();
 
-  color: $text-color;
+  color: $text;
 }
 
 // labels, used on component selector
@@ -55,27 +55,29 @@ $combined-fonts: $open-sans, $system-fonts;
 @mixin input-label {
   @include kiln-copy();
 
-  color: $form-field-label;
+  color: $label;
   font-family: $open-sans-bold, $system-fonts;
-  font-size: 11px;
+  font-size: 14px;
   text-transform: uppercase;
 }
 
 // placeholder typography
 @mixin placeholder-primary {
   font-family: $combined-fonts;
-  font-size: 13px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 700;
+  line-height: 20px;
   text-align: left;
   text-decoration: none;
 }
 
 @mixin placeholder-secondary {
   font-family: $combined-fonts;
-  font-size: 10px;
+  font-size: 11px;
   font-style: normal;
   font-weight: 700;
+  line-height: 18px;
   text-align: left;
   text-decoration: none;
   text-transform: uppercase;
@@ -85,14 +87,14 @@ $combined-fonts: $open-sans, $system-fonts;
 @mixin primary-text {
   @include kiln-copy();
 
-  color: $text-color;
+  color: $text;
 }
 
 // secondary emphasis, used in panes and forms
 @mixin secondary-text {
   @include kiln-copy();
 
-  color: $disabled-input;
+  color: $subtext;
 }
 
 // links
