@@ -81,7 +81,7 @@
         const options = {
           name,
           title: 'Clay Menu',
-          size: 'large',
+          size: 'medium',
           content: [{
             header: 'My Pages',
             content: {
