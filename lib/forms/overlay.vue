@@ -27,7 +27,7 @@
       <pane-header :title="headerTitle" :buttonClick="save" check="publish-check"></pane-header>
       <section class="pane-form-wrapper">
         <form @submit.prevent="save">
-          <div v-if="hasTabs" class="pane-tabs-titles">
+          <div v-if="hasSections" class="pane-tabs-titles">
             <ul class="form-sections-list">
               <li v-for="(section, index) in sections">
                 <button type="button" class="pane-tabs-titles-list-trigger" :class="{ 'active' : isActive(index) }" @click.stop="selectTab(index)">
@@ -63,11 +63,11 @@
     computed: mapState({
       hasCurrentModalForm: (state) => !_.isNull(state.ui.currentForm) && state.ui.currentForm.schema[displayProp] !== 'inline',
       headerTitle: (state) => label(state.ui.currentForm.path, state.ui.currentForm.schema),
-      hasTabs: (state) => !!state.ui.currentForm.schema.sections,
+      hasSections: (state) => state.ui.currentForm.schema.sections && state.ui.currentForm.schema.sections.length > 1,
       sections: (state) => {
         const sections = _.get(state, 'ui.currentForm.schema.sections');
 
-        if (sections) {
+        if (!_.isEmpty(sections)) {
           return _.map(sections, (section) => {
             return {
               title: section.title,
