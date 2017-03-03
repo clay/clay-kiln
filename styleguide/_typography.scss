@@ -33,7 +33,16 @@ $combined-fonts: $open-sans, $system-fonts;
   @include kiln-copy();
 
   color: $title;
-  font-size: 24px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+// subheader for pane tabs and form sections
+@mixin subheader {
+  @include kiln-copy();
+
+  color: $subtitle;
+  font-size: 14px;
 }
 
 // Form input labels

@@ -1,5 +1,6 @@
 <style lang="sass">
   @import '../../styleguide/colors';
+  @import '../../styleguide/typography';
   @import '../../styleguide/buttons';
 
   .kiln-pane-header {
@@ -10,15 +11,14 @@
     justify-content: space-between;
 
     &-left {
-      color: $pane-tab-active;
-      font-size: 14px;
-      font-weight: bold;
+      @include header();
+
       padding-left: 18px;
     }
 
     &-right {
       &-close {
-        @include icon-button($pane-tab-active, 12px);
+        @include icon-button($title, 12px);
 
         padding: 18px;
       }

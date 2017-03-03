@@ -8,7 +8,7 @@ $toolbar-height: 48px;
 @mixin pane {
   @include primary-text();
 
-  background-color: $toolbar-icons;
+  background-color: $pane-background;
   bottom: 0;
   border: 1px solid $pane-border;
   border-bottom: none;
@@ -82,12 +82,12 @@ $toolbar-height: 48px;
   padding: 0;
 
   &-trigger {
+    @include subheader();
+
     appearance: none;
     background: transparent;
     border: none;
-    color: $title;
     cursor: pointer;
-    font-size: 14px;
     margin: 0;
     padding: 15px 18px;
     white-space: nowrap;
