@@ -18,9 +18,9 @@
 
     &-right {
       &-close {
-        @include icon-button($title, 12px);
+        @include icon-button($title, 14px);
 
-        padding: 18px;
+        padding: 17px;
       }
     }
   }

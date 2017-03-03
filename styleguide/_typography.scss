@@ -10,6 +10,10 @@ $open-sans-semibold: 'OpenSans-SemiBold';
 $open-sans-light: 'OpenSans-Light';
 $system-fonts: Helvetica, Arial, sans-serif;
 $combined-fonts: $open-sans, $system-fonts;
+$bold-stack: $open-sans-bold, $system-fonts;
+$italic-stack: $open-sans-italic, $system-fonts;
+$semibold-stack: $open-sans-semibold, $system-fonts;
+$light-stack: $open-sans-light, $system-fonts;
 
 // text that should have the same style as the component it's in
 @mixin normal-text {
@@ -33,8 +37,8 @@ $combined-fonts: $open-sans, $system-fonts;
   @include kiln-copy();
 
   color: $title;
-  font-size: 16px;
-  font-weight: 700;
+  font-family: $semibold-stack;
+  font-size: 18px;
 }
 
 // subheader for pane tabs and form sections
@@ -42,7 +46,7 @@ $combined-fonts: $open-sans, $system-fonts;
   @include kiln-copy();
 
   color: $subtitle;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 // Form input labels
@@ -57,7 +61,7 @@ $combined-fonts: $open-sans, $system-fonts;
   @include input-text();
 
   display: inline-block;
-  font-weight: 700;
+  font-family: $semibold-stack;
   margin-bottom: 5px;
 }
 
@@ -65,27 +69,25 @@ $combined-fonts: $open-sans, $system-fonts;
   @include kiln-copy();
 
   color: $label;
-  font-family: $open-sans-bold, $system-fonts;
-  font-size: 14px;
+  font-family: $bold-stack;
+  font-size: 13px;
   text-transform: uppercase;
 }
 
 // placeholder typography
 @mixin placeholder-primary {
-  font-family: $combined-fonts;
+  font-family: $semibold-stack;
   font-size: 14px;
   font-style: normal;
-  font-weight: 700;
   line-height: 20px;
   text-align: left;
   text-decoration: none;
 }
 
 @mixin placeholder-secondary {
-  font-family: $combined-fonts;
+  font-family: $semibold-stack;
   font-size: 11px;
   font-style: normal;
-  font-weight: 700;
   line-height: 18px;
   text-align: left;
   text-decoration: none;
@@ -104,6 +106,14 @@ $combined-fonts: $open-sans, $system-fonts;
   @include kiln-copy();
 
   color: $subtext;
+}
+
+@mixin tertiary-text {
+  @include kiln-copy();
+
+  color: $subtext;
+  font-family: $italic-stack;
+  font-size: 12px;
 }
 
 // links

@@ -13,14 +13,9 @@
   @import '../styleguide/typography';
 
   .label-required {
-    @include kiln-copy();
-
+    @include tertiary-text();
 
     color: $behavior-required;
-    float: right;
-    font-family: $open-sans-italic, $system-fonts;
-    font-size: 12px;
-    margin-bottom: 5px;
   }
 </style>
 

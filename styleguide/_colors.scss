@@ -42,12 +42,12 @@ $text: $toolbar-view; // used for field descriptions, pane items, general text
 $subtext: #c3c3c3; // used for secondary text
 
 // inputs
-$input-border: #e8e8e8;
+$input-border: $subtext;
 $input-background: #fff;
 $input-text: $text;
 $input-placeholder: #9b9b9b;
 $input-disabled-text: $offline;
-$input-shadow: rgba(0, 0, 0, .4);
+$input-shadow: #d6d6d6;
 
 // forms and behaviors
 $behavior-required: $save;

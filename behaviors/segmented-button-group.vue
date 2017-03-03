@@ -36,14 +36,12 @@
   }
 
   .segmented-button-group .title {
-    @include label();
+    @include primary-text();
 
-    color: $text;
     float: left;
-    font-size: 14px;
-    line-height: 17px;
-    margin-right: 8px;
+    font-family: $semibold-stack;
     text-align: left;
+    margin-bottom: 5px;
     width: 100%;
   }
 </style>

@@ -43,6 +43,10 @@
     cursor: pointer;
     vertical-align: baseline;
   }
+
+  .editor-radio-item input {
+    margin-right: 10px;
+  }
 </style>
 
 <template>

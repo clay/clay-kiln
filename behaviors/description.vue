@@ -13,12 +13,10 @@
   @import '../styleguide/typography';
 
   .label-description {
-    @include kiln-copy();
+    @include primary-text();
 
-    color: $text;
     clear: left;
     cursor: default;
-    font-size: 13px;
     margin: 0 0 5px;
     text-align: left;
   }

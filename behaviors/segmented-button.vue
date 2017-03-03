@@ -29,10 +29,10 @@
 
   // labels
   .segmented-button label {
-    background-color: $toolbar-icons;
-    border-bottom: 1px solid $save;
-    border-left: 1px solid $save;
-    border-top: 1px solid $save;
+    background-color: $pane-background;
+    border-bottom: 1px solid $input-border;
+    border-left: 1px solid $input-border;
+    border-top: 1px solid $input-border;
     cursor: pointer;
     display: block;
     float: left;
@@ -41,7 +41,7 @@
   }
 
   .segmented-button label:last-of-type {
-    border-right: 1px solid $save;
+    border-right: 1px solid $input-border;
   }
 
   // rounded borders on first and last button

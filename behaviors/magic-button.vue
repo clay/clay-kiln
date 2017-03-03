@@ -90,7 +90,7 @@
   @import '../styleguide/buttons';
 
   .magic-button {
-    @include button-outlined($button-disabled, $toolbar-icons);
+    @include button-outlined($input-border, $input-background);
 
     border-bottom-right-radius: 0;
     border-right: none;

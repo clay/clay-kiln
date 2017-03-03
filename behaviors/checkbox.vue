@@ -20,8 +20,11 @@
 
 <style lang="sass">
   @import '../styleguide/typography';
+  @import '../styleguide/inputs';
 
   .input-checkbox {
+    @include checkbox();
+
     cursor: pointer;
     margin: 5px 0 10px 2px; // left-margin space to accommodate browser focus display
   }
@@ -31,7 +34,7 @@
 
     cursor: pointer;
     margin-left: 10px;
-    vertical-align: middle;
+    vertical-align: baseline;
   }
 </style>
 
