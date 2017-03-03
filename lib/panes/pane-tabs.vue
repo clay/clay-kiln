@@ -34,7 +34,9 @@
   export default {
     props: ['content'],
     data() {
-      return {};
+      return {
+        activeTab: 0
+      };
     },
     computed: {
       tabs() {
@@ -43,22 +45,20 @@
 
           return _.isString(header) ? { header, isString: true, disabled: item.disabled } : { component: header.component, disabled: item.disabled };
         });
-      },
-      activeTab() {
-        return _.findIndex(this.content, (item) => item.active) || 0;
       }
     },
     mounted() {
       // set height for tabbed panes when they mount,
       // so clicking tabs doesn't change the pane height
       this.$el.style.height = getComputedStyle(this.$el).height;
+      this.activeTab = _.findIndex(this.content, (item) => item.active) || 0;
     },
     methods: {
       isActive(index) {
         return this.activeTab === index;
       },
       selectTab(index, isDisabled) {
-        if (!isDisabled) {
+        if (isDisabled !== true) {
           this.activeTab = index;
         }
       }
