@@ -76,12 +76,10 @@ $toolbar-height: 48px;
 }
 
 @mixin pane-tab-list {
-  border-bottom: 1px solid $pane-border;
   display: flex;
+  list-style: none;
   margin: 0;
   padding: 0;
-  list-style: none;
-  justify-content: space-between;
 
   &-trigger {
     appearance: none;
@@ -92,6 +90,7 @@ $toolbar-height: 48px;
     font-size: 14px;
     margin: 0;
     padding: 15px 18px;
+    white-space: nowrap;
 
     &:focus {
       outline: none;
