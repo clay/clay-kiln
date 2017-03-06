@@ -71,7 +71,7 @@
         placeholder="Start Typing Here..."
         v-model="inputVal"
         @input="onChange"
-        @keyup.enter="onEnter"
+        @keydown.enter="onEnter"
         @keydown.delete="removeLastItem"
         @keydown.left="focusItem"
         @keydown.down="autocompleteFocus(false)"
@@ -101,7 +101,7 @@
     data() {
       return {
         focusIndex: null,
-        items: [],
+        items: _.cloneDeep(this.data),
         inputVal: '',
         input: null,
         autocompleteIndex: null,
@@ -119,14 +119,16 @@
       }
     },
     methods: {
+      updateData() {
+        console.log('Womp');
+        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: this.items });
+      },
       onDoubleClick() {
         if (_.get(this.args, 'propertyName', '')) {
           this.items = _.map(this.items, (item, i) => {
             item[this.args.propertyName] = this.focusIndex === i;
             return item;
           });
-
-          console.log(this.items);
         }
       },
       onChange() {
@@ -135,8 +137,9 @@
         }
       },
       // Add an item to the array
-      onEnter() {
+      onEnter(e) {
         if (this.inputVal) {
+          e.preventDefault();
 
           // If we have autocomplete and we've selected something
           // inside of the autocomplete dropdown...
@@ -157,6 +160,9 @@
           }
 
           this.autocompleteIndex = null;
+        } else {
+          // Update data
+          this.updateData();
         }
       },
       // Remove the last item from the list
