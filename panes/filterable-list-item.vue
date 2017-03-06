@@ -50,8 +50,8 @@
       class="filterable-list-item-btn"
       @click.stop="onClick(item.id)"
       v-conditional-focus="focused"
-      @keydown.down="focusOnIndex(index + 1)"
-      @keydown.up="focusOnIndex(index - 1)">
+      @keydown.down.stop="focusOnIndex(index + 1)"
+      @keydown.up.stop="focusOnIndex(index - 1)">
       {{ item.title }}
     </button>
     <button v-if="onSettings" type="button" class="filterable-list-item-settings" @click.stop="onSettings(item.id)">

@@ -34,7 +34,8 @@
         placeholder="Begin typing to filter list"
         ref="search"
         v-model="query"
-        @keydown.down="focusOnIndex(0)"
+        @keydown.down.stop="focusOnIndex(0)"
+        @keydown.up.stop
         v-conditional-focus="focusIsNull">
     </div>
     <div class="filterable-list-readout">
