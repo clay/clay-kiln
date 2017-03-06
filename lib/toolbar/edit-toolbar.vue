@@ -184,7 +184,7 @@
             title: 'Page Status',
             content: [{
               header: 'Publish',
-              disabled: results.errors.length > 0,
+              // disabled: results.errors.length > 0, // todo: disable the publish tab if validation fails
               content: {
                 component: 'edit-publish'
               }
