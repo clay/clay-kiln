@@ -6,28 +6,33 @@
     border-bottom: 1px solid $pane-header-border;
     position: relative;
 
-    &::-webkit-scrollbar {
-      display: none;
+    &-scroll {
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
 
     &-btn {
       appearance: none;
       background: white;
-      color: black;
       border: none;
+      color: black;
+      cursor: pointer;
+      outline: none;
       position: absolute;
       top: 0;
       height: 100%;
-      width: 48px;
 
        &.left {
-        background: linear-gradient(-90deg, transparent -10px, white);
+        background: linear-gradient(-90deg, transparent, rgba(255,255,255, 0.95) 14px);
         left: 0;
+        padding: 0 23px 0 17px;
       }
 
       &.right {
-        background: linear-gradient(90deg, transparent -10px, white);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95) 14px);
         right: 0;
+        padding: 0 17px 0 23px;
       }
     }
 
@@ -45,7 +50,9 @@
 <template>
   <div class="pane-tabs">
     <div class="pane-tabs-titles">
-      <button type="button" class="pane-tabs-titles-btn left" v-if="arrowsVisible && !hideLeftArrow" @click="sideScrollClick(false)">L</button>
+      <button type="button" class="pane-tabs-titles-btn left" v-if="arrowsVisible && !hideLeftArrow" @click="sideScrollClick(false)">
+        <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg" width="8" height="12"><path fill="#7A7A7A" d="M6 0l1.41 1.41L2.83 6l4.58 4.59L6 12 0 6z" fill-rule="evenodd"/></svg>
+      </button>
       <div class="pane-tabs-titles-scroll" @scroll="tabScroll" ref="scrollContainer" v-h-scroll="scrollPos">
         <ul class="pane-tabs-titles-list" ref="tabItemContainer" v-bind:style="{ width: `${tabContainerWidth}px` }">
           <li v-for="(tab, index) in tabs" ref="tabItems" >
@@ -56,7 +63,9 @@
           </li>
         </ul>
       </div>
-      <button type="button" class="pane-tabs-titles-btn right" v-if="arrowsVisible && !hideRightArrow" @click="sideScrollClick(true)">R</button>
+      <button type="button" class="pane-tabs-titles-btn right" v-if="arrowsVisible && !hideRightArrow" @click="sideScrollClick(true)">
+        <icon name="right-caret"></icon>
+      </button>
     </div>
     <div class="pane-tabs-content" v-for="(item, index) in content" v-if="isActive(index)">
       <keep-alive>
@@ -69,7 +78,11 @@
 
 <script>
   import _ from 'lodash';
+  import icon from '../utils/icon.vue';
   import hScrollDirective from '../../directives/horizontal-scroll';
+
+  // TODO: FIGURE OUT THE BUG THAT WON'T INCLUDE THE `LEFT-CARET` ICON WITHOUT
+  // PULLING IN THE SVG FOR THE RIGHT-CARET
 
   export default {
     props: ['content'],
@@ -154,6 +167,6 @@
         }
       }
     },
-    components: window.kiln.panes
+    components: _.merge(window.kiln.panes, { icon })
   };
 </script>
