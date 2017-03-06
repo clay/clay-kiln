@@ -2,8 +2,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin'),
   docs = new ExtractTextPlugin('behaviors/README.md'),
   styles = new ExtractTextPlugin('dist/clay-kiln-[name].css'),
   webpack = require('webpack'),
-  LodashModuleReplacementPlugin = require('lodash-webpack-plugin'),
-  path = require('path');
+  LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 module.exports = {
   target: 'web',
@@ -20,11 +19,7 @@ module.exports = {
     rules: [{
       test: /\.js$/,
       exclude: /node_modules/,
-      loader: 'babel-loader',
-      options: {
-        plugins: ['lodash'],
-        presets: ['es2015'],
-      }
+      loader: 'babel-loader'
     }, {
       test: /\.scss|.css$/,
       use: styles.extract({
@@ -66,7 +61,6 @@ module.exports = {
       // note: we're explicitly not allowing chaining or currying
     }),
     new webpack.optimize.OccurrenceOrderPlugin,
-    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/)
   ]
 };
-
