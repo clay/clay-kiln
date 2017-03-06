@@ -350,7 +350,7 @@
       hasSettings() {
         const uri = this.$options.uri;
 
-        return !_.isEmpty(getSettingsFields(getData(uri), getSchema(uri)));
+        return !_.isEmpty(getSettingsFields(getData(uri), getSchema(uri)).fields);
       },
       // note: only for components in LISTS! components in properties can be replaced but not removed (for now)
       hasRemove() {
