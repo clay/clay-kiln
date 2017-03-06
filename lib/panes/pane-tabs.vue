@@ -40,17 +40,13 @@
   .pane-tabs-titles-list {
     @include pane-tab-list();
   }
-
-  .pane-tabs-content {
-    @include pane-tab-content();
-  }
 </style>
 
 <template>
   <div class="pane-tabs">
     <div class="pane-tabs-titles">
       <button type="button" class="pane-tabs-titles-btn left" v-if="arrowsVisible && !hideLeftArrow" @click="sideScrollClick(false)">L</button>
-      <div class="pane-tabs-titles-scroll" @scroll="tabScroll" ref="scrollContainer">
+      <div class="pane-tabs-titles-scroll" @scroll="tabScroll" ref="scrollContainer" v-h-scroll="scrollPos">
         <ul class="pane-tabs-titles-list" ref="tabItemContainer" v-bind:style="{ width: `${tabContainerWidth}px` }">
           <li v-for="(tab, index) in tabs" ref="tabItems" >
             <button type="button" class="pane-tabs-titles-list-trigger" :class="{ 'active' : isActive(index), 'disabled': tab.disabled }" @click.stop="selectTab(index)">
@@ -73,6 +69,7 @@
 
 <script>
   import _ from 'lodash';
+  import hScrollDirective from '../../directives/horizontal-scroll';
 
   export default {
     props: ['content'],
@@ -115,12 +112,8 @@
       this.paneWidth = _.parseInt($elComputedStyles.width.replace('px', ''));
       this.tabContainerWidth = lastTabBtn.offsetLeft + lastTabBtn.offsetWidth;
 
-
-      // TODO
-      this.step = this.tabContainerWidth - this.paneWidth > 100 ? 100 : this.tabContainerWidth - this.paneWidth - 1;
-      this.$refs.scrollContainer.scrollLeft = 0;
-
-
+      // TODO: determine step calculation
+      this.step = this.tabContainerWidth - this.paneWidth > 100 ? 100 : this.tabContainerWidth - this.paneWidth;
 
       // Toggle showing the arrows
       this.showArrows();
@@ -130,25 +123,21 @@
         var step = this.tabContainerWidth - this.paneWidth > 100 ? 100 : this.tabContainerWidth - this.paneWidth - 1;
 
         this.scrollPos = dir ? this.scrollPos += step : this.scrollPos -= step;
-
-        this.$refs.scrollContainer.scrollLeft = this.scrollPos;
       },
       tabScroll(e) {
-        var scrollLeft = e.target.scrollLeft;
+        // TODO: move the tabs into it's own component so that we can get all this logic into it's own component
+        this.scrollPos = e.target.scrollLeft;
 
-        if (scrollLeft < 5) {
+        if (this.scrollPos <= 5) {
           this.hideLeftArrow = true;
           this.hideRightArrow = false;
-        } else if (this.tabContainerWidth - scrollLeft <= this.paneWidth + 5) {
+        } else if (this.tabContainerWidth - this.scrollPos <= this.paneWidth + 5) {
           this.hideLeftArrow = false;
           this.hideRightArrow = true;
         } else {
           this.hideLeftArrow = false;
           this.hideRightArrow = false;
         }
-
-        console.log('WOMP WOMP');
-
       },
       showArrows() {
         if (this.tabContainerWidth > this.paneWidth) {
