@@ -35,7 +35,7 @@
         <div class="kiln-toolbar-inner">
           <toolbar-button class="view-button" name="close" icon-name="close-edit" @click="stopEditing"></toolbar-button>
           <toolbar-button class="components" name="components" icon-name="search-page" text="Search Components" @click="toggleComponents"></toolbar-button>
-          <toolbar-button v-if="hasCurrentSelected" class="add-component-button" name="add-component" icon-name="add-icon" text="Add Component" @click="openAddComponentPane"></toolbar-button>
+          <toolbar-button v-if="hasSelectedAddComponent" class="add-component-button" name="add-component" icon-name="add-icon" text="Add Component" @click="openAddComponentPane"></toolbar-button>
           <div class="flex-span flex-span-inner"></div>
           <toolbar-button class="preview" name="preview" icon-name="new-tab" text="Preview" @click="togglePreview"></toolbar-button>
         </div>
@@ -50,9 +50,10 @@
 
 <script>
   import { mapState } from 'vuex';
+  import { find } from '@nymag/dom';
   import toggleEdit from '../utils/toggle-edit';
   import { getParentComponent } from '../utils/component-elements';
-  import { refAttr, editAttr } from '../utils/references';
+  import { refAttr, editAttr, selectorClass } from '../utils/references';
   import progressBar from './progress.vue';
   import button from './toolbar-button.vue';
   import background from './background.vue';
@@ -64,7 +65,15 @@
     computed: mapState({
       pageState: (state) => state.page.state,
       isLoading: 'isLoading',
-      hasCurrentSelected: (state) => !!state.ui.currentSelection
+      hasSelectedAddComponent: (state) => {
+        const current = state.ui.currentSelection,
+          // look in the FIRST component selector inside the selected element.
+          // this will be the current component's selector
+          selector = current && find(current, `.${selectorClass}`),
+          hasAddButton = selector && find(selector, '.selected-add');
+
+        return !!hasAddButton;
+      }
     }),
     components: {
       'toolbar-button': button,
@@ -184,7 +193,7 @@
             title: 'Page Status',
             content: [{
               header: 'Publish',
-              disabled: results.errors.length > 0,
+              // disabled: results.errors.length > 0, // todo: disable the publish tab if validation fails
               content: {
                 component: 'edit-publish'
               }
