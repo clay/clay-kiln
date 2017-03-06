@@ -7,7 +7,7 @@
 
     align-items: center;
     bottom: 100%;
-    color: $white;
+    color: $toolbar-icons;
     display: flex;
     height: 70px; // 50px viewable, plus some extra for the easing
     justify-content: space-between;
@@ -60,7 +60,7 @@
   .kiln-status a {
     @include primary-text();
 
-    color: $white;
+    color: $toolbar-icons;
     text-decoration: underline;
   }
 </style>

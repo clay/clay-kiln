@@ -14,7 +14,7 @@
   }
 
   .lock-button {
-    @include button-outlined($black-25, $white);
+    @include button-outlined($input-border, $input-background);
 
     border-bottom-left-radius: 0;
     border-left: none;

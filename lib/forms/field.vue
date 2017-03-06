@@ -6,13 +6,8 @@
   }
 
   .editor-inline {
-
     .kiln-field {
       text-align: left; // override component styling
-    }
-
-    .kiln-field + .kiln-field {
-      margin-top: 15px;
     }
   }
 </style>

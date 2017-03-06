@@ -90,7 +90,7 @@
   @import '../styleguide/buttons';
 
   .magic-button {
-    @include button-outlined($black-25, $white);
+    @include button-outlined($input-border, $input-background);
 
     border-bottom-right-radius: 0;
     border-right: none;

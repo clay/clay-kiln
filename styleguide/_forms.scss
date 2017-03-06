@@ -17,7 +17,6 @@
   & > form {
     @include clearfix();
 
-    background-color: $white;
     flex: 0 0 100%;
     overflow: visible;
     padding: 0;
@@ -48,7 +47,7 @@
 
   // Spacing between fields
   & + & {
-    margin-top: 44px;
+    margin-top: 30px;
   }
 
   .field-before,

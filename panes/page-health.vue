@@ -3,6 +3,10 @@
   @import '../styleguide/typography';
   @import '../styleguide/panes';
 
+  .health-pane {
+    padding: 15px;
+  }
+
   .publish-valid {
     align-items: center;
     display: flex;
@@ -28,7 +32,7 @@
   .error-message {
     @include primary-text();
 
-    color: $red;
+    color: $bright-error;
     padding: 0 0 20px;
   }
 
@@ -47,7 +51,7 @@
   }
 
   .error-label {
-    color: $red;
+    color: $bright-error;
     text-transform: uppercase;
   }
 
@@ -74,9 +78,8 @@
   }
 
   .validation-item-preview {
-    @include secondary-text();
+    @include tertiary-text();
 
-    font-style: italic;
     margin-left: 5px;
   }
 </style>

@@ -25,7 +25,7 @@ $height: 48px;
   width: 100%;
 
   .kiln-toolbar-button {
-    @include button-filled-large($toolbar-view);
+    @include button-filled-large($toolbar-view, $toolbar-icons);
 
     flex: 0 0 auto;
   }
@@ -52,7 +52,7 @@ $height: 48px;
     }
 
     .kiln-toolbar-button {
-      @include button-filled-large($toolbar-edit);
+      @include button-filled-large($toolbar-edit, $toolbar-icons);
     }
 
     .view-button {

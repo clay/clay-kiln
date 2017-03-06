@@ -1,7 +1,7 @@
 // states (used by progress bar, status message, publish button)
-$draft: #c8b585;
-$scheduled: #d29c31;
-$published: #599f61;
+$draft: #c7b488;
+$scheduled: #cb8d34;
+$published: #599f62;
 $offline: #888;
 $error: #a86667;
 $save: #229ed3;
@@ -14,8 +14,10 @@ $toolbar-view-border: #898c8f;
 $toolbar-edit: #999c9e;
 $toolbar-edit-border: #b7b9ba;
 
+// toolbar icons
+$toolbar-icons: #f9f9f9;
+
 // selector borders
-// note: other greys will be phased out in favor of semantic grey colors
 $selector-border: #727272;
 $selector-icon: $selector-border;
 $selector-text: $selector-border;
@@ -27,75 +29,47 @@ $placeholder-label: $selector-icon;
 $placeholder-label-border: #abdaee;
 $permanent-placeholder-label: #a6a6a6;
 $permanent-placeholder-label-border: #ccc;
-$placeholder-border: #229ed3;
+$placeholder-border: $save;
 $placeholder-background: #eff8fc;
 $permanent-placeholder-border: $selector-border;
 $permanent-placeholder-background: #f5f5f5;
 
-// forms
-$form-field-label: #727272;
-$form-field-description: #727272;
-$form-input: #585C60;
-$form-input-border: #D6D6D6;
+// typography
+$title: $selector-border; // used for pane titles
+$subtitle: $toolbar-view; // used for pane tabs
+$label: $toolbar-view; // used for field labels
+$text: $toolbar-view; // used for field descriptions, pane items, general text
+$subtext: #c3c3c3; // used for secondary text
 
-// behaviors
-$behavior-required: #229ed3;
+// inputs
+$input-border: $subtext;
+$input-background: #fff;
+$input-text: $text;
+$input-placeholder: #9b9b9b;
+$input-disabled-text: $offline;
+$input-shadow: #d6d6d6;
+
+// forms and behaviors
+$behavior-required: $save;
+$text-selection: #7edbfc;
+$light-error: #f6cbc6;
+$bright-error: #dd2f1c;
+$button-outline: #4d4d4d;
+$button-disabled: #c3c3c3;
+$button-disabled-light: #e7e7e7;
 
 // panes
-$pane-title: #727272;
-$pane-icon: #727272;
-$pane-header-border: #D6D6D6;
+$pane-icon: $selector-border;
+$pane-header-border: $input-border;
 $pane-border: #979797;
-$pane-tab-title: #585C60;
-$pane-tab-active: $selector-border;
-$pane-input-border: #E8E8E8;
-$pane-input-placeholder: #9B9B9B;
-$pane-text: #584C60;
-$pane-list-divider: #F4F4F4;
-
-
-// DEPRECATED COLORS BELOW
-
-// blue - used for page-specific components
-$blue-10: #f6fdff;
-$blue-25: #7edbfc;
-$blue-50: #2abcf6;
-$blue-75: #28b4eb;
-$blue-100: #229ed3;
-$blue: $blue-100;
-
-// purple - used for layout-specific components
-$purple-10: #fbf3ff;
-$purple-25: #e1cfec;
-$purple-50: #bc99d1;
-$purple-75: #8d6e9f;
-$purple-100: #694C79;
-$purple: $purple-100;
-
-// red - used for errors
-$red-10: #FBEAE8;
-$red-25: #F6CBC6;
-$red-50: #EE978D;
-$red-75: #E66355;
-$red-100: #DD2F1C;
-$red: $red-100;
-
-// monochrome - general layout elements and typography
-$white: #fff; // note - we may make this slightly darker at some point
-$grey: #f4f4f4;
-$black-10: #E7E7E7;
-$black-25: #C3C3C3;
-$black-30: #aaa;
-$black-50: #888;
-$black-60: #666;
-$black-75: #4D4D4D;
-$black-100: #111111;
-$black: $black-100;
+$pane-tab-active: #bdbdbd;
+$pane-list-divider: #f4f4f4;
+$preview-icon: #4a4a4a;
+$pane-background: #fff;
 
 // overlays and shadows
 $overlay-background: rgba(17, 17, 17, .5);
 $overlay-shadow: rgba(0, 0, 0, .07);
-$input-shadow: rgba(0, 0, 0, .4);
 $drag-shadow: rgba(0, 0, 0, .3); // different use case than input-shadow
 $drag-error: rgba(215, 39, 39, .41);
-$drag-saving: rgba($blue-75, .41);
+$drag-saving: rgba($save, .41);

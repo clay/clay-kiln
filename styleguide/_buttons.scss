@@ -32,12 +32,12 @@
 
 // button styles
 
-@mixin button-filled($color: $black-75, $text-color: $white) {
+@mixin button-filled($color: $button-outline, $text: $toolbar-icons) {
   @include button();
 
   background-color: $color;
   border: none;
-  color: $text-color;
+  color: $text;
   transition: background-color 150ms ease-out;
 
   &:hover {
@@ -51,13 +51,13 @@
   }
 
   &:disabled {
-    background-color: $black-25;
-    color: $text-color;
+    background-color: $button-disabled;
+    color: $text;
     transition: all 50ms ease-out;
   }
 }
 
-@mixin button-outlined($color: $black-75, $fill: $white) {
+@mixin button-outlined($color: $button-outline, $fill: $toolbar-icons) {
   @include button();
 
   background-color: $fill;
@@ -77,22 +77,22 @@
 
   &:disabled {
     background-color: $fill;
-    border: 1px solid $black-10;
-    color: $black-10;
+    border: 1px solid $button-disabled-light;
+    color: $button-disabled-light;
     transition: all 150ms ease-out;
   }
 }
 
-@mixin button-filled-large($color: $black-75, $text-color: $white) {
+@mixin button-filled-large($color: $button-outline, $text: $toolbar-icons) {
   @include button-large();
 
   background-color: $color;
   border: none;
-  color: $text-color;
+  color: $text;
   transition: background-color 150ms ease-out;
 
   svg {
-    fill: $text-color;
+    fill: $text;
   }
 
   &:hover {
@@ -107,7 +107,7 @@
 
   &:disabled {
     background-color: lighten($color, 25%);
-    color: $text-color;
+    color: $text;
     transition: all 50ms ease-out;
   }
 }

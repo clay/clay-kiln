@@ -93,12 +93,12 @@
     white-space: normal;
 
     &::selection {
-      background-color: $blue-25;
+      background-color: $text-selection;
     }
   }
 
   .wysiwyg-input *::selection {
-    background-color: $blue-25;
+    background-color: $text-selection;
   }
 
   .wysiwyg-input.styled {

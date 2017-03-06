@@ -19,6 +19,10 @@
 
     height: 100%;
   }
+
+  .pane-tabs-content {
+    @include pane-tab-content();
+  }
 </style>
 
 <template>
@@ -27,18 +31,18 @@
       <pane-header :title="headerTitle" :buttonClick="save" check="publish-check"></pane-header>
       <section class="pane-form-wrapper">
         <form @submit.prevent="save">
-          <div v-if="hasTabs" class="pane-tabs-titles">
+          <div v-if="hasSections" class="pane-tabs-titles">
             <ul class="form-sections-list">
               <li v-for="(section, index) in sections">
                 <button type="button" class="pane-tabs-titles-list-trigger" :class="{ 'active' : isActive(index) }" @click.stop="selectTab(index)">
-                  <span>{{ section.title }}</span>
+                  <span class="pane-tab-title">{{ section.title }}</span>
                 </button>
               </li>
             </ul>
             <!-- todo: add right arrow for scrolling -->
           </div>
           <div class="pane-tabs-content input-container" v-for="(section, index) in sections" v-if="isActive(index)">
-            <field v-for="(field, fieldIndex) in section.fieldNames" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
+            <field v-for="(field, fieldIndex) in section.fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
           </div>
         </form>
       </section>
@@ -63,21 +67,21 @@
     computed: mapState({
       hasCurrentModalForm: (state) => !_.isNull(state.ui.currentForm) && state.ui.currentForm.schema[displayProp] !== 'inline',
       headerTitle: (state) => label(state.ui.currentForm.path, state.ui.currentForm.schema),
-      hasTabs: (state) => !!state.ui.currentForm.sections,
+      hasSections: (state) => state.ui.currentForm.schema.sections && state.ui.currentForm.schema.sections.length > 1,
       sections: (state) => {
-        const sections = _.get(state, 'ui.currentForm.sections');
+        const sections = _.get(state, 'ui.currentForm.schema.sections');
 
-        if (sections) {
+        if (!_.isEmpty(sections)) {
           return _.map(sections, (section) => {
             return {
               title: section.title,
-              fieldNames: section.fields
+              fields: section.fields
             };
           });
         } else {
           // no sections, so return a single "section" with all the fields
           return [{
-            fieldNames: state.ui.currentForm.schema.fields || [state.ui.currentForm.path], // group or single field
+            fields: state.ui.currentForm.schema.fields || [state.ui.currentForm.path], // group or single field
           }];
         }
       },

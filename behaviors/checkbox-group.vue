@@ -39,8 +39,8 @@
     @include primary-text();
 
     cursor: pointer;
-    padding-left: 4px;
-    vertical-align: middle;
+    padding-left: 5px;
+    vertical-align: baseline;
   }
 </style>
 

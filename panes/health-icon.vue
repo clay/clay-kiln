@@ -25,7 +25,7 @@
     }
 
     &.errors svg {
-      fill: $red;
+      fill: $bright-error;
     }
   }
 
