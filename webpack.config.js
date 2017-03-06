@@ -19,7 +19,11 @@ module.exports = {
     rules: [{
       test: /\.js$/,
       exclude: /node_modules/,
-      loader: 'babel-loader'
+      loader: 'babel-loader',
+      options: {
+        presets: ['es2015'],
+        plugins: ['lodash']
+      }
     }, {
       test: /\.scss|.css$/,
       use: styles.extract({
@@ -36,7 +40,8 @@ module.exports = {
         loaders: {
           css: 'vue-style-loader!css-loader!postcss-loader',
           sass: 'vue-style-loader!css-loader!postcss-loader!sass-loader',
-          docs: docs.extract('raw-loader')
+          docs: docs.extract('raw-loader'),
+          js: 'babel-loader'
         }
       }
     }, {
