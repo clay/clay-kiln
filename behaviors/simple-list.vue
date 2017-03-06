@@ -63,30 +63,32 @@
             v-on:dblclick.native="onDoubleClick">
           </item>
       </li>
+      <li>
+        <div class="simple-list-input">
+          <input
+            type="text"
+            class="simple-list-add"
+            placeholder="Start Typing Here..."
+            v-model="inputVal"
+            @input="onChange"
+            @keydown.enter="onEnter"
+            @keydown.delete="removeLastItem"
+            @keydown.left="focusItem"
+            @keydown.down="autocompleteFocus(false)"
+            @keydown.up.prevent="autocompleteFocus(true)"
+          />
+          <autocomplete
+            v-if="args.autocomplete"
+            :args="args.autocomplete"
+            :query="inputVal"
+            :select="autocompleteSelect"
+            :focusIndex="autocompleteIndex"
+            :updateFocusIndex="updateFocusIndex"
+            :updateMatches="updateAutocompleteMatches">
+          </autocomplete>
+        </div>
+      </li>
     </ol>
-    <div class="simple-list-input">
-      <input
-        type="text"
-        class="simple-list-add"
-        placeholder="Start Typing Here..."
-        v-model="inputVal"
-        @input="onChange"
-        @keydown.enter="onEnter"
-        @keydown.delete="removeLastItem"
-        @keydown.left="focusItem"
-        @keydown.down="autocompleteFocus(false)"
-        @keydown.up.prevent="autocompleteFocus(true)"
-      />
-      <autocomplete
-        v-if="args.autocomplete"
-        :args="args.autocomplete"
-        :query="inputVal"
-        :select="autocompleteSelect"
-        :focusIndex="autocompleteIndex"
-        :updateFocusIndex="updateFocusIndex"
-        :updateMatches="updateAutocompleteMatches">
-      </autocomplete>
-    </div>
   </div>
 </template>
 
@@ -101,7 +103,6 @@
     data() {
       return {
         focusIndex: null,
-        items: _.cloneDeep(this.data),
         inputVal: '',
         input: null,
         autocompleteIndex: null,
@@ -114,15 +115,13 @@
         return _.get(this.args, 'autocomplete', '') && this.displayAutocomplete;
       },
       badgeOrPropertyName() {
-
         return this.args.badge || this.args.propertyName;
+      },
+      items() {
+        return _.isArray(this.data) ? _.cloneDeep(this.data) : [];
       }
     },
     methods: {
-      updateData() {
-        console.log('Womp');
-        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: this.items });
-      },
       onDoubleClick() {
         if (_.get(this.args, 'propertyName', '')) {
           this.items = _.map(this.items, (item, i) => {
@@ -151,8 +150,8 @@
               text: this.inputVal
             });
 
-            // Update the store
-            // this.$store.commit(UPDATE_FORMDATA, {path: this.name, data: this.items})
+            // Save data
+            this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: this.items });
 
             // Zero out values
             this.inputVal = '';
@@ -160,9 +159,6 @@
           }
 
           this.autocompleteIndex = null;
-        } else {
-          // Update data
-          this.updateData();
         }
       },
       // Remove the last item from the list
