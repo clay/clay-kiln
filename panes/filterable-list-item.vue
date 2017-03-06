@@ -1,15 +1,25 @@
 <style lang="sass">
+  @import '../styleguide/colors';
   @import '../styleguide/buttons';
 
   .filterable-list-item {
-    display: flex;
     align-items: center;
+    border-bottom: 1px solid $pane-list-divider;
+    display: flex;
+
+    &.active {
+      border-bottom-color: $save;
+    }
 
     button {
       appearance: none;
       background: transparent;
       border: none;
       cursor: pointer;
+
+      &:focus {
+        outline: none;
+      }
     }
 
     &-btn {
@@ -31,14 +41,17 @@
 </style>
 
 <template>
-  <li class="filterable-list-item" :data-item-id="item.id">
+  <li class="filterable-list-item" :data-item-id="item.id" :class="{ active : focused }">
     <button type="button" v-if="onReorder">
       <icon name="drag-grip"></icon>
     </button>
     <button
       type="button"
       class="filterable-list-item-btn"
-      @click.stop="onClick(item.id)">
+      @click.stop="onClick(item.id)"
+      v-conditional-focus="focused"
+      @keydown.down.stop="focusOnIndex(index + 1)"
+      @keydown.up.stop="focusOnIndex(index - 1)">
       {{ item.title }}
     </button>
     <button v-if="onSettings" type="button" class="filterable-list-item-settings" @click.stop="onSettings(item.id)">
@@ -53,13 +66,13 @@
 <script>
   import _ from 'lodash';
   import icon from '../lib/utils/icon.vue';
+  import conditionalFocus from '../directives/conditional-focus';
 
   export default {
-    props: ['item', 'index', 'onClick', 'onSettings', 'onDelete', 'onReorder'],
+    props: ['item', 'index', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'focused', 'focusOnIndex'],
     data() {
       return {}
     },
-    computed: {},
     components: {
       icon
     }

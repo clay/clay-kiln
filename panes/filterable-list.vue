@@ -3,25 +3,23 @@
   @import '../styleguide/colors';
 
   .filterable-list {
-    padding: 17px;
     &-input {
       &-field {
         @include input();
+
+        padding: 10px 18px;
       }
     }
     &-readout {
       overflow-y: scroll;
       overflow-x: hidden;
       max-height: 600px;
+      padding: 0 18px 18px;
 
       &-list {
         list-style: none;
         margin: 0;
         padding: 0;
-
-        > * + * {
-          border-top: 1px solid $pane-list-divider;
-        }
       }
     }
   }
@@ -35,7 +33,10 @@
         class="filterable-list-input-field"
         placeholder="Begin typing to filter list"
         ref="search"
-        v-model="query">
+        v-model="query"
+        @keydown.down.stop="focusOnIndex(0)"
+        @keydown.up.stop
+        v-conditional-focus="focusIsNull">
     </div>
     <div class="filterable-list-readout">
       <ul class="filterable-list-readout-list" ref="list">
@@ -43,11 +44,13 @@
           v-for="(item, index) in matches"
           :item="item"
           :index="index"
+          :focused="focusIndex === index"
           :key="item.id"
           :onClick="onClick"
           :onSettings="onSettings"
           :onDelete="onDelete"
-          :onReorder="onReorder"></list-item>
+          :onReorder="onReorder"
+          :focusOnIndex="focusOnIndex"></list-item>
       </ul>
     </div>
   </div>
@@ -59,6 +62,7 @@
   import _ from 'lodash';
   import listItem from './filterable-list-item.vue';
   import dragula from 'dragula';
+  import conditionalFocus from '../directives/conditional-focus';
 
   // Placeholder for Dragula instance
   var drag;
@@ -121,21 +125,19 @@
     props: ['content', 'onClick', 'onSettings', 'onDelete', 'onReorder'],
     data() {
       return {
-        query: ''
+        query: '',
+        focusIndex: null
       }
     },
     computed: {
       matches() {
         return this.query.length ? filterContent(this.content, this.query) : this.content;
+      },
+      focusIsNull() {
+        return _.isNull(this.focusIndex);
       }
     },
     mounted() {
-      // Focus on the input field
-      // TODO: Turn this into a directive
-      if (this.$refs.search) {
-        this.$refs.search.focus();
-      }
-
       // Add dragula
       if (this.onReorder) {
         addDragula(this.$refs.list, this.onReorder);
@@ -145,6 +147,15 @@
       // Clean up any Dragula event handlers
       if (drag) {
         drag.destroy();
+      }
+    },
+    methods: {
+      focusOnIndex(index) {
+        if (index < 0) {
+          this.focusIndex = null;
+        } else if (index !== this.matches.length) {
+          this.focusIndex = index;
+        }
       }
     },
     components: {
