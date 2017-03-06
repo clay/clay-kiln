@@ -82,7 +82,7 @@
     "sinon": "^1.17.7",
     "sinon-chai": "^2.8.0",
     "speakingurl": "^13.0.0",
-    "striptags": "^3.0.1",
+    "striptags": "2.2.1",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.8",
     "vue": "^2.1.10",
