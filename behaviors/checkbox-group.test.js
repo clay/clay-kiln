@@ -4,6 +4,16 @@ import lib from './checkbox-group.vue';
 const options = [{ name: 'One', value: 'one' }, { name: 'Two', value: 'two' }];
 
 describe('checkbox-group behavior', () => {
+  let sandbox;
+
+  beforeEach(() => {
+    sandbox = sinon.sandbox.create();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
   it('allows multiple inputs', () => {
     expect(renderWithArgs(lib, {
       args: { options }, data: {}
