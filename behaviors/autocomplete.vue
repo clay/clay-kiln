@@ -5,14 +5,16 @@
 </docs>
 
 <style lang="sass">
+  @import '../styleguide/colors';
 
   .autocomplete {
-    background-color: #FFF;
-    border: 1px solid blue;
+    background-color: #FFFFFF;
+    border: 1px solid $save;
     list-style: none;
     margin: 0;
     padding: 0;
     position: absolute;
+    width: 100%;
   }
 </style>
 

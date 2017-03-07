@@ -5,23 +5,26 @@
 </docs>
 
 <style lang="sass">
+  @import '../styleguide/colors';
+
   .autocomplete-item {
     appearance: none;
     background: transparent;
     border: none;
     cursor: pointer;
     display: block;
-    font-size: 12px;
+    font-size: 13px;
+    padding: 5px 10px;
     text-align: left;
     width: 100%;
 
     &.selected {
-      background: blue;
-      color: white;
+      background: $save;
+      color: #FFFFFF;
     }
 
     &:hover {
-      background: grey;
+      background: $placeholder-background;
     }
   }
 </style>
