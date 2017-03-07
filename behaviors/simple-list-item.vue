@@ -1,7 +1,7 @@
 <docs>
-  # text
+  # simple-list-item
 
-  Simple list item
+  A component which represents a single item in the `simple-list` component. Functionality is derived from its parent.
 </docs>
 
 <style lang="sass">
@@ -47,7 +47,6 @@
   <button type="button"
     class="simple-list-item"
     v-bind:class="{ 'selected': isActive, 'has-badge': property }"
-    @click="selectItem(index)"
     @keydown.left="selectItem(index - 1)"
     @keydown.right="selectItem(index + 1)"
     @keydown.delete="removeItem"

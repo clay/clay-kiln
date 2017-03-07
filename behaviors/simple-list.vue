@@ -1,7 +1,24 @@
 <docs>
-  # text
+  # simple-list
 
-  Simple list
+  An array of objects with a `text` property that is a string to display in a list. Useful for tags, authors, keywords, etc.
+
+  ## Arguments
+
+  * **allowRepeatedItems** _(optional)_ allow the same item more than once. defaults to false
+
+  * **autocomplete** _(optional)_ NEED TO DECIDE ON THE API
+
+  * **propertyName** _(optional)_ appends double-click functionality to items in the list. Name of the property that is considered "primary"
+
+  * **badge** _(optional)_ string to put in the badge if `propertyName` is defined. Defaults to property name
+
+  ## Usage
+
+  * Items may be added by clicking into the input, typing stuff, then pressing <kbd>enter</kbd>, <kbd>tab</kbd>, or <kbd>,</kbd> (comma).
+  * Items may be deleted by selecting them (either by clicking them or navigating with the <kbd>→</kbd> and <kbd>←</kbd> then hitting <kbd>delete</kbd> or <kbd>backspace</kbd>.
+  * Hitting <kbd>delete</kbd>, <kbd>backspace</kbd>, or <kbd>←</kbd> in the input will select the last item if the input is empty.
+  * If `propertyName` is defined it will allow users to double-click items in a simple-list to select a "primary" item. It will also append a small badge to the "primary" item. Only one item may be "primary" at a time.
 </docs>
 
 <style lang="sass">
@@ -60,6 +77,7 @@
             :badge="badgeOrPropertyName"
             :selectItem="selectItem"
             :removeItem="removeItem"
+            @click="selectItem(index)"
             v-on:dblclick.native="onDoubleClick">
           </item>
       </li>
@@ -71,8 +89,10 @@
             placeholder="Start Typing Here..."
             v-model="inputVal"
             @input="onChange"
-            @keydown.enter="onEnter"
-            @keydown.delete="removeLastItem"
+            @keydown.enter="addItem"
+            @keydown.tab="addItem"
+            @keydown.comma="addItem"
+            @keydown.delete="focusLastItem"
             @keydown.left="focusLastItem"
             @keydown.right="focusFirstItem"
             @keydown.down="autocompleteFocus(false)"
@@ -148,7 +168,7 @@
         }
       },
       // Add an item to the array
-      onEnter(e) {
+      addItem(e) {
         if (this.inputVal) {
           // Prevent submitting the form by preventing default
           e.preventDefault();
@@ -176,13 +196,13 @@
         }
       },
       // Remove the last item from the list
-      removeLastItem() {
-        if (!this.inputVal && this.items.length) {
-          this.items.splice(-1);
-          // Update the data
-          this.updateFormData()
-        }
-      },
+      // removeLastItem() {
+      //   if (!this.inputVal && this.items.length) {
+      //     this.items.splice(-1);
+      //     // Update the data
+      //     this.updateFormData();
+      //   }
+      // },
       // Focus on the first item in the list
       focusFirstItem() {
         if (this.items.length && !this.inputVal.length) {
@@ -197,6 +217,7 @@
       },
       // Directly select an item
       selectItem(index) {
+        console.log(index);
         if (index < 0 || index >= this.items.length) {
           this.focusIndex = null;
         } else {
@@ -215,9 +236,7 @@
         this.updateFormData();
 
         if (this.items.length) {
-          let newIndex = this.focusIndex - 1;
-
-          this.selectItem();
+          this.selectItem(this.focusIndex - 1);
         } else {
           this.focusIndex = null;
         }
