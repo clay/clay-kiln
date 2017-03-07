@@ -51,6 +51,9 @@ Vue.use(NProgress, {
   http: false
 });
 
+// Register keys to make key events easy to call
+Vue.config.keyCodes.comma = 188;
+
 // kick off loading when DOM is ready
 // note: preloaded data, external behaviors, decorators, and validation rules should already be added
 // when this event fires
