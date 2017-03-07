@@ -55,9 +55,9 @@
             :index="index"
             :focusIndex="focusIndex"
             :value="item.text"
+            key="index"
             :property="item[args.propertyName]"
             :badge="badgeOrPropertyName"
-            :changeFocus="changeFocus"
             :selectItem="selectItem"
             :removeItem="removeItem"
             v-on:dblclick.native="onDoubleClick">
@@ -73,9 +73,11 @@
             @input="onChange"
             @keydown.enter="onEnter"
             @keydown.delete="removeLastItem"
-            @keydown.left="focusItem"
+            @keydown.left="focusLastItem"
+            @keydown.right="focusFirstItem"
             @keydown.down="autocompleteFocus(false)"
             @keydown.up.prevent="autocompleteFocus(true)"
+            v-conditional-focus="focusOnInput"
           />
           <autocomplete
             v-if="args.autocomplete"
@@ -97,6 +99,7 @@
   import item from './simple-list-item.vue';
   import autocomplete from './autocomplete.vue';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
+  import conditionalFocus from '../directives/conditional-focus';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
@@ -119,15 +122,24 @@
       },
       items() {
         return _.isArray(this.data) ? _.cloneDeep(this.data) : [];
+      },
+      focusOnInput() {
+        return _.isNull(this.focusIndex);
       }
     },
     methods: {
+      updateFormData() {
+        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: this.items });
+      },
       onDoubleClick() {
         if (_.get(this.args, 'propertyName', '')) {
           this.items = _.map(this.items, (item, i) => {
             item[this.args.propertyName] = this.focusIndex === i;
             return item;
           });
+
+          // Save
+          this.updateFormData();
         }
       },
       onChange() {
@@ -138,6 +150,7 @@
       // Add an item to the array
       onEnter(e) {
         if (this.inputVal) {
+          // Prevent submitting the form by preventing default
           e.preventDefault();
 
           // If we have autocomplete and we've selected something
@@ -146,12 +159,13 @@
             this.inputVal = _.get(this.autocompleteOptions, this.autocompleteIndex, '');
             this.displayAutocomplete = false;
           } else {
+            // Add item in
             this.items.push({
               text: this.inputVal
             });
 
             // Save data
-            this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: this.items });
+            this.updateFormData();
 
             // Zero out values
             this.inputVal = '';
@@ -165,57 +179,47 @@
       removeLastItem() {
         if (!this.inputVal && this.items.length) {
           this.items.splice(-1);
+          // Update the data
+          this.updateFormData()
+        }
+      },
+      // Focus on the first item in the list
+      focusFirstItem() {
+        if (this.items.length && !this.inputVal.length) {
+          this.focusIndex = 0;
         }
       },
       // Focus on the last item in the list
-      focusItem(dir = false) {
-        if (!_.isNumber(this.focusIndex) && !this.inputVal.length) {
-          let end = this.items.length - 1;
-
-          this.focusIndex = end;
-          this.$children[end].$el.focus();
+      focusLastItem() {
+        if (_.isNull(this.focusIndex) && !this.inputVal.length) {
+          this.focusIndex = this.items.length - 1;
         }
-      },
-      // When focused on an item, change the focus
-      // based on keypress
-      changeFocus(dir) {
-        var length = this.items.length - 1;
-
-        if (dir) {
-          if (this.focusIndex === length) {
-            this.focusOnInput();
-          } else {
-            this.focusIndex++;
-          }
-        } else {
-          if (this.focusIndex) {
-            this.focusIndex--;
-          }
-        }
-      },
-      // Focus on the input and set the
-      // focusIndex to null
-      focusOnInput() {
-        this.focusIndex = null;
-        this.input.focus();
       },
       // Directly select an item
       selectItem(index) {
-        this.focusIndex = index;
-        this.input.focus();
+        if (index < 0 || index >= this.items.length) {
+          this.focusIndex = null;
+        } else {
+          if (!this.items.length) {
+            this.focusIndex = null;
+          } else {
+            this.focusIndex = index;
+          }
+        }
       },
       // Remove an item
       removeItem() {
         // Remove the item
         this.items.splice(this.focusIndex, 1);
+        // Update the form data
+        this.updateFormData();
 
         if (this.items.length) {
-          this.changeFocus(false);
+          let newIndex = this.focusIndex - 1;
 
-          let indexVal = this.focusIndex ? this.focusIndex : 1;
-          this.$children[indexVal].$el.focus();
+          this.selectItem();
         } else {
-          this.focusOnInput();
+          this.focusIndex = null;
         }
       },
       updateAutocompleteMatches(options) {
@@ -224,7 +228,7 @@
       autocompleteSelect(value) {
         this.inputVal = value;
         this.displayAutocomplete = false;
-        this.focusOnInput();
+        this.focusIndex = null;
       },
       autocompleteFocus(dir) {
         if (_.isNumber(this.autocompleteIndex)) {
@@ -236,10 +240,6 @@
       updateFocusIndex(val) {
         this.autocompleteIndex = val;
       }
-    },
-    mounted() {
-      // Grab the reference to the input
-      this.input = this.$el.querySelector('.simple-list-add');
     },
     components: {
       item,

@@ -11,6 +11,7 @@
   .simple-list-item {
     @include button-outlined($button-outline, $toolbar-icons);
 
+    background-color: transparent;
     display: inline-block;
     flex: 0 0 auto;
     margin: 0 12px 12px 0;
@@ -47,9 +48,10 @@
     class="simple-list-item"
     v-bind:class="{ 'selected': isActive, 'has-badge': property }"
     @click="selectItem(index)"
-    @keydown.left="changeFocus(false)"
-    @keydown.right="changeFocus(true)"
-    @keydown.delete="removeItem">
+    @keydown.left="selectItem(index - 1)"
+    @keydown.right="selectItem(index + 1)"
+    @keydown.delete="removeItem"
+    v-conditional-focus="isActive">
     {{ value }}
     <span v-if="property" class="badge">{{badge}}</span>
   </button>
@@ -57,13 +59,13 @@
 
 <script>
   import _ from 'lodash';
+  import conditionalFocus from '../directives/conditional-focus';
 
   export default {
     props: [
       'index',
       'focusIndex',
       'value',
-      'changeFocus',
       'selectItem',
       'removeItem',
       'badge',
