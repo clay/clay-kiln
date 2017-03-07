@@ -15,17 +15,7 @@ const files = [
         rules: [{
           test: /\.js$/,
           exclude: /node_modules/,
-          loader: 'babel-loader',
-          options: {
-            presets: ['es2015'],
-            plugins: [['istanbul', {
-              exclude: [
-                '**/*.test.js',
-                'test/**',
-                '*.md'
-              ]
-            }]]
-          }
+          loader: 'babel-loader'
         }, {
           test: /\.svg$/,
           use: 'raw-loader'
@@ -34,6 +24,7 @@ const files = [
           use: 'vue-loader'
         }]
       },
+      devtool: '#inline-source-map',
       watch: false
     },
     reporters: ['dots', 'coverage'],

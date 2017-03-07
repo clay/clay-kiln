@@ -1,16 +1,16 @@
 {
   "name": "clay-kiln",
-  "version": "0.37.4",
+  "version": "1.0.0-alpha.1",
   "description": "Editor tools for Clay",
   "template": "template.handlebars",
   "scripts": {
     "lint": "eslint client.js behaviors controllers services decorators validators",
     "karma": "karma start",
     "test": "npm run lint && npm run karma",
-    "test-local": "npm run lint && npm run karma -- karma.local.conf.js",
-    "build": "webpack",
-    "watch": "webpack -w",
-    "prepublish": "webpack -p"
+    "test-local": "BABEL_ENV=test npm run lint && BABEL_ENV=test npm run karma -- karma.local.conf.js",
+    "build": "BABEL_ENV=build webpack",
+    "watch": "BABEL_ENV=build webpack -w",
+    "prepublish": "BABEL_ENV=build webpack -p"
   },
   "repository": {
     "type": "git",
