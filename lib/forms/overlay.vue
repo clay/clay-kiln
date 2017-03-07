@@ -18,6 +18,7 @@
     @include form();
 
     height: 100%;
+    max-height: calc(70vh - 44px);
   }
 
   .pane-tabs-content {
@@ -44,6 +45,7 @@
           <div class="pane-tabs-content input-container" v-for="(section, index) in sections" v-if="isActive(index)">
             <field v-for="(field, fieldIndex) in section.fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
           </div>
+          <button type="submit" class="hidden-submit" @click.stop></button>
         </form>
       </section>
     </div>

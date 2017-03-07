@@ -26,7 +26,7 @@
       <div class="input-container">
         <field v-for="(field, index) in fieldNames" :class="{ 'first-field': index === 0 }" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
       </div>
-      <button type="submit" class="hidden-submit"></button>
+      <button type="submit" class="hidden-submit" @click.stop></button>
     </form>
   </section>
 </template>
