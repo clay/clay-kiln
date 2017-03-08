@@ -66,6 +66,14 @@ Appends a description to a field.
 
 * **value** _(required)_ field description, allows html
 
+# drop-image
+
+Appends dragdrop events to an input which grab the url of any file dropped into the input.
+
+## Arguments
+
+_No arguments_
+
 # label
 
 Appends a label to a field. This is pulled from the field's `_label` property, and falls back to using the key of the field.
