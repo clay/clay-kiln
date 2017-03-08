@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // always unfocus if clicking out of the current focus
     if (_.get(store, 'state.ui.currentFocus') && !e.stopFocus) {
-      store.dispatch('unfocus');
+      store.dispatch('unfocus').catch(_.noop);
     }
 
     // Close a pane
