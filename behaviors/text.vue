@@ -36,6 +36,7 @@
     :type="args.type || 'text'"
     :value="data"
     @input="update"
+    @keydown="closeFormOnEnter"
     :step="args.step"
     :min="supportsMinMax && args.min"
     :max="supportsMinMax && args.max"
@@ -52,6 +53,7 @@
 <script>
   import _ from 'lodash';
   import moment from 'moment';
+  import keycode from 'keycode';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { hasNativePicker, init as initPicker } from '../lib/utils/datepicker';
   import { setCaret, isFirstField } from '../lib/forms/field-helpers';
@@ -140,6 +142,14 @@
       // every time the value of the input changes, update the store
       update(e) {
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: e.target.value });
+      },
+      closeFormOnEnter(e) {
+        const key = keycode(e);
+
+        if (key === 'enter') {
+          // close form when hitting enter in text fields
+          this.$store.dispatch('unfocus');
+        }
       }
     },
     created() {

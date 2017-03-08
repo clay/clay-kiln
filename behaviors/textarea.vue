@@ -21,10 +21,11 @@
 </style>
 
 <template>
-  <textarea class="editor-textarea" :required="args.required" :placeholder="args.placeholder" :value="data" @input="update"></textarea>
+  <textarea class="editor-textarea" :required="args.required" :placeholder="args.placeholder" :value="data" @input="update" @keydown="closeFormOnEnter"></textarea>
 </template>
 
 <script>
+  import keycode from 'keycode';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { setCaret, isFirstField } from '../lib/forms/field-helpers';
 
@@ -36,6 +37,14 @@
     methods: {
       update(e) {
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: e.target.value });
+      },
+      closeFormOnEnter(e) {
+        const key = keycode(e);
+
+        if (key === 'enter') {
+          // close form when hitting enter in textarea fields
+          this.$store.dispatch('unfocus');
+        }
       }
     },
     mounted() {
