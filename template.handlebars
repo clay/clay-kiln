@@ -19,7 +19,7 @@
         {{#each @root._componentSchemas}}
           window.kiln.preloadSchemas['{{ this.name }}'] = {{{ stringify (yaml (read this.schema)) }}};
         {{/each}}
-        window.kiln.preloadData = {{{ default (stringify @root) '{}' }}};
+        window.kiln.preloadData = {{{ default (replace (stringify @root) '</script>' '<"+"/script>') '{}' }}};
         window.kiln.locals = {{{ default (stringify @root.locals) '{}' }}};
       </script>
     {{else}}
