@@ -27,7 +27,7 @@
         window.kiln.services.componentModels = window.kiln.services.componentModels || {};
         window.kiln.services.componentTemplates = window.kiln.services.componentTemplates || {};
 
-        window.kiln.services.preloadData = {{{ default (stringify @root) '{}' }}};
+        window.kiln.services.preloadData = {{{ default (replace (stringify @root) '</script>' '<"+"/script>') '{}' }}};
       </script>
     {{/if}}
 
