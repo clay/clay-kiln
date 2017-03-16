@@ -77,7 +77,6 @@
             :badge="badgeOrPropertyName"
             :selectItem="selectItem"
             :removeItem="removeItem"
-            @click="selectItem(index)"
             v-on:dblclick.native="onDoubleClick">
           </item>
       </li>
@@ -119,7 +118,6 @@
   import item from './simple-list-item.vue';
   import autocomplete from './autocomplete.vue';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
-  import conditionalFocus from '../directives/conditional-focus';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
@@ -131,7 +129,7 @@
         autocompleteIndex: null,
         autocompleteOptions: [],
         displayAutocomplete: true
-      }
+      };
     },
     computed: {
       showAutocomplete() {
@@ -195,14 +193,6 @@
           this.autocompleteIndex = null;
         }
       },
-      // Remove the last item from the list
-      // removeLastItem() {
-      //   if (!this.inputVal && this.items.length) {
-      //     this.items.splice(-1);
-      //     // Update the data
-      //     this.updateFormData();
-      //   }
-      // },
       // Focus on the first item in the list
       focusFirstItem() {
         if (this.items.length && !this.inputVal.length) {
@@ -217,7 +207,6 @@
       },
       // Directly select an item
       selectItem(index) {
-        console.log(index);
         if (index < 0 || index >= this.items.length) {
           this.focusIndex = null;
         } else {
@@ -266,8 +255,4 @@
     },
     slot: 'main'
   };
-
-  function atEndOfArray(index, length) {
-    return (length - 2) === index;
-  }
 </script>

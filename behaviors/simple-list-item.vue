@@ -46,10 +46,11 @@
 <template>
   <button type="button"
     class="simple-list-item"
-    v-bind:class="{ 'selected': isActive, 'has-badge': property }"
+    :class="{ 'selected': isActive, 'has-badge': property }"
     @keydown.left="selectItem(index - 1)"
     @keydown.right="selectItem(index + 1)"
     @keydown.delete="removeItem"
+    @click="selectItem(index)"
     v-conditional-focus="isActive">
     {{ value }}
     <span v-if="property" class="badge">{{badge}}</span>
@@ -57,9 +58,6 @@
 </template>
 
 <script>
-  import _ from 'lodash';
-  import conditionalFocus from '../directives/conditional-focus';
-
   export default {
     props: [
       'index',
@@ -71,7 +69,7 @@
       'property'
     ],
     data() {
-      return {}
+      return {};
     },
     computed: {
       isActive() {
