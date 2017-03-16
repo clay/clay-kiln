@@ -597,6 +597,11 @@
       // when the form data changes (since quill is handling it)
       if (appendText) {
         el.innerHTML = this.data + appendText;
+        // trigger text-change here, so the form data is updated
+        store.commit(UPDATE_FORMDATA, {
+          path: name,
+          data: isSingleLine || isMultiComponent ? sanitizeInlineHTML(el.innerHTML) : sanitizeBlockHTML(el.innerHTML)
+        });
       } else {
         el.innerHTML = this.data;
       }
