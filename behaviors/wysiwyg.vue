@@ -602,7 +602,7 @@
       }
 
       /**
-       * focus on the previous component, optiopnally specifying an explicit element and text to append
+       * focus on the previous component, optionally specifying an explicit element and text to append
        * @param  {number} offset
        * @param  {element} [prev]
        * @param  {string} [textAfterCaret]
@@ -670,6 +670,37 @@
         }
       }
 
+      /**
+       * add / replace components if we've pasted text that should generate new components
+       * @return {Promise}
+       */
+      function updatePastedComponents() {
+        const first = [firstComponentToUpdate] || [],
+          components = first.concat(otherComponentsToUpdate || []),
+          shouldReplace = !_.isEmpty(firstComponentToUpdate); // should the current component be replaced?
+
+        return store.dispatch('unfocus')
+          .then(() => store.dispatch('addComponents', {
+            currentURI: current.uri,
+            parentURI: current.parentURI,
+            path: current.parentPath,
+            replace: shouldReplace,
+            components: _.map(components, (component) => {
+              // create default data for each new component
+              return {
+                name: component.component,
+                data: { [component.field]: sanitizeInlineHTML(component.value) }
+              };
+            })
+          }))
+          .then((newComponent) => {
+            // focus on the BEGINNING of the last element (before any text we may have split into it)
+            focusNextComponent(newComponent, _.last(otherComponentsToUpdate).field);
+            firstComponentToUpdate = null;
+            otherComponentsToUpdate = null;
+          });
+      }
+
       editor = new Quill(el, {
         theme: 'bubble',
         formats,
@@ -690,20 +721,20 @@
 
                     // if the caret is at the beginning of a new line, create a new component (sending the text after the caret to the new component)
                     this.quill.deleteText(range.index, this.quill.getLength() - range.index); // remove text after caret
-                    return store.dispatch('unfocus')
-                      .then(() => store.dispatch('createComponent', { name: current.component, defaultData: { [name]: textAfterCaret } }))
-                      .then((uri) => {
-                        return store.dispatch('addComponent', {
-                          currentURI: current.uri,
-                          parentURI: current.parentURI,
-                          path: current.parentPath,
-                          uri
-                        })
-                        .then((newComponent) => {
-                          // focus on the BEGINNING of the new element (before any text we may have split into it)
-                          focusNextComponent(newComponent);
-                        });
+                    return store.dispatch('unfocus').then(() => {
+                      return store.dispatch('addComponents', {
+                        currentURI: current.uri,
+                        parentURI: current.parentURI,
+                        path: current.parentPath,
+                        components: [{
+                          name: current.component,
+                          data: { [name]: textAfterCaret }
+                        }]
                       });
+                    }).then((newComponent) => {
+                      // focus on the BEGINNING of the new element (before any text we may have split into it)
+                      focusNextComponent(newComponent);
+                    });
                   } else if (isMultiComponent || isMultiLine) {
                     // multi-component: allow ONE new line before splitting into a new component
                     // multi-line: allow any number of newlines inside the current field
@@ -791,7 +822,7 @@
         });
       }
 
-      editor.on('text-change', () => {
+      editor.on('text-change', function onTextChange() {
         let html;
 
         // convert / sanitize output to save
@@ -809,55 +840,8 @@
         }
 
         // AFTER updating the data, check to see if there are components to paste
-        if (!_.isEmpty(firstComponentToUpdate)) {
-          const components = [firstComponentToUpdate].concat(otherComponentsToUpdate || []);
-
-          // replace current component, and add others if needed
-          return store.dispatch('unfocus')
-            .then(() => Promise.all(_.map(components, (component) => {
-              // create the new components
-              return store.dispatch('createComponent', {
-                name: component.component,
-                defaultData: { [component.field]: sanitizeInlineHTML(component.value) }
-              });
-            })))
-            .then((uris) => {
-              return store.dispatch('replaceComponent', {
-                currentURI: current.uri,
-                parentURI: current.parentURI,
-                path: current.parentPath,
-                uri: uris
-              })
-              .then((newComponent) => {
-                focusNextComponent(newComponent, _.last(otherComponentsToUpdate).field);
-                firstComponentToUpdate = null;
-                otherComponentsToUpdate = null;
-              });
-            });
-        } else if (!_.isEmpty(otherComponentsToUpdate)) {
-          // only add other components
-          return store.dispatch('unfocus')
-            .then(() => Promise.all(_.map(otherComponentsToUpdate, (component) => {
-              // create the new components
-              return store.dispatch('createComponent', {
-                name: component.component,
-                defaultData: { [component.field]: sanitizeInlineHTML(component.value) }
-              });
-            })))
-            .then((uris) => {
-              // add the new components to the parent
-              return store.dispatch('addComponent', {
-                currentURI: current.uri,
-                parentURI: current.parentURI,
-                path: current.parentPath,
-                uri: uris
-              })
-              .then((newComponent) => {
-                // focus on the BEGINNING of the last element (before any text we may have split into it)
-                focusNextComponent(newComponent, _.last(otherComponentsToUpdate).field);
-                otherComponentsToUpdate = null;
-              });
-            });
+        if (!_.isEmpty(firstComponentToUpdate) || !_.isEmpty(otherComponentsToUpdate)) {
+          return updatePastedComponents(store);
         }
       });
     },

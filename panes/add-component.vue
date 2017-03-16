@@ -27,16 +27,13 @@
       itemClick(id) {
         const self = this;
 
-        this.$store.dispatch('createComponent', { name: id })
-          .then((uri) => {
-            return self.$store.dispatch('addComponent', {
-              currentURI: self.args.currentURI,
-              parentURI: self.args.parentURI,
-              path: self.args.path,
-              uri
-            });
-          })
-          .then(() => self.$nextTick(() => self.$store.dispatch('closePane')));
+        this.$store.dispatch('addComponents', {
+          currentURI: this.args.currentURI,
+          parentURI: this.args.parentURI,
+          path: this.args.path,
+          components: [{ name: id }]
+        })
+        .then(() => self.$nextTick(() => self.$store.dispatch('closePane')));
       }
     },
     components: {
