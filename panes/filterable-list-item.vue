@@ -8,8 +8,12 @@
     border-bottom: 1px solid $pane-list-divider;
     display: flex;
 
-    &.active {
+    &.focused {
       border-bottom-color: $save;
+    }
+
+    &.active {
+      border-bottom: 2px solid $save;
     }
 
     button {
@@ -43,7 +47,7 @@
 </style>
 
 <template>
-  <li class="filterable-list-item" :data-item-id="item.id" :class="{ active : focused }">
+  <li class="filterable-list-item" :data-item-id="item.id" :class="{ focused: focused, active: active }">
     <button type="button" v-if="onReorder">
       <icon name="drag-grip"></icon>
     </button>
@@ -53,7 +57,9 @@
       @click.stop="onClick(item.id)"
       v-conditional-focus="focused"
       @keydown.down.stop="focusOnIndex(index + 1)"
-      @keydown.up.stop="focusOnIndex(index - 1)">
+      @keydown.up.stop="focusOnIndex(index - 1)"
+      @keydown.enter.stop.prevent="onEnterDown"
+      @keyup.enter.stop="onEnterUp">
       {{ item.title }}
     </button>
     <button v-if="onSettings" type="button" class="filterable-list-item-settings" @click.stop="onSettings(item.id)">
@@ -66,14 +72,21 @@
 </template>
 
 <script>
-  import _ from 'lodash';
   import icon from '../lib/utils/icon.vue';
-  import conditionalFocus from '../directives/conditional-focus';
 
   export default {
-    props: ['item', 'index', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'focused', 'focusOnIndex'],
+    props: ['item', 'index', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'focused', 'active', 'focusOnIndex', 'setActive'],
     data() {
-      return {}
+      return {};
+    },
+    methods: {
+      onEnterDown() {
+        this.setActive(this.index);
+      },
+      onEnterUp() {
+        this.setActive(this.index);
+        this.onClick(this.item.id);
+      }
     },
     components: {
       icon

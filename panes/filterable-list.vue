@@ -23,6 +23,18 @@
       }
     }
   }
+
+  @keyframes shake {
+    0%, 100% {transform: translateX(0);}
+    20%, 60% {transform: translateX(-5px);}
+    40%, 80% {transform: translateX(5px);}
+  }
+
+  .kiln-shake {
+    animation-name: shake;
+    animation-duration: 300ms;
+    animation-fill-mode: both;
+  }
 </style>
 
 <template>
@@ -34,8 +46,10 @@
         :placeholder="inputPlaceholder"
         ref="search"
         v-model="query"
-        @keydown.down.stop="focusOnIndex(0)"
+        @keyup.stop.prevent
         @keydown.up.stop
+        @keydown.down.stop="focusOnIndex(0)"
+        @keydown.enter.stop.prevent="onEnterDown"
         v-conditional-focus="focusIsNull">
     </div>
     <div class="filterable-list-readout">
@@ -45,12 +59,14 @@
           :item="item"
           :index="index"
           :focused="focusIndex === index"
+          :active="activeIndex === index"
           :key="item.id"
           :onClick="onClick"
           :onSettings="onSettings"
           :onDelete="onDelete"
           :onReorder="onReorder"
-          :focusOnIndex="focusOnIndex"></list-item>
+          :focusOnIndex="focusOnIndex"
+          :setActive="setActive"></list-item>
         <list-add
           v-if="onAdd"
           :onClick="onAdd"
@@ -130,7 +146,8 @@
     data() {
       return {
         query: '',
-        focusIndex: null
+        focusIndex: null,
+        activeIndex: null
       };
     },
     computed: {
@@ -176,6 +193,26 @@
           this.focusIndex = null;
         } else if (index !== this.matches.length) {
           this.focusIndex = index;
+        }
+      },
+      setActive(index) {
+        if (index < 0) {
+          this.activeIndex = null;
+        } else if (index !== this.matches.length) {
+          this.activeIndex = index;
+        }
+      },
+      onEnterDown() {
+        const input = find(this.$el, '.filterable-list-input-field');
+
+        // simulate active states when pressing enter
+        if (this.matches.length === 1) {
+          this.focusIndex = 0;
+          this.activeIndex = 0;
+        } else {
+          this.activeIndex = null;
+          input.classList.add('kiln-shake');
+          setTimeout(() => input.classList.remove('kiln-shake'), 301); // length of the animation + 1
         }
       }
     },

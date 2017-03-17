@@ -10,6 +10,7 @@ import { add as addPane } from './lib/forms/panes';
 import toolbar from './lib/toolbar/edit-toolbar.vue';
 import { HIDE_STATUS } from './lib/toolbar/mutationTypes';
 import { init as initValidators } from './lib/validators';
+import conditionalFocus from './directives/conditional-focus';
 
 // TODO: Figure out saving/closing and reverting in panes
 import { CLOSE_PANE } from './lib/panes/mutationTypes';
@@ -53,6 +54,9 @@ Vue.use(NProgress, {
 
 // Register keys to make key events easy to call
 Vue.config.keyCodes.comma = 188;
+
+// register directives
+Vue.directive('conditional-focus', conditionalFocus());
 
 // kick off loading when DOM is ready
 // note: preloaded data, external behaviors, decorators, and validation rules should already be added
