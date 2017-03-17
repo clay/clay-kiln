@@ -459,9 +459,7 @@
 
         // run element matchers for child node
         if (childNode.nodeType === childNode.ELEMENT_NODE) {
-          console.log('child is element!', childNode.tagName, childNode)
           childDelta = _.reduce(elementMatchers, (childDelta, matcher) => matcher(childNode, childDelta), childDelta);
-          console.log('child delta', childDelta)
           childDelta = _.reduce(childMatchers, (childDelta, matcher) => matcher(childNode, childDelta), childDelta);
         }
         return delta.concat(childDelta);
@@ -628,8 +626,6 @@
           let [elementMatchers, textMatchers] = this.prepareMatching(),
             sanitized, delta, components;
 
-          console.log('matchers', elementMatchers, textMatchers)
-
           if (_.isString(html)) {
             this.container.innerHTML = html;
           }
@@ -641,12 +637,9 @@
             // e.g. if there's no bold allowed, that'll be inserted as plain text
             delta = generateDeltas(sanitized, elementMatchers, textMatchers);
           } else if (isMultiLine) {
-            console.log('paste convert', this.container.innerHTML)
             // in multi-line mode, allow multiple paragraphs but don't run through the paste rules
             sanitized = sanitizeBlockHTML(this.container.innerHTML);
-            console.log('sanitized', sanitized)
             delta = generateDeltas(sanitized, elementMatchers, textMatchers);
-            console.log('deltas', delta)
           } else if (isMultiComponent) {
             // in multi-component mode, split up paragraphs and run them through the paste rules.
             // asynchronously trigger component creation if they match things
@@ -664,7 +657,6 @@
           // Remove trailing newline
           if (deltaEndsWith(delta, '\n') && delta.ops[delta.ops.length - 1].attributes == null) {
             delta = delta.compose(new Delta().retain(delta.length() - 1).delete(1));
-            console.log('delta w/o newline', delta)
           }
 
           this.container.innerHTML = '';
@@ -685,7 +677,6 @@
           data: isSingleLine || isMultiComponent ? sanitizeInlineHTML(el.innerHTML) : sanitizeBlockHTML(el.innerHTML)
         });
       } else {
-        console.log('init', this.data)
         el.innerHTML = this.data;
       }
 

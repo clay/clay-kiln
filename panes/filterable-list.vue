@@ -172,14 +172,15 @@
       // set height for filterable list when it mounts,
       // so filtering the list doesn't change the pane height
       // note: wait for the animation to finish
-      this.$nextTick(() => {
-        const computedStyles = getComputedStyle(self.$el);
+      setTimeout(() => {
+        const list = find(self.$el, '.filterable-list-readout'),
+          computedStyles = getComputedStyle(list);
 
-        self.$el.style.height = computedStyles.height;
+        list.style.height = computedStyles.height;
 
         // focus on the input if it wasn't focused before
         find(self.$el, '.filterable-list-input-field').focus();
-      });
+      }, 351); // 350ms animation
     },
     beforeDestroy() {
       // Clean up any Dragula event handlers
