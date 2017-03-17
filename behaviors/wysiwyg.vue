@@ -123,6 +123,7 @@
   import _ from 'lodash';
   import { find } from '@nymag/dom';
   import sanitize from 'sanitize-html';
+  import striptags from 'striptags';
   import store from '../lib/core-data/store';
   import { getComponentName, refAttr, editAttr } from '../lib/utils/references';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
@@ -131,8 +132,8 @@
 
   const Delta = Quill.import('delta'),
     Clipboard = Quill.import('modules/clipboard'),
-    allowedInlineTags = ['strong', 'em', 'a', 'br', 'strike'],
-    allowedBlockTags = allowedInlineTags.concat(['h1', 'h2', 'h3', 'h4', 'p', 'blockquote']),
+    allowedInlineTags = ['strong', 'em', 'a', 'br', 'strike', 'p'], // note: p gets parsed out in sanitizeInlineHTML
+    allowedBlockTags = allowedInlineTags.concat(['h1', 'h2', 'h3', 'h4', 'blockquote']),
     allowedAttributes = {
       a: ['href']
     },
@@ -183,17 +184,24 @@
 
   /**
    * sanitize inline html
+   * then convert <p> into <br />
    * note: removes any block-level tags
    * @param  {string} str
    * @return {string}
    */
   function sanitizeInlineHTML(str) {
-    return sanitize(unescape(str), {
+    const sanitized = sanitize(unescape(str), {
       allowedTags: allowedInlineTags,
       allowedAttributes,
       transformTags,
       parser
     });
+
+    return sanitized.split('</p>')
+      .filter((line) => line.trim().length > 0)
+      .map((line) => {
+        return line.replace('<p>', '');
+      }).join('<br />');
   };
 
   /**
@@ -432,15 +440,6 @@
   }
 
   /**
-   * determine if the last delta insert already contains two newlines
-   * @param  {object}  delta
-   * @return {Boolean}
-   */
-  function hasNewline(delta) {
-    return _.last(delta.ops) && _.includes(_.last(delta.ops).insert, '\n\n');
-  }
-
-  /**
    * traverse nodes, calling matchers
    * @param  {Node} node
    * @param  {array} elementMatchers
@@ -454,23 +453,21 @@
     } else if (node.nodeType === node.ELEMENT_NODE) {
       let children = node.childNodes || [];
 
-      return _.reduce(children, (delta, childNode, index) => {
-        let childDelta = traverse(childNode, elementMatchers, textMatchers);
+      return _.reduce(children, (delta, childNode) => {
+        let childDelta = traverse(childNode, elementMatchers, textMatchers),
+          childMatchers = childNode['__ql-matcher'] || [];
 
         // run element matchers for child node
         if (childNode.nodeType === childNode.ELEMENT_NODE) {
+          console.log('child is element!', childNode.tagName, childNode)
           childDelta = _.reduce(elementMatchers, (childDelta, matcher) => matcher(childNode, childDelta), childDelta);
+          console.log('child delta', childDelta)
+          childDelta = _.reduce(childMatchers, (childDelta, matcher) => matcher(childNode, childDelta), childDelta);
         }
-
-        // add newlines after paragraphs, unless we're the last paragraph (or there are already newlines)
-        if (childNode.tagName === 'P' && index !== children.length - 1 && !hasNewline(delta)) {
-          let newline = new Delta().insert('\n\n');
-
-          return delta.concat(childDelta).concat(newline);
-        } else {
-          return delta.concat(childDelta);
-        }
+        return delta.concat(childDelta);
       }, new Delta());
+    } else {
+      return new Delta();
     }
   }
 
@@ -487,6 +484,80 @@
 
     temp.innerHTML = html;
     return traverse(temp, elementMatchers, textMatchers);
+  }
+
+  /**
+   * determine if a delta ends with certain text
+   * note: pulled from quill/modules/clipboard
+   * @param  {object} delta
+   * @param  {string} text
+   * @return {boolean}
+   */
+  function deltaEndsWith(delta, text) {
+    let endText = '',
+      i = delta.ops.length - 1;
+
+    for (; i >= 0 && endText.length < text.length; --i) {
+      let op  = delta.ops[i];
+
+      if (typeof op.insert !== 'string') {
+        break;
+      } else {
+        endText = op.insert + endText;
+      }
+    }
+    return endText.slice(-1 * text.length) === text;
+  }
+
+  /**
+   * match line breaks
+   * @param  {Node} node
+   * @param  {object} delta
+   * @return {object}
+   */
+  function matchLineBreak(node, delta) {
+    if (node.tagName === 'BR' && !deltaEndsWith(delta, '\n')) {
+      delta.insert('\n');
+    }
+    return delta;
+  }
+
+  /**
+   * insert newline between paragraphs
+   * @param {Node} node
+   * @param {object} delta
+   * @returns {object}
+   */
+  function matchParagraphs(node, delta) {
+    if (node.tagName === 'P' && !deltaEndsWith(delta, '\n') && node.textContent.length > 0) {
+      delta.insert('\n');
+    }
+    return delta;
+  }
+
+  /**
+   * get the number of newlines before the caret,
+   * so we can accurately set the caret offset when clicking into multiline wysiwyg fields
+   * @param  {string} data
+   * @param  {number} offset
+   * @return {number}
+   */
+  function getNewlinesBeforeCaret(data, offset) {
+    const text = data.replace(/(<\/p><p>|<br \/>)/ig, '\u00B6'), // convert to ¶ so we have something to count
+      plainText = striptags(text);
+
+    let i = 0,
+      realOffset = offset;
+
+    // go through each character (up to the real offset),
+    // increasing the real offset every time we hit a paragraph
+    for (; i <= realOffset; i++) {
+      if (plainText[i] === '\u00B6') {
+        realOffset++; // also increase the temp offset, since paragraph breaks didn't count in the initial offset
+      }
+    }
+
+    return realOffset;
   }
 
   export default {
@@ -557,6 +628,8 @@
           let [elementMatchers, textMatchers] = this.prepareMatching(),
             sanitized, delta, components;
 
+          console.log('matchers', elementMatchers, textMatchers)
+
           if (_.isString(html)) {
             this.container.innerHTML = html;
           }
@@ -568,9 +641,12 @@
             // e.g. if there's no bold allowed, that'll be inserted as plain text
             delta = generateDeltas(sanitized, elementMatchers, textMatchers);
           } else if (isMultiLine) {
+            console.log('paste convert', this.container.innerHTML)
             // in multi-line mode, allow multiple paragraphs but don't run through the paste rules
             sanitized = sanitizeBlockHTML(this.container.innerHTML);
+            console.log('sanitized', sanitized)
             delta = generateDeltas(sanitized, elementMatchers, textMatchers);
+            console.log('deltas', delta)
           } else if (isMultiComponent) {
             // in multi-component mode, split up paragraphs and run them through the paste rules.
             // asynchronously trigger component creation if they match things
@@ -583,6 +659,12 @@
               elementMatchers,
               textMatchers
             });
+          }
+
+          // Remove trailing newline
+          if (deltaEndsWith(delta, '\n') && delta.ops[delta.ops.length - 1].attributes == null) {
+            delta = delta.compose(new Delta().retain(delta.length() - 1).delete(1));
+            console.log('delta w/o newline', delta)
           }
 
           this.container.innerHTML = '';
@@ -603,6 +685,7 @@
           data: isSingleLine || isMultiComponent ? sanitizeInlineHTML(el.innerHTML) : sanitizeBlockHTML(el.innerHTML)
         });
       } else {
+        console.log('init', this.data)
         el.innerHTML = this.data;
       }
 
@@ -711,6 +794,12 @@
         formats,
         modules: {
           toolbar: buttons,
+          clipboard: {
+            matchers: [
+              [Node.ELEMENT_NODE, matchLineBreak],
+              [Node.ELEMENT_NODE, matchParagraphs]
+            ]
+          },
           keyboard: {
             bindings: {
               enter: {
@@ -822,7 +911,8 @@
             // set caret at the end
             editor.setSelection(editor.getLength() - 1);
           } else {
-            editor.setSelection(offset);
+            // if the data of this form has paragraphs, quill is inserting newlines (which count towards the offset)
+            editor.setSelection(getNewlinesBeforeCaret(this.data, offset));
           }
         });
       }
