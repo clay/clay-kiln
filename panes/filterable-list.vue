@@ -13,7 +13,7 @@
     &-readout {
       overflow-y: scroll;
       overflow-x: hidden;
-      max-height: 600px;
+      max-height: calc(70vh - 100px); // max pane height minus header minus filter input
       padding: 0 18px 18px;
 
       &-list {
@@ -63,6 +63,7 @@
 
 <script>
   import _ from 'lodash';
+  import { find } from '@nymag/dom';
   import listItem from './filterable-list-item.vue';
   import listAdd from './filterable-list-add.vue';
   import dragula from 'dragula';
@@ -144,10 +145,24 @@
       }
     },
     mounted() {
+      const self = this;
+
       // Add dragula
       if (this.onReorder) {
         addDragula(this.$refs.list, this.onReorder);
       }
+
+      // set height for filterable list when it mounts,
+      // so filtering the list doesn't change the pane height
+      // note: wait for the animation to finish
+      this.$nextTick(() => {
+        const computedStyles = getComputedStyle(self.$el);
+
+        self.$el.style.height = computedStyles.height;
+
+        // focus on the input if it wasn't focused before
+        find(self.$el, '.filterable-list-input-field').focus();
+      });
     },
     beforeDestroy() {
       // Clean up any Dragula event handlers
