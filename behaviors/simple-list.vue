@@ -30,7 +30,7 @@
     display: flex;
     flex-flow: row wrap;
     flex-grow: 1;
-    margin: 10px 0;
+    margin: 0;
   }
 
   .simple-list-input {
@@ -51,7 +51,7 @@
     border: 0;
     display: inline-block;
     flex: 1 0 135px;
-    height: 48px;
+    height: 34px; // in line with button (change if we change the button height)
     min-width: 100px;
     outline: none;
     padding: 7px 11px 6px;
@@ -115,9 +115,11 @@
 
 <script>
   import _ from 'lodash';
+  import { find } from '@nymag/dom';
   import item from './simple-list-item.vue';
   import autocomplete from './autocomplete.vue';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
+  import { setCaret, isFirstField } from '../lib/forms/field-helpers';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
@@ -247,6 +249,13 @@
       },
       updateFocusIndex(val) {
         this.autocompleteIndex = val;
+      }
+    },
+    mounted() {
+      if (isFirstField(this.$el)) {
+        this.$nextTick(() => {
+          setCaret(find(this.$el, '.simple-list-add'), 0, this.data);
+        });
       }
     },
     components: {
