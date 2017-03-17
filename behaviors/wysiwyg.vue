@@ -754,7 +754,7 @@
        * @return {Promise}
        */
       function updatePastedComponents() {
-        const first = [firstComponentToUpdate] || [],
+        const first = firstComponentToUpdate ? [firstComponentToUpdate] : [],
           components = first.concat(otherComponentsToUpdate || []),
           shouldReplace = !_.isEmpty(firstComponentToUpdate); // should the current component be replaced?
 
