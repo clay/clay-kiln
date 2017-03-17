@@ -31,7 +31,7 @@
       <input
         type="text"
         class="filterable-list-input-field"
-        placeholder="Begin typing to filter list"
+        :placeholder="inputPlaceholder"
         ref="search"
         v-model="query"
         @keydown.down.stop="focusOnIndex(0)"
@@ -125,7 +125,7 @@
   }
 
   export default {
-    props: ['content', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'onAdd', 'addTitle'],
+    props: ['content', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'onAdd', 'addTitle', 'placeholder'],
     data() {
       return {
         query: '',
@@ -138,6 +138,9 @@
       },
       focusIsNull() {
         return _.isNull(this.focusIndex);
+      },
+      inputPlaceholder() {
+        return this.placeholder || 'Begin typing to filter list';
       }
     },
     mounted() {
