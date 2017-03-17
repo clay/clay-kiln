@@ -1,6 +1,7 @@
 <style lang="sass">
   @import '../styleguide/colors';
   @import '../styleguide/buttons';
+  @import '../styleguide/typography';
 
   .filterable-list-item {
     align-items: center;
@@ -23,8 +24,9 @@
     }
 
     &-btn {
+      @include primary-text();
+
       flex-grow: 1;
-      font-size: 14px;
       line-height: 1.4;
       padding: 15px 0;
       text-align: left;

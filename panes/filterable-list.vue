@@ -51,6 +51,10 @@
           :onDelete="onDelete"
           :onReorder="onReorder"
           :focusOnIndex="focusOnIndex"></list-item>
+        <list-add
+          v-if="onAdd"
+          :onClick="onAdd"
+          :title="addTitle"></list-add>
       </ul>
     </div>
   </div>
@@ -58,11 +62,10 @@
 
 
 <script>
-  import Vue from 'vue';
   import _ from 'lodash';
   import listItem from './filterable-list-item.vue';
+  import listAdd from './filterable-list-add.vue';
   import dragula from 'dragula';
-  import conditionalFocus from '../directives/conditional-focus';
 
   // Placeholder for Dragula instance
   var drag;
@@ -81,7 +84,7 @@
    * Add Dragula functionality
    *
    * @param {Element} el
-   * @param {Function} onReorder
+   * @param {Function} reorder
    */
   function addDragula(el, reorder) {
     var oldIndex;
@@ -94,7 +97,7 @@
       oldIndex = getIndex(selectedItem, container);
     });
 
-    drag.on('cancel', function (selectedItem, container) {
+    drag.on('cancel', function () {
       oldIndex = null;
     });
 
@@ -122,12 +125,12 @@
   }
 
   export default {
-    props: ['content', 'onClick', 'onSettings', 'onDelete', 'onReorder'],
+    props: ['content', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'onAdd', 'addTitle'],
     data() {
       return {
         query: '',
         focusIndex: null
-      }
+      };
     },
     computed: {
       matches() {
@@ -159,7 +162,8 @@
       }
     },
     components: {
-      'list-item': listItem
+      'list-item': listItem,
+      'list-add': listAdd
     }
   };
 </script>
