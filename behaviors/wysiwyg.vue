@@ -541,7 +541,7 @@
    * @return {number}
    */
   function getNewlinesBeforeCaret(data, offset) {
-    const text = data.replace(/(<\/p><p>|<br \/>)/ig, '\u00B6'), // convert to ¶ so we have something to count
+    const text = (data || '').replace(/(<\/p><p>|<br \/>)/ig, '\u00B6'), // convert to ¶ so we have something to count
       plainText = striptags(text);
 
     let i = 0,
