@@ -11,6 +11,7 @@ import toolbar from './lib/toolbar/edit-toolbar.vue';
 import { HIDE_STATUS } from './lib/toolbar/mutationTypes';
 import { init as initValidators } from './lib/validators';
 import conditionalFocus from './directives/conditional-focus';
+import utilsAPI from './lib/utils/api';
 
 // TODO: Figure out saving/closing and reverting in panes
 import { CLOSE_PANE } from './lib/panes/mutationTypes';
@@ -57,6 +58,11 @@ Vue.config.keyCodes.comma = 188;
 
 // register directives
 Vue.directive('conditional-focus', conditionalFocus());
+
+// export api for plugins, validators, behaviors
+window.kiln = window.kiln || {};
+// .plugins, .behaviors, .validators, and .panes objects should already exist
+window.kiln.utils = utilsAPI;
 
 // kick off loading when DOM is ready
 // note: preloaded data, external behaviors, decorators, and validation rules should already be added
