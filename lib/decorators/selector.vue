@@ -388,7 +388,7 @@
         });
       },
       removeComponent() {
-        return store.dispatch('removeComponent', this.$el);
+        return store.dispatch('unfocus').then(() => store.dispatch('removeComponent', this.$el));
       },
       prev() {
         return store.dispatch('navigateComponents', 'prev');
