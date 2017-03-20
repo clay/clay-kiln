@@ -81,6 +81,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // add external plugins
+  _.forOwn(window.kiln.plugins || {}, (plugin) => plugin(store));
+
   store.dispatch('preload')
     .then(() => decorateAll())
     .then(() => store.dispatch('openHashedForm'))
