@@ -77,6 +77,10 @@ $height: 48px;
     border-right: 1px solid $toolbar-view-border;
   }
 
+  .new {
+    border-right: 1px solid $toolbar-view-border;
+  }
+
   .button-flex-inner {
     align-items: center;
     display: flex;

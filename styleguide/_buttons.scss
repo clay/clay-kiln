@@ -95,20 +95,24 @@
     fill: $text;
   }
 
-  &:hover {
+  &:not(:disabled):hover {
     background-color: lighten($color, 2%);
     transition: background-color 150ms ease-out;
   }
 
-  &:active {
+  &:not(:disabled):active {
     background-color: lighten($color, 5%);
     transition: background-color 50ms ease-out;
   }
 
   &:disabled {
-    background-color: lighten($color, 25%);
-    color: $text;
+    color: darken($text, 25%);
+    cursor: default;
     transition: all 50ms ease-out;
+
+    svg {
+      fill: darken($text, 25%);
+    }
   }
 }
 
