@@ -127,8 +127,8 @@ document.addEventListener('DOMContentLoaded', function () {
   document.addEventListener('keydown', function (e) {
     const key = keycode(e);
 
-    // don't navigate if they have a form open
-    if (_.get(store, 'state.ui.currentFocus')) {
+    // don't navigate if they have a form or pane open
+    if (_.get(store, 'state.ui.currentFocus') || _.get(store, 'state.ui.currentPane')) {
       return;
     }
 
@@ -136,6 +136,12 @@ document.addEventListener('DOMContentLoaded', function () {
       store.dispatch('navigateComponents', 'prev');
     } else if (key === 'down') {
       store.dispatch('navigateComponents', 'next');
+    } else if (key === 'z' && e.metaKey && e.shiftKey) {
+      // redo
+      store.dispatch('redo');
+    } else if (key === 'z' && e.metaKey) {
+      // undo
+      store.dispatch('undo');
     }
   });
 });
