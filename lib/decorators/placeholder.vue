@@ -225,7 +225,7 @@
     },
     computed: {
       isPermanent() {
-        return !!getSchema(this.$options)[placeholderProp].permanent;
+        return !!_.get(getSchema(this.$options), `${placeholderProp}.permanent`);
       },
       isRequired() {
         return !!getSchema(this.$options)[placeholderProp].required;
