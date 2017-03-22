@@ -388,6 +388,7 @@
         });
       },
       removeComponent() {
+        store.dispatch('unselect');
         return store.dispatch('unfocus').then(() => store.dispatch('removeComponent', this.$el));
       },
       prev() {

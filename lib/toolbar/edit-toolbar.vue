@@ -76,7 +76,7 @@
         return !!hasAddButton;
       },
       undoEnabled: (state) => {
-        return state.undo.cursor > 0 && !state.ui.currentFocus && !state.ui.currentPane;
+        return !state.undo.atStart && !state.ui.currentFocus && !state.ui.currentPane;
       }
     }),
     components: {
