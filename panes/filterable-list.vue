@@ -60,6 +60,7 @@
           :index="index"
           :focused="focusIndex === index"
           :active="activeIndex === index"
+          :selected="selectedIndex === index"
           :key="item.id"
           :onClick="onClick"
           :onSettings="onSettings"
@@ -159,6 +160,9 @@
       },
       inputPlaceholder() {
         return this.placeholder || 'Begin typing to filter list';
+      },
+      selectedIndex() {
+        return _.findIndex(this.matches, (item) => item.selected);
       }
     },
     mounted() {

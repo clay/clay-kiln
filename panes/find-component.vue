@@ -1,10 +1,10 @@
 <template>
-  <filterable-list :content="components" :onClick="itemClick"></filterable-list>
+  <filterable-list :content="components" :onClick="itemClick" placeholder="Search all visible components"></filterable-list>
 </template>
 
 <script>
   import _ from 'lodash';
-  import dom from '@nymag/dom';
+  import { find } from '@nymag/dom';
   import { refAttr, getComponentName } from '../lib/utils/references';
   import { getVisibleList } from '../lib/utils/component-elements';
   import label from '../lib/utils/label';
@@ -13,31 +13,41 @@
   /**
    * Get the name of the component
    *
-   * @param  {[type]} el [description]
-   * @return {[type]}    [description]
+   * @param  {Element} el
+   * @param {Element} selected
+   * @return {object}
    */
-  function getName(el) {
-    var ref = el.getAttribute(refAttr);
+  function getName(el, selected) {
+    const uri = el.getAttribute(refAttr);
 
-    return {
-      id: ref,
-      title: label(getComponentName(ref))
+    let obj = {
+      id: uri,
+      title: label(getComponentName(uri))
     };
+
+    if (el === selected) {
+      obj.selected = true;
+    }
+
+    return obj;
   }
 
   export default {
     props: [],
     data() {
-      return {}
+      return {};
     },
     computed: {
       components() {
-        return _.map(getVisibleList(), getName);
+        const selected = _.get(this.$store, 'state.ui.currentSelection');
+
+        return _.map(getVisibleList(), (el) => getName(el, selected));
       }
     },
     methods: {
       itemClick(id) {
-        console.log('Select component with URI:', id);
+        this.$store.dispatch('select', find(`[${refAttr}="${id}"]`));
+        this.$store.dispatch('closePane');
       }
     },
     components: {

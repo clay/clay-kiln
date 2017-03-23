@@ -36,6 +36,12 @@
       text-align: left;
     }
 
+    &.selected &-btn {
+      // some lists allow for denoting a "selected" item
+      // e.g. spaces, component finder
+      font-weight: 700;
+    }
+
     &-delete {
       padding: 14px 17px;
     }
@@ -47,7 +53,7 @@
 </style>
 
 <template>
-  <li class="filterable-list-item" :data-item-id="item.id" :class="{ focused: focused, active: active }">
+  <li class="filterable-list-item" :data-item-id="item.id" :class="{ focused: focused, active: active, selected: selected }">
     <button type="button" v-if="onReorder">
       <icon name="drag-grip"></icon>
     </button>
@@ -75,7 +81,7 @@
   import icon from '../lib/utils/icon.vue';
 
   export default {
-    props: ['item', 'index', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'focused', 'active', 'focusOnIndex', 'setActive'],
+    props: ['item', 'index', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'focused', 'active', 'selected', 'focusOnIndex', 'setActive'],
     data() {
       return {};
     },
