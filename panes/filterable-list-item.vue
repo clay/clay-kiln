@@ -60,7 +60,7 @@
     <button
       type="button"
       class="filterable-list-item-btn"
-      @click.stop="onClick(item.id)"
+      @click.stop="handleClick(item.id)"
       v-conditional-focus="focused"
       @keydown.down.stop="focusOnIndex(index + 1)"
       @keydown.up.stop="focusOnIndex(index - 1)"
@@ -92,6 +92,11 @@
       onEnterUp() {
         this.setActive(this.index);
         this.onClick(this.item.id);
+      },
+      handleClick(id) {
+        if (this.onClick) {
+          return this.onClick(id);
+        }
       }
     },
     components: {

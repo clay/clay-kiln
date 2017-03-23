@@ -50,17 +50,68 @@
 </template>
 
 <script>
+  import _ from 'lodash';
   import { mapState } from 'vuex';
   import { find } from '@nymag/dom';
   import toggleEdit from '../utils/toggle-edit';
+  import { getSchema } from '../core-data/components';
   import { getParentComponent } from '../utils/component-elements';
-  import { refAttr, editAttr, selectorClass } from '../utils/references';
+  import { refAttr, layoutAttr, editAttr, selectorClass, componentListProp } from '../utils/references';
+  import label from '../utils/label';
   import progressBar from './progress.vue';
   import button from './toolbar-button.vue';
   import background from './background.vue';
   import overlay from '../forms/overlay.vue';
   import pane from '../panes/pane.vue';
   import status from './status.vue';
+
+  /**
+   * determine if a field in the schema has an invisible list
+   * @param  {object}  field
+   * @return {Boolean}
+   */
+  function isInvisibleList(field) {
+    return _.has(field, `${componentListProp}.invisible`);
+  }
+
+  /**
+   * find an element that matches a specific component's data-editable path
+   * @param  {string}  uri
+   * @param  {string}  path
+   * @return {Element|null}
+   */
+  function getListElement(uri, path) {
+    return find(`[${layoutAttr}="${uri}"] [${editAttr}="${path}"]`);
+  }
+
+  /**
+   * get tabs for invisible lists in the layout
+   * @param  {object} state
+   * @return {array}
+   */
+  function getInvisibleTabs(state) {
+    const layoutURI = _.get(state, 'page.data.layout'),
+      schema = getSchema(layoutURI);
+
+    return _.reduce(schema, (result, field, fieldName) => {
+      const listEl = getListElement(layoutURI, fieldName);
+
+      if (isInvisibleList(field) && !!listEl) {
+        result.push({
+          header: label(fieldName, field),
+          content: {
+            component: 'invisible-components',
+            args: {
+              uri: layoutURI,
+              path: fieldName,
+              listEl
+            }
+          }
+        });
+      }
+      return result;
+    }, []);
+  }
 
   export default {
     computed: mapState({
@@ -151,32 +202,47 @@
         this.$store.dispatch('undo');
       },
       toggleComponents(name, button) {
-        const options = {
+        let options = {
           name,
           title: 'Components',
-          // todo: add content / lists dynamically
           content: [{
             header: 'Find Component',
             content: {
               component: 'find-component'
             }
-          }, {
-            header: 'Head',
-            content: {
-              component: 'placeholder'
-            }
-          }, {
-            header: 'Head Layout',
-            content: {
-              component: 'placeholder'
-            }
-          }, {
-            header: 'Foot',
-            content: {
-              component: 'placeholder'
-            }
           }]
         };
+
+        // todo options.content.push(getHeadTabs())
+
+        options.content = options.content.concat(getInvisibleTabs(this.$store.state));
+
+        // const options = {
+        //   name,
+        //   title: 'Components',
+        //   // todo: add content / lists dynamically
+        //   content: [{
+        //     header: 'Find Component',
+        //     content: {
+        //       component: 'find-component'
+        //     }
+        //   }, {
+        //     header: 'Head',
+        //     content: {
+        //       component: 'placeholder'
+        //     }
+        //   }, {
+        //     header: 'Head Layout',
+        //     content: {
+        //       component: 'placeholder'
+        //     }
+        //   }, {
+        //     header: 'Foot',
+        //     content: {
+        //       component: 'placeholder'
+        //     }
+        //   }]
+        // };
 
         return this.$store.dispatch('togglePane', { options, button });
       },
