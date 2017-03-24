@@ -1,6 +1,6 @@
 {{#if @root.locals.user}}
   {{! if a user is logged in, we display either the view-mode or edit-mode toolbar, and associated scripts, styles, and templates }}
-  <div data-uri="{{ default _ref _self }}" class="clay-kiln">
+  <div data-uri="{{ default _ref _self }}" class="clay-kiln" data-ignore> {{! ignore diffing algorithm when list containing kiln updates}}
     {{#if @root.locals.edit}}
       {{! show edit mode styles and preload data}}
       <style>
