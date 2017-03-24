@@ -11,6 +11,7 @@ import toolbar from './lib/toolbar/edit-toolbar.vue';
 import { HIDE_STATUS } from './lib/toolbar/mutationTypes';
 import { init as initValidators } from './lib/validators';
 import conditionalFocus from './directives/conditional-focus';
+import hScrollDirective from './directives/horizontal-scroll';
 import utilsAPI from './lib/utils/api';
 
 // TODO: Figure out saving/closing and reverting in panes
@@ -58,6 +59,7 @@ Vue.config.keyCodes.comma = 188;
 
 // register directives
 Vue.directive('conditional-focus', conditionalFocus());
+Vue.directive('h-scroll', hScrollDirective());
 
 // export api for plugins, validators, behaviors
 window.kiln = window.kiln || {};

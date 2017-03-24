@@ -79,7 +79,6 @@
 <script>
   import _ from 'lodash';
   import icon from '../utils/icon.vue';
-  import hScrollDirective from '../../directives/horizontal-scroll';
 
   // TODO: FIGURE OUT THE BUG THAT WON'T INCLUDE THE `LEFT-CARET` ICON WITHOUT
   // PULLING IN THE SVG FOR THE RIGHT-CARET
@@ -109,17 +108,24 @@
     },
     created() {
       // Find the active index
-      var activeIndex = _.findIndex(this.content, (item) => item.active);
+      const activeIndex = _.findIndex(this.content, (item) => item.active);
+
       // Set active tab when opening
       this.activeTab = activeIndex < 0 ? 0 : activeIndex;
     },
     mounted() {
       var lastTabBtn = _.last(this.$refs.tabItems),
-        $elComputedStyles = getComputedStyle(this.$el);
+        $elComputedStyles = getComputedStyle(this.$el),
+        paneHeight = parseInt($elComputedStyles.height, 10),
+        minHeight = parseInt(document.documentElement.clientHeight * 0.3, 10); // 30vh is minimum pane height
 
       // set height for tabbed panes when they mount,
       // so clicking tabs doesn't change the pane height
-      this.$el.style.height = $elComputedStyles.height;
+      if (paneHeight < minHeight) {
+        this.$el.style.height = `${minHeight}px`;
+      } else {
+        this.$el.style.height = `${paneHeight}px`;
+      }
 
       // Use position of the last tab item to define the width of the container
       this.paneWidth = _.parseInt($elComputedStyles.width.replace('px', ''));

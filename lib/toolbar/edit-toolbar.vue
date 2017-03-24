@@ -31,11 +31,10 @@
       <status></status>
       <section class="kiln-toolbar edit-mode">
         <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" centered="false" @click="toggleMenu"></toolbar-button>
-        <toolbar-button class="new" icon-name="new-page" text="New Page" @click="toggleNewPage"></toolbar-button>
         <toolbar-button class="undo" :disabled="!undoEnabled" icon-name="undo" text="Undo" @click="undo"></toolbar-button>
         <div class="kiln-toolbar-inner">
           <toolbar-button class="view-button" name="close" icon-name="close-edit" @click="stopEditing"></toolbar-button>
-          <toolbar-button class="components" name="components" icon-name="search-page" text="Find" @click="toggleComponents"></toolbar-button>
+          <toolbar-button class="components" name="components" icon-name="search-page" text="Find on Page" @click="toggleComponents"></toolbar-button>
           <toolbar-button v-if="hasSelectedAddComponent" class="add-component-button" name="add-component" icon-name="add-icon" text="Add Component" @click="openAddComponentPane"></toolbar-button>
           <div class="flex-span flex-span-inner"></div>
           <toolbar-button class="preview" name="preview" icon-name="new-tab" text="Preview" @click="togglePreview"></toolbar-button>
@@ -151,7 +150,7 @@
           title: 'Clay Menu',
           size: 'medium',
           content: [{
-            header: 'My Pages',
+            header: 'All Pages',
             content: {
               component: 'page-list',
               args: {
@@ -159,41 +158,11 @@
               }
             }
           }, {
-            header: 'All Pages',
-            content: {
-              component: 'placeholder',
-              args: {
-                number: 2
-              }
-            }
-          }, {
-            header: 'Searches',
-            content: {
-              component: 'placeholder',
-              args: {
-                number: 3
-              }
-            }
-          }, {
             header: 'New Page',
             content: {
-              component: 'placeholder',
-              args: {
-                number: 4
-              }
+              component: 'new-page'
             }
           }]
-        };
-
-        return this.$store.dispatch('togglePane', { options, button });
-      },
-      toggleNewPage(name, button) {
-        const options = {
-          name,
-          title: 'New Page',
-          content: {
-            component: 'new-page'
-          }
         };
 
         return this.$store.dispatch('togglePane', { options, button });
