@@ -1,5 +1,5 @@
 <template>
-  <filterable-list :content="list" :placeholder="placeholder" :onSettings="openSettings" :onDelete="removeComponent" :onReorder="reorderComponents"></filterable-list>
+  <filterable-list :content="list" :placeholder="placeholder" :onSettings="openSettings" :onDelete="removeComponent" :onReorder="reorderComponents" :addTitle="addTitle" :onAdd="openAddComponents"></filterable-list>
 </template>
 
 <script>
@@ -41,6 +41,9 @@
       },
       placeholder() {
         return `Search ${this.label} components`;
+      },
+      addTitle() {
+        return `Add component to ${this.label}`;
       }
     },
     methods: {
@@ -61,6 +64,9 @@
         componentList.splice(oldIndex, 1); // remove at the old index
         componentList.splice(index, 0, { [refProp]: id }); // add at the new index
         this.$store.dispatch('saveComponent', { uri: this.args.uri, data: { [this.args.path]: componentList }});
+      },
+      openAddComponents() {
+        this.$store.dispatch('openAddComponents', { parentURI: this.args.uri, path: this.args.path });
       }
     },
     components: {
