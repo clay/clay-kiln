@@ -178,12 +178,13 @@
       // note: wait for the animation to finish
       setTimeout(() => {
         const list = find(self.$el, '.filterable-list-readout'),
-          computedStyles = getComputedStyle(list);
+          computedStyles = getComputedStyle(list),
+          input = find(self.$el, '.filterable-list-input-field');
 
         list.style.height = computedStyles.height;
 
         // focus on the input if it wasn't focused before
-        find(self.$el, '.filterable-list-input-field').focus();
+        input && input.focus();
       }, 351); // 350ms animation
     },
     beforeDestroy() {
