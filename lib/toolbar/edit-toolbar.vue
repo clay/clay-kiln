@@ -57,12 +57,36 @@
   import { getParentComponent } from '../utils/component-elements';
   import { refAttr, layoutAttr, editAttr, selectorClass, componentListProp } from '../utils/references';
   import label from '../utils/label';
+  import { getListsInHead } from '../utils/head-components';
   import progressBar from './progress.vue';
   import button from './toolbar-button.vue';
   import background from './background.vue';
   import overlay from '../forms/overlay.vue';
   import pane from '../panes/pane.vue';
   import status from './status.vue';
+
+  /**
+   * get tabs for head component lists in the page and layout
+   * @param  {object} state
+   * @return {array}
+   */
+  function getHeadTabs(state) {
+    const layoutURI = _.get(state, 'page.data.layout'),
+      schema = getSchema(layoutURI),
+      lists = getListsInHead();
+
+    return _.reduce(lists, (result, list) => result.concat({
+      header: label(list.path, schema[list.path]),
+      content: {
+        component: 'head-components',
+        args: {
+          uri: layoutURI,
+          path: list.path,
+          isPage: _.get(schema, `${list.path}.${componentListProp}.page`) || false
+        }
+      }
+    }), []);
+  }
 
   /**
    * determine if a field in the schema has an invisible list
@@ -182,36 +206,10 @@
           }]
         };
 
-        // todo options.content.push(getHeadTabs())
-
+        // add head components (from page and layout)
+        options.content = options.content.concat(getHeadTabs(this.$store.state));
+        // add invisible components (from layout)
         options.content = options.content.concat(getInvisibleTabs(this.$store.state));
-
-        // const options = {
-        //   name,
-        //   title: 'Components',
-        //   // todo: add content / lists dynamically
-        //   content: [{
-        //     header: 'Find Component',
-        //     content: {
-        //       component: 'find-component'
-        //     }
-        //   }, {
-        //     header: 'Head',
-        //     content: {
-        //       component: 'placeholder'
-        //     }
-        //   }, {
-        //     header: 'Head Layout',
-        //     content: {
-        //       component: 'placeholder'
-        //     }
-        //   }, {
-        //     header: 'Foot',
-        //     content: {
-        //       component: 'placeholder'
-        //     }
-        //   }]
-        // };
 
         return this.$store.dispatch('togglePane', { options, button });
       },
