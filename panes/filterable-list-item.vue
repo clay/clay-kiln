@@ -19,7 +19,6 @@
     button {
       appearance: none;
       background: transparent;
-      border: none;
       cursor: pointer;
 
       &:focus {
@@ -30,6 +29,7 @@
     &-btn {
       @include primary-text();
 
+      border: none;
       flex-grow: 1;
       line-height: 1.4;
       padding: 15px 0;
@@ -42,19 +42,28 @@
       font-weight: 700;
     }
 
-    &-delete {
-      padding: 14px 17px;
+    &-drag {
+      border: none;
+      padding: 14px 17px 14px 0;
     }
 
     &-settings {
+      border: none;
+      border-left: 1px solid $pane-list-divider;
       padding: 14px 15px;
+    }
+
+    &-delete {
+      border: none;
+      border-left: 1px solid $pane-list-divider;
+      padding: 14px 4px 14px 17px;
     }
   }
 </style>
 
 <template>
   <li class="filterable-list-item" :data-item-id="item.id" :class="{ focused: focused, active: active, selected: selected }">
-    <button type="button" v-if="onReorder">
+    <button v-if="onReorder" type="button" class="filterable-list-item-drag" title="Drag to Reorder">
       <icon name="drag-grip"></icon>
     </button>
     <button
@@ -68,10 +77,10 @@
       @keyup.enter.stop="onEnterUp">
       {{ item.title }}
     </button>
-    <button v-if="onSettings" type="button" class="filterable-list-item-settings" @click.stop="onSettings(item.id)">
+    <button v-if="onSettings" type="button" class="filterable-list-item-settings" title="Open Settings" @click.stop="onSettings(item.id)">
       <icon name="settings"></icon>
     </button>
-    <button v-if="onDelete" type="button" class="filterable-list-item-delete" @click.stop="onDelete(item.id)">
+    <button v-if="onDelete" type="button" class="filterable-list-item-delete" title="Remove from List" @click.stop="onDelete(item.id)">
       <icon name="delete"></icon>
     </button>
   </li>
