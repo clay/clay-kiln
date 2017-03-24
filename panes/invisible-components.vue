@@ -5,7 +5,7 @@
 <script>
   import _ from 'lodash';
   import { find } from '@nymag/dom';
-  import { getData, getSchema } from '../lib/core-data/components';
+  import { getSchema } from '../lib/core-data/components';
   import { getComponentName, refProp, refAttr } from '../lib/utils/references';
   import label from '../lib/utils/label';
   import filterableList from './filterable-list.vue';
@@ -28,13 +28,11 @@
   export default {
     props: ['args'],
     data() {
-      return {
-        list: getData(this.args.uri, this.args.path)
-      };
+      return {};
     },
     computed: {
       components() {
-        return _.map(this.list, formatComponents);
+        return _.map(_.get(this.$store, `state.components['${this.args.uri}'].${this.args.path}`), formatComponents);
       },
       label() {
         return label(this.args.path, getSchema(this.args.uri, this.args.path));
@@ -51,13 +49,9 @@
         this.$store.dispatch('focus', { uri: id, path });
       },
       removeComponent(id) {
-        const componentEl = find(`[${refAttr}="${id}"]`),
-          list = this.list;
+        const componentEl = find(`[${refAttr}="${id}"]`);
 
-        console.log(componentEl)
-        this.$store.dispatch('removeComponent', componentEl).then(() => {
-          _.remove(list, (item) => item.id === id);
-        });
+        this.$store.dispatch('removeComponent', componentEl);
       }
     },
     components: {
