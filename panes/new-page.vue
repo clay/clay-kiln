@@ -4,7 +4,7 @@
 </style>
 
 <template>
-  <filterable-list :content="pages" :onClick="itemClick"></filterable-list>
+  <filterable-list :content="pages" :onClick="itemClick" placeholder="Search Page Templates" addTitle="Add Current Page to Templates" :onAdd="addCurrentPage"></filterable-list>
 </template>
 
 
@@ -26,6 +26,9 @@
     methods: {
       itemClick(id) {
         this.$store.dispatch('createPage', id).then((url) => window.location.href = url);
+      },
+      addCurrentPage() {
+        console.log('todo: add page form')
       }
     },
     components: {

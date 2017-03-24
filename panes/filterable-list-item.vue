@@ -49,7 +49,6 @@
 
     &-settings {
       border: none;
-      border-left: 1px solid $pane-list-divider;
       padding: 14px 15px;
     }
 
