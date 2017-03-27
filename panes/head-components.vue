@@ -4,9 +4,9 @@
 
 <script>
   import _ from 'lodash';
-  import { find } from '@nymag/dom';
+  import { getComponentNode } from '../lib/utils/head-components';
   import { getSchema } from '../lib/core-data/components';
-  import { getComponentName, refProp, refAttr } from '../lib/utils/references';
+  import { getComponentName, refProp } from '../lib/utils/references';
   import label from '../lib/utils/label';
   import filterableList from './filterable-list.vue';
 
@@ -59,10 +59,9 @@
         this.$store.dispatch('focus', { uri: id, path });
       },
       removeComponent(id) {
-        console.log(`remove ${id}`)
-        // const componentEl = find(`[${refAttr}="${id}"]`);
+        const componentNode = getComponentNode(id);
 
-        // this.$store.dispatch('removeComponent', componentEl);
+        this.$store.dispatch('removeHeadComponent', componentNode);
       },
       reorderComponents(id, index, oldIndex) {
         let componentList;
@@ -80,8 +79,9 @@
         }
       },
       openAddComponents() {
-        // todo: do we support adding components to page in openAddComponents?
-        // this.$store.dispatch('openAddComponents', { parentURI: this.args.uri, path: this.args.path });
+        const layoutURI = _.get(this.$store, 'state.page.data.layout');
+
+        this.$store.dispatch('openAddComponents', { parentURI: layoutURI, path: this.args.path });
       }
     },
     components: {
