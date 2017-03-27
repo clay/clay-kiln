@@ -248,7 +248,7 @@
             }, {
               header: 'Location',
               content: {
-                component: 'placeholder'
+                component: 'page-location'
               }
             }]
           };

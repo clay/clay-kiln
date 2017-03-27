@@ -79,6 +79,7 @@
     "quill": "^1.2.0",
     "quill-delta": "^3.4.3",
     "raw-loader": "^0.5.1",
+    "routable": "0.0.5",
     "sanitize-html": "^1.14.1",
     "sass-loader": "^4.1.1",
     "set-dom": "^7.2.0",
