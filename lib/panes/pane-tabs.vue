@@ -56,7 +56,7 @@
       <div class="pane-tabs-titles-scroll" @scroll="tabScroll" ref="scrollContainer" v-h-scroll="scrollPos">
         <ul class="pane-tabs-titles-list" ref="tabItemContainer" v-bind:style="{ width: `${tabContainerWidth}px` }">
           <li v-for="(tab, index) in tabs" ref="tabItems" >
-            <button type="button" class="pane-tabs-titles-list-trigger" :class="{ 'active' : isActive(index), 'disabled': tab.disabled }" @click.stop="selectTab(index)">
+            <button type="button" class="pane-tabs-titles-list-trigger" :class="{ 'active' : isActive(index), 'disabled': tab.disabled }" @click.stop="selectTab(index, tab.disabled)">
               <span v-if="tab.isString" v-html="tab.header" class="pane-tab-title"></span>
               <component v-else :is="tab.component"></component>
             </button>

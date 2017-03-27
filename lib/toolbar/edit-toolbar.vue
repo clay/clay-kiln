@@ -233,7 +233,7 @@
             title: 'Page Status',
             content: [{
               header: 'Publish',
-              // disabled: results.errors.length > 0, // todo: disable the publish tab if validation fails
+              disabled: results.errors.length > 0, // disable the publish tab if validation fails
               content: {
                 component: 'edit-publish'
               }
@@ -244,11 +244,6 @@
               active: results.errors.length > 0,
               content: {
                 component: 'page-health'
-              }
-            }, {
-              header: 'History',
-              content: {
-                component: 'placeholder'
               }
             }, {
               header: 'Location',
