@@ -31,7 +31,7 @@
 
 <template>
   <form class="custom-url-form" @submit.prevent="saveLocation">
-    <label for="custom-url" class="custom-url-message">Designate a custom URL for this page. This should only be used for special cases.</p>
+    <label for="custom-url" class="custom-url-message">Designate a custom URL for this page. This should only be used for special cases.</label>
     <input id="custom-url" class="custom-url-input" type="text" v-model="location" placeholder="/special-page.html" @input="onInput" />
     <button type="submit" class="custom-url-submit">Save Location</button>
   </form>
