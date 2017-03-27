@@ -65,12 +65,19 @@
         // this.$store.dispatch('removeComponent', componentEl);
       },
       reorderComponents(id, index, oldIndex) {
-        console.log(`move ${id} from ${oldIndex} to ${index}`)
-        // let componentList = _.reduce(_.get(this.$store, `state.components['${this.args.uri}'].${this.args.path}`), (list, val) => list.concat({ [refProp]: val[refProp] }), []);
-        //
-        // componentList.splice(oldIndex, 1); // remove at the old index
-        // componentList.splice(index, 0, { [refProp]: id }); // add at the new index
-        // this.$store.dispatch('saveComponent', { uri: this.args.uri, data: { [this.args.path]: componentList }});
+        let componentList;
+
+        if (this.args.isPage) {
+          componentList = _.reduce(_.get(this.$store, `state.page.data['${this.args.path}']`), (list, val) => list.concat(val), []);
+          componentList.splice(oldIndex, 1); // remove at the old index
+          componentList.splice(index, 0, id); // add at the new index
+          this.$store.dispatch('savePage', { [this.args.path]: componentList });
+        } else {
+          componentList = _.reduce(_.get(this.$store, `state.components['${this.args.uri}'].${this.args.path}`), (list, val) => list.concat({ [refProp]: val[refProp] }), []);
+          componentList.splice(oldIndex, 1); // remove at the old index
+          componentList.splice(index, 0, { [refProp]: id }); // add at the new index
+          this.$store.dispatch('saveComponent', { uri: this.args.uri, data: { [this.args.path]: componentList }});
+        }
       },
       openAddComponents() {
         // todo: do we support adding components to page in openAddComponents?
