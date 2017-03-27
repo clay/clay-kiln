@@ -182,9 +182,17 @@
     return str.replace(/&lt;(.*?)&gt;/ig, '<$1>');
   }
 
+  function trimLinebreaks(str) {
+    let trimmed = str.replace(/^(<br \/><br \/>|<br \/>)/i, '');
+
+    trimmed = trimmed.replace(/(<br \/><br \/>|<br \/>)$/i, '');
+    return trimmed;
+  }
+
   /**
    * sanitize inline html
    * then convert <p> into <br />
+   * then trim opening and closing line breaks
    * note: removes any block-level tags
    * @param  {string} str
    * @return {string}
@@ -197,11 +205,11 @@
       parser
     });
 
-    return sanitized.split('</p>')
+    return trimLinebreaks(sanitized.split('</p>')
       .filter((line) => line.trim().length > 0)
       .map((line) => {
         return line.replace('<p>', '');
-      }).join('<br />');
+      }).join('<br />'));
   };
 
   /**
@@ -211,12 +219,12 @@
    * @return {string}
    */
   function sanitizeBlockHTML(str) {
-    return sanitize(unescape(str), {
+    return trimLinebreaks(sanitize(unescape(str), {
       allowedTags: allowedBlockTags,
       allowedAttributes,
       transformTags,
       parser
-    });
+    }));
   };
 
     /**
