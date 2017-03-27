@@ -82,9 +82,9 @@
 
         store.dispatch('savePage', { customUrl: url }).then(() => {
           if (url) {
-            store.dispatch('showStatus', 'Saved custom page url');
+            store.dispatch('showStatus', { type: 'save', message: 'Saved custom page url' });
           } else {
-            store.dispatch('showStatus', 'Removed custom page url');
+            store.dispatch('showStatus', { type: 'save', message: 'Removed custom page url' });
           }
         });
       },
