@@ -84,8 +84,8 @@
       'date',
       'time'
     ],
-    firefoxDateFormat = 'YYYY-MM-DD hh:mm A',
-    defaultDateFormat = 'YYYY-MM-DDThh:mm';
+    firefoxDateFormat = 'YYYY-MM-DD HH:mm A',
+    defaultDateFormat = 'YYYY-MM-DDTHH:mm';
 
     /**
    * create a new date string in a given format. If no
