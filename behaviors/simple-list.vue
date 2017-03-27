@@ -88,7 +88,7 @@
             placeholder="Start Typing Here..."
             v-model="inputVal"
             @input="onChange"
-            @keydown.enter="addItem"
+            @keydown.enter.prevent="addItem"
             @keydown.tab="addItem"
             @keydown.comma="addItem"
             @keydown.delete="focusLastItem"
@@ -168,32 +168,29 @@
         }
       },
       // Add an item to the array
-      addItem(e) {
+      addItem() {
         if (this.inputVal) {
-          // Prevent submitting the form by preventing default
-          e.preventDefault();
-
           // If we have autocomplete and we've selected something
           // inside of the autocomplete dropdown...
           if (_.get(this.args, 'autocomplete', '') && _.isNumber(this.autocompleteIndex)) {
             this.inputVal = _.get(this.autocompleteOptions, this.autocompleteIndex, '');
             this.displayAutocomplete = false;
-          } else {
-            // Add item in
-            this.items.push({
-              text: this.inputVal
-            });
-
-            // Save data
-            this.updateFormData();
-
-            // Zero out values
-            this.inputVal = '';
-            this.focusIndex = null;
           }
 
-          this.autocompleteIndex = null;
+          // Add item in
+          this.items.push({
+            text: this.inputVal
+          });
+
+          // Save data
+          this.updateFormData();
+
+          // Zero out values
+          this.inputVal = '';
+          this.focusIndex = null;
         }
+
+        this.autocompleteIndex = null;
       },
       // Focus on the first item in the list
       focusFirstItem() {
@@ -237,8 +234,7 @@
       },
       autocompleteSelect(value) {
         this.inputVal = value;
-        this.displayAutocomplete = false;
-        this.focusIndex = null;
+        this.addItem();
       },
       autocompleteFocus(dir) {
         if (_.isNumber(this.autocompleteIndex)) {
