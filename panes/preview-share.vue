@@ -1,6 +1,7 @@
 <style lang="sass">
   @import '../styleguide/colors';
   @import '../styleguide/inputs';
+  @import '../styleguide/buttons';
 
   .preview {
     padding: 17px;
@@ -11,25 +12,33 @@
       list-style: none;
 
       &-item {
-        border-bottom: 1px solid $button-disabled;
+        border-bottom: 1px solid $pane-list-divider;
       }
 
-      // TODO: Colors & basically re-structure
       .preview-link {
+        @include primary-text();
+
         align-items: center;
-        justify-content: space-between;
-        color: $selector-border;
         cursor: pointer;
         display: flex;
-        padding: 10px 0;
-        text-decoration: none;
+        flex-grow: 1;
+        justify-content: space-between;
+        line-height: 1.4;
+        padding: 15px 0;
+        text-align: left;
 
         &-size {
+          height: 23px;
           margin-right: 10px;
 
-          & svg {
-            width: 30px;
+          svg {
+            fill: $text;
             height: 23px;
+            width: 30px;
+
+            path {
+              fill: $text;
+            }
           }
         }
 
@@ -37,32 +46,75 @@
           flex-grow: 1;
         }
 
-        svg path {
-          fill: $preview-icon;
+        &-icon {
+          svg {
+            fill: $text;
+
+            path {
+              fill: $text;
+            }
+          }
         }
       }
     }
 
-    // TODO: We need to figure out input +
-    // buttons in the styleguide.
-    .input-group {
-      input {
+    .preview-share {
+      padding: 15px 0 30px; // extra space at the bottom for copy success/error message
+
+      .input-group-input {
+        display: flex;
+        margin-top: 5px;
+      }
+
+      .share-input {
         @include input();
 
+        flex: 1 1 auto;
         margin: 0;
       }
 
-      button {
-        appearance: none;
-        background: none;
-        border: 1px solid $button-disabled;
-        border-left: 0;
-        height: 41px;
-      }
+      .share-copy {
+        @include button-outlined($input-border, $input-background);
 
-      & span {
-        align-items: center;
-        display: flex;
+        border-left: none;
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+        flex: 0 0 auto;
+        height: 48px;
+        margin: 0;
+        position: relative;
+
+        &:before,
+        &:after {
+          @include secondary-text();
+
+          opacity: 0;
+          position: absolute;
+          right: 0;
+          top: calc(100% + 8px);
+          transition: opacity 300ms ease-out;
+          white-space: nowrap;
+        }
+
+        // :before is the success message, :after is the error
+        // this allows us to fade them in (setting the content with the class messes up the animation)
+        &:before {
+          color: $save;
+          content: 'Copied to clipboard!';
+        }
+
+        &:after {
+          color: $error;
+          content: 'Cannot copy link';
+        }
+
+        &.success:before {
+          opacity: 1;
+        }
+
+        &.error:after {
+          opacity: 1;
+        }
       }
     }
   }
@@ -156,5 +208,5 @@
         }
       }
     }
-  }
+  };
 </script>
