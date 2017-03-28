@@ -248,9 +248,11 @@
       }
     },
     mounted() {
+      const self = this;
+
       if (isFirstField(this.$el)) {
         this.$nextTick(() => {
-          setCaret(find(this.$el, '.simple-list-add'), 0, this.data);
+          setCaret(find(self.$el, '.simple-list-add'), 0, self.data);
         });
       }
     },
