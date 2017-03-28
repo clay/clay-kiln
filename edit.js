@@ -116,6 +116,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // when ESC bubbles up to the document, close the current form or pane / unselect components
+  document.body.addEventListener('keydown', (e) => {
+    const key = keycode(e);
+
+    if (key === 'esc') {
+      if (_.get(store, 'state.ui.currentSelection')) {
+        store.dispatch('unselect');
+      }
+
+      if (_.get(store, 'state.ui.currentFocus')) {
+        store.dispatch('unfocus').catch(_.noop);
+      }
+
+      if (_.get(store, 'state.ui.currentPane')) {
+        store.commit(CLOSE_PANE, null);
+      }
+    }
+  });
+
   window.addEventListener('online', function () {
     store.commit(HIDE_STATUS); // in case there are any status messages open, close them
   });
