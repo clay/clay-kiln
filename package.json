@@ -81,7 +81,7 @@
     "promise-timeout": "^1.0.0",
     "rivets": "^0.9.6",
     "routable": "0.0.5",
-    "sass-loader": "^4.1.1",
+    "sass-loader": "^5.0.1",
     "selection-range": "^1.0.1",
     "sinon": "^1.17.7",
     "sinon-chai": "^2.8.0",
