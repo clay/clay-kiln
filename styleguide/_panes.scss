@@ -3,7 +3,6 @@
 
 $pane-margin: 30vh;
 $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
-$toolbar-height: 48px;
 
 @mixin pane {
   @include primary-text();
@@ -108,7 +107,7 @@ $toolbar-height: 48px;
 }
 
 @mixin pane-tab-content {
-  height: 100%;
+  height: calc(100% - 50px); // account for tab height
   overflow-x: visible;
   overflow-y: scroll;
 }
