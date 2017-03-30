@@ -32,6 +32,7 @@
       <section class="kiln-toolbar edit-mode">
         <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" centered="false" @click="toggleMenu"></toolbar-button>
         <toolbar-button class="undo" :disabled="!undoEnabled" icon-name="undo" text="Undo" @click="undo"></toolbar-button>
+        <toolbar-button class="redo" :disabled="!redoEnabled" icon-name="redo" text="Redo" @click="redo"></toolbar-button>
         <div class="kiln-toolbar-inner">
           <toolbar-button class="view-button" name="close" icon-name="close-edit" @click="stopEditing"></toolbar-button>
           <toolbar-button class="components" name="components" icon-name="search-page" text="Find on Page" @click="toggleComponents"></toolbar-button>
@@ -151,6 +152,9 @@
       },
       undoEnabled: (state) => {
         return !state.undo.atStart && !state.ui.currentFocus && !state.ui.currentPane;
+      },
+      redoEnabled: (state) => {
+        return !state.undo.atEnd && !state.ui.currentFocus && !state.ui.currentPane;
       }
     }),
     components: {
@@ -193,6 +197,9 @@
       },
       undo() {
         this.$store.dispatch('undo');
+      },
+      redo() {
+        this.$store.dispatch('redo');
       },
       toggleComponents(name, button) {
         let options = {
