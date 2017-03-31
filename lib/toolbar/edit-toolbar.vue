@@ -31,12 +31,12 @@
       <status></status>
       <section class="kiln-toolbar edit-mode">
         <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" centered="false" @click="toggleMenu"></toolbar-button>
-        <toolbar-button class="undo" :disabled="!undoEnabled" icon-name="undo" text="Undo" @click="undo"></toolbar-button>
-        <toolbar-button class="redo" :disabled="!redoEnabled" icon-name="redo" text="Redo" @click="redo"></toolbar-button>
         <div class="kiln-toolbar-inner">
           <toolbar-button class="view-button" name="close" icon-name="close-edit" @click="stopEditing"></toolbar-button>
           <toolbar-button class="components" name="components" icon-name="search-page" text="Find on Page" @click="toggleComponents"></toolbar-button>
-          <toolbar-button v-if="hasSelectedAddComponent" class="add-component-button" name="add-component" icon-name="add-icon" text="Add Component" @click="openAddComponentPane"></toolbar-button>
+          <toolbar-button class="undo" :disabled="!undoEnabled" icon-name="undo" text="Undo" @click="undo"></toolbar-button>
+          <toolbar-button class="redo" :disabled="!redoEnabled" icon-name="redo" text="Redo" @click="redo"></toolbar-button>
+          <toolbar-button class="add-component-button" :disabled="!hasSelectedAddComponent" name="add-component" icon-name="add-icon" text="Add Component" @click="openAddComponentPane"></toolbar-button>
           <div class="flex-span flex-span-inner"></div>
           <toolbar-button class="preview" name="preview" icon-name="new-tab" text="Preview" @click="togglePreview"></toolbar-button>
         </div>
