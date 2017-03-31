@@ -634,7 +634,6 @@
           let [elementMatchers, textMatchers] = this.prepareMatching(),
             sanitized, delta, components;
 
-
           if (_.isString(html)) {
             this.container.innerHTML = html;
           }
