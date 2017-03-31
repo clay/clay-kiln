@@ -653,7 +653,9 @@
             // asynchronously trigger component creation if they match things
             // note: this may also replace the current paragraph if the entirety of the paragraph
             // is something that matches another component
-            components = matchComponents(splitParagraphs(sanitizeBlockHTML(this.container.innerHTML)), rules);
+            if (rules && rules.length) {
+              components = matchComponents(splitParagraphs(sanitizeBlockHTML(this.container.innerHTML)), rules);
+            }
             delta = handleMultiParagraphPaste(components, {
               quill: this.quill,
               current,
