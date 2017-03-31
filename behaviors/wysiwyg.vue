@@ -891,6 +891,21 @@
               rightArrow: {
                 key: 'right',
                 handler: navigateNext
+              },
+              link: {
+                key: 'k',
+                shortKey: true,
+                handler(range, context) {
+                  if (!context.collapsed && context.format.link) {
+                    // we have a link highlighted, remove the link
+                    this.quill.format('link', false);
+                  } else if (!context.collapsed && !context.format.link) {
+                    // we have regular text highlighted, make it a link!
+                    let value = prompt('Enter link URL:'); // todo: how does quill init its fancy prompt?
+
+                    this.quill.format('link', value);
+                  }
+                }
               }
             }
           }
