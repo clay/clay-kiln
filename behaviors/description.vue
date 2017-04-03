@@ -13,11 +13,11 @@
   @import '../styleguide/typography';
 
   .label-description {
-    @include primary-text();
+    @include secondary-text();
 
     clear: left;
     cursor: default;
-    margin: 0 0 5px;
+    margin: 5px 0 10px;
     text-align: left;
   }
 

@@ -19,9 +19,6 @@
 
   .segmented-button-group {
     @include clearfix();
-
-    clear: both;
-    // margin: 5px 0 10px;
   }
 
   .segmented-button-group .group {
@@ -41,7 +38,7 @@
     float: left;
     font-family: $semibold-stack;
     text-align: left;
-    margin-bottom: 5px;
+    margin: 5px 0 10px;
     width: 100%;
   }
 </style>
