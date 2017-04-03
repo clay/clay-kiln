@@ -111,6 +111,13 @@
         });
       }
     }),
+    watch: {
+      hasCurrentModalForm(val) {
+        if (!val) {
+          this.activeTab = 0; // reset active tab when form closes
+        }
+      }
+    },
     methods: {
       save() {
         this.$store.dispatch('unfocus');

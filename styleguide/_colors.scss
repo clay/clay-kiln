@@ -17,15 +17,22 @@ $toolbar-edit-border: #b7b9ba;
 // toolbar icons
 $toolbar-icons: #f9f9f9;
 
+// typography
+$title: #5b5b5b; // used for pane, selector, etc titles
+$subtitle: #3c3c3c; // used for pane tabs, subtitles
+$label: #3c3c3c; // used for field labels
+$text: #222222; // used for field descriptions, pane items, general text
+$subtext: #999999; // used for secondary text
+
 // selector borders
 $selector-border: #727272;
-$selector-icon: $selector-border;
-$selector-text: $selector-border;
+$selector-icon: $title;
+$selector-text: $title;
 $selector-bg: rgba(255, 255, 255, .95); // background of selector menus
 $selector-overlay: rgba(255, 255, 255, .4); // fade other components
 
 // placeholder colors
-$placeholder-label: $selector-icon;
+$placeholder-label: $title;
 $placeholder-label-border: #abdaee;
 $permanent-placeholder-label: #a6a6a6;
 $permanent-placeholder-label-border: #ccc;
@@ -33,13 +40,6 @@ $placeholder-border: $save;
 $placeholder-background: #eff8fc;
 $permanent-placeholder-border: $selector-border;
 $permanent-placeholder-background: #f5f5f5;
-
-// typography
-$title: $selector-border; // used for pane titles
-$subtitle: $toolbar-view; // used for pane tabs
-$label: $toolbar-view; // used for field labels
-$text: $toolbar-view; // used for field descriptions, pane items, general text
-$subtext: #c3c3c3; // used for secondary text
 
 // inputs
 $input-border: $subtext;
@@ -59,7 +59,7 @@ $button-disabled: #c3c3c3;
 $button-disabled-light: #e7e7e7;
 
 // panes
-$pane-icon: $selector-border;
+$pane-icon: $title;
 $pane-header-border: $input-border;
 $pane-border: #979797;
 $pane-tab-active: #bdbdbd;
