@@ -19,49 +19,89 @@
       width: auto;
     }
   }
-
-  // edit mode doesn't have a border on this button
-  .kiln-toolbar.view-mode .new {
-    border-right: 1px solid $toolbar-view-border;
-  }
 </style>
 
 <template>
-  <div class="kiln-toolbar-wrapper">
-    <div class="kiln-status"></div>
-    <div class="kiln-progress-wrapper"></div>
-    <section class="kiln-toolbar view-mode">
-      <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay"></toolbar-button>
-      <toolbar-button class="new" icon-name="new-page" text="New Page"></toolbar-button>
-      <div class="flex-span flex-span-outer"></div>
-      <div class="kiln-toolbar-inner">
-        <toolbar-button class="edit-button" icon-name="edit" @click="startEditing"></toolbar-button>
-      </div>
-      <toolbar-button v-if="isLoading" class="publish loading" icon-name="draft" text="Loading&hellip;"></toolbar-button>
-      <toolbar-button v-else-if="pageState.scheduled" class="publish scheduled" icon-name="scheduled" text="Scheduled"></toolbar-button>
-      <toolbar-button v-else-if="pageState.published" class="publish published" icon-name="published" text="Published"></toolbar-button>
-      <toolbar-button v-else class="publish draft" icon-name="draft" text="Draft"></toolbar-button>
-    </section>
+  <div class="kiln-wrapper">
+    <background></background>
+    <div class="kiln-toolbar-wrapper">
+      <pane></pane>
+      <progress-bar></progress-bar>
+      <status></status>
+      <section class="kiln-toolbar view-mode">
+        <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" @click="toggleMenu"></toolbar-button>
+        <div class="flex-span flex-span-outer"></div>
+        <div class="kiln-toolbar-inner">
+          <toolbar-button class="edit-button" icon-name="edit" @click="startEditing"></toolbar-button>
+        </div>
+        <toolbar-button v-if="isLoading" class="publish loading" icon-name="draft" text="Loading&hellip;"></toolbar-button>
+        <toolbar-button v-else-if="pageState.scheduled" class="publish scheduled" icon-name="scheduled" text="Scheduled" @click="togglePublish"></toolbar-button>
+        <toolbar-button v-else-if="pageState.published" class="publish published" icon-name="published" text="Published" @click="togglePublish"></toolbar-button>
+        <toolbar-button v-else class="publish draft" icon-name="draft" text="Draft" @click="togglePublish"></toolbar-button>
+      </section>
+    </div>
   </div>
 </template>
 
 <script>
   import { mapState } from 'vuex';
   import toggleEdit from '../utils/toggle-edit';
+  import progressBar from './progress.vue';
   import button from './toolbar-button.vue';
+  import background from './background.vue';
+  import pane from '../panes/pane.vue';
+  import status from './status.vue';
 
   export default {
     computed: mapState({
       pageState: (state) => state.page.state,
       isLoading: 'isLoading'
     }),
-    components: {
-      'toolbar-button': button
-    },
     methods: {
       startEditing() {
         toggleEdit();
+      },
+      toggleMenu(name, button) {
+        const options = {
+          name,
+          title: 'Clay Menu',
+          size: 'medium',
+          content: [{
+            header: 'All Pages',
+            content: {
+              component: 'page-list',
+              args: {
+                number: 1
+              }
+            }
+          }, {
+            header: 'New Page',
+            content: {
+              component: 'new-page'
+            }
+          }]
+        };
+
+        return this.$store.dispatch('togglePane', { options, button });
+      },
+      togglePublish(name, button) {
+        const options = {
+          name,
+          title: 'Publish',
+          content: {
+            component: 'view-publish'
+          }
+        };
+
+        return this.$store.dispatch('togglePane', { options, button });
       }
+    },
+    components: {
+      'toolbar-button': button,
+      background,
+      pane,
+      status,
+      'progress-bar': progressBar
     }
   };
 </script>
