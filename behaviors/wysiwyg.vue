@@ -1036,8 +1036,6 @@
           html = sanitizeBlockHTML(editor.root.innerHTML);
         }
 
-        console.log(html)
-
         if (html === '<br />') {
           // empty fields will have a single line break
           store.commit(UPDATE_FORMDATA, { path: name, data: '' });
