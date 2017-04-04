@@ -114,7 +114,9 @@
   }
 
   // toolbar phrase button
-  .ql-phrase {
+  .kiln-phrase-button {
+    @include normal-text();
+
     color: #fff;
   }
 </style>
@@ -404,11 +406,21 @@
   /**
    * generate paste rules
    * @param  {array} pasteRules
+   * @param {string} currentComponent name
+   * @param {string} currentField
    * @throw {Error} if rule doesn't have a `match` property
    * @throw {Error} if rule.match isn't parseable as regex
    * @return {array}
    */
-  function generatePasteRules(pasteRules) {
+  function generatePasteRules(pasteRules, currentComponent, currentField) {
+    // if no paste rules are defined for a multi-component wysiwyg,
+    // new paragraphs should match the current component
+    pasteRules = pasteRules || [{
+      match: '(.*)',
+      component: currentComponent,
+      field: currentField
+    }];
+
     return _.map(pasteRules, function (rawRule) {
       const pre = '^',
         preLink = '(?:<a(?:.*?)>)?',
@@ -645,14 +657,14 @@
         isMultiLine = this.isMultiLine,
         isMultiComponent = this.isMultiComponent,
         pseudoBullet = this.args.pseudoBullet,
-        rules = generatePasteRules(this.args.paste),
+        rules = generatePasteRules(this.args.paste, getComponentName(_.get(this.$store, 'state.ui.currentForm.uri')), this.name),
         buttons = _.map(this.args.buttons, (button) => parsePhraseButton(button)).concat(['clean']),
         store = this.$store,
         name = this.name,
         el = this.$el,
         appendText = _.get(store, 'state.ui.currentForm.appendText'),
         parent = _.get(store, 'state.ui.currentForm.el') && getParentComponent(getComponentEl(_.get(store, 'state.ui.currentForm.el'))),
-        formats = _.flatten(_.filter(this.args.buttons, (button) => _.isString(button) && button !== 'clean')).concat(['header', 'blockquote']),
+        formats = _.flatten(_.filter(this.args.buttons, (button) => _.isString(button) && !_.includes(['clean', 'phrase'], button))).concat(['header', 'blockquote']),
         // some useful details about the current component, range, etc
         // to pass into handleMultiParagraphPaste()
         current = {
@@ -663,7 +675,6 @@
         };
 
       let phrases = _.filter(this.args.buttons, (button) => button === 'phrase' || _.isObject(button) && button.phrase),
-        phraseBlots = {},
         editor;
 
       _.each(phrases, (phraseConfig) => {
@@ -671,12 +682,14 @@
           phraseButton = _.isObject(phraseConfig) && phraseConfig.phrase.button || 'P',
           phraseName = phraseClass ? `phrase-${phraseClass}` : 'phrase';
 
-        // add dropdown options
-        toolbarIcons[phraseName] = `<button class="ql-phrase">${phraseButton}</button>`;
+        let PhraseBlot;
 
         // create format if it hasn't been created already
-        if (!phraseBlots[phraseName]) {
-          phraseBlots[phraseName] = class extends Inline {
+        if (!Quill.imports[`formats/${phraseName}`]) {
+          // add dropdown options
+          toolbarIcons[phraseName] = `<span class="kiln-phrase-button">${phraseButton}</span>`;
+
+          PhraseBlot = class extends Inline {
             static create() {
               let node = super.create();
 
@@ -689,12 +702,12 @@
             }
           };
 
-          phraseBlots[phraseName].blotName = phraseName;
-          phraseBlots[phraseName].tagName = 'SPAN';
+          PhraseBlot.blotName = phraseName;
+          PhraseBlot.tagName = 'SPAN';
           if (phraseClass) {
-            phraseBlots[phraseName].className = phraseClass;
+            PhraseBlot.className = phraseClass;
           }
-          Quill.register(phraseBlots[phraseName]);
+          Quill.register(PhraseBlot);
         }
 
         // add format to the list of formats
@@ -725,9 +738,7 @@
             // asynchronously trigger component creation if they match things
             // note: this may also replace the current paragraph if the entirety of the paragraph
             // is something that matches another component
-            if (rules && rules.length) {
-              components = matchComponents(splitParagraphs(sanitizeBlockHTML(this.container.innerHTML)), rules);
-            }
+            components = matchComponents(splitParagraphs(sanitizeBlockHTML(this.container.innerHTML)), rules);
             delta = handleMultiParagraphPaste(components, {
               quill: this.quill,
               current,
@@ -988,7 +999,7 @@
 
       // add handlers for phrase buttons
       _.each(phrases, (phraseButton) => {
-        const phraseFormat = `phrase-${phraseButton.phrase}`,
+        const phraseFormat = _.isObject(phraseButton) && phraseButton.phrase.class ? `phrase-${phraseButton.phrase}` : 'phrase',
           toolbar = editor.getModule('toolbar');
 
         toolbar.addHandler(phraseFormat, function (value) {
@@ -1024,6 +1035,8 @@
         } else if (isMultiLine) {
           html = sanitizeBlockHTML(editor.root.innerHTML);
         }
+
+        console.log(html)
 
         if (html === '<br />') {
           // empty fields will have a single line break
