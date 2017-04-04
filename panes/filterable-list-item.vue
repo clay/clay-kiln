@@ -7,13 +7,17 @@
     align-items: center;
     border-bottom: 1px solid $pane-list-divider;
     display: flex;
+    transition: 200ms border-bottom-color ease-out;
 
     &.focused {
       border-bottom-color: $save;
+      transition: 200ms border-bottom-color ease-out;
     }
 
-    &.active {
+    &.active,
+    &:active {
       border-bottom: 2px solid $save;
+      transition: 200ms border-bottom-color ease-out;
     }
 
     button {
