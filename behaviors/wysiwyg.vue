@@ -600,6 +600,29 @@
   }
 
   /**
+   * get last offset (caret at the END of some data), when the data has newlines
+   * @param {string} data
+   * @return {number}
+   */
+  function getLastOffsetWithNewlines(data) {
+    const text = (data || '').replace(/(<\/p><p>|<br \/>)/ig, '\u00B6'), // convert to ¶ so we have something to count
+      plainText = striptags(text);
+
+    let i = 0,
+      realOffset = plainText.length - 1;
+
+    // go through each character (up to the end of the text),
+    // increasing the real offset every time we hit a paragraph
+    for (; i <= realOffset; i++) {
+      if (plainText[i] === '\u00B6') {
+        realOffset++;
+      }
+    }
+
+    return realOffset;
+  }
+
+  /**
    * parse button configs for phrases
    * note: a phrase with no class or custom button will just be a string
    * @param  {string|object} button
@@ -763,6 +786,7 @@
       // note: we don't use v-html here because we don't want to update the html
       // when the form data changes (since quill is handling it)
       if (appendText) {
+        // then append the new text
         el.innerHTML = this.data + appendText;
         // trigger text-change here, so the form data is updated
         store.commit(UPDATE_FORMDATA, {
@@ -1015,7 +1039,7 @@
         this.$nextTick(() => {
           if (offset === -1 && appendText) {
             // set caret near the end, but BEFORE the appended text
-            editor.setSelection(editor.getLength() - sanitizeInlineHTML(appendText).length - 1);
+            editor.setSelection(editor.getLength() - getLastOffsetWithNewlines(appendText) - 1);
           } else if (offset === -1) {
             // set caret at the end
             editor.setSelection(editor.getLength() - 1);

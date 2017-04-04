@@ -304,7 +304,7 @@
 </style>
 
 <template>
-  <aside class="component-selector" @click.stop>
+  <aside class="component-selector" data-ignore @click.stop>
     <!-- stop clicks on the selector from bubbling up -->
     <aside class="component-selector-top">
       <div class="selected-info">
