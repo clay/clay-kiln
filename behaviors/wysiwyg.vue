@@ -112,6 +112,11 @@
   .ql-editor {
     padding: 0;
   }
+
+  // toolbar phrase button
+  .ql-phrase {
+    color: #fff;
+  }
 </style>
 
 <template>
@@ -132,10 +137,22 @@
 
   const Delta = Quill.import('delta'),
     Clipboard = Quill.import('modules/clipboard'),
-    allowedInlineTags = ['strong', 'em', 'a', 'br', 'strike', 'p'], // note: p gets parsed out in sanitizeInlineHTML
+    Inline = Quill.import('blots/inline'),
+    toolbarIcons = Quill.import('ui/icons'),
+    allowedInlineTags = ['strong', 'em', 'a', 'br', 'strike', 'span', 'p'], // note: p gets parsed out in sanitizeInlineHTML
     allowedBlockTags = allowedInlineTags.concat(['h1', 'h2', 'h3', 'h4', 'blockquote']),
     allowedAttributes = {
       a: ['href']
+    },
+    allowedClasses = {
+      span: [
+        // whitelisted phrase classes we allow
+        // note: we can convert this to a wildcard (thus allowing many more classes for phrases)
+        // once https://github.com/punkave/sanitize-html/pull/84 is merged
+        'kiln-phrase',
+        'clay-annotated',
+        'clay-designed'
+      ]
     },
     transformTags = {
       div: sanitize.simpleTransform('p'),
@@ -156,10 +173,12 @@
             tagName: 'em',
             attribs: {}
           };
-        } else {
-          // spans will be cleaned up later, since they're
-          // not allowed in the sanitized output
+        } else if (attribs.class && _.includes(attribs.class, 'kiln-phrase')) {
+          // phrases are whitelisted (and can have additional classes if they're added above)
           return { tagName, attribs };
+        } else {
+          // remove any other spans by setting them to a disallowed tag
+          return { tagName: 'h6' };
         }
       }
     },
@@ -201,6 +220,7 @@
     const sanitized = sanitize(unescape(str), {
       allowedTags: allowedInlineTags,
       allowedAttributes,
+      allowedClasses,
       transformTags,
       parser
     });
@@ -222,6 +242,7 @@
     return trimLinebreaks(sanitize(unescape(str), {
       allowedTags: allowedBlockTags,
       allowedAttributes,
+      allowedClasses,
       transformTags,
       parser
     }));
@@ -566,6 +587,20 @@
     return realOffset;
   }
 
+  /**
+   * parse button configs for phrases
+   * note: a phrase with no class or custom button will just be a string
+   * @param  {string|object} button
+   * @return {string}
+   */
+  function parsePhraseButton(button) {
+    if (_.isObject(button) && button.phrase) {
+      return button.phrase.class ? `phrase-${button.phrase.class}` : 'phrase';
+    } else if (_.isString(button)) {
+      return button; // note: 'phrase' might be the button
+    }
+  }
+
   export default {
     props: ['name', 'data', 'schema', 'args'],
     data() {
@@ -611,13 +646,13 @@
         isMultiComponent = this.isMultiComponent,
         pseudoBullet = this.args.pseudoBullet,
         rules = generatePasteRules(this.args.paste),
-        buttons = this.args.buttons.concat(['clean']),
+        buttons = _.map(this.args.buttons, (button) => parsePhraseButton(button)).concat(['clean']),
         store = this.$store,
         name = this.name,
         el = this.$el,
         appendText = _.get(store, 'state.ui.currentForm.appendText'),
         parent = _.get(store, 'state.ui.currentForm.el') && getParentComponent(getComponentEl(_.get(store, 'state.ui.currentForm.el'))),
-        formats = _.flatten(_.filter(buttons, (button) => button !== 'clean')).concat(['header', 'blockquote']),
+        formats = _.flatten(_.filter(this.args.buttons, (button) => _.isString(button) && button !== 'clean')).concat(['header', 'blockquote']),
         // some useful details about the current component, range, etc
         // to pass into handleMultiParagraphPaste()
         current = {
@@ -627,7 +662,44 @@
           parentPath:  _.get(store, 'state.ui.currentForm.el') && getComponentEl(_.get(store, 'state.ui.currentForm.el')).parentNode.getAttribute(editAttr)
         };
 
-      let editor;
+      let phrases = _.filter(this.args.buttons, (button) => button === 'phrase' || _.isObject(button) && button.phrase),
+        phraseBlots = {},
+        editor;
+
+      _.each(phrases, (phraseConfig) => {
+        const phraseClass = _.isObject(phraseConfig) && phraseConfig.phrase.class,
+          phraseButton = _.isObject(phraseConfig) && phraseConfig.phrase.button || 'P',
+          phraseName = phraseClass ? `phrase-${phraseClass}` : 'phrase';
+
+        // add dropdown options
+        toolbarIcons[phraseName] = `<button class="ql-phrase">${phraseButton}</button>`;
+
+        // create format if it hasn't been created already
+        if (!phraseBlots[phraseName]) {
+          phraseBlots[phraseName] = class extends Inline {
+            static create() {
+              let node = super.create();
+
+              node.classList.add('kiln-phrase'); // add class so it won't be sanitized out
+              return node;
+            }
+
+            static formats(domNode) {
+              return domNode.classList.contains(phraseClass) || true;
+            }
+          };
+
+          phraseBlots[phraseName].blotName = phraseName;
+          phraseBlots[phraseName].tagName = 'SPAN';
+          if (phraseClass) {
+            phraseBlots[phraseName].className = phraseClass;
+          }
+          Quill.register(phraseBlots[phraseName]);
+        }
+
+        // add format to the list of formats
+        formats.push(phraseName);
+      });
 
       class ClayClipboard extends Clipboard {
         convert(html) {
@@ -912,6 +984,16 @@
             }
           }
         }
+      });
+
+      // add handlers for phrase buttons
+      _.each(phrases, (phraseButton) => {
+        const phraseFormat = `phrase-${phraseButton.phrase}`,
+          toolbar = editor.getModule('toolbar');
+
+        toolbar.addHandler(phraseFormat, function (value) {
+          return this.quill.format(phraseFormat, value); // true or false
+        });
       });
 
       this.editor = editor; // save reference to the editor
