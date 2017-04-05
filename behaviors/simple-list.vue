@@ -88,7 +88,7 @@
             placeholder="Start Typing Here..."
             v-model="inputVal"
             @input="onChange"
-            @keydown.enter.prevent="addItem"
+            @keydown.enter.prevent="onEnter"
             @keydown.tab="addItem"
             @keydown.comma="addItem"
             @keydown.delete="focusLastItem"
@@ -188,9 +188,19 @@
           // Zero out values
           this.inputVal = '';
           this.focusIndex = null;
+          this.autocompleteIndex = null;
         }
 
         this.autocompleteIndex = null;
+      },
+      onEnter() {
+        if (this.inputVal) {
+          // if theres a value in the input, add it (like when you hit tab or comma)
+          this.addItem();
+        } else {
+          // otherwise, close the form (which we never do on tab or comma)
+          this.$store.dispatch('unfocus');
+        }
       },
       // Focus on the first item in the list
       focusFirstItem() {
