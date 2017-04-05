@@ -33,18 +33,6 @@
 <script>
   import _ from 'lodash';
   import item from './autocomplete-item.vue';
-  import { getJSON } from '../lib/core-data/api';
-  import { uriToUrl } from '../lib/utils/urls';
-
-  const textProp = 'text';
-
-  function flattenText(items) {
-    var pluckedText = _.compact(_.map(items, textProp)),
-      hasTextProp = _.isString(_.head(pluckedText));
-
-    return hasTextProp ? pluckedText : items;
-  }
-
   export default {
     props: ['args', 'query', 'select', 'focusIndex', 'updateFocusIndex', 'updateMatches'],
     data() {
@@ -53,19 +41,24 @@
         prevFocusIndex: null,
       }
     },
-    asyncComputed: {
-      options() {
-        // Get the JSON response from the API passed in
-        return getJSON(this.getApi())
-          .then(flattenText);
-      }
-    },
     computed: {
+      listItems() {
+        const lists = this.$store.state.lists,
+        site = this.$store.state.site,
+        list = this.args.list;
+
+        // if the list isn't in the store yet, tell Vuex to get it
+        if (list && !lists[list]) {
+          this.$store.dispatch('getList', {prefix: site.prefix, listName: list});
+          return [];
+        }
+        return lists[list].items;
+      },
       showMatches() {
         return this.query.length >= 2 && this.matches.length;
       },
       matches() {
-        var matches = _.take(_.filter(this.options, option => {
+        var matches = _.take(_.filter(this.listItems, option => {
           return _.includes(option.toLowerCase(), this.query.toLowerCase());
         }), 20);
 
@@ -98,15 +91,6 @@
     methods: {
       selectItem(value) {
         this.select(value);
-      },
-      getApi() {
-        if (this.args.api) {
-          return this.args.api;
-        } else if (this.args.list) {
-          return uriToUrl(this.$store.state.site.prefix) + '/lists/' + this.args.list;
-        } else {
-          return null;
-        }
       }
     },
     components: {
