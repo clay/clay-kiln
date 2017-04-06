@@ -187,7 +187,7 @@
 </style>
 
 <template>
-  <div :class="[isPermanent ? permanentClass : temporaryClass, { 'single-line': isSingleLine }]" :style="{ minHeight: placeholderHeight }" data-ignore>
+  <div :class="[isPermanent ? permanentClass : temporaryClass, { 'single-line': isSingleLine }]" :style="{ minHeight: placeholderHeight }">
     <div class="placeholder-top">
       <span class="placeholder-label">{{ text }}</span>
       <span class="placeholder-location">
