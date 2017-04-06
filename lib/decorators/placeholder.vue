@@ -197,13 +197,14 @@
       <span v-if="isRequired" class="placeholder-required">Required</span>
     </div>
     <div v-if="canAddComponent" class="placeholder-bottom">
-      <span class="placeholder-add-component" title="Add Components">Add Components</span>
+      <span class="placeholder-add-component" title="Add Components" @click.stop="openAddComponentPane">Add Components</span>
     </div>
   </div>
 </template>
 
 <script>
   import _ from 'lodash';
+  import store from '../core-data/store';
   import { placeholderProp, componentListProp, componentProp } from '../utils/references';
   import { getData } from '../core-data/components';
   import { get } from '../core-data/groups';
@@ -261,6 +262,17 @@
       isSingleLine() {
         // note: this.placeholderHeight is a computed property. getters are cool!
         return parseInt(this.placeholderHeight, 10) < SINGLE_LINE_HEIGHT;
+      }
+    },
+    methods: {
+      openAddComponentPane() {
+        const parentURI = this.$options.uri,
+          path = this.$options.path;
+
+        return store.dispatch('openAddComponents', {
+          parentURI,
+          path
+        });
       }
     },
     components: {
