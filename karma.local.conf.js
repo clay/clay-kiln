@@ -1,4 +1,5 @@
 var settings = require('./karma.conf.js').settings,
+  WatchIgnorePlugin = require('webpack').WatchIgnorePlugin,
   _ = require('lodash');
 
 // generating code coverage reports for local tests
@@ -16,5 +17,12 @@ module.exports = function (karma) {
   });
 
   _.set(localSettings, 'webpack.watch', true);
+  _.set(localSettings, 'webpack.plugins', [
+    new WatchIgnorePlugin([
+      /node_modules\//ig,
+      /coverage\//ig,
+      /dist\//ig
+    ])
+  ]);
   karma.set(localSettings);
 };
