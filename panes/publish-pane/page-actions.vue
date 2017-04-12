@@ -72,9 +72,39 @@
 
 <script>
   import _ from 'lodash';
-  import moment from 'moment';
+  import parseDate from 'date-fns/parse';
+  import dateFormat from 'date-fns/format';
+  import getTime from 'date-fns/get_time';
+  import isSameDay from 'date-fns/is_same_day';
+  import isYesterday from 'date-fns/is_yesterday';
+  import isTomorrow from 'date-fns/is_tomorrow';
+  import addWeeks from 'date-fns/add_weeks';
+  import subWeeks from 'date-fns/sub_weeks';
+  import isThisWeek from 'date-fns/is_this_week';
+  import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
   import { hasNativePicker, init as initPicker } from '../../lib/utils/datepicker';
   import { START_PROGRESS, FINISH_PROGRESS } from '../../lib/toolbar/mutationTypes';
+
+  function calendar(date) {
+    if (isSameDay(now, date)) {
+      // today
+      return distanceInWordsToNow(date, { includeSeconds: true, addSuffix: true });
+    } else if (isYesterday(date)) {
+      // yesterday
+      return `Yesterday at ${dateFormat(date, 'h:mm A')}`;
+    } else if (isTomorrow(date)) {
+      // tomorrow
+      return `Tomorrow at ${dateFormat(date, 'h:mm A')}`;
+    } else if (isThisWeek(addWeeks(date, 1))) {
+      // last week
+      return `Last ${dateFormat(date, 'dddd [at] h:mm A')}`;
+    } else if (isThisWeek(subWeeks(date, 1))) {
+      // next week
+      return dateFormat(date, 'dddd [at] h:mm A');
+    } else {
+      return dateFormat(date, 'M/D/YYYY [at] h:mm A');
+    }
+  }
 
   export default {
     props: [],
@@ -107,15 +137,15 @@
         // therefore, check for AM/PM
         const date = this.dateValue,
           time = this.timeValue,
-          datetime = _.includes(time, 'M') ? moment(date + ' ' + time, 'YYYY-MM-DD h:mm A') : moment(date + ' ' + time, 'YYYY-MM-DD HH:mm'),
-          timestamp = datetime.valueOf(),
+          datetime = _.includes(time, 'M') ? parseDate(date + ' ' + time, 'YYYY-MM-DD h:mm A') : parseDate(date + ' ' + time, 'YYYY-MM-DD HH:mm'),
+          timestamp = getTime(datetime),
           store = this.$store;
 
         this.$store.dispatch('closePane');
         this.$store.commit(START_PROGRESS, 'schedule');
         this.$store.dispatch('schedulePage', { uri: this.$store.state.page.uri, timestamp }).then(() => {
           store.commit(FINISH_PROGRESS, 'schedule');
-          store.dispatch('showStatus', { type: 'schedule', message: `Scheduled to publish ${datetime.calendar()}` });
+          store.dispatch('showStatus', { type: 'schedule', message: `Scheduled to publish ${calendar(datetime)}` });
         });
       }
     },

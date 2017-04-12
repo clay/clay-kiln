@@ -23,8 +23,7 @@ let plugins = [
     paths: true, // allow deep _.get, _.set, _.has
     // note: we're explicitly not allowing chaining or currying
   }),
-  new webpack.optimize.OccurrenceOrderPlugin,
-  new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
+  new webpack.optimize.OccurrenceOrderPlugin
 ];
 
 if (prod) {
