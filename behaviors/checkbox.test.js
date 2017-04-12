@@ -10,8 +10,4 @@ describe('checkbox behavior', () => {
   it('goes in the main slot', () => {
     expect(lib.slot).to.equal('main');
   });
-
-  it('throws error if no label arg', () => {
-    expect(() => renderWithArgs(lib, { args: {} })).to.throw('Checkbox behavior must have a `label` argument!');
-  });
 });

@@ -55,11 +55,6 @@
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: !this.data });
       }
     },
-    created() {
-      if (!this.args.label) {
-        throw new Error('Checkbox behavior must have a `label` argument!');
-      }
-    },
     slot: 'main'
   };
 </script>

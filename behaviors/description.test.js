@@ -16,8 +16,4 @@ describe('description behavior', () => {
   it('goes in the before slot', () => {
     expect(lib.slot).to.equal('before');
   });
-
-  it('throws error if no value arg', () => {
-    expect(() => renderWithArgs(lib, { args: {} })).to.throw('Description behavior must have a `value` argument!');
-  });
 });

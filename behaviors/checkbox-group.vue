@@ -78,11 +78,6 @@
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: _.assign({}, this.data, newData) });
       }
     },
-    created() {
-      if (!this.args.options) {
-        throw new Error('Checkbox Group behavior must have an `options` argument!');
-      }
-    },
     slot: 'main'
   };
 </script>

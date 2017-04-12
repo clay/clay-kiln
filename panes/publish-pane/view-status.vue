@@ -44,7 +44,8 @@
 
 
 <script>
-  import moment from 'moment';
+  import dateFormat from 'date-fns/format';
+  import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
   import { mapState } from 'vuex';
 
   export default {
@@ -54,8 +55,8 @@
     computed: mapState({
       isPublished: (state) => state.page.state.published,
       isScheduled: (state) => state.page.state.scheduled,
-      publishedDate: (state) => moment(state.page.state.publishedAt),
-      scheduledDate: (state) => moment(state.page.state.scheduledAt),
+      publishedDate: (state) => state.page.state.publishedAt,
+      scheduledDate: (state) => state.page.state.scheduledAt,
       isDraft() {
         return !this.isPublished && !this.isScheduled;
       },
@@ -68,18 +69,18 @@
       },
       message() {
         if (this.isScheduled) {
-          return `Scheduled ${this.scheduledDate.fromNow()}`;
+          return `Scheduled ${distanceInWordsToNow(this.scheduledDate, { includeSeconds: true, addSuffix: true })}`;
         } if (this.isPublished) {
-          return `Published ${this.publishedDate.fromNow()}`;
+          return `Published ${distanceInWordsToNow(this.publishedDate, { includeSeconds: true, addSuffix: true })}`;
         } else {
           return 'Draft Created';
         }
       },
       time() {
         if (this.isScheduled) {
-          return this.scheduledDate.format('MMMM Do [at] h:mm A');
+          return dateFormat(this.scheduledDate, 'MMMM Do [at] h:mm A');
         } if (this.isPublished) {
-          return this.publishedDate.format('MMMM Do [at] h:mm A');
+          return dateFormat(this.publishedDate, 'MMMM Do [at] h:mm A');
         }
       }
     })

@@ -52,7 +52,7 @@
 
 <script>
   import _ from 'lodash';
-  import moment from 'moment';
+  import dateFormat from 'date-fns/format';
   import keycode from 'keycode';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { hasNativePicker, init as initPicker } from '../lib/utils/datepicker';
@@ -94,19 +94,19 @@
    * @param  {string} format  The format of the returned date string
    * @return {string}
    */
-  function newMomentWithFormat(value, format) {
+  function getFormattedDateString(value, format) {
     // If value then instantiate with the value in proper format
-    return value ? moment(value).format(format) : '';
+    return value ? dateFormat(value, format) : '';
   }
 
   function initDatePicker($el) {
     if (!hasNativePicker()) {
       // when instantiating, convert from the ISO format (what we save) to firefox's format (what the datepicker needs)
-      $el.value = newMomentWithFormat($el.value, firefoxDateFormat);
+      $el.value = getFormattedDateString($el.value, firefoxDateFormat);
       initPicker($el);
     } else {
       // Get proper value at instantiation
-      $el.value = newMomentWithFormat($el.value, defaultDateFormat);
+      $el.value = getFormattedDateString($el.value, defaultDateFormat);
     }
   }
 
