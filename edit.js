@@ -13,6 +13,7 @@ import { init as initValidators } from './lib/validators';
 import conditionalFocus from './directives/conditional-focus';
 import hScrollDirective from './directives/horizontal-scroll';
 import utilsAPI from './lib/utils/api';
+import { hasClickedFocusableEl } from './lib/decorators/focus';
 
 // TODO: Figure out saving/closing and reverting in panes
 import { CLOSE_PANE } from './lib/panes/mutationTypes';
@@ -105,8 +106,8 @@ document.addEventListener('DOMContentLoaded', function () {
       store.dispatch('unselect');
     }
 
-    // always unfocus if clicking out of the current focus
-    if (_.get(store, 'state.ui.currentFocus') && !e.stopFocus) {
+    // always unfocus if clicking out of the current focus (and not directly clicking into another focusable el)
+    if (_.get(store, 'state.ui.currentFocus') && !hasClickedFocusableEl(e)) {
       store.dispatch('unfocus').catch(_.noop);
     }
 
