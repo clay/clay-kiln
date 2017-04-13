@@ -22,6 +22,8 @@
   @import '../styleguide/typography';
 
   .checkbox-group .checkbox-group-item {
+    align-items: center;
+    display: flex;
     margin: 0 0 10px;
     padding: 0;
     width: 100%;
@@ -39,6 +41,7 @@
     @include primary-text();
 
     cursor: pointer;
+    flex: 1 0 auto;
     padding-left: 5px;
     vertical-align: baseline;
   }

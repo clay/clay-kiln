@@ -22,17 +22,23 @@
   @import '../styleguide/typography';
   @import '../styleguide/inputs';
 
+  .checkbox-wrapper {
+    align-items: center;
+    display: flex;
+    width: 100%;
+  }
+
   .input-checkbox {
     @include checkbox();
 
     cursor: pointer;
-    margin: 5px 0 10px 2px; // left-margin space to accommodate browser focus display
   }
 
   .checkbox-label {
     @include input-text();
 
     cursor: pointer;
+    flex: 1 0 auto;
     margin-left: 10px;
     vertical-align: baseline;
   }
