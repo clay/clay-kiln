@@ -40,8 +40,11 @@
 @mixin field() {
   @include clearfix();
 
+  border: none;
   flex: 0 0 100%;
+  margin: 0;
   min-width: 100px;
+  padding: 0;
   position: relative;
 
   // Spacing between fields

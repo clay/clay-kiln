@@ -11,18 +11,19 @@
 <style lang="sass">
   @import '../styleguide/typography';
 
-  .label-inner {
+  .legend {
     @include input-label();
 
     float: left;
-    margin-right: 8px;
-    text-align: left;
     margin-bottom: 5px;
+    margin-right: 8px;
+    padding: 0;
+    text-align: left;
   }
 </style>
 
 <template>
-  <span class="label-inner">{{ label }}</span>
+  <legend class="legend">{{ label }}</legend>
 </template>
 
 <script>

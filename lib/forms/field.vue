@@ -13,7 +13,7 @@
 </style>
 
 <template>
-  <label class="kiln-field" v-if="beforeBehaviors.lenght || mainBehaviors.length || afterBehaviors.length">
+  <fieldset class="kiln-field" v-if="beforeBehaviors.lenght || mainBehaviors.length || afterBehaviors.length">
     <div class="field-before">
       <component v-for="behavior in beforeBehaviors" :is="behavior.fn" :name="name" :data="data" :schema="schema" :args="behavior.args"></component>
     </div>
@@ -23,7 +23,7 @@
     <div class="field-after">
       <component v-for="behavior in afterBehaviors" :is="behavior.fn" :name="name" :data="data" :schema="schema" :args="behavior.args"></component>
     </div>
-  </label>
+  </fieldset>
 </template>
 
 <script>
