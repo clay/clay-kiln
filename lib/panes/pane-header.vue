@@ -13,7 +13,28 @@
     &-left {
       @include header();
 
+      display: flex;
+      flex: 1 0 auto;
       padding-left: 18px;
+    }
+
+    .clay-logo {
+      align-items: center;
+      display: flex;
+      flex: 1 0 auto;
+      height: 34px;
+    }
+
+    .sign-out {
+      @include secondary-text();
+
+      background: none;
+      border: none;
+      cursor: pointer;
+      flex: 0 0 auto;
+      margin: 0;
+      outline: none;
+      padding: 6px 8px;
     }
 
     &-right {
@@ -28,7 +49,11 @@
 
 <template>
   <div class="kiln-pane-header">
-    <div class="kiln-pane-header-left">
+    <div v-if="clayHeader" class="kiln-pane-header-left">
+      <icon class="clay-logo" name="clay-logo-horizontal"></icon>
+      <button class="sign-out" @click.stop.prevent="signOut">Sign Out</button>
+    </div>
+    <div v-else class="kiln-pane-header-left">
       {{ title }}
     </div>
     <div class="kiln-pane-header-right">
@@ -38,20 +63,18 @@
 </template>
 
 <script>
+  import _ from 'lodash';
   import icon from '../utils/icon.vue';
 
-  /**
-   * Returns a new array with only the desired
-   * property as for each entry
-   *
-   * @param  {Array} content
-   * @param  {String} property
-   * @return {Array}
-   */
   export default {
-    props: ['title', 'buttonClick', 'check'],
+    props: ['title', 'buttonClick', 'check', 'clayHeader'],
     data() {
       return {};
+    },
+    methods: {
+      signOut() {
+        window.location.href = _.get(this.$store, 'state.site.path') + '/auth/logout';
+      }
     },
     components: {
       icon

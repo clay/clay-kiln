@@ -66,6 +66,7 @@
           name,
           title: 'Clay Menu',
           size: 'medium',
+          clayHeader: true,
           content: [{
             header: 'All Pages',
             content: {

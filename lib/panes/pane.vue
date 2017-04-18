@@ -13,7 +13,7 @@
 <template>
   <transition name="pane-slide">
     <div class="kiln-toolbar-pane" v-if="hasOpenPane" :class="[position, size]" :style="{ left: offsetLeft }" @click.stop>
-      <pane-header :title="headerTitle" :buttonClick="closePane" check="close-edit"></pane-header>
+      <pane-header :title="headerTitle" :buttonClick="closePane" check="close-edit" :clayHeader="clayHeader"></pane-header>
       <component v-if="singleTab" :is="singleComponent" :args="singleComponentArgs"></component>
       <pane-tabs v-else :content="content"></pane-tabs>
     </div>
@@ -63,6 +63,7 @@
         return _.get(this, 'content.args');
       },
       headerTitle: (state) => _.get(state, 'ui.currentPane.title') || 'Pane',
+      clayHeader: (state) => _.get(state, 'ui.currentPane.clayHeader')
     }),
     methods: {
       closePane() {
