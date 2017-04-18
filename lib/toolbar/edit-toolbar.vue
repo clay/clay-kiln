@@ -180,10 +180,7 @@
           content: [{
             header: 'All Pages',
             content: {
-              component: 'page-list',
-              args: {
-                number: 1
-              }
+              component: 'page-list'
             }
           }, {
             header: 'New Page',
