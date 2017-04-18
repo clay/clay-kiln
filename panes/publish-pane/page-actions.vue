@@ -127,7 +127,7 @@
         this.$store.dispatch('publishPage', this.$store.state.page.uri)
           .catch((e) => {
             console.error('Error publishing page:', e);
-            store.dispatch('showStatus', { type: 'error', message: 'Error publising page!'});
+            store.dispatch('showStatus', { type: 'error', message: 'Error publishing page!'});
             throw e;
           })
           .then((url) => store.dispatch('showStatus', { type: 'publish', message: 'Published Page!', action: `<a href="${url}">View</a>` }));
