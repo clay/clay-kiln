@@ -39,9 +39,7 @@
 
     {{! show different scripts in view/edit mode }}
     {{#if @root.locals.edit}}
-      <script>
-          {{{ read 'node_modules/clay-kiln/dist/clay-kiln-edit.js' }}}
-      </script>
+      <script src="{{ @root.locals.site.assetPath }}/js/clay-kiln-edit.js"></script>
     {{else}}
       <script>
           {{{ read 'node_modules/clay-kiln/dist/clay-kiln-view.js' }}}
