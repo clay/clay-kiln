@@ -40,6 +40,19 @@
   import { getField } from '../lib/forms/field-helpers';
   import { compare } from '../lib/utils/comparators';
 
+  /**
+   * toggle showing or hiding a field
+   * @param  {Element}  fieldEl
+   * @param  {Boolean} isShown
+   */
+  function toggleField(fieldEl, isShown) {
+    if (isShown) {
+      fieldEl.classList.remove('kiln-reveal-hide');
+    } else {
+      fieldEl.classList.add('kiln-reveal-hide');
+    }
+  }
+
   export default {
     props: ['name', 'data', 'schema', 'args'],
     data() {
@@ -57,23 +70,11 @@
     },
     watch: {
       isShown(val) {
-        const fieldEl = getField(this.$el);
-
-        if (val) {
-          fieldEl.classList.remove('kiln-reveal-hide');
-        } else {
-          fieldEl.classList.add('kiln-reveal-hide');
-        }
+        toggleField(getField(this.$el), val);
       }
     },
     mounted() {
-      const fieldEl = getField(this.$el);
-
-      if (this.isShown) {
-        fieldEl.classList.remove('kiln-reveal-hide');
-      } else {
-        fieldEl.classList.add('kiln-reveal-hide');
-      }
+      toggleField(getField(this.$el), this.isShown);
     },
     slot: 'after'
   };
