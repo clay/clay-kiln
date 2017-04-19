@@ -40,7 +40,7 @@
 
 <template>
   <transition name="fade">
-    <span v-if="hasLabel && isRequired" class="label-conditional-required">required ({{ fieldLabel }})</span>
+    <span v-if="hasLabel && isRequired" class="label-conditional-required">required (based on {{ fieldLabel }})</span>
   </transition>
 </template>
 
@@ -48,7 +48,7 @@
   import _ from 'lodash';
   import { fieldProp, behaviorKey } from '../lib/utils/references';
   import { expand, convertNativeTagName } from '../lib/forms/behaviors';
-  import { getSchema } from '../lib/core-data/components';
+  import { getSchema, getData } from '../lib/core-data/components';
   import { compare } from '../lib/utils/comparators';
   import label from '../lib/utils/label';
 
@@ -65,7 +65,11 @@
         const field = this.args.field,
           operator = this.args.operator,
           value = this.args.value,
-          data = _.get(this.$store, `state.ui.currentForm.fields[${field}]`);
+          // compare against the field if it's in the current form,
+          // but fall back to comparing against data in the component
+          // (this allows comparing to fields that might not be in the same form)
+          uri = _.get(this.$store, 'state.ui.currentForm.uri'),
+          data = _.get(this.$store, `state.ui.currentForm.fields[${field}]`) || getData(uri, field);
 
         return compare({ data, operator, value });
       },
