@@ -149,7 +149,7 @@
     Clipboard = Quill.import('modules/clipboard'),
     Inline = Quill.import('blots/inline'),
     toolbarIcons = Quill.import('ui/icons'),
-    allowedInlineTags = ['strong', 'em', 'a', 'br', 'strike', 'span', 'p'], // note: p gets parsed out in sanitizeInlineHTML
+    allowedInlineTags = ['strong', 'em', 'a', 'br', 's', 'span', 'p'], // note: p gets parsed out in sanitizeInlineHTML
     allowedBlockTags = allowedInlineTags.concat(['h1', 'h2', 'h3', 'h4', 'blockquote']),
     allowedAttributes = {
       a: ['href']
@@ -168,6 +168,7 @@
       div: sanitize.simpleTransform('p'),
       b: sanitize.simpleTransform('strong'),
       i: sanitize.simpleTransform('em'),
+      strike: sanitize.simpleTransform('s'),
       span(tagName, attribs) {
         const style = attribs.style;
 
