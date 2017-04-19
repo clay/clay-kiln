@@ -58,6 +58,33 @@ The mode of the editor sets syntax highlighting, linting, and other functionalit
 
 _Note:_ We will add more supported modes as we find use cases for them. See [this link](http://codemirror.net/mode/) for the full list of modes supported in codemirror.
 
+# required
+
+Appends "required (field name)" to a field's label, to mark that field as required (based on another field).
+
+## Arguments
+
+* **field** to compare against
+* **operator** _(optional)_ to use for the comparison
+* **value** _(optional)_ to compare the field against
+
+If neither `operator` nor `value` are specified, this will make the current field required if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality.
+
+Operators:
+
+* `===`
+* `!==`
+* `<`
+* `>`
+* `<=`
+* `>=`
+* `typeof`
+* `regex`
+* `empty` (only checks field data, no value needed)
+* `not-empty` (only checks field data, no value needed)
+* `truthy` (only checks field data, no value needed)
+* `falsy` (only checks field data, no value needed)
+
 # description
 
 Appends a description to a field.
