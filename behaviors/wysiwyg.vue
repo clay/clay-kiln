@@ -249,6 +249,28 @@
   };
 
   /**
+   * similar to sanitizeInlineHTML, but allowing block-level tags
+   * since they'll be parsed out after paragraphs are split
+   * @param  {string} str
+   * @return {string}
+   */
+  function sanitizeMultiComponentHTML(str) {
+    const sanitized = sanitize(unescape(str), {
+      allowedTags: allowedBlockTags,
+      allowedAttributes,
+      allowedClasses,
+      transformTags,
+      parser
+    });
+
+    return trimLinebreaks(sanitized.split('</p>')
+      .filter((line) => line.trim().length > 0)
+      .map((line) => {
+        return line.replace('<p>', '');
+      }).join('<br />'));
+  }
+
+  /**
    * sanitize block html
    * note: allows block-level tags
    * @param  {string} str
@@ -271,18 +293,11 @@
    * @returns {array}
    */
   function splitParagraphs(str) {
-    // </p>, </div>, </h1> through </h9>, or two (interchangeable) <br> or newlines
-    // note: <br> tags may contain closing slashes, and there may be spaces around stuff
-    // note: split on both </blockquote> and <blockquote>, since there may be text before/after the quote
-    let paragraphs = _.map(str.split(/(?:<\/(?:p|div|h[1-9])>|(?:\s?<br(?:\s?\/)?>\s?|\s?\n\s?){2})/ig), s => s.trim());
-
-    // splitting on the closing p/div/header allows us to grab ALL the paragraphs from
-    // google docs, since when you paste from there the last paragraph
-    // isn't wrapped in a <p> tag. weird, right?
-    // splitting on closing <div> tags allows us to support some weird
-    // google docs situations (lots of line breaks with embedded media),
-    // as well as "plaintext" editors like IA Writer
-    // splitting on double line breaks/<br> tags allows us to catch a few edge cases in other editors
+    // because we're parsing out <p> tags, we can conclude that two <br> tags
+    // means a "real" paragraph (e.g. the writer intended for this to be a paragraph break),
+    // whereas a single <br> tag is intended to simply be a line break.
+    // also look for headers
+    let paragraphs = _.map(str.split(/(?:<br\s?\/><br\s?\/>|<\/h[1-9]>)/ig), (s) => s.trim());
 
     // handle inline blockquotes (and, in the future, other inline things)
     // that should be parsed out as separate components
@@ -776,7 +791,7 @@
             // asynchronously trigger component creation if they match things
             // note: this may also replace the current paragraph if the entirety of the paragraph
             // is something that matches another component
-            components = matchComponents(splitParagraphs(sanitizeBlockHTML(this.container.innerHTML)), rules);
+            components = matchComponents(splitParagraphs(sanitizeMultiComponentHTML(this.container.innerHTML)), rules);
             delta = handleMultiParagraphPaste(components, {
               quill: this.quill,
               current,
