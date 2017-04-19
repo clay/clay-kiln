@@ -165,10 +165,10 @@
       ]
     },
     transformTags = {
-      div: sanitize.simpleTransform('p'),
-      b: sanitize.simpleTransform('strong'),
-      i: sanitize.simpleTransform('em'),
-      strike: sanitize.simpleTransform('s'),
+      div: 'p',
+      b: 'strong',
+      i: 'em',
+      strike: 's',
       span(tagName, attribs) {
         const style = attribs.style;
 
@@ -188,8 +188,8 @@
           // phrases are whitelisted (and can have additional classes if they're added above)
           return { tagName, attribs };
         } else {
-          // remove any other spans by setting them to a disallowed tag
-          return { tagName: 'h6' };
+          // remove any other spans
+          return {};
         }
       }
     },
@@ -212,6 +212,11 @@
     return str.replace(/&lt;(.*?)&gt;/ig, '<$1>');
   }
 
+  /**
+   * remove line breaks at the beginning or end of text
+   * @param  {string} str
+   * @return {string}
+   */
   function trimLinebreaks(str) {
     let trimmed = str.replace(/^(<br \/><br \/>|<br \/>)/i, '');
 
