@@ -14,6 +14,7 @@ import conditionalFocus from './directives/conditional-focus';
 import hScrollDirective from './directives/horizontal-scroll';
 import utilsAPI from './lib/utils/api';
 import { hasClickedFocusableEl } from './lib/decorators/focus';
+import servicesAPI from './lib/services/api';
 
 // TODO: Figure out saving/closing and reverting in panes
 import { CLOSE_PANE } from './lib/panes/mutationTypes';
@@ -66,6 +67,7 @@ Vue.directive('h-scroll', hScrollDirective());
 window.kiln = window.kiln || {};
 // .plugins, .behaviors, .validators, and .panes objects should already exist
 window.kiln.utils = utilsAPI;
+window.kiln.services = servicesAPI;
 
 // kick off loading when DOM is ready
 // note: preloaded data, external behaviors, decorators, and validation rules should already be added
