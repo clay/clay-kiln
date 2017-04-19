@@ -200,6 +200,33 @@ Appends "required" to a field's label, to mark that field as required.
 
 _No arguments_
 
+# reveal
+
+Conditionally shows/hides a field based on another field
+
+## Arguments
+
+* **field** to compare against
+* **operator** _(optional)_ to use for the comparison
+* **value** _(optional)_ to compare the field against
+
+If neither `operator` nor `value` are specified, this will show the current field if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality.
+
+Operators:
+
+* `===`
+* `!==`
+* `<`
+* `>`
+* `<=`
+* `>=`
+* `typeof`
+* `regex`
+* `empty` (only checks field data, no value needed)
+* `not-empty` (only checks field data, no value needed)
+* `truthy` (only checks field data, no value needed)
+* `falsy` (only checks field data, no value needed)
+
 # segmented-button
 
 A group of buttons allowing the user to select one of a few related options. Functions like a styled radio button.
