@@ -113,6 +113,14 @@
     padding: 0;
   }
 
+  .ql-container.ql-bubble:not(.ql-disabled) a {
+    white-space: inherit;
+  }
+
+  .ql-bubble .ql-editor a {
+    text-decoration: inherit;
+  }
+
   // toolbar phrase button
   .kiln-phrase-button {
     @include normal-text();
