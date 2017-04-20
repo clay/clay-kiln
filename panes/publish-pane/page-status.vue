@@ -62,6 +62,7 @@
 
 
 <script>
+  import _ from 'lodash';
   import dateFormat from 'date-fns/format';
   import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
   import { mapState } from 'vuex';
