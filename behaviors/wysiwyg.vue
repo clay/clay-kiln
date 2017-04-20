@@ -52,8 +52,10 @@
         buttons:
           - bold
           - italic
-          - strikethrough
+          - strike
           - link
+          -
+            script: sub
         paste:
           -
             match: (https?://twitter\.com/\w+?/status/\d+)
@@ -241,12 +243,32 @@
       parser
     });
 
+    // all text coming out of Quill will have each line wrapped in <p>,
+    // so we need to convert those to <br> line breaks
     return trimLinebreaks(sanitized.split('</p>')
       .filter((line) => line.trim().length > 0)
       .map((line) => {
         return line.replace('<p>', '');
       }).join('<br />'));
   };
+
+  /**
+   * determine if pasted text has well-formed paragraphs
+   * 'well-formed paragraphs' means the text is separated by <p> tags
+   * (e.g. when pasting from a website),
+   * rather than being separated by <p><br> tags
+   * (e.g. when pasting from a text editor that doesn't differentiate
+   * between soft linebreaks and separate paragraphs)
+   * @param  {string}  str
+   * @return {Boolean}
+   */
+  function hasWellFormedParagraphs(str) {
+    // malformed paragraphs will use <p><br></p> as their paragraph separator,
+    // because each line will technically be a new paragraph.
+    // well-formed paragraphs will just use <p>, and will use <br> by itself
+    // to designate soft linebreaks
+    return !_.includes(str, '<p><br /></p>');
+  }
 
   /**
    * similar to sanitizeInlineHTML, but allowing block-level tags
@@ -263,11 +285,19 @@
       parser
     });
 
-    return trimLinebreaks(sanitized.split('</p>')
-      .filter((line) => line.trim().length > 0)
-      .map((line) => {
-        return line.replace('<p>', '');
-      }).join('<br />'));
+    if (hasWellFormedParagraphs(sanitized)) {
+      return trimLinebreaks(sanitized.split('</p>')
+        .filter((line) => line.trim().length > 0)
+        .map((line) => {
+          return line.replace('<p>', '');
+        }).join('<br /><br />'));
+    } else {
+      return trimLinebreaks(sanitized.split('</p>')
+        .filter((line) => line.trim().length > 0)
+        .map((line) => {
+          return line.replace('<p>', '');
+        }).join('<br />'));
+    }
   }
 
   /**

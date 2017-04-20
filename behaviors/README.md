@@ -479,8 +479,10 @@ text:
       buttons:
         - bold
         - italic
-        - strikethrough
+        - strike
         - link
+        -
+          script: sub
       paste:
         -
           match: (https?://twitter\.com/\w+?/status/\d+)
