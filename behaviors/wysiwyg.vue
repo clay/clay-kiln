@@ -971,7 +971,7 @@
           }))
           .then((newComponent) => {
             // focus on the BEGINNING of the last element (before any text we may have split into it)
-            focusNextComponent(newComponent, _.last(otherComponentsToUpdate).field);
+            focusNextComponent(newComponent, _.last(components).field);
             firstComponentToUpdate = null;
             otherComponentsToUpdate = null;
           });
