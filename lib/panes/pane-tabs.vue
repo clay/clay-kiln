@@ -45,6 +45,12 @@
   .pane-tabs-titles-list {
     @include pane-tab-list();
   }
+
+  .pane-tabs-content {
+    height: calc(100% - 50px); // account for tab height
+    overflow-x: visible;
+    overflow-y: scroll;
+  }
 </style>
 
 <template>
