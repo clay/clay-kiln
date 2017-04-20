@@ -15,6 +15,14 @@
     // don't span full width
     width: auto;
 
+    &.small {
+      width: 350px;
+    }
+
+    &.medium {
+      width: 500px;
+    }
+
     .publish {
       margin: 0 0 0 -3px;
       padding: 7px 16px 6px 22px;
@@ -39,9 +47,7 @@
     <background></background>
     <div class="kiln-toolbar-wrapper">
       <pane></pane>
-      <progress-bar></progress-bar>
-      <status></status>
-      <section class="kiln-toolbar view-mode">
+      <section class="kiln-toolbar view-mode" :class="paneSize">
         <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" @click="toggleMenu"></toolbar-button>
         <toolbar-button v-if="isLoading" class="publish loading" icon-name="draft" text="Edit"></toolbar-button>
         <toolbar-button v-else-if="pageState.scheduled" class="publish scheduled" icon-name="scheduled" text="Edit" @click="togglePublish"></toolbar-button>
@@ -55,16 +61,15 @@
 <script>
   import { mapState } from 'vuex';
   import toggleEdit from '../utils/toggle-edit';
-  import progressBar from './progress.vue';
   import button from './toolbar-button.vue';
   import background from './background.vue';
   import pane from '../panes/pane.vue';
-  import status from './status.vue';
 
   export default {
     computed: mapState({
       pageState: (state) => state.page.state,
-      isLoading: 'isLoading'
+      isLoading: 'isLoading',
+      paneSize: (state) => state.ui.currentPane ? state.ui.currentPane.size || 'small' : null
     }),
     methods: {
       startEditing() {
@@ -108,9 +113,7 @@
     components: {
       'toolbar-button': button,
       background,
-      pane,
-      status,
-      'progress-bar': progressBar
+      pane
     }
   };
 </script>

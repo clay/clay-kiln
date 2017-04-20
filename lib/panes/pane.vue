@@ -6,7 +6,7 @@
   }
 
   .pane-slide-enter, .pane-slide-leave-active {
-    transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, calc(100% + 50px), 0);
   }
 </style>
 
