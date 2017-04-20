@@ -75,7 +75,7 @@
   import parseDate from 'date-fns/parse';
   import dateFormat from 'date-fns/format';
   import getTime from 'date-fns/get_time';
-  import isSameDay from 'date-fns/is_same_day';
+  import isToday from 'date-fns/is_today';
   import isYesterday from 'date-fns/is_yesterday';
   import isTomorrow from 'date-fns/is_tomorrow';
   import addWeeks from 'date-fns/add_weeks';
@@ -86,7 +86,7 @@
   import { START_PROGRESS, FINISH_PROGRESS } from '../../lib/toolbar/mutationTypes';
 
   function calendar(date) {
-    if (isSameDay(now, date)) {
+    if (isToday(date)) {
       // today
       return distanceInWordsToNow(date, { includeSeconds: true, addSuffix: true });
     } else if (isYesterday(date)) {
