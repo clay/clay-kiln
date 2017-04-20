@@ -296,7 +296,7 @@
     // because we're parsing out <p> tags, we can conclude that two <br> tags
     // means a "real" paragraph (e.g. the writer intended for this to be a paragraph break),
     // whereas a single <br> tag is intended to simply be a line break.
-    // also look for headers
+    // also look for headers (they cannot have any text before or after them)
     let paragraphs = _.map(str.split(/(?:<br\s?\/><br\s?\/>|<\/h[1-9]>)/ig), (s) => s.trim());
 
     // handle inline blockquotes (and, in the future, other inline things)
@@ -373,14 +373,14 @@
         throw new Error('No matching paste rule for ' + cleanStr);
       }
 
-      // grab stuff from matched rule, incl. component, field, sanitize
+      // grab stuff from matched rule, incl. component and field
       matchedObj = _.assign({}, matchedRule);
 
       // find actual matched value for component
       // note: rules need to grab _some value_ from the string
       matchedValue = matchedRule.match.exec(cleanStr)[1];
 
-      // finally, add the potentially-sanitized value into the matched obj
+      // finally, add the value into the matched obj
       matchedObj.value = matchedValue;
 
       return matchedObj;
@@ -388,11 +388,9 @@
       var val = component.value;
 
       // filter out any components that are blank (filled with empty spaces)
-      // this happens a lot when paragraphs really only contain <p> tags, <div>s, or extra spaces
-      // we filter AFTER generating text models because the generation gets rid of tags that paragraphs can't handle
+      // this happens when paragraphs really only contain <p> tags, <div>s, <br>s, or extra spaces
 
-      // return true if the string contains words (anything that isn't whitespace, but not just a single closing tag),
-      // or if it's a text-model that contains words (anything that isn't whitespace, but not just a single closing tag)
+      // return true if the string contains words (anything that isn't whitespace, but not just a single closing tag)
       return _.isString(val) && val.match(/\S/) && !val.match(/^<\/.*?>$/);
     });
   }
