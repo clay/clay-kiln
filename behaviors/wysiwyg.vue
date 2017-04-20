@@ -149,8 +149,8 @@
     Clipboard = Quill.import('modules/clipboard'),
     Inline = Quill.import('blots/inline'),
     toolbarIcons = Quill.import('ui/icons'),
-    allowedInlineTags = ['strong', 'em', 'a', 'br', 's', 'span', 'p'], // note: p gets parsed out in sanitizeInlineHTML
-    allowedBlockTags = allowedInlineTags.concat(['h1', 'h2', 'h3', 'h4', 'blockquote']),
+    allowedInlineTags = ['strong', 'em', 'a', 'br', 's', 'span', 'sup', 'sub', 'p'], // note: p gets parsed out in sanitizeInlineHTML
+    allowedBlockTags = allowedInlineTags.concat(['h1', 'h2', 'h3', 'h4', 'blockquote', 'ul', 'ol', 'li']),
     allowedAttributes = {
       a: ['href']
     },
@@ -658,9 +658,31 @@
   function parsePhraseButton(button) {
     if (_.isObject(button) && button.phrase) {
       return button.phrase.class ? `phrase-${button.phrase.class}` : 'phrase';
-    } else if (_.isString(button)) {
+    } else {
       return button; // note: 'phrase' might be the button
     }
+  }
+
+  /**
+   * parse supported formats from button arguments
+   * buttons look like 'bold' or { 'list': 'ordered' }
+   * @param  {array} buttons
+   * @return {array}
+   */
+  function parseFormats(buttons) {
+    return _.reduce(buttons, (result, button) => {
+      // add every string besides 'clean' and 'phrase'
+      // (phrease is added later)
+      if (_.isString(button) && !_.includes(['clean', 'phrase'], button)) {
+        result.push(button);
+      } else if (_.isObject(button) && !button.phrase) {
+        // add every object besides 'phrase'
+        // (phrase is added later)
+        // e.g. { script: sup }, { list: ordered }
+        result.push(Object.keys(button)[0]);
+      }
+      return result;
+    }, ['header', 'blockquote']); // also support these formats, so we can paste them in
   }
 
   export default {
@@ -715,7 +737,7 @@
         initialData = this.data || '',
         appendText = _.get(store, 'state.ui.currentForm.appendText'),
         parent = _.get(store, 'state.ui.currentForm.el') && getParentComponent(getComponentEl(_.get(store, 'state.ui.currentForm.el'))),
-        formats = _.flatten(_.filter(this.args.buttons, (button) => _.isString(button) && !_.includes(['clean', 'phrase'], button))).concat(['header', 'blockquote']),
+        formats = parseFormats(this.args.buttons),
         // some useful details about the current component, range, etc
         // to pass into handleMultiParagraphPaste()
         current = {
