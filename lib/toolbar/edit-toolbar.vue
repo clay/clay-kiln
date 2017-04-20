@@ -18,6 +18,16 @@
       left: 0;
       width: auto;
     }
+
+    .clay-menu-button {
+      border-right: 1px solid $toolbar-view-border;
+    }
+
+    .publish {
+      @media screen and (min-width: 1024px) {
+        min-width: 130px; // largest width (scheduled)
+      }
+    }
   }
 </style>
 
@@ -30,9 +40,9 @@
       <progress-bar></progress-bar>
       <status></status>
       <section class="kiln-toolbar edit-mode">
-        <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" centered="false" @click="toggleMenu"></toolbar-button>
+        <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" @click="toggleMenu"></toolbar-button>
+        <toolbar-button class="view-button" name="close" icon-name="close-edit" text="Stop Editing" @click="stopEditing"></toolbar-button>
         <div class="kiln-toolbar-inner">
-          <toolbar-button class="view-button" name="close" icon-name="close-edit" @click="stopEditing"></toolbar-button>
           <toolbar-button class="components" name="components" icon-name="search-page" text="Find on Page" @click="toggleComponents"></toolbar-button>
           <toolbar-button class="undo" :disabled="!undoEnabled" icon-name="undo" text="Undo" @click="undo"></toolbar-button>
           <toolbar-button class="redo" :disabled="!redoEnabled" icon-name="redo" text="Redo" @click="redo"></toolbar-button>
