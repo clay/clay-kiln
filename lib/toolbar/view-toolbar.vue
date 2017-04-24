@@ -49,10 +49,10 @@
       <pane></pane>
       <section class="kiln-toolbar view-mode" :class="paneSize">
         <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" @click="toggleMenu"></toolbar-button>
-        <toolbar-button v-if="isLoading" class="publish loading" icon-name="draft" text="Edit"></toolbar-button>
-        <toolbar-button v-else-if="pageState.scheduled" class="publish scheduled" icon-name="scheduled" text="Edit" @click="togglePublish"></toolbar-button>
-        <toolbar-button v-else-if="pageState.published" class="publish published" icon-name="published" text="Edit" @click="togglePublish"></toolbar-button>
-        <toolbar-button v-else class="publish draft" icon-name="draft" text="Edit" @click="togglePublish"></toolbar-button>
+        <toolbar-button v-if="isLoading" class="publish loading" icon-name="draft" text="Edit" @click="startEditing"></toolbar-button>
+        <toolbar-button v-else-if="pageState.scheduled" class="publish scheduled" icon-name="scheduled" text="Edit" @click="startEditing"></toolbar-button>
+        <toolbar-button v-else-if="pageState.published" class="publish published" icon-name="published" text="Edit" @click="startEditing"></toolbar-button>
+        <toolbar-button v-else class="publish draft" icon-name="draft" text="Edit" @click="startEditing"></toolbar-button>
       </section>
     </div>
   </div>
