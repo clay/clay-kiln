@@ -58,7 +58,7 @@ The mode of the editor sets syntax highlighting, linting, and other functionalit
 
 _Note:_ We will add more supported modes as we find use cases for them. See [this link](http://codemirror.net/mode/) for the full list of modes supported in codemirror.
 
-# required
+# conditional-required
 
 Appends "required (field name)" to a field's label, to mark that field as required (based on another field).
 

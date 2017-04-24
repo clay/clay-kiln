@@ -1,5 +1,5 @@
 <docs>
-  # required
+  # conditional-required
 
   Appends "required (field name)" to a field's label, to mark that field as required (based on another field).
 
