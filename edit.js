@@ -107,8 +107,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // always unfocus if clicking out of the current focus (and not directly clicking into another focusable el)
-    if (_.get(store, 'state.ui.currentFocus') && !hasClickedFocusableEl(e)) {
+    if (_.get(store, 'state.ui.currentFocus') && !hasClickedFocusableEl(e) && !window.kiln.isDragging) {
       store.dispatch('unfocus').catch(_.noop);
+    }
+
+    // if we're in the process of dragging, untick window.kiln.isDragging after we've tested against it
+    if (window.kiln.isDragging) {
+      window.kiln.isDragging = false;
     }
 
     // Close a pane
