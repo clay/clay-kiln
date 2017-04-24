@@ -2,6 +2,7 @@
   @import '../../styleguide/colors';
   @import '../../styleguide/buttons';
   @import '../../styleguide/inputs';
+  @import '../../styleguide/mixins';
 
   .page-actions {
     &-head {
@@ -20,6 +21,8 @@
     }
 
     &-foot {
+      @include clearfix();
+
       &-btn {
         @include button-outlined($published);
 
