@@ -173,6 +173,7 @@
       &:before {
         border-top: none;
         height: calc(100% + 2px);
+        top: 0;
       }
 
       &:after {
