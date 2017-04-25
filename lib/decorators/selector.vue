@@ -282,24 +282,6 @@
   .component-selector-wrapper .kiln-placeholder {
     cursor: pointer;
   }
-
-  // inner component lists should always be flexed
-  // (this will display properly if their parents are either flexed OR box)
-  .component-list-inner {
-    display: inherit;
-    flex-direction: inherit;
-    flex-wrap: inherit;
-    flex: 1 1 100%;
-  }
-
-  // overlay div on top of iframes
-  .iframe-overlay-div {
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-  }
 </style>
 
 <template>
