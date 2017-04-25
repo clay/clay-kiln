@@ -3,16 +3,17 @@
   @import '../../styleguide/layers';
   @import '../../styleguide/buttons';
 
-  // size of the fat component border
+  // size of the thick component border
   $border-size: 3px;
   // amount of space between selector and component
   $offset: 5px;
-  // smallest length of the fat border
+  // smallest length of the thick border
   $min-border-length: 20px;
 
   // borders
-  $fat-border: $border-size solid $mini-selector-color;
+  $thick-border: $border-size solid $mini-selector-color;
   $thin-border: 1px solid $mini-selector-color;
+  $thin-padding: 1px solid $mini-selector-border-padding;
 
   // component element needs to be position: relative for the mini selectors to display
   .component-selector-wrapper {
@@ -20,6 +21,8 @@
   }
 
   .mini-selector {
+    @include component-toolbar-layer();
+
     opacity: 1;
     pointer-events: none;
     position: absolute;
@@ -39,22 +42,22 @@
     }
 
     &.left {
-      border-right: $fat-border;
+      border-right: $thick-border;
       right: calc(100% + #{$offset});
     }
 
     &.right {
-      border-left: $fat-border;
+      border-left: $thick-border;
       left: calc(100% + #{$offset});
     }
 
     &.top {
-      border-bottom: $fat-border;
+      border-bottom: $thick-border;
       bottom: calc(100% + #{$offset});
     }
 
     &.bottom {
-      border-top: $fat-border;
+      border-top: $thick-border;
       top: calc(100% + #{$offset});
     }
 
@@ -66,7 +69,7 @@
   }
 
   .selector-fade-enter-active, .selector-fade-leave-active {
-    transition: opacity 350ms ease-out;
+    transition: opacity 150ms linear;
   }
 
   .selector-fade-enter, .selector-fade-leave-to {
@@ -74,9 +77,31 @@
   }
 
   .quick-bar {
+    // behind its parent, so the border padding doesn't show
+    @include component-toolbar-menu-layer();
+
     background: $selector-bg;
     border: $thin-border;
     display: flex;
+    pointer-events: all;
+    position: absolute;
+
+    &:before {
+      border: $thin-padding;
+      content: '';
+      height: calc(100% + 4px);
+      left: -2px;
+      position: absolute;
+      top: -2px;
+      width: calc(100% + 4px);
+    }
+
+    &:after {
+      content: '';
+      height: 100%;
+      position: absolute;
+      width: 100%;
+    }
 
     &.left,
     &.right {
@@ -92,10 +117,76 @@
       justify-content: flex-start;
     }
 
+    // nudge the quick bar so the border lines up with the thick border
+    &.left {
+      border-right: none;
+      right: 0;
+
+      &:before {
+        border-right: none;
+        width: calc(100% + 2px);
+      }
+
+      &:after {
+        border-right: $thin-border;
+        height: calc(100% + 2px);
+        right: -1px;
+      }
+    }
+
+    &.right {
+      border-left: none;
+      left: 0;
+
+      &:before {
+        border-left: none;
+        width: calc(100% + 2px);
+      }
+
+      &:after {
+        border-left: $thin-border;
+        height: calc(100% + 2px);
+        left: -1px;
+      }
+    }
+
+    &.top {
+      border-bottom: none;
+      bottom: 0;
+
+      &:before {
+        border-bottom: none;
+        height: calc(100% + 2px);
+      }
+
+      &:after {
+        border-bottom: $thin-border;
+        bottom: -1px;
+        width: calc(100% + 2px);
+      }
+    }
+
+    &.bottom {
+      border-top: none;
+      top: 0;
+
+      &:before {
+        border-top: none;
+        height: calc(100% + 2px);
+      }
+
+      &:after {
+        border-top: $thin-border;
+        top: -1px;
+        width: calc(100% + 2px);
+      }
+    }
+
     &-button {
       @include icon-button($mini-selector-color, 18px);
 
       padding: 14px;
+      z-index: 1;
 
       .left &.quick-bar-add,
       .left &.quick-bar-replace,
@@ -116,10 +207,10 @@
 
 <template>
   <transition name="selector-fade">
-    <aside data-ignore v-if="hasCurrentComponent" class="mini-selector" :class="selectorPosition" @click.stop>
+    <aside data-ignore v-show="isCurrentSelection" class="mini-selector" :class="selectorPosition" @click.stop>
       <div v-if="hasButtons" class="quick-bar" :class="selectorPosition">
-        <button v-if="hasSettings" class="quick-bar-button quick-bar-settings" title="Component Settings" @click="openSettings"><icon name="settings"></icon></button>
-        <button v-if="hasRemove" class="quick-bar-button quick-bar-remove" title="Remove Component" @click="removeComponent"><icon name="delete"></icon></button>
+        <button v-if="hasSettings" class="quick-bar-button quick-bar-settings" title="Component Settings" @click.stop="openSettings"><icon name="settings"></icon></button>
+        <button v-if="hasRemove" class="quick-bar-button quick-bar-remove" title="Remove Component" @click.stop="removeComponent"><icon name="delete"></icon></button>
         <button v-if="hasAddComponent" class="quick-bar-button quick-bar-add" title="Add Component" @click.stop="openAddComponentPane"><icon name="add-icon"></icon></button>
         <button v-if="hasReplaceComponent" class="quick-bar-button quick-bar-replace" title="Replace Component"><icon name="replace-icon"></icon></button>
       </div>
@@ -168,9 +259,6 @@
       };
     },
     computed: {
-      hasCurrentComponent() {
-        return _.get(store, 'state.ui.currentSelection') !== null;
-      },
       currentComponent() {
         return _.get(store, 'state.ui.currentSelection') || {};
       },
@@ -178,10 +266,10 @@
         return this.currentComponent.uri;
       },
       parentField() {
-        return this.currentComponent.parentField;
+        return this.isCurrentSelection && this.currentComponent.parentField;
       },
       hasSettings() {
-        return !_.isEmpty(getSettingsFields(getData(this.uri), getSchema(this.uri)).fields);
+        return this.isCurrentSelection && !_.isEmpty(getSettingsFields(getData(this.uri), getSchema(this.uri)).fields);
       },
       // note: only for components in LISTS! components in properties can be replaced but not removed (for now)
       hasRemove() {
@@ -196,7 +284,7 @@
       hasButtons() {
         return this.hasSettings || this.hasRemove || this.hasAddComponent || this.hasReplaceComponent;
       },
-      isCurrentSelection() { // used to calculate selector position
+      isCurrentSelection() {
         return this.$options.componentEl === this.currentComponent.el;
       }
     },

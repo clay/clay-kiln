@@ -2,8 +2,12 @@
 // all view-mode css should specify a z-index between 0 and 999
 // the editor will use the levels above that
 
-@mixin component-toolbar-layer {
+@mixin component-toolbar-menu-layer {
   z-index: 1000;
+}
+
+@mixin component-toolbar-layer {
+  z-index: 1010;
 }
 
 @mixin overlay-layer {
