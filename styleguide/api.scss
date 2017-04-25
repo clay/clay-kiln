@@ -12,7 +12,7 @@
 }
 
 // generic class for buttons in component selectors
-.selector-button {
+.expanded-selector-button {
   @include icon-button($selector-icon, 18px);
 
   padding: 14px;

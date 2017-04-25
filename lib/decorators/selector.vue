@@ -27,7 +27,6 @@
 
   // fade things behind the component
   .component-selector:before {
-    background: $selector-overlay;
     content: '';
     height: 100vh;
     left: 0;
@@ -224,7 +223,7 @@
 
   // component label
   .selected-label {
-    @include label();
+    @include selector-label();
 
     color: $selector-text;
     flex: 1 0 auto;

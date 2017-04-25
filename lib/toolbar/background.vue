@@ -19,7 +19,6 @@
     top: 0;
     transform: translateZ(0); // create a new viewport context
     width: 100%;
-    z-index: 1;
   }
 
   .fade-enter-active, .fade-leave-active {
