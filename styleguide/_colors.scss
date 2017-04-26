@@ -26,10 +26,12 @@ $subtext: #888888; // used for secondary text
 
 // selector borders
 $selector-border: #727272;
-$selector-icon: $title;
-$selector-text: $title;
+$selector-icon: #727272;
+$selector-text: #727272;
 $selector-bg: rgba(255, 255, 255, .95); // background of selector menus
-$selector-overlay: rgba(255, 255, 255, .4); // fade other components
+$selector-divider: #d6d6d6;
+$mini-selector-color: $save;
+$mini-selector-border-padding: #fff;
 
 // placeholder colors
 $placeholder-label: $title;

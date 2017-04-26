@@ -107,9 +107,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // always unfocus if clicking out of the current focus (and not directly clicking into another focusable el)
-    if (_.get(store, 'state.ui.currentFocus') && !hasClickedFocusableEl(e)) {
+    if (_.get(store, 'state.ui.currentFocus') && !hasClickedFocusableEl(e) && !window.kiln.isInvalidDrag) {
       store.dispatch('unfocus').catch(_.noop);
     }
+
+    // unset isInvalidDrag after checking for unfocus
+    window.kiln.isInvalidDrag = false;
 
     // Close a pane
     if (_.get(store, 'state.ui.currentPane')) {
@@ -147,7 +150,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // navigate components when hitting ↑ / ↓ arrows (if there's a component selected)
   document.addEventListener('keydown', function (e) {
-    const key = keycode(e);
+    const key = keycode(e),
+      // shortKey is a Quill convention to test for cmd on mac and ctrl on windows
+      SHORTKEY = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 
     // don't navigate if they have a form or pane open
     if (_.get(store, 'state.ui.currentFocus') || _.get(store, 'state.ui.currentPane')) {
@@ -158,10 +163,10 @@ document.addEventListener('DOMContentLoaded', function () {
       store.dispatch('navigateComponents', 'prev');
     } else if (key === 'down') {
       store.dispatch('navigateComponents', 'next');
-    } else if (key === 'z' && e.metaKey && e.shiftKey) {
+    } else if (key === 'z' && e[SHORTKEY] && e.shiftKey) {
       // redo
       store.dispatch('redo');
-    } else if (key === 'z' && e.metaKey) {
+    } else if (key === 'z' && e[SHORTKEY]) {
       // undo
       store.dispatch('undo');
     }

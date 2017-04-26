@@ -112,7 +112,7 @@
 </style>
 
 <template>
-  <button class="magic-button" @click.prevent="doMagic">
+  <button class="magic-button" @click.prevent.stop="doMagic">
     <icon name="magic-button"></icon>
   </button>
 </template>
@@ -270,6 +270,10 @@
           storePath = this.args.store,
           store = this.$store,
           name = this.name;
+
+        // unset isInvalidDrag after clicking somewhere in the form
+        // (since the button is stopping propagation)
+        window.kiln.isInvalidDrag = false;
 
         // get the initial data
         let data = getData.call(this, field, component),

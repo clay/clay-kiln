@@ -56,15 +56,19 @@ $light-stack: $open-sans-light, $system-fonts;
   color: $text;
 }
 
-// labels, used on component selector
-@mixin label {
-  @include input-text();
+// component selector labels
+@mixin selector-label {
+  @include kiln-copy();
 
+  color: $selector-text;
   display: inline-block;
   font-family: $semibold-stack;
-  margin-bottom: 5px;
+  font-size: 13px;
+  margin: 0;
+  text-transform: uppercase;
 }
 
+// form labels
 @mixin input-label {
   @include kiln-copy();
 

@@ -3,6 +3,19 @@
 
   .kiln-field {
     @include field();
+
+    opacity: 1;
+    transition: opacity 300ms linear;
+    visibility: visible;
+
+    &.kiln-reveal-hide {
+      // fade out, THEN remove the element from the space it takes up
+      // (by using margin-top, which can be transitioned and thus delayed)
+      margin-top: -1000px;
+      opacity: 0;
+      transition: visibility 0ms 300ms, margin-top 0ms 300ms, opacity 300ms linear;
+      visibility: hidden;
+    }
   }
 
   .editor-inline {
@@ -13,7 +26,7 @@
 </style>
 
 <template>
-  <fieldset class="kiln-field" v-if="beforeBehaviors.lenght || mainBehaviors.length || afterBehaviors.length">
+  <fieldset class="kiln-field" v-if="beforeBehaviors.length || mainBehaviors.length || afterBehaviors.length">
     <div class="field-before">
       <component v-for="behavior in beforeBehaviors" :is="behavior.fn" :name="name" :data="data" :schema="schema" :args="behavior.args"></component>
     </div>

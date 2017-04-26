@@ -22,7 +22,15 @@
   }
 
   .pane-tabs-content {
-    @include pane-tab-content();
+    height: calc(100% - 50px); // account for tab height
+    overflow-x: visible;
+    overflow-y: scroll;
+  }
+
+  .pane-notabs-content {
+    height: 100%;
+    overflow-x: visible;
+    overflow-y: scroll;
   }
 </style>
 
@@ -42,7 +50,7 @@
             </ul>
             <!-- todo: add right arrow for scrolling -->
           </div>
-          <div class="pane-tabs-content input-container" v-for="(section, index) in sections" v-if="isActive(index)">
+          <div class="input-container" :class="hasSections ? 'pane-tabs-content' : 'pane-notabs-content'" v-for="(section, index) in sections" v-if="isActive(index)">
             <field v-for="(field, fieldIndex) in section.fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
           </div>
           <button type="submit" class="hidden-submit" @click.stop></button>

@@ -52,8 +52,10 @@
         buttons:
           - bold
           - italic
-          - strikethrough
+          - strike
           - link
+          -
+            script: sub
         paste:
           -
             match: (https?://twitter\.com/\w+?/status/\d+)
@@ -113,6 +115,14 @@
     padding: 0;
   }
 
+  .ql-container.ql-bubble:not(.ql-disabled) a {
+    white-space: inherit;
+  }
+
+  .ql-bubble .ql-editor a {
+    text-decoration: inherit;
+  }
+
   // toolbar phrase button
   .kiln-phrase-button {
     @include normal-text();
@@ -141,8 +151,8 @@
     Clipboard = Quill.import('modules/clipboard'),
     Inline = Quill.import('blots/inline'),
     toolbarIcons = Quill.import('ui/icons'),
-    allowedInlineTags = ['strong', 'em', 'a', 'br', 'strike', 'span', 'p'], // note: p gets parsed out in sanitizeInlineHTML
-    allowedBlockTags = allowedInlineTags.concat(['h1', 'h2', 'h3', 'h4', 'blockquote']),
+    allowedInlineTags = ['strong', 'em', 'a', 'br', 's', 'span', 'sup', 'sub', 'p'], // note: p gets parsed out in sanitizeInlineHTML
+    allowedBlockTags = allowedInlineTags.concat(['h1', 'h2', 'h3', 'h4', 'blockquote', 'ul', 'ol', 'li']),
     allowedAttributes = {
       a: ['href']
     },
@@ -157,9 +167,10 @@
       ]
     },
     transformTags = {
-      div: sanitize.simpleTransform('p'),
-      b: sanitize.simpleTransform('strong'),
-      i: sanitize.simpleTransform('em'),
+      div: 'p',
+      b: 'strong',
+      i: 'em',
+      strike: 's',
       span(tagName, attribs) {
         const style = attribs.style;
 
@@ -179,8 +190,8 @@
           // phrases are whitelisted (and can have additional classes if they're added above)
           return { tagName, attribs };
         } else {
-          // remove any other spans by setting them to a disallowed tag
-          return { tagName: 'h6' };
+          // remove any other spans
+          return {};
         }
       }
     },
@@ -203,6 +214,11 @@
     return str.replace(/&lt;(.*?)&gt;/ig, '<$1>');
   }
 
+  /**
+   * remove line breaks at the beginning or end of text
+   * @param  {string} str
+   * @return {string}
+   */
   function trimLinebreaks(str) {
     let trimmed = str.replace(/^(<br \/><br \/>|<br \/>)/i, '');
 
@@ -227,12 +243,62 @@
       parser
     });
 
+    // all text coming out of Quill will have each line wrapped in <p>,
+    // so we need to convert those to <br> line breaks
     return trimLinebreaks(sanitized.split('</p>')
       .filter((line) => line.trim().length > 0)
       .map((line) => {
         return line.replace('<p>', '');
       }).join('<br />'));
   };
+
+  /**
+   * determine if pasted text has well-formed paragraphs
+   * 'well-formed paragraphs' means the text is separated by <p> tags
+   * (e.g. when pasting from a website),
+   * rather than being separated by <p><br> tags
+   * (e.g. when pasting from a text editor that doesn't differentiate
+   * between soft linebreaks and separate paragraphs)
+   * @param  {string}  str
+   * @return {Boolean}
+   */
+  function hasWellFormedParagraphs(str) {
+    // malformed paragraphs will use <p><br></p> as their paragraph separator,
+    // because each line will technically be a new paragraph.
+    // well-formed paragraphs will just use <p>, and will use <br> by itself
+    // to designate soft linebreaks
+    return !_.includes(str, '<p><br /></p>');
+  }
+
+  /**
+   * similar to sanitizeInlineHTML, but allowing block-level tags
+   * since they'll be parsed out after paragraphs are split
+   * @param  {string} str
+   * @return {string}
+   */
+  function sanitizeMultiComponentHTML(str) {
+    const sanitized = sanitize(unescape(str), {
+      allowedTags: allowedBlockTags,
+      allowedAttributes,
+      allowedClasses,
+      transformTags,
+      parser
+    });
+
+    if (hasWellFormedParagraphs(sanitized)) {
+      return trimLinebreaks(sanitized.split('</p>')
+        .filter((line) => line.trim().length > 0)
+        .map((line) => {
+          return line.replace('<p>', '');
+        }).join('<br /><br />'));
+    } else {
+      return trimLinebreaks(sanitized.split('</p>')
+        .filter((line) => line.trim().length > 0)
+        .map((line) => {
+          return line.replace('<p>', '');
+        }).join('<br />'));
+    }
+  }
 
   /**
    * sanitize block html
@@ -257,18 +323,11 @@
    * @returns {array}
    */
   function splitParagraphs(str) {
-    // </p>, </div>, </h1> through </h9>, or two (interchangeable) <br> or newlines
-    // note: <br> tags may contain closing slashes, and there may be spaces around stuff
-    // note: split on both </blockquote> and <blockquote>, since there may be text before/after the quote
-    let paragraphs = _.map(str.split(/(?:<\/(?:p|div|h[1-9])>|(?:\s?<br(?:\s?\/)?>\s?|\s?\n\s?){2})/ig), s => s.trim());
-
-    // splitting on the closing p/div/header allows us to grab ALL the paragraphs from
-    // google docs, since when you paste from there the last paragraph
-    // isn't wrapped in a <p> tag. weird, right?
-    // splitting on closing <div> tags allows us to support some weird
-    // google docs situations (lots of line breaks with embedded media),
-    // as well as "plaintext" editors like IA Writer
-    // splitting on double line breaks/<br> tags allows us to catch a few edge cases in other editors
+    // because we're parsing out <p> tags, we can conclude that two <br> tags
+    // means a "real" paragraph (e.g. the writer intended for this to be a paragraph break),
+    // whereas a single <br> tag is intended to simply be a line break.
+    // also look for headers (they cannot have any text before or after them)
+    let paragraphs = _.map(str.split(/(?:<br\s?\/><br\s?\/>|<\/h[1-9]>)/ig), (s) => s.trim());
 
     // handle inline blockquotes (and, in the future, other inline things)
     // that should be parsed out as separate components
@@ -344,14 +403,14 @@
         throw new Error('No matching paste rule for ' + cleanStr);
       }
 
-      // grab stuff from matched rule, incl. component, field, sanitize
+      // grab stuff from matched rule, incl. component and field
       matchedObj = _.assign({}, matchedRule);
 
       // find actual matched value for component
       // note: rules need to grab _some value_ from the string
       matchedValue = matchedRule.match.exec(cleanStr)[1];
 
-      // finally, add the potentially-sanitized value into the matched obj
+      // finally, add the value into the matched obj
       matchedObj.value = matchedValue;
 
       return matchedObj;
@@ -359,11 +418,9 @@
       var val = component.value;
 
       // filter out any components that are blank (filled with empty spaces)
-      // this happens a lot when paragraphs really only contain <p> tags, <div>s, or extra spaces
-      // we filter AFTER generating text models because the generation gets rid of tags that paragraphs can't handle
+      // this happens when paragraphs really only contain <p> tags, <div>s, <br>s, or extra spaces
 
-      // return true if the string contains words (anything that isn't whitespace, but not just a single closing tag),
-      // or if it's a text-model that contains words (anything that isn't whitespace, but not just a single closing tag)
+      // return true if the string contains words (anything that isn't whitespace, but not just a single closing tag)
       return _.isString(val) && val.match(/\S/) && !val.match(/^<\/.*?>$/);
     });
   }
@@ -631,9 +688,31 @@
   function parsePhraseButton(button) {
     if (_.isObject(button) && button.phrase) {
       return button.phrase.class ? `phrase-${button.phrase.class}` : 'phrase';
-    } else if (_.isString(button)) {
+    } else {
       return button; // note: 'phrase' might be the button
     }
+  }
+
+  /**
+   * parse supported formats from button arguments
+   * buttons look like 'bold' or { 'list': 'ordered' }
+   * @param  {array} buttons
+   * @return {array}
+   */
+  function parseFormats(buttons) {
+    return _.reduce(buttons, (result, button) => {
+      // add every string besides 'clean' and 'phrase'
+      // (phrease is added later)
+      if (_.isString(button) && !_.includes(['clean', 'phrase'], button)) {
+        result.push(button);
+      } else if (_.isObject(button) && !button.phrase) {
+        // add every object besides 'phrase'
+        // (phrase is added later)
+        // e.g. { script: sup }, { list: ordered }
+        result.push(Object.keys(button)[0]);
+      }
+      return result;
+    }, ['header', 'blockquote']); // also support these formats, so we can paste them in
   }
 
   export default {
@@ -688,7 +767,7 @@
         initialData = this.data || '',
         appendText = _.get(store, 'state.ui.currentForm.appendText'),
         parent = _.get(store, 'state.ui.currentForm.el') && getParentComponent(getComponentEl(_.get(store, 'state.ui.currentForm.el'))),
-        formats = _.flatten(_.filter(this.args.buttons, (button) => _.isString(button) && !_.includes(['clean', 'phrase'], button))).concat(['header', 'blockquote']),
+        formats = parseFormats(this.args.buttons),
         // some useful details about the current component, range, etc
         // to pass into handleMultiParagraphPaste()
         current = {
@@ -762,7 +841,7 @@
             // asynchronously trigger component creation if they match things
             // note: this may also replace the current paragraph if the entirety of the paragraph
             // is something that matches another component
-            components = matchComponents(splitParagraphs(sanitizeBlockHTML(this.container.innerHTML)), rules);
+            components = matchComponents(splitParagraphs(sanitizeMultiComponentHTML(this.container.innerHTML)), rules);
             delta = handleMultiParagraphPaste(components, {
               quill: this.quill,
               current,
@@ -892,7 +971,7 @@
           }))
           .then((newComponent) => {
             // focus on the BEGINNING of the last element (before any text we may have split into it)
-            focusNextComponent(newComponent, _.last(otherComponentsToUpdate).field);
+            focusNextComponent(newComponent, _.last(components).field);
             firstComponentToUpdate = null;
             otherComponentsToUpdate = null;
           });

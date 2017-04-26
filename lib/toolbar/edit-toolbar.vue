@@ -18,11 +18,22 @@
       left: 0;
       width: auto;
     }
+
+    .clay-menu-button {
+      border-right: 1px solid $toolbar-view-border;
+    }
+
+    .publish {
+      @media screen and (min-width: 1024px) {
+        min-width: 130px; // largest width (scheduled)
+      }
+    }
   }
 </style>
 
 <template>
   <div class="kiln-wrapper">
+    <selector></selector>
     <background></background>
     <div class="kiln-toolbar-wrapper">
       <pane></pane>
@@ -30,13 +41,12 @@
       <progress-bar></progress-bar>
       <status></status>
       <section class="kiln-toolbar edit-mode">
-        <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" centered="false" @click="toggleMenu"></toolbar-button>
+        <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" @click="toggleMenu"></toolbar-button>
+        <toolbar-button class="view-button" name="close" icon-name="close-edit" text="Stop Editing" @click="stopEditing"></toolbar-button>
         <div class="kiln-toolbar-inner">
-          <toolbar-button class="view-button" name="close" icon-name="close-edit" @click="stopEditing"></toolbar-button>
           <toolbar-button class="components" name="components" icon-name="search-page" text="Find on Page" @click="toggleComponents"></toolbar-button>
           <toolbar-button class="undo" :disabled="!undoEnabled" icon-name="undo" text="Undo" @click="undo"></toolbar-button>
           <toolbar-button class="redo" :disabled="!redoEnabled" icon-name="redo" text="Redo" @click="redo"></toolbar-button>
-          <toolbar-button class="add-component-button" :disabled="!hasSelectedAddComponent" name="add-component" icon-name="add-icon" text="Add Component" @click="openAddComponentPane"></toolbar-button>
           <div class="flex-span flex-span-inner"></div>
           <toolbar-button class="preview" name="preview" icon-name="new-tab" text="Preview" @click="togglePreview"></toolbar-button>
         </div>
@@ -55,8 +65,7 @@
   import { find } from '@nymag/dom';
   import toggleEdit from '../utils/toggle-edit';
   import { getSchema } from '../core-data/components';
-  import { getParentComponent } from '../utils/component-elements';
-  import { refAttr, layoutAttr, editAttr, selectorClass, componentListProp } from '../utils/references';
+  import { layoutAttr, editAttr, componentListProp } from '../utils/references';
   import label from '../utils/label';
   import { getListsInHead } from '../utils/head-components';
   import progressBar from './progress.vue';
@@ -65,6 +74,7 @@
   import overlay from '../forms/overlay.vue';
   import pane from '../panes/pane.vue';
   import status from './status.vue';
+  import selector from './selector.vue';
 
   /**
    * get tabs for head component lists in the page and layout
@@ -141,15 +151,6 @@
     computed: mapState({
       pageState: (state) => state.page.state,
       isLoading: 'isLoading',
-      hasSelectedAddComponent: (state) => {
-        const current = state.ui.currentSelection,
-          // look in the FIRST component selector inside the selected element.
-          // this will be the current component's selector
-          selector = current && find(current, `.${selectorClass}`),
-          hasAddButton = selector && find(selector, '.selected-add');
-
-        return !!hasAddButton;
-      },
       undoEnabled: (state) => {
         return !state.undo.atStart && !state.ui.currentFocus && !state.ui.currentPane;
       },
@@ -157,14 +158,6 @@
         return !state.undo.atEnd && !state.ui.currentFocus && !state.ui.currentPane;
       }
     }),
-    components: {
-      'toolbar-button': button,
-      background,
-      overlay,
-      pane,
-      status,
-      'progress-bar': progressBar
-    },
     methods: {
       stopEditing() {
         toggleEdit();
@@ -260,22 +253,16 @@
 
           store.dispatch('togglePane', { options, button });
         });
-      },
-      openAddComponentPane() {
-        const currentEl = _.get(this, '$store.state.ui.currentSelection'),
-          currentURI = currentEl && currentEl.getAttribute(refAttr),
-          path = currentEl && currentEl.parentNode && currentEl.parentNode.getAttribute(editAttr),
-          parentComponent = currentEl && getParentComponent(currentEl),
-          parentURI = parentComponent && parentComponent.getAttribute(refAttr);
-
-        if (currentURI && parentURI && path) {
-          return this.$store.dispatch('openAddComponents', {
-            currentURI,
-            parentURI,
-            path
-          });
-        }
       }
+    },
+    components: {
+      'toolbar-button': button,
+      background,
+      overlay,
+      pane,
+      status,
+      'progress-bar': progressBar,
+      selector
     }
   };
 </script>

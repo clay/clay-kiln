@@ -21,7 +21,7 @@
 </style>
 
 <template>
-  <section class="editor-inline" @click.stop>
+  <section class="editor-inline" @click.stop="unsetInvalidDrag">
     <form @submit.prevent="save">
       <div class="input-container">
         <field v-for="(field, index) in fieldNames" :class="{ 'first-field': index === 0 }" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
@@ -51,6 +51,10 @@
     methods: {
       save() {
         store.dispatch('unfocus');
+      },
+      unsetInvalidDrag() {
+        // unset isInvalidDrag after clicking somewhere in the form
+        window.kiln.isInvalidDrag = false;
       }
     },
     components: {

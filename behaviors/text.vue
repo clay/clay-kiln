@@ -165,7 +165,10 @@
         const offset = _.get(this, '$store.state.ui.currentForm.initialOffset');
 
         this.$nextTick(() => {
-          setCaret(this.$el, offset, this.data);
+          if (_.includes(['text', 'search', 'url', 'tel', 'password'], this.args.type)) {
+            // selection range is only permitted on certain input types
+            setCaret(this.$el, offset, this.data);
+          }
         });
       }
     },

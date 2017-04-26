@@ -3,10 +3,24 @@
   @import '../../styleguide/typography';
   @import '../../styleguide/buttons';
 
+  // all editable elements should have some kind of ux showing they can be edited
+  *[data-editable] {
+    cursor: pointer;
+  }
+
+  // editable TEXT elements should use a caret rather than a pointer through
+  p[data-editable],
+  blockquote[data-editable] {
+    cursor: text;
+  }
+
   // styles shared between regular and permanent placeholders
   .kiln-placeholder,
   .kiln-permanent-placeholder {
     align-items: center;
+    // everything inside a regular placeholder should use the pointer,
+    // even if that placeholder is inside a paragraph/blockquote
+    cursor: pointer;
     display: flex;
     flex-direction: column;
     height: 100%;
