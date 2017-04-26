@@ -107,6 +107,7 @@
     &.right {
       align-items: flex-start;
       flex-direction: column;
+      height: auto;
       justify-content: center;
     }
 
@@ -115,6 +116,7 @@
       align-items: center;
       flex-direction: row;
       justify-content: flex-start;
+      width: auto;
     }
 
     // nudge the quick bar so the border lines up with the thick border
@@ -190,6 +192,8 @@
     &-button {
       @include icon-button($mini-selector-color, 18px);
 
+      // note: 46px is width minus border
+      flex: 0 0 46px;
       padding: 14px;
       z-index: 1;
 
