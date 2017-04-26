@@ -124,6 +124,7 @@
   import { send } from '../lib/utils/rest';
   import { reduce as reducePromise } from '../lib/utils/promises';
   import { uriToUrl } from '../lib/utils/urls';
+  import { isEmpty } from '../lib/utils/comparators';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import transformers from './magic-button-transformers';
   import icon from '../lib/utils/icon.vue';
@@ -247,7 +248,11 @@
    * @param {*} data
    */
   function setFieldData(store, name, data) {
-    store.commit(UPDATE_FORMDATA, { path: name, data });
+    if (isEmpty(data)) {
+      store.commit(UPDATE_FORMDATA, { path: name, data: '' }); // set emptystring in field if there's no data
+    } else {
+      store.commit(UPDATE_FORMDATA, { path: name, data });
+    }
   }
 
   export default {

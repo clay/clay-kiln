@@ -131,6 +131,7 @@
         border-right: $thin-border;
         height: calc(100% + 2px);
         right: -1px;
+        top: 0;
       }
     }
 
@@ -147,6 +148,7 @@
         border-left: $thin-border;
         height: calc(100% + 2px);
         left: -1px;
+        top: 0;
       }
     }
 
@@ -162,6 +164,7 @@
       &:after {
         border-bottom: $thin-border;
         bottom: -1px;
+        left: 0;
         width: calc(100% + 2px);
       }
     }
@@ -178,6 +181,7 @@
 
       &:after {
         border-top: $thin-border;
+        left: 0;
         top: -1px;
         width: calc(100% + 2px);
       }
