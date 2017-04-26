@@ -237,7 +237,7 @@
         <ul v-if="pagesLoaded" class="page-list-readout">
           <li v-for="page in pages" class="page-list-readout-item">
             <div class="page-list-readout-item-title">
-              <a class="page-list-readout-item-link" :href="page.url">{{ page.title }}</a>
+              <a class="page-list-readout-item-link" :href="page.url" target="_blank">{{ page.title }}</a>
             </div>
             <div class="page-list-readout-item-author">{{ page.firstAuthor }}</div>
             <div class="page-list-readout-item-status">
