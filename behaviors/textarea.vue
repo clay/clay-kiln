@@ -28,6 +28,7 @@
   import keycode from 'keycode';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { setCaret, isFirstField } from '../lib/forms/field-helpers';
+  import _ from 'lodash';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],

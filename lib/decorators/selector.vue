@@ -107,6 +107,7 @@
     &.right {
       align-items: flex-start;
       flex-direction: column;
+      height: auto;
       justify-content: center;
     }
 
@@ -115,6 +116,7 @@
       align-items: center;
       flex-direction: row;
       justify-content: flex-start;
+      width: auto;
     }
 
     // nudge the quick bar so the border lines up with the thick border
@@ -131,6 +133,7 @@
         border-right: $thin-border;
         height: calc(100% + 2px);
         right: -1px;
+        top: 0;
       }
     }
 
@@ -147,6 +150,7 @@
         border-left: $thin-border;
         height: calc(100% + 2px);
         left: -1px;
+        top: 0;
       }
     }
 
@@ -162,6 +166,7 @@
       &:after {
         border-bottom: $thin-border;
         bottom: -1px;
+        left: 0;
         width: calc(100% + 2px);
       }
     }
@@ -178,6 +183,7 @@
 
       &:after {
         border-top: $thin-border;
+        left: 0;
         top: -1px;
         width: calc(100% + 2px);
       }
@@ -186,6 +192,8 @@
     &-button {
       @include icon-button($mini-selector-color, 18px);
 
+      // note: 46px is width minus border
+      flex: 0 0 46px;
       padding: 14px;
       z-index: 1;
 
