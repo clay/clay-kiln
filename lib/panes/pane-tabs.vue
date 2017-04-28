@@ -120,18 +120,24 @@
       this.activeTab = activeIndex < 0 ? 0 : activeIndex;
     },
     mounted() {
-      var lastTabBtn = _.last(this.$refs.tabItems),
-        $elComputedStyles = getComputedStyle(this.$el),
-        paneHeight = parseInt($elComputedStyles.height, 10),
+      let lastTabBtn = _.last(this.$refs.tabItems),
+        $elComputedStyles = getComputedStyle(this.$el);
+
+      window.setTimeout(() => {
+        let paneHeight, minHeight;
+
+        $elComputedStyles = getComputedStyle(this.$el);
+        paneHeight = parseInt($elComputedStyles.height, 10);
         minHeight = parseInt(document.documentElement.clientHeight * 0.3, 10); // 30vh is minimum pane height
 
-      // set height for tabbed panes when they mount,
-      // so clicking tabs doesn't change the pane height
-      if (paneHeight < minHeight) {
-        this.$el.style.height = `${minHeight}px`;
-      } else {
-        this.$el.style.height = `${paneHeight}px`;
-      }
+        // set height for tabbed panes when they mount,
+        // so clicking tabs doesn't change the pane height
+        if (paneHeight < minHeight) {
+          this.$el.style.height = `${minHeight}px`;
+        } else {
+          this.$el.style.height = `${paneHeight}px`;
+        }
+      }, 1000); // wait a second before fixing the height (allows things like page list to populate)
 
       // Use position of the last tab item to define the width of the container
       this.paneWidth = _.parseInt($elComputedStyles.width.replace('px', ''));

@@ -460,8 +460,6 @@
           prefix = _.get(this.$store, 'state.site.prefix'),
           query = buildQuery(siteFilter, searchFilter, offset);
 
-        console.log(query.body.query)
-
         return postJSON(prefix + searchRoute, query).then((res) => {
           const hits = _.get(res, 'hits.hits') || [],
             total = _.get(res, 'hits.total'),
