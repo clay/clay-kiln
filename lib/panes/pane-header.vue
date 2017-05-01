@@ -23,6 +23,8 @@
       display: flex;
       flex: 1 0 auto;
       height: 34px;
+      // 17px visual border between edge and clay dude's body (not arm)
+      margin-left: -4px;
     }
 
     .sign-out {

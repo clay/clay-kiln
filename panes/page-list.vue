@@ -15,6 +15,7 @@
     @include input;
 
     border: none;
+    padding: 10px 10px 10px 17px;
     transition: $toggle-speed all ease;
 
     &.closed {
@@ -28,7 +29,8 @@
     display: flex;
     flex-grow: 0;
     transition: $toggle-speed all ease;
-    width: 48px;
+    // extra padding on the right
+    width: 58px;
 
     &.open {
       flex-grow: 1;
@@ -126,7 +128,7 @@
       flex-grow: 1;
       font-size: 14px;
       justify-content: space-between;
-      padding: 15px 10px;
+      padding: 15px 17px;
 
       &:first-child {
         padding-top: 30px;
@@ -197,9 +199,10 @@
         }
 
         &-time {
-          color: $subtitle;
+          color: $page-list-text;
           display: block;
-          font-size: 12px;
+          font-size: 11px;
+          font-weight: 700;
           text-transform: uppercase;
         }
       }
