@@ -380,15 +380,12 @@
    * @return {string}
    */
   function generatePageUrl(src, sites) {
-    const site = sites[src.siteSlug],
-      // site will be unavailable in view mode, so default to some values we can always look up
-      port = site ? site.port.toString() : window.location.port,
-      host = site ? site.host : src.uri.split('/')[0];
+    const site = sites[src.siteSlug];
 
     return uriToUrl(src.uri, {
       protocol: 'http:', // note: assumes http (until we have protocol in site configs)
-      port,
-      hostname: host
+      port: site.port.toString(),
+      hostname: site.host,
     }) + htmlExt;
   }
 

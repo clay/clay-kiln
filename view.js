@@ -8,9 +8,11 @@ import { add as addPane } from './lib/forms/panes';
 import store from './lib/core-data/store';
 import toolbar from './lib/toolbar/view-toolbar.vue';
 import getPageState from './lib/page-state';
-import { PRELOAD_PENDING, LOADING_SUCCESS, PRELOAD_SITE } from './lib/preloader/mutationTypes';
+import getSites from './lib/preloader/sites';
+import { PRELOAD_PENDING, LOADING_SUCCESS, PRELOAD_SITE, PRELOAD_ALL_SITES } from './lib/preloader/mutationTypes';
 import { UPDATE_PAGESTATE, UPDATE_PAGEURI } from './lib/page-state/mutationTypes';
 import { CLOSE_PANE } from './lib/panes/mutationTypes';
+import { props } from './lib/utils/promises';
 import conditionalFocus from './directives/conditional-focus';
 import hScrollDirective from './directives/horizontal-scroll';
 
@@ -48,10 +50,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // don't preload all the data, just grab the page state
-  getPageState(pageUri()).then(function (pageState) {
+  // don't preload all the data, just grab the page state and site info
+  props({
+    pageState: getPageState(pageUri()),
+    allSites: getSites(window.kiln.preloadSite)
+  }).then(({ pageState, allSites }) => {
     store.commit(UPDATE_PAGESTATE, pageState);
     store.commit(UPDATE_PAGEURI, pageUri());
+    store.commit(PRELOAD_ALL_SITES, allSites);
     store.commit(LOADING_SUCCESS);
   });
 
