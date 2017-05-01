@@ -419,7 +419,7 @@
     if (searchFilter) {
       _.set(query, 'body.query.filtered.query.multi_match', {
         query: searchFilter,
-        fields: ['authors^3', 'title^2', 'content'], // favor authors, then title, then full content
+        fields: ['authors^2', 'title'], // favor authors then title
         type: 'phrase_prefix'
       });
     }
