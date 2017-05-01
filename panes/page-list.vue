@@ -480,7 +480,7 @@
                 site: src.siteSlug,
                 url: src.url || generatePageUrl(src, _.get(this.$store, 'state.allSites')),
                 uri: src.uri,
-                title: src.title,
+                title: src.titleTruncated, // display truncated title (query by full title)
                 firstAuthor: _.head(src.authors),
                 status: pageStatus.status,
                 statusMessage: pageStatus.statusMessage,
