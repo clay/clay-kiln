@@ -384,6 +384,11 @@
       body: {
         size: querySize,
         from: offset,
+        sort: {
+          createdAt: {
+            order: 'desc'
+          }
+        },
         query: {}
       }
     };
@@ -393,7 +398,11 @@
     }
 
     if (searchFilter) {
-      _.set(query, 'body.query.filtered.query.match.title', searchFilter);
+      _.set(query, 'body.query.filtered.query.multi_match', {
+        query: searchFilter,
+        fields: ['authors^3', 'title^2', 'content'], // favor authors, then title, then full content
+        type: 'phrase_prefix'
+      });
     }
 
     if (!siteFilter.length && !searchFilter) {
