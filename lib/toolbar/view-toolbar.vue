@@ -23,6 +23,14 @@
       width: 500px;
     }
 
+    &.large {
+      width: 600px;
+    }
+
+    &.xlarge {
+      width: 700px;
+    }
+
     .publish {
       margin: 0 0 0 -3px;
       padding: 7px 16px 6px 22px;
@@ -79,7 +87,7 @@
         const options = {
           name,
           title: 'Clay Menu',
-          size: 'medium',
+          size: 'xlarge',
           clayHeader: true,
           content: [{
             header: 'All Pages',
@@ -95,17 +103,6 @@
         };
 
         return this.$store.dispatch('togglePane', { options, button });
-      },
-      togglePublish(name, button) {
-        const options = {
-          name,
-          title: 'Publish',
-          content: {
-            component: 'view-publish'
-          }
-        };
-
-        return this.$store.dispatch('togglePane', { options, button, offset: false });
       }
     },
     components: {

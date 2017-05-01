@@ -169,7 +169,7 @@
         const options = {
           name,
           title: 'Clay Menu',
-          size: 'medium',
+          size: 'xlarge',
           clayHeader: true,
           content: [{
             header: 'All Pages',

@@ -31,7 +31,8 @@
   const widths = {
     small: 350,
     medium: 500,
-    large: 600
+    large: 600,
+    xlarge: 700
   };
 
   export default {

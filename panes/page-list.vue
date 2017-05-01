@@ -8,7 +8,7 @@
     border-bottom: 1px solid $input-border;
     display: flex;
     overflow: hidden;
-    max-width: 500px;
+    max-width: 100%;
   }
 
   .page-list-search {
@@ -120,7 +120,8 @@
     padding: 0;
 
     &-item {
-      align-items: flex-start;
+      align-items: center;
+      border-bottom: 1px solid $pane-list-divider;
       display: flex;
       flex-grow: 1;
       font-size: 14px;
@@ -130,6 +131,7 @@
       &:first-child {
         padding-top: 30px;
 
+        .page-list-readout-item-title:before,
         .page-list-readout-item-status:before,
         .page-list-readout-item-author:before {
           color: $subtext;
@@ -139,6 +141,12 @@
           right: 0;
           text-transform: uppercase;
           top: -15px;
+        }
+
+        .page-list-readout-item-title:before {
+          content: 'Title';
+          left: 0;
+          right: auto;
         }
 
         .page-list-readout-item-status:before {
@@ -167,7 +175,8 @@
       }
 
       &-title {
-        flex: 0 1 50%;
+        flex: 1 0 50%;
+        position: relative;
       }
 
       &-status {
@@ -198,7 +207,9 @@
       &-author {
         color: $subtitle;
         display: none;
+        flex: 0 0 150px;
         position: relative;
+        text-align: right;
 
         &.no-text {
           color: $subtext;
