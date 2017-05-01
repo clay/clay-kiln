@@ -159,6 +159,11 @@
           color: $subtext;
           font-style: italic;
         }
+
+        &.current-page {
+          /* make current page bold in page list */
+          font-weight: 700;
+        }
       }
 
       &-title {
@@ -249,8 +254,8 @@
         <ul v-if="pagesLoaded" class="page-list-readout">
           <li v-for="page in pages" class="page-list-readout-item">
             <div class="page-list-readout-item-title">
-              <a v-if="page.title" class="page-list-readout-item-link" :href="page.url" target="_blank">{{ page.title }}</a>
-              <a v-else class="page-list-readout-item-link no-text" :href="page.url" target="_blank">No Headline</a>
+              <a v-if="page.title" class="page-list-readout-item-link" :class="{ 'current-page': page.isCurrentPage }" :href="page.url" target="_blank">{{ page.title }}</a>
+              <a v-else class="page-list-readout-item-link no-text" :class="{ 'current-page': page.isCurrentPage }" :href="page.url" target="_blank">No Headline</a>
             </div>
             <div v-if="page.firstAuthor" class="page-list-readout-item-author">{{ page.firstAuthor }}</div>
             <div v-else class="page-list-readout-item-author no-text">No Author</div>
@@ -467,7 +472,8 @@
           searchFilter = this.searchString,
           offset = this.offset,
           prefix = _.get(this.$store, 'state.site.prefix'),
-          query = buildQuery(siteFilter, searchFilter, offset);
+          query = buildQuery(siteFilter, searchFilter, offset),
+          currentPageURI = _.get(this.$store, 'state.page.uri');
 
         return postJSON(prefix + searchRoute, query).then((res) => {
           const hits = _.get(res, 'hits.hits') || [],
@@ -484,7 +490,8 @@
                 firstAuthor: _.head(src.authors),
                 status: pageStatus.status,
                 statusMessage: pageStatus.statusMessage,
-                statusTime: pageStatus.statusTime
+                statusTime: pageStatus.statusTime,
+                isCurrentPage: src.uri === currentPageURI
               };
             });
 
