@@ -139,13 +139,13 @@
   import Quill from 'quill';
   import _ from 'lodash';
   import { find } from '@nymag/dom';
-  import { sanitizeInlineHTML, sanitizeMultiComponentHTML, sanitizeBlockHTML } from './wysiwyg-sanitize';
   import striptags from 'striptags';
-  import store from '../lib/core-data/store';
   import { getComponentName, refAttr, editAttr } from '../lib/utils/references';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { getPrevComponent, getNextComponent, getParentComponent, getComponentEl } from '../lib/utils/component-elements';
   import { isFirstField } from '../lib/forms/field-helpers';
+  import { sanitizeInlineHTML, sanitizeMultiComponentHTML, sanitizeBlockHTML } from './wysiwyg-sanitize';
+  import { splitParagraphs, matchComponents, generatePasteRules } from './wysiwyg-paste';
 
   const Delta = Quill.import('delta'),
     Clipboard = Quill.import('modules/clipboard'),
@@ -156,115 +156,6 @@
   // this way, the paste function can set these, and they can be checked
   // AFTER the generated deltas have been pasted in.
   let firstComponentToUpdate, otherComponentsToUpdate;
-
-    /**
-   * split innerHTML into paragraphs based on closing <p>/<div> and line breaks
-   * trim the resulting strings to get rid of any extraneous whitespace
-   * @param {string} str
-   * @returns {array}
-   */
-  function splitParagraphs(str) {
-    // because we're parsing out <p> tags, we can conclude that two <br> tags
-    // means a "real" paragraph (e.g. the writer intended for this to be a paragraph break),
-    // whereas a single <br> tag is intended to simply be a line break.
-    // also look for headers (they cannot have any text before or after them)
-    let paragraphs = _.map(str.split(/(?:<br\s?\/><br\s?\/>|<\/h[1-9]>)/ig), (s) => s.trim());
-
-    // handle inline blockquotes (and, in the future, other inline things)
-    // that should be parsed out as separate components
-    return _.reduce(paragraphs, function (result, graf) {
-      if (_.includes(graf, '<blockquote') || _.includes(graf, '</blockquote')) {
-        let start = graf.indexOf('<blockquote'),
-          end = graf.indexOf('</blockquote>') + 13, // length of that closing tag
-          before = graf.substring(0, start),
-          quote = graf.substring(start, end),
-          after = graf.substring(end);
-
-        result.push(before);
-        result.push(quote); // pass this through so it gets picked up by rules
-        result.push(after);
-      } else {
-        result.push(graf);
-      }
-      return result;
-    }, []);
-  }
-
-  /**
-   * clean characters from string
-   * @param  {string} str
-   * @return {string}
-   */
-  function cleanCharacters(str) {
-    let cleanStr;
-
-    // remove 'line separator' and 'paragraph separator' characters
-    // (not visible in text editors, but get added when pasting from pdfs and old systems)
-    cleanStr = str.replace(/(\u2028|\u2029)/g, '');
-    // convert tab characters to spaces (pdfs looooove tab characters)
-    cleanStr = cleanStr.replace(/(?:\t|\\t)/g, ' ');
-    // assume newlines that AREN'T between a period and a capital letter (or number) are errors
-    // note: this fixes issues when pasting from pdfs or other sources that automatically
-    // insert newlines at arbitrary places
-    cleanStr = cleanStr.replace(/\.\n[A-Z0-9]/g, '<br>');
-    cleanStr = cleanStr.replace(/\n/g, ' ');
-    return cleanStr;
-  }
-
-  /**
-   * match components from strings of random pasted input
-   * note: paragraphs (and other components with rules that specify sanitization)
-   * will have their values returned as text models instead of strings
-   * @param  {array} strings
-   * @param {array} rules chain of responsibility for paste rules
-   * @returns {array}
-   */
-  function matchComponents(strings, rules) {
-    return _.filter(_.map(strings, function (str) {
-      let cleanStr, matchedRule, matchedObj, matchedValue;
-
-      // do some more post-splitting sanitization:
-
-      // remove extraneous opening <p>, <div>, and <br> tags
-      // note: some google docs pastes might have `<p><br>`
-      cleanStr = str.replace(/^\s?<(?:p><br|p|div|br)(?:.*?)>\s?/ig, '');
-      // remove any other <p> or <div> tags, because you cannot put block-level tags inside paragraphs
-      cleanStr = cleanStr.replace(/<(?:p|div).*?>/ig, '');
-      // remove other characters
-      cleanStr = cleanCharacters(cleanStr);
-      // FINALLY, trim the string to catch any of the stuff we converted to spaces above
-      cleanStr = cleanStr.trim();
-
-      matchedRule = _.find(rules, function matchRule(rule) {
-        return rule.match.exec(cleanStr);
-      });
-
-      if (!matchedRule) {
-        store.dispatch('showStatus', { type: 'error', message: `Error pasting text: No rule found for "${_.truncate(cleanStr, { length: 40, omission: '…' })}"`});
-        throw new Error('No matching paste rule for ' + cleanStr);
-      }
-
-      // grab stuff from matched rule, incl. component and field
-      matchedObj = _.assign({}, matchedRule);
-
-      // find actual matched value for component
-      // note: rules need to grab _some value_ from the string
-      matchedValue = matchedRule.match.exec(cleanStr)[1];
-
-      // finally, add the value into the matched obj
-      matchedObj.value = matchedValue;
-
-      return matchedObj;
-    }), function filterMatches(component) {
-      var val = component.value;
-
-      // filter out any components that are blank (filled with empty spaces)
-      // this happens when paragraphs really only contain <p> tags, <div>s, <br>s, or extra spaces
-
-      // return true if the string contains words (anything that isn't whitespace, but not just a single closing tag)
-      return _.isString(val) && val.match(/\S/) && !val.match(/^<\/.*?>$/);
-    });
-  }
 
   /**
    * handle multi-paragraph paste
@@ -299,60 +190,6 @@
     }
 
     return delta;
-  }
-
-  /**
-   * generate paste rules
-   * @param  {array} pasteRules
-   * @param {string} currentComponent name
-   * @param {string} currentField
-   * @throw {Error} if rule doesn't have a `match` property
-   * @throw {Error} if rule.match isn't parseable as regex
-   * @return {array}
-   */
-  function generatePasteRules(pasteRules, currentComponent, currentField) {
-    // if no paste rules are defined for a multi-component wysiwyg,
-    // new paragraphs should match the current component
-    pasteRules = pasteRules || [{
-      match: '(.*)',
-      component: currentComponent,
-      field: currentField
-    }];
-
-    return _.map(pasteRules, function (rawRule) {
-      const pre = '^',
-        preLink = '(?:<a(?:.*?)>)?',
-        post = '$',
-        postLink = '(?:</a>)?';
-
-      let rule = _.assign({}, rawRule);
-
-      // regex rule assumptions
-      // 1. match FULL STRINGS (not partials), e.g. wrap rule in ^ and $
-      if (!rule.match) {
-        throw new Error('Paste rule needs regex! ', rule);
-      }
-
-      // if `rule.matchLink` is true, match rule AND a link with the rule as its text
-      // this allows us to deal with urls that other text editors make into links automatically
-      // (e.g. google docs creates links when you paste in urls),
-      // but will only return the stuff INSIDE the link text (e.g. the url).
-      // For embeds (where you want to grab the url) set matchLink to true,
-      // but for components that may contain actual links set matchLink to false
-      if (rule.matchLink) {
-        rule.match = `${preLink}${rule.match}${postLink}`;
-      }
-
-      // create regex
-      try {
-        rule.match = new RegExp(`${pre}${rule.match}${post}`);
-      } catch (e) {
-        console.error(e);
-        throw e;
-      }
-
-      return rule;
-    });
   }
 
   /**
