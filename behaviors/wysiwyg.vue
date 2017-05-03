@@ -127,7 +127,24 @@
   .kiln-phrase-button {
     @include normal-text();
 
-    color: #fff;
+    color: #ccc;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  // all phrases should have some sort of highlight, so users can
+  // reason about them in edit mode. for now, we're doing different colors
+  // for different kiln phrase classes
+  .ql-editor .kiln-phrase {
+    background-color: #fff2a8;
+  }
+
+  .ql-editor .clay-annotated {
+    background-color: #a8d1ff;
+  }
+
+  .ql-editor .clay-designed {
+    background-color: #ffb7b7;
   }
 </style>
 
@@ -251,9 +268,10 @@
           uri: _.get(store, 'state.ui.currentForm.uri'),
           parentURI: parent && parent.getAttribute(refAttr),
           parentPath:  _.get(store, 'state.ui.currentForm.el') && getComponentEl(_.get(store, 'state.ui.currentForm.el')).parentNode.getAttribute(editAttr)
-        };
+        },
+        phrases = createPhraseBlots(this.args.buttons);
 
-      let formats = parseFormats(this.args.buttons).concat(createPhraseBlots(this.args.buttons)),
+      let formats = parseFormats(this.args.buttons).concat(phrases),
         editor;
 
       class ClayClipboard extends Clipboard {
@@ -342,11 +360,12 @@
       /**
        * navigate to the previous component on ↑ or ←
        * @param  {object} range
+       * @param {object} context
        * @return {boolean|undefined}
        */
-      function navigatePrevious(range) {
-        if (isMultiComponent && range.index === 0) {
-          // we're at the beginning of the field! navigate to the previous component
+      function navigatePrevious(range, context) {
+        if (isMultiComponent && range.index === 0 && context.collapsed) {
+          // we're at the beginning of the field (and nothing is highlighted)! navigate to the previous component
           focusPreviousComponent(-1);
         } else {
           // default arrow behavior for single-line and multi-line
@@ -541,12 +560,11 @@
       });
 
       // add handlers for phrase buttons
-      _.each(phrases, (phraseButton) => {
-        const phraseFormat = _.isObject(phraseButton) && phraseButton.phrase.class ? `phrase-${phraseButton.phrase}` : 'phrase',
-          toolbar = editor.getModule('toolbar');
+      _.each(phrases, (phrase) => {
+        const toolbar = editor.getModule('toolbar');
 
-        toolbar.addHandler(phraseFormat, function (value) {
-          return this.quill.format(phraseFormat, value); // true or false
+        toolbar.addHandler(phrase, function (value) {
+          return this.quill.format(phrase, value); // true or false
         });
       });
 
