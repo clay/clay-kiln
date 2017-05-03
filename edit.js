@@ -99,9 +99,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // when clicks bubble up to the document, close the current form or pane / unselect components
   document.body.addEventListener('click', (e) => {
-    // always unselect if clicking out of the current selection
+    // unselect if clicking out of the current selection (if user isn't trying to select text)
     // todo: handle panes where we want to stay selected
-    if (_.get(store, 'state.ui.currentSelection') && !e.stopSelection) {
+    if (_.get(store, 'state.ui.currentSelection') && !window.kiln.isInvalidDrag) {
       // note: stopSelection is set in the 'select' action. see the comments there for details
       store.dispatch('unselect');
     }
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
       store.dispatch('unfocus').catch(_.noop);
     }
 
-    // unset isInvalidDrag after checking for unfocus
+    // unset isInvalidDrag after checking for unfocus / unselect
     window.kiln.isInvalidDrag = false;
 
     // Close a pane
