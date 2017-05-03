@@ -147,11 +147,10 @@
   import { splitParagraphs, matchComponents, generatePasteRules } from './wysiwyg-paste';
   import { renderDeltas, generateDeltas, deltaEndsWith, matchLineBreak, matchParagraphs } from './wysiwyg-deltas';
   import { getNewlinesBeforeCaret, getLastOffsetWithNewlines } from './wysiwyg-caret';
+  import { parsePhraseButton, parseFormats, createPhraseBlots } from './wysiwyg-phrase';
 
   const Delta = Quill.import('delta'),
-    Clipboard = Quill.import('modules/clipboard'),
-    Inline = Quill.import('blots/inline'),
-    toolbarIcons = Quill.import('ui/icons');
+    Clipboard = Quill.import('modules/clipboard');
 
   // store references for multi-paragraph paste here.
   // this way, the paste function can set these, and they can be checked
@@ -191,42 +190,6 @@
     }
 
     return delta;
-  }
-
-  /**
-   * parse button configs for phrases
-   * note: a phrase with no class or custom button will just be a string
-   * @param  {string|object} button
-   * @return {string}
-   */
-  function parsePhraseButton(button) {
-    if (_.isObject(button) && button.phrase) {
-      return button.phrase.class ? `phrase-${button.phrase.class}` : 'phrase';
-    } else {
-      return button; // note: 'phrase' might be the button
-    }
-  }
-
-  /**
-   * parse supported formats from button arguments
-   * buttons look like 'bold' or { 'list': 'ordered' }
-   * @param  {array} buttons
-   * @return {array}
-   */
-  function parseFormats(buttons) {
-    return _.reduce(buttons, (result, button) => {
-      // add every string besides 'clean' and 'phrase'
-      // (phrease is added later)
-      if (_.isString(button) && !_.includes(['clean', 'phrase'], button)) {
-        result.push(button);
-      } else if (_.isObject(button) && !button.phrase) {
-        // add every object besides 'phrase'
-        // (phrase is added later)
-        // e.g. { script: sup }, { list: ordered }
-        result.push(Object.keys(button)[0]);
-      }
-      return result;
-    }, ['header', 'blockquote']); // also support these formats, so we can paste them in
   }
 
   export default {
@@ -281,7 +244,6 @@
         initialData = this.data || '',
         appendText = _.get(store, 'state.ui.currentForm.appendText'),
         parent = _.get(store, 'state.ui.currentForm.el') && getParentComponent(getComponentEl(_.get(store, 'state.ui.currentForm.el'))),
-        formats = parseFormats(this.args.buttons),
         // some useful details about the current component, range, etc
         // to pass into handleMultiParagraphPaste()
         current = {
@@ -291,45 +253,8 @@
           parentPath:  _.get(store, 'state.ui.currentForm.el') && getComponentEl(_.get(store, 'state.ui.currentForm.el')).parentNode.getAttribute(editAttr)
         };
 
-      let phrases = _.filter(this.args.buttons, (button) => button === 'phrase' || _.isObject(button) && button.phrase),
+      let formats = parseFormats(this.args.buttons).concat(createPhraseBlots(this.args.buttons)),
         editor;
-
-      _.each(phrases, (phraseConfig) => {
-        const phraseClass = _.isObject(phraseConfig) && phraseConfig.phrase.class,
-          phraseButton = _.isObject(phraseConfig) && phraseConfig.phrase.button || 'P',
-          phraseName = phraseClass ? `phrase-${phraseClass}` : 'phrase';
-
-        let PhraseBlot;
-
-        // create format if it hasn't been created already
-        if (!Quill.imports[`formats/${phraseName}`]) {
-          // add dropdown options
-          toolbarIcons[phraseName] = `<span class="kiln-phrase-button">${phraseButton}</span>`;
-
-          PhraseBlot = class extends Inline {
-            static create() {
-              let node = super.create();
-
-              node.classList.add('kiln-phrase'); // add class so it won't be sanitized out
-              return node;
-            }
-
-            static formats(domNode) {
-              return domNode.classList.contains(phraseClass) || true;
-            }
-          };
-
-          PhraseBlot.blotName = phraseName;
-          PhraseBlot.tagName = 'SPAN';
-          if (phraseClass) {
-            PhraseBlot.className = phraseClass;
-          }
-          Quill.register(PhraseBlot);
-        }
-
-        // add format to the list of formats
-        formats.push(phraseName);
-      });
 
       class ClayClipboard extends Clipboard {
         convert(html) {

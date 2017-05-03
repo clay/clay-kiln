@@ -39,7 +39,7 @@ function traverse(node, elementMatchers, textMatchers) {  // Post-order
     // run text matchers for node
     return _.reduce(textMatchers, (delta, matcher) => matcher(node, delta), new Delta());
   } else if (node.nodeType === node.ELEMENT_NODE) {
-    let children = node.childNodes || [];
+    let children = node.childNodes /* istanbul ignore next: only applies in edge cases */ || [];
 
     return _.reduce(children, (delta, childNode) => {
       let childDelta = traverse(childNode, elementMatchers, textMatchers),
@@ -48,6 +48,7 @@ function traverse(node, elementMatchers, textMatchers) {  // Post-order
       // run element matchers for child node
       if (childNode.nodeType === childNode.ELEMENT_NODE) {
         childDelta = _.reduce(elementMatchers, (childDelta, matcher) => matcher(childNode, childDelta), childDelta);
+        /* istanbul ignore next: ql-matchers are very rarely called */
         childDelta = _.reduce(childMatchers, (childDelta, matcher) => matcher(childNode, childDelta), childDelta);
       }
       return delta.concat(childDelta);
@@ -86,6 +87,7 @@ export function deltaEndsWith(delta, text) {
   for (; i >= 0 && endText.length < text.length; --i) {
     let op  = delta.ops[i];
 
+    /* istanbul ignore if: copied from quill, but never hit in our code */
     if (typeof op.insert !== 'string') {
       break;
     } else {
