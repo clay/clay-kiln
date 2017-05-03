@@ -212,7 +212,9 @@
   export default {
     props: ['name', 'data', 'schema', 'args'],
     data() {
-      return {};
+      return {
+        editorData: this.data || ''
+      };
     },
     computed: {
       isStyled() {
@@ -243,6 +245,7 @@
         }
 
         if (val !== html) {
+          this.editorData = val;
           // something else is updating our data! (e.g. magic button)
           this.editor.setContents(generateDeltas(val, elementMatchers, textMatchers));
         }
@@ -258,7 +261,6 @@
         store = this.$store,
         name = this.name,
         el = this.$el,
-        initialData = this.data || '',
         appendText = _.get(store, 'state.ui.currentForm.appendText'),
         parent = _.get(store, 'state.ui.currentForm.el') && getParentComponent(getComponentEl(_.get(store, 'state.ui.currentForm.el'))),
         // some useful details about the current component, range, etc
@@ -319,19 +321,20 @@
 
       Quill.register('modules/clipboard', ClayClipboard, true); // need to do this before creating the editor
 
-      // manually add data into element when mounting
+      // initialize the data
       // note: we don't use v-html here because we don't want to update the html
       // when the form data changes (since quill is handling it)
       if (appendText) {
         // then append the new text
-        el.innerHTML = initialData + appendText;
-        // trigger text-change here, so the form data is updated
+        this.editorData += appendText;
+        el.innerHTML = this.editorData;
+        // update form data
         store.commit(UPDATE_FORMDATA, {
           path: name,
           data: isSingleLine || isMultiComponent ? sanitizeInlineHTML(el.innerHTML) : sanitizeBlockHTML(el.innerHTML)
         });
       } else {
-        el.innerHTML = initialData;
+        el.innerHTML = this.editorData;
       }
 
       /**
@@ -344,13 +347,16 @@
         prev = prev || getPrevComponent(el, current.component);
 
         if (prev) {
-          store.dispatch('select', prev);
+          // fetch the previous component's element from the dom, since it may have re-rendered
+          const updatedPrev = find(`[${refAttr}="${prev.getAttribute(refAttr)}"]`);
+
+          store.dispatch('select', updatedPrev);
           // note: if you pass -1 as the offset, it will set the caret
           // at the end of the previous text
           store.dispatch('focus', {
-            uri: prev.getAttribute(refAttr),
+            uri: updatedPrev.getAttribute(refAttr),
             path: name,
-            el: prev,
+            el: updatedPrev,
             offset,
             appendText: textAfterCaret
           });
@@ -436,6 +442,7 @@
       }
 
       editor = new Quill(el, {
+        strict: false,
         theme: 'bubble',
         formats,
         modules: {
@@ -576,7 +583,7 @@
         this.$nextTick(() => {
           if (offset === -1 && appendText) {
             // set caret near the end, but BEFORE the appended text
-            editor.setSelection(editor.getLength() - getLastOffsetWithNewlines(appendText) - 1);
+            editor.setSelection(editor.getLength() - getLastOffsetWithNewlines(appendText) - 2);
           } else if (offset === -1) {
             // set caret at the end
             editor.setSelection(editor.getLength() - 1);
@@ -609,6 +616,9 @@
           return updatePastedComponents(store);
         }
       });
+    },
+    destroyed() {
+      delete this.editor; // remove quill reference so it can be garbage collected
     },
     slot: 'main'
   };
