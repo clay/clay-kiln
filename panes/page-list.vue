@@ -404,7 +404,7 @@
         size: querySize,
         from: offset,
         sort: {
-          createdAt: {
+          updateTime: {
             order: 'desc'
           }
         },
