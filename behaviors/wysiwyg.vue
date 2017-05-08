@@ -589,7 +589,7 @@
             editor.setSelection(editor.getLength() - 1);
           } else {
             // if the data of this form has paragraphs, quill is inserting newlines (which count towards the offset)
-            editor.setSelection(getNewlinesBeforeCaret(this.data, offset));
+            editor.setSelection(getNewlinesBeforeCaret(this.editorData, offset));
           }
         });
       }
