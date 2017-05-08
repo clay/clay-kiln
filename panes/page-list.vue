@@ -128,7 +128,7 @@
       flex-grow: 1;
       font-size: 14px;
       justify-content: space-between;
-      padding: 15px 17px;
+      padding: 0 17px;
 
       &:first-child {
         padding-top: 30px;
@@ -162,7 +162,9 @@
 
       &-link {
         color: $subtitle;
+        cursor: pointer;
         display: flex;
+        padding: 15px 0;
         text-decoration: none;
 
         &.no-text {
@@ -183,6 +185,7 @@
 
       &-status {
         flex: 0 0 100px;
+        padding: 15px 0;
         position: relative;
         text-align: right;
 
@@ -211,6 +214,7 @@
         color: $subtitle;
         display: none;
         flex: 0 0 150px;
+        padding: 15px 0;
         position: relative;
         text-align: right;
 
