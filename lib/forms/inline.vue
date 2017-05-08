@@ -1,12 +1,13 @@
 <style lang="sass">
   @import '../../styleguide/forms';
+  @import '../../styleguide/layers';
 
   .editor-inline {
     @include form();
+    @include inline-form-layer();
 
     max-width: 90vw;
     margin: 0 auto;
-    z-index: 3;
 
     .input-container {
       overflow: visible;

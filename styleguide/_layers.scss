@@ -10,6 +10,11 @@
   z-index: 1010;
 }
 
+@mixin inline-form-layer {
+  // must be above mini toolbar
+  z-index: 1015;
+}
+
 @mixin overlay-layer {
   z-index: 1020;
 }
