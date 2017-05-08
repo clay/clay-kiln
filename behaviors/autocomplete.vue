@@ -39,20 +39,19 @@
       return {
         localIndex: null,
         prevFocusIndex: null,
-      }
+      };
     },
     computed: {
       listItems() {
         const lists = this.$store.state.lists,
-        site = this.$store.state.site,
-        list = this.args.list;
+          listName = this.args.list;
 
         // if the list isn't in the store yet, tell Vuex to get it
-        if (list && !lists[list]) {
-          this.$store.dispatch('getList', {prefix: site.prefix, listName: list});
+        if (listName && !lists[listName]) {
+          this.$store.dispatch('getList', listName);
           return [];
         }
-        return lists[list].items;
+        return lists[listName].items;
       },
       showMatches() {
         return this.query.length >= 2 && this.matches.length;
@@ -76,7 +75,7 @@
           } else {
             activeIndex = this.focusIndex % matchesLength;
           }
-        } else if (this.prevFocusIndex && !this.focusIndex){
+        } else if (this.prevFocusIndex && !this.focusIndex) {
           this.matches = [];
         }
 
