@@ -60,6 +60,7 @@
     <div v-if="hasCurrentComponent" class="expanded-selector" @click.stop>
       <span class="expanded-selector-name">{{ componentLabel }}</span>
       <button v-if="hasSettings" class="expanded-selector-button expanded-selector-settings" title="Component Settings" @click="openSettings"><icon name="settings"></icon></button>
+      <component v-for="button in customButtons" :is="button"></component>
       <button v-if="hasRemove" class="expanded-selector-button expanded-selector-remove" title="Remove Component" @click="removeComponent"><icon name="delete"></icon></button>
       <button v-if="hasAddComponent" class="expanded-selector-button expanded-selector-add" title="Add Component" @click.stop="openAddComponentPane"><icon name="add-icon"></icon></button>
       <button v-if="hasReplaceComponent" class="expanded-selector-button expanded-selector-replace" title="Replace Component"><icon name="replace-icon"></icon></button>
@@ -80,6 +81,9 @@
       return {};
     },
     computed: {
+      customButtons() {
+        return Object.keys(window.kiln.selectorButtons);
+      },
       hasCurrentComponent() {
         return _.get(this.$store, 'state.ui.currentSelection') !== null;
       },
@@ -134,8 +138,6 @@
       //   return store.dispatch('navigateComponents', 'next');
       // }
     },
-    components: {
-      icon
-    }
+    components: _.merge(window.kiln.selectorButtons, { icon })
   };
 </script>

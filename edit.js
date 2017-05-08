@@ -5,6 +5,7 @@ import NProgress from 'vue-nprogress';
 import keycode from 'keycode';
 import store from './lib/core-data/store';
 import { decorateAll } from './lib/decorators';
+import { addSelectorButton } from './lib/utils/custom-buttons'; // eslint-disable-line
 import { add as addBehavior } from './lib/forms/behaviors';
 import { add as addPane } from './lib/forms/panes';
 import toolbar from './lib/toolbar/edit-toolbar.vue';
@@ -62,7 +63,7 @@ Vue.config.keyCodes.comma = 188;
 Vue.directive('conditional-focus', conditionalFocus());
 Vue.directive('h-scroll', hScrollDirective());
 
-// export api for plugins, validators, behaviors
+// export api for plugins, validators, behaviors, buttons, etc
 window.kiln = window.kiln || {};
 // .plugins, .behaviors, .validators, and .panes objects should already exist
 window.kiln.utils = utilsAPI;

@@ -47,6 +47,7 @@
           <toolbar-button class="components" name="components" icon-name="search-page" text="Find on Page" @click="toggleComponents"></toolbar-button>
           <toolbar-button class="undo" :disabled="!undoEnabled" icon-name="undo" text="Undo" @click="undo"></toolbar-button>
           <toolbar-button class="redo" :disabled="!redoEnabled" icon-name="redo" text="Redo" @click="redo"></toolbar-button>
+          <component v-for="button in customButtons" :is="button"></component>
           <div class="flex-span flex-span-inner"></div>
           <toolbar-button class="preview" name="preview" icon-name="new-tab" text="Preview" @click="togglePreview"></toolbar-button>
         </div>
@@ -156,6 +157,9 @@
       },
       redoEnabled: (state) => {
         return !state.undo.atEnd && !state.ui.currentFocus && !state.ui.currentPane;
+      },
+      customButtons() {
+        return Object.keys(window.kiln.toolbarButtons);
       }
     }),
     methods: {
@@ -255,7 +259,7 @@
         });
       }
     },
-    components: {
+    components: _.merge({
       'toolbar-button': button,
       background,
       overlay,
@@ -263,6 +267,6 @@
       status,
       'progress-bar': progressBar,
       selector
-    }
+    }, window.kiln.toolbarButtons)
   };
 </script>

@@ -4,6 +4,7 @@ import keycode from 'keycode';
 import Vue from 'vue';
 import { pageUri } from '@nymag/dom';
 import addClayListeners from './lib/utils/shift-clay';
+import { addToolbarButton } from './lib/utils/custom-buttons'; // eslint-disable-line
 import { add as addPane } from './lib/forms/panes';
 import store from './lib/core-data/store';
 import toolbar from './lib/toolbar/view-toolbar.vue';
