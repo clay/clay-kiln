@@ -33,6 +33,15 @@
       flex: 1 0 auto;
     }
 
+    .shortcut-keys {
+      align-items: center;
+      display: flex;
+      flex: 1 1 auto;
+      flex-flow: row wrap;
+      justify-content: flex-end;
+      margin-left: 5px;
+    }
+
     .shortcut-key {
       @include keyboard-keys();
 
@@ -53,7 +62,9 @@
   <div class="keyboard-shortcuts">
     <div v-for="shortcut in shortcuts" class="shortcut">
       <span class="shortcut-title">{{ shortcut.title }}</span>
-      <span v-for="key in shortcut.keys" class="shortcut-key">{{ key }}</span>
+      <div class="shortcut-keys">
+        <span v-for="key in shortcut.keys" class="shortcut-key">{{ key }}</span>
+      </div>
       <span class="shortcut-description">{{ shortcut.description }}</span>
     </div>
   </div>
@@ -66,7 +77,7 @@
       return {
         shortcuts: [{
           title: 'Undo and Redo',
-          keys: ['⌘+Z / Ctrl+Z', 'Shift+⌘+Z / Shift+Ctrl+Z'],
+          keys: ['⌘/Ctrl+Z', 'Shift+⌘/Ctrl+Z'],
           description: 'Undo (or redo) your saves, up to 50 times. Navigating away from the page will erase the save history.'
         }, {
           title: 'Navigate Components',
@@ -101,25 +112,13 @@
           keys: ['Backspace'],
           description: 'Like Google Docs or Microsoft Word, use Backspace to merge paragraphs when text is after the cursor.'
         }, {
-          title: 'Insert Fake Bullet',
+          title: 'Insert Bullet',
           keys: ['Tab'],
-          description: 'In field where it is enabled, Tab will insert a fake bullet at the beginning of a line.'
+          description: 'In field where it is enabled, Tab will insert a bullet (•) at the beginning of a line.'
         }, {
-          title: 'Bold Text',
-          keys: ['⌘+B / Ctrl+B'],
-          description: 'In a field where it is enabled, embolden the highlighted text.'
-        }, {
-          title: 'Italicize Text',
-          keys: ['⌘+I / Ctrl+I'],
-          description: 'In a field where it is enabled, italicize the highlighted text.'
-        }, {
-          title: 'Underline Text',
-          keys: ['⌘+U / Ctrl+U'],
-          description: 'In a field where it is enabled, underline the highlighted text.'
-        }, {
-          title: 'Create Link',
-          keys: ['⌘+K / Ctrl+K'],
-          description: 'In a field where it is enabled, create a link from the highlighted text.'
+          title: 'Format Text',
+          keys: ['⌘/Ctrl+B', '⌘/Ctrl+I', '⌘/Ctrl+U', '⌘/Ctrl+K'],
+          description: 'In a field where it is enabled, embolden, italicize, underline, or create a link from the highlighted text.'
         }]
       };
     }
