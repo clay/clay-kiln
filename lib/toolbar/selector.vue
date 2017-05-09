@@ -10,7 +10,7 @@
 
   // selector outlines
   .expanded-selector {
-    @include component-toolbar-layer();
+    @include expanded-selector-layer();
 
     align-items: center;
     background: $selector-bg;

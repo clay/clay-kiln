@@ -21,7 +21,7 @@
   }
 
   .mini-selector {
-    @include component-toolbar-layer();
+    @include mini-selector-layer();
 
     opacity: 1;
     pointer-events: none;
@@ -78,7 +78,7 @@
 
   .quick-bar {
     // behind its parent, so the border padding doesn't show
-    @include component-toolbar-menu-layer();
+    @include quick-bar-layer();
 
     background: $selector-bg;
     border: $thin-border;
