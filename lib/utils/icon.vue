@@ -1,5 +1,5 @@
 <template>
-  <span class="icon" v-once v-html="icon"></span>
+  <span class="icon" v-html="icon"></span>
 </template>
 
 <script>
