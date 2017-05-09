@@ -53,6 +53,7 @@
         </div>
         <toolbar-button v-if="isLoading" class="publish loading" name="publish" icon-name="draft" text="Loading&hellip;"></toolbar-button>
         <toolbar-button v-else-if="pageState.scheduled" class="publish scheduled" name="publish" icon-name="scheduled" text="Scheduled" @click="togglePublish"></toolbar-button>
+        <toolbar-button v-else-if="hasChanges" class="publish changes" name="publish" icon-name="unpubbed-changes" text="Changes" @click="togglePublish"></toolbar-button>
         <toolbar-button v-else-if="pageState.published" class="publish published" name="publish" icon-name="published" text="Published" @click="togglePublish"></toolbar-button>
         <toolbar-button v-else class="publish draft" name="publish" icon-name="draft" text="Draft" @click="togglePublish"></toolbar-button>
       </section>
@@ -64,6 +65,7 @@
   import _ from 'lodash';
   import { mapState } from 'vuex';
   import { find } from '@nymag/dom';
+  import isAfter from 'date-fns/is_after';
   import toggleEdit from '../utils/toggle-edit';
   import { getSchema } from '../core-data/components';
   import { layoutAttr, editAttr, componentListProp } from '../utils/references';
@@ -160,6 +162,16 @@
       },
       customButtons() {
         return Object.keys(window.kiln.toolbarButtons);
+      },
+      hasChanges: (state) => {
+        const pubTime = _.get(state, 'page.state.publishedAt'),
+          upTime = _.get(state, 'page.listData.updateTime');
+
+        if (pubTime && upTime) {
+          return isAfter(upTime, pubTime);
+        } else {
+          return false;
+        }
       }
     }),
     methods: {

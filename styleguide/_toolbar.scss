@@ -124,6 +124,12 @@ $height: 48px;
     border-left: none;
   }
 
+  .changes {
+    @include button-filled-large($published);
+
+    border-left: none;
+  }
+
   .scheduled {
     @include button-filled-large($scheduled);
 
