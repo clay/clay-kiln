@@ -134,3 +134,18 @@ $light-stack: $open-sans-light, $system-fonts;
     text-decoration: none;
   }
 }
+
+// keys
+@mixin keyboard-keys {
+  background-color: $toolbar-icons;
+  border: 1px solid $input-border;
+  border-radius: 3px;
+  box-shadow: 0 1px 0 $overlay-shadow, 0 0 0 2px $pane-background inset;
+  color: $label;
+  display: inline-block;
+  font-size: 14px;
+  font-family: monospace, sans-serif;
+  font-weight: 500;
+  padding: 4px 8px;
+  line-height: 13px;
+}

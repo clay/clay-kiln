@@ -150,6 +150,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // navigate components when hitting ↑ / ↓ arrows (if there's a component selected)
+  // undo and redo with shortkey+z / shift+shortkey+z
+  // display cheat sheet of all keyboard shortcuts with shift+?
   document.addEventListener('keydown', function (e) {
     const key = keycode(e),
       // shortKey is a Quill convention to test for cmd on mac and ctrl on windows
@@ -170,6 +172,16 @@ document.addEventListener('DOMContentLoaded', function () {
     } else if (key === 'z' && e[SHORTKEY]) {
       // undo
       store.dispatch('undo');
+    } else if (key === '/' && e.shiftKey === true) {
+      // cheat sheet
+      store.dispatch('openPane', {
+        title: 'Keyboard Shortcuts',
+        position: 'center',
+        size: 'large',
+        content: {
+          component: 'keyboard-shortcuts'
+        }
+      });
     }
   });
 });
