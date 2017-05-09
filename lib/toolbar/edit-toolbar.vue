@@ -164,7 +164,7 @@
         return Object.keys(window.kiln.toolbarButtons);
       },
       hasChanges: (state) => {
-        const pubTime = _.get(state, 'page.state.publishedAt'),
+        const pubTime = _.get(state, 'page.listData.publishTime'), // latest published timestamp
           upTime = _.get(state, 'page.listData.updateTime');
 
         if (pubTime && upTime) {
