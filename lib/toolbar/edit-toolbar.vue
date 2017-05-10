@@ -44,11 +44,12 @@
         <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" @click="toggleMenu"></toolbar-button>
         <toolbar-button class="view-button" name="close" icon-name="close-edit" text="Stop Editing" @click="stopEditing"></toolbar-button>
         <div class="kiln-toolbar-inner">
-          <toolbar-button class="components" name="components" icon-name="search-page" text="Find on Page" @click="toggleComponents"></toolbar-button>
           <toolbar-button class="undo" :disabled="!undoEnabled" icon-name="undo" text="Undo" @click="undo"></toolbar-button>
           <toolbar-button class="redo" :disabled="!redoEnabled" icon-name="redo" text="Redo" @click="redo"></toolbar-button>
           <component v-for="button in customButtons" :is="button"></component>
           <div class="flex-span flex-span-inner"></div>
+          <toolbar-button class="people" name="people" icon-name="people" text="People" @click="togglePeople"></toolbar-button>
+          <toolbar-button class="components" name="components" icon-name="search-page" text="Find on Page" @click="toggleComponents"></toolbar-button>
           <toolbar-button class="preview" name="preview" icon-name="new-tab" text="Preview" @click="togglePreview"></toolbar-button>
         </div>
         <toolbar-button v-if="isLoading" class="publish loading" name="publish" icon-name="draft" text="Loading&hellip;"></toolbar-button>
@@ -207,6 +208,17 @@
       },
       redo() {
         this.$store.dispatch('redo');
+      },
+      togglePeople(name, button) {
+        let options = {
+          name,
+          title: 'People',
+          content: {
+            component: 'people'
+          }
+        };
+
+        return this.$store.dispatch('togglePane', { options, button });
       },
       toggleComponents(name, button) {
         let options = {
