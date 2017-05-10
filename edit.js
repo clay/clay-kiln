@@ -67,6 +67,7 @@ Vue.directive('h-scroll', hScrollDirective());
 window.kiln = window.kiln || {};
 // .plugins, .behaviors, .validators, and .panes objects should already exist
 window.kiln.utils = utilsAPI;
+window.kiln.store = store;
 
 // kick off loading when DOM is ready
 // note: preloaded data, external behaviors, decorators, and validation rules should already be added
