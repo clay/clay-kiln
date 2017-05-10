@@ -106,15 +106,18 @@
 
   export default {
     data() {
-      return {}; // todo: fetch new list data when this pane opens
+      return {};
     },
-    computed: {
+    asyncComputed: {
       people() {
-        const listData = _.get(this.$store, 'state.page.listData');
+        return this.$store.dispatch('getListData', _.get(this.$store, 'state.page.uri')).then(() => {
+          // getListData sets the store, which we then pull from
+          const listData = _.cloneDeep(_.get(this.$store, 'state.page.listData'));
 
-        return _.map(listData.users, (user) => {
-          user.formattedTime = formatStatusTime(user.updateTime);
-          return user;
+          return _.map(listData.users, (user) => {
+            user.formattedTime = formatStatusTime(user.updateTime);
+            return user;
+          });
         });
       }
     }
