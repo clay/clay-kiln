@@ -125,9 +125,12 @@ $height: 48px;
   }
 
   .changes {
-    @include button-filled-large($published);
+    @include button-filled-large($save);
 
     border-left: none;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: left;
   }
 
   .scheduled {

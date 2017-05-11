@@ -25,7 +25,7 @@
 
     .publish {
       @media screen and (min-width: 1024px) {
-        min-width: 130px; // largest width (scheduled)
+        width: 130px; // largest width (scheduled)
       }
     }
   }
@@ -54,7 +54,7 @@
         </div>
         <toolbar-button v-if="isLoading" class="publish loading" name="publish" icon-name="draft" text="Loading&hellip;"></toolbar-button>
         <toolbar-button v-else-if="pageState.scheduled" class="publish scheduled" name="publish" icon-name="scheduled" text="Scheduled" @click="togglePublish"></toolbar-button>
-        <toolbar-button v-else-if="hasChanges" class="publish changes" name="publish" icon-name="unpubbed-changes" text="Changes" @click="togglePublish"></toolbar-button>
+        <toolbar-button v-else-if="hasChanges" class="publish changes" name="publish" icon-name="unpubbed-changes" text="Unpublished Changes" @click="togglePublish"></toolbar-button>
         <toolbar-button v-else-if="pageState.published" class="publish published" name="publish" icon-name="published" text="Published" @click="togglePublish"></toolbar-button>
         <toolbar-button v-else class="publish draft" name="publish" icon-name="draft" text="Draft" @click="togglePublish"></toolbar-button>
       </section>

@@ -9,7 +9,7 @@
     </defs>
     <g id="Toolbar-v6" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="Group-24" transform="translate(2.000000, 2.000000)">
-            <use id="Path-Copy-11" stroke="#FFFFFF" mask="url(#mask-2)" stroke-width="2" opacity="0.939999998" stroke-dasharray="5,1" xlink:href="#path-1"></use>
+            <use id="Path-Copy-11" stroke="#FFFFFF" mask="url(#mask-2)" stroke-width="4" opacity="0.939999998" stroke-dasharray="5,1" xlink:href="#path-1"></use>
             <polygon id="Path-Copy-2" fill="#FFFFFF" points="8 15 3 10 4.41 8.59 8 12.17 15.59 4.58 17 6"></polygon>
         </g>
     </g>
