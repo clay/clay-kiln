@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import striptags from 'striptags';
 import store from '../lib/core-data/store';
 
 /**
@@ -19,7 +20,7 @@ function containsTag(tagName, graf) {
  */
 function parseTag(tagName, graf) {
   const start = graf.indexOf(`<${tagName}`),
-    end = graf.indexOf(`</${tagName}>`) + tagName.length + 3, // length of closing tag
+    end = graf.indexOf(`</${tagName}>`) > -1 ? graf.indexOf(`</${tagName}>`) + tagName.length + 3 : graf.length, // length of closing tag
     before = graf.substring(0, start),
     mid = graf.substring(start, end),
     after = graf.substring(end);
@@ -121,13 +122,20 @@ export function matchComponents(strings, rules) {
 
     return matchedObj;
   }), function filterMatches(component) {
-    var val = component.value;
+    let val;
+
+    try {
+      val = striptags(component.value);
+    } catch (e) {
+      console.warn('Cannot parse match:', e);
+      val = '';
+    }
 
     // filter out any components that are blank (filled with empty spaces)
     // this happens when paragraphs really only contain <p> tags, <div>s, <br>s, or extra spaces
 
-    // return true if the string contains words (anything that isn't whitespace, but not just a single closing tag)
-    return _.isString(val) && val.match(/\S/) && !val.match(/^<.*?>$/);
+    // return true if the string contains text (not just tags), and isn't just whitespace
+    return val.length && val.match(/\S/);
   });
 }
 
