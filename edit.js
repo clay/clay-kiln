@@ -85,6 +85,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // page load indicator. will be finished by the preloader
+  store.dispatch('startProgress', 'offline');
+
   // add external plugins
   _.forOwn(window.kiln.plugins || {}, (plugin) => plugin(store));
 
@@ -152,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // navigate components when hitting ↑ / ↓ arrows (if there's a component selected)
   // undo and redo with shortkey+z / shift+shortkey+z
   // display cheat sheet of all keyboard shortcuts with shift+?
-  document.addEventListener('keydown', function (e) {
+  document.addEventListener('keydown', function (e) { // eslint-disable-line
     const key = keycode(e),
       // shortKey is a Quill convention to test for cmd on mac and ctrl on windows
       SHORTKEY = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
