@@ -25,7 +25,7 @@
       background-color: transparent;
       bottom: 0;
       box-shadow: none;
-      height: 6px;
+      height: 3px;
       left: 0;
       position: absolute;
       top: auto;
