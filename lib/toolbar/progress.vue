@@ -13,6 +13,12 @@
     position: absolute;
     width: 100%;
 
+    &.nprogress-custom-parent {
+      // override nprogress styling
+      overflow: visible;
+      position: absolute;
+    }
+
     #nprogress .bar {
       @include toolbar-layer();
 
@@ -93,7 +99,7 @@
 
     // never hit 100%
     if (log >= MAX_LOG) {
-      log =  MAX_LOG;
+      log = MAX_LOG;
     }
 
     np.set(log);

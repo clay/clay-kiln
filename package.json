@@ -98,7 +98,6 @@
     "vue-async-computed": "^3.0.0",
     "vue-loader": "^10.3.0",
     "vue-nprogress": "^0.1.5",
-    "vue-progressbar": "^0.7.1",
     "vue-style-loader": "^2.0.0",
     "vue-template-compiler": "^2.1.10",
     "vuex": "^2.1.2",
