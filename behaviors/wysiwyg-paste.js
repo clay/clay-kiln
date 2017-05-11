@@ -98,6 +98,8 @@ export function matchComponents(strings, rules) {
 
     // do some more post-splitting sanitization:
     cleanStr = cleanCharacters(str);
+    // remove any opening line breaks
+    cleanStr = cleanStr.replace(/^<br\s?\/?>/ig, '');
     // remove any other <p> or <div> tags, because you cannot put block-level tags inside paragraphs
     cleanStr = cleanStr.replace(/<\/?(?:p|div)>/ig, '');
 
