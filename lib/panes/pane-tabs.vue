@@ -1,6 +1,11 @@
 <style lang="sass">
   @import '../../styleguide/panes';
 
+  .pane-tabs {
+    // max height of panes, minus pane header
+    max-height: calc(70vh - 51px);
+  }
+
   .pane-tabs-titles {
     display: flex;
     border-bottom: 1px solid $pane-header-border;
