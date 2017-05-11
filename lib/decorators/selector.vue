@@ -282,13 +282,13 @@
       },
       // note: only for components in LISTS! components in properties can be replaced but not removed (for now)
       hasRemove() {
-        return this.parentField && this.parentField.type === 'list';
+        return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable;
       },
       hasAddComponent() {
-        return this.parentField && this.parentField.type === 'list';
+        return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable;
       },
       hasReplaceComponent() {
-        return this.parentField && this.parentField.type === 'prop';
+        return this.parentField && this.parentField.type === 'prop' && this.parentField.isEditable;
       },
       hasButtons() {
         return this.hasSettings || this.hasRemove || this.hasAddComponent || this.hasReplaceComponent;
