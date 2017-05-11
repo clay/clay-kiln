@@ -39,13 +39,16 @@
     .person-image {
       flex: 0 0 32px;
       height: 32px;
+      margin-right: 15px;
       width: 32px;
     }
 
     .person-name {
       color: $subtitle;
       flex: 1 0 auto;
-      padding: 0 15px;
+      padding-right: 0 15px;
+      // no left padding (it's handled by the image),
+      // so name displays to the left if image doesn't exist
     }
 
     .person-timestamp {
