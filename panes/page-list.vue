@@ -480,6 +480,8 @@
       },
       toggleSiteSelected(site) {
         site.isSelected = !site.isSelected;
+        this.offset = 0;
+        this.fetchPages();
       },
       onSearchKeyup: _.debounce(function () {
         this.offset = 0;
