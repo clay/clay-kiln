@@ -120,7 +120,7 @@
           return _.map(listData.users, (user) => {
             user.formattedTime = formatStatusTime(user.updateTime);
             return user;
-          });
+          }).reverse();
         });
       }
     }
