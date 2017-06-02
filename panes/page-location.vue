@@ -69,8 +69,11 @@
         if (val.match(/^http/i)) {
           // full url
           url = val;
+        } else if (val === '/') {
+          // a single slash means this page should be the root url for a site, e.g. an index page
+          url = uriToUrl(prefix);
         } else if (val.match(/^\/\S/i)) {
-          // already starts with a slash
+          // already starts with a slash (but isn't the root url for a site)
           url = uriToUrl(prefix + val);
         } else if (val.match(/^\S/i)) {
           // add the slash ourselves
