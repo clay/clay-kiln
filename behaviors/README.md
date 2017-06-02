@@ -325,7 +325,14 @@ An array of objects with a `text` property that is a string to display in a list
 
 * **allowRepeatedItems** _(optional)_ allow the same item more than once. defaults to false
 
-* **autocomplete** _(optional)_ NEED TO DECIDE ON THE API
+* **autocomplete** _(optional)_ object with autocomplete options. Currently this is just the key `list` where the value is the name of a list that Amphora knows about accessible via `/<site>/lists/<listName>`. Example:
+
+```yaml
+  -
+    fn: simple-list
+    autocomplete:
+      list: authors
+```
 
 * **propertyName** _(optional)_ appends double-click functionality to items in the list. Name of the property that is considered "primary"
 
