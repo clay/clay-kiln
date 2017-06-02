@@ -398,9 +398,12 @@
    * @param  {array} siteFilter
    * @param  {string} searchFilter
    * @param {number} offset
+   * @param {object} user
+   * @param {boolean} user.isMyPages
+   * @param {string} user.username
    * @return {object}
    */
-  function buildQuery(siteFilter, searchFilter, offset) {
+  function buildQuery(siteFilter, searchFilter, offset, user) {
     let query = {
       index: 'pages',
       type: 'general',
@@ -416,26 +419,48 @@
       }
     };
 
-    if (siteFilter.length) {
-      _.set(query, 'body.query.filtered.filter.terms.siteSlug', siteFilter);
+    if (user.isMyPages || siteFilter.length || searchFilter) {
+      _.set(query, 'body.query.bool.must', []);
+    } else {
+      _.set(query, 'body.query.match_all', {});
     }
 
-    if (searchFilter) {
-      _.set(query, 'body.query.filtered.query.multi_match', {
-        query: searchFilter,
-        fields: ['authors^2', 'title'], // favor authors then title
-        type: 'phrase_prefix'
+    if (user.isMyPages) {
+      query.body.query.bool.must.push({
+        nested: {
+          path: 'users',
+          query: {
+            term: {
+              'users.username': user.username
+            }
+          }
+        }
       });
     }
 
-    if (!siteFilter.length && !searchFilter) {
-      _.set(query, 'body.query.match_all', {});
+    if (siteFilter.length) {
+      query.body.query.bool.must.push({
+        terms: {
+          siteSlug: siteFilter
+        }
+      });
+    }
+
+    if (searchFilter) {
+      query.body.query.bool.must.push({
+        multi_match: {
+          query: searchFilter,
+          fields: ['authors^2', 'title'], // favor authors, then title
+          type: 'phrase_prefix'
+        }
+      });
     }
 
     return query;
   }
 
   export default {
+    props: ['args'],
     data() {
       return {
         searchString: '',
@@ -492,7 +517,9 @@
           searchFilter = this.searchString,
           offset = this.offset,
           prefix = _.get(this.$store, 'state.site.prefix'),
-          query = buildQuery(siteFilter, searchFilter, offset),
+          isMyPages = this.args && this.args.isMyPages,
+          username = _.get(this.$store, 'state.user.username'),
+          query = buildQuery(siteFilter, searchFilter, offset, { isMyPages, username }),
           currentPageURI = _.get(this.$store, 'state.page.uri');
 
         return postJSON(prefix + searchRoute, query).then((res) => {

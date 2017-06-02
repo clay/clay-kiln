@@ -95,6 +95,14 @@
           size: 'xlarge',
           clayHeader: true,
           content: [{
+            header: 'My Pages',
+            content: {
+              component: 'page-list',
+              args: {
+                isMyPages: true
+              }
+            }
+          },{
             header: 'All Pages',
             content: {
               component: 'page-list'
