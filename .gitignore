@@ -30,5 +30,3 @@ node_modules
 
 # compiled scripts and styles (generated on postinstall)
 dist
-
-package-lock.json
