@@ -6,35 +6,33 @@
 
   .page-list-input {
     border-bottom: 1px solid $input-border;
-    display: flex;
     overflow: hidden;
-    max-width: 100%;
+    width: 100%;
+    position: relative;
   }
 
   .page-list-search {
     @include input;
 
     border: none;
-    padding: 10px 10px 10px 17px;
-    transition: $toggle-speed all ease;
-
-    &.closed {
-      padding: 0;
-      width: 0;
-    }
+    /* right padding: 2x48 (buttons) + 10px padding */
+    padding: 10px 106px 10px 17px;
+    width: 100%;
   }
 
   .sites-readout {
-    border-left: 1px solid $input-border;
+    background-color: $input-background;
+    border-left: 1px solid $pane-list-divider;
     display: flex;
-    flex-grow: 0;
+    position: absolute;
+    right: 44px;
+    top: 2px;
     transition: $toggle-speed all ease;
-    // extra padding on the right
-    width: 58px;
+    width: 44px;
+    z-index: 1;
 
     &.open {
-      flex-grow: 1;
-      width: 100%;
+      width: calc(100% - 44px);
     }
 
     &-trigger {
@@ -43,7 +41,7 @@
       border: none;
       cursor: pointer;
       flex-shrink: 0;
-      width: 48px;
+      width: 44px;
 
       &:focus {
         outline: none;
@@ -82,10 +80,10 @@
           background: transparent;
           border: none;
           cursor: pointer;
-          height: 48px;
+          height: 44px;
           outline: none;
           position: relative;
-          width: 48px;
+          width: 44px;
 
           & > img {
             max-width: 100%;
@@ -114,6 +112,52 @@
 
     &.open .sites-readout-list {
       opacity: 1;
+    }
+  }
+
+  .status-toggle {
+    appearance: none;
+    background-color: $input-background;
+    border: none;
+    border-left: 1px solid $pane-list-divider;
+    cursor: pointer;
+    display: flex;
+    position: absolute;
+    right: 0;
+    top: 2px;
+    transition: $toggle-speed all ease;
+    width: 44px;
+    z-index: 1;
+
+    &:focus {
+      outline: none;
+    }
+
+    .triforce {
+      margin-top: 5px;
+    }
+
+    // grey icons when no status is toggled
+    .triforce-published,
+    .triforce-scheduled {
+      fill: $triforce-disabled;
+    }
+
+    .triforce-draft {
+      stroke: $triforce-disabled;
+    }
+
+    // bright icons when status is toggled
+    &.show-draft .triforce-draft {
+      stroke: $draft;
+    }
+
+    &.show-published .triforce-published {
+      fill: $published;
+    }
+
+    &.show-scheduled .triforce-scheduled {
+      fill: $scheduled;
     }
   }
 
@@ -247,7 +291,7 @@
 <template>
   <div class="page-list">
     <div class="page-list-input">
-      <input class="page-list-search" :class="{ closed: isSiteListOpen }" placeholder="Search Pages" v-model="searchString" @keyup="onSearchKeyup" />
+      <input class="page-list-search" placeholder="Search Pages" v-model="searchString" @keyup="onSearchKeyup" />
       <div class="sites-readout" :class="{ open: isSiteListOpen }">
         <button class="sites-readout-trigger" type="button" @click.stop="toggleSitesList">
           <svg v-if="isSiteListOpen" width="8" height="12" viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><path d="M2 0L.59 1.41 5.17 6 .59 10.59 2 12l6-6z" fill-rule="evenodd"/></svg>
@@ -266,6 +310,9 @@
           </ul>
         </div>
       </div>
+      <button class="status-toggle" :class="{ 'show-draft': toggledStatuses.draft, 'show-published': toggledStatuses.published, 'show-scheduled': toggledStatuses.scheduled }" @click.stop.prevent="cycleStatuses">
+        <icon class="triforce" name="triforce-of-publishing"></icon>
+      </button>
     </div>
     <div class="page-list-display">
       <transition name="fade">
@@ -398,12 +445,14 @@
    * @param  {array} siteFilter
    * @param  {string} searchFilter
    * @param {number} offset
-   * @param {object} user
-   * @param {boolean} user.isMyPages
-   * @param {string} user.username
+   * @param {object} statuses
+   * @param {boolean} isMyPages
+   * @param {string} username
    * @return {object}
    */
-  function buildQuery(siteFilter, searchFilter, offset, user) {
+  function buildQuery({ siteFilter, searchFilter, offset, statuses, isMyPages, username }) { // eslint-disable-line
+    const allStatuses = statuses.draft && statuses.published && statuses.scheduled;
+
     let query = {
       index: 'pages',
       type: 'general',
@@ -419,25 +468,27 @@
       }
     };
 
-    if (user.isMyPages || siteFilter.length || searchFilter) {
+    if (isMyPages || siteFilter.length || searchFilter || !allStatuses) {
       _.set(query, 'body.query.bool.must', []);
     } else {
       _.set(query, 'body.query.match_all', {});
     }
 
-    if (user.isMyPages) {
+    // filter for only "My Pages"
+    if (isMyPages) {
       query.body.query.bool.must.push({
         nested: {
           path: 'users',
           query: {
             term: {
-              'users.username': user.username
+              'users.username': username
             }
           }
         }
       });
     }
 
+    // filter by selected sites
     if (siteFilter.length) {
       query.body.query.bool.must.push({
         terms: {
@@ -446,6 +497,7 @@
       });
     }
 
+    // filter by search string
     if (searchFilter) {
       query.body.query.bool.must.push({
         multi_match: {
@@ -454,6 +506,35 @@
           type: 'phrase_prefix'
         }
       });
+    }
+
+    // filter by selected status
+    if (!allStatuses) {
+      // when all statuses are selected, it doesn't need to include a status filter in the query
+      // when a single status is selected, it does include the filter
+      if (statuses.draft) {
+        query.body.query.bool.must.push({
+          term: {
+            published: false
+          }
+        }, {
+          term: {
+            scheduled: false
+          }
+        });
+      } else if (statuses.published) {
+        query.body.query.bool.must.push({
+          term: {
+            published: true
+          }
+        });
+      } else if (statuses.scheduled) {
+        query.body.query.bool.must.push({
+          term: {
+            scheduled: true
+          }
+        });
+      }
     }
 
     return query;
@@ -469,7 +550,12 @@
         pagesLoaded: true,
         isSiteListOpen: false,
         sites: getInitialSites.call(this),
-        pages: []
+        pages: [],
+        toggledStatuses: {
+          draft: true,
+          published: true,
+          scheduled: true
+        }
       };
     },
     computed: {
@@ -512,6 +598,28 @@
         this.offset = 0;
         this.fetchPages();
       }, 300),
+      cycleStatuses() {
+        const allShown = this.toggledStatuses.draft && this.toggledStatuses.published && this.toggledStatuses.scheduled;
+
+        // all → draft → scheduled → published
+        if (allShown) {
+          this.toggledStatuses.scheduled = false;
+          this.toggledStatuses.published = false;
+          // only show draft
+        } else if (this.toggledStatuses.draft) {
+          this.toggledStatuses.draft = false;
+          this.toggledStatuses.scheduled = true; // switch to scheduled
+        } else if (this.toggledStatuses.scheduled) {
+          this.toggledStatuses.scheduled = false;
+          this.toggledStatuses.published = true; // switch to published
+        } else if (this.toggledStatuses.published) {
+          // back to all
+          this.toggledStatuses.draft = true;
+          this.toggledStatuses.scheduled = true;
+        }
+        this.offset = 0;
+        this.fetchPages();
+      },
       fetchPages() {
         const siteFilter = _.map(this.selectedSites, (site) => site.slug),
           searchFilter = this.searchString,
@@ -519,7 +627,8 @@
           prefix = _.get(this.$store, 'state.site.prefix'),
           isMyPages = this.args && this.args.isMyPages,
           username = _.get(this.$store, 'state.user.username'),
-          query = buildQuery(siteFilter, searchFilter, offset, { isMyPages, username }),
+          statuses = this.toggledStatuses,
+          query = buildQuery({ siteFilter, searchFilter, offset, statuses, isMyPages, username }),
           currentPageURI = _.get(this.$store, 'state.page.uri');
 
         return postJSON(prefix + searchRoute, query).then((res) => {
