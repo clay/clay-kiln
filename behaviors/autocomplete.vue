@@ -41,18 +41,15 @@
         prevFocusIndex: null,
       };
     },
-    computed: {
+    asyncComputed: {
       listItems() {
-        const lists = this.$store.state.lists,
-          listName = this.args.list;
+        const listName = this.args.list,
+          lists = this.$store.state.lists;
 
-        // if the list isn't in the store yet, tell Vuex to get it
-        if (listName && !lists[listName]) {
-          this.$store.dispatch('getList', listName);
-          return [];
-        }
-        return lists[listName].items;
-      },
+        return this.$store.dispatch('getList', listName).then(() => lists[listName].items);
+      }
+    },
+    computed: {
       showMatches() {
         return this.query.length >= 2 && this.matches.length;
       },
