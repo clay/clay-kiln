@@ -85,7 +85,8 @@
       'time'
     ],
     firefoxDateFormat = 'YYYY-MM-DD HH:mm A',
-    defaultDateFormat = 'YYYY-MM-DDTHH:mm';
+    defaultDateFormat = 'YYYY-MM-DDTHH:mm',
+    withoutTimeDateFormat = 'YYYY-MM-DD';
 
     /**
    * create a new date string in a given format. If no
@@ -99,14 +100,18 @@
     return value ? dateFormat(value, format) : '';
   }
 
-  function initDatePicker($el) {
+  function initDatePicker($el, type) {
+    var dateFormat;
+
     if (!hasNativePicker()) {
       // when instantiating, convert from the ISO format (what we save) to firefox's format (what the datepicker needs)
-      $el.value = getFormattedDateString($el.value, firefoxDateFormat);
+      dateFormat = type === 'date' ? withoutTimeDateFormat : firefoxDateFormat;
+      $el.value = getFormattedDateString($el.value, dateFormat);
       initPicker($el);
     } else {
       // Get proper value at instantiation
-      $el.value = getFormattedDateString($el.value, defaultDateFormat);
+      dateFormat = type === 'date' ? withoutTimeDateFormat : defaultDateFormat;
+      $el.value = getFormattedDateString($el.value, dateFormat);
     }
   }
 
@@ -160,7 +165,7 @@
     mounted() {
       if (isDate(this.args.type)) {
         // initialize datepicker if necessary
-        initDatePicker(this.$el, this.$store, this.name);
+        initDatePicker(this.$el, this.args.type, this.$store, this.name);
       } else if (isFirstField(this.$el)) {
         const offset = _.get(this, '$store.state.ui.currentForm.initialOffset');
 
