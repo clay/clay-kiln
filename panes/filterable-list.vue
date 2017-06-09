@@ -4,10 +4,11 @@
 
   .filterable-list {
     &-input {
+      padding: 4px;
       &-field {
         @include input();
 
-        padding: 10px 18px;
+        padding: 10px 14px;
       }
     }
     &-readout {
