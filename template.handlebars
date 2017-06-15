@@ -22,7 +22,7 @@
         window.kiln.locals = {{{ default (stringify @root.locals) '{}' }}};
       </script>
     {{else}}
-      {{! show view mode styles, only preload site data}}
+      {{! show view mode styles, only preload site and user data}}
       <style>
           {{{ read 'node_modules/clay-kiln/dist/clay-kiln-view.css' }}}
       </style>
@@ -30,6 +30,7 @@
       <script>
         window.kiln = window.kiln || {};
         window.kiln.preloadSite = {{{ default (stringify @root.locals.site) '{}' }}};
+        window.kiln.preloadUser = {{{ default (stringify @root.locals.user) '{}' }}};
       </script>
     {{/if}}
 
