@@ -198,6 +198,7 @@
             }
           },{
             header: 'All Pages',
+            active: true, // todo: save last tab in localstorage
             content: {
               component: 'page-list'
             }
