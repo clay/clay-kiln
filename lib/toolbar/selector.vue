@@ -20,6 +20,7 @@
     left: 0;
     justify-content: flex-start;
     max-width: 350px; // pane size
+    min-height: 49px; // fix for selectors that do not have icons
     position: fixed;
     top: calc(100% - 96px); // 48px times 2
     transition: transform 350ms $easeOutCubic;
