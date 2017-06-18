@@ -50,6 +50,10 @@
     padding: 20px 0;
   }
 
+  .publish-warning + .publish-warning {
+    margin-top: 20px;
+  }
+
   .error-label {
     color: $bright-error;
     text-transform: uppercase;
