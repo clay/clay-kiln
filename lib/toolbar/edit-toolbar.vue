@@ -67,6 +67,7 @@
   import { mapState } from 'vuex';
   import { find } from '@nymag/dom';
   import isAfter from 'date-fns/is_after';
+  import addSeconds from 'date-fns/add_seconds';
   import toggleEdit from '../utils/toggle-edit';
   import { getSchema } from '../core-data/components';
   import { layoutAttr, editAttr, componentListProp } from '../utils/references';
@@ -166,10 +167,10 @@
       },
       hasChanges: (state) => {
         const pubTime = _.get(state, 'page.listData.publishTime'), // latest published timestamp
-          upTime = _.get(state, 'page.listData.updateTime');
+          upTime = _.get(state, 'page.listData.updateTime'); // latest updated timestamp
 
         if (pubTime && upTime) {
-          return isAfter(upTime, pubTime);
+          return isAfter(upTime, addSeconds(pubTime, 30)); // give it 30 seconds of leeway, in case there are slow updates to the server
         } else {
           return false;
         }
