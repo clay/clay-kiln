@@ -1,7 +1,20 @@
 {
   "parserOptions": {
     "sourceType": "module",
-    "ecmaVersion": 6
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "arrowFunctions": true,
+      "blockBindings": true,
+      "forOf": true,
+      "objectLiteralDuplicateProperties": true,
+      "objectLiteralShorthandProperties": true,
+      "objectLiteralShorthandMethods": true,
+      "octalLiterals": true,
+      "binaryLiterals": true,
+      "templateStrings": true,
+      "generators": true,
+      "modules": true
+    }
   },
   "plugins": ["html"],
   "env": {
@@ -15,20 +28,6 @@
     "expect": false,
     "chai": false,
     "sinon": false
-  },
-  // enable the es6 features supported by our browsers / iojs
-  "ecmaFeatures": {
-    "arrowFunctions": true,
-    "blockBindings": true,
-    "forOf": true,
-    "objectLiteralDuplicateProperties": true,
-    "objectLiteralShorthandProperties": true,
-    "objectLiteralShorthandMethods": true,
-    "octalLiterals": true,
-    "binaryLiterals": true,
-    "templateStrings": true,
-    "generators": true,
-    "modules": true
   },
   "rules": {
     // possible errors
