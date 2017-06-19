@@ -91,10 +91,10 @@ export function sanitizeInlineHTML(str) {
   // all text coming out of Quill will have each line wrapped in <p>,
   // so we need to convert those to <br> line breaks
   return trimLinebreaks(sanitized.split('</p>')
-    .filter((line) => line.trim().length > 0)
-    .map((line) => {
-      return line.replace('<p>', '');
-    }).join('<br />'));
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0)
+    .map((line) => line.replace('<p>', ''))
+    .join('<br />'));
 };
 
 /**
@@ -132,16 +132,16 @@ export function sanitizeMultiComponentHTML(str) {
 
   if (hasWellFormedParagraphs(sanitized)) {
     return trimLinebreaks(sanitized.split('</p>')
-      .filter((line) => line.trim().length > 0)
-      .map((line) => {
-        return line.replace('<p>', '');
-      }).join('<br /><br />'));
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0)
+      .map((line) => line.replace('<p>', ''))
+      .join('<br /><br />'));
   } else {
     return trimLinebreaks(sanitized.split('</p>')
-      .filter((line) => line.trim().length > 0)
-      .map((line) => {
-        return line.replace('<p>', '');
-      }).join('<br />'));
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0)
+      .map((line) => line.replace('<p>', ''))
+      .join('<br />'));
   }
 }
 
