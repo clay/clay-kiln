@@ -22,12 +22,16 @@ let plugins = [
     flattening: true, // allow flattening methods
     paths: true, // allow deep _.get, _.set, _.has
     // note: we're explicitly not allowing chaining or currying
-  }),
-  new webpack.optimize.OccurrenceOrderPlugin
+  })
 ];
 
 if (prod) {
   plugins = plugins.concat([
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: '"production"'
+      }
+    }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         sequences: true,
@@ -41,7 +45,8 @@ if (prod) {
         if_return: true,
         reduce_vars: true,
         passes: 2,
-        unsafe: true
+        unsafe: true,
+        warnings: false
       },
       output: {
         inline_script: true
