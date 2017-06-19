@@ -9,24 +9,24 @@
     overflow: hidden;
     width: 100%;
     position: relative;
+    padding: 4px;
   }
 
   .page-list-search {
     @include input;
 
-    border: none;
     /* right padding: 2x48 (buttons) + 10px padding */
-    padding: 10px 106px 10px 17px;
+    padding: 10px 106px 10px 14px;
     width: 100%;
   }
 
   .sites-readout {
     background-color: $input-background;
-    border-left: 1px solid $pane-list-divider;
+    border-left: 1px solid $input-border;
     display: flex;
     position: absolute;
     right: 44px;
-    top: 2px;
+    top: 4px;
     transition: $toggle-speed all ease;
     width: 44px;
     z-index: 1;
@@ -42,6 +42,7 @@
       cursor: pointer;
       flex-shrink: 0;
       width: 44px;
+      height: 48px;
 
       &:focus {
         outline: none;
@@ -127,6 +128,7 @@
     top: 2px;
     transition: $toggle-speed all ease;
     width: 44px;
+    height: 50px;
     z-index: 1;
 
     &:focus {
