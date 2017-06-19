@@ -20,12 +20,17 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   margin: 0;
   max-height: 100vh - $pane-margin;
   max-width: 320px;
-  min-height: 500px;
+  min-height: 30vh;
   min-width: 320px;
   padding: 0;
   position: absolute;
   transition: transform 350ms $easeOutExpo;
   width: 100%;
+
+  // x-large panes also have a minimum height, or they look weird
+  &.xlarge {
+    min-height: 500px;
+  }
 
   @media screen and (min-width: 600px) {
     width: 90%;
