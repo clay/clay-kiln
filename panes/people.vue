@@ -12,7 +12,7 @@
       display: flex;
       font-size: 14px;
       justify-content: space-between;
-      padding: 10px 17px;
+      padding: 12px 17px;
       position: relative;
 
       &:first-child {
@@ -29,10 +29,6 @@
           text-transform: uppercase;
           top: 10px;
         }
-      }
-
-      &:last-child {
-        padding-bottom: 20px;
       }
     }
 
