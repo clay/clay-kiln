@@ -300,6 +300,7 @@
           <span v-else-if="hasAllSitesSelected" class="sites-readout-trigger-text">All</span>
           <span v-else-if="hasMultipleSitesSelected" class="sites-readout-trigger-text">{{ selectedSites.length }}</span>
           <img v-else-if="hasOneSiteSelected" :src="selectedSites[0].iconURL" :title="selectedSites[0].name" />
+          <span v-else-if="hasNoSitesSelected" class="sites-readout-trigger-text">{{ selectedSites.length }}</span>
         </button>
         <div class="sites-readout-overflow">
           <ul class="sites-readout-list">
@@ -470,11 +471,7 @@
       }
     };
 
-    if (isMyPages || siteFilter.length || searchFilter || !allStatuses) {
-      _.set(query, 'body.query.bool.must', []);
-    } else {
-      _.set(query, 'body.query.match_all', {});
-    }
+    _.set(query, 'body.query.bool.must', []);
 
     // filter for only "My Pages"
     if (isMyPages) {
@@ -495,6 +492,12 @@
       query.body.query.bool.must.push({
         terms: {
           siteSlug: siteFilter
+        }
+      });
+    } else {
+      query.body.query.bool.must.push({
+        terms: {
+          siteSlug: ['no-site-selected']
         }
       });
     }
@@ -575,6 +578,9 @@
       },
       hasOneSiteSelected() {
         return this.selectedSites.length === 1;
+      },
+      hasNoSitesSelected() {
+        return this.selectedSites.length === 0;
       },
       showLoadMore() {
         return this.total === null || this.offset < this.total;
