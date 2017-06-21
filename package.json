@@ -94,13 +94,13 @@
     "striptags": "2.2.1",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.8",
-    "vue": "^2.1.10",
+    "vue": "^2.3.4",
     "vue-async-computed": "^3.0.0",
     "vue-loader": "^10.3.0",
     "vue-nprogress": "^0.1.5",
-    "vue-style-loader": "^2.0.0",
-    "vue-template-compiler": "^2.1.10",
-    "vuex": "^2.1.2",
+    "vue-style-loader": "^2.0.5",
+    "vue-template-compiler": "^2.3.4",
+    "vuex": "^2.3.1",
     "webpack": "^2.2.1",
     "whatwg-fetch": "^1.0.0"
   }
