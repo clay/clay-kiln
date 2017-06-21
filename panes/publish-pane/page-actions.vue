@@ -129,7 +129,7 @@
         this.$store.dispatch('closePane');
         this.$store.dispatch('publishPage', this.$store.state.page.uri)
           .catch((e) => {
-            console.error('Error publishing page:', e);
+            console.error(`Error publishing page: ${e.message}`);
             store.dispatch('showStatus', { type: 'error', message: 'Error publishing page!'});
             throw e;
           })

@@ -188,7 +188,7 @@ export function generatePasteRules(pasteRules, currentComponent, currentField) {
     try {
       rule.match = new RegExp(`${pre}${rule.match}${post}`);
     } catch (e) {
-      console.error(e);
+      console.error(e.message);
       throw e;
     }
 

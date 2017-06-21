@@ -204,7 +204,7 @@
           // some browsers can't do this.
           button.classList.remove('success');
           button.classList.add('error');
-          console.error(e.message, e.stack);
+          console.error(e.message);
         }
       }
     }

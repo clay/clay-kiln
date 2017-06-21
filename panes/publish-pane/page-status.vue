@@ -114,7 +114,7 @@
         this.$store.dispatch('unschedulePage', this.$store.state.page.uri)
           .catch((e) => {
             store.commit(FINISH_PROGRESS, 'error');
-            console.error('Error unscheduling page:', e);
+            console.error(`Error unscheduling page: ${e.message}`);
             store.dispatch('showStatus', { type: 'error', message: 'Error unscheduling page!'});
             throw e;
           })
@@ -132,7 +132,7 @@
         this.$store.dispatch('unpublishPage', uri)
           .catch((e) => {
             store.commit(FINISH_PROGRESS, 'error');
-            console.error('Error unpublishing page:', e);
+            console.error(`Error unpublishing page: ${e.message}`);
             store.dispatch('showStatus', { type: 'error', message: 'Error unpublishing page!'});
             throw e;
           })
