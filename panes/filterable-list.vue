@@ -186,7 +186,7 @@
 
         // focus on the input if it wasn't focused before
         input && input.focus();
-      }, 351); // 350ms animation
+      }, 1000); // wait a second before fixing the height (allows things like page list to populate)
     },
     beforeDestroy() {
       // Clean up any Dragula event handlers
