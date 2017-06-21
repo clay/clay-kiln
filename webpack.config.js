@@ -5,7 +5,8 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin'),
   LodashModuleReplacementPlugin = require('lodash-webpack-plugin'),
   OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin'),
   cssnano = require('cssnano'),
-  prod = process.argv.indexOf('-p') !== -1;
+  prod = process.argv.indexOf('-p') !== -1,
+  kilnVersion = require('./package.json').version;
 
 let plugins = [
   styles,
@@ -22,6 +23,11 @@ let plugins = [
     flattening: true, // allow flattening methods
     paths: true, // allow deep _.get, _.set, _.has
     // note: we're explicitly not allowing chaining or currying
+  }),
+  new webpack.DefinePlugin({
+    'process.env': {
+      KILN_VERSION: `"${kilnVersion}"`
+    }
   })
 ];
 
