@@ -459,33 +459,74 @@
                 key: 'enter',
                 shiftKey: null, // don't care if shift is pressed or not
                 shortKey: null, // don't care if ctrl/⌘ is pressed or not
-                handler(range, context) {
+                handler(range, context) { // eslint-disable-line
                   if (isSingleLine) {
                     // single-line: never allow newlines, always just close the form
                     store.dispatch('unfocus');
-                  } else if (isMultiComponent && context.collapsed && context.offset === 0) {
-                    const textAfterCaret = renderDeltas(this.quill.getContents(range.index));
-
-                    // if the caret is at the beginning of a new line, create a new component (sending the text after the caret to the new component)
-                    this.quill.deleteText(range.index, this.quill.getLength() - range.index); // remove text after caret
-                    return store.dispatch('unfocus').then(() => {
-                      return store.dispatch('addComponents', {
-                        currentURI: current.uri,
-                        parentURI: current.parentURI,
-                        path: current.parentPath,
-                        components: [{
-                          name: current.component,
-                          data: { [name]: textAfterCaret }
-                        }]
-                      });
-                    }).then((newComponent) => {
-                      // focus on the BEGINNING of the new element (before any text we may have split into it)
-                      focusNextComponent(newComponent);
-                    });
-                  } else if (isMultiComponent || isMultiLine) {
-                    // multi-component: allow ONE new line before splitting into a new component
+                  } else if (isMultiLine) {
                     // multi-line: allow any number of newlines inside the current field
-                    return true; // create new line
+                    return true;
+                  } else if (isMultiComponent) {
+                    // multi-component: allow one newline before splitting into a new component
+                    // the logic can be boiled down to five points:
+                    // 1. if there's a newline right before caret → create a new component
+                    // 2. if there's a newline right after caret → move caret to the next line
+                    // 3. if neither of those are true, create a newline
+                    // 4. if any text is highlighted, delete it
+                    // 5. if deleting a whole line, don't add a newline
+                    const index = range.index,
+                      length = range.length,
+                      textBefore = this.quill.getText(0, index),
+                      hasNewlineBefore = !!textBefore.match(/\n\s*?$/),
+                      hasSelection = !context.collapsed,
+                      textAfter = hasSelection ? this.quill.getText(index + length) : this.quill.getText(index),
+                      hasNewlineInside = hasSelection && !!this.quill.getText(index, length).match(/\n/),
+                      hasNewlineAfter = hasSelection ? hasNewlineInside : !!textAfter.match(/^\s*?\n./), // find newlines except the last one
+                      deletingWholeLine = context.prefix === '' && context.suffix === '';
+
+                    // delete enything the user has selected
+                    if (hasNewlineInside) {
+                      this.quill.deleteText(index, length);
+                    } else if (hasSelection) {
+                      this.quill.deleteText(index);
+                    }
+
+                    if (hasNewlineBefore) {
+                      // if there's a newline before the caret, create a new component
+                      const textAfterCaret = renderDeltas(this.quill.getContents(index)),
+                        fieldLength = this.quill.getLength();
+
+                      // remove the text after the caret, and create a new component with it
+                      this.quill.deleteText(index, fieldLength - index);
+                      return store.dispatch('unfocus').then(() => {
+                        return store.dispatch('addComponents', {
+                          currentURI: current.uri,
+                          parentURI: current.parentURI,
+                          path: current.parentPath,
+                          components: [{
+                            name: current.component,
+                            data: { [name]: textAfterCaret }
+                          }]
+                        });
+                      }).then((newComponent) => {
+                        // focus on the BEGINNING of the new element (before any text we may have split into it)
+                        focusNextComponent(newComponent);
+                      });
+                    } else if (hasNewlineAfter) {
+                      // if there's a newline after the caret (or within the selection),
+                      // move the caret to after the newline
+                      const charsUntilNewline = hasNewlineInside ? 0 : textAfter.indexOf('\n') + 1;
+
+                      // if the newline is inside the old selection, we just need to increase the caret position by 1,
+                      // otherwise, find how many characters there are until the next newline
+                      this.quill.setSelection(index + charsUntilNewline);
+                    } else if (deletingWholeLine) {
+                      this.quill.deleteText(index, length);
+                      return false; // just delete the line, don't add a newline
+                    } else {
+                      // create a newline
+                      return true;
+                    }
                   }
                 }
               },
@@ -582,8 +623,10 @@
 
         this.$nextTick(() => {
           if (offset === -1 && appendText) {
+            const lastOffset = editor.getLength() - getLastOffsetWithNewlines(appendText) - 1;
+
             // set caret near the end, but BEFORE the appended text
-            editor.setSelection(editor.getLength() - getLastOffsetWithNewlines(appendText) - 2);
+            editor.setSelection(lastOffset > -1 ? lastOffset : 0);
           } else if (offset === -1) {
             // set caret at the end
             editor.setSelection(editor.getLength() - 1);

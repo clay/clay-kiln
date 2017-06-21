@@ -31,7 +31,7 @@ export function getNewlinesBeforeCaret(data, offset) {
  * @return {number}
  */
 export function getLastOffsetWithNewlines(data) {
-  const text = (data || '').replace(/(<\/p><p>|<br \/>)/ig, '\u00B6'), // convert to ¶ so we have something to count
+  const text = (data || '').replace(/(<\/p><p>|<br \/>|\n)/ig, '\u00B6'), // convert to ¶ so we have something to count
     plainText = striptags(text);
 
   let i = 0,

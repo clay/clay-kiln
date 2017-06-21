@@ -81,7 +81,7 @@
     "postcss-loader": "^1.3.0",
     "promise-queue": "^2.2.3",
     "promise-timeout": "^1.0.0",
-    "quill": "^1.2.0",
+    "quill": "^1.2.6",
     "quill-delta": "^3.4.3",
     "raw-loader": "^0.5.1",
     "routable": "0.0.5",
