@@ -1,6 +1,6 @@
 # clay-kiln
 
-[![Coverage Status](https://coveralls.io/repos/nymag/clay-kiln/badge.svg?branch=master&service=github&t=C3xeVy)](https://coveralls.io/github/nymag/clay-kiln?branch=master)
+[![CircleCI](https://circleci.com/gh/clay/clay-kiln.svg?style=svg)](https://circleci.com/gh/clay/clay-kiln) [![Coverage Status](https://coveralls.io/repos/nymag/clay-kiln/badge.svg?branch=master&service=github&t=C3xeVy)](https://coveralls.io/github/nymag/clay-kiln?branch=master)
 
 🔥 Editing tools for Clay
 
@@ -12,95 +12,68 @@
 npm install --save clay-kiln
 ```
 
-Kiln will automatically compile scripts and styles after installing.
+Kiln comes with compiled scripts and styles, and will inline most of them in edit mode. `dist/clay-kiln-edit.js` must be added to your Clay page in edit mode, and copied / served from a public directory by your script compilation.
 
 ## Usage
 
-To include it in your site, add it to your bootstrap:
+To include it in your site, add it to a bootstrap with non-empty data, e.g. `allow: true`.
 
 ```yaml
 components:
   clay-kiln:
-      allow: true
+    instances:
+      general:
+        allow: true
 ```
 
-Then add it to any layouts you want to use it on:
+Then create a _non-editable_ component list in your layout (preferably near the end), and add a reference to your Kiln instance.
 
 ```yaml
 components:
   layout:
     instances:
-      article-layout:
-        top:
+      article:
+        kilnInternals:
           -
-            _ref: /components/clay-kiln
+            _ref: /components/clay-kiln/instances/general
 ```
 
-Kiln will automatically display its toolbar (and load its scripts and styles) when you visit a page with `?edit=true` as a query param.
+Make sure you add that component list to your layout template, and double check that it isn't editable.
 
-### Extending Kiln
-
-Kiln has a simple client-side api that is used to extend its functionality. It consists of a global `kiln` object, with `behaviors` (object), `decorators` (array), and `validators` (array).
-
-* [Behaviors](https://github.com/nymag/clay-kiln/tree/master/behaviors#behaviors) — run on each field when opening forms
-* [Decorators](https://github.com/nymag/clay-kiln/tree/master/decorators#decorators) — run on each field (elements with `data-editable`) when the page is loaded
-* [Validators](https://github.com/nymag/clay-kiln/tree/master/validators#validators) — run when opening the `PUBLISH` pane and returns errors and warnings
-* [Plugins](https://github.com/nymag/clay-kiln/tree/master/README.md#plugins) — run before kiln code is initialized, and can hook into events and call kiln services.
-
-To add custom `behaviors`, `decorators`, `validators`, and `plugins` simply add them to the `kiln` object before the page's `DOMContentLoaded` event fires.
-
-#### Plugins
-
-Plugins are added to the global `window.kiln.plugins` object. They are initialized _before_ kiln services run, so they can add event listeners for things like saving, publishing, adding component selectors, etc. They may also call certain exported `window.kiln.services`.
-
-```js
-// my-plugin.js
-
-window.kiln.plugins['my-plugin'] = function () {
-  // you can add event handlers
-  window.kiln.on('save', function (data) {
-    console.log(window.kiln.services.label(data.name)); // and call kiln services
-  });
-}
+```handlebars
+<div class="kiln-internals">{{ > component-list kilnInternals }}</div>
 ```
 
-**Events:**
+Kiln will display a small toolbar to logged-in users when viewing any page in that layout, and a full toolbar when you visit a page with `?edit=true`.
 
-* `save` (api response) — after a component is saved
-* `schedule` (api response) — after a component/page is scheduled
-* `unschedule` (api response) — after a component/page is unscheduled
-* `publish` (api response) — after a page is published
-* `unpublish` (api response) — after a page is unpublished
-* `select` (selected component) — after a component is selected
-* `unselect` (previously selected component) — after a component is unselected
-* `add-selector` (el, options, parent data) — after a selector is added to a component
-* `form:open` (created form) — after a form is opened
-* `form:close` (form data) — after a form is closed (whether or not data was changed/saved)
-* `pane:open` (created pane, active tab) — right before a pane is opened
-* `pane:close` (pane) — after a pane is closed
-* `component-pane:create-invisible-tab` (pane content, invisible list object, layoutRef) - after one tab of content for the Component Pane has been created for an invisible component list
+
+## Guides
+
+When viewing a page in _edit mode_, Kiln will "decorate" your components with information and functionality that allows you to edit them, based on your component schemas. It allows you to open forms to edit components, manipulate those components in lists, create new pages using shared layouts, and preview and publish changes for the rest of the world to see. By keeping the editing experience consistent, it allows many different types of components to coexist in the same ecosystem, while decreasing both the maintenance cost for developers and the mental overhead for end users.
+
+* Editing Components with Forms
+* Adding / Removing / Reordering Components in Lists
+* Pages and Layouts
+* Saving, Publishing, and Scheduling
+* Anatomy of a Component Schema
+* [Extending Kiln](https://github.com/clay/clay-kiln/wiki/Kiln-APIs)
 
 ## Contributing
 
-### Inside The Kiln
+If you have a plugin, behavior, validator, or other functionality that you believe is generic enough and would improve the lives of others, please submit a pull request! We want to avoid enforcing workflows on Kiln users, but we welcome more efficient ways to working with different types of content and use-cases.
 
-As `behvaiors`, `decorators`, and `validators` are standardized, we may add them into the kiln directly. They live in their respective folders, and can be overridden by clay instances as needed.
+### Inside the Kiln
 
-* [Behaviors](https://github.com/nymag/clay-kiln/tree/master/behaviors#behaviors) — scripts and styles for standard behaviors
-* [Controllers](https://github.com/nymag/clay-kiln/tree/master/controllers#controllers) — handlers attached to editable components, forms, toolbars, etc
-* [Decorators](https://github.com/nymag/clay-kiln/tree/master/decorators#decorators) — scripts for standard decorators, including `focus` and `placeholder`
-* [Media](https://github.com/nymag/clay-kiln/tree/master/media) — svgs used by standard behaviors, decorators, and other kiln elements
-* [Services](https://github.com/nymag/clay-kiln/tree/master/services) — internal services including editing, database access, and form creation
-* [Styleguide](https://github.com/nymag/clay-kiln/tree/master/styleguide) — Kiln styleguide, used by standard behaviors, decorators, validators, and other kiln elements
-* [Validators](https://github.com/nymag/clay-kiln/tree/master/validators#validators) — scripts for standard validators
+As you can see in the template, Kiln will load one of three different application bundles, depending on the user state.
 
-### Client.js
-
-This file bootstraps internal and external `behaviors`, `decorators`, and `validators`. When the `DOMContentLoaded` event fires it instantiates a `component-edit` controller for each component on the page. This controller calls the decorators it needs (to attach click events to editable elements, or add placeholders, etc) and instantiates any services required (like component selectors).
+* [`view-public.js`](https://github.com/clay/clay-kiln/blob/master/view-public.js) is run if nobody is logged in, allowing people to easily use the `Shift+CLAY` shortcut.
+* [`view.js`](https://github.com/clay/clay-kiln/blob/master/view.js) is run for logged-in users when viewing pages, and displays the small toolbar with access to the Clay Menu.
+* [`edit.js`](https://github.com/clay/clay-kiln/blob/master/edit.js) is the fully-featured edit experience, for logged-in users in edit mode.
 
 ### Testing
 
-* `npm test` will run `eslint` and `karma` tests (the latter being run on browserify).
-* `npm run lint` will run `eslint` locally on the script folders, as well as `client.js`
-* `npm run test-local` will run `karma` tests locally (using `karma.local.conf.js`) and auto-watch for changes
-* `gulp watch` will automatically re-compile scripts and styles on change
+* `npm run lint` will run `eslint` on everything, making sure it conforms to our JavaScript style guide
+* `npm run test-local` will `lint` and run `karma` tests on the code, auto-watching for changes
+* `npm run build` will run `webpack`, compiling the scripts and styles to the `dist/` folder
+* `npm run watch` will run `webpack` and watch for changes
+* `npm run prepublish` will run `webpack` with production flags enabled, compiling and minifying the scripts and styles
