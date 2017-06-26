@@ -51,11 +51,11 @@ Kiln will display a small toolbar to logged-in users when viewing any page in th
 
 When viewing a page in _edit mode_, Kiln will "decorate" your components with information and functionality that allows you to edit them, based on your component schemas. It allows you to open forms to edit components, manipulate those components in lists, create new pages using shared layouts, and preview and publish changes for the rest of the world to see. By keeping the editing experience consistent, it allows many different types of components to coexist in the same ecosystem, while decreasing both the maintenance cost for developers and the mental overhead for end users.
 
-* Editing Components with Forms
-* Adding / Removing / Reordering Components in Lists
-* Pages and Layouts
-* Saving, Publishing, and Scheduling
-* Anatomy of a Component Schema
+* [Editing Components with Forms](https://github.com/clay/clay-kiln/wiki/Editing-Components-with-Forms)
+* [Adding / Removing / Reordering Components in Lists](https://github.com/clay/clay-kiln/wiki/Component-Lists-and-Properties)
+* [Saving Components and Cross-Component Communication](https://github.com/clay/clay-kiln/wiki/Cross-Component-Communication)
+* [Creating, Publishing, and Scheduling Pages](https://github.com/clay/clay-kiln/wiki/Creating,-Publishing,-and-Scheduling-Pages)
+* [Anatomy of a Component Schema](https://github.com/clay/clay-kiln/wiki/Anatomy-of-a-Component-Schema)
 * [Extending Kiln](https://github.com/clay/clay-kiln/wiki/Kiln-APIs)
 
 ## Contributing
