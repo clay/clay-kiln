@@ -46,7 +46,8 @@
 <template>
   <div class="page-status">
     <div class="page-status-msg">
-      <div class="page-status-msg-main" :class="stateClass">{{ message }}</div>
+      <a v-if="isPublished && !isScheduled" class="page-status-msg-main" :class="stateClass" :href="publishedUrl">{{ message }}</a>
+      <div v-else class="page-status-msg-main" :class="stateClass">{{ message }}</div>
       <div class="page-status-msg-info">{{ time }}</div>
     </div>
     <div class="page-status-action">
@@ -77,6 +78,7 @@
       isPublished: (state) => state.page.state.published,
       isScheduled: (state) => state.page.state.scheduled,
       publishedDate: (state) => state.page.state.publishedAt,
+      publishedUrl: (state) => state.page.state.publishedUrl,
       scheduledDate: (state) => state.page.state.scheduledAt,
       isDraft() {
         return !this.isPublished && !this.isScheduled;
