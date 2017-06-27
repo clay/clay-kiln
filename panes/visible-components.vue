@@ -46,7 +46,10 @@
     },
     methods: {
       itemClick(id) {
-        this.$store.dispatch('select', find(`[${refAttr}="${id}"]`));
+        const el = find(`[${refAttr}="${id}"]`);
+
+        this.$store.dispatch('select', el);
+        this.$store.dispatch('scrollToComponent', el);
         this.$store.dispatch('closePane');
       }
     },
