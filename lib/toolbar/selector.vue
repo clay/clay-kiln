@@ -59,7 +59,7 @@
 <template>
   <transition name="selector-slide">
     <div v-if="hasCurrentComponent" class="expanded-selector" @click.stop>
-      <span class="expanded-selector-name">{{ componentLabel }}</span>
+      <span class="expanded-selector-name" @click="scrollToComponent">{{ componentLabel }}</span>
       <button v-if="hasSettings" class="expanded-selector-button expanded-selector-settings" title="Component Settings" @click="openSettings"><icon name="settings"></icon></button>
       <component v-for="button in customButtons" :is="button"></component>
       <button v-if="hasRemove" class="expanded-selector-button expanded-selector-remove" title="Remove Component" @click="removeComponent"><icon name="delete"></icon></button>
@@ -131,6 +131,11 @@
         this.$store.dispatch('unselect');
         return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', el));
       },
+      scrollToComponent() {
+        const el = this.currentComponent.el;
+
+        this.$store.dispatch('scrollToComponent', el);
+      }
       // todo: do we want to add these buttons back in?
       // prev() {
       //   return store.dispatch('navigateComponents', 'prev');
