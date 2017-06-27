@@ -3,6 +3,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import NProgress from 'vue-nprogress';
 import keycode from 'keycode';
+import differenceInMinutes from 'date-fns/difference_in_minutes';
 import store from './lib/core-data/store';
 import { decorateAll } from './lib/decorators';
 import { addSelectorButton } from './lib/utils/custom-buttons'; // eslint-disable-line
@@ -68,6 +69,23 @@ window.kiln = window.kiln || {};
 // .plugins, .behaviors, .validators, and .panes objects should already exist
 window.kiln.utils = utilsAPI;
 
+/**
+ * get the last user who edited a page, who ISN'T the current user
+ * @param  {object} store
+ * @return {null|string}
+ */
+function getLastEditUser(store) {
+  const currentUser = _.get(store, 'state.user'),
+    lastUser = _.findLast(_.get(store, 'state.page.listData.users'), (user) => {
+      const isDifferentUser = user.username !== currentUser.username,
+        isWithinFiveMinutes = Math.abs(differenceInMinutes(user.updateTime, new Date())) < 5;
+
+      return isDifferentUser && isWithinFiveMinutes;
+    });
+
+  return lastUser ? lastUser.name : null;
+}
+
 // kick off loading when DOM is ready
 // note: preloaded data, external behaviors, decorators, and validation rules should already be added
 // when this event fires
@@ -98,6 +116,8 @@ document.addEventListener('DOMContentLoaded', function () {
       // test connection loss on page load
       if (!navigator.onLine) {
         store.dispatch('showStatus', { type: 'offline', message: connectionLostMessage, isPermanent: true});
+      } else if (getLastEditUser(store)) {
+        store.dispatch('showStatus', { type: 'save', message: `Edited less than 5 minutes ago by ${getLastEditUser(store)}` });
       }
     });
 
