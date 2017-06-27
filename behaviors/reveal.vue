@@ -25,6 +25,8 @@
   * `not-empty` (only checks field data, no value needed)
   * `truthy` (only checks field data, no value needed)
   * `falsy` (only checks field data, no value needed)
+
+  _Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story`
 </docs>
 
 <style lang="sass">
@@ -63,7 +65,8 @@
         const field = this.args.field,
           operator = this.args.operator,
           value = this.args.value,
-          data = _.get(this.$store, `state.ui.currentForm.fields[${field}]`);
+          fieldPath = _.reduce(field.split('.'), (str, fieldPart) => str += `.${fieldPart}`, 'state.ui.currentForm.fields'),
+          data = _.get(this.$store, fieldPath); // note: we explicitly only allow revealing fields based on other fields IN THE SAME FORM
 
         return compare({ data, operator, value });
       }

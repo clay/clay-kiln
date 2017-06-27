@@ -25,6 +25,8 @@
   * `not-empty` (only checks field data, no value needed)
   * `truthy` (only checks field data, no value needed)
   * `falsy` (only checks field data, no value needed)
+
+  _Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story`
 </docs>
 
 <style lang="sass">
@@ -69,7 +71,8 @@
           // but fall back to comparing against data in the component
           // (this allows comparing to fields that might not be in the same form)
           uri = _.get(this.$store, 'state.ui.currentForm.uri'),
-          data = _.get(this.$store, `state.ui.currentForm.fields[${field}]`) || getData(uri, field);
+          fieldPath = _.reduce(field.split('.'), (str, fieldPart) => str += `.${fieldPart}`, 'state.ui.currentForm.fields'),
+          data = _.get(this.$store, fieldPath) || getData(uri, field);
 
         return compare({ data, operator, value });
       },

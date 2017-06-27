@@ -85,6 +85,8 @@ Operators:
 * `truthy` (only checks field data, no value needed)
 * `falsy` (only checks field data, no value needed)
 
+_Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story`
+
 # description
 
 Appends a description to a field.
@@ -253,6 +255,8 @@ Operators:
 * `not-empty` (only checks field data, no value needed)
 * `truthy` (only checks field data, no value needed)
 * `falsy` (only checks field data, no value needed)
+
+_Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story`
 
 # segmented-button
 
