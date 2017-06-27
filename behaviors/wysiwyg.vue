@@ -81,6 +81,7 @@
 
 <style lang="sass">
   @import '../styleguide/colors';
+  @import '../styleguide/typography';
   @import '../styleguide/inputs';
   @import '~quill/dist/quill.core.css';
   @import '~quill/dist/quill.bubble.css';
@@ -112,6 +113,7 @@
 
   // quill overrides
   .ql-editor {
+    overflow: visible;
     padding: 0;
   }
 
@@ -121,6 +123,14 @@
 
   .ql-bubble .ql-editor a {
     text-decoration: inherit;
+  }
+
+  // link preview tooltip
+  .ql-container.ql-bubble:not(.ql-disabled) a::before {
+    @include kiln-copy();
+
+    color: $tooltip-text;
+    font-size: 12px;
   }
 
   // toolbar phrase button
@@ -167,7 +177,9 @@
   import { parsePhraseButton, parseFormats, createPhraseBlots } from './wysiwyg-phrase';
 
   const Delta = Quill.import('delta'),
-    Clipboard = Quill.import('modules/clipboard');
+    Clipboard = Quill.import('modules/clipboard'),
+    Link = Quill.import('formats/link'),
+    originalLinkSanitize = Link.sanitize;
 
   // store references for multi-paragraph paste here.
   // this way, the paste function can set these, and they can be checked
@@ -208,6 +220,15 @@
 
     return delta;
   }
+
+  // add sanitization to all quill links
+  Link.sanitize = (value) => {
+    if (!/^https?:/.test(value) && !/^\/\//.test(value)) {
+      // no protocol, add it
+      value = `http://${value}`;
+    }
+    return originalLinkSanitize.call(this, value);
+  };
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
