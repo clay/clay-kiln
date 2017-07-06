@@ -77,6 +77,7 @@
       'input-select': select
     },
     mounted() {
+      console.warn('site-specific-select is deprecated and will be removed in the next major release! (as of kiln v3.5.0, the select behavior allows site-specific options)');
       // if no sites match and there are no default options, that's a programmer error
       if (!this.currentSite && !this.defaultSite) {
         throw new Error('No options specified for current site!');
