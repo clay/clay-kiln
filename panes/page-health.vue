@@ -126,6 +126,7 @@
   import { find } from '@nymag/dom';
   import { getSchema } from '../lib/core-data/components';
   import { displayProp, groupsProp, refAttr, editAttr } from '../lib/utils/references';
+  import { getFieldEl, getComponentEl } from '../lib/utils/component-elements';
 
   function getSettingsPath(field, schema) {
     if (_.get(schema, `${field}[${displayProp}]`) === 'settings') {
@@ -171,11 +172,13 @@
     methods: {
       openLocation(uri, field) {
         const path = getPathFromField(uri, field),
-          el = find(`[${refAttr}="${uri}"][${editAttr}="${path}"]`) || find(`[${refAttr}="${uri}"] [${editAttr}="${path}"]`);
+          el = getFieldEl(uri, path),
+          componentEl = el && getComponentEl(el);
 
         this.$store.dispatch('closePane');
-        if (el && el.nodeType === el.ELEMENT_NODE) {
-          this.$store.dispatch('select', el);
+        if (componentEl) {
+          // component exists and is in the body (not a head component)
+          this.$store.dispatch('select', componentEl);
         }
         this.$store.dispatch('focus', { uri, path, el });
       }
