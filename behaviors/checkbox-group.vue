@@ -13,7 +13,7 @@
 
   ## Arguments
 
-  * **options** _(required)_ an array of strings or objects (with `text`, `value`, and optionally `sites`)
+  * **options** _(required)_ an array of strings or objects (with `name`, `value`, and optionally `sites`)
 
   If you specify options as strings, the label for each will simply be the option converted to Start Case.
 
@@ -24,10 +24,10 @@
       options:
         - foo
         -
-          text: Bar
+          name: Bar
           value: bar
         -
-          text: Baz Qux
+          name: Baz Qux
           value: baz-qux
           sites: site1, site2
   ```
@@ -97,7 +97,7 @@
           } else {
             return {
               value: option.value,
-              name: option.text,
+              name: option.name,
               id: cid()
             };
           }

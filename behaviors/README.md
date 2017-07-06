@@ -21,7 +21,7 @@ A group of checkboxes, allowing the user to toggle on or off related items. You 
 
 ## Arguments
 
-* **options** _(required)_ an array of strings or objects (with `text`, `value`, and optionally `sites`)
+* **options** _(required)_ an array of strings or objects (with `name`, `value`, and optionally `sites`)
 
 If you specify options as strings, the label for each will simply be the option converted to Start Case.
 
@@ -32,10 +32,10 @@ field1:
     options:
       - foo
       -
-        text: Bar
+        name: Bar
         value: bar
       -
-        text: Baz Qux
+        name: Baz Qux
         value: baz-qux
         sites: site1, site2
 ```
@@ -317,7 +317,7 @@ _Notes:_
 
 ## Arguments
 
-* **options** _(required)_ an array of strings or objects (with `text`, `value`, and optionally `sites`)
+* **options** _(required)_ an array of strings or objects (with `name`, `value`, and optionally `sites`)
 
 If you specify options as strings, the label for each will simply be the option converted to Start Case.
 
@@ -328,10 +328,10 @@ field1:
     options:
       - foo
       -
-        text: Bar
+        name: Bar
         value: bar
       -
-        text: Baz Qux
+        name: Baz Qux
         value: baz-qux
         sites: site1, site2
 ```

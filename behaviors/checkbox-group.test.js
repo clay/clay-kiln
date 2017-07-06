@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import lib from './checkbox-group.vue';
 
-const options = [{ text: 'One', value: 'one' }, { text: 'Two', value: 'two' }],
+const options = [{ name: 'One', value: 'one' }, { name: 'Two', value: 'two' }],
   state = { site: { slug: 'foo' }};
 
 describe('checkbox-group behavior', () => {

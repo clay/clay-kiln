@@ -18,7 +18,7 @@
 
   ## Arguments
 
-  * **options** _(required)_ an array of strings or objects (with `text`, `value`, and optionally `sites`)
+  * **options** _(required)_ an array of strings or objects (with `name`, `value`, and optionally `sites`)
 
   If you specify options as strings, the label for each will simply be the option converted to Start Case.
 
@@ -29,10 +29,10 @@
       options:
         - foo
         -
-          text: Bar
+          name: Bar
           value: bar
         -
-          text: Baz Qux
+          name: Baz Qux
           value: baz-qux
           sites: site1, site2
   ```
@@ -48,7 +48,7 @@
 
 <template>
   <select class="editor-select" :value="data" @change="update">
-    <option v-for="option in options" :value="option.value">{{ option.text }}</option>
+    <option v-for="option in options" :value="option.value">{{ option.name }}</option>
   </select>
 </template>
 
@@ -68,17 +68,17 @@
 
         return [{
           value: null,
-          text: 'None'
+          name: 'None'
         }].concat(_.map(filterBySite(this.args.options, currentSlug), (option) => {
           if (_.isString(option)) {
             return {
               value: option,
-              text: _.startCase(option)
+              name: _.startCase(option)
             };
           } else {
             return {
               value: option.value,
-              text: option.text
+              name: option.name
             };
           }
         }));
