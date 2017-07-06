@@ -13,6 +13,10 @@ const files = [
       target: 'web',
       module: {
         rules: [{
+          // todo: remove this (and update vue-unit dep) once vue-unit hits 0.3.0
+          test: /node_modules\/vue-unit\//,
+          loader: 'babel-loader'
+        }, {
           test: /\.js$/,
           exclude: /node_modules/,
           loader: 'babel-loader'
@@ -48,28 +52,28 @@ const files = [
       chromeMac: {
         base: 'BrowserStack',
         browser: 'chrome',
-        browser_version: '55',
+        browser_version: '59',
         os: 'OS X',
         os_version: 'Sierra'
       },
       firefoxMac: {
         base: 'BrowserStack',
         browser: 'firefox',
-        browser_version: '50',
+        browser_version: '54',
         os: 'OS X',
         os_version: 'Sierra'
       },
       chromeWindows: {
         base: 'BrowserStack',
         browser: 'chrome',
-        browser_version: '55',
+        browser_version: '59',
         os: 'Windows',
         os_version: '10'
       },
       firefoxWindows: {
         base: 'BrowserStack',
         browser: 'firefox',
-        browser_version: '50',
+        browser_version: '54',
         os: 'Windows',
         os_version: '10'
       }

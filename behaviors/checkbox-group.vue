@@ -1,19 +1,35 @@
 <docs>
   # checkbox-group
 
-  A group of checkboxes, allowing the user to toggle on or off related items.
+  A group of checkboxes, allowing the user to toggle on or off related items. You can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components)
+
+  ```yaml
+      fn: checkbox-group
+      options:
+        - foo (site1)
+        - bar (not: site1)
+        - baz (site1, site2)
+  ```
 
   ## Arguments
 
-  * **options** _(required)_ an array of checkboxes
+  * **options** _(required)_ an array of strings or objects (with `name`, `value`, and optionally `sites`)
 
-  Each option should be an object with `name` and `value` properties. Use the bootstrap to specify which should be toggled by default, e.g.
+  If you specify options as strings, the label for each will simply be the option converted to Start Case.
 
   ```yaml
   field1:
-    option1: true
-    option2: false
-    option3: false
+    _has:
+      fn: checkbox-group
+      options:
+        - foo
+        -
+          name: Bar
+          value: bar
+        -
+          name: Baz Qux
+          value: baz-qux
+          sites: site1, site2
   ```
 </docs>
 
@@ -60,6 +76,7 @@
   import cid from '@nymag/cid';
   import _ from 'lodash';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
+  import { filterBySite } from '../lib/utils/site-filter';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
@@ -68,8 +85,22 @@
     },
     computed: {
       options() {
-        return this.args.options.map((o) => {
-          return { name: o.name || o.value, value: o.value, id: cid() };
+        const currentSlug = _.get(this.$store, 'state.site.slug');
+
+        return _.map(filterBySite(this.args.options, currentSlug), (option) => {
+          if (_.isString(option)) {
+            return {
+              value: option,
+              name: _.startCase(option),
+              id: cid()
+            };
+          } else {
+            return {
+              value: option.value,
+              name: option.name,
+              id: cid()
+            };
+          }
         });
       }
     },

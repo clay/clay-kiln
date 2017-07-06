@@ -1,11 +1,19 @@
 {
-  "presets": ["es2015"],
+  "presets": [
+    ["env", {
+      "targets": {
+        "browsers": ["last 2 versions"],
+        "uglify": true
+      },
+      "useBuiltIns": true
+    }]
+  ],
   "env": {
     "test": {
-      "plugins": ["istanbul"]
+      "plugins": ["transform-object-rest-spread", "istanbul"]
     },
     "build": {
-      "plugins": ["lodash"]
+      "plugins": ["transform-object-rest-spread", "lodash"]
     }
   }
 }

@@ -1,6 +1,10 @@
 import lib from './checkbox.vue';
 
 describe('checkbox behavior', () => {
+  beforeEach(beforeEachHooks);
+
+  afterEach(afterEachHooks);
+
   it('adds label', () => {
     expect(renderWithArgs(lib, {
       args: { label: 'Hi'}

@@ -4,6 +4,10 @@ import lib from './radio.vue';
 const options = ['', 'one', 'two three'];
 
 describe('radio behavior', () => {
+  beforeEach(beforeEachHooks);
+
+  afterEach(afterEachHooks);
+
   it('adds radio buttons', () => {
     expect(renderWithArgs(lib, {
       args: { options }
