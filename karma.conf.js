@@ -52,28 +52,28 @@ const files = [
       chromeMac: {
         base: 'BrowserStack',
         browser: 'chrome',
-        browser_version: '55',
+        browser_version: '59',
         os: 'OS X',
         os_version: 'Sierra'
       },
       firefoxMac: {
         base: 'BrowserStack',
         browser: 'firefox',
-        browser_version: '50',
+        browser_version: '54',
         os: 'OS X',
         os_version: 'Sierra'
       },
       chromeWindows: {
         base: 'BrowserStack',
         browser: 'chrome',
-        browser_version: '55',
+        browser_version: '59',
         os: 'Windows',
         os_version: '10'
       },
       firefoxWindows: {
         base: 'BrowserStack',
         browser: 'firefox',
-        browser_version: '50',
+        browser_version: '54',
         os: 'Windows',
         os_version: '10'
       }
