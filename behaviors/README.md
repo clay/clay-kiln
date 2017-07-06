@@ -9,19 +9,35 @@ Autocomplete
 
 # checkbox-group
 
-A group of checkboxes, allowing the user to toggle on or off related items.
+A group of checkboxes, allowing the user to toggle on or off related items. You can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components)
+
+```yaml
+    fn: checkbox-group
+    options:
+      - foo (site1)
+      - bar (not: site1)
+      - baz (site1, site2)
+```
 
 ## Arguments
 
-* **options** _(required)_ an array of checkboxes
+* **options** _(required)_ an array of strings or objects (with `text`, `value`, and optionally `sites`)
 
-Each option should be an object with `name` and `value` properties. Use the bootstrap to specify which should be toggled by default, e.g.
+If you specify options as strings, the label for each will simply be the option converted to Start Case.
 
 ```yaml
 field1:
-  option1: true
-  option2: false
-  option3: false
+  _has:
+    fn: checkbox-group
+    options:
+      - foo
+      -
+        text: Bar
+        value: bar
+      -
+        text: Baz Qux
+        value: baz-qux
+        sites: site1, site2
 ```
 
 # checkbox
@@ -288,33 +304,36 @@ A standard browser `<select>` element, allowing the user to select one of a few 
 
 _Notes:_
 
-- the first item in `options` is pre-selected
-- you can force the user to select an option by adding a `required` behavior and by setting the options like this:
+- no/empty option is pre-selected by default (you don't need to specify an empty option in the schema)
+- you can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components)
 
 ```yaml
     fn: select
     options:
-      -
-      - foo
-      - bar
+      - foo (site1)
+      - bar (not: site1)
+      - baz (site1, site2)
 ```
-
-Since a blank option is selected by default, the validator will fail.
 
 ## Arguments
 
-* **options** _(required)_ an array of strings
+* **options** _(required)_ an array of strings or objects (with `text`, `value`, and optionally `sites`)
 
-Unlike [checkbox-group](https://github.com/nymag/clay-kiln/blob/master/behaviors/checkbox-group.md), each option should be a string rather than an object. The label for each option will simply be the option converted to Start Case.
+If you specify options as strings, the label for each will simply be the option converted to Start Case.
 
 ```yaml
 field1:
   _has:
     fn: select
     options:
-      - foo # looks like Foo
-      - bar # looks like Bar
-      - baz # looks like Baz
+      - foo
+      -
+        text: Bar
+        value: bar
+      -
+        text: Baz Qux
+        value: baz-qux
+        sites: site1, site2
 ```
 
 # simple-list-item

@@ -84,6 +84,10 @@ module.exports = {
   },
   module: {
     rules: [{
+      // todo: remove this (and update vue-unit dep) once vue-unit hits 0.3.0
+      test: /node_modules\/vue-unit\//,
+      loader: 'babel-loader'
+    }, {
       test: /\.js$/,
       exclude: /node_modules/,
       loader: 'babel-loader'

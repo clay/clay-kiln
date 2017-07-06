@@ -7,10 +7,12 @@ describe('required behavior', () => {
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
     sandbox.stub(behaviors, 'expand');
+    beforeEachHooks();
   });
 
   afterEach(() => {
     sandbox.restore();
+    afterEachHooks();
   });
 
   it('adds span if label behavior exists in the schema', () => {

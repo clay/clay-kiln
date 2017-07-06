@@ -1,6 +1,10 @@
 import lib from './text.vue';
 
 describe('text behavior', () => {
+  beforeEach(beforeEachHooks);
+
+  afterEach(afterEachHooks);
+
   it('defaults to text input', () => {
     expect(renderWithArgs(lib, {
       args: {}

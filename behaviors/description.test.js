@@ -1,6 +1,10 @@
 import lib from './description.vue';
 
 describe('description behavior', () => {
+  beforeEach(beforeEachHooks);
+
+  afterEach(afterEachHooks);
+
   it('passes in value', () => {
     expect(renderWithArgs(lib, {
       args: { value: 'Hello'}
