@@ -56,7 +56,6 @@
     "element-client-rect": "^1.0.4",
     "eslint": "^3.2.2",
     "eslint-plugin-html": "^2.0.0",
-    "eventify": "^2.0.1",
     "extract-text-webpack-plugin": "^2.0.0-rc.2",
     "file-loader": "^0.10.1",
     "flatpickr": "^2.3.7",
