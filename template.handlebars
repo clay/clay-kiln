@@ -20,6 +20,9 @@
         {{/each}}
         window.kiln.preloadData = {{{ default (replace (stringify @root) '</script>' '<"+"/script>') '{}' }}};
         window.kiln.locals = {{{ default (stringify @root.locals) '{}' }}};
+        // and add the environment variables for model.js
+        window.process = window.process || {};
+        window.process.env = {{{ default (stringify @root._envVars) '{}' }}};
       </script>
     {{else}}
       {{! show view mode styles, only preload site and user data}}
