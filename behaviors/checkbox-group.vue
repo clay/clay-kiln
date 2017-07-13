@@ -107,7 +107,7 @@
     methods: {
       update(e) {
         const key = e.target.value,
-          newData = { [key]: !this.data[key] }; // toggle the check
+          newData = { [key]: this.data ? !this.data[key] : true }; // toggle the check
 
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: _.assign({}, this.data, newData) });
       }
