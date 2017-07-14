@@ -181,6 +181,7 @@
     }),
     methods: {
       open(size) {
+        this.$store.commit('OPEN_PREVIEW_LINK', `${this.url} (${size})`);
         window.open(this.url, `Preview${size}`, `resizable=yes,scrollbars=yes,width=${previewSizes[size].w},height=${previewSizes[size].h}`);
       },
       copyURL() {
@@ -196,6 +197,7 @@
           if (success) {
             button.classList.remove('error');
             button.classList.add('success');
+            this.$store.commit('COPY_PREVIEW_LINK', this.url);
           } else {
             button.classList.remove('success');
             button.classList.add('error');

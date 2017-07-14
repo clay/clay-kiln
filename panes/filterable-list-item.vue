@@ -72,7 +72,7 @@
     <button
       type="button"
       class="filterable-list-item-btn"
-      @click.stop="handleClick(item.id)"
+      @click.stop="handleClick(item.id, item.title)"
       v-conditional-focus="focused"
       @keydown.down.stop="focusOnIndex(index + 1)"
       @keydown.up.stop="focusOnIndex(index - 1)"
@@ -105,9 +105,9 @@
         this.setActive(this.index);
         this.onClick(this.item.id);
       },
-      handleClick(id) {
+      handleClick(id, title) {
         if (this.onClick) {
-          return this.onClick(id);
+          return this.onClick(id, title);
         }
       }
     },

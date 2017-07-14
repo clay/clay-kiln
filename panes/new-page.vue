@@ -24,7 +24,8 @@
       }
     },
     methods: {
-      itemClick(id) {
+      itemClick(id, title) {
+        this.$store.commit('CREATE_PAGE', title);
         this.$store.dispatch('createPage', id).then((url) => window.location.href = url);
       }
     },

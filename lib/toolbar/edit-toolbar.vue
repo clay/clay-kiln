@@ -178,6 +178,7 @@
     }),
     methods: {
       stopEditing() {
+        this.$store.commit('STOP_EDITING');
         toggleEdit();
       },
       // note: these are separate methods because there might be additional

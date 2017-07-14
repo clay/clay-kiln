@@ -593,16 +593,19 @@
         // when closing this list, trigger a fetch of new pages
         // todo: optimize this to only fetch if site selection has changed
         if (!this.isSiteListOpen) {
+          this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, (site) => site.slug).join(', '));
           this.offset = 0;
           this.fetchPages();
         }
       },
       toggleSiteSelected(site) {
         site.isSelected = !site.isSelected;
+        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, (site) => site.slug).join(', '));
         this.offset = 0;
         this.fetchPages();
       },
       onSearchKeyup: _.debounce(function () {
+        this.$store.commit('FILTER_PAGELIST_SEARCH', this.searchString);
         this.offset = 0;
         this.fetchPages();
       }, 300),
@@ -614,16 +617,20 @@
           this.toggledStatuses.scheduled = false;
           this.toggledStatuses.published = false;
           // only show draft
+          this.$store.commit('FILTER_PAGELIST_STATUS', 'draft');
         } else if (this.toggledStatuses.draft) {
           this.toggledStatuses.draft = false;
           this.toggledStatuses.scheduled = true; // switch to scheduled
+          this.$store.commit('FILTER_PAGELIST_STATUS', 'scheduled');
         } else if (this.toggledStatuses.scheduled) {
           this.toggledStatuses.scheduled = false;
           this.toggledStatuses.published = true; // switch to published
+          this.$store.commit('FILTER_PAGELIST_STATUS', 'published');
         } else if (this.toggledStatuses.published) {
           // back to all
           this.toggledStatuses.draft = true;
           this.toggledStatuses.scheduled = true;
+          this.$store.commit('FILTER_PAGELIST_STATUS', 'all');
         }
         this.offset = 0;
         this.fetchPages();

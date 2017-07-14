@@ -101,7 +101,7 @@
       <span class="error-description">{{ error.description }}</span>
       <ul class="validation-items">
         <li v-for="item in error.items" class="validation-item">
-          <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click="openLocation(item.uri, item.field)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
+          <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click="openLocation(item.uri, item.field, item.location)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
         </li>
       </ul>
     </div>
@@ -112,7 +112,7 @@
       <span class="warning-description">{{ warning.description }}</span>
       <ul class="validation-items">
         <li v-for="item in warning.items" class="validation-item">
-          <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click="openLocation(item.uri, item.field)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
+          <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click="openLocation(item.uri, item.field, item.location)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
         </li>
       </ul>
     </div>
@@ -169,11 +169,12 @@
       }
     }),
     methods: {
-      openLocation(uri, field) {
+      openLocation(uri, field, location) {
         const path = getPathFromField(uri, field),
           el = getFieldEl(uri, path),
           componentEl = el && getComponentEl(el);
 
+        this.$store.commit('OPEN_VALIDATION_LINK', location);
         this.$store.dispatch('closePane');
         if (componentEl) {
           // component exists and is in the body (not a head component)

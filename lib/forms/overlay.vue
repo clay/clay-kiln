@@ -134,6 +134,7 @@
         return this.activeTab === index;
       },
       selectTab(index) {
+        this.$store.commit('SWITCH_TAB', this.sections[index] && this.sections[index].title);
         this.activeTab = index;
       }
     },

@@ -186,6 +186,7 @@
       },
       selectTab(index, isDisabled) {
         if (isDisabled !== true) {
+          this.$store.commit('SWITCH_TAB', this.tabs[index] && this.tabs[index].header);
           this.activeTab = index;
         }
       }
