@@ -66,7 +66,7 @@
 <template>
   <div class="checkbox-group">
     <div class="checkbox-group-item" v-for="option in options">
-      <input :name="option.name" type="checkbox" :id="option.id" :checked="data[option.value]" :value="option.value" @change="update" />
+      <input :name="option.name" type="checkbox" :id="option.id" :checked="data && data[option.value]" :value="option.value" @change="update" />
       <label :for="option.id">{{ option.name }}</label>
     </div>
   </div>
@@ -107,7 +107,7 @@
     methods: {
       update(e) {
         const key = e.target.value,
-          newData = { [key]: !this.data[key] }; // toggle the check
+          newData = { [key]: this.data ? !this.data[key] : true }; // toggle the check
 
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: _.assign({}, this.data, newData) });
       }
