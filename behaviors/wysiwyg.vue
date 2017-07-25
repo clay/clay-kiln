@@ -227,7 +227,7 @@
       // no protocol, add it
       value = `http://${value}`;
     }
-    return originalLinkSanitize.call(this, value);
+    return originalLinkSanitize.call(Link, value);
   };
 
   export default {
