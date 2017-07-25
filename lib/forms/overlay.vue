@@ -18,7 +18,7 @@
     @include form();
 
     height: 100%;
-    max-height: calc(70vh - 44px);
+    max-height: calc(70vh - 52px);
   }
 
   .pane-tabs-content {
