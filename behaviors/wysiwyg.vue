@@ -303,7 +303,7 @@
             sanitized, delta, components;
 
           if (_.isString(html)) {
-            this.container.innerHTML = html;
+            this.container.innerHTML = html.replace(/\>\r?\n +\</g, '><'); // remove spaces between tags
           }
 
           if (isSingleLine) {
@@ -469,6 +469,7 @@
         modules: {
           toolbar: buttons,
           clipboard: {
+            matchVisual: false, // don't add extra spacing between lines, since we handle that
             matchers: [
               [Node.ELEMENT_NODE, matchLineBreak],
               [Node.ELEMENT_NODE, matchParagraphs]
