@@ -42,6 +42,7 @@
   import { getField } from '../lib/forms/field-helpers';
   import { compare } from '../lib/utils/comparators';
   import { filterBySite } from '../lib/utils/site-filter';
+  import { getData } from '../lib/core-data/components';
 
   /**
    * toggle showing or hiding a field
@@ -64,12 +65,16 @@
     computed: {
       isShown() {
         const currentSlug = _.get(this.$store, 'state.site.slug'),
+          uri = _.get(this.$store, 'state.ui.currentForm.uri'),
           field = this.args.field,
           operator = this.args.operator,
           value = this.args.value,
           sites = this.args.sites,
           fieldPath = field && _.reduce(field.split('.'), (str, fieldPart) => str += `.${fieldPart}`, 'state.ui.currentForm.fields'),
-          data = field && _.get(this.$store, fieldPath); // note: we explicitly only allow revealing fields based on other fields IN THE SAME FORM
+          // compare against the field if it's in the current form,
+          // but fall back to comparing against data in the component
+          // (this allows comparing to fields that might not be in the same form)
+          data = field && (_.get(this.$store, fieldPath) || getData(uri, field));
 
         if (sites && field) {
           // if there is site logic, run it before field logic
