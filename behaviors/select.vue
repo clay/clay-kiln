@@ -20,7 +20,7 @@
 
   * **options** _(required)_ an array of strings or objects (with `name`, `value`, and optionally `sites`)
 
-  If you specify options as strings, the label for each will simply be the option converted to Start Case.
+  If you specify options as strings, the label for each will simply be the option converted to Start Case. If this behavior is run on a site with no available options, an error message will appear. Please use the `reveal` behavior to conditionally hide/show fields based on site.
 
   ```yaml
   field1:
@@ -40,16 +40,22 @@
 
 <style lang="sass">
   @import '../styleguide/inputs';
+  @import '../styleguide/typography';
 
   .editor-select {
     @include select();
   }
+
+  .editor-no-options {
+    @include tertiary-text();
+  }
 </style>
 
 <template>
-  <select class="editor-select" :value="data" @change="update">
+  <select v-if="hasOptions" class="editor-select" :value="data" @change="update">
     <option v-for="option in options" :value="option.value">{{ option.name }}</option>
   </select>
+  <span v-else class="editor-no-options">No options available on current site.</span>
 </template>
 
 <script>
@@ -82,6 +88,9 @@
             };
           }
         }));
+      },
+      hasOptions() {
+        return this.options.length > 1; // the first (blank) option is automatically added
       }
     },
     methods: {

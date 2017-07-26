@@ -23,7 +23,7 @@ A group of checkboxes, allowing the user to toggle on or off related items. You 
 
 * **options** _(required)_ an array of strings or objects (with `name`, `value`, and optionally `sites`)
 
-If you specify options as strings, the label for each will simply be the option converted to Start Case.
+If you specify options as strings, the label for each will simply be the option converted to Start Case. If this behavior is run on a site with no available options, an error message will appear. Please use the `reveal` behavior to conditionally hide/show fields based on site.
 
 ```yaml
 field1:
@@ -319,7 +319,7 @@ _Notes:_
 
 * **options** _(required)_ an array of strings or objects (with `name`, `value`, and optionally `sites`)
 
-If you specify options as strings, the label for each will simply be the option converted to Start Case.
+If you specify options as strings, the label for each will simply be the option converted to Start Case. If this behavior is run on a site with no available options, an error message will appear. Please use the `reveal` behavior to conditionally hide/show fields based on site.
 
 ```yaml
 field1:

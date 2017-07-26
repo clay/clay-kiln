@@ -15,7 +15,7 @@
 
   * **options** _(required)_ an array of strings or objects (with `name`, `value`, and optionally `sites`)
 
-  If you specify options as strings, the label for each will simply be the option converted to Start Case.
+  If you specify options as strings, the label for each will simply be the option converted to Start Case. If this behavior is run on a site with no available options, an error message will appear. Please use the `reveal` behavior to conditionally hide/show fields based on site.
 
   ```yaml
   field1:
@@ -61,15 +61,20 @@
     padding-left: 5px;
     vertical-align: baseline;
   }
+
+  .editor-no-options {
+    @include tertiary-text();
+  }
 </style>
 
 <template>
-  <div class="checkbox-group">
+  <div v-if="hasOptions" class="checkbox-group">
     <div class="checkbox-group-item" v-for="option in options">
       <input :name="option.name" type="checkbox" :id="option.id" :checked="data && data[option.value]" :value="option.value" @change="update" />
       <label :for="option.id">{{ option.name }}</label>
     </div>
   </div>
+  <span v-else class="editor-no-options">No options available on current site.</span>
 </template>
 
 <script>
@@ -102,6 +107,9 @@
             };
           }
         });
+      },
+      hasOptions() {
+        return this.options.length;
       }
     },
     methods: {
