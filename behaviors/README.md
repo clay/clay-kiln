@@ -251,11 +251,11 @@ Conditionally shows/hides a field based on another field
 
 ## Arguments
 
-* **field** to compare against
+* **field** and/or **sites** to compare against
 * **operator** _(optional)_ to use for the comparison
 * **value** _(optional)_ to compare the field against
 
-If neither `operator` nor `value` are specified, this will show the current field if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality.
+If neither `operator` nor `value` are specified, this will show the current field if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality. You can compare against fields, sites (using the same site logic syntax as `select` and component lists), or both.
 
 Operators:
 

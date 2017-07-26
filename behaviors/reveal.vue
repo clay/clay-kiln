@@ -5,11 +5,11 @@
 
   ## Arguments
 
-  * **field** to compare against
+  * **field** and/or **sites** to compare against
   * **operator** _(optional)_ to use for the comparison
   * **value** _(optional)_ to compare the field against
 
-  If neither `operator` nor `value` are specified, this will show the current field if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality.
+  If neither `operator` nor `value` are specified, this will show the current field if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality. You can compare against fields, sites (using the same site logic syntax as `select` and component lists), or both.
 
   Operators:
 
@@ -41,6 +41,7 @@
   import _ from 'lodash';
   import { getField } from '../lib/forms/field-helpers';
   import { compare } from '../lib/utils/comparators';
+  import { filterBySite } from '../lib/utils/site-filter';
 
   /**
    * toggle showing or hiding a field
@@ -62,13 +63,27 @@
     },
     computed: {
       isShown() {
-        const field = this.args.field,
+        const currentSlug = _.get(this.$store, 'state.site.slug'),
+          field = this.args.field,
           operator = this.args.operator,
           value = this.args.value,
-          fieldPath = _.reduce(field.split('.'), (str, fieldPart) => str += `.${fieldPart}`, 'state.ui.currentForm.fields'),
-          data = _.get(this.$store, fieldPath); // note: we explicitly only allow revealing fields based on other fields IN THE SAME FORM
+          sites = this.args.sites,
+          fieldPath = field && _.reduce(field.split('.'), (str, fieldPart) => str += `.${fieldPart}`, 'state.ui.currentForm.fields'),
+          data = field && _.get(this.$store, fieldPath); // note: we explicitly only allow revealing fields based on other fields IN THE SAME FORM
 
-        return compare({ data, operator, value });
+        if (sites && field) {
+          // if there is site logic, run it before field logic
+          // and return a boolean based on both checks
+          return filterBySite([{ sites }], currentSlug).length && compare({ data, operator, value });
+        } else if (sites) {
+          // only check the site logic
+          return filterBySite([{ sites }], currentSlug).length;
+        } else if (field) {
+          // only check field logic
+          return compare({ data, operator, value });
+        } else {
+          throw new Error('Please specify sites or field logic for the reveal behavior!');
+        }
       }
     },
     watch: {
