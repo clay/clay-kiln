@@ -201,6 +201,7 @@ document.addEventListener('DOMContentLoaded', function () {
         title: 'Keyboard Shortcuts',
         position: 'center',
         size: 'large',
+        height: 'medium-height',
         content: {
           component: 'keyboard-shortcuts'
         }

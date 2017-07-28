@@ -126,6 +126,7 @@
   import { getSchema } from '../lib/core-data/components';
   import { displayProp, groupsProp } from '../lib/utils/references';
   import { getFieldEl, getComponentEl } from '../lib/utils/component-elements';
+  import icon from '../lib/utils/icon.vue';
 
   function getSettingsPath(field, schema) {
     if (_.get(schema, `${field}[${displayProp}]`) === 'settings') {
@@ -182,6 +183,9 @@
         }
         this.$store.dispatch('focus', { uri, path, el });
       }
+    },
+    components: {
+      icon
     }
   };
 </script>

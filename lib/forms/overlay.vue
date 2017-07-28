@@ -36,9 +36,9 @@
 
 <template>
   <transition name="pane-slide">
-    <div class="kiln-toolbar-pane-form center large" v-if="hasCurrentModalForm" @click.stop>
+    <div class="kiln-toolbar-pane-form center large medium-height" v-if="hasCurrentModalForm" @click.stop>
       <pane-header :title="headerTitle" :buttonClick="save" check="publish-check"></pane-header>
-      <section class="pane-form-wrapper" :style="{ height: paneHeight }">
+      <section class="pane-form-wrapper">
         <form @submit.prevent="save">
           <div v-if="hasSections" class="pane-tabs-titles">
             <ul class="form-sections-list">
@@ -97,27 +97,7 @@
       },
       fields: (state) => state.ui.currentForm.fields,
       schema: (state) => state.ui.currentForm.schema,
-      componentSchema: (state) => state.schemas[getComponentName(state.ui.currentForm.uri)],
-      paneHeight() {
-        this.$nextTick(() => {
-          const el = this.$el,
-            val = this.hasCurrentModalForm; // recalculate every time the form is opened
-
-          if (val && el) {
-            const $elComputedStyles = getComputedStyle(el),
-              paneHeight = parseInt($elComputedStyles.height, 10),
-              minHeight = parseInt(document.documentElement.clientHeight * 0.3, 10); // 30vh is minimum pane height
-
-            // set height for tabbed forms when they mount,
-            // so clicking tabs doesn't change the pane height
-            if (paneHeight < minHeight) {
-              el.style.height = `${minHeight}px`;
-            } else {
-              el.style.height = `${paneHeight}px`;
-            }
-          }
-        });
-      }
+      componentSchema: (state) => state.schemas[getComponentName(state.ui.currentForm.uri)]
     }),
     watch: {
       hasCurrentModalForm(val) {

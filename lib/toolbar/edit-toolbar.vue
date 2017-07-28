@@ -189,6 +189,7 @@
           name,
           title: 'Clay Menu',
           size: 'xlarge',
+          height: 'tall',
           clayHeader: true,
           content: [{
             header: 'My Pages',
@@ -235,6 +236,7 @@
         let options = {
           name,
           title: 'Find on Page',
+          height: 'medium-height',
           content: [{
             header: 'Visible',
             content: {
@@ -254,6 +256,7 @@
         const options = {
           name,
           title: 'Preview',
+          height: 'preview-height',
           content: {
             component: 'preview-share'
           }
@@ -268,6 +271,7 @@
           const options = {
             name,
             title: 'Page Status',
+            height: results.errors.length > 0 ? 'medium-height' : 'publish-height',
             content: [{
               header: 'Publish',
               disabled: results.errors.length > 0, // disable the publish tab if validation fails

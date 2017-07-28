@@ -1,8 +1,8 @@
 @import 'colors';
 @import 'typography';
 
-$pane-margin: 30vh;
 $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
+$toolbar-height: 47px;
 
 @mixin pane {
   @include primary-text();
@@ -15,26 +15,18 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
   cursor: auto;
   display: flex;
   flex-direction: column;
-  height: auto;
+  height: calc(100vh - #{$toolbar-height});
   justify-content: flex-start;
   margin: 0;
-  max-height: 100vh - $pane-margin;
-  max-width: 320px;
-  min-height: 30vh;
-  min-width: 320px;
   padding: 0;
   position: absolute;
   transition: transform 350ms $easeOutExpo;
   width: 100%;
 
-  // x-large panes also have a minimum height, or they look weird
-  &.xlarge {
-    min-height: 500px;
-  }
-
   @media screen and (min-width: 600px) {
     width: 90%;
 
+    // widths
     &.small {
       max-width: 350px;
     }
@@ -48,9 +40,31 @@ $easeOutExpo: cubic-bezier(.190, 1.000, .220, 1.000);
     }
 
     &.xlarge {
-      max-width: 700px;
+      max-width: 800px;
     }
 
+    // heights
+    &.short {
+      max-height: 40vh;
+    }
+
+    &.medium-height {
+      max-height: 70vh;
+    }
+
+    &.tall {
+      max-height: 90vh;
+    }
+
+    &.preview-height {
+      max-height: 365px;
+    }
+
+    &.publish-height {
+      max-height: 400px;
+    }
+
+    // positions
     &.left {
       left: 0;
       right: auto;

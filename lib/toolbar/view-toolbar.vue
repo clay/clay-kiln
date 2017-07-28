@@ -28,7 +28,7 @@
     }
 
     &.xlarge {
-      width: 700px;
+      width: 800px;
     }
 
     .publish {
@@ -93,6 +93,7 @@
           name,
           title: 'Clay Menu',
           size: 'xlarge',
+          height: 'tall',
           clayHeader: true,
           content: [{
             header: 'My Pages',

@@ -3,6 +3,8 @@
   @import '../styleguide/colors';
 
   .filterable-list {
+    height: 100%;
+
     &-input {
       padding: 4px;
       &-field {
@@ -11,10 +13,13 @@
         padding: 10px 14px;
       }
     }
+
     &-readout {
       overflow-y: scroll;
       overflow-x: hidden;
-      max-height: calc(70vh - 100px); // max pane height minus header minus filter input
+      // pane height minus header minus filter input,
+      // so it doesn't conflict with the pane tabs scrolling
+      height: calc(100% - 57px);
       padding: 0 18px 18px;
 
       &-list {
@@ -22,6 +27,11 @@
         margin: 0;
         padding: 0;
       }
+    }
+
+    &.has-reorder &-readout {
+      // has reorder, so no search input
+      height: 100%;
     }
   }
 
@@ -39,7 +49,7 @@
 </style>
 
 <template>
-  <div class="filterable-list">
+  <div class="filterable-list" :class="{ 'has-reorder': onReorder }">
     <div class="filterable-list-input" v-if="!onReorder">
       <input
         type="text"
@@ -174,19 +184,12 @@
         addDragula(this.$refs.list, this.onReorder);
       }
 
-      // set height for filterable list when it mounts,
-      // so filtering the list doesn't change the pane height
-      // note: wait for the animation to finish
-      setTimeout(() => {
-        const list = find(self.$el, '.filterable-list-readout'),
-          computedStyles = getComputedStyle(list),
-          input = find(self.$el, '.filterable-list-input-field');
-
-        list.style.height = computedStyles.height;
+      this.$nextTick(() => {
+        const input = find(self.$el, '.filterable-list-input-field');
 
         // focus on the input if it wasn't focused before
         input && input.focus();
-      }, 1000); // wait a second before fixing the height (allows things like page list to populate)
+      });
     },
     beforeDestroy() {
       // Clean up any Dragula event handlers

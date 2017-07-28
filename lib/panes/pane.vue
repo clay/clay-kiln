@@ -12,7 +12,7 @@
 
 <template>
   <transition name="pane-slide">
-    <div class="kiln-toolbar-pane" v-if="hasOpenPane" :class="[position, size]" :style="{ left: offsetLeft }" @click.stop>
+    <div class="kiln-toolbar-pane" v-if="hasOpenPane" :class="[position, size, height]" :style="{ left: offsetLeft }" @click.stop>
       <pane-header :title="headerTitle" :buttonClick="closePane" check="close-edit" :clayHeader="clayHeader"></pane-header>
       <component v-if="singleTab" :is="singleComponent" :args="singleComponentArgs"></component>
       <pane-tabs v-else :content="content"></pane-tabs>
@@ -32,7 +32,7 @@
     small: 350,
     medium: 500,
     large: 600,
-    xlarge: 700
+    xlarge: 800
   };
 
   export default {
@@ -44,6 +44,7 @@
       // note: 'transitioning' is a special property that's set when panes are transitioning
       position: (state) => _.get(state, 'ui.currentPane.position') || 'left',
       size: (state) => _.get(state, 'ui.currentPane.size') || 'small',
+      height: (state) => _.get(state, 'ui.currentPane.height') || 'short',
       offsetLeft(state) {
         const offset = _.get(state, 'ui.currentPane.offset') || {};
 

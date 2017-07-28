@@ -11,6 +11,7 @@
     this.$store.dispatch('openPane', {
       title: 'All Components',
       position: 'right',
+      height: 'medium-height',
       content: {
         component: 'add-component',
         args: {
