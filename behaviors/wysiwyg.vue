@@ -107,7 +107,7 @@
   .wysiwyg-input.styled {
     @include input();
 
-    padding: 13.5px 10px; // align to buttons
+    padding: 0;
     white-space: normal;
   }
 
@@ -115,6 +115,10 @@
   .ql-editor {
     overflow: visible;
     padding: 0;
+  }
+
+  .wysiwyg-input.styled .ql-editor {
+    padding: 13.5px 10px;
   }
 
   .ql-container.ql-bubble:not(.ql-disabled) a {
