@@ -8,9 +8,9 @@
     justify-content: space-between;
 
     &-msg {
-
       &-main {
         font-size: 18px;
+        text-decoration: none;
 
         &.draft {
           color: $draft;
@@ -22,6 +22,20 @@
 
         &.scheduled {
           color: $scheduled;
+        }
+      }
+
+      .public-link-icon {
+        display: inline-block;
+        height: 16px;
+        margin-left: 4px;
+        width: 16px;
+
+        svg {
+          fill: $published;
+          height: 16px;
+          width: 16px;
+          vertical-align: middle;
         }
       }
 
@@ -46,7 +60,7 @@
 <template>
   <div class="page-status">
     <div class="page-status-msg">
-      <a v-if="isPublished && !isScheduled" class="page-status-msg-main" :class="stateClass" :href="publishedUrl">{{ message }}</a>
+      <a v-if="isPublished && !isScheduled" class="page-status-msg-main" :class="stateClass" :href="publishedUrl" target="_blank">{{ message }}<icon name="external-link" class="public-link-icon"></icon></a>
       <div v-else class="page-status-msg-main" :class="stateClass">{{ message }}</div>
       <div class="page-status-msg-info">{{ time }}</div>
     </div>
@@ -69,6 +83,7 @@
   import { mapState } from 'vuex';
   import { uriToUrl } from '../../lib/utils/urls';
   import { START_PROGRESS, FINISH_PROGRESS } from '../../lib/toolbar/mutationTypes';
+  import icon from '../../lib/utils/icon.vue';
 
   export default {
     data() {
@@ -150,6 +165,8 @@
           });
       }
     },
-    components: {}
+    components: {
+      icon
+    }
   };
 </script>
