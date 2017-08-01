@@ -3,7 +3,7 @@
   @import '../styleguide/colors';
 
   .filterable-list {
-    height: 100%;
+    height: calc(100% - 51px);
 
     &-input {
       padding: 4px;
@@ -33,6 +33,11 @@
       // has reorder, so no search input
       height: 100%;
     }
+  }
+
+  // lists inside tabbed panes need slightly different heights
+  .pane-tabs-content .filterable-list {
+    height: 100%;
   }
 
   @keyframes shake {
