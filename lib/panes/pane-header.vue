@@ -27,7 +27,8 @@
       margin-left: -4px;
     }
 
-    .sign-out {
+    .sign-out,
+    .directory-button {
       @include secondary-text();
 
       background: none;
@@ -53,6 +54,7 @@
   <div class="kiln-pane-header">
     <div v-if="clayHeader" class="kiln-pane-header-left">
       <icon class="clay-logo" name="clay-logo-horizontal"></icon>
+      <button v-if="isAdmin" class="directory-button" @click.stop.prevent="openDirectory">Directory</button>
       <button class="sign-out" @click.stop.prevent="signOut">Sign Out</button>
     </div>
     <div v-else class="kiln-pane-header-left">
@@ -73,7 +75,23 @@
     data() {
       return {};
     },
+    computed: {
+      isAdmin() {
+        return _.get(this.$store, 'state.user.auth') === 'admin';
+      }
+    },
     methods: {
+      openDirectory() {
+        return this.$store.dispatch('openPane', {
+          title: 'Directory',
+          position: 'left',
+          size: 'small',
+          height: 'medium-height',
+          content: {
+            component: 'directory'
+          }
+        });
+      },
       signOut() {
         window.location.href = _.get(this.$store, 'state.site.path') + '/auth/logout';
       }
