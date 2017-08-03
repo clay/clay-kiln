@@ -95,6 +95,7 @@
             options = {
               name,
               title: 'Clay Menu',
+              saveTab: 'claymenu',
               size: 'xlarge',
               height: 'tall',
               clayHeader: true,

@@ -96,7 +96,7 @@
   // PULLING IN THE SVG FOR THE RIGHT-CARET
 
   export default {
-    props: ['content', 'clayHeader'],
+    props: ['content', 'saveTab'],
     data() {
       return {
         paneWidth: null,
@@ -174,10 +174,10 @@
           this.$store.commit('SWITCH_TAB', this.tabs[index] && this.tabs[index].header);
           this.activeTab = index;
 
-          if (this.clayHeader) {
+          if (this.saveTab) {
             // if this pane has a clay header (e.g. it's a clay menu),
             // then persist the active tab so it becomes the default next time
-            setItem('claymenu:activetab', this.tabs[index].header);
+            setItem(`${this.saveTab}:activetab`, this.tabs[index].header);
           }
         }
       }
