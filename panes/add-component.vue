@@ -5,6 +5,8 @@
 <script>
   import _ from 'lodash';
   import label from '../lib/utils/label';
+  import { getItem, updateArray } from '../lib/utils/local';
+  import { getComponentName } from '../lib/utils/references';
   import filterableList from './filterable-list.vue';
 
   function openAllComponents() {
@@ -30,14 +32,6 @@
       return {};
     },
     computed: {
-      components() {
-        return _.map(this.args.available, (component) => {
-          return {
-            id: component,
-            title: label(component)
-          }; // todo: add fuzzy list
-        });
-      },
       fuzzyTitle() {
         return this.args.isFuzzy ? 'View All Components' : null;
       },
@@ -45,17 +39,50 @@
         return this.args.isFuzzy ? openAllComponents.bind(this) : null;
       }
     },
+    asyncComputed: {
+      components() {
+        const parentName = getComponentName(this.args.parentURI),
+          path = this.args.path,
+          available = _.map(this.args.available, (component) => {
+            return {
+              id: component,
+              title: label(component)
+            };
+          });
+
+        return getItem(`${parentName}.${path}`).then((sortList) => {
+          const sortedComponents = _.unionWith(sortList, available, (val, otherVal) => {
+              return val.name === otherVal.id;
+            }),
+            unsortedComponents = _.differenceWith(available, sortList, (val, otherVal) => {
+              return val.id === otherVal.name;
+            });
+
+          return _.map(sortedComponents, (component) => {
+            return {
+              id: component.name,
+              title: label(component.name)
+            };
+          }).concat(unsortedComponents);
+        });
+      }
+    },
     methods: {
       itemClick(id) {
-        const self = this;
+        const self = this,
+          parentName = getComponentName(this.args.parentURI),
+          path = this.args.path;
 
-        this.$store.dispatch('addComponents', {
-          currentURI: this.args.currentURI,
-          parentURI: this.args.parentURI,
-          path: this.args.path,
-          components: [{ name: id }]
-        })
-        .then(() => self.$nextTick(() => self.$store.dispatch('closePane')));
+        return updateArray(`${parentName}.${path}`, { name: id })
+          .then(() => {
+            return this.$store.dispatch('addComponents', {
+              currentURI: this.args.currentURI,
+              parentURI: this.args.parentURI,
+              path,
+              components: [{ name: id }]
+            })
+            .then(() => self.$nextTick(() => self.$store.dispatch('closePane')));
+          });
       }
     },
     components: {
