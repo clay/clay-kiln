@@ -240,24 +240,38 @@
         return this.$store.dispatch('togglePane', { options, button });
       },
       toggleComponents(name, button) {
-        let options = {
-          name,
-          title: 'Find on Page',
-          height: 'medium-height',
-          content: [{
-            header: 'Visible',
-            content: {
-              component: 'visible-components'
-            }
-          }]
-        };
+        return getItem('findonpage:activetab').then((savedTab) => {
+          const activeTab = savedTab || 'Visible';
 
-        // add head components (from page and layout)
-        options.content = options.content.concat(getHeadTabs(this.$store.state));
-        // add invisible components (from layout)
-        options.content = options.content.concat(getInvisibleTabs(this.$store.state));
+          let options = {
+              name,
+              title: 'Find on Page',
+              saveTab: 'findonpage',
+              height: 'medium-height',
+              content: [{
+                header: 'Visible',
+                active: activeTab === 'Visible',
+                content: {
+                  component: 'visible-components'
+                }
+              }]
+            },
+            headTabs = _.map(getHeadTabs(this.$store.state), (tab) => {
+              tab.active = activeTab === tab.header;
+              return tab;
+            }),
+            invisibleTabs = _.map(getInvisibleTabs(this.$store.state), (tab) => {
+              tab.active = activeTab === tab.header;
+              return tab;
+            });
 
-        return this.$store.dispatch('togglePane', { options, button });
+          // add head components (from page and layout)
+          options.content = options.content.concat(headTabs);
+          // add invisible components (from layout)
+          options.content = options.content.concat(invisibleTabs);
+
+          return this.$store.dispatch('togglePane', { options, button });
+        });
       },
       togglePreview(name, button) {
         const options = {
