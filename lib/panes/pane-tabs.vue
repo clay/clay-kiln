@@ -89,13 +89,14 @@
 
 <script>
   import _ from 'lodash';
+  import { setItem } from '../utils/local';
   import icon from '../utils/icon.vue';
 
   // TODO: FIGURE OUT THE BUG THAT WON'T INCLUDE THE `LEFT-CARET` ICON WITHOUT
   // PULLING IN THE SVG FOR THE RIGHT-CARET
 
   export default {
-    props: ['content'],
+    props: ['content', 'saveTab'],
     data() {
       return {
         paneWidth: null,
@@ -172,6 +173,13 @@
         if (isDisabled !== true) {
           this.$store.commit('SWITCH_TAB', this.tabs[index] && this.tabs[index].header);
           this.activeTab = index;
+
+          if (this.saveTab) {
+            // if this pane has a saveTab key specified,
+            // then persist the active tab so it becomes the active one
+            // next time the pane is opened
+            setItem(`${this.saveTab}:activetab`, this.tabs[index].header);
+          }
         }
       }
     },

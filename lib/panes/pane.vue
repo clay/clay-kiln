@@ -15,7 +15,7 @@
     <div class="kiln-toolbar-pane" v-if="hasOpenPane" :class="[position, size, height]" :style="{ left: offsetLeft }" @click.stop>
       <pane-header :title="headerTitle" :buttonClick="closePane" check="close-edit" :clayHeader="clayHeader"></pane-header>
       <component v-if="singleTab" :is="singleComponent" :args="singleComponentArgs"></component>
-      <pane-tabs v-else :content="content"></pane-tabs>
+      <pane-tabs v-else :content="content" :saveTab="saveTab"></pane-tabs>
     </div>
   </transition>
 </template>
@@ -65,7 +65,8 @@
         return _.get(this, 'content.args');
       },
       headerTitle: (state) => _.get(state, 'ui.currentPane.title') || 'Pane',
-      clayHeader: (state) => _.get(state, 'ui.currentPane.clayHeader')
+      clayHeader: (state) => _.get(state, 'ui.currentPane.clayHeader'),
+      saveTab: (state) => _.get(state, 'ui.currentPane.saveTab')
     }),
     methods: {
       closePane() {
