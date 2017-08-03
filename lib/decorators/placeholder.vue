@@ -211,7 +211,7 @@
       <span v-if="isRequired" class="placeholder-required">Required</span>
     </div>
     <div v-if="canAddComponent" class="placeholder-bottom">
-      <span class="placeholder-add-component" title="Add Components" @click.stop="openAddComponentPane">Add Components</span>
+      <span class="placeholder-add-component" :title="addComponentTitle" @click.stop="openAddComponentPane">{{ addComponentTitle }}</span>
     </div>
   </div>
 </template>
@@ -222,6 +222,7 @@
   import { placeholderProp, componentListProp, componentProp } from '../utils/references';
   import { getData } from '../core-data/components';
   import { get } from '../core-data/groups';
+  import label from '../utils/label';
   import interpolate from '../utils/interpolate';
   import icon from '../utils/icon.vue';
 
@@ -235,7 +236,7 @@
     data() {
       return {
         permanentClass: 'kiln-permanent-placeholder',
-        temporaryClass: 'kiln-placeholder'
+        temporaryClass: 'kiln-placeholder',
       };
     },
     computed: {
@@ -262,6 +263,13 @@
         const subSchema = getSchema(this.$options);
 
         return !!subSchema[componentListProp] || !!subSchema[componentProp];
+      },
+      addComponentTitle() {
+        const subSchema = getSchema(this.$options),
+          componentsToAdd = _.get(subSchema, `${componentListProp}.include`) || _.get(subSchema, `${componentProp}.include`),
+          hasOneComponent = componentsToAdd.length === 1;
+
+        return hasOneComponent ? `Add ${label(componentsToAdd[0])}` : 'Add Components';
       },
       placeholderHeight() {
         const placeholderHeight = parseInt(getSchema(this.$options)[placeholderProp].height, 10) || 100, // default to 100px
