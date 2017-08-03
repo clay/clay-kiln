@@ -175,8 +175,9 @@
           this.activeTab = index;
 
           if (this.saveTab) {
-            // if this pane has a clay header (e.g. it's a clay menu),
-            // then persist the active tab so it becomes the default next time
+            // if this pane has a saveTab key specified,
+            // then persist the active tab so it becomes the active one
+            // next time the pane is opened
             setItem(`${this.saveTab}:activetab`, this.tabs[index].header);
           }
         }

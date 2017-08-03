@@ -236,7 +236,7 @@
     data() {
       return {
         permanentClass: 'kiln-permanent-placeholder',
-        temporaryClass: 'kiln-placeholder',
+        temporaryClass: 'kiln-placeholder'
       };
     },
     computed: {
@@ -267,7 +267,7 @@
       addComponentTitle() {
         const subSchema = getSchema(this.$options),
           componentsToAdd = _.get(subSchema, `${componentListProp}.include`) || _.get(subSchema, `${componentProp}.include`),
-          hasOneComponent = componentsToAdd.length === 1;
+          hasOneComponent = componentsToAdd && componentsToAdd.length === 1;
 
         return hasOneComponent ? `Add ${label(componentsToAdd[0])}` : 'Add Components';
       },
