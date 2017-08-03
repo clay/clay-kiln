@@ -73,6 +73,7 @@
   import { layoutAttr, editAttr, componentListProp } from '../utils/references';
   import label from '../utils/label';
   import { getListsInHead } from '../utils/head-components';
+  import { getItem } from '../utils/local';
   import progressBar from './progress.vue';
   import button from './toolbar-button.vue';
   import background from './background.vue';
@@ -185,35 +186,40 @@
       // logic that is specific to each button,
       // e.g. running validation before opening the publish pane
       toggleMenu(name, button) {
-        const options = {
-          name,
-          title: 'Clay Menu',
-          size: 'xlarge',
-          height: 'tall',
-          clayHeader: true,
-          content: [{
-            header: 'My Pages',
-            content: {
-              component: 'page-list',
-              args: {
-                isMyPages: true
-              }
-            }
-          },{
-            header: 'All Pages',
-            active: true, // todo: save last tab in localstorage
-            content: {
-              component: 'page-list'
-            }
-          }, {
-            header: 'New Page',
-            content: {
-              component: 'new-page'
-            }
-          }]
-        };
+        return getItem('claymenu:activetab').then((savedTab) => {
+          const activeTab = savedTab || 'All Pages',
+            options = {
+              name,
+              title: 'Clay Menu',
+              size: 'xlarge',
+              height: 'tall',
+              clayHeader: true,
+              content: [{
+                header: 'My Pages',
+                active: activeTab === 'My Pages',
+                content: {
+                  component: 'page-list',
+                  args: {
+                    isMyPages: true
+                  }
+                }
+              },{
+                header: 'All Pages',
+                active: activeTab === 'All Pages', // note: this is the default
+                content: {
+                  component: 'page-list'
+                }
+              }, {
+                header: 'New Page',
+                active: activeTab === 'New Page',
+                content: {
+                  component: 'new-page'
+                }
+              }]
+            };
 
-        return this.$store.dispatch('togglePane', { options, button });
+          return this.$store.dispatch('togglePane', { options, button });
+        });
       },
       undo() {
         this.$store.dispatch('undo');

@@ -71,6 +71,7 @@
   import _ from 'lodash';
   import { mapState } from 'vuex';
   import toggleEdit from '../utils/toggle-edit';
+  import { getItem } from '../utils/local';
   import button from './toolbar-button.vue';
   import background from './background.vue';
   import pane from '../panes/pane.vue';
@@ -89,35 +90,40 @@
         toggleEdit();
       },
       toggleMenu(name, button) {
-        const options = {
-          name,
-          title: 'Clay Menu',
-          size: 'xlarge',
-          height: 'tall',
-          clayHeader: true,
-          content: [{
-            header: 'My Pages',
-            content: {
-              component: 'page-list',
-              args: {
-                isMyPages: true
-              }
-            }
-          },{
-            header: 'All Pages',
-            active: true, // todo: save last tab in localstorage
-            content: {
-              component: 'page-list'
-            }
-          }, {
-            header: 'New Page',
-            content: {
-              component: 'new-page'
-            }
-          }]
-        };
+        return getItem('claymenu:activetab').then((savedTab) => {
+          const activeTab = savedTab || 'All Pages',
+            options = {
+              name,
+              title: 'Clay Menu',
+              size: 'xlarge',
+              height: 'tall',
+              clayHeader: true,
+              content: [{
+                header: 'My Pages',
+                active: activeTab === 'My Pages',
+                content: {
+                  component: 'page-list',
+                  args: {
+                    isMyPages: true
+                  }
+                }
+              },{
+                header: 'All Pages',
+                active: activeTab === 'All Pages', // note: this is the default
+                content: {
+                  component: 'page-list'
+                }
+              }, {
+                header: 'New Page',
+                active: activeTab === 'New Page',
+                content: {
+                  component: 'new-page'
+                }
+              }]
+            };
 
-        return this.$store.dispatch('togglePane', { options, button });
+          return this.$store.dispatch('togglePane', { options, button });
+        });
       }
     },
     components: _.merge({

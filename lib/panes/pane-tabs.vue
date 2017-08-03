@@ -89,13 +89,14 @@
 
 <script>
   import _ from 'lodash';
+  import { setItem } from '../utils/local';
   import icon from '../utils/icon.vue';
 
   // TODO: FIGURE OUT THE BUG THAT WON'T INCLUDE THE `LEFT-CARET` ICON WITHOUT
   // PULLING IN THE SVG FOR THE RIGHT-CARET
 
   export default {
-    props: ['content'],
+    props: ['content', 'clayHeader'],
     data() {
       return {
         paneWidth: null,
@@ -172,6 +173,12 @@
         if (isDisabled !== true) {
           this.$store.commit('SWITCH_TAB', this.tabs[index] && this.tabs[index].header);
           this.activeTab = index;
+
+          if (this.clayHeader) {
+            // if this pane has a clay header (e.g. it's a clay menu),
+            // then persist the active tab so it becomes the default next time
+            setItem('claymenu:activetab', this.tabs[index].header);
+          }
         }
       }
     },
