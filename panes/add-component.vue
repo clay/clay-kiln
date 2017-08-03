@@ -50,9 +50,10 @@
             };
           });
 
-        return getItem(`${parentName}.${path}`).then((sortList) => {
-          const sortedComponents = _.unionWith(sortList, available, (val, otherVal) => {
-              return val.name === otherVal.id;
+        return getItem(`addcomponents:${parentName}.${path}`).then((sortList) => {
+          sortList = sortList || []; // initialize if it doesn't exist
+          const sortedComponents = _.intersectionWith(sortList, available, (val, otherVal) => {
+              return _.isObject(val) && _.isObject(otherVal) && val.name === otherVal.id;
             }),
             unsortedComponents = _.differenceWith(available, sortList, (val, otherVal) => {
               return val.id === otherVal.name;
@@ -73,7 +74,7 @@
           parentName = getComponentName(this.args.parentURI),
           path = this.args.path;
 
-        return updateArray(`${parentName}.${path}`, { name: id })
+        return updateArray(`addcomponents:${parentName}.${path}`, { name: id })
           .then(() => {
             return this.$store.dispatch('addComponents', {
               currentURI: this.args.currentURI,
