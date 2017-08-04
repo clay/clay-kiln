@@ -202,7 +202,7 @@
         }
 
         .page-list-readout-item-author:before {
-          content: 'Author';
+          content: 'Byline';
         }
       }
 
@@ -293,7 +293,7 @@
 <template>
   <div class="page-list">
     <div class="page-list-input">
-      <input class="page-list-search" placeholder="Search Pages" v-model="searchString" @keyup="onSearchKeyup" />
+      <input class="page-list-search" placeholder="Search Titles and Bylines" v-model="searchString" @keyup="onSearchKeyup" />
       <div class="sites-readout" :class="{ open: isSiteListOpen }">
         <button class="sites-readout-trigger" type="button" @click.stop="toggleSitesList">
           <svg v-if="isSiteListOpen" width="8" height="12" viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><path d="M2 0L.59 1.41 5.17 6 .59 10.59 2 12l6-6z" fill-rule="evenodd"/></svg>
@@ -323,10 +323,10 @@
           <li v-for="page in pages" class="page-list-readout-item">
             <div class="page-list-readout-item-title">
               <a v-if="page.title" class="page-list-readout-item-link" :class="{ 'current-page': page.isCurrentPage }" :href="page.url" target="_blank">{{ page.title }}</a>
-              <a v-else class="page-list-readout-item-link no-text" :class="{ 'current-page': page.isCurrentPage }" :href="page.url" target="_blank">No Headline</a>
+              <a v-else class="page-list-readout-item-link no-text" :class="{ 'current-page': page.isCurrentPage }" :href="page.url" target="_blank">No Title</a>
             </div>
             <div v-if="page.firstAuthor" class="page-list-readout-item-author">{{ page.firstAuthor }}</div>
-            <div v-else class="page-list-readout-item-author no-text">No Author</div>
+            <div v-else class="page-list-readout-item-author no-text">No Byline</div>
             <div class="page-list-readout-item-status">
               <span :class="page.status">{{ page.statusMessage }}</span>
               <span v-if="page.statusTime" class="page-list-readout-item-status-time">{{ page.statusTime }}</span>
@@ -360,6 +360,15 @@
   const querySize = 20; // todo: this is for testing. make this 50 before release
 
   /**
+   * format hour and minute
+   * @param  {Date} date
+   * @return {string}
+   */
+  function formatHM(date) {
+    return ' ' + dateFormat(date, 'h:mm A');
+  }
+
+  /**
    * format time for pages
    * @param  {Date} date
    * @return {string}
@@ -372,15 +381,15 @@
     }
 
     if (isToday(date)) {
-      return 'Today';
+      return 'Today' + formatHM(date);
     } else if (isTomorrow(date)) {
-      return 'Tomorrow';
+      return 'Tomorrow' + formatHM(date);
     } else if (isYesterday(date)) {
-      return 'Yesterday';
+      return 'Yesterday' + formatHM(date);
     } else if (isThisYear(date)) {
-      return dateFormat(date, 'M/D');
+      return dateFormat(date, 'M/D') + formatHM(date);
     } else {
-      return dateFormat(date, 'M/D/YY');
+      return dateFormat(date, 'M/D/YY') + formatHM(date);
     }
   }
 
