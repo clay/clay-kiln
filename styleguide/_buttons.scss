@@ -53,6 +53,7 @@
   &:disabled {
     background-color: $button-disabled;
     color: $text;
+    cursor: not-allowed;
     transition: all 50ms ease-out;
   }
 }
@@ -79,6 +80,7 @@
     background-color: $fill;
     border: 1px solid $button-disabled-light;
     color: $button-disabled-light;
+    cursor: not-allowed;
     transition: all 150ms ease-out;
   }
 }
@@ -107,7 +109,7 @@
 
   &:disabled {
     color: darken($text, 25%);
-    cursor: default;
+    cursor: not-allowed;
     transition: all 50ms ease-out;
 
     svg {

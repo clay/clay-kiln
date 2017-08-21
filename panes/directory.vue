@@ -53,7 +53,8 @@
         width: 32px;
       }
 
-      .user-name {
+      .user-name,
+      .user-name-empty {
         @include primary-text();
 
         border: none;
@@ -63,6 +64,10 @@
         // no left padding (it's handled by the image),
         // so name displays to the left if image doesn't exist
         text-align: left;
+      }
+
+      .user-name-empty {
+        @include tertiary-text();
       }
 
       .user-admin-toggle {
@@ -147,7 +152,8 @@
       <ul class="directory-pane-readout-list" ref="list">
         <li v-for="(user, index) in users" class="directory-pane-item">
           <img v-if="user.imageUrl" class="user-image" :src="user.imageUrl" />
-          <span class="user-name">{{ user.name }}</span>
+          <span v-if="user.name" class="user-name">{{ user.name }}</span>
+          <span v-else class="user-name-empty">{{ user.username }}</span>
           <label class="user-admin-toggle" :class="{ 'disabled': user.isCurrentUser }">
             <span v-if="user.auth === 'admin'">admin</span>
             <input type="checkbox" class="user-admin-checkbox" :checked="user.auth === 'admin'" :disabled="user.isCurrentUser" @change="toggleAdmin(user.id, user.auth, index)" />
@@ -258,7 +264,7 @@
           this.users.splice(index, 1);
           return remove(prefix + '/users/' + id).then(() => {
             store.dispatch('finishProgress', 'save');
-            store.dispatch('showStatus', { type: 'save', message: `Removed ${username} from Clay` });
+            store.dispatch('showStatus', { type: 'save', message: `Removed ${username} from all sites!` });
           }).catch((e) => {
             store.dispatch('finishProgress', 'error');
             store.dispatch('showStatus', { type: 'error', message: `Error removing ${username} from Clay: ${e.message}` });
@@ -266,7 +272,15 @@
         }
       },
       openAddUser() {
-        console.log('add user pane')
+        this.$store.dispatch('openPane', {
+          title: 'Add Person',
+          position: 'left',
+          size: 'small',
+          height: 'add-person-height', // add-person has a specific custom height
+          content: {
+            component: 'add-person'
+          }
+        });
       }
     },
     mounted() {

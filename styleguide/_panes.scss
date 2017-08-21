@@ -56,12 +56,17 @@ $toolbar-height: 47px;
       max-height: 90vh;
     }
 
+    // custom heights for specific panes
     &.preview-height {
       max-height: 365px;
     }
 
     &.publish-height {
       max-height: 400px;
+    }
+
+    &.add-person-height {
+      max-height: 460px;
     }
 
     // positions
