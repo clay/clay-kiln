@@ -80,10 +80,18 @@
         text-align: right;
         text-transform: uppercase;
 
+        &.disabled {
+          cursor: not-allowed;
+        }
+
         .user-admin-checkbox {
           height: 16px;
           margin-left: 5px;
           width: 16px;
+
+          &:disabled {
+            cursor: not-allowed;
+          }
         }
       }
 
@@ -91,6 +99,15 @@
         border: none;
         border-left: 1px solid $pane-list-divider;
         padding: 14px 4px 14px 17px;
+
+        &:disabled {
+          cursor: not-allowed;
+
+          svg,
+          svg * {
+            fill: $button-disabled;
+          }
+        }
       }
     }
 
@@ -123,18 +140,19 @@
         class="directory-pane-input-field"
         placeholder="Search for someone"
         ref="search"
-        v-model="query">
+        v-model="query"
+        @keyup="onSearchKeyup">
     </div>
     <div class="directory-pane-readout">
       <ul class="directory-pane-readout-list" ref="list">
-        <li v-for="user in users" class="directory-pane-item">
+        <li v-for="(user, index) in users" class="directory-pane-item">
           <img v-if="user.imageUrl" class="user-image" :src="user.imageUrl" />
           <span class="user-name">{{ user.name }}</span>
-          <label class="user-admin-toggle">
+          <label class="user-admin-toggle" :class="{ 'disabled': user.isCurrentUser }">
             <span v-if="user.auth === 'admin'">admin</span>
-            <input type="checkbox" class="user-admin-checkbox" :checked="user.auth === 'admin'" @change="toggleAdmin(user.username)" />
+            <input type="checkbox" class="user-admin-checkbox" :checked="user.auth === 'admin'" :disabled="user.isCurrentUser" @change="toggleAdmin(user.id, user.auth, index)" />
           </label>
-          <button type="button" class="user-delete" title="Remove person from Clay" @click.stop="deleteUser(user.username)">
+          <button type="button" class="user-delete" title="Remove person from Clay" :disabled="user.isCurrentUser" @click.stop="deleteUser(user.id, user.username, index)">
             <icon name="delete"></icon>
           </button>
         </li>
@@ -147,44 +165,112 @@
 </template>
 
 <script>
+  import _ from 'lodash';
+  import { postJSON, save, remove } from '../lib/core-data/api';
+  import { searchRoute } from '../lib/utils/references';
   import icon from '../lib/utils/icon.vue';
+
+  function buildUserQuery(query) {
+    const str = _.isString(query) && query.toLowerCase() || '';
+
+    if (str === 'admin' || str === 'write') {
+      // allow filtering by ONLY admins or non-admins
+      return {
+        term: {
+          auth: str
+        }
+      };
+    } else if (str !== '') {
+      // allow filtering by name / username (weighing the names more than usernames)
+      return {
+        multi_match: {
+          query: str,
+          fields: ['name^2', 'username']
+        }
+      };
+    } else {
+      // list all users
+      return {
+        match_all: {}
+      };
+    }
+  }
 
   export default {
     data() {
       return {
-        query: ''
+        query: '',
+        users: []
       };
     },
-    computed: {
-      users() {
-        return [{
-          auth: 'admin',
-          imageUrl: 'https://lh4.googleusercontent.com/-b5fpu7SlP28/AAAAAAAAAAI/AAAAAAAAACI/HHLG02wfBBs/photo.jpg?sz=50',
-          name: 'Nelson Pecora',
-          provider: 'google',
-          username: 'nelson.pecora@nymag.com'
-        }, {
-          auth: 'write',
-          name: 'Samuel Clemens',
-          provider: 'google',
-          username: 'mark.twain@nymag.com'
-        }];
-      }
-    },
     methods: {
-      toggleAdmin(username) {
-        console.log('toggle admin:', username)
+      fetchUsers() {
+        const query = this.query,
+          prefix = _.get(this.$store, 'state.site.prefix'),
+          current = _.get(this.$store, 'state.user');
+
+        return postJSON(prefix + searchRoute, {
+          index: 'users',
+          type: 'general',
+          body: { query: buildUserQuery(query) }
+        }).then((res) => {
+          const hits = _.get(res, 'hits.hits') || [],
+            users = _.map(hits, (hit) => {
+              const src = hit._source;
+
+              return {
+                id: hit._id, // PUT to prefix + /users/ + id to update user (e.g. to toggle admin)
+                username: src.username,
+                provider: src.provider,
+                auth: src.auth,
+                imageUrl: src.imageUrl,
+                name: src.name,
+                isCurrentUser: src.username === current.username && src.provider === current.provider
+              };
+            });
+
+          // set the filtered user data
+          this.users = users;
+        });
       },
-      deleteUser(username) {
-        const confirm = window.confirm(`Delete ${username}? This cannot be undone.`);
+      onSearchKeyup: _.debounce(function () {
+        this.fetchUsers();
+      }, 300),
+      toggleAdmin(id, auth, index) {
+        const prefix = _.get(this.$store, 'state.site.prefix');
+
+        if (auth === 'write') {
+          // make them an admin!
+          this.users[index].auth = 'admin';
+        } else {
+          this.users[index].auth = 'write';
+        }
+
+        return save(prefix + '/users/' + id, _.omit(this.users[index], ['id', 'isCurrentUser']));
+      },
+      deleteUser(id, username, index) {
+        const store = this.$store,
+          prefix = _.get(store, 'state.site.prefix'),
+          confirm = window.confirm(`Remove ${username} from Clay? This cannot be undone.`); // eslint-disable-line
 
         if (confirm) {
-          console.log('delete:', username)
+          store.dispatch('startProgress', 'save');
+          this.users.splice(index, 1);
+          return remove(prefix + '/users/' + id).then(() => {
+            store.dispatch('finishProgress', 'save');
+            store.dispatch('showStatus', { type: 'save', message: `Removed ${username} from Clay` });
+          }).catch((e) => {
+            store.dispatch('finishProgress', 'error');
+            store.dispatch('showStatus', { type: 'error', message: `Error removing ${username} from Clay: ${e.message}` });
+          });
         }
       },
       openAddUser() {
         console.log('add user pane')
       }
+    },
+    mounted() {
+      return this.fetchUsers();
     },
     components: {
       icon
