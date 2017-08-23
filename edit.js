@@ -123,16 +123,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // when clicks bubble up to the document, close the current form or pane / unselect components
   document.body.addEventListener('click', (e) => {
-    // unselect if clicking out of the current selection (if user isn't trying to select text)
-    // todo: handle panes where we want to stay selected
-    if (_.get(store, 'state.ui.currentSelection') && !window.kiln.isInvalidDrag) {
+    if (_.get(store, 'state.ui.currentFocus') && !hasClickedFocusableEl(e) && !window.kiln.isInvalidDrag) {
+      // always unfocus if clicking out of the current focus (and not directly clicking into another focusable el)
+      // note: isInvalidDrag is set when dragging to select text in a text/wysiwyg field,
+      // since if you drag outside the form it'll trigger a click. ♥ browsers ♥
+      store.dispatch('unfocus').catch(_.noop);
+    } else if (_.get(store, 'state.ui.currentSelection') && !window.kiln.isInvalidDrag) {
+      // unselect if clicking out of the current selection (if user isn't trying to select text)
       // note: stopSelection is set in the 'select' action. see the comments there for details
       store.dispatch('unselect');
-    }
-
-    // always unfocus if clicking out of the current focus (and not directly clicking into another focusable el)
-    if (_.get(store, 'state.ui.currentFocus') && !hasClickedFocusableEl(e) && !window.kiln.isInvalidDrag) {
-      store.dispatch('unfocus').catch(_.noop);
     }
 
     // unset isInvalidDrag after checking for unfocus / unselect
@@ -149,12 +148,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const key = keycode(e);
 
     if (key === 'esc') {
-      if (_.get(store, 'state.ui.currentSelection')) {
-        store.dispatch('unselect');
-      }
-
+      // pressing esc when forms are focused unfocuses them but does NOT unselect the component.
+      // press esc again to unselect a component
       if (_.get(store, 'state.ui.currentFocus')) {
         store.dispatch('unfocus').catch(_.noop);
+      } else if (_.get(store, 'state.ui.currentSelection')) {
+        store.dispatch('unselect');
       }
 
       if (_.get(store, 'state.ui.currentPane')) {
