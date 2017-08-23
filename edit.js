@@ -16,6 +16,7 @@ import conditionalFocus from './directives/conditional-focus';
 import hScrollDirective from './directives/horizontal-scroll';
 import utilsAPI from './lib/utils/api';
 import { hasClickedFocusableEl } from './lib/decorators/focus';
+import { hasClickedSelectableEl } from './lib/decorators/select';
 
 // TODO: Figure out saving/closing and reverting in panes
 import { CLOSE_PANE } from './lib/panes/mutationTypes';
@@ -128,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
       // note: isInvalidDrag is set when dragging to select text in a text/wysiwyg field,
       // since if you drag outside the form it'll trigger a click. ♥ browsers ♥
       store.dispatch('unfocus').catch(_.noop);
-    } else if (_.get(store, 'state.ui.currentSelection') && !window.kiln.isInvalidDrag) {
+    } else if (_.get(store, 'state.ui.currentSelection') && !hasClickedSelectableEl(e) && !window.kiln.isInvalidDrag) {
       // unselect if clicking out of the current selection (if user isn't trying to select text)
       // note: stopSelection is set in the 'select' action. see the comments there for details
       store.dispatch('unselect');

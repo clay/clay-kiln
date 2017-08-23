@@ -299,6 +299,7 @@
     },
     watch: {
       isCurrentSelection(val) {
+        console.log(this.$options.componentEl === this.currentComponent.el, this.$options.componentEl, this.currentComponent.el)
         if (val) {
           // fires when selecting a component
           this.setSelectorPosition();
