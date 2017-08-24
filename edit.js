@@ -77,7 +77,7 @@ window.kiln.utils = utilsAPI;
  */
 function getLastEditUser(store) {
   const currentUser = _.get(store, 'state.user'),
-    lastUser = _.findLast(_.get(store, 'state.page.listData.users'), (user) => {
+    lastUser = _.findLast(_.get(store, 'state.page.state.users'), (user) => {
       const isDifferentUser = user.username !== currentUser.username,
         isWithinFiveMinutes = Math.abs(differenceInMinutes(user.updateTime, new Date())) < 5;
 
