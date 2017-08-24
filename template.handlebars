@@ -44,9 +44,7 @@
     {{#if @root.locals.edit}}
       <script src="{{ @root.locals.site.assetPath }}/js/clay-kiln-edit.js"></script>
     {{else}}
-      <script>
-          {{{ read 'node_modules/clay-kiln/dist/clay-kiln-view.js' }}}
-      </script>
+      <script src="{{ @root.locals.site.assetPath }}/js/clay-kiln-view.js"></script>
 
       {{! logo to display when going into edit mode }}
       <div class="clay-kiln-logo">{{{ read 'node_modules/clay-kiln/media/clay-logo.svg' }}}</div>
