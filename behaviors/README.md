@@ -381,53 +381,6 @@ An array of objects with a `text` property that is a string to display in a list
 * Hitting <kbd>delete</kbd>, <kbd>backspace</kbd>, or <kbd>←</kbd> in the input will select the last item if the input is empty.
 * If `propertyName` is defined it will allow users to double-click items in a simple-list to select a "primary" item. It will also append a small badge to the "primary" item. Only one item may be "primary" at a time.
 
-# site-specific-select
-
-A standard browser `<select>` element, allowing the user to select one of a few related options. Options are delineated by site, using the site slug.
-
-## Arguments
-
-* **sites** _(required)_ an array of site options
-* **default** _(optional)_ an array of default options
-
-Each site should have a `slug` to match and an `options` array. Similar to the [select behavior](https://github.com/nymag/clay-kiln/blob/master/behaviors/select.md), options are an array of strings. The label for each option will simply be the option converted to Start Case.
-
-```yaml
-field1:
-  _has:
-    fn: site-specific-select
-    sites:
-      -
-        slug: site1
-        options:
-          - foo # looks like Foo
-          - bar # looks like Bar
-          - baz # looks like Baz
-      -
-        slug: site2
-        options:
-          - quz
-          - quuz
-```
-
-You may also specify `default` options that will be used if no site slug matches.
-
-```yaml
-field1:
-  _has:
-    fn: site-specific-select
-    sites:
-      -
-        slug: site1
-        options:
-          - foo # looks like Foo
-          - bar # looks like Bar
-          - baz # looks like Baz
-    default:
-      - quz
-      - quuz
-```
-
 # soft-maxlength
 
 Appends a character count to an input. Allows the user to type above the limit, but can be paired with publishing validation to prevent publishing things that are too long.
