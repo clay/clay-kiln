@@ -219,22 +219,35 @@ transformArg: [base image url]/recaps-$DATAFIELD.png ($DATAFIELD is the placehol
 
 # radio
 
-A group of radio buttons, allowing the user to select one of a few related options.
+A group of radio buttons, allowing the user to select one of a few related options. You can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components)
+
+```yaml
+    fn: radio
+    options:
+      - foo (site1)
+      - bar (not: site1)
+      - baz (site1, site2)
+```
 
 ## Arguments
 
-* **options** _(required)_ an array of strings
+* **options** _(required)_ an array of strings or objects (with `name`, `value`, and optionally `sites`)
 
-Unlike [checkbox-group](https://github.com/nymag/clay-kiln/blob/master/behaviors/checkbox-group.md), each option should be a string rather than an object. The label for each option will simply be the option converted to Start Case.
+If you specify options as strings, the label for each will simply be the option converted to Start Case. If this behavior is run on a site with no available options, an error message will appear. Please use the `reveal` behavior to conditionally hide/show fields based on site.
 
 ```yaml
 field1:
   _has:
     fn: radio
     options:
-      - foo # looks like Foo
-      - bar # looks like Bar
-      - baz # looks like Baz
+      - foo
+      -
+        name: Bar
+        value: bar
+      -
+        name: Baz Qux
+        value: baz-qux
+        sites: site1, site2
 ```
 
 # required
