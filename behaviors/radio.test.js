@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import lib from './radio.vue';
 
-const options = ['', 'one', 'two three'];
+const options = ['none', 'one', 'two three'];
 
 describe('radio behavior', () => {
   beforeEach(beforeEachHooks);
