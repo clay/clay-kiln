@@ -167,8 +167,8 @@
         return Object.keys(window.kiln.toolbarButtons);
       },
       hasChanges: (state) => {
-        const pubTime = _.get(state, 'page.listData.publishTime'), // latest published timestamp
-          upTime = _.get(state, 'page.listData.updateTime'); // latest updated timestamp
+        const pubTime = _.get(state, 'page.state.publishTime'), // latest published timestamp
+          upTime = _.get(state, 'page.state.updateTime'); // latest updated timestamp
 
         if (pubTime && upTime) {
           return isAfter(upTime, addSeconds(pubTime, 30)); // give it 30 seconds of leeway, in case there are slow updates to the server

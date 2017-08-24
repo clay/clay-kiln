@@ -8,10 +8,10 @@ import { addToolbarButton } from './lib/utils/custom-buttons'; // eslint-disable
 import { add as addPane } from './lib/forms/panes';
 import store from './lib/core-data/store';
 import toolbar from './lib/toolbar/view-toolbar.vue';
-import getPageState from './lib/page-state';
+import { getListData } from './lib/page-state/actions';
 import getSites from './lib/preloader/sites';
 import { PRELOAD_PENDING, LOADING_SUCCESS, PRELOAD_SITE, PRELOAD_ALL_SITES, PRELOAD_USER } from './lib/preloader/mutationTypes';
-import { UPDATE_PAGESTATE, UPDATE_PAGEURI } from './lib/page-state/mutationTypes';
+import { UPDATE_PAGE_STATE, UPDATE_PAGEURI } from './lib/page-state/mutationTypes';
 import { CLOSE_PANE } from './lib/panes/mutationTypes';
 import { props } from './lib/utils/promises';
 import conditionalFocus from './directives/conditional-focus';
@@ -53,10 +53,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // don't preload all the data, just grab the page state, site info, and user
   props({
-    pageState: getPageState(pageUri()),
+    pageState: getListData({}, { uri: pageUri(), prefix: window.kiln.preloadSite.prefix }),
     allSites: getSites(window.kiln.preloadSite),
   }).then(({ pageState, allSites }) => {
-    store.commit(UPDATE_PAGESTATE, pageState);
+    store.commit(UPDATE_PAGE_STATE, pageState);
     store.commit(UPDATE_PAGEURI, pageUri());
     store.commit(PRELOAD_ALL_SITES, allSites);
     store.commit(PRELOAD_USER, window.kiln.preloadUser);

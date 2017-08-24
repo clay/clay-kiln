@@ -109,11 +109,13 @@
     },
     asyncComputed: {
       people() {
+        // refresh the page state (from the pages index), in case new users have edited this page
+        // between the time it loaded and the time you opened the people pane
         return this.$store.dispatch('getListData', _.get(this.$store, 'state.page.uri')).then(() => {
           // getListData sets the store, which we then pull from
-          const listData = _.cloneDeep(_.get(this.$store, 'state.page.listData'));
+          const state = _.cloneDeep(_.get(this.$store, 'state.page.state'));
 
-          return _.map(listData.users, (user) => {
+          return _.map(state.users, (user) => {
             user.formattedTime = formatStatusTime(user.updateTime);
             return user;
           }).reverse();
