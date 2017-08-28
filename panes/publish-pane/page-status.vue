@@ -60,7 +60,7 @@
 <template>
   <div class="page-status">
     <div class="page-status-msg">
-      <a v-if="isPublished && !isScheduled" class="page-status-msg-main" :class="stateClass" :href="publishedUrl" target="_blank">{{ message }}<icon name="external-link" class="public-link-icon"></icon></a>
+      <a v-if="isPublished && !isScheduled" class="page-status-msg-main" :class="stateClass" :href="url" target="_blank">{{ message }}<icon name="external-link" class="public-link-icon"></icon></a>
       <div v-else class="page-status-msg-main" :class="stateClass">{{ message }}</div>
       <div class="page-status-msg-info">{{ time }}</div>
     </div>
@@ -92,9 +92,9 @@
     computed: mapState({
       isPublished: (state) => state.page.state.published,
       isScheduled: (state) => state.page.state.scheduled,
-      publishedDate: (state) => state.page.state.publishedAt,
-      publishedUrl: (state) => state.page.state.publishedUrl,
-      scheduledDate: (state) => state.page.state.scheduledAt,
+      publishedDate: (state) => state.page.state.publishTime,
+      url: (state) => state.page.state.url,
+      scheduledDate: (state) => state.page.state.scheduledTime,
       isDraft() {
         return !this.isPublished && !this.isScheduled;
       },
