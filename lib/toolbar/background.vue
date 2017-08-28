@@ -38,7 +38,7 @@
 
 <template>
   <transition name="fade" v-if="displayBackground">
-      <div class="editor-overlay-background">
+      <div class="editor-overlay-background" @click.prevent="unsetDragStop">
         <slot></slot>
       </div>
   </transition>
@@ -79,6 +79,12 @@
         toggleNoScroll(showbackground);
         // Return test
         return showbackground;
+      }
+    },
+    methods: {
+      unsetDragStop() {
+        // unset isInvalidDrag, so we can click out of overlay/settings forms
+        window.kiln.isInvalidDrag = false;
       }
     }
   };

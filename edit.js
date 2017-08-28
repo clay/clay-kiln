@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.body.addEventListener('click', (e) => {
     if (_.get(store, 'state.ui.currentFocus') && !hasClickedFocusableEl(e) && !window.kiln.isInvalidDrag) {
       // always unfocus if clicking out of the current focus (and not directly clicking into another focusable el)
-      // note: isInvalidDrag is set when dragging to select text in a text/wysiwyg field,
+      // note: isInvalidDrag is set when dragging to select text in a text/wysiwyg field,u
       // since if you drag outside the form it'll trigger a click. ♥ browsers ♥
       store.dispatch('unfocus').catch(_.noop);
     } else if (_.get(store, 'state.ui.currentSelection') && !hasClickedSelectableEl(e) && !window.kiln.isInvalidDrag) {
