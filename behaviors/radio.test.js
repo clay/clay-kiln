@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import lib from './radio.vue';
 
-const options = ['none', 'one', 'two three'];
+const options = ['one', 'two three'],
+  state = { site: { slug: 'foo' }};
 
 describe('radio behavior', () => {
   beforeEach(beforeEachHooks);
@@ -11,19 +12,19 @@ describe('radio behavior', () => {
   it('adds radio buttons', () => {
     expect(renderWithArgs(lib, {
       args: { options }
-    }).$el.querySelectorAll('input').length).to.equal(3);
+    }, state).$el.querySelectorAll('input').length).to.equal(2);
   });
 
-  it('uses "None" as label for emptystring option', () => {
+  it('allows options with objects', () => {
     expect(_.head(renderWithArgs(lib, {
-      args: { options }
-    }).$el.querySelectorAll('label')).textContent.trim()).to.eql('None');
+      args: { options: [{ value: '', name: 'None' }] }
+    }, state).$el.querySelectorAll('label')).textContent.trim()).to.eql('None');
   });
 
   it('converts label to start case', () => {
     expect(_.map(renderWithArgs(lib, {
       args: { options }
-    }).$el.querySelectorAll('label'), (label) => label.textContent.trim())).to.eql(['None', 'One', 'Two Three']);
+    }, state).$el.querySelectorAll('label'), (label) => label.textContent.trim())).to.eql(['One', 'Two Three']);
   });
 
   it('goes in the main slot', () => {
