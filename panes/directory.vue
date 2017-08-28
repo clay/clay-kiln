@@ -74,7 +74,7 @@
         @include input-label();
 
         align-items: center;
-        color: $published;
+        color: $label;
         cursor: pointer;
         display: flex;
         flex: 0 0 auto;

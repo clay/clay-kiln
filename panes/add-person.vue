@@ -124,8 +124,9 @@
       createUser() {
         const store = this.$store,
           prefix = _.get(store, 'state.site.prefix'),
+          username = this.username,
           user = {
-            username: this.username,
+            username: username,
             provider: this.provider,
             auth: this.isAdmin ? 'admin' : 'write'
           };
