@@ -199,15 +199,19 @@
 
       .left &.quick-bar-add,
       .left &.quick-bar-replace,
+      .left &.quick-bar-dupe,
       .right &.quick-bar-add,
-      .right &.quick-bar-replace {
+      .right &.quick-bar-replace,
+      .right &.quick-bar-dupe {
         border-top: $thin-border;
       }
 
       .top &.quick-bar-add,
       .top &.quick-bar-replace,
+      .top &.quick-bar-dupe,
       .bottom &.quick-bar-add,
-      .bottom &.quick-bar-replace {
+      .bottom &.quick-bar-replace,
+      .bottom &.quick-bar-dupe {
         border-left: $thin-border;
       }
     }
@@ -221,6 +225,7 @@
         <button v-if="hasSettings" class="quick-bar-button quick-bar-settings" title="Component Settings" @click.stop="openSettings"><icon name="settings"></icon></button>
         <button v-if="hasRemove" class="quick-bar-button quick-bar-remove" title="Remove Component" @click.stop="removeComponent"><icon name="delete"></icon></button>
         <button v-if="hasAddComponent" class="quick-bar-button quick-bar-add" title="Add Component" @click.stop="openAddComponentPane"><icon name="add-icon"></icon></button>
+        <button v-if="hasDuplicateComponent" class="quick-bar-button quick-bar-dupe" title="Duplicate Component" @click.stop="duplicateComponent"><icon name="plusone"></icon></button>
         <button v-if="hasReplaceComponent" class="quick-bar-button quick-bar-replace" title="Replace Component"><icon name="replace-icon"></icon></button>
       </div>
     </aside>
@@ -233,6 +238,7 @@
   import store from '../core-data/store';
   import { getData, getSchema } from '../core-data/components';
   import { getSettingsFields } from '../core-data/groups';
+  import { getComponentName } from '../utils/references';
   import icon from '../utils/icon.vue';
 
   /**
@@ -285,7 +291,10 @@
         return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable;
       },
       hasAddComponent() {
-        return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable;
+        return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable && !_.get(store, 'state.ui.metaKey');
+      },
+      hasDuplicateComponent() {
+        return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable && _.get(store, 'state.ui.metaKey');
       },
       hasReplaceComponent() {
         return this.parentField && this.parentField.type === 'prop' && this.parentField.isEditable;
@@ -321,6 +330,16 @@
           parentURI: this.currentComponent.parentURI,
           path: this.parentField.path
         });
+      },
+      duplicateComponent() {
+        const name = getComponentName(this.uri);
+
+        return store.dispatch('addComponents', {
+          currentURI: this.uri,
+          parentURI: this.currentComponent.parentURI,
+          path: this.parentField.path,
+          components: [{ name }]
+        }).then((newEl) => store.dispatch('select', newEl));
       },
       removeComponent() {
         const el = this.currentComponent.el;

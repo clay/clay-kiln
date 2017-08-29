@@ -45,6 +45,7 @@
       flex: 0 0 auto;
 
       &.expanded-selector-add,
+      &.expanded-selector-dupe,
       &.expanded-selector-replace {
         border-left: 1px solid $selector-divider;
       }
@@ -64,6 +65,7 @@
       <component v-for="button in customButtons" :is="button"></component>
       <button v-if="hasRemove" class="expanded-selector-button expanded-selector-remove" title="Remove Component" @click="removeComponent"><icon name="delete"></icon></button>
       <button v-if="hasAddComponent" class="expanded-selector-button expanded-selector-add" title="Add Component" @click.stop="openAddComponentPane"><icon name="add-icon"></icon></button>
+      <button v-if="hasDuplicateComponent" class="expanded-selector-button expanded-selector-dupe" title="Duplicate Component" @click.stop="duplicateComponent"><icon name="plusone"></icon></button>
       <button v-if="hasReplaceComponent" class="expanded-selector-button expanded-selector-replace" title="Replace Component"><icon name="replace-icon"></icon></button>
     </div>
   </transition>
@@ -108,7 +110,10 @@
         return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable;
       },
       hasAddComponent() {
-        return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable;
+        return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable && !_.get(this.$store, 'state.ui.metaKey');
+      },
+      hasDuplicateComponent() {
+        return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable && _.get(this.$store, 'state.ui.metaKey');
       },
       hasReplaceComponent() {
         return this.parentField && this.parentField.type === 'prop' && this.parentField.isEditable;
@@ -124,6 +129,16 @@
           parentURI: this.currentComponent.parentURI,
           path: this.parentField.path
         });
+      },
+      duplicateComponent() {
+        const name = getComponentName(this.uri);
+
+        return this.$store.dispatch('addComponents', {
+          currentURI: this.uri,
+          parentURI: this.currentComponent.parentURI,
+          path: this.parentField.path,
+          components: [{ name }]
+        }).then((newEl) => this.$store.dispatch('select', newEl));
       },
       removeComponent() {
         const el = this.currentComponent.el;
