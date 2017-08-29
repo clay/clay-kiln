@@ -114,10 +114,15 @@
     },
     computed: {
       providers() {
-        return [{
-          value: 'google',
-          text: 'Google Apps'
-        }];
+        return _.reduce(_.get(this.$store, 'state.site.providers'), (results, provider) => {
+          if (provider !== 'apikey') {
+            results.push({
+              value: provider,
+              text: _.startCase(provider)
+            });
+          }
+          return results;
+        }, []);
       }
     },
     methods: {
