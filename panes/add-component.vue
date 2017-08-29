@@ -82,6 +82,7 @@
               path,
               components: [{ name: id }]
             })
+            .then((newEl) => self.$store.dispatch('select', newEl))
             .then(() => self.$nextTick(() => self.$store.dispatch('closePane')));
           });
       }

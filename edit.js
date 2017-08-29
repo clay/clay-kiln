@@ -17,6 +17,7 @@ import hScrollDirective from './directives/horizontal-scroll';
 import utilsAPI from './lib/utils/api';
 import { hasClickedFocusableEl } from './lib/decorators/focus';
 import { hasClickedSelectableEl } from './lib/decorators/select';
+import { META_PRESS, META_UNPRESS } from './lib/preloader/mutationTypes';
 
 // TODO: Figure out saving/closing and reverting in panes
 import { CLOSE_PANE } from './lib/panes/mutationTypes';
@@ -160,6 +161,19 @@ document.addEventListener('DOMContentLoaded', function () {
       if (_.get(store, 'state.ui.currentPane')) {
         store.commit(CLOSE_PANE, null);
       }
+    } else if (key === 'ctrl' || key === 'left command') {
+      // pressing and holding meta key will unlock additional functionality,
+      // such as the ability to duplicate the selected component
+      store.commit(META_PRESS);
+    }
+  });
+
+  // when user stops pressing a key, toggle this off
+  document.body.addEventListener('keyup', (e) => {
+    const key = keycode(e);
+
+    if (key === 'ctrl' || key === 'left command') {
+      store.commit(META_UNPRESS);
     }
   });
 
