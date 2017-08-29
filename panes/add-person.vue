@@ -108,7 +108,7 @@
     data() {
       return {
         username: '',
-        provider: 'google',
+        provider: null,
         isAdmin: false
       };
     },
@@ -148,6 +148,12 @@
             store.dispatch('showStatus', { type: 'error', message: `Error adding ${username} to Clay: ${e.message}` });
           });
       }
+    },
+    mounted() {
+      this.$nextTick(() => {
+        // wait for providers to load, then set the first provider as the selected one
+        this.provider = _.head(this.providers) && _.head(this.providers).value;
+      });
     }
   };
 </script>
