@@ -49,6 +49,10 @@
     background-color: $error;
   }
 
+  .kiln-status.warning {
+    background-color: $warning;
+  }
+
   .kiln-status.save {
     background-color: $save;
   }
@@ -70,6 +74,7 @@
     <div class="kiln-status" v-if="hasCurrentStatus" :class="type" @click.stop>
       <div class="kiln-status-message" v-if="message" v-html="message"></div>
       <div class="kiln-status-action" v-if="action" v-html="action"></div>
+      <div class="kiln-status-action" v-if="isPermanent && dismissable"><a @click.stop.prevent="dismissStatus">Dismiss</a></div>
     </div>
   </transition>
 </template>
@@ -90,6 +95,7 @@
       message: (state) => _.get(state, 'ui.currentStatus.message'),
       action: (state) => _.get(state, 'ui.currentStatus.action'),
       isPermanent: (state) => _.get(state, 'ui.currentStatus.isPermanent'),
+      dismissable: (state) => _.get(state, 'ui.currentStatus.dismissable'),
       type: (state) => _.get(state, 'ui.currentStatus.type')
     }),
     watch: {
@@ -113,6 +119,11 @@
             store.commit(HIDE_STATUS);
           }, timeout);
         }
+      }
+    },
+    methods: {
+      dismissStatus() {
+        return this.$store.commit('HIDE_STATUS');
       }
     }
   };

@@ -21,7 +21,7 @@
     }
 
     &.warnings svg {
-      fill: $scheduled;
+      fill: $warning;
     }
 
     &.errors svg {
