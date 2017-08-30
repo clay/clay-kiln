@@ -76,16 +76,16 @@
           uri = _.get(this.$store, 'state.page.uri'),
           id = uri.match(/pages\/([A-Za-z0-9\-]+)/)[1];
 
-        store.dispatch('startProgress', 'save');
-        return this.$store.dispatch('addToList', { list: 'new-pages', item: { id, title }})
-          .then(() => store.dispatch('closePane'))
+        this.$store.dispatch('startProgress', 'save');
+        return this.$store.dispatch('updateList', { listName: 'new-pages', fn: (items) => items.concat([{ id, title }])})
+          .then(() => this.$store.dispatch('closePane'))
           .then(() => {
-            store.dispatch('finishProgress', 'save');
-            store.dispatch('showStatus', { type: 'save', message: `Added ${title} to Page Templates!` });
+            this.$store.dispatch('finishProgress', 'save');
+            this.$store.dispatch('showStatus', { type: 'save', message: `Added ${title} to Page Templates!` });
           }).catch((e) => {
             console.error(e);
-            store.dispatch('finishProgress', 'error');
-            store.dispatch('showStatus', { type: 'error', message: `Error adding ${title} to Page Templates: ${e.message}` });
+            this.$store.dispatch('finishProgress', 'error');
+            this.$store.dispatch('showStatus', { type: 'error', message: `Error adding ${title} to Page Templates: ${e.message}` });
           });
       }
     }

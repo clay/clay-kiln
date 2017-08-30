@@ -46,7 +46,7 @@
         const listName = this.args.list,
           lists = this.$store.state.lists;
 
-        return this.$store.dispatch('getList', listName).then(() => lists[listName].items);
+        return this.$store.dispatch('getList', listName).then(() => _.map(lists[listName].items, 'text'));
       }
     },
     computed: {
