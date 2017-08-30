@@ -33,10 +33,9 @@
     },
     asyncComputed: {
       pages() {
-        return props({
-          pages: getObject(`${this.$store.state.site.prefix}/lists/new-pages`),
-          sortList: getItem(`newpages:${this.$store.state.site.slug}`)
-        }).then(({ pages, sortList }) => {
+        const pages = _.get(this.$store, 'state.lists[new-pages].items');
+
+        return getItem(`newpages:${this.$store.state.site.slug}`).then((sortList) => {
           sortList = sortList || [];
           const sorted = _.intersectionBy(sortList, pages, 'id'),
             unsorted = _.differenceBy(pages, sortList, 'id');
@@ -58,7 +57,12 @@
         window.location.href = uriToUrl(`${prefix}${pagesRoute}${id}${htmlExt}${editExt}`);
       },
       removeTemplate(id) {
-        console.log('remove template:', id)
+        return this.$store.dispatch('updateList', { listName: 'new-pages', fn: (items) => {
+          const index = _.indexOf(items, (item) => item.id === id);
+
+          items.splice(index, 1);
+          return items;
+        }});
       },
       addTemplate() {
         const isMetaKeyPressed = _.get(this.$store, 'state.ui.metaKey'),

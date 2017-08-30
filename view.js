@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
   props({
     pageState: store.dispatch('getListData', { uri: pageUri(), prefix: window.kiln.preloadSite.prefix }),
     allSites: getSites(window.kiln.preloadSite),
+    lists: store.dispatch('getList', 'new-pages')
   }).then(({ pageState, allSites }) => {
     store.commit(UPDATE_PAGE_STATE, pageState);
     store.commit(UPDATE_PAGEURI, pageUri());
