@@ -111,7 +111,7 @@
       people() {
         // refresh the page state (from the pages index), in case new users have edited this page
         // between the time it loaded and the time you opened the people pane
-        return this.$store.dispatch('getListData', _.get(this.$store, 'state.page.uri')).then(() => {
+        return this.$store.dispatch('getListData', { uri: _.get(this.$store, 'state.page.uri') }).then(() => {
           // getListData sets the store, which we then pull from
           const state = _.cloneDeep(_.get(this.$store, 'state.page.state'));
 
