@@ -14,6 +14,8 @@
   import { getObject } from '../lib/core-data/api';
   import { getItem, updateArray } from '../lib/utils/local';
   import { props } from '../lib/utils/promises';
+  import { uriToUrl } from '../lib/utils/urls';
+  import { pagesRoute, htmlExt, editExt } from '../lib/utils/references';
   import filterableList from './filterable-list.vue';
 
   export default {
@@ -51,18 +53,32 @@
           .then((url) => window.location.href = url);
       },
       editTemplate(id) {
-        console.log('edit template:', id)
+        const prefix = _.get(this.$store, 'state.site.prefix');
+
+        window.location.href = uriToUrl(`${prefix}${pagesRoute}${id}${htmlExt}${editExt}`);
       },
       removeTemplate(id) {
         console.log('remove template:', id)
       },
       addTemplate() {
-        const isMetaKeyPressed = _.get(this.$store, 'state.ui.metaKey');
+        const isMetaKeyPressed = _.get(this.$store, 'state.ui.metaKey'),
+          uri = _.get(this.$store, 'state.page.uri'),
+          currentPageID = uri.match(/pages\/([A-Za-z0-9\-]+)/)[1];
 
         if (isMetaKeyPressed) {
-          console.log('create new page from current page')
+          this.$store.commit('CREATE_PAGE', currentPageID);
+          return this.$store.dispatch('createPage', currentPageID)
+            .then((url) => window.location.href = url);
         } else {
-          console.log('add current page')
+          return this.$store.dispatch('openPane', {
+            title: 'Add Page Template',
+            position: 'left',
+            size: 'small',
+            height: 'short',
+            content: {
+              component: 'add-page-to-list'
+            }
+          })
         }
       }
     },
