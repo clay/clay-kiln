@@ -141,11 +141,17 @@
       }, 300),
       addPersonToPage(user) {
         this.$store.dispatch('startProgress', 'save');
-        return this.$store.dispatch('updatePageList', { user }).then(() => {
-          this.$store.dispatch('finishProgress', 'save');
-          this.$store.dispatch('showStatus', { type: 'save', message: `Added ${user.username} to this page!` });
-          return this.$store.dispatch('closePane');
-        })
+        return this.$store.dispatch('updatePageList', { user })
+          .then(() => {
+            this.$store.dispatch('finishProgress', 'save');
+            this.$store.dispatch('showStatus', { type: 'save', message: `Added ${user.username} to this page!` });
+            return this.$store.dispatch('closePane');
+          })
+          .catch((e) => {
+            console.error(e);
+            store.dispatch('finishProgress', 'error');
+            store.dispatch('showStatus', { type: 'error', message: `Error adding ${user.username} to page: ${e.message}` });
+          });
       }
     },
     mounted() {
