@@ -114,12 +114,24 @@ document.addEventListener('DOMContentLoaded', function () {
   store.dispatch('preload')
     .then(() => decorateAll())
     .then(() => store.dispatch('openHashedForm'))
+    .then(() => store.dispatch('getList', 'new-pages'))
     .then(() => {
-      // test connection loss on page load
+      const pageTemplates = _.get(store, 'state.lists[new-pages].items'),
+        currentPageURI = _.get(store, 'state.page.uri'),
+        currentPageID = currentPageURI.match(/pages\/([A-Za-z0-9\-]+)/)[1],
+        currentPageTemplate = _.find(pageTemplates, (template) => template.id === currentPageID);
+
       if (!navigator.onLine) {
+        // test connection loss on page load
         store.dispatch('showStatus', { type: 'offline', message: connectionLostMessage, isPermanent: true});
       } else if (getLastEditUser(store)) {
+        // show message if another user has edited this page in the last 5 minutes
         store.dispatch('showStatus', { type: 'save', message: `Edited less than 5 minutes ago by ${getLastEditUser(store)}` });
+      }
+
+      // display a status message if you're editing a page template
+      if (currentPageTemplate) {
+        store.dispatch('showStatus', { type: 'warning', message: `You are currently editing the "${currentPageTemplate.title}" template. Changes you make will be reflected on new pages that use this template.`, isPermanent: true, dismissable: true });
       }
     });
 

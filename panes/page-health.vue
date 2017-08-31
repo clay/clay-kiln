@@ -39,7 +39,7 @@
   .warning-message {
     @include primary-text();
 
-    color: $scheduled;
+    color: $warning;
     padding: 0 0 20px;
   }
 
