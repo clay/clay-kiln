@@ -28,7 +28,7 @@
         return _.get(this.$store, 'state.user.auth') === 'admin';
       },
       addTitle() {
-        return _.get(this.$store, 'state.ui.metaKey') ? 'Create New Page From Current Page' : 'Add Current Page To List';
+        return _.get(this.$store, 'state.ui.metaKey') ? 'Duplicate Current Page' : 'Add Current Page To List';
       }
     },
     asyncComputed: {
@@ -57,12 +57,16 @@
         window.location.href = uriToUrl(`${prefix}${pagesRoute}${id}${htmlExt}${editExt}`);
       },
       removeTemplate(id) {
-        return this.$store.dispatch('updateList', { listName: 'new-pages', fn: (items) => {
-          const index = _.indexOf(items, (item) => item.id === id);
+        let confirm = window.confirm('Remove template from this list? This cannot be undone.');
 
-          items.splice(index, 1);
-          return items;
-        }});
+        if (confirm) {
+          return this.$store.dispatch('updateList', { listName: 'new-pages', fn: (items) => {
+            const index = _.indexOf(items, (item) => item.id === id);
+
+            items.splice(index, 1);
+            return items;
+          }});
+        }
       },
       addTemplate() {
         const isMetaKeyPressed = _.get(this.$store, 'state.ui.metaKey'),
