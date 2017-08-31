@@ -62,7 +62,7 @@
         :placeholder="inputPlaceholder"
         ref="search"
         v-model="query"
-        @keyup.stop.prevent
+        @keyup.prevent
         @keydown.up.stop
         @keydown.down.stop="focusOnIndex(0)"
         @keydown.enter.stop.prevent="onEnterDown"
