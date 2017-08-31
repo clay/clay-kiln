@@ -1,5 +1,6 @@
 <style lang="sass">
   @import '../styleguide/colors';
+  @import '../styleguide/buttons';
 
   .people-pane {
     margin: 0;
@@ -55,6 +56,25 @@
       font-weight: 700;
       text-transform: uppercase;
     }
+
+    .person-add {
+      border-top: 1px solid $pane-border;
+      bottom: 0;
+      left: 0;
+      padding: 15px;
+      position: absolute;
+      width: 100%;
+
+      &-button {
+        @include button-outlined($published);
+
+        height: auto;
+        font-size: 16px;
+        margin: 0;
+        padding: 15px 0;
+        width: 100%;
+      }
+    }
   }
 </style>
 
@@ -65,6 +85,9 @@
       <span class="person-name">{{ person.name }}</span>
       <span class="person-timestamp">{{ person.formattedTime }}</span>
     </li>
+    <div class="person-add">
+      <button type="button" class="person-add-button" @click.stop="addPersonToPage">Add Person To Page</button>
+    </div>
   </ul>
 </template>
 
@@ -120,6 +143,19 @@
             return user;
           }).reverse();
         });
+      }
+    },
+    methods: {
+      addPersonToPage() {
+        const offset = _.get(this.$store, 'state.ui.currentPane.offset');
+
+        return this.$store.dispatch('openPane', {
+          title: 'Add Person To Page',
+          offset,
+          content: {
+            component: 'add-person-to-page'
+          }
+        })
       }
     }
   };

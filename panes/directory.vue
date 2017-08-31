@@ -35,6 +35,7 @@
       align-items: center;
       border-bottom: 1px solid $pane-list-divider;
       display: flex;
+      min-height: 53px;
 
       button {
         appearance: none;
