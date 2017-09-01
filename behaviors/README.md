@@ -74,6 +74,26 @@ The mode of the editor sets syntax highlighting, linting, and other functionalit
 
 _Note:_ We will add more supported modes as we find use cases for them. See [this link](http://codemirror.net/mode/) for the full list of modes supported in codemirror.
 
+# complex-list-item
+
+A component which represents a single item in the `complex-list` component. Functionality is derived from its parent. Behaves similar to a field, as it transcludes other behaviors via the same "slot" mechanism that field uses.
+
+# complex-list
+
+An array of objects with arbitrary properties. Each property may have any behaviors a field is allowed to have, including custom behaviors. Complex-list is similar to Angular's _transcluded directives_ or Advanced Custom Fields' _repeater field_, in that each item in the list is treated like a separate field. Items may also have `_label`, but may not have `_display` or `_placeholder`.
+
+## Arguments
+
+* **props** an array of objects, represending the fields in each item. Each item should have a name, defined by `prop: 'name'`, as well as any `_label` or behaviors it needs.
+
+## Usage
+
+* When a complex-list is empty, it will display a plus button, styled similarly to components' mini-selector.
+* Items can be added by clicking the plus button.
+* When a complex-list is _not_ empty, the focused item will have a mini-selector below it, with add and remove buttons
+* Items can be removed by clicking the trashcan button.
+* Items in a complex-list cannot be reordered, but can be added and removed from anywhere in the list.
+
 # conditional-required
 
 Appends "required (field name)" to a field's label, to mark that field as required (based on another field).
