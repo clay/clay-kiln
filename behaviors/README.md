@@ -80,7 +80,7 @@ A component which represents a single item in the `complex-list` component. Func
 
 # complex-list
 
-An array of objects with arbitrary properties. Each property may have any behaviors a field is allowed to have, including custom behaviors. Complex-list is similar to Angular's _transcluded directives_ or Advanced Custom Fields' _repeater field_, in that each item in the list is treated like a separate field. Items may also have `_label`, but may not have `_display` or `_placeholder`.
+An array of objects with arbitrary properties. Each property may have any behaviors a field is allowed to have, including custom behaviors. Complex-list is similar to [Angular's _transcluded directives_](https://nulogy.com/who-we-are/company-blog/articles/transclusion-in-angular/) or [Advanced Custom Fields' _repeater field_](https://www.advancedcustomfields.com/add-ons/repeater-field/), in that each item in the list is treated like a separate field. Items may also have `_label`, but may not have `_display` or `_placeholder`.
 
 ## Arguments
 
