@@ -189,6 +189,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // when user tabs / clicks away from the page, toggle this off
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      store.commit(META_UNPRESS);
+    }
+  })
+
   window.addEventListener('online', function () {
     store.commit(HIDE_STATUS); // in case there are any status messages open, close them
   });
