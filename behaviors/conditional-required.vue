@@ -5,7 +5,7 @@
 
   ## Arguments
 
-  * **field** to compare against
+  * **field** to compare against (inside complex-list item, current form, or current component)
   * **operator** _(optional)_ to use for the comparison
   * **value** _(optional)_ to compare the field against
 
@@ -26,7 +26,7 @@
   * `truthy` (only checks field data, no value needed)
   * `falsy` (only checks field data, no value needed)
 
-  _Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story`
+  _Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story` (don't worry about spaces!)
 </docs>
 
 <style lang="sass">
@@ -48,6 +48,7 @@
 
 <script>
   import _ from 'lodash';
+  import { getFieldData } from '../lib/forms/field-helpers';
   import { fieldProp, behaviorKey } from '../lib/utils/references';
   import { expand, convertNativeTagName } from '../lib/forms/behaviors';
   import { getSchema, getData } from '../lib/core-data/components';
@@ -67,12 +68,8 @@
         const field = this.args.field,
           operator = this.args.operator,
           value = this.args.value,
-          // compare against the field if it's in the current form,
-          // but fall back to comparing against data in the component
-          // (this allows comparing to fields that might not be in the same form)
           uri = _.get(this.$store, 'state.ui.currentForm.uri'),
-          fieldPath = _.reduce(field.split('.'), (str, fieldPart) => str += `.${fieldPart}`, 'state.ui.currentForm.fields'),
-          data = _.get(this.$store, fieldPath) || getData(uri, field);
+          data = getFieldData(this.$store, field, this.name, uri);
 
         return compare({ data, operator, value });
       },

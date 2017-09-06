@@ -100,7 +100,7 @@ Appends "required (field name)" to a field's label, to mark that field as requir
 
 ## Arguments
 
-* **field** to compare against
+* **field** to compare against (inside complex-list item, current form, or current component)
 * **operator** _(optional)_ to use for the comparison
 * **value** _(optional)_ to compare the field against
 
@@ -121,7 +121,7 @@ Operators:
 * `truthy` (only checks field data, no value needed)
 * `falsy` (only checks field data, no value needed)
 
-_Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story`
+_Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story` (don't worry about spaces!)
 
 # description
 
@@ -284,7 +284,7 @@ Conditionally shows/hides a field based on another field
 
 ## Arguments
 
-* **field** and/or **sites** to compare against
+* **field** and/or **sites** to compare against (inside complex-list item, current form, or current component)
 * **operator** _(optional)_ to use for the comparison
 * **value** _(optional)_ to compare the field against
 

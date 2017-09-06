@@ -5,7 +5,7 @@
 
   ## Arguments
 
-  * **field** and/or **sites** to compare against
+  * **field** and/or **sites** to compare against (inside complex-list item, current form, or current component)
   * **operator** _(optional)_ to use for the comparison
   * **value** _(optional)_ to compare the field against
 
@@ -39,7 +39,7 @@
 
 <script>
   import _ from 'lodash';
-  import { getField } from '../lib/forms/field-helpers';
+  import { getField, getFieldData } from '../lib/forms/field-helpers';
   import { compare } from '../lib/utils/comparators';
   import { filterBySite } from '../lib/utils/site-filter';
   import { getData } from '../lib/core-data/components';
@@ -70,11 +70,7 @@
           operator = this.args.operator,
           value = this.args.value,
           sites = this.args.sites,
-          fieldPath = field && _.reduce(field.split('.'), (str, fieldPart) => str += `.${fieldPart}`, 'state.ui.currentForm.fields'),
-          // compare against the field if it's in the current form,
-          // but fall back to comparing against data in the component
-          // (this allows comparing to fields that might not be in the same form)
-          data = field && (_.get(this.$store, fieldPath) || getData(uri, field));
+          data = getFieldData(this.$store, field, this.name, uri);
 
         if (sites && field) {
           // if there is site logic, run it before field logic
