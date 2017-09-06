@@ -95,7 +95,13 @@
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: this.items });
       },
       addItem(index) {
-        this.items.splice(index + 1, 0, {}); // add new item after the specified index
+        const props = _.map(_.get(this.args, 'props', []), (item) => item.prop),
+          newObj = _.reduce(props, (obj, prop) => {
+            obj[prop] = null;
+            return obj;
+          }, {});
+
+        this.items.splice(index + 1, 0, newObj); // add new item after the specified index
         this.updateFormData(); // save the data
       },
       removeItem(index) {

@@ -157,8 +157,8 @@ Append a magic button to an input.
 
 ## Arguments
 
-* **field** _(optional)_ a field to grab the value from
-* **component** _(optional)_ a name of a component to grab the component ref from
+* **field** _(optional)_ a field to grab the value from (in the current complex list, form, or component)
+* **component** _(optional)_ a name of a component to grab the component ref/uri from
 * **transform** _(optional)_ a transform to apply to the grabbed value
 * **transformArg** _(optional)_ an argument to pass through to the transform
 * **store** _(optional)_ to grab data from the client-side store
