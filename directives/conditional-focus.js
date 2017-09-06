@@ -1,7 +1,7 @@
 export default function conditionalFocus() {
   return {
-    componentUpdated: (el, { value }) => {
-      if (value) {
+    componentUpdated: (el, { value, oldValue }) => {
+      if (value && value !== oldValue) {
         el.focus();
       }
     }
