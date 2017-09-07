@@ -57,11 +57,13 @@
         window.location.href = uriToUrl(`${prefix}${pagesRoute}${id}${htmlExt}${editExt}`);
       },
       removeTemplate(id) {
-        let confirm = window.confirm('Remove template from this list? This cannot be undone.');
+        const title = _.find(this.pages, (page) => page.id === id).title;
+
+        let confirm = window.confirm(`Remove the "${title}" template from this list? This cannot be undone.`);
 
         if (confirm) {
           return this.$store.dispatch('updateList', { listName: 'new-pages', fn: (items) => {
-            const index = _.indexOf(items, (item) => item.id === id);
+            const index = _.findIndex(items, (item) => item.id === id);
 
             items.splice(index, 1);
             return items;

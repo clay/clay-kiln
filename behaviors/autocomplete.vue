@@ -33,29 +33,25 @@
 <script>
   import _ from 'lodash';
   import item from './autocomplete-item.vue';
+
   export default {
     props: ['args', 'query', 'select', 'focusIndex', 'updateFocusIndex', 'updateMatches'],
     data() {
       return {
         localIndex: null,
         prevFocusIndex: null,
+        listItems: []
       };
-    },
-    asyncComputed: {
-      listItems() {
-        const listName = this.args.list,
-          lists = this.$store.state.lists;
-
-        return this.$store.dispatch('getList', listName).then(() => _.map(lists[listName].items, 'text'));
-      }
     },
     computed: {
       showMatches() {
         return this.query.length >= 2 && this.matches.length;
       },
       matches() {
-        var matches = _.take(_.filter(this.listItems, option => {
-          return _.includes(option.toLowerCase(), this.query.toLowerCase());
+        const query = this.query || '';
+
+        let matches = _.take(_.filter(this.listItems, (option) => {
+          return _.includes(option.toLowerCase(), query.toLowerCase());
         }), 20);
 
         this.updateMatches(matches);
@@ -88,6 +84,14 @@
       selectItem(value) {
         this.select(value);
       }
+    },
+    mounted() {
+      const listName = this.args.list,
+        lists = this.$store.state.lists;
+
+      return this.$store.dispatch('getList', listName).then(() => {
+        this.listItems = _.map(_.get(lists, `${listName}.items`), (item) => _.isObject(item) ? item.text : item);
+      });
     },
     components: {
       item
