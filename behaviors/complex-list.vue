@@ -59,18 +59,18 @@
 
 <template>
   <div class="complex-list">
-    <ul class="complex-list-items">
+    <transition-group name="selector-fade" tag="ul" class="complex-list-items">
       <item v-for="(item, index) in items"
         :index="index"
         :name="name + '.' + index"
         :data="item"
         :schema="args.props"
-        key="index"
+        :key="index"
         :addItem="addItem"
         :removeItem="removeItem">
       </item>
-      <button v-if="items.length === 0" class="complex-list-add" title="Add Item" @click.stop.prevent="addItem(-1)"><icon name="add-icon" class="complex-list-add-icon"></icon><span class="complex-list-add-text">Add Items</span></button>
-    </ul>
+    </transition-group>
+    <button v-if="items.length === 0" class="complex-list-add" title="Add Item" @click.stop.prevent="addItem(-1)"><icon name="add-icon" class="complex-list-add-icon"></icon><span class="complex-list-add-text">Add Items</span></button>
   </div>
 </template>
 
