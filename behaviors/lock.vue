@@ -63,7 +63,7 @@
 </style>
 
 <template>
-  <button class="lock-button" :class="{ unlocked: !locked }" @click.stop.prevent="toggleLock">
+  <button type="button" class="lock-button" :class="{ unlocked: !locked }" @click.stop.prevent="toggleLock">
     <icon name="locked" class="locked"></icon>
     <icon name="unlocked" class="unlocked"></icon>
   </button>

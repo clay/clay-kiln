@@ -89,8 +89,8 @@
     <transition name="selector-fade">
       <aside v-show="isCurrentItem" class="complex-list-item-selector" @click.stop>
         <div class="complex-list-item-selector-menu">
-          <button class="complex-list-item-selector-button complex-list-item-selector-remove" title="Remove Item" @click.stop.prevent="removeItem(index)"><icon name="delete"></icon></button>
-          <button class="complex-list-item-selector-button complex-list-item-selector-add" title="Add Item" @click.stop.prevent="addItem(index)"><icon name="add-icon"></icon></button>
+          <button type="button" class="complex-list-item-selector-button complex-list-item-selector-remove" title="Remove Item" @click.stop.prevent="removeItem(index)"><icon name="delete"></icon></button>
+          <button type="button" class="complex-list-item-selector-button complex-list-item-selector-add" title="Add Item" @click.stop.prevent="addItem(index)"><icon name="add-icon"></icon></button>
         </div>
       </aside>
     </transition>
