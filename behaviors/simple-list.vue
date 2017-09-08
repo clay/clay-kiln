@@ -26,6 +26,16 @@
   * Items may be deleted by selecting them (either by clicking them or navigating with the <kbd>→</kbd> and <kbd>←</kbd> then hitting <kbd>delete</kbd> or <kbd>backspace</kbd>.
   * Hitting <kbd>delete</kbd>, <kbd>backspace</kbd>, or <kbd>←</kbd> in the input will select the last item if the input is empty.
   * If `propertyName` is defined it will allow users to double-click items in a simple-list to select a "primary" item. It will also append a small badge to the "primary" item. Only one item may be "primary" at a time.
+
+  ## Example
+
+  ```yaml
+  tags:
+    _has:
+      fn: simple-list
+      autocomplete:
+        list: tags
+  ```
 </docs>
 
 <style lang="sass">

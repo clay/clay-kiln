@@ -14,6 +14,29 @@
   * When a complex-list is _not_ empty, the focused item will have a mini-selector below it, with add and remove buttons
   * Items can be removed by clicking the trashcan button.
   * Items in a complex-list cannot be reordered, but can be added and removed from anywhere in the list.
+
+  ## Example
+
+  ```yaml
+  links:
+    _has:
+      fn: complex-list
+      props:
+        -
+          prop: url
+          _label: URL
+          _has:
+            - label
+            -
+              fn: text
+              type: url
+        -
+          prop: title
+          _label: Title
+          _has:
+            - label
+            - text
+  ```
 </docs>
 
 <style lang="sass">

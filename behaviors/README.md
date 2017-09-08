@@ -94,6 +94,29 @@ An array of objects with arbitrary properties. Each property may have any behavi
 * Items can be removed by clicking the trashcan button.
 * Items in a complex-list cannot be reordered, but can be added and removed from anywhere in the list.
 
+## Example
+
+```yaml
+links:
+  _has:
+    fn: complex-list
+    props:
+      -
+        prop: url
+        _label: URL
+        _has:
+          - label
+          -
+            fn: text
+            type: url
+      -
+        prop: title
+        _label: Title
+        _has:
+          - label
+          - text
+```
+
 # conditional-required
 
 Appends "required (field name)" to a field's label, to mark that field as required (based on another field).
@@ -400,6 +423,16 @@ An array of objects with a `text` property that is a string to display in a list
 * Items may be deleted by selecting them (either by clicking them or navigating with the <kbd>→</kbd> and <kbd>←</kbd> then hitting <kbd>delete</kbd> or <kbd>backspace</kbd>.
 * Hitting <kbd>delete</kbd>, <kbd>backspace</kbd>, or <kbd>←</kbd> in the input will select the last item if the input is empty.
 * If `propertyName` is defined it will allow users to double-click items in a simple-list to select a "primary" item. It will also append a small badge to the "primary" item. Only one item may be "primary" at a time.
+
+## Example
+
+```yaml
+tags:
+  _has:
+    fn: simple-list
+    autocomplete:
+      list: tags
+```
 
 # soft-maxlength
 
