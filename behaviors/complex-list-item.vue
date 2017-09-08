@@ -142,10 +142,12 @@
       }
     },
     mounted() {
-      document.addEventListener('focusin', this.focusChanged)
+      document.addEventListener('focusin', this.focusChanged);
+      document.addEventListener('focusout', this.focusChanged);
     },
     beforeDestroy() {
-      document.removeEventListener('focusin', this.focusChanged)
+      document.removeEventListener('focusin', this.focusChanged);
+      document.removeEventListener('focusout', this.focusChanged);
     },
     components: {
       field,
