@@ -5,8 +5,8 @@
 
   ## Arguments
 
-  * **field** _(optional)_ a field to grab the value from
-  * **component** _(optional)_ a name of a component to grab the component ref from
+  * **field** _(optional)_ a field to grab the value from (in the current complex list, form, or component)
+  * **component** _(optional)_ a name of a component to grab the component ref/uri from
   * **transform** _(optional)_ a transform to apply to the grabbed value
   * **transformArg** _(optional)_ an argument to pass through to the transform
   * **store** _(optional)_ to grab data from the client-side store
@@ -112,7 +112,7 @@
 </style>
 
 <template>
-  <button class="magic-button" @click.prevent.stop="doMagic">
+  <button type="button" class="magic-button" @click.prevent.stop="doMagic">
     <icon name="magic-button"></icon>
   </button>
 </template>
@@ -120,6 +120,7 @@
 <script>
   import _ from 'lodash';
   import { find } from '@nymag/dom';
+  import { getFieldData } from '../lib/forms/field-helpers';
   import { refAttr } from '../lib/utils/references';
   import { send } from '../lib/utils/rest';
   import { reduce as reducePromise } from '../lib/utils/promises';
@@ -128,15 +129,6 @@
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import transformers from './magic-button-transformers';
   import icon from '../lib/utils/icon.vue';
-
-  /**
-   * get data from a field in the current form
-   * @param  {string} field
-   * @return {string}
-   */
-  function getFieldData(field) {
-    return _.get(this, `$store.state.ui.currentForm.fields.${field}`) || '';
-  }
 
   /**
    * get the uri of the first component that matches
@@ -164,7 +156,7 @@
     // otherwise, if they specify a component to pull data from, find it on the page
     // otherwise, return emptystring (it may be transformed)
     if (!_.isEmpty(field)) {
-      return getFieldData.call(this, field);
+      return getFieldData(this.$store, field, this.name, _.get(this.$store, 'state.ui.currentForm.uri'));
     } else if (!_.isEmpty(component)) {
       return findComponent(component);
     } else {
