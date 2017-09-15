@@ -26,6 +26,9 @@ Contributing to Clay should be a harassment-free experience for everyone, regard
 
 Harassment includes offensive verbal comments related to gender, gender identity and expression, age, sexual orientation, disability, physical appearance, body size, race, ethnicity, religion, technology choices, sexual images in public spaces, deliberate intimidation, stalking, following, harassing photography or recording, sustained disruption of talks or other events, inappropriate physical contact, and unwelcome sexual attention.
 
-contributors asked to stop any harassing behavior are expected to comply immediately.
+Contributors asked to stop any harassing behavior are expected to comply immediately.
 
 If a contributor engages in harassing behavior, the project maintainers may take any action they deem appropriate, including warning the offender or expulsion from the project.
+
+
+### If you are experiencing harassment, please let a [project maintainer](https://github.com/orgs/clay/people) know!
