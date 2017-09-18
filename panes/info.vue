@@ -2,6 +2,9 @@
   @import '../styleguide/typography';
 
   .info-pane {
+    height: 100%;
+    max-height: calc(100% - 51px);
+    overflow-y: scroll;
     padding: 17px;
 
     &-text {
