@@ -334,6 +334,7 @@
       duplicateComponent() {
         const name = getComponentName(this.uri);
 
+        store.commit('DUPLICATE_COMPONENT', name);
         return store.dispatch('addComponents', {
           currentURI: this.uri,
           parentURI: this.currentComponent.parentURI,

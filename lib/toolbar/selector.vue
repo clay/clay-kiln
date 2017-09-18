@@ -133,6 +133,7 @@
       duplicateComponent() {
         const name = getComponentName(this.uri);
 
+        this.$store.commit('DUPLICATE_COMPONENT', name);
         return this.$store.dispatch('addComponents', {
           currentURI: this.uri,
           parentURI: this.currentComponent.parentURI,
