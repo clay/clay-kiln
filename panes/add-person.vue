@@ -102,6 +102,7 @@
 
 <script>
   import _ from 'lodash';
+  import { find } from '@nymag/dom';
   import { postJSON } from '../lib/core-data/api';
 
   export default {
@@ -150,6 +151,9 @@
       }
     },
     mounted() {
+      const input = find(this.$el, '.add-person-input');
+
+      input.focus();
       this.$nextTick(() => {
         // wait for providers to load, then set the first provider as the selected one
         this.provider = _.head(this.providers) && _.head(this.providers).value;

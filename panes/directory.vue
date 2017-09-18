@@ -173,6 +173,7 @@
 
 <script>
   import _ from 'lodash';
+  import { find } from '@nymag/dom';
   import { postJSON, save, remove } from '../lib/core-data/api';
   import { searchRoute } from '../lib/utils/references';
   import icon from '../lib/utils/icon.vue';
@@ -285,6 +286,9 @@
       }
     },
     mounted() {
+      const input = find(this.$el, '.directory-pane-input-field');
+
+      input.focus();
       return this.fetchUsers();
     },
     components: {

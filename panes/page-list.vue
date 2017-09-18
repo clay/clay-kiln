@@ -346,6 +346,7 @@
 
 <script>
   import _ from 'lodash';
+  import { find } from '@nymag/dom';
   import isValidDate from 'date-fns/is_valid';
   import dateFormat from 'date-fns/format';
   import isToday from 'date-fns/is_today';
@@ -688,6 +689,9 @@
       }
     },
     mounted() {
+      const input = find(this.$el, '.page-list-search');
+
+      input.focus();
       return this.fetchPages();
     },
     components: {

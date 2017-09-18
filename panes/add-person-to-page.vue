@@ -90,6 +90,7 @@
 
 <script>
   import _ from 'lodash';
+  import { find } from '@nymag/dom';
   import { postJSON } from '../lib/core-data/api';
   import { searchRoute } from '../lib/utils/references';
 
@@ -155,6 +156,9 @@
       }
     },
     mounted() {
+      const input = find(this.$el, '.add-person-to-page-pane-input-field');
+
+      input.focus();
       return this.fetchUsers();
     }
   };
