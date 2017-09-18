@@ -197,6 +197,19 @@
       padding: 14px;
       z-index: 1;
 
+      &.quick-bar-info {
+        padding: 11px;
+
+        svg {
+          height: 24px;
+          width: 24px;
+        }
+
+        .inset {
+          fill: #fff;
+        }
+      }
+
       .left &.quick-bar-add,
       .left &.quick-bar-replace,
       .left &.quick-bar-dupe,
@@ -221,7 +234,8 @@
 <template>
   <transition name="selector-fade">
     <aside data-ignore v-show="isCurrentSelection" class="mini-selector" :class="selectorPosition" @click.stop>
-      <div v-if="hasButtons" class="quick-bar" :class="selectorPosition">
+      <div class="quick-bar" :class="selectorPosition">
+        <button class="quick-bar-button quick-bar-info" :title="componentLabel" @click.stop="openInfo"><icon name="info"></icon></button>
         <button v-if="hasSettings" class="quick-bar-button quick-bar-settings" title="Component Settings" @click.stop="openSettings"><icon name="settings"></icon></button>
         <button v-if="hasRemove" class="quick-bar-button quick-bar-remove" title="Remove Component" @click.stop="removeComponent"><icon name="delete"></icon></button>
         <button v-if="hasAddComponent" class="quick-bar-button quick-bar-add" title="Add Component" @click.stop="openAddComponentPane"><icon name="add-icon"></icon></button>
@@ -239,6 +253,7 @@
   import { getData, getSchema } from '../core-data/components';
   import { getSettingsFields } from '../core-data/groups';
   import { getComponentName } from '../utils/references';
+  import label from '../utils/label';
   import icon from '../utils/icon.vue';
 
   /**
@@ -299,8 +314,11 @@
       hasReplaceComponent() {
         return this.parentField && this.parentField.type === 'prop' && this.parentField.isEditable;
       },
-      hasButtons() {
-        return this.hasSettings || this.hasRemove || this.hasAddComponent || this.hasReplaceComponent;
+      componentName() {
+        return this.uri && getComponentName(this.uri);
+      },
+      componentLabel() {
+        return this.componentName && label(this.componentName);
       },
       isCurrentSelection() {
         return this.$options.componentEl === this.currentComponent.el;
@@ -321,6 +339,26 @@
       }
     },
     methods: {
+      openInfo() {
+        const description = _.get(store, `state.schemas['${this.componentName}']._description`);
+
+        if (!description) {
+          console.error(`Cannot open component information: "${this.componentLabel}" has no description!`);
+        } else {
+          return store.dispatch('openPane', {
+            title: this.componentLabel,
+            position: 'center',
+            size: 'medium',
+            height: 'short',
+            content: {
+              component: 'info',
+              args: {
+                text: description
+              }
+            }
+          });
+        }
+      },
       openSettings() {
         return store.dispatch('focus', { uri: this.uri, path: 'settings' });
       },

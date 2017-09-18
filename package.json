@@ -90,6 +90,7 @@
     "set-dom": "^7.2.0",
     "sinon": "^1.17.7",
     "sinon-chai": "^2.8.0",
+    "snarkdown": "^1.2.2",
     "speakingurl": "^13.0.0",
     "striptags": "2.2.1",
     "style-loader": "^0.13.1",
