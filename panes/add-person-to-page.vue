@@ -128,7 +128,11 @@
         return postJSON(prefix + searchRoute, {
           index: 'users',
           type: 'general',
-          body: { query: buildUserQuery(query) }
+          body: {
+            query: buildUserQuery(query),
+            size: 500, // todo: paginate this once we redesign the clay menu (use the same pagination UI)
+            from: 0
+          }
         }).then((res) => {
           const hits = _.get(res, 'hits.hits') || [],
             users = _.map(hits, (hit) => hit._source);
