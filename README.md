@@ -58,10 +58,6 @@ When viewing a page in _edit mode_, Kiln will "decorate" your components with in
 * [Anatomy of a Component Schema](https://github.com/clay/clay-kiln/wiki/Anatomy-of-a-Component-Schema)
 * [Extending Kiln](https://github.com/clay/clay-kiln/wiki/Kiln-APIs)
 
-## Contributing
-
-If you have a plugin, behavior, validator, or other functionality that you believe is generic enough and would improve the lives of others, please submit a pull request! We want to avoid enforcing workflows on Kiln users, but we welcome more efficient ways to working with different types of content and use-cases.
-
 ### Inside the Kiln
 
 As you can see in the template, Kiln will load one of three different application bundles, depending on the user state.
