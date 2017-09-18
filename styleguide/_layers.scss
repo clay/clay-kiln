@@ -1,28 +1,30 @@
 // these are the levels of z-index values we're using in the editor
 // all view-mode css should specify a z-index between 0 and 999
-// the editor will use the levels above that
+// and IAB standards top out at between 6 and 7 million (IAB Canada, AOL)
+// https://www.iab.com/wp-content/uploads/2015/11/IAB_Display_Mobile_Creative_Guidelines_HTML5_2015.pdf
+// the editor will use the levels above 1 billion
 
 @mixin quick-bar-layer {
-  z-index: 1000;
+  z-index: 1000000000;
 }
 
 @mixin mini-selector-layer {
-  z-index: 1005;
+  z-index: 1000000005;
 }
 
 @mixin inline-form-layer {
   // must be above mini selector
-  z-index: 1010;
+  z-index: 1000000010;
 }
 
 @mixin overlay-layer {
-  z-index: 1020;
+  z-index: 1000000020;
 }
 
 @mixin toolbar-layer {
-  z-index: 1021;
+  z-index: 1000000025;
 }
 
 @mixin datepicker-layer {
-  z-index: 1030; // must be above toolbar AND overlays
+  z-index: 1000000030; // must be above toolbar AND overlays
 }
