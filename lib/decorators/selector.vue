@@ -198,11 +198,11 @@
       z-index: 1;
 
       &.quick-bar-info {
-        padding: 11px;
+        padding: 12px;
 
         svg {
-          height: 24px;
-          width: 24px;
+          height: 22px;
+          width: 22px;
         }
 
         .inset {
