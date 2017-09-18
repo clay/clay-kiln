@@ -235,8 +235,9 @@
   <transition name="selector-fade">
     <aside data-ignore v-show="isCurrentSelection" class="mini-selector" :class="selectorPosition" @click.stop>
       <div class="quick-bar" :class="selectorPosition">
-        <button class="quick-bar-button quick-bar-info" :title="componentLabel" @click.stop="openInfo"><icon name="info"></icon></button>
+        <button v-if="componentLabel" class="quick-bar-button quick-bar-info" :title="componentLabel" @click.stop="openInfo"><icon name="info"></icon></button>
         <button v-if="hasSettings" class="quick-bar-button quick-bar-settings" title="Component Settings" @click.stop="openSettings"><icon name="settings"></icon></button>
+        <component v-for="button in customButtons" :is="button"></component>
         <button v-if="hasRemove" class="quick-bar-button quick-bar-remove" title="Remove Component" @click.stop="removeComponent"><icon name="delete"></icon></button>
         <button v-if="hasAddComponent" class="quick-bar-button quick-bar-add" title="Add Component" @click.stop="openAddComponentPane"><icon name="add-icon"></icon></button>
         <button v-if="hasDuplicateComponent" class="quick-bar-button quick-bar-dupe" title="Duplicate Component" @click.stop="duplicateComponent"><icon name="plusone"></icon></button>
@@ -294,6 +295,9 @@
       },
       uri() {
         return this.currentComponent.uri;
+      },
+      customButtons() {
+        return Object.keys(window.kiln.selectorButtons);
       },
       parentField() {
         return this.isCurrentSelection && this.currentComponent.parentField;

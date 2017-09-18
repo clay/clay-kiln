@@ -15,11 +15,6 @@
   z-index: 1010;
 }
 
-@mixin expanded-selector-layer {
-  // under the overlay, but above all components and inline forms
-  z-index: 1015;
-}
-
 @mixin overlay-layer {
   z-index: 1020;
 }

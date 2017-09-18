@@ -33,7 +33,6 @@
 
 <template>
   <div class="kiln-wrapper">
-    <selector></selector>
     <background></background>
     <div class="kiln-toolbar-wrapper">
       <pane></pane>
@@ -80,7 +79,6 @@
   import overlay from '../forms/overlay.vue';
   import pane from '../panes/pane.vue';
   import status from './status.vue';
-  import selector from './selector.vue';
 
   /**
    * get tabs for head component lists in the page and layout
@@ -325,8 +323,7 @@
       overlay,
       pane,
       status,
-      'progress-bar': progressBar,
-      selector
+      'progress-bar': progressBar
     }, window.kiln.toolbarButtons)
   };
 </script>

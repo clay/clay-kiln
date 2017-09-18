@@ -12,8 +12,9 @@
 }
 
 // generic class for buttons in component selectors
+// todo: change/remove this after we migrate to material design buttons
 .expanded-selector-button {
-  @include icon-button($selector-icon, 18px);
+  @include icon-button($mini-selector-color, 18px);
 
   padding: 14px;
 }
