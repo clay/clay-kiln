@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (document.hidden) {
       store.commit(META_UNPRESS);
     }
-  })
+  });
 
   window.addEventListener('online', function () {
     store.commit(HIDE_STATUS); // in case there are any status messages open, close them
