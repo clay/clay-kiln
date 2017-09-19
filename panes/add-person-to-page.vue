@@ -20,8 +20,8 @@
     &-readout {
       overflow-y: scroll;
       overflow-x: hidden;
-      // height is pane height minus search box and bottom button area
-      height: calc(100% - 134px);
+      // height is pane height minus search box
+      height: calc(100% - 56px);
       padding: 0 18px 18px;
 
       &-list {
