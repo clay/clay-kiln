@@ -137,11 +137,16 @@ export function sanitizeMultiComponentHTML(str) {
       .map((line) => line.replace('<p>', ''))
       .join('<br /><br />'));
   } else {
-    return trimLinebreaks(sanitized.split('</p>')
+    // non-wellformed paragraphs must be split on paragraph tags,
+    // and non-graf tags must have extra line breaks because google docs
+    // decided to stop wrapping them in <p> tags
+    let result = trimLinebreaks(sanitized.split('</p>')
       .map((line) => line.trim())
       .filter((line) => line.length > 0)
       .map((line) => line.replace('<p>', ''))
       .join('<br />'));
+
+    return result.replace(/<\/(blockquote|h1|h2|h3|h4)><br\s?\/>/ig, '</$1><br /><br />');
   }
 }
 

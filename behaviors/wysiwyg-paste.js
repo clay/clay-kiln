@@ -40,7 +40,6 @@ export function splitParagraphs(str) {
   // whereas a single <br> tag is intended to simply be a line break.
   let paragraphs = _.map(str.split(/<br\s?\/><br\s?\/>/ig), (s) => s.trim());
 
-
   // handle blocks and headers that should be parsed out as separate components
   return _.reduce(paragraphs, function (result, graf) {
     if (containsTag('blockquote', graf)) {

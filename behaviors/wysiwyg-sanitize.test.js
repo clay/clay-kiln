@@ -107,6 +107,15 @@ describe('wysiwyg sanitize', () => {
       expect(fn('hello<p><br /></p>world')).to.equal('hello<br /><br />world');
     });
 
+    it('adds extra line breaks to blockquotes and headers in malformed paragraphs', () => {
+      expect(fn('<p><blockquote>Foo</blockquote><br />Bar</p><p><br /></p>')).to.equal('<blockquote>Foo</blockquote><br /><br />Bar');
+      expect(fn('<p><h2>Foo</h2><br />Bar</p><p><br /></p>')).to.equal('<h2>Foo</h2><br /><br />Bar');
+    });
+
+    it('parses multiple non-graf tags in malformed paragraphs', () => {
+      expect(fn('<p><h2>Foo</h2><br />Bar<h3>Baz</h3><br /></p><p><br /></p>')).to.equal('<h2>Foo</h2><br /><br />Bar<h3>Baz</h3><br /><br />');
+    });
+
     it('transforms b, i, strike, and spans', () => {
       expect(fn('<b>hi</b>')).to.equal('<strong>hi</strong>');
       expect(fn('<i>hi</i>')).to.equal('<em>hi</em>');
