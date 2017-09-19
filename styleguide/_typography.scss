@@ -149,3 +149,13 @@ $light-stack: $open-sans-light, $system-fonts;
   padding: 4px 8px;
   line-height: 13px;
 }
+
+@mixin code {
+  color: $label;
+  font-family: 'Consolas', 'Menlo', monospace;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  text-decoration: none;
+}
