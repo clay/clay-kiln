@@ -36,44 +36,15 @@
 <style lang="sass">
   @import '../styleguide/typography';
 
-  .editor-radios {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .editor-radio-item {
-    @include input-text();
-
-    margin: 10px 0;
-    text-align: left;
-  }
-
-  .editor-radio-item input[type='radio'],
-  .editor-radio-item label {
-    @include input-text();
-
-    cursor: pointer;
-    vertical-align: baseline;
-  }
-
-  .editor-radio-item input {
-    margin-right: 10px;
-  }
-
   .editor-no-options {
     @include tertiary-text();
   }
 </style>
 
 <template>
-  <ul v-if="hasOptions" class="editor-radios">
-    <li class="editor-radio-item" v-for="option in options">
-      <label>
-        <input type="radio" :checked="option.checked" :value="option.value" @change="update" />{{ option.name }}
-      </label>
-    </li>
-  </ul>
+  <div v-if="hasOptions" class="editor-radios">
+    <ui-radio-group :name="name" :value="data" :options="options" :vertical="isVertical" @input="update"></ui-radio-group>
+  </div>
   <span v-else class="editor-no-options">No options available on current site.</span>
 </template>
 
@@ -81,11 +52,14 @@
   import _ from 'lodash';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { filterBySite } from '../lib/utils/site-filter';
+  import UiRadioGroup from 'keen-ui/src/UiRadioGroup.vue';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
     data() {
-      return {};
+      return {
+        isVertical: true // todo: allow setting this in the args
+      };
     },
     computed: {
       options() {
@@ -96,13 +70,13 @@
           if (_.isString(option)) {
             return {
               value: option,
-              name: _.startCase(option),
+              label: _.startCase(option),
               checked: option === data
             };
           } else {
             return {
               value: option.value,
-              name: option.name,
+              label: option.name,
               checked: option.value === data
             };
           }
@@ -113,11 +87,12 @@
       }
     },
     methods: {
-      update(e) {
-        const value = e.target.value;
-
-        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: value });
+      update(val) {
+        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: val });
       }
+    },
+    components: {
+      UiRadioGroup
     },
     slot: 'main'
   };

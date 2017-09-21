@@ -99,8 +99,6 @@
     },
     methods: {
       update(newCheckedItems) {
-        console.log('\nupdate:')
-        console.log(this.data, newCheckedItems)
         const newData = _.reduce(_.cloneDeep(this.data), (obj, val, key) => {
           if (_.includes(newCheckedItems, key)) {
             return _.assign(obj, { [key]: true });
@@ -108,7 +106,6 @@
             return _.assign(obj, { [key]: false });
           }
         }, {});
-        console.log(newData)
 
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: newData });
       }

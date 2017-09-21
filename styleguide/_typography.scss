@@ -25,15 +25,6 @@ $font-stack: 'Noto Sans', Arial, sans-serif;
 }
 
 // typographic hierarchy
-@mixin type-display2 {
-  @include kiln-copy();
-
-  color: $text-alt-color;
-  font-size: 45px;
-  letter-spacing: normal;
-  line-height: 48px;
-}
-
 @mixin type-display1 {
   @include kiln-copy();
 
