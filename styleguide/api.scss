@@ -18,3 +18,10 @@
 
   padding: 14px;
 }
+
+// all KeenUI components should follow our typographic rules
+[class^="ui-"],
+[class^="ui-"] * {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: auto;
+}

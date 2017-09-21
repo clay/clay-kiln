@@ -18,38 +18,13 @@
   ```
 </docs>
 
-<style lang="sass">
-  @import '../styleguide/typography';
-  @import '../styleguide/inputs';
-
-  .checkbox-wrapper {
-    align-items: center;
-    display: flex;
-    width: 100%;
-  }
-
-  .input-checkbox {
-    @include checkbox();
-
-    cursor: pointer;
-  }
-
-  .checkbox-label {
-    @include input-text();
-
-    cursor: pointer;
-    flex: 1 0 auto;
-    margin-left: 10px;
-    vertical-align: baseline;
-  }
-</style>
-
 <template>
-  <label class="checkbox-wrapper"><input class="input-checkbox" type="checkbox" :checked="data" @change="update" /><span class="checkbox-label">{{ args.label }}</span></label>
+  <ui-checkbox :name="name" :label="args.label" :value="data" @input="update"></ui-checkbox>
 </template>
 
 <script>
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
+  import UiCheckbox from 'keen-ui/src/UiCheckbox.vue';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
@@ -57,9 +32,12 @@
       return {};
     },
     methods: {
-      update() {
-        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: !this.data });
+      update(val) {
+        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: val });
       }
+    },
+    components: {
+      UiCheckbox
     },
     slot: 'main'
   };

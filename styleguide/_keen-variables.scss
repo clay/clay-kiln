@@ -1,7 +1,30 @@
 // variables that override things in KeenUI components
 // https://github.com/JosephusPaye/Keen-UI/blob/master/Customization.md#customization
 @import 'colors';
+@import 'typography';
+@import 'layers';
+
+// unified font size and stack - switch from roboto to noto
+$base-font-size: 16px; // override body font size if it's different
+$font-stack: $font-stack;
 
 // primary and accent colors for KeenUI components
 $brand-primary-color: $save;
 $brand-accent-color: $published;
+
+// text colors
+$primary-text-color: $text-color;
+$secondary-text-color: $text-alt-color;
+$hint-text-color: $text-hint-color;
+$disabled-text-color: $text-disabled-color;
+
+// layers
+$z-index-level-1: $z-index-level-1;
+$z-index-level-2: $z-index-level-2;
+$z-index-level-3: $z-index-level-3;
+$z-index-level-4: $z-index-level-4;
+$z-index-level-5: $z-index-level-5;
+$z-index-level-6: $z-index-level-6;
+
+// layout / component variables
+$divider-color: $divider-color;

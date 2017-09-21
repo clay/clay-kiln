@@ -29,16 +29,16 @@ let plugins = [
     'process.env': {
       KILN_VERSION: `"${kilnVersion}"`
     }
-  }),
-  new webpack.LoaderOptionsPlugin({
-      options: {
-        sassLoader: {
-          data: '@import "styleguide/_keen-variables.scss";',
-          includePaths: 'styleguide'
-        },
-        context: path.resolve(__dirname)
-      }
   })
+  // new webpack.LoaderOptionsPlugin({
+  //     options: {
+  //       sassLoader: {
+  //         data: '@import "styleguide/_keen-variables.scss";',
+  //         includePaths: 'styleguide'
+  //       },
+  //       context: path.resolve(__dirname)
+  //     }
+  // })
 ];
 
 if (prod) {
@@ -116,7 +116,8 @@ module.exports = {
       options: {
         loaders: {
           css: 'vue-style-loader!css-loader!postcss-loader',
-          sass: 'vue-style-loader!css-loader!postcss-loader!sass-loader',
+          sass: 'vue-style-loader!css-loader!postcss-loader!sass-loader?data=@import "styleguide/_keen-variables.scss";',
+          scss: 'vue-style-loader!css-loader!postcss-loader!sass-loader?data=@import "styleguide/_keen-variables.scss";',
           docs: docs.extract('raw-loader')
         }
       }

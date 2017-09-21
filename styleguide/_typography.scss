@@ -2,14 +2,10 @@
 
 // general typography
 $font-stack: 'Noto Sans', Arial, sans-serif;
-$text-opacity: .87;
-$text-alt-opacity: .54;
-$text-color: rgba($text, $text-opacity);
-$text-alt-color: rgba($text, $text-alt-opacity);
 
 // text that should have the same style as the component it's in
 @mixin normal-text {
-  color: $text;
+  color: inherit;
   font-family: inherit;
   font-size: inherit;
   word-break: inherit;
