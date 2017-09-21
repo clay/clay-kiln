@@ -34,33 +34,7 @@
 </docs>
 
 <style lang="sass">
-  @import '../styleguide/inputs';
   @import '../styleguide/typography';
-
-  .checkbox-group .checkbox-group-item {
-    align-items: center;
-    display: flex;
-    margin: 0 0 10px;
-    padding: 0;
-    width: 100%;
-  }
-
-  .checkbox-group .checkbox-group-item:first-of-type {
-    margin-top: 15px;
-  }
-
-  .checkbox-group input {
-    @include checkbox();
-  }
-
-  .checkbox-group label {
-    @include primary-text();
-
-    cursor: pointer;
-    flex: 1 0 auto;
-    padding-left: 5px;
-    vertical-align: baseline;
-  }
 
   .editor-no-options {
     @include tertiary-text();
@@ -69,10 +43,7 @@
 
 <template>
   <div v-if="hasOptions" class="checkbox-group">
-    <div class="checkbox-group-item" v-for="option in options">
-      <input :name="option.name" type="checkbox" :id="option.id" :checked="data && data[option.value]" :value="option.value" @change="update" />
-      <label :for="option.id">{{ option.name }}</label>
-    </div>
+    <ui-checkbox-group :value="checkedArray" :options="options" :vertical="isVertical" @input="update"></ui-checkbox-group>
   </div>
   <span v-else class="editor-no-options">No options available on current site.</span>
 </template>
@@ -82,13 +53,25 @@
   import _ from 'lodash';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { filterBySite } from '../lib/utils/site-filter';
+  import UiCheckboxGroup from 'keen-ui/src/UiCheckboxGroup.vue';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
     data() {
-      return {};
+      return {
+        isVertical: true
+      };
     },
     computed: {
+      checkedArray() {
+        return _.reduce(this.data, (result, val, key) => {
+          if (val) {
+            return result.concat(key);
+          } else {
+            return result;
+          }
+        }, []);
+      },
       options() {
         const currentSlug = _.get(this.$store, 'state.site.slug');
 
@@ -97,12 +80,14 @@
             return {
               value: option,
               name: _.startCase(option),
+              label: _.startCase(option),
               id: cid()
             };
           } else {
             return {
               value: option.value,
               name: option.name,
+              label: option.name,
               id: cid()
             };
           }
@@ -113,12 +98,23 @@
       }
     },
     methods: {
-      update(e) {
-        const key = e.target.value,
-          newData = { [key]: this.data ? !this.data[key] : true }; // toggle the check
+      update(newCheckedItems) {
+        console.log('\nupdate:')
+        console.log(this.data, newCheckedItems)
+        const newData = _.reduce(_.cloneDeep(this.data), (obj, val, key) => {
+          if (_.includes(newCheckedItems, key)) {
+            return _.assign(obj, { [key]: true });
+          } else {
+            return _.assign(obj, { [key]: false });
+          }
+        }, {});
+        console.log(newData)
 
-        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: _.assign({}, this.data, newData) });
+        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: newData });
       }
+    },
+    components: {
+      UiCheckboxGroup
     },
     slot: 'main'
   };
