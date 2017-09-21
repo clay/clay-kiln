@@ -239,7 +239,7 @@
         <button v-if="hasSettings" class="quick-bar-button quick-bar-settings" title="Component Settings" @click.stop="openSettings"><icon name="settings"></icon></button>
         <component v-for="button in customButtons" :is="button"></component>
         <button v-if="hasRemove" class="quick-bar-button quick-bar-remove" title="Remove Component" @click.stop="removeComponent"><icon name="delete"></icon></button>
-        <button v-if="hasAddComponent" class="quick-bar-button quick-bar-add" title="Add Component" @click.stop="openAddComponentPane"><icon name="add-icon"></icon></button>
+        <button v-if="hasAddComponent" class="quick-bar-button quick-bar-add" title="Add Component" @click.stop="openAddComponentPane"><ui-icon icon="add"></ui-icon></button>
         <button v-if="hasDuplicateComponent" class="quick-bar-button quick-bar-dupe" title="Duplicate Component" @click.stop="duplicateComponent"><icon name="plusone"></icon></button>
         <button v-if="hasReplaceComponent" class="quick-bar-button quick-bar-replace" title="Replace Component"><icon name="replace-icon"></icon></button>
       </div>
@@ -256,6 +256,7 @@
   import { getComponentName } from '../utils/references';
   import label from '../utils/label';
   import icon from '../utils/icon.vue';
+  import UiIcon from 'keen-ui/src/UiIcon.vue';
 
   /**
   * calculate the selector position, based on how much space is around the component
@@ -399,7 +400,8 @@
       setupResizeListener.call(this);
     },
     components: {
-      icon
+      icon,
+      UiIcon
     }
   };
 </script>

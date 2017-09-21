@@ -65,12 +65,6 @@
     justify-content: center;
   }
 
-  .complex-list-add-icon {
-    @include icon-button($mini-selector-color, 18px);
-
-    padding: 0;
-  }
-
   .complex-list-add-text {
     @include input-label();
 
@@ -93,14 +87,14 @@
         :removeItem="removeItem">
       </item>
     </transition-group>
-    <button v-if="items.length === 0" class="complex-list-add" title="Add Item" @click.stop.prevent="addItem(-1)"><icon name="add-icon" class="complex-list-add-icon"></icon><span class="complex-list-add-text">Add Items</span></button>
+    <button v-if="items.length === 0" class="complex-list-add" title="Add Item" @click.stop.prevent="addItem(-1)"><ui-icon icon="add"></ui-icon><span class="complex-list-add-text">Add Items</span></button>
   </div>
 </template>
 
 <script>
   import _ from 'lodash';
   import item from './complex-list-item.vue';
-  import icon from '../lib/utils/icon.vue';
+  import UiIcon from 'keen-ui/src/UiIcon.vue';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
 
   export default {
@@ -134,7 +128,7 @@
     },
     components: {
       item,
-      icon
+      UiIcon
     },
     slot: 'main'
   };

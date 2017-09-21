@@ -90,7 +90,7 @@
       <aside v-show="isCurrentItem" class="complex-list-item-selector" @click.stop>
         <div class="complex-list-item-selector-menu">
           <button type="button" class="complex-list-item-selector-button complex-list-item-selector-remove" title="Remove Item" @click.stop.prevent="removeItem(index)"><icon name="delete"></icon></button>
-          <button type="button" class="complex-list-item-selector-button complex-list-item-selector-add" title="Add Item" @click.stop.prevent="addItemAndUnselect(index)"><icon name="add-icon"></icon></button>
+          <button type="button" class="complex-list-item-selector-button complex-list-item-selector-add" title="Add Item" @click.stop.prevent="addItemAndUnselect(index)"><ui-icon icon="add"></ui-icon></button>
         </div>
       </aside>
     </transition>
@@ -101,6 +101,7 @@
   import _ from 'lodash';
   import field from '../lib/forms/field.vue';
   import icon from '../lib/utils/icon.vue';
+  import UiIcon from 'keen-ui/src/UiIcon.vue';
 
   export default {
     props: [
@@ -155,7 +156,8 @@
     },
     components: {
       field,
-      icon
+      icon,
+      UiIcon
     }
   };
 </script>
