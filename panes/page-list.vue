@@ -220,7 +220,7 @@
 
         &.current-page {
           /* make current page bold in page list */
-          font-weight: 700;
+          font-weight: bold;
         }
       }
 
@@ -251,7 +251,7 @@
           color: $page-list-text;
           display: block;
           font-size: 11px;
-          font-weight: 700;
+          font-weight: bold;
           text-transform: uppercase;
         }
       }

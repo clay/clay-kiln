@@ -32,7 +32,7 @@
       border-radius: 10px;
       display: block;
       font-size: 9px;
-      font-weight: 700;
+      font-weight: bold;
       height: 20px;
       line-height: 12px;
       padding: 2px;

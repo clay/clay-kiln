@@ -24,7 +24,7 @@
           content: 'Last Edit';
           font-size: 12px;
           font-style: normal;
-          font-weight: 500;
+          font-weight: normal;
           position: absolute;
           right: 17px;
           text-transform: uppercase;
@@ -53,7 +53,7 @@
       display: block;
       flex: 0 0 auto;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: bold;
       text-transform: uppercase;
     }
 

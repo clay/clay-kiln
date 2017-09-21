@@ -11,7 +11,7 @@
   @include datepicker-layer();
 
   // not the full kiln-copy (no sizes, overrides, etc)
-  font-family: $system-fonts;
+  font-family: $font-stack;
 }
 
 // right align the time picker, preventing overflow to the right of the pane

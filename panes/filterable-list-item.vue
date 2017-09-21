@@ -43,7 +43,7 @@
     &.selected &-btn {
       // some lists allow for denoting a "selected" item
       // e.g. spaces, component finder
-      font-weight: 700;
+      font-weight: bold;
     }
 
     &-drag {

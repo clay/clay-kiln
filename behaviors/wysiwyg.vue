@@ -131,10 +131,9 @@
 
   // link preview tooltip
   .ql-container.ql-bubble:not(.ql-disabled) a::before {
-    @include kiln-copy();
+    @include type-caption();
 
     color: $tooltip-text;
-    font-size: 12px;
   }
 
   // toolbar phrase button
@@ -143,7 +142,7 @@
 
     color: #ccc;
     font-size: 13px;
-    font-weight: 700;
+    font-weight: bold;
   }
 
   // all phrases should have some sort of highlight, so users can

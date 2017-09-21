@@ -36,7 +36,7 @@
     @include primary-text();
 
     float: left;
-    font-family: $semibold-stack;
+    font-weight: bold;
     text-align: left;
     margin: 5px 0 10px;
     width: 100%;
