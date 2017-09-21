@@ -29,11 +29,12 @@
   }
 
   .list-add-icon {
-    @include icon-button($text, 22px);
+    @include icon-button($text, 24px);
 
     flex: 0 0 auto;
-    height: 22px;
-    padding: 0 10px 0 0;
+    height: 24px;
+    margin: 0 10px 0 0;
+    padding: 0;
   }
 
   .filtered-add-title {
