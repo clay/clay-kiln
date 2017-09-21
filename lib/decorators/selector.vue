@@ -197,19 +197,6 @@
       padding: 14px;
       z-index: 1;
 
-      &.quick-bar-info {
-        padding: 12px;
-
-        svg {
-          height: 22px;
-          width: 22px;
-        }
-
-        .inset {
-          fill: #fff;
-        }
-      }
-
       .left &.quick-bar-add,
       .left &.quick-bar-replace,
       .left &.quick-bar-dupe,
@@ -235,13 +222,13 @@
   <transition name="selector-fade">
     <aside data-ignore v-show="isCurrentSelection" class="mini-selector" :class="selectorPosition" @click.stop>
       <div class="quick-bar" :class="selectorPosition">
-        <button v-if="componentLabel" class="quick-bar-button quick-bar-info" :title="componentLabel" @click.stop="openInfo"><icon name="info"></icon></button>
-        <button v-if="hasSettings" class="quick-bar-button quick-bar-settings" title="Component Settings" @click.stop="openSettings"><icon name="settings"></icon></button>
+        <button v-if="componentLabel" class="quick-bar-button quick-bar-info" :title="componentLabel" @click.stop="openInfo"><ui-icon icon="info"></ui-icon></button>
+        <button v-if="hasSettings" class="quick-bar-button quick-bar-settings" title="Component Settings" @click.stop="openSettings"><ui-icon icon="settings"></ui-icon></button>
         <component v-for="button in customButtons" :is="button"></component>
-        <button v-if="hasRemove" class="quick-bar-button quick-bar-remove" title="Remove Component" @click.stop="removeComponent"><icon name="delete"></icon></button>
+        <button v-if="hasRemove" class="quick-bar-button quick-bar-remove" title="Remove Component" @click.stop="removeComponent"><ui-icon icon="delete"></ui-icon></button>
         <button v-if="hasAddComponent" class="quick-bar-button quick-bar-add" title="Add Component" @click.stop="openAddComponentPane"><ui-icon icon="add"></ui-icon></button>
-        <button v-if="hasDuplicateComponent" class="quick-bar-button quick-bar-dupe" title="Duplicate Component" @click.stop="duplicateComponent"><icon name="plusone"></icon></button>
-        <button v-if="hasReplaceComponent" class="quick-bar-button quick-bar-replace" title="Replace Component"><icon name="replace-icon"></icon></button>
+        <button v-if="hasDuplicateComponent" class="quick-bar-button quick-bar-dupe" title="Duplicate Component" @click.stop="duplicateComponent"><ui-icon icon="plus_one"></ui-icon></button>
+        <button v-if="hasReplaceComponent" class="quick-bar-button quick-bar-replace" title="Replace Component"><ui-icon icon="swap_vert"></ui-icon></button>
       </div>
     </aside>
   </transition>
@@ -255,7 +242,6 @@
   import { getSettingsFields } from '../core-data/groups';
   import { getComponentName } from '../utils/references';
   import label from '../utils/label';
-  import icon from '../utils/icon.vue';
   import UiIcon from 'keen-ui/src/UiIcon.vue';
 
   /**
@@ -400,7 +386,6 @@
       setupResizeListener.call(this);
     },
     components: {
-      icon,
       UiIcon
     }
   };

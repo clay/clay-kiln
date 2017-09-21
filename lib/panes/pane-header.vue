@@ -42,8 +42,6 @@
 
     &-right {
       &-close {
-        @include icon-button($title, 14px);
-
         padding: 17px;
       }
     }
@@ -61,7 +59,7 @@
       {{ title }}
     </div>
     <div class="kiln-pane-header-right">
-      <button type="button" class="kiln-pane-header-right-close" @click="buttonClick"><icon :name="check"></icon></button>
+      <button type="button" class="kiln-pane-header-right-close" @click="buttonClick"><ui-icon :icon="check"></ui-icon></button>
     </div>
   </div>
 </template>
@@ -69,6 +67,7 @@
 <script>
   import _ from 'lodash';
   import icon from '../utils/icon.vue';
+  import UiIcon from 'keen-ui/src/UiIcon.vue';
 
   export default {
     props: ['title', 'buttonClick', 'check', 'clayHeader'],
@@ -97,7 +96,8 @@
       }
     },
     components: {
-      icon
+      icon,
+      UiIcon
     }
   };
 </script>

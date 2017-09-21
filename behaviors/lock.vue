@@ -64,14 +64,14 @@
 
 <template>
   <button type="button" class="lock-button" :class="{ unlocked: !locked }" @click.stop.prevent="toggleLock">
-    <icon name="locked" class="locked"></icon>
-    <icon name="unlocked" class="unlocked"></icon>
+    <ui-icon name="lock_outline" class="locked"></ui-icon>
+    <ui-icon name="lock_open" class="unlocked"></ui-icon>
   </button>
 </template>
 
 <script>
   import { getInput } from '../lib/forms/field-helpers';
-  import icon from '../lib/utils/icon.vue';
+  import UiIcon from 'keen-ui/src/UiIcon.vue';
 
   function jiggle(input, el) {
     el.classList.add('jiggle'); // trigger the jiggle animation
@@ -96,7 +96,7 @@
       };
     },
     components: {
-      icon
+      UiIcon
     },
     methods: {
       toggleLock() {

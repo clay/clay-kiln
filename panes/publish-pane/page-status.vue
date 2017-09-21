@@ -27,14 +27,10 @@
 
       .public-link-icon {
         display: inline-block;
-        height: 16px;
         margin-left: 4px;
-        width: 16px;
 
         svg {
           fill: $published;
-          height: 16px;
-          width: 16px;
           vertical-align: middle;
         }
       }
@@ -60,7 +56,7 @@
 <template>
   <div class="page-status">
     <div class="page-status-msg">
-      <a v-if="isPublished && !isScheduled" class="page-status-msg-main" :class="stateClass" :href="url" target="_blank">{{ message }}<icon name="external-link" class="public-link-icon"></icon></a>
+      <a v-if="isPublished && !isScheduled" class="page-status-msg-main" :class="stateClass" :href="url" target="_blank">{{ message }}<ui-icon icon="open_in_new" class="public-link-icon"></ui-icon></a>
       <div v-else class="page-status-msg-main" :class="stateClass">{{ message }}</div>
       <div class="page-status-msg-info">{{ time }}</div>
     </div>
@@ -84,7 +80,7 @@
   import { uriToUrl } from '../../lib/utils/urls';
   import { htmlExt, editExt } from '../../lib/utils/references';
   import { START_PROGRESS, FINISH_PROGRESS } from '../../lib/toolbar/mutationTypes';
-  import icon from '../../lib/utils/icon.vue';
+  import UiIcon from 'keen-ui/src/UiIcon.vue';
 
   export default {
     data() {
@@ -167,7 +163,7 @@
       }
     },
     components: {
-      icon
+      UiIcon
     }
   };
 </script>

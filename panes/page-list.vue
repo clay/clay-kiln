@@ -307,7 +307,7 @@
             <li v-for="site in sites" class="sites-readout-list-item">
               <button type="button" class="sites-readout-list-item-btn" :class="{ active: site.isSelected }" :title="site.name" @click.stop.prevent="toggleSiteSelected(site)">
                 <img :src="site.iconURL" />
-                <icon class="checkmark" name="publish-check"></icon>
+                <ui-icon class="checkmark" icon="check"></ui-icon>
               </button>
             </li>
           </ul>
@@ -357,6 +357,7 @@
   import { searchRoute, htmlExt } from '../lib/utils/references';
   import { uriToUrl } from '../lib/utils/urls';
   import icon from '../lib/utils/icon.vue';
+  import UiIcon from 'keen-ui/src/UiIcon.vue';
 
   const querySize = 20; // todo: this is for testing. make this 50 before release
 
@@ -695,7 +696,8 @@
       return this.fetchPages();
     },
     components: {
-      icon
+      icon,
+      UiIcon
     }
   };
 </script>

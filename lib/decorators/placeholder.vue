@@ -45,20 +45,6 @@
       flex: 1 1 100%;
     }
 
-    .placeholder-this-page,
-    .placeholder-many-pages {
-      @include placeholder-secondary();
-
-      align-items: flex-start;
-      flex: 0 1 auto;
-
-      svg {
-        height: 11px;
-        margin: 4px 4px 0 0;
-        width: 11px;
-      }
-    }
-
     .placeholder-required {
       @include placeholder-secondary();
 
@@ -87,19 +73,6 @@
         min-width: 0;
       }
 
-      .placeholder-this-page,
-      .placeholder-many-pages {
-        order: 1;
-
-        svg {
-          margin-top: 4px;
-        }
-      }
-
-      .placeholder-location-text {
-        display: none; // hide 'this page' / 'multiple pages'
-      }
-
       .placeholder-label {
         border: none;
         flex: 0 1 auto; // allow word wrapping
@@ -120,23 +93,6 @@
     }
   }
 
-  // multi-page / single-page toggle
-  .placeholder-this-page {
-    display: none;
-  }
-
-  .placeholder-many-pages {
-    display: flex;
-  }
-
-  .kiln-page-area .placeholder-this-page {
-    display: flex;
-  }
-
-  .kiln-page-area .placeholder-many-pages {
-    display: none;
-  }
-
   // regular placeholder - displays when field is empty
   .kiln-placeholder {
     background-color: $placeholder-background;
@@ -152,8 +108,6 @@
       color: $placeholder-label;
     }
 
-    .placeholder-this-page,
-    .placeholder-many-pages,
     .placeholder-required {
       color: $placeholder-border;
     }
@@ -182,8 +136,6 @@
       color: $permanent-placeholder-label;
     }
 
-    .placeholder-this-page,
-    .placeholder-many-pages,
     .placeholder-required {
       color: $permanent-placeholder-label;
     }
@@ -204,10 +156,6 @@
   <div data-ignore :class="[isPermanent ? permanentClass : temporaryClass, { 'single-line': isSingleLine }]" :style="{ minHeight: placeholderHeight }">
     <div class="placeholder-top">
       <span class="placeholder-label">{{ text }}</span>
-      <span class="placeholder-location">
-        <span class="placeholder-this-page" title="This Page"><icon name="this-page"></icon><span class="placeholder-location-text placeholder-this-page"> This Page</span></span>
-        <span class="placeholder-many-pages" title="Multiple Pages"><icon name="many-pages"></icon><span class="placeholder-location-text placeholder-many-pages"> Multiple Pages</span></span>
-      </span>
       <span v-if="isRequired" class="placeholder-required">Required</span>
     </div>
     <div v-if="canAddComponent" class="placeholder-bottom">
@@ -224,7 +172,6 @@
   import { get } from '../core-data/groups';
   import label from '../utils/label';
   import interpolate from '../utils/interpolate';
-  import icon from '../utils/icon.vue';
 
   const SINGLE_LINE_HEIGHT = 50;
 
@@ -296,9 +243,6 @@
           path
         });
       }
-    },
-    components: {
-      icon
     }
   };
 </script>

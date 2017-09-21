@@ -40,22 +40,22 @@
       <progress-bar></progress-bar>
       <status></status>
       <section class="kiln-toolbar edit-mode">
-        <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" @click="toggleMenu"></toolbar-button>
-        <toolbar-button class="view-button" name="close" icon-name="close-edit" text="Stop Editing" @click="stopEditing"></toolbar-button>
+        <toolbar-button class="clay-menu-button" icon-name="menu" text="Clay" @click="toggleMenu"></toolbar-button>
+        <toolbar-button class="view-button" name="close" icon-name="close" text="Stop Editing" @click="stopEditing"></toolbar-button>
         <div class="kiln-toolbar-inner">
           <toolbar-button class="undo" :disabled="!undoEnabled" icon-name="undo" text="Undo" @click="undo"></toolbar-button>
           <toolbar-button class="redo" :disabled="!redoEnabled" icon-name="redo" text="Redo" @click="redo"></toolbar-button>
           <component v-for="button in customButtons" :is="button"></component>
           <div class="flex-span flex-span-inner"></div>
           <toolbar-button class="people" name="people" icon-name="people" text="People" @click="togglePeople"></toolbar-button>
-          <toolbar-button class="components" name="components" icon-name="search-page" text="Find on Page" @click="toggleComponents"></toolbar-button>
-          <toolbar-button class="preview" name="preview" icon-name="new-tab" text="Preview" @click="togglePreview"></toolbar-button>
+          <toolbar-button class="components" name="components" icon-name="find_in_page" text="Find on Page" @click="toggleComponents"></toolbar-button>
+          <toolbar-button class="preview" name="preview" icon-name="open_in_new" text="Preview" @click="togglePreview"></toolbar-button>
         </div>
-        <toolbar-button v-if="isLoading" class="publish loading" name="publish" icon-name="draft" text="Loading&hellip;"></toolbar-button>
-        <toolbar-button v-else-if="pageState.scheduled" class="publish scheduled" name="publish" icon-name="scheduled" text="Scheduled" @click="togglePublish"></toolbar-button>
+        <toolbar-button v-if="isLoading" class="publish loading" name="publish" icon-name="create" text="Loading&hellip;"></toolbar-button>
+        <toolbar-button v-else-if="pageState.scheduled" class="publish scheduled" name="publish" icon-name="schedule" text="Scheduled" @click="togglePublish"></toolbar-button>
         <toolbar-button v-else-if="hasChanges" class="publish changes" name="publish" icon-name="unpubbed-changes" text="Unpublished Changes" @click="togglePublish"></toolbar-button>
-        <toolbar-button v-else-if="pageState.published" class="publish published" name="publish" icon-name="published" text="Published" @click="togglePublish"></toolbar-button>
-        <toolbar-button v-else class="publish draft" name="publish" icon-name="draft" text="Draft" @click="togglePublish"></toolbar-button>
+        <toolbar-button v-else-if="pageState.published" class="publish published" name="publish" icon-name="check_circle" text="Published" @click="togglePublish"></toolbar-button>
+        <toolbar-button v-else class="publish draft" name="publish" icon-name="create" text="Draft" @click="togglePublish"></toolbar-button>
       </section>
     </div>
   </div>

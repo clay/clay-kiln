@@ -91,7 +91,7 @@
 <template>
   <div class="health-pane">
     <div v-if="isValid" class="publish-valid">
-      <icon name="publish-check" class="publish-valid-icon"></icon>
+      <ui-icon icon="check" class="publish-valid-icon"></ui-icon>
       <p class="publish-valid-message">Checks pass! This is good to publish.</p>
     </div>
 
@@ -126,7 +126,7 @@
   import { getSchema } from '../lib/core-data/components';
   import { displayProp, groupsProp } from '../lib/utils/references';
   import { getFieldEl, getComponentEl } from '../lib/utils/component-elements';
-  import icon from '../lib/utils/icon.vue';
+  import UiIcon from 'keen-ui/src/UiIcon.vue';
 
   function getSettingsPath(field, schema) {
     if (_.get(schema, `${field}[${displayProp}]`) === 'settings') {
@@ -185,7 +185,7 @@
       }
     },
     components: {
-      icon
+      UiIcon
     }
   };
 </script>

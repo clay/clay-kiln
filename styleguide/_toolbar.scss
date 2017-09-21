@@ -57,23 +57,23 @@ $height: 48px;
       @include button-filled-large($toolbar-edit, $toolbar-icons);
     }
 
-    .undo {
+    > .undo {
       border-right: 1px solid $toolbar-edit-border;
     }
 
-    .redo {
+    > .redo {
       border-right: 1px solid $toolbar-edit-border;
     }
 
-    .people {
+    > .people {
       border-left: 1px solid $toolbar-edit-border;
     }
 
-    .components {
+    > .components {
       border-left: 1px solid $toolbar-edit-border;
     }
 
-    .preview {
+    > .preview {
       border-left: 1px solid $toolbar-edit-border;
     }
   }

@@ -126,23 +126,23 @@
       <ul class="preview-actions-list">
         <li class="preview-actions-list-item">
           <a class="preview-link" :href="url" @click.prevent="open('small')">
-            <icon name="preview-small" class="preview-link-size small"></icon>
+            <ui-icon icon="smartphone" class="preview-link-size small"></ui-icon>
             <span class="preview-link-text">Small</span>
-            <icon name="new-tab" class="preview-link-icon"></icon>
+            <ui-icon icon="open_in_new" class="preview-link-icon"></ui-icon>
           </a>
         </li>
         <li class="preview-actions-list-item">
           <a class="preview-link" :href="url" @click.prevent="open('medium')">
-            <icon name="preview-medium" class="preview-link-size medium"></icon>
+            <ui-icon icon="tablet" class="preview-link-size medium"></ui-icon>
             <span class="preview-link-text">Medium</span>
-            <icon name="new-tab" class="preview-link-icon"></icon>
+            <ui-icon icon="open_in_new" class="preview-link-icon"></ui-icon>
           </a>
         </li>
         <li class="preview-actions-list-item">
           <a class="preview-link" :href="url" @click.prevent="open('large')">
-            <icon name="preview-large" class="preview-link-size large"></icon>
+            <ui-icon icon="laptop" class="preview-link-size large"></ui-icon>
             <span class="preview-link-text">Large</span>
-            <icon name="new-tab" class="preview-link-icon"></icon>
+            <ui-icon icon="open_in_new" class="preview-link-icon"></ui-icon>
           </a>
         </li>
       </ul>
@@ -165,6 +165,7 @@
   import { uriToUrl } from '../lib/utils/urls';
   import icon from '../lib/utils/icon.vue';
   import { mapState } from 'vuex';
+  import UiIcon from 'keen-ui/src/UiIcon.vue'
 
   const previewSizes = {
     small: { w: 375, h: 660 },
@@ -174,7 +175,8 @@
 
   export default {
     components: {
-      icon
+      icon,
+      UiIcon
     },
     computed: mapState({
       url: (state) => uriToUrl(state.page.uri) + '.html'

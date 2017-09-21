@@ -67,7 +67,7 @@
 <template>
   <li class="filterable-list-item" :data-item-id="item.id" :class="{ focused: focused, active: active, selected: selected }">
     <button v-if="onReorder" type="button" class="filterable-list-item-drag" title="Drag to Reorder">
-      <icon name="drag-grip"></icon>
+      <ui-icon icon="drag_handle"></ui-icon>
     </button>
     <button
       type="button"
@@ -81,16 +81,16 @@
       {{ item.title }}
     </button>
     <button v-if="onSettings" type="button" class="filterable-list-item-settings" title="Open Settings" @click.stop="onSettings(item.id)">
-      <icon name="settings"></icon>
+      <ui-icon icon="settings"></ui-icon>
     </button>
     <button v-if="onDelete" type="button" class="filterable-list-item-delete" title="Remove from List" @click.stop="onDelete(item.id)">
-      <icon name="delete"></icon>
+      <ui-icon icon="delete"></ui-icon>
     </button>
   </li>
 </template>
 
 <script>
-  import icon from '../lib/utils/icon.vue';
+  import UiIcon from 'keen-ui/src/UiIcon.vue';
 
   export default {
     props: ['item', 'index', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'focused', 'active', 'selected', 'focusOnIndex', 'setActive'],
@@ -112,7 +112,7 @@
       }
     },
     components: {
-      icon
+      UiIcon
     }
   };
 </script>

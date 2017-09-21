@@ -75,7 +75,7 @@
         </ul>
       </div>
       <button type="button" class="pane-tabs-titles-btn right" v-if="arrowsVisible && !hideRightArrow" @click="sideScrollClick(true)">
-        <icon name="right-caret"></icon>
+        <ui-icon icon="keyboard_arrow_right"></ui-icon>
       </button>
     </div>
     <div class="pane-tabs-content" v-for="(item, index) in content" v-if="isActive(index)">
@@ -90,7 +90,7 @@
 <script>
   import _ from 'lodash';
   import { setItem } from '../utils/local';
-  import icon from '../utils/icon.vue';
+  import UiIcon from 'keen-ui/src/UiIcon.vue';
 
   // TODO: FIGURE OUT THE BUG THAT WON'T INCLUDE THE `LEFT-CARET` ICON WITHOUT
   // PULLING IN THE SVG FOR THE RIGHT-CARET
@@ -183,6 +183,6 @@
         }
       }
     },
-    components: _.merge(window.kiln.panes, { icon })
+    components: _.merge(window.kiln.panes, { UiIcon })
   };
 </script>

@@ -36,16 +36,16 @@
 
 <template>
   <div class="health-header-wrapper">
-    <icon name="health-valid" v-if="icon === 'valid'" class="health-icon valid"></icon>
-    <icon name="health-warnings" v-else-if="icon === 'warnings'" class="health-icon warnings"></icon>
-    <icon name="health-errors" v-else-if="icon === 'errors'" class="health-icon errors"></icon>
+    <ui-icon icon="check_circle" v-if="icon === 'valid'" class="health-icon valid"></ui-icon>
+    <ui-icon icon="warning" v-else-if="icon === 'warnings'" class="health-icon warnings"></ui-icon>
+    <ui-icon icon="error" v-else-if="icon === 'errors'" class="health-icon errors"></ui-icon>
     <span class="health-header pane-tab-title">Health</span>
   </div>
 </template>
 
 <script>
   import _ from 'lodash';
-  import icon from '../lib/utils/icon.vue';
+  import UiIcon from 'keen-ui/src/UiIcon.vue';
 
   export default {
     data() {
@@ -65,7 +65,7 @@
       }
     },
     components: {
-      icon
+      UiIcon
     }
   };
 </script>

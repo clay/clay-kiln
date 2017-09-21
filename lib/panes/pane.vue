@@ -13,7 +13,7 @@
 <template>
   <transition name="pane-slide">
     <div class="kiln-toolbar-pane" v-if="hasOpenPane" :class="[position, size, height]" :style="{ left: offsetLeft }" @click.stop>
-      <pane-header :title="headerTitle" :buttonClick="closePane" check="close-edit" :clayHeader="clayHeader"></pane-header>
+      <pane-header :title="headerTitle" :buttonClick="closePane" check="close" :clayHeader="clayHeader"></pane-header>
       <component v-if="singleTab" :is="singleComponent" :args="singleComponentArgs"></component>
       <pane-tabs v-else :content="content" :saveTab="saveTab"></pane-tabs>
     </div>

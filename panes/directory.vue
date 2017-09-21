@@ -160,7 +160,7 @@
             <input type="checkbox" class="user-admin-checkbox" :checked="user.auth === 'admin'" :disabled="user.isCurrentUser" @change="toggleAdmin(user.id, user.auth, index)" />
           </label>
           <button type="button" class="user-delete" title="Remove person from Clay" :disabled="user.isCurrentUser" @click.stop="deleteUser(user.id, user.username, index)">
-            <icon name="delete"></icon>
+            <ui-icon icon="delete"></ui-icon>
           </button>
         </li>
       </ul>
@@ -176,7 +176,7 @@
   import { find } from '@nymag/dom';
   import { postJSON, save, remove } from '../lib/core-data/api';
   import { searchRoute } from '../lib/utils/references';
-  import icon from '../lib/utils/icon.vue';
+  import UiIcon from 'keen-ui/src/UiIcon.vue';
 
   function buildUserQuery(query) {
     const str = _.isString(query) && query.toLowerCase() || '';
@@ -296,7 +296,7 @@
       return this.fetchUsers();
     },
     components: {
-      icon
+      UiIcon
     }
   };
 </script>
