@@ -68,11 +68,6 @@ $font-stack: 'Noto Sans', Arial, sans-serif;
   font-size: 16px;
   letter-spacing: 0.01em;
   line-height: 24px;
-
-  @media screen and (min-width: 1024px) {
-    font-size: 15px;
-    // same line height on desktop
-  }
 }
 
 @mixin type-body {
@@ -82,10 +77,6 @@ $font-stack: 'Noto Sans', Arial, sans-serif;
   font-size: 14px;
   letter-spacing: 0.01em;
   line-height: 20px;
-
-  @media screen and (min-width: 1024px) {
-    font-size: 13px;
-  }
 }
 
 @mixin type-caption {

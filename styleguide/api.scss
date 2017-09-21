@@ -25,3 +25,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: auto;
 }
+// html element in edit mode gets a smaller base font size
+// this sets the base sizing for KeenUI components, as they all use rem
+html.component-selector-wrapper {
+  font-size: 14px;
+}

@@ -4,8 +4,7 @@
 @import 'typography';
 @import 'layers';
 
-// unified font size and stack - switch from roboto to noto
-$base-font-size: 16px; // override body font size if it's different
+// unified font stack - switch from roboto to noto
 $font-stack: $font-stack;
 
 // primary and accent colors for KeenUI components
