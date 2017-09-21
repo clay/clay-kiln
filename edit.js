@@ -18,6 +18,7 @@ import utilsAPI from './lib/utils/api';
 import { hasClickedFocusableEl } from './lib/decorators/focus';
 import { hasClickedSelectableEl } from './lib/decorators/select';
 import { META_PRESS, META_UNPRESS } from './lib/preloader/mutationTypes';
+import 'keen-ui/src/bootstrap'; // import this once, for KeenUI components
 
 // TODO: Figure out saving/closing and reverting in panes
 import { CLOSE_PANE } from './lib/panes/mutationTypes';

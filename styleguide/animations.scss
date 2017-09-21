@@ -1,0 +1,14 @@
+// easing curves from material design spec
+
+// standard curve - "ease in out", used for growing and shrinking material,
+// and other property changes inside the viewport
+$standard-curve: cubic-bezier(.4, 0, .2, 1);
+
+// deceleration curve - "ease out", used for elements entering the viewport
+$deceleration-curve: cubic-bezier(0, 0, .2, 1);
+
+// acceleration curve - "ease in", used for elements leaving the viewport permanently
+$acceleration-curve: cubic-bezier(.4, 0, 1, 1);
+
+// sharp curve - "ease in out", used for elements leaving the viewport temporarily
+$sharp-curve: cubic-bezier(.4, 0, .6, 1);

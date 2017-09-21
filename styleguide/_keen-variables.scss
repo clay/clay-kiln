@@ -1,0 +1,7 @@
+// variables that override things in KeenUI components
+// https://github.com/JosephusPaye/Keen-UI/blob/master/Customization.md#customization
+@import 'colors';
+
+// primary and accent colors for KeenUI components
+$brand-primary-color: $save;
+$brand-accent-color: $published;

@@ -16,6 +16,7 @@ import { META_PRESS, META_UNPRESS } from './lib/preloader/mutationTypes';
 import { props } from './lib/utils/promises';
 import conditionalFocus from './directives/conditional-focus';
 import hScrollDirective from './directives/horizontal-scroll';
+import 'keen-ui/src/bootstrap'; // import this once, for KeenUI components
 
 const paneReq = require.context('./panes', false, /\.vue$/);
 
