@@ -39,12 +39,7 @@
 </docs>
 
 <style lang="sass">
-  @import '../styleguide/inputs';
   @import '../styleguide/typography';
-
-  .editor-select {
-    @include select();
-  }
 
   .editor-no-options {
     @include tertiary-text();
@@ -52,9 +47,7 @@
 </style>
 
 <template>
-  <select v-if="hasOptions" class="editor-select" :value="data" @change="update">
-    <option v-for="option in options" :value="option.value">{{ option.name }}</option>
-  </select>
+  <ui-select v-if="hasOptions" :name="name" :value="safeData" :options="options" :multiple="args.multiple" :hasSearch="args.search" @input="update"></ui-select>
   <span v-else class="editor-no-options">No options available on current site.</span>
 </template>
 
@@ -62,6 +55,7 @@
   import _ from 'lodash';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { filterBySite } from '../lib/utils/site-filter';
+  import UiSelect from 'keen-ui/src/UiSelect.vue';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
@@ -69,22 +63,37 @@
       return {};
     },
     computed: {
+      safeData() {
+        if (_.isString(this.data)) {
+          return _.find(this.options, (option) => option.value === this.data);
+        } else if (_.isObject(this.data)) {
+          return _.reduce(this.options, (safeArray, option) => {
+            if (this.data[option.value] === true) {
+              return safeArray.concat([option]);
+            } else {
+              return safeArray;
+            }
+          }, []);
+        } else {
+          return this.args.multiple ? [] : { value: null, label: 'None' };
+        }
+      },
       options() {
         const currentSlug = _.get(this.$store, 'state.site.slug');
 
         return [{
           value: null,
-          name: 'None'
+          label: 'None'
         }].concat(_.map(filterBySite(this.args.options, currentSlug), (option) => {
           if (_.isString(option)) {
             return {
               value: option,
-              name: _.startCase(option)
+              label: _.startCase(option)
             };
           } else {
             return {
               value: option.value,
-              name: option.name
+              label: option.name
             };
           }
         }));
@@ -94,11 +103,15 @@
       }
     },
     methods: {
-      update(e) {
-        const value = e.target.value;
+      update(option) {
+        console.log(option)
+        const val = option.value;
 
-        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: value });
+        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: val });
       }
+    },
+    components: {
+      UiSelect
     },
     slot: 'main'
   };
