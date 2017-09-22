@@ -1,10 +1,9 @@
 <template>
-  <ui-icon v-html="icon"></ui-icon>
+  <span v-html="icon"></span>
 </template>
 
 <script>
   import icons from './icons';
-  import UiIcon from 'keen-ui/src/UiIcon.vue';
 
   // NOTE: this is only for using custom SVG icons. For material design icons, please use ui-icon directly
   export default {
@@ -16,9 +15,6 @@
       icon() {
         return icons[this.name];
       }
-    },
-    components: {
-      UiIcon
     }
   };
 </script>
