@@ -1,4 +1,5 @@
-const ExtractTextPlugin = require('extract-text-webpack-plugin'),
+const path = require('path'),
+  ExtractTextPlugin = require('extract-text-webpack-plugin'),
   docs = new ExtractTextPlugin('behaviors/README.md'),
   styles = new ExtractTextPlugin('dist/clay-kiln-[name].css'),
   webpack = require('webpack'),
@@ -117,6 +118,9 @@ module.exports = {
     }]
   },
   resolve: {
+    // note: when importing vue components, you don't have to specify .vue
+    // also, when importing keen-ui components, do so as `keen/UiComponentName`,
+    // so they get imported correctly when testing
     extensions: ['.js', '.json', '.vue'],
     alias: {
       keen: path.resolve(__dirname, 'node_modules/keen-ui/src')
