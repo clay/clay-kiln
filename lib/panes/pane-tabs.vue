@@ -90,7 +90,7 @@
 <script>
   import _ from 'lodash';
   import { setItem } from '../utils/local';
-  import UiIcon from 'keen-ui/src/UiIcon.vue';
+  import UiIcon from 'keen/UiIcon';
 
   // TODO: FIGURE OUT THE BUG THAT WON'T INCLUDE THE `LEFT-CARET` ICON WITHOUT
   // PULLING IN THE SVG FOR THE RIGHT-CARET

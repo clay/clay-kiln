@@ -165,7 +165,7 @@
   import { uriToUrl } from '../lib/utils/urls';
   import icon from '../lib/utils/icon.vue';
   import { mapState } from 'vuex';
-  import UiIcon from 'keen-ui/src/UiIcon.vue'
+  import UiIcon from 'keen/UiIcon'
 
   const previewSizes = {
     small: { w: 375, h: 660 },

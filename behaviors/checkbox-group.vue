@@ -53,7 +53,7 @@
   import _ from 'lodash';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { filterBySite } from '../lib/utils/site-filter';
-  import UiCheckboxGroup from 'keen-ui/src/UiCheckboxGroup.vue';
+  import UiCheckboxGroup from 'keen/UiCheckboxGroup';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],

@@ -357,7 +357,7 @@
   import { searchRoute, htmlExt } from '../lib/utils/references';
   import { uriToUrl } from '../lib/utils/urls';
   import icon from '../lib/utils/icon.vue';
-  import UiIcon from 'keen-ui/src/UiIcon.vue';
+  import UiIcon from 'keen/UiIcon';
 
   const querySize = 20; // todo: this is for testing. make this 50 before release
 

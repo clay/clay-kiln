@@ -52,7 +52,7 @@
   import _ from 'lodash';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { filterBySite } from '../lib/utils/site-filter';
-  import UiRadioGroup from 'keen-ui/src/UiRadioGroup.vue';
+  import UiRadioGroup from 'keen/UiRadioGroup';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],

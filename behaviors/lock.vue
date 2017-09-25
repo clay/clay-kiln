@@ -71,7 +71,7 @@
 
 <script>
   import { getInput } from '../lib/forms/field-helpers';
-  import UiIcon from 'keen-ui/src/UiIcon.vue';
+  import UiIcon from 'keen/UiIcon';
 
   function jiggle(input, el) {
     el.classList.add('jiggle'); // trigger the jiggle animation

@@ -24,7 +24,7 @@
 
 <script>
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
-  import UiCheckbox from 'keen-ui/src/UiCheckbox.vue';
+  import UiCheckbox from 'keen/UiCheckbox';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],

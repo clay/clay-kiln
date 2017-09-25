@@ -126,7 +126,7 @@
   import { getSchema } from '../lib/core-data/components';
   import { displayProp, groupsProp } from '../lib/utils/references';
   import { getFieldEl, getComponentEl } from '../lib/utils/component-elements';
-  import UiIcon from 'keen-ui/src/UiIcon.vue';
+  import UiIcon from 'keen/UiIcon';
 
   function getSettingsPath(field, schema) {
     if (_.get(schema, `${field}[${displayProp}]`) === 'settings') {

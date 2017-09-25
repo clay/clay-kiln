@@ -45,7 +45,7 @@
 
 <script>
   import _ from 'lodash';
-  import UiIcon from 'keen-ui/src/UiIcon.vue';
+  import UiIcon from 'keen/UiIcon';
 
   export default {
     data() {

@@ -176,7 +176,7 @@
   import { find } from '@nymag/dom';
   import { postJSON, save, remove } from '../lib/core-data/api';
   import { searchRoute } from '../lib/utils/references';
-  import UiIcon from 'keen-ui/src/UiIcon.vue';
+  import UiIcon from 'keen/UiIcon';
 
   function buildUserQuery(query) {
     const str = _.isString(query) && query.toLowerCase() || '';

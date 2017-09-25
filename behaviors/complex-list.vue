@@ -94,7 +94,7 @@
 <script>
   import _ from 'lodash';
   import item from './complex-list-item.vue';
-  import UiIcon from 'keen-ui/src/UiIcon.vue';
+  import UiIcon from 'keen/UiIcon';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
 
   export default {

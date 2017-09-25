@@ -242,7 +242,7 @@
   import { getSettingsFields } from '../core-data/groups';
   import { getComponentName } from '../utils/references';
   import label from '../utils/label';
-  import UiIcon from 'keen-ui/src/UiIcon.vue';
+  import UiIcon from 'keen/UiIcon';
 
   /**
   * calculate the selector position, based on how much space is around the component

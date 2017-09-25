@@ -1,5 +1,4 @@
-const path = require('path'),
-  ExtractTextPlugin = require('extract-text-webpack-plugin'),
+const ExtractTextPlugin = require('extract-text-webpack-plugin'),
   docs = new ExtractTextPlugin('behaviors/README.md'),
   styles = new ExtractTextPlugin('dist/clay-kiln-[name].css'),
   webpack = require('webpack'),
@@ -30,15 +29,6 @@ let plugins = [
       KILN_VERSION: `"${kilnVersion}"`
     }
   })
-  // new webpack.LoaderOptionsPlugin({
-  //     options: {
-  //       sassLoader: {
-  //         data: '@import "styleguide/_keen-variables.scss";',
-  //         includePaths: 'styleguide'
-  //       },
-  //       context: path.resolve(__dirname)
-  //     }
-  // })
 ];
 
 if (prod) {
@@ -125,6 +115,12 @@ module.exports = {
       test: /\.woff2$/,
       loader: 'url-loader?limit=65000&mimetype=application/font-woff2&name=public/fonts/[name].[ext]'
     }]
+  },
+  resolve: {
+    extensions: ['.js', '.json', '.vue'],
+    alias: {
+      keen: path.resolve(__dirname, 'node_modules/keen-ui/src')
+    }
   },
   plugins: plugins
 };

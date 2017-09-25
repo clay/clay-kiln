@@ -80,7 +80,7 @@
   import { uriToUrl } from '../../lib/utils/urls';
   import { htmlExt, editExt } from '../../lib/utils/references';
   import { START_PROGRESS, FINISH_PROGRESS } from '../../lib/toolbar/mutationTypes';
-  import UiIcon from 'keen-ui/src/UiIcon.vue';
+  import UiIcon from 'keen/UiIcon';
 
   export default {
     data() {

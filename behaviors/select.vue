@@ -55,7 +55,7 @@
   import _ from 'lodash';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { filterBySite } from '../lib/utils/site-filter';
-  import UiSelect from 'keen-ui/src/UiSelect.vue';
+  import UiSelect from 'keen/UiSelect';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],

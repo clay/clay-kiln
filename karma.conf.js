@@ -1,4 +1,5 @@
-const files = [
+const path = require('path'),
+  files = [
     {pattern: 'test/setup.js', watched: false, included: true, served: true}
   ],
   settings = {
@@ -25,8 +26,14 @@ const files = [
           use: 'raw-loader'
         }, {
           test: /\.vue$/,
-          use: 'vue-loader'
+          loader: 'vue-loader'
         }]
+      },
+      resolve: {
+        extensions: ['.js', '.json', '.vue'],
+        alias: {
+          keen: path.resolve(__dirname, 'node_modules/keen-ui/lib')
+        }
       },
       devtool: '#inline-source-map',
       watch: false

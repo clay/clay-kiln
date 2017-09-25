@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import UiIcon from 'keen-ui/src/UiIcon.vue';
+  import UiIcon from 'keen/UiIcon';
 
   export default {
     props: ['iconName', 'name', 'text'],
