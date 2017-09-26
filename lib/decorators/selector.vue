@@ -238,8 +238,7 @@
   import _ from 'lodash';
   import getRect from 'element-client-rect';
   import store from '../core-data/store';
-  import { getData, getSchema } from '../core-data/components';
-  import { getSettingsFields } from '../core-data/groups';
+  import { getSchema } from '../core-data/components';
   import { getComponentName } from '../utils/references';
   import label from '../utils/label';
   import UiIcon from 'keen/UiIcon';
@@ -290,7 +289,7 @@
         return this.isCurrentSelection && this.currentComponent.parentField;
       },
       hasSettings() {
-        return this.isCurrentSelection && !_.isEmpty(getSettingsFields(getData(this.uri), getSchema(this.uri)).fields);
+        return this.isCurrentSelection && _.has(getSchema(this.uri), '_groups.settings');
       },
       // note: only for components in LISTS! components in properties can be replaced but not removed (for now)
       hasRemove() {
