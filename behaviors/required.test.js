@@ -1,12 +1,12 @@
 import lib from './required.vue';
-import * as behaviors from '../lib/forms/behaviors';
+import * as inputs from '../lib/forms/inputs';
 
 describe('required behavior', () => {
   let sandbox;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
-    sandbox.stub(behaviors, 'expand');
+    sandbox.stub(inputs, 'expand');
     beforeEachHooks();
   });
 
@@ -16,14 +16,14 @@ describe('required behavior', () => {
   });
 
   it('adds span if label behavior exists in the schema', () => {
-    behaviors.expand.returns([{ fn: 'input-label' }]);
+    inputs.expand.returns([{ fn: 'input-label' }]);
     expect(renderWithArgs(lib, {
       schema: { _has: 'input-label' }
     }).$el.innerText).to.equal('required');
   });
 
   it('does not add span if no label', () => {
-    behaviors.expand.returns([{ fn: 'required' }]);
+    inputs.expand.returns([{ fn: 'required' }]);
     expect(renderWithArgs(lib, {
       schema: { _has: 'required' }
     }).$el.innerText).to.equal(undefined);

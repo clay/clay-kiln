@@ -50,7 +50,7 @@
   import _ from 'lodash';
   import { getFieldData } from '../lib/forms/field-helpers';
   import { fieldProp, behaviorKey } from '../lib/utils/references';
-  import { expand, convertNativeTagName } from '../lib/forms/behaviors';
+  import { expand, convertNativeTagName } from '../lib/forms/inputs';
   import { getSchema, getData } from '../lib/core-data/components';
   import { compare } from '../lib/utils/comparators';
   import label from '../lib/utils/label';

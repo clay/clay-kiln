@@ -41,7 +41,7 @@
 
 <script>
   import { fieldProp } from '../utils/references';
-  import { expand } from './behaviors';
+  import { expand } from './inputs';
 
   export default {
     props: ['name', 'data', 'schema'],

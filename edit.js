@@ -7,7 +7,7 @@ import differenceInMinutes from 'date-fns/difference_in_minutes';
 import store from './lib/core-data/store';
 import { decorateAll } from './lib/decorators';
 import { addSelectorButton } from './lib/utils/custom-buttons'; // eslint-disable-line
-import { add as addBehavior } from './lib/forms/behaviors';
+import { add as addInput } from './lib/forms/inputs';
 import { add as addPane } from './lib/forms/panes';
 import toolbar from './lib/toolbar/edit-toolbar.vue';
 import { HIDE_STATUS } from './lib/toolbar/mutationTypes';
@@ -23,7 +23,7 @@ import 'keen-ui/src/bootstrap'; // import this once, for KeenUI components
 // TODO: Figure out saving/closing and reverting in panes
 import { CLOSE_PANE } from './lib/panes/mutationTypes';
 
-const behaviorReq = require.context('./behaviors', false, /\.vue$/),
+const inputReq = require.context('./inputs', false, /\.vue$/),
   paneReq = require.context('./panes', false, /\.vue$/),
   // todo: in the future, we should queue up the saves
   connectionLostMessage = 'Connection Lost. Changes will <strong>NOT</strong> be saved.',
@@ -41,9 +41,9 @@ const behaviorReq = require.context('./behaviors', false, /\.vue$/),
 // Require all scss/css files needed
 require.context('./styleguide', true, /^.*\.(scss|css)$/);
 
-// Add behaviors
-behaviorReq.keys().forEach(function (key) {
-  addBehavior(basename(key, extname(key)), behaviorReq(key));
+// Add inputs
+inputReq.keys().forEach(function (key) {
+  addInput(basename(key, extname(key)), inputReq(key));
 });
 
 // Add panes
@@ -67,9 +67,9 @@ Vue.config.keyCodes.comma = 188;
 Vue.directive('conditional-focus', conditionalFocus());
 Vue.directive('h-scroll', hScrollDirective());
 
-// export api for plugins, validators, behaviors, buttons, etc
+// export api for plugins, validators, inputs, buttons, etc
 window.kiln = window.kiln || {};
-// .plugins, .behaviors, .validators, and .panes objects should already exist
+// .plugins, .inputs, .validators, and .panes objects should already exist
 window.kiln.utils = utilsAPI;
 
 /**
@@ -90,7 +90,7 @@ function getLastEditUser(store) {
 }
 
 // kick off loading when DOM is ready
-// note: preloaded data, external behaviors, decorators, and validation rules should already be added
+// note: preloaded data, external inputs, decorators, and validation rules should already be added
 // when this event fires
 document.addEventListener('DOMContentLoaded', function () {
   new Vue({

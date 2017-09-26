@@ -26,7 +26,7 @@
 <script>
   import _ from 'lodash';
   import { fieldProp, behaviorKey } from '../lib/utils/references';
-  import { expand, convertNativeTagName } from '../lib/forms/behaviors';
+  import { expand, convertNativeTagName } from '../lib/forms/inputs';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
