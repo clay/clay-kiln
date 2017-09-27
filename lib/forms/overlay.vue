@@ -1,82 +1,99 @@
 <style lang="sass">
-  @import '../../styleguide/panes';
   @import '../../styleguide/forms';
+  @import '../../styleguide/layers';
+  @import '../../styleguide/cards';
 
-  .kiln-toolbar-pane-form {
-    @include pane();
-  }
-
-  .pane-slide-enter, .pane-slide-leave-active {
-    transform: translate3d(0, 100%, 0);
-  }
-
-  .form-sections-list {
-    @include pane-tab-list();
-  }
-
-  .pane-form-wrapper {
+  .kiln-overlay-form {
     @include form();
+    @include overlay-layer();
+    @include card();
 
-    height: 100%;
-    max-height: calc(70vh - 52px);
-  }
+    align-items: flex-start;
+    height: 100px;
+    left: 50vw;
+    max-height: 100vh;
+    max-width: 100vw;
+    opacity: 0;
+    position: fixed;
+    top: 50vh;
+    transform: translateX(-50%) translateY(-50%);
+    width: 100px;
 
-  .pane-tabs-content {
-    height: calc(100% - 50px); // account for tab height
-    overflow-x: visible;
-    overflow-y: scroll;
-  }
+    .form-header {
+      align-items: center;
+      display: flex;
+      flex: 0 0 auto;
+      justify-content: space-between;
+      padding: 24px 16px 16px;
+      width: 100%;
+    }
 
-  .pane-notabs-content {
-    height: 100%;
-    overflow-x: visible;
-    overflow-y: scroll;
+    .form-header-title {
+      @include type-title();
+
+      margin: 0;
+    }
+
+    .form-contents {
+      // fade this in after form opens
+      opacity: 0;
+    }
+
+    .input-container {
+      overflow: scroll;
+      padding: 16px 16px 24px;
+      width: 100%;
+    }
   }
 </style>
 
 <template>
-  <transition name="pane-slide">
-    <div class="kiln-toolbar-pane-form center large medium-height" v-if="hasCurrentModalForm" @click.stop>
-      <pane-header :title="headerTitle" :buttonClick="save" check="publish-check"></pane-header>
-      <section class="pane-form-wrapper">
-        <form @submit.prevent="save">
-          <div v-if="hasSections" class="pane-tabs-titles">
-            <ul class="form-sections-list">
-              <li v-for="(section, index) in sections">
-                <button type="button" class="pane-tabs-titles-list-trigger" :class="{ 'active' : isActive(index) }" @click.stop="selectTab(index)">
-                  <span class="pane-tab-title">{{ section.title }}</span>
-                </button>
-              </li>
-            </ul>
-            <!-- todo: add right arrow for scrolling -->
-          </div>
-          <div class="input-container" :class="hasSections ? 'pane-tabs-content' : 'pane-notabs-content'" v-for="(section, index) in sections" v-if="isActive(index)">
-            <field v-for="(field, fieldIndex) in section.fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
-          </div>
-          <button type="submit" class="hidden-submit" @click.stop></button>
-        </form>
-      </section>
-    </div>
+  <transition name="overlay-fade-resize" appear mode="out-in" :css="false" @before-ender="beforeEnter" @enter="enter" @leave="leave">
+    <form class="kiln-overlay-form" v-if="hasCurrentOverlayForm" :key="formKey" :style="{ top: formTop, left: formLeft }" @click.stop @submit.prevent="save">
+      <div class="form-header">
+        <h2 class="form-header-title">{{ formHeader }}</h2>
+        <ui-icon-button type="secondary" icon="check" ariaLabel="Save Form" tooltip="Save Form" @click.stop="save"></ui-icon-button>
+      </div>
+      <div class="form-contents">
+        <ui-tabs v-if="hasSections">
+          <ui-tab v-for="(section, index) in sections" :title="section.title">
+            <div class="input-container">
+              <field v-for="(field, fieldIndex) in section.fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]"></field>
+            </div>
+          </ui-tab>
+        </ui-tabs>
+        <div v-else class="input-container">
+          <field v-for="(field, fieldIndex) in sections[0].fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]"></field>
+        </div>
+        <button type="submit" class="hidden-submit" @click.stop></button>
+      </div>
+    </form>
   </transition>
 </template>
 
 <script>
   import _ from 'lodash';
+  import { find } from '@nymag/dom';
   import { mapState } from 'vuex';
-  import { displayProp, getComponentName } from '../utils/references';
+  import velocity from 'velocity-animate';
+  import { getSchema } from '../core-data/components';
   import label from '../utils/label';
   import field from './field.vue';
-  import paneHeader from '../panes/pane-header.vue';
+  import UiIconButton from 'keen/UiIconButton';
+  import UiTabs from 'keen/UiTabs';
+  import UiTab from 'keen/UiTab';
 
   export default {
     data() {
       return {
-        activeTab: 0
+        formTop: '50vh',
+        formLeft: '50vw'
       };
     },
     computed: mapState({
-      hasCurrentModalForm: (state) => !_.isNull(state.ui.currentForm) && !state.ui.currentForm.inline,
-      headerTitle: (state) => label(state.ui.currentForm.path, state.ui.currentForm.schema),
+      hasCurrentOverlayForm: (state) => !_.isNull(state.ui.currentForm) && !state.ui.currentForm.inline,
+      formKey: (state) => state.ui.currentForm.uri + state.ui.currentForm.path,
+      formHeader: (state) => label(state.ui.currentForm.path, state.ui.currentForm.schema),
       hasSections: (state) => state.ui.currentForm.schema.sections && state.ui.currentForm.schema.sections.length > 1,
       sections: (state) => {
         const sections = _.get(state, 'ui.currentForm.schema.sections');
@@ -96,31 +113,37 @@
         }
       },
       fields: (state) => state.ui.currentForm.fields,
-      schema: (state) => state.ui.currentForm.schema,
-      componentSchema: (state) => state.schemas[getComponentName(state.ui.currentForm.uri)]
+      schema: (state) => getSchema(state.ui.currentForm.uri)
     }),
-    watch: {
-      hasCurrentModalForm(val) {
-        if (!val) {
-          this.activeTab = 0; // reset active tab when form closes
-        }
-      }
-    },
     methods: {
+      beforeEnter(el) {
+        el.style.opacity = 0;
+      },
+      enter(el, done) {
+        const innerEl = find(el, '.form-contents');
+
+        velocity(el, { opacity: 1 }, { duration: 100 });
+        velocity(el, { width: 600 }, { duration: 280 });
+        velocity(innerEl, { opacity: 1 }, { delay: 325, duration: 50 });
+        velocity(el, { height: 300 }, { delay: 35, duration: 340, complete: done });
+      },
+      leave(el, done) {
+        const innerEl = find(el, '.form-contents');
+
+        velocity(el, { width: 100 }, { delay: 55, duration: 320 });
+        velocity(el, { height: 100 }, { duration: 320 });
+        velocity(innerEl, { opacity: 0 }, { duration: 50 });
+        velocity(el, { opacity: 0 }, { delay: 220, duration: 100, complete: done });
+      },
       save() {
         this.$store.dispatch('unfocus');
-      },
-      isActive(index) {
-        return this.activeTab === index;
-      },
-      selectTab(index) {
-        this.$store.commit('SWITCH_TAB', this.sections[index] && this.sections[index].title);
-        this.activeTab = index;
       }
     },
     components: {
       field,
-      'pane-header': paneHeader
+      UiIconButton,
+      UiTabs,
+      UiTab
     }
   };
 </script>

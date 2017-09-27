@@ -107,8 +107,8 @@ module.exports = {
       options: {
         loaders: {
           css: 'vue-style-loader!css-loader!postcss-loader',
-          sass: 'vue-style-loader!css-loader!postcss-loader!sass-loader?data=@import "styleguide/_keen-variables.scss";',
-          scss: 'vue-style-loader!css-loader!postcss-loader!sass-loader?data=@import "styleguide/_keen-variables.scss";',
+          sass: 'vue-style-loader!css-loader!postcss-loader!sass-loader?data=@import "styleguide/keen-variables.scss";',
+          scss: 'vue-style-loader!css-loader!postcss-loader!sass-loader?data=@import "styleguide/keen-variables.scss";',
           docs: docs.extract('raw-loader')
         }
       }

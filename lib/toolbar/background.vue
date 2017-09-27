@@ -70,14 +70,12 @@
     },
     computed: {
       displayBackground() {
-        var isOverlayForm = !isNull(this.$store.state.ui.currentForm) && !this.$store.state.ui.currentForm.inline,
-          paneIsOpen = !isNull(this.$store.state.ui.currentPane),
-          showbackground = isOverlayForm || paneIsOpen;
+        var paneIsOpen = !isNull(this.$store.state.ui.currentPane);
 
         // Toggle the `noscroll` class
-        toggleNoScroll(showbackground);
+        toggleNoScroll(paneIsOpen);
         // Return test
-        return showbackground;
+        return paneIsOpen;
       }
     },
     methods: {

@@ -3,6 +3,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import NProgress from 'vue-nprogress';
 import keycode from 'keycode';
+import velocity from 'velocity-animate';
 import differenceInMinutes from 'date-fns/difference_in_minutes';
 import store from './lib/core-data/store';
 import { decorateAll } from './lib/decorators';
@@ -18,7 +19,13 @@ import utilsAPI from './lib/utils/api';
 import { hasClickedFocusableEl } from './lib/decorators/focus';
 import { hasClickedSelectableEl } from './lib/decorators/select';
 import { META_PRESS, META_UNPRESS } from './lib/preloader/mutationTypes';
+import { standardCurve } from './lib/utils/references';
 import 'keen-ui/src/bootstrap'; // import this once, for KeenUI components
+import 'velocity-animate/velocity.ui.min.js'; // import this once, for velocity ui stuff
+
+// set animation defaults
+velocity.defaults.easing = standardCurve;
+velocity.defaults.queue = false;
 
 // TODO: Figure out saving/closing and reverting in panes
 import { CLOSE_PANE } from './lib/panes/mutationTypes';
