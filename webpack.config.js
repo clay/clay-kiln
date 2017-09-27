@@ -1,6 +1,6 @@
 const path = require('path'),
   ExtractTextPlugin = require('extract-text-webpack-plugin'),
-  docs = new ExtractTextPlugin('behaviors/README.md'),
+  docs = new ExtractTextPlugin('inputs/README.md'),
   styles = new ExtractTextPlugin('dist/clay-kiln-[name].css'),
   webpack = require('webpack'),
   LodashModuleReplacementPlugin = require('lodash-webpack-plugin'),

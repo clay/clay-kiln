@@ -75,7 +75,7 @@
       };
     },
     computed: mapState({
-      hasCurrentModalForm: (state) => !_.isNull(state.ui.currentForm) && state.ui.currentForm.schema[displayProp] !== 'inline',
+      hasCurrentModalForm: (state) => !_.isNull(state.ui.currentForm) && !state.ui.currentForm.inline,
       headerTitle: (state) => label(state.ui.currentForm.path, state.ui.currentForm.schema),
       hasSections: (state) => state.ui.currentForm.schema.sections && state.ui.currentForm.schema.sections.length > 1,
       sections: (state) => {

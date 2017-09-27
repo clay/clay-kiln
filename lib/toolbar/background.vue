@@ -47,7 +47,6 @@
 
 <script>
   import { isNull } from 'lodash';
-  import { displayProp } from '../utils/references';
 
   const noscrollClass = 'noscroll',
     htmlElement = document.documentElement;
@@ -59,7 +58,7 @@
   function toggleNoScroll(show) {
     if (show) {
       htmlElement.classList.add(noscrollClass);
-    } else if (!show && htmlElement.classList.contains(noscrollClass)){
+    } else if (!show && htmlElement.classList.contains(noscrollClass)) {
       htmlElement.classList.remove(noscrollClass);
     }
   }
@@ -67,11 +66,11 @@
   export default {
     props: [],
     data() {
-      return {}
+      return {};
     },
     computed: {
       displayBackground() {
-        var isOverlayForm = !isNull(this.$store.state.ui.currentForm) && this.$store.state.ui.currentForm.schema[displayProp] !== 'inline',
+        var isOverlayForm = !isNull(this.$store.state.ui.currentForm) && !this.$store.state.ui.currentForm.inline,
           paneIsOpen = !isNull(this.$store.state.ui.currentPane),
           showbackground = isOverlayForm || paneIsOpen;
 

@@ -25,7 +25,7 @@
   <section class="editor-inline" @click.stop="unsetInvalidDrag">
     <form @submit.prevent="save">
       <div class="input-container">
-        <field v-for="(field, index) in fieldNames" :class="{ 'first-field': index === 0 }" :name="field" :data="fields[field]" :schema="componentSchema[field]"></field>
+        <field class="first-field" :name="path" :data="data" :schema="schema"></field>
       </div>
       <button type="submit" class="hidden-submit" @click.stop></button>
     </form>
@@ -33,9 +33,8 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import _ from 'lodash';
   import store from '../core-data/store';
-  import { getComponentName } from '../utils/references';
   import field from './field.vue';
 
   export default {
@@ -43,12 +42,17 @@
       return {};
     },
     store,
-    computed: mapState({
-      fields: (state) => state.ui.currentForm.fields,
-      fieldNames: (state) => state.ui.currentForm.schema.fields || [state.ui.currentForm.path], // group or single field
-      schema: (state) => state.ui.currentForm.schema,
-      componentSchema: (state) => state.schemas[getComponentName(state.ui.currentForm.uri)]
-    }),
+    computed: {
+      path() {
+        return _.get(store, 'state.ui.currentForm.path');
+      },
+      data() {
+        return _.get(store, `state.ui.currentForm.fields['${this.path}']`);
+      },
+      schema() {
+        return _.get(store, 'state.ui.currentForm.schema');
+      }
+    },
     methods: {
       save() {
         store.dispatch('unfocus');
