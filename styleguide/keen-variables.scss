@@ -27,6 +27,7 @@ $z-index-level-6: $z-index-level-6;
 
 // layout / component variables
 $divider-color: $divider-color;
+$ui-modal-mask-background: rgba($pure-black, $modal-opacity);
 
 .ui-tooltip {
   font-family: $font-stack;

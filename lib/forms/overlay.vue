@@ -1,4 +1,5 @@
 <style lang="sass">
+  @import '../../styleguide/colors';
   @import '../../styleguide/forms';
   @import '../../styleguide/layers';
   @import '../../styleguide/cards';
@@ -8,7 +9,6 @@
     @include overlay-layer();
     @include card();
 
-    align-items: flex-start;
     // height is computed when rendering, so we can animate it
     height: auto;
     max-height: 100vh;
@@ -20,10 +20,13 @@
 
     .form-header {
       align-items: center;
+      background-color: $card-header-bg-color;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, .16);
       display: flex;
       flex: 0 0 auto;
+      height: 56px;
       justify-content: space-between;
-      padding: 24px 16px 16px;
+      padding: 0 24px;
       width: 100%;
     }
 
@@ -35,14 +38,27 @@
 
     .form-contents {
       // fade this in after form opens
+      align-self: flex-start;
+      flex: 1 1 auto;
+      // 100% minus form header height
+      height: calc(100% - 76px);
       opacity: 0;
       width: 100%;
+
+      .ui-tabs__body {
+        // input container already has padding
+        padding: 0;
+      }
     }
 
     .input-container {
       overflow: scroll;
-      padding: 16px 16px 24px;
+      padding: 16px 24px 24px;
       width: 100%;
+    }
+
+    .input-container-no-tabs {
+      padding-top: 0;
     }
   }
 </style>
@@ -52,17 +68,17 @@
     <form class="kiln-overlay-form" v-if="hasCurrentOverlayForm" :key="formKey" :style="{ top: formTop, left: formLeft }" @click.stop @submit.prevent="save">
       <div class="form-header">
         <h2 class="form-header-title">{{ formHeader }}</h2>
-        <ui-icon-button type="secondary" icon="check" ariaLabel="Save Form" tooltip="Save (ESC)" @click.stop="save"></ui-icon-button>
+        <ui-icon-button color="black" type="secondary" icon="check" ariaLabel="Save Form" tooltip="Save (ESC)" @click.stop="save"></ui-icon-button>
       </div>
       <div class="form-contents">
-        <ui-tabs v-if="hasSections">
+        <ui-tabs v-if="hasSections" fullwidth>
           <ui-tab v-for="(section, index) in sections" :title="section.title">
             <div class="input-container">
               <field v-for="(field, fieldIndex) in section.fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]"></field>
             </div>
           </ui-tab>
         </ui-tabs>
-        <div v-else class="input-container">
+        <div v-else class="input-container input-container-no-tabs">
           <field v-for="(field, fieldIndex) in sections[0].fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]"></field>
         </div>
         <button type="submit" class="hidden-submit" @click.stop></button>
@@ -141,14 +157,23 @@
     }),
     methods: {
       enter(el, done) {
-        const innerEl = find(el, '.form-contents'),
-          openHeight = el.offsetHeight;
+        this.$nextTick(() => {
+          // wait for children before calculating height
+          const innerEl = find(el, '.form-contents'),
+            openHeight = el.offsetHeight;
 
-        el.style.height = '100px'; // animate from 100px to auto height
-        velocity(el, { opacity: 1 }, { duration: 100 });
-        velocity(el, { width: 600 }, { duration: 280 });
-        velocity(innerEl, { opacity: 1 }, { delay: 325, duration: 50 });
-        velocity(el, { height: openHeight }, { delay: 35, duration: 340, complete: done });
+          el.style.height = '100px'; // animate from 100px to auto height
+          velocity(el, { opacity: 1 }, { duration: 100 });
+          velocity(el, { width: 600 }, { duration: 280 });
+          velocity(innerEl, { opacity: 1 }, { delay: 325, duration: 50 });
+          velocity(el, { height: openHeight }, { delay: 35, duration: 340, complete: () => {
+            // after animating, set top directly (and stop the transform)
+            // so tab switching won't move the form
+            el.style.top = `${el.getBoundingClientRect().top}px`;
+            el.style.transform = 'translateX(-50%)';
+            done();
+          } });
+        });
       },
       leave(el, done) {
         const innerEl = find(el, '.form-contents');

@@ -46,12 +46,12 @@
     :enforceMaxlength="args.enforceMaxlength"
     :label="label"
     :floatingLabel="true"
+    :help="args.help"
     :error="errorMessage"
     :disabled="isDisabled">
     <slot name="icon" v-if="hasButton">
       <component :is="args.attachedButton.name" :name="name" :data="data" :schema="schema" :args="args.attachedButton"></component>
     </slot>
-    <slot name="help" v-html="args.help"></slot>
   </ui-textbox>
 </template>
 

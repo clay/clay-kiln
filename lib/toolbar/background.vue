@@ -1,14 +1,14 @@
 <style lang="sass">
   @import '../../styleguide/colors';
   @import '../../styleguide/layers';
-  @import '../../styleguide/typography';
+  @import '../../styleguide/animations';
 
   $overlay-margin: 10vh;
 
   .editor-overlay-background {
     @include overlay-layer();
 
-    background-color: $overlay-background;
+    background-color: $ui-modal-mask-background;
     display: block;
     height: 100%;
     left: 0;
@@ -22,7 +22,7 @@
   }
 
   .fade-enter-active, .fade-leave-active {
-    transition: opacity 350ms ease-out;
+    transition: opacity 350ms $standard-curve;
   }
 
   .fade-enter, .fade-leave-to {
@@ -46,7 +46,7 @@
 
 
 <script>
-  import { isNull } from 'lodash';
+  import _ from 'lodash';
 
   const noscrollClass = 'noscroll',
     htmlElement = document.documentElement;
@@ -70,12 +70,14 @@
     },
     computed: {
       displayBackground() {
-        var paneIsOpen = !isNull(this.$store.state.ui.currentPane);
+        const formIsOpen = _.get(this.$store, 'state.ui.currentForm') && !_.get(this.$store, 'state.ui.currentForm.inline'),
+          paneIsOpen = !_.isNull(this.$store.state.ui.currentPane),
+          shouldDisplay = formIsOpen || paneIsOpen;
 
         // Toggle the `noscroll` class
-        toggleNoScroll(paneIsOpen);
+        toggleNoScroll(shouldDisplay);
         // Return test
-        return paneIsOpen;
+        return shouldDisplay;
       }
     },
     methods: {

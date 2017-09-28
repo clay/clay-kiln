@@ -47,7 +47,7 @@ $font-stack: 'Noto Sans', Arial, sans-serif;
   @include kiln-copy();
 
   color: $text-color;
-  font-size: 20px;
+  font-size: 18px;
   letter-spacing: 0.005em;
   line-height: 20px; // single line
 }

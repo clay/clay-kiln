@@ -14,6 +14,7 @@ $text-opacity: .87;
 $text-alt-opacity: .54;
 $text-hint-opacity: .38;
 $divider-opacity: .12;
+$modal-opacity: .4;
 
 // typographic colors
 $text-color: rgba($pure-black, $text-opacity);
@@ -24,6 +25,7 @@ $text-disabled-color: $text-hint-color;
 // layout colors
 $divider-color: rgba($pure-black, $divider-opacity);
 $card-bg-color: #fff;
+$card-header-bg-color: #f5f5f5;
 
 // OLD COLORS:
 
