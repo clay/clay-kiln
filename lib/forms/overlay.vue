@@ -9,7 +9,8 @@
     @include card();
 
     align-items: flex-start;
-    height: 100px;
+    // height is computed when rendering, so we can animate it
+    height: auto;
     left: 50vw;
     max-height: 100vh;
     max-width: 100vw;
@@ -37,6 +38,7 @@
     .form-contents {
       // fade this in after form opens
       opacity: 0;
+      width: 100%;
     }
 
     .input-container {
@@ -48,11 +50,11 @@
 </style>
 
 <template>
-  <transition name="overlay-fade-resize" appear mode="out-in" :css="false" @before-ender="beforeEnter" @enter="enter" @leave="leave">
+  <transition name="overlay-fade-resize" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
     <form class="kiln-overlay-form" v-if="hasCurrentOverlayForm" :key="formKey" :style="{ top: formTop, left: formLeft }" @click.stop @submit.prevent="save">
       <div class="form-header">
         <h2 class="form-header-title">{{ formHeader }}</h2>
-        <ui-icon-button type="secondary" icon="check" ariaLabel="Save Form" tooltip="Save Form" @click.stop="save"></ui-icon-button>
+        <ui-icon-button type="secondary" icon="check" ariaLabel="Save Form" tooltip="Save (ESC)" @click.stop="save"></ui-icon-button>
       </div>
       <div class="form-contents">
         <ui-tabs v-if="hasSections">
@@ -116,16 +118,15 @@
       schema: (state) => getSchema(state.ui.currentForm.uri)
     }),
     methods: {
-      beforeEnter(el) {
-        el.style.opacity = 0;
-      },
       enter(el, done) {
-        const innerEl = find(el, '.form-contents');
+        const innerEl = find(el, '.form-contents'),
+          openHeight = el.offsetHeight;
 
+        el.style.height = '100px'; // animate from 100px to auto height
         velocity(el, { opacity: 1 }, { duration: 100 });
         velocity(el, { width: 600 }, { duration: 280 });
         velocity(innerEl, { opacity: 1 }, { delay: 325, duration: 50 });
-        velocity(el, { height: 300 }, { delay: 35, duration: 340, complete: done });
+        velocity(el, { height: openHeight }, { delay: 35, duration: 340, complete: done });
       },
       leave(el, done) {
         const innerEl = find(el, '.form-contents');

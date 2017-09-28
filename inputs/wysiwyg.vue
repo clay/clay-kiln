@@ -5,10 +5,10 @@
 
   ## Arguments
 
-  * **buttons** _(optional)_  array of button names (strings) or groups (arrays) for text styling, passed directly into Quill (defaults to "remove formatting")
-  * **type** _(optional)_ `single-line`, `multi-line`, or `multi-component`. (defaults to `single-line`)
-  * **pseudoBullet** _(optional)_ boolean to enable <kbd>tab</kbd> to create pseudo bullet points
-  * **paste** _(optional)_ array of paste rules for parsing pasted content and creating new components
+  * **buttons** - array of button names (strings) or groups (arrays) for text styling, passed directly into Quill (defaults to "remove formatting")
+  * **type** - `single-line`, `multi-line`, or `multi-component`. (defaults to `single-line`)
+  * **pseudoBullet** - boolean to enable <kbd>tab</kbd> to create pseudo bullet points
+  * **paste** - array of paste rules for parsing pasted content and creating new components
 
   The buttons allowed in our wysiwyg behavior are [defined in Quill's documentation](http://quilljs.com/docs/modules/toolbar/)
 

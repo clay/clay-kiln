@@ -5,10 +5,10 @@ A multi-line text input which allows a rich editing experience. Uses [Quill](htt
 
 ## Arguments
 
-* **buttons** _(optional)_  array of button names (strings) or groups (arrays) for text styling, passed directly into Quill (defaults to "remove formatting")
-* **type** _(optional)_ `single-line`, `multi-line`, or `multi-component`. (defaults to `single-line`)
-* **pseudoBullet** _(optional)_ boolean to enable <kbd>tab</kbd> to create pseudo bullet points
-* **paste** _(optional)_ array of paste rules for parsing pasted content and creating new components
+* **buttons** - array of button names (strings) or groups (arrays) for text styling, passed directly into Quill (defaults to "remove formatting")
+* **type** - `single-line`, `multi-line`, or `multi-component`. (defaults to `single-line`)
+* **pseudoBullet** - boolean to enable <kbd>tab</kbd> to create pseudo bullet points
+* **paste** - array of paste rules for parsing pasted content and creating new components
 
 The buttons allowed in our wysiwyg behavior are [defined in Quill's documentation](http://quilljs.com/docs/modules/toolbar/)
 
@@ -73,3 +73,35 @@ text:
         component: clay-paragraph
         field: text
 ```
+
+# text
+
+A basic text input. Can be single line or multi-line. Uses the float label pattern.
+
+## Arguments
+
+* **type** - defaults to `text` if not defined. Set to `multi-line` for a multi-line text area
+* **step** - define step increments (for numberical inputs only)
+* **enforceMaxlength** - prevent user from typing more characters than the maximum allowed (`from validate.max`)
+
+### Shared Arguments
+
+This input shares certain arguments with other inputs:
+
+* **help** - description / helper text for the field
+* **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
+* **validate** - an object that contains pre-publish validation rules:
+
+* **validate.required** - either `true` or an object that described the conditions that should make this field required
+* **validate.min** - minimum number (for `type=numer`) or length (for other types) that the field must meet
+* **validate.max** - maximum number (for `type=number`) or length (for other types) that the field must not exceed
+* **validate.pattern** - regex pattern
+
+Validation rules may also have custom error messages, that will appear in the same place as the help text. If you do not specify a message, default error messages will appear.
+
+* **validate.requiredMessage** - will appear when required validation fails
+* **validate.minMessage** - will appear when minimum validation fails
+* **validate.maxMessage** - will appear when maximum validation fails
+* **validate.patternMessage** - will appear when pattern validation fails (very handy to set, as the default message is vague)
+
+Note: labels are pulled from the field's `_label` property.
