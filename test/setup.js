@@ -3,7 +3,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { beforeEachHooks, afterEachHooks, mount } from 'vue-unit/src';
 
-const testsContext = require.context('../', true, /^\.\/(lib|behaviors)\/.*?\.test\.js$/);
+const testsContext = require.context('../', true, /^\.\/(lib|behaviors|inputs)\/.*?\.test\.js$/);
 
 let defaultStore;
 
