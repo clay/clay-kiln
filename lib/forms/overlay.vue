@@ -11,12 +11,10 @@
     align-items: flex-start;
     // height is computed when rendering, so we can animate it
     height: auto;
-    left: 50vw;
     max-height: 100vh;
     max-width: 100vw;
     opacity: 0;
     position: fixed;
-    top: 50vh;
     transform: translateX(-50%) translateY(-50%);
     width: 100px;
 
@@ -87,14 +85,38 @@
 
   export default {
     data() {
-      return {
-        formTop: '50vh',
-        formLeft: '50vw'
-      };
+      return {};
     },
     computed: mapState({
       hasCurrentOverlayForm: (state) => !_.isNull(state.ui.currentForm) && !state.ui.currentForm.inline,
       formKey: (state) => state.ui.currentForm.uri + state.ui.currentForm.path,
+      formTop: (state) => {
+        const path = state.ui.currentForm.path;
+
+        if (path === 'settings') {
+          return '50vh'; // open settings forms in the center of the viewport
+        } else {
+          const val = _.get(state, 'ui.currentForm.pos.y'),
+            doc = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+          return val ? `${val / doc * 100}vh` : '50vh';
+        }
+      },
+      formLeft: (state) => {
+        const path = state.ui.currentForm.path,
+          val = _.get(state, 'ui.currentForm.pos.x');
+
+        if (path === 'settings') {
+          return '50vw'; // open settings forms in the center of the viewport
+        } else if (val) {
+          const doc = Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
+            isInsideViewport = val > 320 && val < doc - 320; // 20px of space on either side, otherwise we center the form
+
+          return isInsideViewport ? `${val / doc * 100}vw` : '50vw';
+        } else {
+          return '50vw';
+        }
+      },
       formHeader: (state) => label(state.ui.currentForm.path, state.ui.currentForm.schema),
       hasSections: (state) => state.ui.currentForm.schema.sections && state.ui.currentForm.schema.sections.length > 1,
       sections: (state) => {
