@@ -1,3 +1,5 @@
+@import '~keen-ui/src/styles/md-colors'; // material design color palette
+
 // states (used by progress bar, status message, publish button)
 $draft: #c7b488;
 $scheduled: #cb8d34;
@@ -9,6 +11,8 @@ $save: #229ed3;
 
 // base colors and opacities
 $pure-black: #000;
+$brand-primary-color: $save;
+$brand-accent-color: $published;
 
 $text-opacity: .87;
 $text-alt-opacity: .54;

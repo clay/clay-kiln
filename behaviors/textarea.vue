@@ -10,11 +10,7 @@
 </docs>
 
 <style lang="sass">
-  @import '../styleguide/inputs';
-
   .editor-textarea {
-    @include input();
-
     max-width: 100%; // prevents resize
     min-height: 40px;
   }

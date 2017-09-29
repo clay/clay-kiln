@@ -73,7 +73,7 @@
     :floatingLabel="true"
     :help="args.help"
     :error="errorMessage"
-    :disabled="isDisabled"
+    :disabled="disabled"
     iconPosition="right"
     @input="update"
     @keydown-enter="closeFormOnEnter">
@@ -94,7 +94,7 @@
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {
-        isDisabled: false
+        disabled: false
       };
     },
     computed: {

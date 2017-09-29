@@ -101,17 +101,32 @@ $font-stack: 'Noto Sans', Arial, sans-serif;
   @include type-subheading();
 }
 
-// Form input labels
+// text in form inputs
 @mixin input-text {
   @include type-body();
+
+  font-size: 16px;
+  letter-spacing: normal;
+  line-height: normal;
 }
 
 // form labels
 @mixin input-label {
   @include type-body();
 
-  font-weight: bold;
-  text-transform: uppercase;
+  font-size: 15px;
+  letter-spacing: normal;
+  line-height: normal;
+  margin-bottom: 0;
+  top: 26px; // float label
+}
+
+// form help / error text
+@mixin input-help {
+  @include type-body();
+
+  color: $text-alt-color;
+  line-height: 1.2;
 }
 
 // placeholder typography

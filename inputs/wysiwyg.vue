@@ -73,12 +73,58 @@
           component: clay-paragraph
           field: text
   ```
+
+  ### Shared Arguments
+
+  This input shares certain arguments with other inputs:
+
+  * **help** - description / helper text for the field
+  * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
+  * **validate** - an object that contains pre-publish validation rules:
+
+  * **validate.required** - either `true` or an object that described the conditions that should make this field required
+  * **validate.min** - minimum number (for `type=numer`) or length (for other types) that the field must meet
+  * **validate.max** - maximum number (for `type=number`) or length (for other types) that the field must not exceed
+  * **validate.pattern** - regex pattern
+
+  Validation rules may also have custom error messages, that will appear in the same place as the help text. If you do not specify a message, default error messages will appear.
+
+  * **validate.requiredMessage** - will appear when required validation fails
+  * **validate.minMessage** - will appear when minimum validation fails
+  * **validate.maxMessage** - will appear when maximum validation fails
+  * **validate.patternMessage** - will appear when pattern validation fails (very handy to set, as the default message is vague)
+
+  ### Conditional Required Arguments
+
+  * **field** to compare against (inside complex-list item, current form, or current component)
+  * **operator** _(optional)_ to use for the comparison
+  * **value** _(optional)_ to compare the field against
+
+  If neither `operator` nor `value` are specified, this will make the current field required if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality.
+
+  Operators:
+
+  * `===`
+  * `!==`
+  * `<`
+  * `>`
+  * `<=`
+  * `>=`
+  * `typeof`
+  * `regex`
+  * `empty` (only checks field data, no value needed)
+  * `not-empty` (only checks field data, no value needed)
+  * `truthy` (only checks field data, no value needed)
+  * `falsy` (only checks field data, no value needed)
+
+  _Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story` (don't worry about spaces!)
+
+  Note: labels are pulled from the field's `_label` property.
 </docs>
 
 <style lang="sass">
   @import '../styleguide/colors';
   @import '../styleguide/typography';
-  @import '../styleguide/inputs';
   @import '~quill/dist/quill.core.css';
   @import '~quill/dist/quill.bubble.css';
 
@@ -100,21 +146,10 @@
     background-color: $text-selection;
   }
 
-  .wysiwyg-input.styled {
-    @include input();
-
-    padding: 0;
-    white-space: normal;
-  }
-
   // quill overrides
   .ql-editor {
     overflow: visible;
     padding: 0;
-  }
-
-  .wysiwyg-input.styled .ql-editor {
-    padding: 13.5px 10px;
   }
 
   .ql-container.ql-bubble:not(.ql-disabled) a {
@@ -134,6 +169,7 @@
 
   // toolbar phrase button
   .kiln-phrase-button {
+    // todo: make buttons more material-design-y
     @include normal-text();
 
     color: #ccc;
@@ -158,7 +194,27 @@
 </style>
 
 <template>
-  <div class="wysiwyg-input" :class="{ styled: isStyled }"></div>
+  <div class="wysiwyg-input" :class="classes">
+    <div class="ui-textbox__icon-wrapper" v-if="isStyled && hasButton">
+      <component :is="args.attachedButton.name" :name="name" :data="data" :schema="schema" :args="args.attachedButton"></component>
+    </div>
+
+    <div v-if="isStyled" class="ui-textbox__content">
+      <label class="ui-textbox__label">
+        <div class="ui-textbox__label-text" :class="labelClasses">{{ label }}</div>
+        <div class="ui-textbox__input wysiwyg-content" ref="input"></div>
+      </label>
+
+      <div class="ui-textbox__feedback" v-if="hasFeedback || maxLength">
+        <div class="ui-textbox__feedback-text" v-if="showError">{{ error }}</div>
+        <div class="ui-textbox__feedback-text" v-else-if="showHelp">{{ args.help }}</div>
+        <div class="ui-textbox__counter" v-if="maxLength">
+            {{ valueLength + '/' + maxLength }}
+        </div>
+      </div>
+    </div>
+    <div v-else class="wysiwyg-content"></div>
+  </div>
 </template>
 
 <script>
@@ -168,7 +224,8 @@
   import { getComponentName, refAttr, editAttr } from '../lib/utils/references';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { getPrevComponent, getNextComponent, getParentComponent, getComponentEl } from '../lib/utils/component-elements';
-  import { isFirstField } from '../lib/forms/field-helpers';
+  import { isFirstField, shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
+  import label from '../lib/utils/label';
   import { sanitizeInlineHTML, sanitizeMultiComponentHTML, sanitizeBlockHTML } from './wysiwyg-sanitize';
   import { splitParagraphs, matchComponents, generatePasteRules } from './wysiwyg-paste';
   import { renderDeltas, generateDeltas, deltaEndsWith, matchLineBreak, matchParagraphs } from './wysiwyg-deltas';
@@ -233,7 +290,9 @@
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {
-        editorData: this.data || ''
+        editorData: this.data || '',
+        isActive: false,
+        isTouched: false
       };
     },
     computed: {
@@ -248,6 +307,68 @@
       },
       isMultiComponent() {
         return this.args.type === 'multi-component';
+      },
+      isRequired() {
+        return _.get(this.args, 'validate.required') === true || shouldBeRequired(this.args.validate, this.$store, this.name);
+      },
+      label() {
+        return `${label(this.name, this.schema)}${this.isRequired ? '*' : ''}`;
+      },
+      maxLength() {
+        return _.get(this.args, 'validate.max') || 0;
+      },
+      hasButton() {
+        const button = _.get(this, 'args.attachedButton');
+
+        if (button && !_.get(window, `kiln.inputs['${button.name}']`)) {
+          console.warn(`Attached button (${button.name}) for '${this.name}' not found!`);
+          return false;
+        } else if (button) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      error() {
+        return getValidationError(this.data || '', this.args.validate, this.$store, this.name);
+      },
+      isInvalid() {
+        return !!this.error;
+      },
+      classes() {
+        return [
+          { 'ui-textbox': this.isStyled },
+          { 'ui-textbox--icon-position-right': this.isStyled && this.hasButton },
+          { 'is-active': this.isStyled && this.isActive },
+          { 'is-invalid': this.isStyled && this.isInvalid },
+          { 'is-touched': this.isStyled && this.isTouched },
+          { 'is-multi-line': this.isStyled && this.isMultiLine },
+          { 'has-counter': this.isStyled && this.maxLength },
+          { 'is-disabled': this.isStyled && this.disabled },
+          { 'has-label': this.isStyled },
+          { 'has-floating-label': this.isStyled }
+        ];
+      },
+      labelClasses() {
+        return {
+          'is-inline': this.isStyled && this.isLabelInline,
+          'is-floating': this.isStyled && !this.isLabelInline
+        };
+      },
+      isLabelInline() {
+        return (this.data || '').length === 0 && !this.isActive;
+      },
+      valueLength() {
+        return (this.data || '').length;
+      },
+      hasFeedback() {
+        return this.args.help || this.error;
+      },
+      showError() {
+        return this.isInvalid && this.error;
+      },
+      showHelp() {
+        return !this.showError && this.args.help;
       }
     },
     watch: {
@@ -280,7 +401,7 @@
         buttons = _.map(this.args.buttons, (button) => parsePhraseButton(button)).concat(['clean']),
         store = this.$store,
         name = this.name,
-        el = this.$el,
+        el = find(this.$el, '.wysiwyg-content'),
         appendText = _.get(store, 'state.ui.currentForm.appendText'),
         parent = _.get(store, 'state.ui.currentForm.el') && getParentComponent(getComponentEl(_.get(store, 'state.ui.currentForm.el'))),
         // some useful details about the current component, range, etc
@@ -658,6 +779,14 @@
         });
       }
 
+      editor.on('selection-change', (range) => {
+        if (range) {
+          this.onFocus();
+        } else {
+          this.onBlur();
+        }
+      });
+
       editor.on('text-change', function onTextChange() {
         let html;
 
@@ -684,6 +813,18 @@
     destroyed() {
       delete this.editor; // remove quill reference so it can be garbage collected
     },
-    slot: 'main'
+    methods: {
+      onFocus() {
+        this.isActive = true;
+      },
+      onBlur() {
+        this.isActive = false;
+
+        if (!this.isTouched) {
+          this.isTouched = true;
+        }
+      }
+    },
+    components: window.kiln.inputs // for attached button
   };
 </script>

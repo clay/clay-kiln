@@ -17,11 +17,9 @@
 </docs>
 
 <style lang="sass">
-  @import '../styleguide/inputs';
   @import '~codemirror/lib/codemirror.css';
 
   .CodeMirror {
-    @include input();
 
     font-family: monospace;
     padding: 0;

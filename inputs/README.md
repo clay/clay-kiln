@@ -74,6 +74,53 @@ text:
         field: text
 ```
 
+### Shared Arguments
+
+This input shares certain arguments with other inputs:
+
+* **help** - description / helper text for the field
+* **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
+* **validate** - an object that contains pre-publish validation rules:
+
+* **validate.required** - either `true` or an object that described the conditions that should make this field required
+* **validate.min** - minimum number (for `type=numer`) or length (for other types) that the field must meet
+* **validate.max** - maximum number (for `type=number`) or length (for other types) that the field must not exceed
+* **validate.pattern** - regex pattern
+
+Validation rules may also have custom error messages, that will appear in the same place as the help text. If you do not specify a message, default error messages will appear.
+
+* **validate.requiredMessage** - will appear when required validation fails
+* **validate.minMessage** - will appear when minimum validation fails
+* **validate.maxMessage** - will appear when maximum validation fails
+* **validate.patternMessage** - will appear when pattern validation fails (very handy to set, as the default message is vague)
+
+### Conditional Required Arguments
+
+* **field** to compare against (inside complex-list item, current form, or current component)
+* **operator** _(optional)_ to use for the comparison
+* **value** _(optional)_ to compare the field against
+
+If neither `operator` nor `value` are specified, this will make the current field required if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality.
+
+Operators:
+
+* `===`
+* `!==`
+* `<`
+* `>`
+* `<=`
+* `>=`
+* `typeof`
+* `regex`
+* `empty` (only checks field data, no value needed)
+* `not-empty` (only checks field data, no value needed)
+* `truthy` (only checks field data, no value needed)
+* `falsy` (only checks field data, no value needed)
+
+_Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story` (don't worry about spaces!)
+
+Note: labels are pulled from the field's `_label` property.
+
 # text
 
 A basic text input. Can be single line or multi-line. Uses the float label pattern.

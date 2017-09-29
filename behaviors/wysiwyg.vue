@@ -78,7 +78,6 @@
 <style lang="sass">
   @import '../styleguide/colors';
   @import '../styleguide/typography';
-  @import '../styleguide/inputs';
   @import '~quill/dist/quill.core.css';
   @import '~quill/dist/quill.bubble.css';
 
@@ -101,8 +100,6 @@
   }
 
   .wysiwyg-input.styled {
-    @include input();
-
     padding: 0;
     white-space: normal;
   }
