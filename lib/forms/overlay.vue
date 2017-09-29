@@ -10,23 +10,25 @@
     @include card();
 
     // height is computed when rendering, so we can animate it
+    display: block;
     height: auto;
     max-height: 100vh;
     max-width: 100vw;
     opacity: 0;
     position: fixed;
     transform: translateX(-50%) translateY(-50%);
-    width: 100px;
+    width: 600px;
 
     .form-header {
       align-items: center;
       background-color: $card-header-bg-color;
       box-shadow: 0 1px 1px rgba(0, 0, 0, .16);
       display: flex;
-      flex: 0 0 auto;
       height: 56px;
       justify-content: space-between;
+      opacity: 0;
       padding: 0 24px;
+      position: relative;
       width: 100%;
     }
 
@@ -38,14 +40,19 @@
 
     .form-contents {
       // fade this in after form opens
-      align-self: flex-start;
-      flex: 1 1 auto;
-      // 100% minus form header height
-      height: calc(100% - 76px);
+      display: block;
+      height: auto;
       opacity: 0;
+      position: relative;
       width: 100%;
 
+      .ui-tabs {
+        // input container already has padding
+        margin: 0;
+      }
+
       .ui-tabs__body {
+        border: none;
         // input container already has padding
         padding: 0;
       }
@@ -55,10 +62,6 @@
       overflow: scroll;
       padding: 16px 24px 24px;
       width: 100%;
-    }
-
-    .input-container-no-tabs {
-      padding-top: 0;
     }
   }
 </style>
@@ -71,14 +74,14 @@
         <ui-icon-button color="black" type="secondary" icon="check" ariaLabel="Save Form" tooltip="Save (ESC)" @click.stop="save"></ui-icon-button>
       </div>
       <div class="form-contents">
-        <ui-tabs v-if="hasSections" fullwidth>
+        <ui-tabs v-if="hasSections" fullwidth ref="tabs">
           <ui-tab v-for="(section, index) in sections" :title="section.title">
             <div class="input-container">
               <field v-for="(field, fieldIndex) in section.fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]"></field>
             </div>
           </ui-tab>
         </ui-tabs>
-        <div v-else class="input-container input-container-no-tabs">
+        <div v-else class="input-container">
           <field v-for="(field, fieldIndex) in sections[0].fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]"></field>
         </div>
         <button type="submit" class="hidden-submit" @click.stop></button>
@@ -101,7 +104,9 @@
 
   export default {
     data() {
-      return {};
+      return {
+        height: this.$el ? this.$el.getBoundingClientRect().height : 0
+      };
     },
     computed: mapState({
       hasCurrentOverlayForm: (state) => !_.isNull(state.ui.currentForm) && !state.ui.currentForm.inline,
@@ -133,10 +138,10 @@
           return '50vw';
         }
       },
-      formHeader: (state) => label(state.ui.currentForm.path, state.ui.currentForm.schema),
+      formHeader: (state) => state.ui.currentForm.path && label(state.ui.currentForm.path, state.ui.currentForm.schema),
       hasSections: (state) => state.ui.currentForm.schema.sections && state.ui.currentForm.schema.sections.length > 1,
       sections: (state) => {
-        const sections = _.get(state, 'ui.currentForm.schema.sections');
+        const sections = state.ui.currentForm.schema.sections;
 
         if (!_.isEmpty(sections)) {
           return _.map(sections, (section) => {
@@ -158,28 +163,32 @@
     methods: {
       enter(el, done) {
         this.$nextTick(() => {
-          // wait for children before calculating height
-          const innerEl = find(el, '.form-contents'),
-            openHeight = el.offsetHeight;
+          const headerEl = find(el, '.form-header'),
+            innerEl = find(el, '.form-contents'),
+            finalHeight = el.clientHeight;
 
-          el.style.height = '100px'; // animate from 100px to auto height
+          el.style.height = '100px'; // animate from 100px to auto height (auto)
+          el.style.width = '100px'; // animate from 100px to auto width (600px)
           velocity(el, { opacity: 1 }, { duration: 100 });
           velocity(el, { width: 600 }, { duration: 280 });
+          velocity(headerEl, { opacity: 1 }, { delay: 325, duration: 50 });
           velocity(innerEl, { opacity: 1 }, { delay: 325, duration: 50 });
-          velocity(el, { height: openHeight }, { delay: 35, duration: 340, complete: () => {
-            // after animating, set top directly (and stop the transform)
-            // so tab switching won't move the form
-            el.style.top = `${el.getBoundingClientRect().top}px`;
-            el.style.transform = 'translateX(-50%)';
+          velocity(el, { height: finalHeight }, { delay: 35, duration: 340, complete: () => {
+            if (this.$refs.tabs) {
+              // manually reset the initial width of the indicator, see https://github.com/JosephusPaye/Keen-UI/issues/328
+              this.$refs.tabs.refreshIndicator();
+            }
             done();
           } });
         });
       },
       leave(el, done) {
-        const innerEl = find(el, '.form-contents');
+        const headerEl = find(el, '.form-header'),
+          innerEl = find(el, '.form-contents');
 
         velocity(el, { width: 100 }, { delay: 55, duration: 320 });
         velocity(el, { height: 100 }, { duration: 320 });
+        velocity(headerEl, { opacity: 0 }, { duration: 50 });
         velocity(innerEl, { opacity: 0 }, { duration: 50 });
         velocity(el, { opacity: 0 }, { delay: 220, duration: 100, complete: done });
       },
