@@ -105,24 +105,12 @@
   export default {
     data() {
       return {
-        height: this.$el ? this.$el.getBoundingClientRect().height : 0
+        formTop: '50vh'
       };
     },
     computed: mapState({
       hasCurrentOverlayForm: (state) => !_.isNull(state.ui.currentForm) && !state.ui.currentForm.inline,
       formKey: (state) => state.ui.currentForm.uri + state.ui.currentForm.path,
-      formTop: (state) => {
-        const path = state.ui.currentForm.path;
-
-        if (path === 'settings') {
-          return '50vh'; // open settings forms in the center of the viewport
-        } else {
-          const val = _.get(state, 'ui.currentForm.pos.y'),
-            doc = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-
-          return val ? `${val / doc * 100}vh` : '50vh';
-        }
-      },
       formLeft: (state) => {
         const path = state.ui.currentForm.path,
           val = _.get(state, 'ui.currentForm.pos.x');
@@ -162,11 +150,25 @@
     }),
     methods: {
       enter(el, done) {
+        const path = _.get(this.$store, 'state.ui.currentForm.path'),
+          posY = _.get(this.$store, 'state.ui.currentForm.pos.y'),
+          docHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
         this.$nextTick(() => {
           const headerEl = find(el, '.form-header'),
             innerEl = find(el, '.form-contents'),
             finalHeight = el.clientHeight;
 
+          if (path === 'settings' || !posY) {
+            // set top position of form once we know how tall it should be,
+            // to prevent overflowing the top/bottom of the viewport
+            this.formTop = '50vh';
+          } else {
+            const heightPlusMargin = finalHeight / 2 + 20,
+              isInsideViewport = posY > heightPlusMargin && posY < docHeight - heightPlusMargin;
+
+            this.formTop = isInsideViewport ? `${posY / docHeight * 100}vh` : '50vh';
+          }
           el.style.height = '100px'; // animate from 100px to auto height (auto)
           el.style.width = '100px'; // animate from 100px to auto width (600px)
           velocity(el, { opacity: 1 }, { duration: 100 });
