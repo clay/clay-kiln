@@ -104,4 +104,29 @@ Validation rules may also have custom error messages, that will appear in the sa
 * **validate.maxMessage** - will appear when maximum validation fails
 * **validate.patternMessage** - will appear when pattern validation fails (very handy to set, as the default message is vague)
 
+### Conditional Required Arguments
+
+* **field** to compare against (inside complex-list item, current form, or current component)
+* **operator** _(optional)_ to use for the comparison
+* **value** _(optional)_ to compare the field against
+
+If neither `operator` nor `value` are specified, this will make the current field required if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality.
+
+Operators:
+
+* `===`
+* `!==`
+* `<`
+* `>`
+* `<=`
+* `>=`
+* `typeof`
+* `regex`
+* `empty` (only checks field data, no value needed)
+* `not-empty` (only checks field data, no value needed)
+* `truthy` (only checks field data, no value needed)
+* `falsy` (only checks field data, no value needed)
+
+_Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story` (don't worry about spaces!)
+
 Note: labels are pulled from the field's `_label` property.

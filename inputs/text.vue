@@ -29,6 +29,31 @@
   * **validate.maxMessage** - will appear when maximum validation fails
   * **validate.patternMessage** - will appear when pattern validation fails (very handy to set, as the default message is vague)
 
+  ### Conditional Required Arguments
+
+  * **field** to compare against (inside complex-list item, current form, or current component)
+  * **operator** _(optional)_ to use for the comparison
+  * **value** _(optional)_ to compare the field against
+
+  If neither `operator` nor `value` are specified, this will make the current field required if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality.
+
+  Operators:
+
+  * `===`
+  * `!==`
+  * `<`
+  * `>`
+  * `<=`
+  * `>=`
+  * `typeof`
+  * `regex`
+  * `empty` (only checks field data, no value needed)
+  * `not-empty` (only checks field data, no value needed)
+  * `truthy` (only checks field data, no value needed)
+  * `falsy` (only checks field data, no value needed)
+
+  _Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story` (don't worry about spaces!)
+
   Note: labels are pulled from the field's `_label` property.
 </docs>
 
@@ -42,13 +67,16 @@
     :min="min"
     :max="max"
     :step="step"
-    :maxLength="maxLength"
+    :maxlength="maxLength"
     :enforceMaxlength="args.enforceMaxlength"
     :label="label"
     :floatingLabel="true"
     :help="args.help"
     :error="errorMessage"
-    :disabled="isDisabled">
+    :disabled="isDisabled"
+    iconPosition="right"
+    @input="update"
+    @keydown-enter="closeFormOnEnter">
     <slot name="icon" v-if="hasButton">
       <component :is="args.attachedButton.name" :name="name" :data="data" :schema="schema" :args="args.attachedButton"></component>
     </slot>
@@ -57,18 +85,15 @@
 
 <script>
   import _ from 'lodash';
-  import keycode from 'keycode';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
-  import { setCaret, isFirstField } from '../lib/forms/field-helpers';
-  import { labelProp } from '../lib/utils/references';
+  import { setCaret, isFirstField, shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
+  import label from '../lib/utils/label';
   import UiTextbox from 'keen/UiTextbox';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {
-        isInvalid: false,
-        errorMessage: null,
         isDisabled: false
       };
     },
@@ -84,7 +109,7 @@
         return this.args.type === 'multi-line';
       },
       isRequired() {
-        return _.get(this.args, 'validate.required') === true; // todo: conditional required
+        return _.get(this.args, 'validate.required') === true || shouldBeRequired(this.args.validate, this.$store, this.name);
       },
       min() {
         return _.includes(['number', 'range'], this.args.type) ? _.get(this.args, 'validate.min') : 0;
@@ -95,14 +120,11 @@
       step() {
         return this.args.step ? this.args.step.toString() : 'any';
       },
-      minLength() {
-        return !_.includes(['number', 'range'], this.args.type) ? _.get(this.args, 'validate.min') : 0;
-      },
       maxLength() {
         return !_.includes(['number', 'range'], this.args.type) ? _.get(this.args, 'validate.max') : 0;
       },
       label() {
-        return this.schema[labelProp];
+        return `${label(this.name, this.schema)}${this.isRequired ? '*' : ''}`;
       },
       hasButton() {
         const button = _.get(this, 'args.attachedButton');
@@ -115,20 +137,22 @@
         } else {
           return false;
         }
+      },
+      errorMessage() {
+        return getValidationError(this.data, this.args.validate, this.$store, this.name);
+      },
+      isInvalid() {
+        return !!this.errorMessage;
       }
     },
     methods: {
       // every time the value of the input changes, update the store
-      update(e) {
-        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: e.target.value });
+      update(val) {
+        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: val });
       },
-      closeFormOnEnter(e) {
-        const key = keycode(e);
-
-        if (key === 'enter') {
-          // close form when hitting enter in text fields
-          this.$store.dispatch('unfocus');
-        }
+      closeFormOnEnter() {
+        // close form when hitting enter in text fields
+        this.$store.dispatch('unfocus');
       }
     },
     mounted() {
