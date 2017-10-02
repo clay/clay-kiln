@@ -22,6 +22,8 @@
     .form-header {
       align-items: center;
       background-color: $card-header-bg-color;
+      border-top-left-radius: 2px;
+      border-top-right-radius: 2px;
       box-shadow: 0 1px 1px rgba(0, 0, 0, .16);
       display: flex;
       height: 56px;
@@ -63,6 +65,10 @@
       padding: 16px 24px 24px;
       width: 100%;
     }
+
+    .required-footer {
+      @include type-caption();
+    }
   }
 </style>
 
@@ -78,11 +84,13 @@
           <ui-tab v-for="(section, index) in sections" :title="section.title">
             <div class="input-container">
               <field v-for="(field, fieldIndex) in section.fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]"></field>
+              <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
             </div>
           </ui-tab>
         </ui-tabs>
         <div v-else class="input-container">
           <field v-for="(field, fieldIndex) in sections[0].fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]"></field>
+          <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
         </div>
         <button type="submit" class="hidden-submit" @click.stop></button>
       </div>
@@ -97,6 +105,7 @@
   import velocity from 'velocity-animate';
   import { getSchema } from '../core-data/components';
   import label from '../utils/label';
+  import { fieldProp } from '../utils/references';
   import field from './field.vue';
   import UiIconButton from 'keen/UiIconButton';
   import UiTabs from 'keen/UiTabs';
@@ -146,7 +155,11 @@
         }
       },
       fields: (state) => state.ui.currentForm.fields,
-      schema: (state) => getSchema(state.ui.currentForm.uri)
+      schema: (state) => getSchema(state.ui.currentForm.uri),
+      hasRequiredFields() {
+        // true if any of the fields in the current form have required validation
+        return _.some(this.schema, (val, key) => _.includes(Object.keys(this.fields), key) && _.has(val, `${fieldProp}.validate.required`));
+      }
     }),
     methods: {
       enter(el, done) {
