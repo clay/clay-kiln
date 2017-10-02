@@ -281,10 +281,11 @@
 
   // add sanitization to all quill links
   Link.sanitize = (value) => {
-    if (!/^https?:/.test(value) && !/^\/\//.test(value)) {
-      // no protocol, add it
+    if (!/^\w+:/.test(value)) {
+      // no protocol, add it (assuming it's http)
       value = `http://${value}`;
     }
+
     return originalLinkSanitize.call(Link, value);
   };
 

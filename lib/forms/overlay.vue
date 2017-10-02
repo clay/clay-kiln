@@ -74,7 +74,7 @@
 
 <template>
   <transition name="overlay-fade-resize" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
-    <form class="kiln-overlay-form" v-if="hasCurrentOverlayForm" :key="formKey" :style="{ top: formTop, left: formLeft }" @click.stop @submit.prevent="save">
+    <form class="kiln-overlay-form" v-if="hasCurrentOverlayForm" :key="formKey" :style="{ top: formTop, left: formLeft }" @click.stop @submit.stop.prevent="save">
       <div class="form-header">
         <h2 class="form-header-title">{{ formHeader }}</h2>
         <ui-icon-button color="black" type="secondary" icon="check" ariaLabel="Save Form" tooltip="Save (ESC)" @click.stop="save"></ui-icon-button>
