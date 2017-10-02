@@ -297,7 +297,7 @@
         return this.currentComponent.uri;
       },
       customButtons() {
-        return Object.keys(window.kiln.selectorButtons);
+        return Object.keys(_.get(window, 'kiln.selectorButtons', {}));
       },
       parentField() {
         return this.isCurrentSelection && this.currentComponent.parentField;
@@ -398,6 +398,6 @@
       // setup event listener, so it can be removed later
       setupResizeListener.call(this);
     },
-    components: _.merge(window.kiln.selectorButtons, { icon })
+    components: _.merge(_.get(window, 'kiln.selectorButtons', {}), { icon })
   };
 </script>

@@ -121,7 +121,7 @@
   import _ from 'lodash';
   import { find } from '@nymag/dom';
   import { getFieldData } from '../lib/forms/field-helpers';
-  import { refAttr } from '../lib/utils/references';
+  import { refAttr, componentRoute } from '../lib/utils/references';
   import { send } from '../lib/utils/rest';
   import { reduce as reducePromise } from '../lib/utils/promises';
   import { uriToUrl } from '../lib/utils/urls';
@@ -136,7 +136,7 @@
    * @return {string}
    */
   function findComponent(component) {
-    const firstComponent = find(`[${refAttr}*="/components/${component}"]`);
+    const firstComponent = find(`[${refAttr}*="${componentRoute}${component}"]`);
 
     if (firstComponent) {
       return firstComponent.getAttribute(refAttr);
