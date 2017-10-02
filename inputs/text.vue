@@ -73,13 +73,11 @@
     :floatingLabel="true"
     :help="args.help"
     :error="errorMessage"
-    :disabled="disabled"
+    :disabled="isDisabled"
     iconPosition="right"
     @input="update"
     @keydown-enter="closeFormOnEnter">
-    <slot name="icon" v-if="hasButton">
-      <component :is="args.attachedButton.name" :name="name" :data="data" :schema="schema" :args="args.attachedButton"></component>
-    </slot>
+    <component v-if="hasButton" slot="icon" :is="args.attachedButton.name" :name="name" :data="data" :schema="schema" :args="args.attachedButton"></component>
   </ui-textbox>
 </template>
 
@@ -97,7 +95,7 @@
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {
-        disabled: false
+        isDisabled: false
       };
     },
     computed: {

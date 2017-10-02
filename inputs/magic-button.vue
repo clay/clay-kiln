@@ -87,34 +87,39 @@
 </docs>
 
 <style lang="sass">
-  @import '../styleguide/buttons';
+  @import '../styleguide/colors';
 
-  .magic-button {
-    @include button-outlined($input-border, $input-background);
+  .magic-button-icon svg {
+    fill: $text-color;
+    height: 18px;
+    // offset this for visual balance
+    margin-left: 3px;
+    margin-top: 3px;
+    transition: 100ms fill ease; 
+    width: 20px;
+  }
 
-    border-bottom-right-radius: 0;
-    border-right: none;
-    border-top-right-radius: 0;
-    clear: left;
-    left: 0;
-    height: 48px; // to match inputs
-    margin: 0;
-    padding: 9px 10px 4px;
-    position: relative;
-    top: 0; // allow 1px for border
-    width: 44px; // explicit width, see below
+  .is-active .magic-button-icon svg {
+    fill: $brand-primary-color;
+  }
+
+  .is-disabled .magic-button-icon {
+    pointer-events: none;
 
     svg {
-      height: 22px;
-      width: 24px;
+      fill: $text-disabled-color;
     }
+  }
+
+  .is-invalid .magic-button-icon svg {
+    fill: $md-red;
   }
 </style>
 
 <template>
-  <button type="button" class="magic-button" @click.prevent.stop="doMagic">
-    <icon name="magic-button"></icon>
-  </button>
+  <ui-icon-button color="default" type="secondary" ariaLabel="Do Magic" :loading="loading" @click.stop.prevent="doMagic">
+    <icon name="magic-button" class="magic-button-icon"></icon>
+  </ui-icon-button>
 </template>
 
 <script>
@@ -129,6 +134,7 @@
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import transformers from './magic-button-transformers';
   import icon from '../lib/utils/icon.vue';
+  import UiIconButton from 'keen/UiIconButton';
 
   /**
    * get the uri of the first component that matches
@@ -250,10 +256,9 @@
   export default {
     props: ['name', 'data', 'schema', 'args'],
     data() {
-      return {};
-    },
-    components: {
-      icon
+      return {
+        loading: false
+      };
     },
     methods: {
       doMagic() {
@@ -271,6 +276,8 @@
         // unset isInvalidDrag after clicking somewhere in the form
         // (since the button is stopping propagation)
         window.kiln.isInvalidDrag = false;
+        // start the loading spinner
+        this.loading = true;
 
         // get the initial data
         let data = getData.call(this, field, component),
@@ -283,12 +290,21 @@
         if (moreMagic.length) {
           return promise.then(function (res) {
             return reducePromise(moreMagic, doMoreMagic.bind(this), res);
-          }).then((finalRes) => setFieldData(store, name, finalRes));
+          }).then((finalRes) => {
+            setFieldData(store, name, finalRes);
+            this.loading = false;
+          });
         } else {
-          return promise.then((finalRes) => setFieldData(store, name, finalRes));
+          return promise.then((finalRes) => {
+            setFieldData(store, name, finalRes);
+            this.loading = false;
+          });
         }
       }
     },
-    slot: 'main'
+    components: {
+      icon,
+      UiIconButton
+    }
   };
 </script>

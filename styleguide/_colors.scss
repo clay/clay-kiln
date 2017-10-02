@@ -11,6 +11,7 @@ $save: #229ed3;
 
 // base colors and opacities
 $pure-black: #000;
+$pure-white: #fff;
 $brand-primary-color: $save;
 $brand-accent-color: $published;
 
@@ -28,7 +29,7 @@ $text-disabled-color: $text-hint-color;
 
 // layout colors
 $divider-color: rgba($pure-black, $divider-opacity);
-$card-bg-color: #fff;
+$card-bg-color: $pure-white;
 $card-header-bg-color: #f5f5f5;
 
 // OLD COLORS:

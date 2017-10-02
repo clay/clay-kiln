@@ -295,7 +295,8 @@
       return {
         editorData: this.data || '',
         isActive: false,
-        isTouched: false
+        isTouched: false,
+        isDisabled: false
       };
     },
     computed: {
@@ -347,7 +348,7 @@
           { 'is-touched': this.isStyled && this.isTouched },
           { 'is-multi-line': this.isStyled && this.isMultiLine },
           { 'has-counter': this.isStyled && this.maxLength },
-          { 'is-disabled': this.isStyled && this.disabled },
+          { 'is-disabled': this.isStyled && this.isDisabled },
           { 'has-label': this.isStyled },
           { 'has-floating-label': this.isStyled }
         ];

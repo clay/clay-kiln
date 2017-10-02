@@ -43,13 +43,14 @@
     .form-contents {
       // fade this in after form opens
       display: block;
-      height: auto;
+      height: calc(100% - 56px);
       opacity: 0;
       position: relative;
       width: 100%;
 
       .ui-tabs {
         // input container already has padding
+        height: 100%;
         margin: 0;
       }
 
@@ -61,6 +62,7 @@
     }
 
     .input-container {
+      height: 100%;
       overflow: scroll;
       padding: 16px 24px 24px;
       width: 100%;

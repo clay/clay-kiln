@@ -26,6 +26,7 @@
 </template>
 
 <script>
+  import _ from 'lodash';
   import { fieldProp, inputProp, revealProp } from '../utils/references';
   import { getFieldData } from './field-helpers';
   import { filterBySite } from '../utils/site-filter';
@@ -39,7 +40,7 @@
     },
     computed: {
       expandedInput() {
-        return expand(this.schema[fieldProp]);
+        return expand(_.cloneDeep(this.schema[fieldProp]));
       },
       inputName() {
         return this.expandedInput[inputProp];
