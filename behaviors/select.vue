@@ -104,7 +104,6 @@
     },
     methods: {
       update(option) {
-        console.log(option)
         const val = option.value;
 
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: val });

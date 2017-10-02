@@ -231,11 +231,13 @@
   import { renderDeltas, generateDeltas, deltaEndsWith, matchLineBreak, matchParagraphs } from './wysiwyg-deltas';
   import { getNewlinesBeforeCaret, getLastOffsetWithNewlines } from './wysiwyg-caret';
   import { parsePhraseButton, parseFormats, createPhraseBlots } from './wysiwyg-phrase';
+  import logger from '../lib/utils/log';
 
   const Delta = Quill.import('delta'),
     Clipboard = Quill.import('modules/clipboard'),
     Link = Quill.import('formats/link'),
-    originalLinkSanitize = Link.sanitize;
+    originalLinkSanitize = Link.sanitize,
+    log = logger(__filename);
 
   // store references for multi-paragraph paste here.
   // this way, the paste function can set these, and they can be checked
@@ -321,7 +323,7 @@
         const button = _.get(this, 'args.attachedButton');
 
         if (button && !_.get(window, `kiln.inputs['${button.name}']`)) {
-          console.warn(`Attached button (${button.name}) for '${this.name}' not found!`);
+          log.warn(`Attached button (${button.name}) for '${this.name}' not found!`, { action: 'hasButton' });
           return false;
         } else if (button) {
           return true;

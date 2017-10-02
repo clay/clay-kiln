@@ -88,7 +88,10 @@
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { setCaret, isFirstField, shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
   import label from '../lib/utils/label';
+  import logger from '../lib/utils/log';
   import UiTextbox from 'keen/UiTextbox';
+
+  const log = logger(__filename);
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
@@ -130,7 +133,7 @@
         const button = _.get(this, 'args.attachedButton');
 
         if (button && !_.get(window, `kiln.inputs['${button.name}']`)) {
-          console.warn(`Attached button (${button.name}) for '${this.name}' not found!`);
+          log.warn(`Attached button (${button.name}) for '${this.name}' not found!`, { action: 'hasButton' });
           return false;
         } else if (button) {
           return true;
