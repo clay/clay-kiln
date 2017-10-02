@@ -81,6 +81,9 @@
   import { htmlExt, editExt } from '../../lib/utils/references';
   import { START_PROGRESS, FINISH_PROGRESS } from '../../lib/toolbar/mutationTypes';
   import UiIcon from 'keen/UiIcon';
+  import logger from '../../lib/utils/log';
+
+  const log = logger(__filename);
 
   export default {
     data() {
@@ -128,7 +131,7 @@
         this.$store.dispatch('unschedulePage', this.$store.state.page.uri)
           .catch((e) => {
             store.commit(FINISH_PROGRESS, 'error');
-            console.error(`Error unscheduling page: ${e.message}`);
+            log.error(`Error unscheduling page: ${e.message}`, { action: 'unschedulePage' });
             store.dispatch('showStatus', { type: 'error', message: 'Error unscheduling page!'});
             throw e;
           })
@@ -146,7 +149,7 @@
         this.$store.dispatch('unpublishPage', uri)
           .catch((e) => {
             store.commit(FINISH_PROGRESS, 'error');
-            console.error(`Error unpublishing page: ${e.message}`);
+            log.error(`Error unpublishing page: ${e.message}`, { action: 'unpublishPage' });
             store.dispatch('showStatus', { type: 'error', message: 'Error unpublishing page!'});
             throw e;
           })

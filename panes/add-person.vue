@@ -104,6 +104,9 @@
   import _ from 'lodash';
   import { find } from '@nymag/dom';
   import { postJSON } from '../lib/core-data/api';
+  import logger from '../lib/utils/log';
+
+  const log = logger(__filename);
 
   export default {
     data() {
@@ -144,7 +147,7 @@
             store.dispatch('finishProgress', 'save');
             store.dispatch('showStatus', { type: 'save', message: `Added ${username} to all sites!` });
           }).catch((e) => {
-            console.error(e);
+            log.error(e.message, { action: 'createUser', username: user.username, provider: user.provider });
             store.dispatch('finishProgress', 'error');
             store.dispatch('showStatus', { type: 'error', message: `Error adding ${username} to Clay: ${e.message}` });
           });

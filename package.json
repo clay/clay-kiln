@@ -1,6 +1,6 @@
 {
   "name": "clay-kiln",
-  "version": "4.5.1",
+  "version": "4.6.0",
   "description": "Editor tools for Clay",
   "template": "template.handlebars",
   "scripts": {
@@ -45,6 +45,7 @@
     "babel-preset-env": "^1.6.0",
     "caret-position": "0.0.1",
     "chai": "^3.5.0",
+    "clay-log": "^1.1.1",
     "codemirror": "^5.23.0",
     "coveralls": "^2.11.2",
     "css-loader": "^0.26.1",

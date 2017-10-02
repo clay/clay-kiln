@@ -2,7 +2,7 @@ import _ from 'lodash';
 import speakingurl from 'speakingurl';
 import striptags from 'striptags';
 import { decode } from 'he';
-import { getComponentName, getComponentInstance, getComponentVersion } from '../lib/utils/references';
+import { getComponentName, getComponentInstance, getComponentVersion, componentRoute } from '../lib/utils/references';
 
 /**
  * Removes all unicode from string
@@ -57,7 +57,7 @@ export default {
       instance = getComponentInstance(data),
       version = getComponentVersion(data);
 
-    let path = '/components/' + name;
+    let path = componentRoute + name;
 
     if (instance) {
       // this allows us to get default component data as well as instance data

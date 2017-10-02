@@ -87,6 +87,9 @@
   import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
   import { hasNativePicker, init as initPicker } from '../../lib/utils/datepicker';
   import { START_PROGRESS, FINISH_PROGRESS } from '../../lib/toolbar/mutationTypes';
+  import logger from '../../lib/utils/log';
+
+  const log = logger(__filename);
 
   function calendar(date) {
     if (isToday(date)) {
@@ -129,7 +132,7 @@
         this.$store.dispatch('closePane');
         this.$store.dispatch('publishPage', this.$store.state.page.uri)
           .catch((e) => {
-            console.error(`Error publishing page: ${e.message}`);
+            log.error(`Error publishing page: ${e.message}`, { action: 'onPublishClick' });
             store.dispatch('showStatus', { type: 'error', message: 'Error publishing page!'});
             throw e;
           })
