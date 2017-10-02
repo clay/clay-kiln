@@ -5,7 +5,7 @@
       // start scaffolding kiln stuff
       window.kiln = window.kiln || {};
       // figure out the route prefix (e.g. /components, or /_components) based on the _ref of kiln itself
-      window.kiln.routePrefix = '{{ default _ref _self }}'.indexOf('/_components/') ? '_' : '';
+      window.kiln.routePrefix = '{{ default _ref _self }}'.indexOf('/_components/') > -1 ? '_' : '';
     </script>
     {{#if @root.locals.edit}}
       {{! show edit mode styles and preload data}}

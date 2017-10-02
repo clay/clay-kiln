@@ -255,7 +255,10 @@
   import { getSettingsFields } from '../core-data/groups';
   import { getComponentName } from '../utils/references';
   import label from '../utils/label';
+  import logger from '../utils/log';
   import icon from '../utils/icon.vue';
+
+  const log = logger(__filename);
 
   /**
   * calculate the selector position, based on how much space is around the component
@@ -347,7 +350,7 @@
         const description = _.get(store, `state.schemas['${this.componentName}']._description`);
 
         if (!description) {
-          console.error(`Cannot open component information: "${this.componentLabel}" has no description!`);
+          log.error(`Cannot open component information: "${this.componentLabel}" has no description!`, { action: 'openInfo' });
         } else {
           return store.dispatch('openPane', {
             title: this.componentLabel,

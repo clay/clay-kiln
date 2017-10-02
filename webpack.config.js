@@ -73,6 +73,10 @@ if (prod) {
 
 module.exports = {
   target: 'web',
+  node: {
+    __filename: true, // actually expand filenames, used for logging
+    __dirname: true
+  },
   entry: {
     edit: './edit.js',
     view: './view.js',

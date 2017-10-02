@@ -63,6 +63,9 @@
 
 <script>
   import _ from 'lodash';
+  import logger from '../lib/utils/log';
+
+  const log = logger(__filename);
 
   export default {
     data() {
@@ -83,7 +86,7 @@
             this.$store.dispatch('finishProgress', 'save');
             this.$store.dispatch('showStatus', { type: 'save', message: `Added ${title} to Page Templates!` });
           }).catch((e) => {
-            console.error(e);
+            log.error(e.message, { action: 'addPage', uri });
             this.$store.dispatch('finishProgress', 'error');
             this.$store.dispatch('showStatus', { type: 'error', message: `Error adding ${title} to Page Templates: ${e.message}` });
           });
