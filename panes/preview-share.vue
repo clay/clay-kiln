@@ -165,12 +165,14 @@
   import { uriToUrl } from '../lib/utils/urls';
   import icon from '../lib/utils/icon.vue';
   import { mapState } from 'vuex';
+  import logger from '../lib/utils/log';
 
-  const previewSizes = {
-    small: { w: 375, h: 660 },
-    medium: { w: 768, h: 1024 },
-    large: { w: 1024, h: 768 }
-  };
+  const log = logger(__filename),
+    previewSizes = {
+      small: { w: 375, h: 660 },
+      medium: { w: 768, h: 1024 },
+      large: { w: 1024, h: 768 }
+    };
 
   export default {
     components: {
@@ -206,7 +208,7 @@
           // some browsers can't do this.
           button.classList.remove('success');
           button.classList.add('error');
-          console.error(`Error copying preview link: ${e.message}`);
+          log.error(`Error copying preview link: ${e.message}`, { action: 'copyURL' });
         }
       }
     }

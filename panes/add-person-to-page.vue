@@ -93,6 +93,9 @@
   import { find } from '@nymag/dom';
   import { postJSON } from '../lib/core-data/api';
   import { searchRoute } from '../lib/utils/references';
+  import logger from '../lib/utils/log';
+
+  const log = logger(__filename);
 
   function buildUserQuery(query) {
     const str = _.isString(query) && query.toLowerCase() || '';
@@ -153,7 +156,7 @@
             return this.$store.dispatch('closePane');
           })
           .catch((e) => {
-            console.error(e);
+            log.error(e.message, { action: 'addPersonToPage' });
             store.dispatch('finishProgress', 'error');
             store.dispatch('showStatus', { type: 'error', message: `Error adding ${user.username} to page: ${e.message}` });
           });

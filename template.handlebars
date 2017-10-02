@@ -1,6 +1,12 @@
 {{#if @root.locals.user}}
   {{! if a user is logged in, we display either the view-mode or edit-mode toolbar, and associated scripts, styles, and templates }}
   <div data-uri="{{ default _ref _self }}" class="clay-kiln">
+    <script>
+      // start scaffolding kiln stuff
+      window.kiln = window.kiln || {};
+      // figure out the route prefix (e.g. /components, or /_components) based on the _ref of kiln itself
+      window.kiln.routePrefix = '{{ default _ref _self }}'.indexOf('/_components/') > -1 ? '_' : '';
+    </script>
     {{#if @root.locals.edit}}
       {{! show edit mode styles and preload data}}
       <style>
@@ -9,7 +15,6 @@
 
       <script>
         // scaffold kiln preloading stuff (models, templates, schemae, data, locals),
-        window.kiln = window.kiln || {};
         window.kiln.componentModels = window.kiln.componentModels || {};
         window.kiln.componentTemplates = window.kiln.componentTemplates || {};
         window.kiln.preloadSchemas = window.kiln.preloadSchemas || {};
@@ -31,7 +36,6 @@
       </style>
 
       <script>
-        window.kiln = window.kiln || {};
         window.kiln.preloadSite = {{{ default (stringify @root.locals.site) '{}' }}};
         window.kiln.preloadUser = {{{ default (stringify @root.locals.user) '{}' }}};
       </script>

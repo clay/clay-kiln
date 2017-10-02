@@ -1,6 +1,9 @@
 import _ from 'lodash';
 import striptags from 'striptags';
 import store from '../lib/core-data/store';
+import logger from '../lib/utils/log';
+
+const log = logger(__filename);
 
 /**
  * determine if a paragraph contains a specified tag
@@ -128,7 +131,7 @@ export function matchComponents(strings, rules) {
     try {
       val = striptags(component.value);
     } catch (e) {
-      console.warn('Cannot parse match:', e);
+      log.warn(`Cannot parse match: ${e.message}`, { action: 'filterMatches' });
       val = '';
     }
 
@@ -187,7 +190,7 @@ export function generatePasteRules(pasteRules, currentComponent, currentField) {
     try {
       rule.match = new RegExp(`${pre}${rule.match}${post}`);
     } catch (e) {
-      console.error(e.message);
+      log.error(`Error creating regex for matching: ${e.message}`, { action: 'generatePasteRules' });
       throw e;
     }
 
