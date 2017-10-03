@@ -26,8 +26,4 @@ describe('radio behavior', () => {
       args: { options }
     }, state).$el.querySelectorAll('label'), (label) => label.textContent.trim())).to.eql(['One', 'Two Three']);
   });
-
-  it('goes in the main slot', () => {
-    expect(lib.slot).to.equal('main');
-  });
 });

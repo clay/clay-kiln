@@ -5,20 +5,27 @@
 
   ## Arguments
 
-  * **delimiter** _(optional)_  alternate delimiter (defaults to comma, of course)
-  * **quote** _(optional)_ alternate quote to use (defaults to one double-quote)
+  * **delimiter** - alternate delimiter (defaults to comma, of course)
+  * **quote** - alternate quote to use (defaults to one double-quote)
 
   Note: Certain spreadsheet editors like Google Spreadsheets will use triple-quotes if you use both quotes and commas in your cells. Make sure you account for that by changing the `quote` argument:
 
   ```yaml
   _has:
-    fn: csv
+    input: csv
     quote: '"""'
   ```
+
+  Note: CSV buttons don't have validation, but may have help text below them.
 </docs>
 
 <template>
-  <ui-fileupload :name="name" :label="label" accept=".csv" @change="update"></ui-fileupload>
+  <div class="kiln-csv-upload">
+    <ui-fileupload :name="name" :label="label" accept=".csv" @change="update"></ui-fileupload>
+    <div class="ui-textbox__feedback" v-if="args.help">
+      <div class="ui-textbox__feedback-text">{{ args.help }}</div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -58,7 +65,6 @@
           store.dispatch('showStatus', 'error', `Unable to read ${file.fileName}`);
         };
       }
-    },
-    slot: 'main'
+    }
   };
 </script>

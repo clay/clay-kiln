@@ -34,11 +34,15 @@ $ui-modal-mask-background: rgba($pure-black, $modal-opacity);
 }
 
 // all KeenUI components should follow our typographic rules
-[class^="ui-"],
-[class^="ui-"] * {
+[class^="ui-"] {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: auto;
 }
+
+.ui-textbox__feedback {
+  font-family: $font-stack;
+}
+
 // html element in edit mode gets a smaller base font size
 // this sets the base sizing for KeenUI components, as they all use rem
 html.component-selector-wrapper {

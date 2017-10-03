@@ -70,6 +70,8 @@
 
     .required-footer {
       @include type-caption();
+
+      margin-top: 10px;
     }
   }
 </style>

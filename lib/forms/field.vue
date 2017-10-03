@@ -17,6 +17,10 @@
       visibility: hidden;
     }
   }
+
+  .kiln-field + .kiln-field {
+    margin-top: 10px;
+  }
 </style>
 
 <template>

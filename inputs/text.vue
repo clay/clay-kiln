@@ -174,6 +174,6 @@
         });
       }
     },
-    components: _.merge(window.kiln.inputs, { UiTextbox })
+    components: _.merge(window.kiln.inputs, { UiTextbox }) // attached button
   };
 </script>

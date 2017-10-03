@@ -5,14 +5,14 @@
 
   ## Arguments
 
-  * **field** _(optional)_ a field to grab the value from (in the current complex list, form, or component)
-  * **component** _(optional)_ a name of a component to grab the component ref/uri from
-  * **transform** _(optional)_ a transform to apply to the grabbed value
-  * **transformArg** _(optional)_ an argument to pass through to the transform
-  * **store** _(optional)_ to grab data from the client-side store
-  * **url** _(optional)_ to get data from
-  * **property** _(optional)_ to get from the returned data
-  * **moreMagic** _(optional)_ to run the returned value through more transforms, api calls, etc
+  * **field** - a field to grab the value from (in the current complex list, form, or component)
+  * **component** - a name of a component to grab the component ref/uri from
+  * **transform** - a transform to apply to the grabbed value
+  * **transformArg** - an argument to pass through to the transform
+  * **store** - to grab data from the client-side store
+  * **url** - to get data from
+  * **property** - to get from the returned data
+  * **moreMagic** - to run the returned value through more transforms, api calls, etc
 
   ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
 
@@ -95,7 +95,7 @@
     // offset this for visual balance
     margin-left: 3px;
     margin-top: 3px;
-    transition: 100ms fill ease; 
+    transition: 100ms fill ease;
     width: 20px;
   }
 

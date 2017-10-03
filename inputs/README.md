@@ -1,20 +1,109 @@
 
+# checkbox-group
+
+A group of checkboxes, allowing the user to toggle on or off related items. You can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components)
+
+```yaml
+    input: checkbox-group
+    options:
+      - foo (site1)
+      - bar (not: site1)
+      - baz (site1, site2)
+```
+
+## Arguments
+
+* **options** - an array of strings or objects (with `name`, `value`, and optionally `sites`)
+
+If you specify options as strings, the label for each will simply be the option converted to Start Case. If this behavior is run on a site with no available options, an error message will appear. Please use `_reveal` on the field to conditionally hide/show it based on site.
+
+```yaml
+field1:
+  _has:
+    input: checkbox-group
+    options:
+      - foo
+      -
+        name: Bar
+        value: bar
+      -
+        name: Baz Qux
+        value: baz-qux
+        sites: site1, site2
+```
+
+### Shared Arguments
+
+This input shares certain arguments with other inputs:
+
+* **help** - description / helper text for the field
+* **validate** - an object that contains pre-publish validation rules:
+
+* **validate.required** - either `true` or an object that described the conditions that should make this field required
+
+Validation rules may also have custom error messages, that will appear in the same place as the help text. If you do not specify a message, default error messages will appear.
+
+* **validate.requiredMessage** - will appear when required validation fails
+
+### Conditional Required Arguments
+
+* **field** to compare against (inside complex-list item, current form, or current component)
+* **operator** _(optional)_ to use for the comparison
+* **value** _(optional)_ to compare the field against
+
+If neither `operator` nor `value` are specified, this will make the current field required if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality.
+
+Operators:
+
+* `===`
+* `!==`
+* `<`
+* `>`
+* `<=`
+* `>=`
+* `typeof`
+* `regex`
+* `empty` (only checks field data, no value needed)
+* `not-empty` (only checks field data, no value needed)
+* `truthy` (only checks field data, no value needed)
+* `falsy` (only checks field data, no value needed)
+
+_Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story` (don't worry about spaces!)
+
+Note: labels are pulled from the field's `_label` property.
+
+# checkbox
+
+A single checkbox, allowing the user to toggle something on or off.
+
+In practice, it's usually best to use a conversational tone / question as the checkbox label, e.g.
+
+```yaml
+field1:
+  _label: Should we use a special logo in this component?
+  _has: checkbox
+```
+
+Note: Single checkboxes don't have validation, but may have help text below them.
+
 # csv
 
 A button that allows uploading csv data. Note: the data isn't editable once it's uploaded, but should be re-uploaded from a csv file when it needs to be changed.
 
 ## Arguments
 
-* **delimiter** _(optional)_  alternate delimiter (defaults to comma, of course)
-* **quote** _(optional)_ alternate quote to use (defaults to one double-quote)
+* **delimiter** - alternate delimiter (defaults to comma, of course)
+* **quote** - alternate quote to use (defaults to one double-quote)
 
 Note: Certain spreadsheet editors like Google Spreadsheets will use triple-quotes if you use both quotes and commas in your cells. Make sure you account for that by changing the `quote` argument:
 
 ```yaml
 _has:
-  fn: csv
+  input: csv
   quote: '"""'
 ```
+
+Note: CSV buttons don't have validation, but may have help text below them.
 
 # wysiwyg
 
@@ -148,14 +237,14 @@ Append a magic button to an input.
 
 ## Arguments
 
-* **field** _(optional)_ a field to grab the value from (in the current complex list, form, or component)
-* **component** _(optional)_ a name of a component to grab the component ref/uri from
-* **transform** _(optional)_ a transform to apply to the grabbed value
-* **transformArg** _(optional)_ an argument to pass through to the transform
-* **store** _(optional)_ to grab data from the client-side store
-* **url** _(optional)_ to get data from
-* **property** _(optional)_ to get from the returned data
-* **moreMagic** _(optional)_ to run the returned value through more transforms, api calls, etc
+* **field** - a field to grab the value from (in the current complex list, form, or component)
+* **component** - a name of a component to grab the component ref/uri from
+* **transform** - a transform to apply to the grabbed value
+* **transformArg** - an argument to pass through to the transform
+* **store** - to grab data from the client-side store
+* **url** - to get data from
+* **property** - to get from the returned data
+* **moreMagic** - to run the returned value through more transforms, api calls, etc
 
 ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
 
@@ -227,6 +316,160 @@ transformArg: [base image url]/recaps-$DATAFIELD.png ($DATAFIELD is the placehol
 ```
 
 ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
+
+# radio
+
+A group of radio buttons, allowing the user to select one of a few related options. You can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components)
+
+```yaml
+    input: radio
+    options:
+      - foo (site1)
+      - bar (not: site1)
+      - baz (site1, site2)
+```
+
+## Arguments
+
+* **options** - an array of strings or objects (with `name`, `value`, and optionally `sites`)
+
+If you specify options as strings, the label for each will simply be the option converted to Start Case. If this behavior is run on a site with no available options, an error message will appear. Please use `_reveal` on the field to conditionally hide/show it based on site.
+
+```yaml
+field1:
+  _has:
+    input: radio
+    options:
+      - foo
+      -
+        name: Bar
+        value: bar
+      -
+        name: Baz Qux
+        value: baz-qux
+        sites: site1, site2
+```
+
+### Shared Arguments
+
+This input shares certain arguments with other inputs:
+
+* **help** - description / helper text for the field
+* **validate** - an object that contains pre-publish validation rules:
+
+* **validate.required** - either `true` or an object that described the conditions that should make this field required
+
+Validation rules may also have custom error messages, that will appear in the same place as the help text. If you do not specify a message, default error messages will appear.
+
+* **validate.requiredMessage** - will appear when required validation fails
+
+### Conditional Required Arguments
+
+* **field** to compare against (inside complex-list item, current form, or current component)
+* **operator** _(optional)_ to use for the comparison
+* **value** _(optional)_ to compare the field against
+
+If neither `operator` nor `value` are specified, this will make the current field required if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality.
+
+Operators:
+
+* `===`
+* `!==`
+* `<`
+* `>`
+* `<=`
+* `>=`
+* `typeof`
+* `regex`
+* `empty` (only checks field data, no value needed)
+* `not-empty` (only checks field data, no value needed)
+* `truthy` (only checks field data, no value needed)
+* `falsy` (only checks field data, no value needed)
+
+_Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story` (don't worry about spaces!)
+
+Note: labels are pulled from the field's `_label` property.
+
+# select
+
+An enhanced browser `<select>` element, allowing the user to select one (or more!) of a few related options.
+
+_Notes:_
+
+- no/empty option is pre-selected by default (you don't need to specify an empty option in the schema)
+- you can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components)
+
+```yaml
+    fn: select
+    options:
+      - foo (site1)
+      - bar (not: site1)
+      - baz (site1, site2)
+```
+
+## Arguments
+
+* **multiple** - allow multiple options to be selected. data will be an object with options as keys, similar to checkbox-group
+* **search** - allow users to type stuff in to filter options. Extremely useful for longer options lists
+* **options** - an array of strings or objects (with `name`, `value`, and optionally `sites`)
+
+If you specify options as strings, the label for each will simply be the option converted to Start Case. If this behavior is run on a site with no available options, an error message will appear. Please use `_reveal` on the field to conditionally hide/show it based on site.
+
+```yaml
+field1:
+  _has:
+    input: select
+    options:
+      - foo
+      -
+        name: Bar
+        value: bar
+      -
+        name: Baz Qux
+        value: baz-qux
+        sites: site1, site2
+```
+
+### Shared Arguments
+
+This input shares certain arguments with other inputs:
+
+* **help** - description / helper text for the field
+* **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
+* **validate** - an object that contains pre-publish validation rules:
+
+* **validate.required** - either `true` or an object that described the conditions that should make this field required
+
+Validation rules may also have custom error messages, that will appear in the same place as the help text. If you do not specify a message, default error messages will appear.
+
+* **validate.requiredMessage** - will appear when required validation fails
+
+### Conditional Required Arguments
+
+* **field** to compare against (inside complex-list item, current form, or current component)
+* **operator** _(optional)_ to use for the comparison
+* **value** _(optional)_ to compare the field against
+
+If neither `operator` nor `value` are specified, this will make the current field required if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality.
+
+Operators:
+
+* `===`
+* `!==`
+* `<`
+* `>`
+* `<=`
+* `>=`
+* `typeof`
+* `regex`
+* `empty` (only checks field data, no value needed)
+* `not-empty` (only checks field data, no value needed)
+* `truthy` (only checks field data, no value needed)
+* `falsy` (only checks field data, no value needed)
+
+_Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story` (don't worry about spaces!)
+
+Note: labels are pulled from the field's `_label` property.
 
 # text
 

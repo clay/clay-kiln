@@ -27,7 +27,8 @@ let plugins = [
   }),
   new webpack.DefinePlugin({
     'process.env': {
-      KILN_VERSION: `"${kilnVersion}"`
+      KILN_VERSION: `"${kilnVersion}"`,
+      LOG: '"trace"'
     }
   })
 ];
