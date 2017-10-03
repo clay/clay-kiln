@@ -1,4 +1,21 @@
 
+# csv
+
+A button that allows uploading csv data. Note: the data isn't editable once it's uploaded, but should be re-uploaded from a csv file when it needs to be changed.
+
+## Arguments
+
+* **delimiter** _(optional)_  alternate delimiter (defaults to comma, of course)
+* **quote** _(optional)_ alternate quote to use (defaults to one double-quote)
+
+Note: Certain spreadsheet editors like Google Spreadsheets will use triple-quotes if you use both quotes and commas in your cells. Make sure you account for that by changing the `quote` argument:
+
+```yaml
+_has:
+  fn: csv
+  quote: '"""'
+```
+
 # wysiwyg
 
 A multi-line text input which allows a rich editing experience. Uses [Quill](http://quilljs.com/). Inline inputs (which can only be wysiwyg) have the same arguments as normal wysiwyg, but will inherit styles from their parent component.

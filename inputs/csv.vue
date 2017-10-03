@@ -17,42 +17,25 @@
   ```
 </docs>
 
-<style lang="sass">
-  @import '../styleguide/typography';
-  @import '../styleguide/buttons';
-
-  .csv-input {
-    width: .1px;
-    height: .1px;
-    opacity: 0;
-    overflow: hidden;
-    position: absolute;
-    z-index: -1;
-  }
-
-  .csv-label {
-    @include button-outlined();
-  }
-</style>
-
 <template>
-  <div>
-    <input class="csv-input" type="file" name="CSV Upload" id="kiln-csv" accept=".csv" @change="update" />
-    <label class="csv-label" for="kiln-csv">{{ label }}</label>
-  </div>
+  <ui-fileupload :name="name" :label="label" accept=".csv" @change="update"></ui-fileupload>
 </template>
 
 <script>
   import _ from 'lodash';
   import { toObject } from 'csvjson';
+  import label from '../lib/utils/label';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
     data() {
-      return {
-        label: 'Choose a CSV file' // updated once the file is uploaded
-      };
+      return {};
+    },
+    computed: {
+      label() {
+        return label(this.name, this.schema);
+      }
     },
     methods: {
       update(e) {
