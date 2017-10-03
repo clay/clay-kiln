@@ -196,7 +196,7 @@
 <template>
   <div class="wysiwyg-input" :class="classes">
     <div class="ui-textbox__icon-wrapper" v-if="isStyled && hasButton">
-      <component :is="args.attachedButton.name" :name="name" :data="data" :schema="schema" :args="args.attachedButton"></component>
+      <component :is="args.attachedButton.name" :name="name" :data="data" :schema="schema" :args="args.attachedButton" @disable="disableInput" @enable="enableInput"></component>
     </div>
 
     <div v-if="isStyled" class="ui-textbox__content">
@@ -827,6 +827,12 @@
         if (!this.isTouched) {
           this.isTouched = true;
         }
+      },
+      disableInput() {
+        this.isDisabled = true;
+      },
+      enableInput() {
+        this.isDisabled = false;
       }
     },
     components: window.kiln.inputs // for attached button

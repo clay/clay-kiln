@@ -40,7 +40,7 @@
     },
     computed: {
       expandedInput() {
-        return expand(_.cloneDeep(this.schema[fieldProp]));
+        return expand(this.schema[fieldProp]);
       },
       inputName() {
         return this.expandedInput[inputProp];

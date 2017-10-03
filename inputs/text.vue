@@ -77,7 +77,7 @@
     iconPosition="right"
     @input="update"
     @keydown-enter="closeFormOnEnter">
-    <component v-if="hasButton" slot="icon" :is="args.attachedButton.name" :name="name" :data="data" :schema="schema" :args="args.attachedButton"></component>
+    <component v-if="hasButton" slot="icon" :is="args.attachedButton.name" :name="name" :data="data" :schema="schema" :args="args.attachedButton" @disable="disableInput" @enable="enableInput"></component>
   </ui-textbox>
 </template>
 
@@ -131,7 +131,7 @@
         const button = _.get(this, 'args.attachedButton');
 
         if (button && !_.get(window, `kiln.inputs['${button.name}']`)) {
-          log.warn(`Attached button (${button.name}) for '${this.name}' not found!`, { action: 'hasButton' });
+          log.warn(`Attached button (${button.name}) for '${this.name}' not found!`, { action: 'hasButton', input: this.args });
           return false;
         } else if (button) {
           return true;
@@ -154,6 +154,12 @@
       closeFormOnEnter() {
         // close form when hitting enter in text fields
         this.$store.dispatch('unfocus');
+      },
+      disableInput() {
+        this.isDisabled = true;
+      },
+      enableInput() {
+        this.isDisabled = false;
       }
     },
     mounted() {

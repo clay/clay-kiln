@@ -121,6 +121,10 @@ _Note:_ You can compare against deep fields (like checkbox-group) by using dot-s
 
 Note: labels are pulled from the field's `_label` property.
 
+# lock
+
+Append a lock button to an input. The input will be locked until the user clicks the lock button. This provides a small amount of friction before editing important (and rarely-edited) fields, similar to macOS's system preferences.
+
 # magic-button
 
 Append a magic button to an input.
