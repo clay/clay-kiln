@@ -17,3 +17,6 @@ $acceleration-curve: cubic-bezier(.4, 0, 1, 1);
 
 // sharp curve - "ease in out", used for elements leaving the viewport temporarily
 $sharp-curve: cubic-bezier(.4, 0, .6, 1);
+
+// toggle curve - used for toggling opacity on buttons
+$toggle-curve: cubic-bezier(.25, .8, .5, 1);

@@ -1,14 +1,14 @@
 <docs>
-  # segmented-button
+  # segmented-button-group
 
-  A group of buttons allowing the user to select one (or more!) of a few related options.
+  A group of segmented buttons allowing the user to select one (or more!) of a few related options.
 
   ## Arguments
 
   * **multiple** - allow multiple things to be selected. `false` by default
-  * **options** - an array of options
+  * **options** _(required)_ an array of options
 
-  Each option should be an object with `icon`, `text`, and `value` properties. Icons will be displayed in the buttons, and text will be used for tooltips.
+  Each option should be an object with `title` and `values` properties. The `values` should be an array of objects with `icon`, `text`, and `value` properties, which will be passed into each `segmented-button`.
 
   Note: By default, the data for this field will be the selected option's `value`. If multiple selection is turned on, it'll be an object with boolean values keyed to each option's `value`, similar to `checkbox-group`.
 
@@ -57,9 +57,8 @@
   @import '../styleguide/mixins';
   @import '../styleguide/typography';
   @import '../styleguide/colors';
-  @import '../styleguide/animations';
 
-  .segmented-button {
+  .segmented-button-group {
     align-items: flex-start;
     display: flex;
     flex-flow: row wrap;
@@ -72,20 +71,9 @@
       width: 100%;
     }
 
-    .button-toggle {
-      background-color: $card-bg-color;
-      border-radius: 2px;
-      cursor: pointer;
-      display: flex;
-      flex-flow: row nowrap;
-      float: left;
-      margin: 10px 0;
-      transition: 300ms $toggle-curve;
-      will-change: background, box-shadow;
-
-      &.is-selected {
-        // raise toggle buttons when one is selected
-        box-shadow: 0 1px 5px rgba(0, 0, 0, .2), 0 2px 2px rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .12);
+    &:hover {
+      .ui-textbox__label-text {
+        color: rgba(black, 0.75);
       }
     }
 
@@ -105,14 +93,25 @@
       }
     }
   }
+
+  // some tiny styling tweaks when buttons are grouped
+  .segmented-button-group-input {
+    .segmented-button {
+      margin-bottom: 0;
+    }
+
+    .ui-textbox__label-text {
+      font-size: 14px;
+    }
+  }
 </style>
 
 <template>
-  <div class="segmented-button has-label has-floating-label" :class="{ 'is-invalid': this.isInvalid }">
+  <div class="segmented-button-group has-label has-floating-label" :class="{ 'is-invalid': this.isInvalid }">
     <span class="ui-textbox__label">
       <div class="ui-textbox__label-text is-floating">{{ label }}</div>
-      <div class="button-toggle" :class="{ 'is-selected': isSelected }">
-        <segmented-button-segment v-for="option in options" :name="name" :option="option" :update="update"></segmented-button-segment>
+      <div v-for="option in options" class="segmented-button-group-input">
+        <segmented-button :name="name" :data="data" :schema="option.schema" :args="option.args"></segmented-button>
       </div>
     </span>
 
@@ -125,39 +124,29 @@
 
 <script>
   import _ from 'lodash';
-  import cid from '@nymag/cid';
-  import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
+  import { labelProp } from '../lib/utils/references';
   import { shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
   import label from '../lib/utils/label';
-  import SegmentedButtonSegment from './segmented-button-segment.vue';
+  import segmentedButton from './segmented-button.vue';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
     data() {
-      return {};
+      return {
+        isActive: false,
+        isTouched: false,
+        isDisabled: false
+      };
     },
     computed: {
       multiple() {
         return this.args.multiple || false;
       },
       options() {
-        const data = this.data,
-          assetPath = _.get(this.$store, 'state.site.assetPath');
-
-        return _.map(this.args.options, (option) => {
-          const hasImgIcon = option.icon && _.head(option.icon) === '/',
-            hasMaterialIcon = option.icon && _.head(option.icon) !== '/';
-
-          return {
-            id: cid(),
-            value: option.value,
-            hasMaterialIcon,
-            hasImgIcon,
-            icon: hasImgIcon ? `${assetPath}${option.icon}` : option.icon,
-            text: option.text || option.value.split('-').map(_.startCase).join(' '),
-            checked: this.multiple ? data[option.value] === true : data === option.value
-          };
-        });
+        return _.map(this.args.options, (option) => ({
+          schema: _.assign({}, this.schema, { [labelProp]: option.title }),
+          args: _.assign({}, { options: option.values, multiple: this.multiple })
+        }));
       },
       isRequired() {
         return _.get(this.args, 'validate.required') === true || shouldBeRequired(this.args.validate, this.$store, this.name);
@@ -184,23 +173,8 @@
         return !this.showError && this.args.help;
       }
     },
-    methods: {
-      update(val) {
-        let newData;
-
-        if (this.multiple) {
-          newData[val] = !this.data[val];
-        } else if (this.data === val) {
-          newData = null; // unselect
-        } else {
-          newData = val;
-        }
-
-        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: newData });
-      }
-    },
     components: {
-      SegmentedButtonSegment
+      'segmented-button': segmentedButton
     }
   };
 </script>
