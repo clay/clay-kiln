@@ -143,6 +143,45 @@ _Note:_ You can compare against deep fields (like checkbox-group) by using dot-s
 
 Note: labels are pulled from the field's `_label` property.
 
+# complex-list-item
+
+A component which represents a single item in the `complex-list` input. Functionality is derived from its parent. Behaves similar to a field, as it transcludes other inputs via the same mechanism that field uses.
+
+# complex-list
+
+An array of objects with arbitrary properties. Each property may have any inputs a field is allowed to have, including custom inputs. Complex-list is similar to [Angular's _transcluded directives_](https://nulogy.com/who-we-are/company-blog/articles/transclusion-in-angular/) or [Advanced Custom Fields' _repeater field_](https://www.advancedcustomfields.com/add-ons/repeater-field/), in that each item in the list is treated like a separate field. Like fields, items must also have `_label`, but may not have `_placeholder`.
+
+## Arguments
+
+* **props** an array of objects, represending the fields in each item. Each item should have a name, defined by `prop: 'name'`, as well as `_label` and the input that item uses.
+
+## Usage
+
+* When a complex-list is empty, it will display a `add` button to add the initial item
+* Items can be added by clicking the `add` button
+* When a complex-list is _not_ empty, the focused item will have actions it, with `add` and `remove` buttons
+* Items can be removed by clicking the `remove` button
+* Items in a complex-list cannot be reordered, but can be added and removed from anywhere in the list.
+
+## Example
+
+```yaml
+links:
+  _has:
+    input: complex-list
+    props:
+      -
+        prop: url
+        _label: URL
+        _has:
+          input: text
+          type: url
+      -
+        prop: title
+        _label: Title
+        _has: text
+```
+
 # csv
 
 A button that allows uploading csv data. Note: the data isn't editable once it's uploaded, but should be re-uploaded from a csv file when it needs to be changed.

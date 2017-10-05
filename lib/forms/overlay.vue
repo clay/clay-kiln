@@ -72,6 +72,7 @@
       @include type-caption();
 
       margin-top: 10px;
+      width: 100%;
     }
   }
 </style>
