@@ -1,7 +1,7 @@
 <docs>
-  # text
+  # autocomplete
 
-  Autocomplete
+  Autocomplete for `simple-list`.
 </docs>
 
 <style lang="sass">

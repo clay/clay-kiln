@@ -1,11 +1,11 @@
 
-# text
+# autocomplete-item
 
-Autocomplete
+Individual autocomplete item, used by `autocomplete` (which is itself used by `simple-list`).
 
-# text
+# autocomplete
 
-Autocomplete
+Autocomplete for `simple-list`.
 
 # checkbox-group
 

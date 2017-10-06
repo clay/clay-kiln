@@ -1,7 +1,7 @@
 <docs>
-  # text
+  # autocomplete-item
 
-  Autocomplete
+  Individual autocomplete item, used by `autocomplete` (which is itself used by `simple-list`).
 </docs>
 
 <style lang="sass">
