@@ -1,0 +1,157 @@
+<docs>
+  # simple-list-item
+
+  A component which represents a single item in the `simple-list` input. Functionality is derived from its parent.
+</docs>
+
+<style lang="sass">
+  @import '../styleguide/typography';
+  @import '../styleguide/colors';
+  @import '../styleguide/animations';
+
+  .simple-list-item {
+    @include kiln-copy();
+
+    align-items: center;
+    background-color: $chip-bg-color;
+    border: none;
+    border-radius: 16px;
+    color: $text-color;
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: 13px;
+    height: 32px;
+    justify-content: center;
+    margin: 5px 5px 5px 0;
+    transition: all 300ms $standard-curve;
+    user-select: none;
+    white-space: nowrap;
+
+    .primary-badge {
+      background-color: $chip-bg-color;
+      border-radius: 50%;
+      color: $chip-badge-color;
+      display: none;
+      height: 32px;
+      margin-right: -4px;
+      overflow: hidden;
+      width: 32px;
+    }
+
+    &.is-primary .primary-badge {
+      disply: flex;
+    }
+
+    .item-text {
+      align-items: center;
+      cursor: inherit;
+      display: flex;
+      padding: 0 12px;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .simple-list-remove {
+      align-items: center;
+      background-color: $chip-delete-color;
+      border: none;
+      border-radius: 50%;
+      color: $chip-bg-color;
+      cursor: inherit;
+      display: flex;
+      height: 20px;
+      justify-content: center;
+      padding: 1px 0px 0 1px;
+      transition: all 300ms $standard-curve;
+      width: 20px;
+
+      .ui-icon {
+        font-size: 16px;
+      }
+    }
+
+    &:hover:not(.is-disabled) {
+      background-color: $chip-bg-color--focus;
+    }
+
+    &:active:not(.is-disabled),
+    &.is-current:not(.is-disabled) {
+      box-shadow: $chip-shadow;
+    }
+
+    &.is-disabled {
+      background-color: lighten($chip-bg-color, 10%);
+      color: $text-disabled-color;
+
+      .simple-list-remove {
+        background-color: $text-disabled-color;
+      }
+    }
+  }
+</style>
+
+<template>
+  <button type="button"
+    class="simple-list-item"
+    :class="classes"
+    @keydown.left="selectItem(index - 1)"
+    @keydown.shift.tab="selectItem(index - 1)"
+    @keydown.right="selectItem(index + 1)"
+    @keydown.tab="selectItem(index + 1)"
+    @keydown.delete="removeItem"
+    @click="selectItem(index)"
+    @dblclick.native="setPrimary"
+    v-conditional-focus="isCurrentItem">
+    <ui-icon v-if="hasIcon && isPrimary" :icon="badge" class="primary-badge"></ui-icon>
+    <span v-else-if="isPrimary" class="primary-badge">{{ badge }}</span>
+    <span class="item-text">{{ data.text }}</span>
+    <button type="button" class="simple-list-remove" @click.stop.prevent="removeItem"><ui-icon icon="close"></ui-icon></button>
+  </button>
+</template>
+
+<script>
+  import _ from 'lodash';
+  import iconList from '../lib/utils/material-icons-list';
+  import UiIcon from 'keen/UiIcon';
+
+  export default {
+    props: ['index', 'data', 'currentItem', 'propertyName', 'badge', 'disabled'],
+    data() {
+      return {};
+    },
+    computed: {
+      isPrimary() {
+        return _.get(this.data, this.propertyName) === true;
+      },
+      isCurrentItem() {
+        return this.currentItem === this.index;
+      },
+      hasIcon() {
+        // determine if the badge is a material design icon
+        return _.includes(iconList, this.badge);
+      },
+      classes() {
+        return [
+          { 'is-disabled': this.disabled },
+          { 'is-primary': this.isPrimary },
+          { 'is-current': this.isCurrentItem }
+        ];
+      }
+    },
+    methods: {
+      selectItem(index) {
+        this.$emit('select', index);
+      },
+      removeItem() {
+        this.$emit('remove', this.index);
+      },
+      setPrimary() {
+        this.$emit('primary', this.index);
+      }
+    },
+    components: {
+      UiIcon
+    }
+  };
+</script>

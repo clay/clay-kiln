@@ -130,6 +130,7 @@
   import { find } from '@nymag/dom';
   import { shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
   import label from '../lib/utils/label';
+  import logger from '../lib/utils/log';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
 
   // scss mode
@@ -138,6 +139,8 @@
   require('codemirror/mode/yaml/yaml');
   // show selections
   require('codemirror/addon/selection/active-line.js');
+
+  const log = logger(__filename);
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
@@ -168,7 +171,7 @@
         }
       },
       error() {
-        return getValidationError(this.data || '', this.args.validate, this.$store, this.name);
+        return this.isTouched && getValidationError(this.data || '', this.args.validate, this.$store, this.name);
       },
       isInvalid() {
         return !!this.error;

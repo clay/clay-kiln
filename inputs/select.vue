@@ -117,7 +117,10 @@
   import { filterBySite } from '../lib/utils/site-filter';
   import label from '../lib/utils/label';
   import { shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
+  import logger from '../lib/utils/log';
   import UiSelect from 'keen/UiSelect';
+
+  const log = logger(__filename);
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
