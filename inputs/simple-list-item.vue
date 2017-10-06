@@ -29,6 +29,15 @@
     user-select: none;
     white-space: nowrap;
 
+    &:hover:not(.is-disabled) {
+      background-color: $chip-bg-color--focus;
+    }
+
+    &:active:not(.is-disabled),
+    &.is-current:not(.is-disabled) {
+      box-shadow: $chip-shadow;
+    }
+
     .primary-badge {
       background-color: $chip-badge-bg-color;
       border-radius: 50%;
@@ -41,10 +50,15 @@
       text-align: center;
       vertical-align: middle;
       width: 32px;
+
+      &.is-text {
+        color: $pure-white;
+        font-weight: bold;
+      }
     }
 
     &.is-primary .primary-badge {
-      display: flex;
+      display: block;
     }
 
     .item-text {
@@ -66,22 +80,14 @@
       display: flex;
       height: 20px;
       justify-content: center;
-      padding: 1px 0px 0 1px;
-      transition: all 300ms $standard-curve;
+      margin-right: 6px;
+      padding: 0 0 0 1px;
+      transition: background-color 300ms $standard-curve, color 300ms $standard-curve;
       width: 20px;
 
       .ui-icon {
-        font-size: 16px;
+        font-size: 14px;
       }
-    }
-
-    &:hover:not(.is-disabled) {
-      background-color: $chip-bg-color--focus;
-    }
-
-    &:active:not(.is-disabled),
-    &.is-current:not(.is-disabled) {
-      box-shadow: $chip-shadow;
     }
 
     &.is-disabled {
@@ -91,6 +97,21 @@
       .simple-list-remove {
         background-color: $text-disabled-color;
       }
+    }
+
+    .badge-enter,
+    .badge-leave-to {
+      opacity: 0;
+    }
+
+    .badge-enter-to,
+    .badge-leave {
+      opacity: 1;
+    }
+
+    .badge-enter-active,
+    .badge-leave-active {
+      transition: opacity 300ms $standard-curve;
     }
   }
 </style>
@@ -102,12 +123,14 @@
     @keydown.left="selectItem(index - 1)"
     @keydown.shift.tab="selectItem(index - 1)"
     @keydown.right="selectItem(index + 1)"
-    @keydown.tab="selectItem(index + 1)"
+    @keydown.tab.prevent="selectItem(index + 1)"
     @keydown.delete="removeItem"
     @click="selectItem(index)"
     v-conditional-focus="isCurrentItem">
-    <ui-icon v-if="hasIcon && isPrimary" :icon="badge" class="primary-badge"></ui-icon>
-    <span v-else-if="isPrimary" class="primary-badge">{{ badge }}</span>
+    <transition name="badge">
+      <ui-icon v-if="hasIcon && isPrimary" :icon="badge" class="primary-badge"></ui-icon>
+      <span v-else-if="isPrimary" class="primary-badge is-text">{{ badge }}</span>
+    </transition>
     <span class="item-text">{{ data.text }}</span>
     <button type="button" class="simple-list-remove" @click.stop.prevent="removeItem"><ui-icon icon="close"></ui-icon></button>
   </button>
@@ -115,7 +138,6 @@
 
 <script>
   import _ from 'lodash';
-  import iconList from '../lib/utils/material-icons-list';
   import UiIcon from 'keen/UiIcon';
 
   export default {
@@ -125,7 +147,6 @@
     },
     computed: {
       isPrimary() {
-        console.log(this.data, this.propertyName)
         return _.get(this.data, this.propertyName) === true;
       },
       isCurrentItem() {
@@ -133,7 +154,8 @@
       },
       hasIcon() {
         // determine if the badge is a material design icon
-        return _.includes(iconList, this.badge);
+        // note: we assume any string over two characters is supposed to be an icon
+        return this.badge && this.badge.length > 2;
       },
       classes() {
         return [

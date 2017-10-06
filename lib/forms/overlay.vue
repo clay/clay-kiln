@@ -110,7 +110,7 @@
   import velocity from 'velocity-animate';
   import { getSchema } from '../core-data/components';
   import label from '../utils/label';
-  import { fieldProp } from '../utils/references';
+  import { fieldProp, getComponentName } from '../utils/references';
   import field from './field.vue';
   import UiIconButton from 'keen/UiIconButton';
   import UiTabs from 'keen/UiTabs';
@@ -140,7 +140,14 @@
           return '50vw';
         }
       },
-      formHeader: (state) => state.ui.currentForm.path && label(state.ui.currentForm.path, state.ui.currentForm.schema),
+      formHeader: (state) => {
+        if (_.size(state.ui.currentForm.fields) === 1) {
+          // one field, use the component name as the form header
+          return label(getComponentName(state.ui.currentForm.uri));
+        } else {
+          return label(state.ui.currentForm.path, state.ui.currentForm.schema);
+        }
+      },
       hasSections: (state) => state.ui.currentForm.schema.sections && state.ui.currentForm.schema.sections.length > 1,
       sections: (state) => {
         const sections = state.ui.currentForm.schema.sections;

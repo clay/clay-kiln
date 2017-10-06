@@ -31,7 +31,7 @@
       @input="onChange"
       @keydown.enter.prevent="onEnter"
       @keydown.tab="addItem"
-      @keydown.comma="addItem"
+      @keyup.comma="addItem"
       @keydown.delete="focusLastItem"
       @keydown.left="focusLastItem"
       @keydown.right="focusFirstItem"
