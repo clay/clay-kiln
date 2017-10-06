@@ -24,23 +24,27 @@
     height: 32px;
     justify-content: center;
     margin: 5px 5px 5px 0;
+    padding: 0;
     transition: all 300ms $standard-curve;
     user-select: none;
     white-space: nowrap;
 
     .primary-badge {
-      background-color: $chip-bg-color;
+      background-color: $chip-badge-bg-color;
       border-radius: 50%;
       color: $chip-badge-color;
       display: none;
+      line-height: 32px;
       height: 32px;
       margin-right: -4px;
       overflow: hidden;
+      text-align: center;
+      vertical-align: middle;
       width: 32px;
     }
 
     &.is-primary .primary-badge {
-      disply: flex;
+      display: flex;
     }
 
     .item-text {
@@ -101,7 +105,6 @@
     @keydown.tab="selectItem(index + 1)"
     @keydown.delete="removeItem"
     @click="selectItem(index)"
-    @dblclick.native="setPrimary"
     v-conditional-focus="isCurrentItem">
     <ui-icon v-if="hasIcon && isPrimary" :icon="badge" class="primary-badge"></ui-icon>
     <span v-else-if="isPrimary" class="primary-badge">{{ badge }}</span>
@@ -122,6 +125,7 @@
     },
     computed: {
       isPrimary() {
+        console.log(this.data, this.propertyName)
         return _.get(this.data, this.propertyName) === true;
       },
       isCurrentItem() {
@@ -145,9 +149,6 @@
       },
       removeItem() {
         this.$emit('remove', this.index);
-      },
-      setPrimary() {
-        this.$emit('primary', this.index);
       }
     },
     components: {

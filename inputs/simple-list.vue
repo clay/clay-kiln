@@ -124,7 +124,7 @@
               :disabled="isDisabled"
               @remove="removeItem"
               @select="selectItem"
-              @primary="setPrimary"></simple-list-item>
+              @dblclick.native="setPrimary(index)"></simple-list-item>
           </transition-group>
           <simple-list-input
             :items="items"
