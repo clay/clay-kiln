@@ -16,7 +16,7 @@
     max-width: 100vw;
     opacity: 0;
     position: fixed;
-    transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%);
     width: 600px;
 
     .form-header {
@@ -61,10 +61,18 @@
       }
     }
 
-    .input-container {
+    .input-container-wrapper {
       height: 100%;
+      margin: 0;
       overflow: scroll;
+      padding: 0;
+      width: 100%;
+    }
+
+    .input-container {
+      height: auto;
       padding: 16px 24px 24px;
+      position: relative;
       width: 100%;
     }
 
@@ -87,15 +95,19 @@
       <div class="form-contents">
         <ui-tabs v-if="hasSections" fullwidth ref="tabs">
           <ui-tab v-for="(section, index) in sections" :title="section.title">
-            <div class="input-container">
-              <field v-for="(field, fieldIndex) in section.fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]"></field>
-              <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
+            <div class="input-container-wrapper">
+              <div class="input-container">
+                <field v-for="(field, fieldIndex) in section.fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]" @resize="onResize"></field>
+                <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
+              </div>
             </div>
           </ui-tab>
         </ui-tabs>
-        <div v-else class="input-container">
-          <field v-for="(field, fieldIndex) in sections[0].fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]"></field>
-          <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
+        <div v-else class="input-container-wrapper">
+          <div class="input-container">
+            <field v-for="(field, fieldIndex) in sections[0].fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]" @resize="onResize"></field>
+            <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
+          </div>
         </div>
         <button type="submit" class="hidden-submit" @click.stop></button>
       </div>
@@ -182,17 +194,18 @@
         this.$nextTick(() => {
           const headerEl = find(el, '.form-header'),
             innerEl = find(el, '.form-contents'),
-            finalHeight = el.clientHeight;
+            finalHeight = el.clientHeight,
+            halfFinalHeight = finalHeight / 2;
 
           if (path === 'settings' || !posY) {
             // set top position of form once we know how tall it should be,
             // to prevent overflowing the top/bottom of the viewport
-            this.formTop = '50vh';
+            this.formTop = `${docHeight / 2 - halfFinalHeight}px`;
           } else {
             const heightPlusMargin = finalHeight / 2 + 20,
               isInsideViewport = posY > heightPlusMargin && posY < docHeight - heightPlusMargin;
 
-            this.formTop = isInsideViewport ? `${posY / docHeight * 100}vh` : '50vh';
+            this.formTop = isInsideViewport ? `${posY - halfFinalHeight}px` : `${docHeight / 2 - halfFinalHeight}px`;
           }
           el.style.height = '100px'; // animate from 100px to auto height (auto)
           el.style.width = '100px'; // animate from 100px to auto width (600px)
@@ -201,8 +214,13 @@
           velocity(headerEl, { opacity: 1 }, { delay: 325, duration: 50 });
           velocity(innerEl, { opacity: 1 }, { delay: 325, duration: 50 });
           velocity(el, { height: finalHeight }, { delay: 35, duration: 340, complete: () => {
+            // set the height to auto, so forms can grow if the fields inside them grow
+            // (e.g. adding complex-list items)
+            // el.style.height = 'auto';
+            el.style.maxHeight = `calc(100vh - ${this.formTop})`;
+
+            // manually reset the initial width of the indicator, see https://github.com/JosephusPaye/Keen-UI/issues/328
             if (this.$refs.tabs) {
-              // manually reset the initial width of the indicator, see https://github.com/JosephusPaye/Keen-UI/issues/328
               this.$refs.tabs.refreshIndicator();
             }
             done();
@@ -218,6 +236,24 @@
         velocity(headerEl, { opacity: 0 }, { duration: 50 });
         velocity(innerEl, { opacity: 0 }, { duration: 50 });
         velocity(el, { opacity: 0 }, { delay: 220, duration: 100, complete: done });
+      },
+      onResize() {
+        this.$nextTick(() => {
+          const innerEl = find(this.$el, '.input-container'),
+            // note: we can't grab the scrollHeight of the innerEl, since it's always 100% height,
+            // but we can calculate the height of all the child fields
+            innerHeight = innerEl.clientHeight,
+            currentTop = parseInt(this.formTop),
+            docHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
+            newHeight = innerHeight + 56, // header is 56px
+            isInsideViewport = currentTop + newHeight < docHeight;
+
+          if (isInsideViewport) {
+            velocity(this.$el, { height: newHeight }, { duration: 320 });
+          } else {
+            velocity(this.$el, { height: docHeight - currentTop }, { duration: 320 });
+          }
+        });
       },
       save() {
         this.$store.dispatch('unfocus');

@@ -21,7 +21,7 @@
 
 <template>
   <fieldset class="kiln-field" :class="{ 'kiln-reveal-hide': !isShown }" v-if="inputName">
-    <component :is="inputName" :name="name" :data="data" :schema="schema" :args="expandedInput"></component>
+    <component :is="inputName" :name="name" :data="data" :schema="schema" :args="expandedInput" @resize="onResize"></component>
   </fieldset>
 </template>
 
@@ -68,6 +68,11 @@
         } else {
           return true; // show the field if no _reveal config
         }
+      }
+    },
+    methods: {
+      onResize() {
+        this.$emit('resize'); // pass this to the form component
       }
     },
     components: window.kiln.inputs

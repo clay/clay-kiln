@@ -36,29 +36,48 @@
 </docs>
 
 <style lang="sass">
+  @import '../styleguide/animations';
+
   .complex-list {
     margin: 0;
     width: 100%;
   }
+
+  .hide-show-enter,
+  .hide-show-leave-to {
+    opacity: 0;
+  }
+
+  .hide-show-enter-to,
+  .hide-show-leave {
+    opacity: 1;
+  }
+
+  .hide-show-enter-active,
+  .hide-show-leave-active {
+    transition: opacity 300ms $standard-curve;
+  }
 </style>
 
 <template>
-  <div class="complex-list">
-    <transition-group name="list-items" class="complex-list-items">
-      <item v-for="(item, index) in items"
-        :index="index"
-        :name="name + '.' + index"
-        :data="item"
-        :schema="args.props"
-        :key="index"
-        :currentItem="currentItem"
-        :addItem="addItem"
-        :removeItem="removeItem"
-        @current="onCurrentChange">
-      </item>
-    </transition-group>
-    <ui-button v-if="!items.length" buttonType="button" color="primary" icon="add" @click.stop.prevent="addItem(-1)">Add Items</ui-button>
-  </div>
+  <transition mode="out-in" name="hide-show" @after-enter="onResize" @after-leave="onResize">
+    <div class="complex-list" v-if="items.length">
+      <transition-group mode="out-in" name="hide-show" tag="div" class="complex-list-items" @after-enter="onResize" @after-leave="onResize">
+        <item v-if="items.length" v-for="(item, index) in items"
+          :index="index"
+          :name="name + '.' + index"
+          :data="item"
+          :schema="args.props"
+          :key="index"
+          :currentItem="currentItem"
+          :addItem="addItem"
+          :removeItem="removeItem"
+          @current="onCurrentChange">
+        </item>
+      </transition-group>
+    </div>
+    <ui-button v-else buttonType="button" color="primary" icon="add" @click.stop.prevent="addItem(-1)">Add Items</ui-button>
+  </transition>
 </template>
 
 <script>
@@ -82,6 +101,9 @@
     methods: {
       updateFormData(items) {
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: items });
+      },
+      onResize() {
+        this.$emit('resize'); // potentially resize the form (after transitioning elements)
       },
       addItem(index) {
         const props = _.map(_.get(this.args, 'props', []), (item) => item.prop),
