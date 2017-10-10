@@ -29,14 +29,24 @@ $text-disabled-color: $text-hint-color;
 
 // layout colors
 $divider-color: rgba($pure-black, $divider-opacity);
+
+// cards
 $card-bg-color: $pure-white;
 $card-header-bg-color: #f5f5f5;
+
+// chips
 $chip-bg-color: #dcdcdc;
 $chip-bg-color--focus: #cacaca;
 $chip-badge-bg-color: #b9b9b9;
 $chip-badge-color: #424242;
 $chip-delete-color: rgba(0, 0, 0, 0.26);
 $chip-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+
+// placeholders
+$placeholder-color: $save;
+$placeholder-bg-color: #e7f2f6;
+$permanent-placeholder-color: #acacac;
+$permanent-placeholder-bg-color: #f5f5f5;
 
 // shadows
 $popover-shadow: 0 2px 4px -1px rgba(black, 0.2), 0 4px 5px 0 rgba(black, 0.14), 0 1px 10px 0 rgba(black, 0.12);

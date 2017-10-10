@@ -14,166 +14,125 @@
     cursor: text;
   }
 
-  // styles shared between regular and permanent placeholders
-  .component-selector-wrapper .kiln-placeholder,
-  .component-selector-wrapper .kiln-permanent-placeholder {
+  .kiln-inline-placeholder {
+    display: inline-block;
+
+    .placeholder-label {
+      display: inline-block;
+      position: relative;
+    }
+
+    .placeholder-icon {
+      color: $placeholder-color;
+      pointer-events: none;
+      position: absolute;
+      right: calc(100% + 5px);
+      top: 0;
+    }
+
+    .placeholder-text {
+      @include normal-text();
+
+      color: $text-alt-color;
+      cursor: text;
+    }
+  }
+
+  .kiln-permanent-placeholder,
+  .kiln-block-placeholder {
     align-items: center;
-    // everything inside a regular placeholder should use the pointer,
-    // even if that placeholder is inside a paragraph/blockquote
+    border-radius: 2px;
     cursor: pointer;
     display: flex;
-    flex-direction: column;
     height: 100%;
     justify-content: center;
-    padding: 8px;
-    position: relative;
+    padding: 16px 24px;
     width: 100%;
 
-    .placeholder-top,
-    .placeholder-bottom {
-      display: flex;
-      flex-flow: row wrap;
-      min-width: 60%;
-      width: auto;
+    .placeholder-label,
+    .placeholder-add-component {
+      flex: 1 1 auto;
     }
 
     .placeholder-label {
-      @include placeholder-primary();
-
-      border-bottom-style: solid;
-      border-bottom-width: 4px;
-      flex: 1 1 100%;
+      align-items: center;
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: center;
     }
 
-    .placeholder-required {
-      @include placeholder-secondary();
-
-      display: block;
-      flex: 1 0 auto;
-      text-align: right;
-    }
-
-    .placeholder-add-component {
-      display: block;
+    .placeholder-icon {
       flex: 0 0 auto;
     }
 
-    // single line styles (when placeholders are not tall enough to fit multiple lines)
-    &.single-line {
-      flex-direction: row;
+    .placeholder-text {
+      @include type-button();
 
-      .placeholder-top {
-        flex-flow: row; // no wrap
-        justify-content: flex-start;
-      }
-
-      .placeholder-bottom {
-        flex-flow: row; // no wrap
-        justify-content: flex-start;
-        min-width: 0;
-      }
-
-      .placeholder-label {
-        border: none;
-        flex: 0 1 auto; // allow word wrapping
-        margin: 0 4px;
-        order: 2;
-      }
-
-      .placeholder-required {
-        flex: 0 0 auto;
-        margin: 2px 0 0 4px;
-        order: 3;
-        text-align: left;
-      }
-
-      .placeholder-add-component {
-        margin: 0;
-      }
+      flex: 0 1 auto;
+      line-height: 18px;
     }
   }
 
-  // regular placeholder - displays when field is empty
-  .kiln-placeholder {
-    background-color: $placeholder-background;
-    border: 1px dashed $placeholder-border;
-
-    svg,
-    svg * {
-      fill: $placeholder-label-border;
-    }
-
-    .placeholder-label {
-      border-bottom-color: $placeholder-label-border;
-      color: $placeholder-label;
-    }
-
-    .placeholder-required {
-      color: $placeholder-border;
-    }
-
-    .placeholder-add-component {
-      @include button-outlined($placeholder-border, $placeholder-background);
-      @include placeholder-secondary();
-
-      margin: 16px auto 0;
-      padding: 8px;
-    }
-  }
-
-  // permanent placeholder - always displays, even when there is data in fields
   .kiln-permanent-placeholder {
-    background-color: $permanent-placeholder-background;
-    border: 1px dotted $permanent-placeholder-border;
-
-    svg,
-    svg * {
-      fill: $permanent-placeholder-label-border;
-    }
+    background-color: $permanent-placeholder-bg-color;
 
     .placeholder-label {
-      border-bottom-color: $permanent-placeholder-label-border;
-      color: $permanent-placeholder-label;
+      color: $permanent-placeholder-color;
     }
 
-    .placeholder-required {
-      color: $permanent-placeholder-label;
+    .placeholder-icon {
+      color: $permanent-placeholder-color;
     }
 
-    // permanent placeholders should probably never show this button,
-    // but let's add styles just in case
-    .placeholder-add-component {
-      @include button-outlined($permanent-placeholder-label, $permanent-placeholder-background);
-      @include placeholder-secondary();
+    .placeholder-text {
+      color: $permanent-placeholder-color;
+    }
+  }
 
-      margin: 16px auto 0;
-      padding: 8px;
+  .kiln-block-placeholder {
+    background-color: $placeholder-bg-color;
+
+    .placeholder-label {
+      color: $placeholder-color;
+    }
+
+    .placeholder-icon {
+      color: $placeholder-color;
+    }
+
+    .placeholder-text {
+      color: $placeholder-color;
     }
   }
 </style>
 
 <template>
-  <div data-ignore :class="[isPermanent ? permanentClass : temporaryClass, { 'single-line': isSingleLine }]" :style="{ minHeight: placeholderHeight }">
-    <div class="placeholder-top">
-      <span class="placeholder-label">{{ text }}</span>
-      <span v-if="isRequired" class="placeholder-required">Required</span>
+  <div :class="{ 'kiln-inline-placeholder': isInline, 'kiln-permanent-placeholder': isPermanent && !isInline, 'kiln-block-placeholder': !isPermanent && !isInline }" :style="{ minHeight: placeholderHeight }" :ref="uid">
+    <div v-if="isInline" class="placeholder-label">
+      <ui-icon class="placeholder-icon" icon="arrow_forward"></ui-icon>
+      <span class="placeholder-text">{{ text }}</span>
     </div>
-    <div v-if="canAddComponent" class="placeholder-bottom">
-      <span class="placeholder-add-component" :title="addComponentTitle" @click.stop="openAddComponentPane">{{ addComponentTitle }}</span>
+    <ui-button v-else-if="isComponent" class="placeholder-add-component" icon="add_circle_outline">{{ addComponentText }}</ui-button>
+    <div v-else class="placeholder-label">
+      <ui-icon v-if="!isPermanent" class="placeholder-icon" icon="add"></ui-icon>
+      <span class="placeholder-text">{{ text }}</span>
+      <ui-ripple-ink v-if="!isPermanent" :trigger="uid"></ui-ripple-ink>
     </div>
   </div>
 </template>
 
 <script>
   import _ from 'lodash';
+  import cuid from 'cuid';
   import store from '../core-data/store';
-  import { placeholderProp, componentListProp, componentProp } from '../utils/references';
+  import { placeholderProp, componentListProp, componentProp, fieldProp } from '../utils/references';
   import { getData } from '../core-data/components';
   import { get } from '../core-data/groups';
   import label from '../utils/label';
   import interpolate from '../utils/interpolate';
-
-  const SINGLE_LINE_HEIGHT = 50;
+  import UiIcon from 'keen/UiIcon';
+  import UiButton from 'keen/UiButton';
+  import UiRippleInk from 'keen/UiRippleInk';
 
   function getSchema(options) {
     return get(options.uri, options.path).schema;
@@ -181,17 +140,17 @@
 
   export default {
     data() {
-      return {
-        permanentClass: 'kiln-permanent-placeholder',
-        temporaryClass: 'kiln-placeholder'
-      };
+      return {};
     },
     computed: {
+      uid() {
+        return cuid();
+      },
       isPermanent() {
         return !!_.get(getSchema(this.$options), `${placeholderProp}.permanent`);
       },
-      isRequired() {
-        return !!getSchema(this.$options)[placeholderProp].required;
+      isInline() {
+        return _.get(getSchema(this.$options), `${fieldProp}.input`) === 'inline';
       },
       text() {
         const subSchema = getSchema(this.$options),
@@ -206,12 +165,12 @@
           return label(this.$options.path, subSchema);
         }
       },
-      canAddComponent() {
+      isComponent() {
         const subSchema = getSchema(this.$options);
 
         return !!subSchema[componentListProp] || !!subSchema[componentProp];
       },
-      addComponentTitle() {
+      addComponentText() {
         const subSchema = getSchema(this.$options),
           componentsToAdd = _.get(subSchema, `${componentListProp}.include`) || _.get(subSchema, `${componentProp}.include`),
           hasOneComponent = componentsToAdd && componentsToAdd.length === 1;
@@ -222,15 +181,15 @@
         const placeholderHeight = parseInt(getSchema(this.$options)[placeholderProp].height, 10) || 100, // default to 100px
           parentHeight = parseInt(this.$options.parentHeight, 10) || 0; // default to 0 for comparison purposes
 
-        // if the parent element (the element with `data-editable` or `data-placeholder`)
-        // is larger than the specified placeholder height, use that instead.
-        // this is useful for having different-sized placeholders for different-sized instances
-        // of the same component, e.g. ads
-        return parentHeight > placeholderHeight ? `${parentHeight}px` : `${placeholderHeight}px`;
-      },
-      isSingleLine() {
-        // note: this.placeholderHeight is a computed property. getters are cool!
-        return parseInt(this.placeholderHeight, 10) < SINGLE_LINE_HEIGHT;
+        if (this.isInline) {
+          return 'none'; // no min-height for inline placeholders
+        } else {
+          // if the parent element (the element with `data-editable` or `data-placeholder`)
+          // is larger than the specified placeholder height, use that instead.
+          // this is useful for having different-sized placeholders for different-sized instances
+          // of the same component, e.g. ads
+          return parentHeight > placeholderHeight ? `${parentHeight}px` : `${placeholderHeight}px`;
+        }
       }
     },
     methods: {
@@ -243,6 +202,11 @@
           path
         });
       }
+    },
+    components: {
+      UiIcon,
+      UiButton,
+      UiRippleInk
     }
   };
 </script>
