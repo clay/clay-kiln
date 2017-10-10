@@ -49,14 +49,14 @@
     padding: 16px 24px;
     width: 100%;
 
-    .placeholder-label,
     .placeholder-add-component {
-      flex: 1 1 auto;
+      flex: 0 0 auto;
     }
 
     .placeholder-label {
       align-items: center;
       display: flex;
+      flex: 1 1 auto;
       flex-flow: row wrap;
       justify-content: center;
     }
@@ -70,6 +70,7 @@
 
       flex: 0 1 auto;
       line-height: 18px;
+      text-align: center;
     }
   }
 
@@ -112,7 +113,7 @@
       <ui-icon class="placeholder-icon" icon="arrow_forward"></ui-icon>
       <span class="placeholder-text">{{ text }}</span>
     </div>
-    <ui-button v-else-if="isComponent" class="placeholder-add-component" icon="add_circle_outline">{{ addComponentText }}</ui-button>
+    <ui-button v-else-if="isComponent" class="placeholder-add-component" icon="add" color="primary" :raised="true" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
     <div v-else class="placeholder-label">
       <ui-icon v-if="!isPermanent" class="placeholder-icon" icon="add"></ui-icon>
       <span class="placeholder-text">{{ text }}</span>
