@@ -189,12 +189,12 @@
       }
     }
 
-    &-button {
-      @include icon-button($mini-selector-color, 18px);
-
+    & &-button {
+      border-radius: 0;
       // note: 46px is width minus border
       flex: 0 0 46px;
-      padding: 14px;
+      height: 46px;
+      width: 46px;
       z-index: 1;
 
       .left &.quick-bar-add,
@@ -222,13 +222,13 @@
   <transition name="selector-fade">
     <aside data-ignore v-show="isCurrentSelection" class="mini-selector" :class="selectorPosition" @click.stop>
       <div class="quick-bar" :class="selectorPosition">
-        <button v-if="componentLabel" class="quick-bar-button quick-bar-info" :title="componentLabel" @click.stop="openInfo"><ui-icon icon="info"></ui-icon></button>
-        <button v-if="hasSettings" class="quick-bar-button quick-bar-settings" title="Component Settings" @click.stop="openSettings"><ui-icon icon="settings"></ui-icon></button>
+        <ui-icon-button v-if="componentLabel" type="secondary" color="primary" class="quick-bar-button quick-bar-info" icon="info" :tooltip="`${componentLabel} Info`" @click.stop="openInfo"></ui-icon-button>
+        <ui-icon-button v-if="hasSettings" type="secondary" color="primary" class="quick-bar-button quick-bar-settings" icon="settings" :tooltip="`${componentLabel} Settings`" @click.stop="openSettings"></ui-icon-button>
         <component v-for="button in customButtons" :is="button"></component>
-        <button v-if="hasRemove" class="quick-bar-button quick-bar-remove" title="Remove Component" @click.stop="removeComponent"><ui-icon icon="delete"></ui-icon></button>
-        <button v-if="hasAddComponent" class="quick-bar-button quick-bar-add" title="Add Component" @click.stop="openAddComponentPane"><ui-icon icon="add"></ui-icon></button>
-        <button v-if="hasDuplicateComponent" class="quick-bar-button quick-bar-dupe" title="Duplicate Component" @click.stop="duplicateComponent"><ui-icon icon="plus_one"></ui-icon></button>
-        <button v-if="hasReplaceComponent" class="quick-bar-button quick-bar-replace" title="Replace Component"><ui-icon icon="swap_vert"></ui-icon></button>
+        <ui-icon-button v-if="hasRemove" type="secondary" color="primary" class="quick-bar-button quick-bar-remove" icon="delete" :tooltip="`Remove ${componentLabel}`" @click.stop="removeComponent"></ui-icon-button>
+        <ui-icon-button v-if="hasAddComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-add" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
+        <ui-icon-button v-if="hasDuplicateComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-dupe" icon="plus_one" :tooltip="`Duplicate ${componentLabel}`" @click.stop="duplicateComponent"></ui-icon-button>
+        <ui-icon-button v-if="hasReplaceComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-replace" icon="swap_vert" :tooltip="`Replcae ${componentLabel}`"></ui-icon-button>
       </div>
     </aside>
   </transition>
@@ -239,10 +239,10 @@
   import getRect from 'element-client-rect';
   import store from '../core-data/store';
   import { getSchema } from '../core-data/components';
-  import { getComponentName } from '../utils/references';
+  import { getComponentName, componentListProp } from '../utils/references';
   import label from '../utils/label';
   import logger from '../utils/log';
-  import UiIcon from 'keen/UiIcon';
+  import UiIconButton from 'keen/UiIconButton';
 
   const log = logger(__filename);
 
@@ -315,6 +315,15 @@
       },
       isCurrentSelection() {
         return this.$options.componentEl === this.currentComponent.el;
+      },
+      addComponentText() {
+        if (this.hasAddComponent) {
+          const schema = getSchema(_.get(store, 'state.ui.currentSelection.parentURI'), this.parentField.path),
+            componentsToAdd = _.get(schema, `${componentListProp}.include`),
+            hasOneComponent = componentsToAdd && componentsToAdd.length === 1;
+
+          return hasOneComponent ? `Add ${label(componentsToAdd[0])}` : 'Add Components';
+        }
       }
     },
     watch: {
@@ -387,6 +396,6 @@
       // setup event listener, so it can be removed later
       setupResizeListener.call(this);
     },
-    components: _.merge(_.get(window, 'kiln.selectorButtons', {}), { UiIcon })
+    components: _.merge(_.get(window, 'kiln.selectorButtons', {}), { UiIconButton })
   };
 </script>
