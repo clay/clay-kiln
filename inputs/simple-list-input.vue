@@ -22,8 +22,7 @@
 </style>
 
 <template>
-  <div class="simple-list-input"
-    :class="classes">
+  <div class="simple-list-input" :class="classes">
     <input
       type="text"
       class="ui-textbox__input simple-list-add"

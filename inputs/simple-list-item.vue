@@ -29,6 +29,10 @@
     user-select: none;
     white-space: nowrap;
 
+    &:focus {
+      outline: none;
+    }
+
     &:hover:not(.is-disabled) {
       background-color: $chip-bg-color--focus;
     }
@@ -117,15 +121,15 @@
 </style>
 
 <template>
-  <button type="button"
-    class="simple-list-item"
+  <div class="simple-list-item"
     :class="classes"
+    tabindex="0"
     @keydown.left="selectItem(index - 1)"
     @keydown.shift.tab="selectItem(index - 1)"
     @keydown.right="selectItem(index + 1)"
     @keydown.tab.prevent="selectItem(index + 1)"
     @keydown.delete="removeItem"
-    @click="selectItem(index)"
+    @click.stop.prevent="selectItem(index)"
     v-conditional-focus="isCurrentItem">
     <transition name="badge">
       <ui-icon v-if="hasIcon && isPrimary" :icon="badge" class="primary-badge"></ui-icon>
@@ -133,7 +137,7 @@
     </transition>
     <span class="item-text">{{ data.text }}</span>
     <button type="button" class="simple-list-remove" @click.stop.prevent="removeItem"><ui-icon icon="close"></ui-icon></button>
-  </button>
+  </div>
 </template>
 
 <script>
