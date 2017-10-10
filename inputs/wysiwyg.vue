@@ -191,6 +191,10 @@
   .ql-editor .clay-designed {
     background-color: #ffb7b7;
   }
+
+  .ui-textbox__input.wysiwyg-content {
+    height: auto;
+  }
 </style>
 
 <template>
