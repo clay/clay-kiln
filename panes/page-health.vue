@@ -101,7 +101,7 @@
       <span class="error-description">{{ error.description }}</span>
       <ul class="validation-items">
         <li v-for="item in error.items" class="validation-item">
-          <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click="openLocation(item.uri, item.field, item.location)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
+          <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click="openLocation(item.uri, item.path, item.location)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
         </li>
       </ul>
     </div>
@@ -112,7 +112,7 @@
       <span class="warning-description">{{ warning.description }}</span>
       <ul class="validation-items">
         <li v-for="item in warning.items" class="validation-item">
-          <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click="openLocation(item.uri, item.field, item.location)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
+          <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click="openLocation(item.uri, item.path, item.location)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
         </li>
       </ul>
     </div>
@@ -121,36 +121,9 @@
 
 
 <script>
-  import _ from 'lodash';
   import { mapState } from 'vuex';
-  import { getSchema } from '../lib/core-data/components';
-  import { displayProp, groupsProp } from '../lib/utils/references';
   import { getFieldEl, getComponentEl } from '../lib/utils/component-elements';
   import UiIcon from 'keen/UiIcon';
-
-  function getSettingsPath(field, schema) {
-    if (_.get(schema, `${field}[${displayProp}]`) === 'settings') {
-      return 'settings';
-    }
-  }
-
-  function getGroupPath(field, schema) {
-    // find the field in a group
-    // note: this will find it in a manually-specified settings group
-    // if the field doesn't itself have _display: settings
-    if (schema[groupsProp]) {
-      return _.findKey(schema[groupsProp], (group) => _.includes(group.fields, field));
-    }
-  }
-
-  function getPathFromField(uri, field) {
-    const schema = getSchema(uri);
-
-    // if it's a field in settings, return settings (easiest check)
-    // otherwise see if it's in a group
-    // otherwise return the field itself
-    return getSettingsPath(field, schema) || getGroupPath(field, schema) || field;
-  }
 
   export default {
     data() {
@@ -170,9 +143,8 @@
       }
     }),
     methods: {
-      openLocation(uri, field, location) {
-        const path = getPathFromField(uri, field),
-          el = getFieldEl(uri, path),
+      openLocation(uri, path, location) {
+        const el = getFieldEl(uri, path),
           componentEl = el && getComponentEl(el);
 
         this.$store.commit('OPEN_VALIDATION_LINK', location);

@@ -1,7 +1,7 @@
 <style lang="sass">
   @import '../../styleguide/colors';
   @import '../../styleguide/typography';
-  @import '../../styleguide/buttons';
+  @import '../../styleguide/animations';
 
   // all editable elements should have some kind of ux showing they can be edited
   .component-selector-wrapper *[data-editable] {
@@ -12,6 +12,17 @@
   .component-selector-wrapper  p[data-editable],
   .component-selector-wrapper  blockquote[data-editable] {
     cursor: text;
+  }
+
+  .kiln-inline-placeholder,
+  .kiln-block-placeholder {
+    transition: background-color 300ms $standard-curve;
+
+    .placeholder-label,
+    .placeholder-icon,
+    .placeholder-text {
+      transition: color 300ms $standard-curve;
+    }
   }
 
   .kiln-inline-placeholder {
@@ -105,10 +116,29 @@
       color: $placeholder-color;
     }
   }
+
+  .kiln-error-placeholder {
+    &.kiln-block-placeholder {
+      // inline placeholders don't have a background-color
+      background-color: $placeholder-error-bg-color;
+    }
+
+    .placeholder-label {
+      color: $placeholder-error-color;
+    }
+
+    .placeholder-icon {
+      color: $placeholder-error-color;
+    }
+
+    .placeholder-text {
+      color: $placeholder-error-color;
+    }
+  }
 </style>
 
 <template>
-  <div :class="{ 'kiln-inline-placeholder': isInline, 'kiln-permanent-placeholder': isPermanent && !isInline, 'kiln-block-placeholder': !isPermanent && !isInline }" :style="{ minHeight: placeholderHeight }" :ref="uid">
+  <div :class="{ 'kiln-inline-placeholder': isInline, 'kiln-permanent-placeholder': isPermanent && !isInline, 'kiln-block-placeholder': !isPermanent && !isInline, 'kiln-error-placeholder': isError }" :style="{ minHeight: placeholderHeight }" :ref="uid">
     <div v-if="isInline" class="placeholder-label">
       <ui-icon class="placeholder-icon" icon="arrow_forward"></ui-icon>
       <span class="placeholder-text">{{ text }}</span>
@@ -152,6 +182,9 @@
       },
       isInline() {
         return _.get(getSchema(this.$options), `${fieldProp}.input`) === 'inline';
+      },
+      isError() {
+        return _.find(_.get(store, 'state.validation.errors', []), (error) => _.find(error.items, (item) => item.uri === this.$options.uri && item.path === this.$options.path));
       },
       text() {
         const subSchema = getSchema(this.$options),
