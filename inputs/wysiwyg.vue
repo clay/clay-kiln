@@ -194,6 +194,7 @@
 
   .ui-textbox__input.wysiwyg-content {
     height: auto;
+    min-height: 32px;
   }
 </style>
 
