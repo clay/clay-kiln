@@ -43,6 +43,11 @@ $ui-modal-mask-background: rgba($pure-black, $modal-opacity);
   font-family: $font-stack;
 }
 
+.ui-textbox {
+  // override margins, since fields will set them
+  margin: 0;
+}
+
 // html element in edit mode gets a smaller base font size
 // this sets the base sizing for KeenUI components, as they all use rem
 html.component-selector-wrapper {

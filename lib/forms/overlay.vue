@@ -29,7 +29,8 @@
       height: 56px;
       justify-content: space-between;
       opacity: 0;
-      padding: 0 24px;
+      // visually align the right buttons
+      padding: 0 14px 0 24px;
       position: relative;
       width: 100%;
     }

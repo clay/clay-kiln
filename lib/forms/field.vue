@@ -1,12 +1,15 @@
 <style lang="sass">
-  @import '../../styleguide/forms';
 
   .kiln-field {
-    @include field();
-
+    border: none;
+    flex: 0 0 100%;
+    margin: 0 0 16px;
     opacity: 1;
+    padding: 0;
+    position: relative;
     transition: opacity 300ms linear;
     visibility: visible;
+    width: 100%;
 
     &.kiln-reveal-hide {
       // fade out, THEN remove the element from the space it takes up
