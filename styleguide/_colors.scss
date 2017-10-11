@@ -1,17 +1,17 @@
 @import '~keen-ui/src/styles/md-colors'; // material design color palette
 
 // states (used by progress bar, status message, publish button)
-$draft: #c7b488;
-$scheduled: #cb8d34;
-$published: #599f62;
-$offline: #888;
+$draft: $md-purple;
+$scheduled: $md-orange;
+$published: $md-green;
+$offline: $md-grey;
 $error: $md-red;
 $warning: $scheduled;
-$save: #229ed3;
+$save: $md-blue;
 
 // base colors and opacities
-$pure-black: #000;
-$pure-white: #fff;
+$pure-black: $md-black;
+$pure-white: $md-white;
 $brand-primary-color: $save;
 $brand-accent-color: $published;
 
@@ -32,23 +32,23 @@ $divider-color: rgba($pure-black, $divider-opacity);
 
 // cards
 $card-bg-color: $pure-white;
-$card-header-bg-color: #f5f5f5;
+$card-header-bg-color: $md-grey-100;
 
 // chips
-$chip-bg-color: #dcdcdc;
-$chip-bg-color--focus: #cacaca;
-$chip-badge-bg-color: #b9b9b9;
-$chip-badge-color: #424242;
+$chip-bg-color: $md-grey-300;
+$chip-bg-color--focus: $md-grey-400;
+$chip-badge-bg-color: $md-grey-600;
+$chip-badge-color: $md-white;
 $chip-delete-color: rgba(0, 0, 0, 0.26);
 $chip-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
 
 // placeholders
-$placeholder-color: $save;
-$placeholder-bg-color: #e7f2f6;
-$permanent-placeholder-color: #acacac;
-$permanent-placeholder-bg-color: #f5f5f5;
+$placeholder-color: $md-blue;
+$placeholder-bg-color: $md-blue-50;
+$permanent-placeholder-color: $md-grey-500;
+$permanent-placeholder-bg-color: $md-grey-50;
 $placeholder-error-color: $md-red;
-$placeholder-error-bg-color: #ffcdd2;
+$placeholder-error-bg-color: $md-red-50;
 
 // shadows
 $popover-shadow: 0 2px 4px -1px rgba(black, 0.2), 0 4px 5px 0 rgba(black, 0.14), 0 1px 10px 0 rgba(black, 0.12);
