@@ -222,13 +222,13 @@
   <transition name="selector-fade">
     <aside data-ignore v-show="isCurrentSelection" class="mini-selector" :class="selectorPosition" @click.stop>
       <div class="quick-bar" :class="selectorPosition">
-        <ui-icon-button v-if="componentLabel" type="secondary" color="primary" class="quick-bar-button quick-bar-info" icon="info" :tooltip="`${componentLabel} Info`" @click.stop="openInfo"></ui-icon-button>
+        <ui-icon-button v-if="componentLabel" type="secondary" color="primary" class="quick-bar-button quick-bar-info" icon="info_outline" :tooltip="`${componentLabel} Info`" @click.stop="openInfo"></ui-icon-button>
         <ui-icon-button v-if="hasSettings" type="secondary" color="primary" class="quick-bar-button quick-bar-settings" icon="settings" :tooltip="`${componentLabel} Settings`" @click.stop="openSettings"></ui-icon-button>
         <component v-for="button in customButtons" :is="button"></component>
         <ui-icon-button v-if="hasRemove" type="secondary" color="primary" class="quick-bar-button quick-bar-remove" icon="delete" :tooltip="`Remove ${componentLabel}`" @click.stop="removeComponent"></ui-icon-button>
         <ui-icon-button v-if="hasAddComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-add" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
         <ui-icon-button v-if="hasDuplicateComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-dupe" icon="plus_one" :tooltip="`Duplicate ${componentLabel}`" @click.stop="duplicateComponent"></ui-icon-button>
-        <ui-icon-button v-if="hasReplaceComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-replace" icon="swap_vert" :tooltip="`Replcae ${componentLabel}`"></ui-icon-button>
+        <ui-icon-button v-if="hasReplaceComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-replace" icon="swap_vert" :tooltip="`Replace ${componentLabel}`"></ui-icon-button>
       </div>
     </aside>
   </transition>

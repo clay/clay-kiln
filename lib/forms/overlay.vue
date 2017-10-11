@@ -40,6 +40,19 @@
       margin: 0;
     }
 
+    .form-header-actions {
+      align-items: center;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .form-close-divider {
+      border-left: 1px solid $divider-color;
+      height: 22px;
+      margin-left: 10px;
+      width: 10px;
+    }
+
     .form-contents {
       // fade this in after form opens
       display: block;
@@ -90,7 +103,16 @@
     <form class="kiln-overlay-form" v-if="hasCurrentOverlayForm" :key="formKey" :style="{ top: formTop, left: formLeft }" @click.stop @submit.stop.prevent="save">
       <div class="form-header">
         <h2 class="form-header-title">{{ formHeader }}</h2>
-        <ui-icon-button color="black" type="secondary" icon="check" ariaLabel="Save Form" tooltip="Save (ESC)" @click.stop="save"></ui-icon-button>
+        <div class="form-header-actions">
+          <ui-icon-button v-if="componentLabel" type="secondary" color="black" icon="info_outline" :tooltip="`${componentLabel} Info`" @click.stop="openInfo"></ui-icon-button>
+          <ui-icon-button v-if="hasSettings" type="secondary" color="black" icon="settings" :tooltip="`${componentLabel} Settings`" @click.stop="openSettings"></ui-icon-button>
+          <component v-for="button in customButtons" :is="button"></component>
+          <ui-icon-button v-if="hasRemove" type="secondary" color="black" icon="delete" :tooltip="`Remove ${componentLabel}`" @click.stop="removeComponent"></ui-icon-button>
+          <ui-icon-button v-if="hasAddComponent" type="secondary" color="black" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
+          <ui-icon-button v-if="hasReplaceComponent" type="secondary" color="black" icon="swap_vert" :tooltip="`Replace ${componentLabel}`"></ui-icon-button>
+          <div class="form-close-divider"></div>
+          <ui-icon-button color="black" type="secondary" icon="check" ariaLabel="Save Form" tooltip="Save (ESC)" @click.stop="save"></ui-icon-button>
+        </div>
       </div>
       <div class="form-contents">
         <ui-tabs v-if="hasSections" fullwidth ref="tabs">
@@ -122,11 +144,14 @@
   import velocity from 'velocity-animate';
   import { getSchema } from '../core-data/components';
   import label from '../utils/label';
-  import { fieldProp, getComponentName } from '../utils/references';
+  import logger from '../utils/log';
+  import { fieldProp, groupsProp, getComponentName, componentListProp } from '../utils/references';
   import field from './field.vue';
   import UiIconButton from 'keen/UiIconButton';
   import UiTabs from 'keen/UiTabs';
   import UiTab from 'keen/UiTab';
+
+  const log = logger(__filename);
 
   export default {
     data() {
@@ -183,6 +208,35 @@
       hasRequiredFields() {
         // true if any of the fields in the current form have required validation
         return _.some(this.schema, (val, key) => _.includes(Object.keys(this.fields), key) && _.has(val, `${fieldProp}.validate.required`));
+      },
+      componentLabel: (state) => label(getComponentName(state.ui.currentForm.uri)),
+      hasSettings(state) {
+        return state.ui.currentForm.path !== 'settings' && _.has(this.schema, `${groupsProp}.settings`);
+      },
+      customButtons() {
+        return Object.keys(_.get(window, 'kiln.selectorButtons', {}));
+      },
+      isCurrentlySelected: (state) => _.get(state, 'ui.currentForm.uri') === _.get(state, 'ui.currentSelection.uri'),
+      hasRemove(state) {
+        // note: this only shows up if the component that contains this form is selected
+        return this.isCurrentlySelected && _.get(state, 'ui.currentSelection.parentField.type') === 'list' && _.get(state, 'ui.currentSelection.parentField.isEditable');
+      },
+      hasAddComponent(state) {
+        // note: this only shows up if the component that contains this form is selected
+        return this.isCurrentlySelected && _.get(state, 'ui.currentSelection.parentField.type') === 'list' && _.get(state, 'ui.currentSelection.parentField.isEditable');
+      },
+      hasReplaceComponent(state) {
+        // note: this only shows up if the component that contains this form is selected
+        return this.isCurrentlySelected && _.get(state, 'ui.currentSelection.parentField.type') === 'prop' && _.get(state, 'ui.currentSelection.parentField.isEditable');
+      },
+      addComponentText(state) {
+        if (this.hasAddComponent) {
+          const schema = getSchema(_.get(state, 'ui.currentSelection.parentURI'), _.get(state, 'ui.currentSelection.parentField.path')),
+            componentsToAdd = _.get(schema, `${componentListProp}.include`),
+            hasOneComponent = componentsToAdd && componentsToAdd.length === 1;
+
+          return hasOneComponent ? `Add ${label(componentsToAdd[0])}` : 'Add Components';
+        }
       }
     }),
     methods: {
@@ -253,6 +307,42 @@
           } else {
             velocity(this.$el, { height: docHeight - currentTop }, { duration: 320 });
           }
+        });
+      },
+      openInfo() {
+        const description = _.get(this.schema, '_description');
+
+        if (!description) {
+          log.error(`Cannot open component information: "${this.componentLabel}" has no description!`, { action: 'openInfo' });
+        } else {
+          return this.$store.dispatch('openPane', {
+            title: this.componentLabel,
+            position: 'center',
+            size: 'medium',
+            height: 'short',
+            content: {
+              component: 'info',
+              args: {
+                text: description
+              }
+            }
+          });
+        }
+      },
+      openSettings() {
+        return this.$store.dispatch('focus', { uri: _.get(this.$store, 'state.ui.currentForm.uri'), path: 'settings' });
+      },
+      removeComponent() {
+        const el = _.get(this.$store, 'state.ui.currentSelection.el');
+
+        this.$store.dispatch('unselect');
+        return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', el));
+      },
+      openAddComponentPane() {
+        return this.$store.dispatch('openAddComponents', {
+          currentURI: _.get(this.$store, 'state.ui.currentForm.uri'),
+          parentURI: _.get(this.$store, 'state.ui.currentSelection.parentURI'),
+          path: _.get(this.$store, 'state.ui.currentSelection.parentField.path')
         });
       },
       save() {
