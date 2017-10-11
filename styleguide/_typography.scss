@@ -20,8 +20,6 @@ $font-stack: 'Noto Sans', Arial, sans-serif;
   text-decoration: none;
   // enable ligatures
   text-rendering: optimizeLegibility;
-  // don't fix what isn't broken - http://usabilitypost.com/2012/11/05/stop-fixing-font-smoothing/
-  -webkit-font-smoothing: auto;
 }
 
 // typographic hierarchy

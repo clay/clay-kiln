@@ -33,12 +33,6 @@ $ui-modal-mask-background: rgba($pure-black, $modal-opacity);
   font-family: $font-stack;
 }
 
-// all KeenUI components should follow our typographic rules
-[class^="ui-"] {
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: auto;
-}
-
 .ui-textbox__feedback {
   font-family: $font-stack;
 }
