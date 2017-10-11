@@ -7,6 +7,8 @@
 
   .kiln-toolbar-wrapper {
     @include toolbar-wrapper();
+
+    top: calc(100% - 48px)
   }
 
   .kiln-toolbar {
