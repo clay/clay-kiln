@@ -364,11 +364,12 @@
       openSettings() {
         return store.dispatch('focus', { uri: this.uri, path: 'settings' });
       },
-      openAddComponentPane() {
-        return store.dispatch('openAddComponents', {
+      openAddComponentPane(e) {
+        return store.dispatch('openAddComponent', {
           currentURI: this.uri,
           parentURI: this.currentComponent.parentURI,
-          path: this.parentField.path
+          path: this.parentField.path,
+          pos: { x: e.clientX, y: e.clientY }
         });
       },
       duplicateComponent() {

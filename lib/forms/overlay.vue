@@ -340,7 +340,7 @@
         return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', el));
       },
       openAddComponentPane() {
-        return this.$store.dispatch('openAddComponents', {
+        return this.$store.dispatch('openAddComponent', {
           currentURI: _.get(this.$store, 'state.ui.currentForm.uri'),
           parentURI: _.get(this.$store, 'state.ui.currentSelection.parentURI'),
           path: _.get(this.$store, 'state.ui.currentSelection.parentField.path')

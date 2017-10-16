@@ -162,6 +162,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Close a pane
     if (_.get(store, 'state.ui.currentPane')) {
       store.commit(CLOSE_PANE, null);
+    } else if (_.get(store, 'state.ui.currentAddComponentModal')) {
+      store.dispatch('closeAddComponent');
     }
   });
 
@@ -180,6 +182,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (_.get(store, 'state.ui.currentPane')) {
         store.commit(CLOSE_PANE, null);
+      } else if (_.get(store, 'state.ui.currentAddComponentModal')) {
+        store.dispatch('closeAddComponent');
       }
     } else if (key === 'ctrl' || key === 'left command') {
       // pressing and holding meta key will unlock additional functionality,
@@ -222,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
       SHORTKEY = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 
     // don't navigate if they have a form or pane open
-    if (_.get(store, 'state.ui.currentFocus') || _.get(store, 'state.ui.currentPane')) {
+    if (_.get(store, 'state.ui.currentFocus') || _.get(store, 'state.ui.currentPane') || _.get(store, 'state.ui.currentAddComponentModal')) {
       return;
     }
 

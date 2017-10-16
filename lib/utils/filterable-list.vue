@@ -1,6 +1,6 @@
 <style lang="sass">
-  @import '../styleguide/inputs';
-  @import '../styleguide/colors';
+  @import '../../styleguide/inputs';
+  @import '../../styleguide/colors';
 
   .filterable-list {
     height: calc(100% - 51px);

@@ -227,13 +227,14 @@
       }
     },
     methods: {
-      openAddComponentPane() {
+      openAddComponentPane(e) {
         const parentURI = this.$options.uri,
           path = this.$options.path;
 
-        return store.dispatch('openAddComponents', {
+        return store.dispatch('openAddComponent', {
           parentURI,
-          path
+          path,
+          pos: { x: e.clientX, y: e.clientY }
         });
       }
     },

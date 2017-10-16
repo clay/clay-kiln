@@ -8,7 +8,7 @@
   import { refAttr, getComponentName } from '../lib/utils/references';
   import { getVisibleList } from '../lib/utils/component-elements';
   import label from '../lib/utils/label';
-  import filterableList from './filterable-list.vue';
+  import filterableList from '../lib/utils/filterable-list.vue';
 
   /**
    * Get the name of the component

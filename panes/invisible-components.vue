@@ -1,5 +1,5 @@
 <template>
-  <filterable-list :content="list" :placeholder="placeholder" :onSettings="openSettings" :onDelete="removeComponent" :onReorder="reorderComponents" :addTitle="addTitle" :onAdd="openAddComponents"></filterable-list>
+  <filterable-list :content="list" :placeholder="placeholder" :onSettings="openSettings" :onDelete="removeComponent" :onReorder="reorderComponents" :addTitle="addTitle" :onAdd="openAddComponent"></filterable-list>
 </template>
 
 <script>
@@ -8,7 +8,7 @@
   import { getSchema } from '../lib/core-data/components';
   import { getComponentName, refProp, refAttr } from '../lib/utils/references';
   import label from '../lib/utils/label';
-  import filterableList from './filterable-list.vue';
+  import filterableList from '../lib/utils/filterable-list.vue';
 
   /**
    * Get the name of the component
@@ -65,8 +65,8 @@
         componentList.splice(index, 0, { [refProp]: id }); // add at the new index
         this.$store.dispatch('saveComponent', { uri: this.args.uri, data: { [this.args.path]: componentList }});
       },
-      openAddComponents() {
-        this.$store.dispatch('openAddComponents', { parentURI: this.args.uri, path: this.args.path });
+      openAddComponent() {
+        this.$store.dispatch('openAddComponent', { parentURI: this.args.uri, path: this.args.path });
       }
     },
     components: {

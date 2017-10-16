@@ -1,7 +1,7 @@
 <style lang="sass">
-  @import '../styleguide/colors';
-  @import '../styleguide/buttons';
-  @import '../styleguide/typography';
+  @import '../../styleguide/colors';
+  @import '../../styleguide/buttons';
+  @import '../../styleguide/typography';
 
   .filtered-add {
     align-items: center;
@@ -54,7 +54,7 @@
 </template>
 
 <script>
-  import icon from '../lib/utils/icon.vue';
+  import icon from './icon.vue';
 
   export default {
     props: ['onClick', 'title'],

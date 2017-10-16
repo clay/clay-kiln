@@ -16,7 +16,7 @@
   import { props } from '../lib/utils/promises';
   import { uriToUrl } from '../lib/utils/urls';
   import { pagesRoute, htmlExt, editExt } from '../lib/utils/references';
-  import filterableList from './filterable-list.vue';
+  import filterableList from '../lib/utils/filterable-list.vue';
 
   export default {
     props: ['content'],

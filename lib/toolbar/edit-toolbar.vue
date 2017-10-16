@@ -8,7 +8,7 @@
   .kiln-toolbar-wrapper {
     @include toolbar-wrapper();
 
-    top: calc(100% - 48px)
+    top: calc(100% - 48px);
   }
 
   .kiln-toolbar {
@@ -39,6 +39,7 @@
     <div class="kiln-toolbar-wrapper">
       <pane></pane>
       <overlay></overlay>
+      <add-component></add-component>
       <progress-bar></progress-bar>
       <status></status>
       <section class="kiln-toolbar edit-mode">
@@ -81,6 +82,7 @@
   import overlay from '../forms/overlay.vue';
   import pane from '../panes/pane.vue';
   import status from './status.vue';
+  import addComponent from '../component-data/add-component.vue';
 
   /**
    * get tabs for head component lists in the page and layout
@@ -325,7 +327,8 @@
       overlay,
       pane,
       status,
-      'progress-bar': progressBar
+      'progress-bar': progressBar,
+      'add-component': addComponent
     }, window.kiln.toolbarButtons)
   };
 </script>

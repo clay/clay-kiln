@@ -1,7 +1,7 @@
 <style lang="sass">
-  @import '../styleguide/colors';
-  @import '../styleguide/buttons';
-  @import '../styleguide/typography';
+  @import '../../styleguide/colors';
+  @import '../../styleguide/buttons';
+  @import '../../styleguide/typography';
 
   .filterable-list-item {
     align-items: center;
