@@ -57,7 +57,7 @@
       display: block;
       height: calc(100% - 56px);
       opacity: 0;
-      padding: 14px;
+      padding: 0 8px;
       position: relative;
       width: 100%;
 
@@ -74,12 +74,12 @@
       <div class="add-component-header">
         <h2 class="add-component-header-title">Add Component</h2>
         <div class="add-component-header-actions">
-          <ui-icon-button v-if="isFuzzy" type="secondary" color="black" icon="group_work" :tooltip="fuzzyTitle" @click.stop="fuzzyAdd"></ui-icon-button>
+          <ui-icon-button v-if="isFuzzy" type="secondary" color="black" icon="search" :tooltip="fuzzyTitle" @click.stop="fuzzyAdd"></ui-icon-button>
           <div class="add-component-close-divider"></div>
           <ui-icon-button color="black" type="secondary" icon="close" ariaLabel="Close" tooltip="Close (ESC)" @click.stop="close"></ui-icon-button>
         </div>
       </div>
-      <filterable-list class="add-component-list" :content="components" inputPlaceholder="Filter Components" :onClick="itemClick"></filterable-list>
+      <filterable-list class="add-component-list" :content="components" label="Filter Components" help="Or pick from your most used" :onClick="itemClick"></filterable-list>
     </div>
   </transition>
 </template>

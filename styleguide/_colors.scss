@@ -50,6 +50,11 @@ $permanent-placeholder-bg-color: $md-grey-50;
 $placeholder-error-color: $md-red;
 $placeholder-error-bg-color: $md-red-50;
 
+// lists
+$list-bg: $pure-white;
+$list-bg-hover: $md-grey-200;
+$list-bg-active: $brand-primary-color;
+
 // shadows
 $popover-shadow: 0 2px 4px -1px rgba(black, 0.2), 0 4px 5px 0 rgba(black, 0.14), 0 1px 10px 0 rgba(black, 0.12);
 // 2dp - cards (resting state), raised buttons (resting state), search bar

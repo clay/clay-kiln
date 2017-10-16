@@ -4,11 +4,15 @@
   .filterable-list {
     height: calc(100% - 51px);
 
+    &-input {
+      margin: 8px 16px;
+    }
+
     &-readout {
       overflow-y: scroll;
       overflow-x: hidden;
       min-height: 200px;
-      padding: 0 0 14px;
+      padding: 0;
 
       &-list {
         list-style: none;
@@ -41,8 +45,10 @@
     <div class="filterable-list-input" v-if="!onReorder">
       <ui-textbox
         v-model="query"
-        :label="inputPlaceholder"
+        :label="inputLabel"
         :floatingLabel="true"
+        :help="help"
+        :autofocus="true"
         @keyup.prevent
         @keydown.up.stop
         @keydown.down.stop="focusOnIndex(0)"
@@ -141,7 +147,7 @@
   }
 
   export default {
-    props: ['content', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'onAdd', 'addTitle', 'placeholder'],
+    props: ['content', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'onAdd', 'addTitle', 'label', 'help'],
     data() {
       return {
         query: '',
@@ -156,8 +162,8 @@
       focusIsNull() {
         return _.isNull(this.focusIndex);
       },
-      inputPlaceholder() {
-        return this.placeholder || 'Filter List';
+      inputLabel() {
+        return this.label || 'Filter List';
       },
       selectedIndex() {
         return _.findIndex(this.matches, (item) => item.selected);

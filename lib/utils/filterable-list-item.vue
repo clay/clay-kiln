@@ -1,29 +1,46 @@
 <style lang="sass">
   @import '../../styleguide/colors';
-  @import '../../styleguide/buttons';
   @import '../../styleguide/typography';
 
   .filterable-list-item {
     align-items: center;
-    border-bottom: 1px solid $pane-list-divider;
+    background-color: $list-bg;
+    color: $list-bg-active;
     display: flex;
-    transition: 200ms border-bottom-color ease-out;
+    padding: 0 16px;
+    position: relative;
+    transition: 200ms background-color ease-out;
 
-    &.focused {
-      border-bottom-color: $save;
-      transition: 200ms border-bottom-color ease-out;
+    &:after {
+      background-color: currentColor;
+      content: '';
+      height: 100%;
+      left: 0;
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      transition: opacity 600ms ease-out;
+      user-select: none;
+      width: 0%;
     }
 
-    &.active,
-    &:active {
-      border-bottom: 2px solid $save;
-      transition: 200ms border-bottom-color ease-out;
+    &:hover,
+    &.focused {
+      background-color: $list-bg-hover;
+    }
+
+    &.active:after {
+      opacity: 0.4;
+      transition: opacity 600ms ease-out;
+      width: 100%;
     }
 
     button {
       appearance: none;
       background: transparent;
       cursor: pointer;
+      padding: 0;
 
       &:focus {
         outline: none;
@@ -31,13 +48,13 @@
     }
 
     &-btn {
-      @include primary-text();
+      @include type-subheading();
 
       border: none;
       flex-grow: 1;
-      line-height: 1.4;
-      padding: 15px 0;
+      height: 48px;
       text-align: left;
+      vertical-align: middle;
     }
 
     &.selected &-btn {
@@ -65,32 +82,27 @@
 </style>
 
 <template>
-  <li class="filterable-list-item" :data-item-id="item.id" :class="{ focused: focused, active: active, selected: selected }">
-    <button v-if="onReorder" type="button" class="filterable-list-item-drag" title="Drag to Reorder">
-      <ui-icon icon="drag_handle"></ui-icon>
-    </button>
+  <li class="filterable-list-item" :data-item-id="item.id" :ref="item.id" :class="{ focused: focused, active: active, selected: selected }" @click.stop="handleClick(item.id, item.title)">
+    <ui-icon-button v-if="onReorder" type="button" class="filterable-list-item-drag" tooltip="Drag to Reorder" icon="drag_handle"></ui-icon-button>
     <button
       type="button"
       class="filterable-list-item-btn"
-      @click.stop="handleClick(item.id, item.title)"
       v-conditional-focus="focused"
-      @keydown.down.stop="focusOnIndex(index + 1)"
-      @keydown.up.stop="focusOnIndex(index - 1)"
+      @keydown.down.stop.prevent="focusOnIndex(index + 1)"
+      @keydown.up.stop.prevent="focusOnIndex(index - 1)"
       @keydown.enter.stop.prevent="onEnterDown"
       @keyup.enter.stop="onEnterUp">
       {{ item.title }}
     </button>
-    <button v-if="onSettings" type="button" class="filterable-list-item-settings" title="Open Settings" @click.stop="onSettings(item.id)">
-      <ui-icon icon="settings"></ui-icon>
-    </button>
-    <button v-if="onDelete" type="button" class="filterable-list-item-delete" title="Remove from List" @click.stop="onDelete(item.id)">
-      <ui-icon icon="delete"></ui-icon>
-    </button>
+    <ui-ripple-ink ref="ripple" :trigger="item.id"></ui-ripple-ink>
+    <ui-icon-button v-if="onSettings" type="button" class="filterable-list-item-settings" tooltip="Open Settings" icon="settings" @click.stop="onSettings(item.id)"></ui-icon-button>
+    <ui-icon-button v-if="onDelete" type="button" class="filterable-list-item-delete" tooltip="Remove from List" icon="delete" @click.stop="onDelete(item.id)"></ui-icon-button>
   </li>
 </template>
 
 <script>
-  import UiIcon from 'keen/UiIcon';
+  import UiIconButton from 'keen/UiIconButton';
+  import UiRippleInk from 'keen/UiRippleInk';
 
   export default {
     props: ['item', 'index', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'focused', 'active', 'selected', 'focusOnIndex', 'setActive'],
@@ -112,7 +124,8 @@
       }
     },
     components: {
-      UiIcon
+      UiIconButton,
+      UiRippleInk
     }
   };
 </script>
