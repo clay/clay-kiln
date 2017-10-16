@@ -1,26 +1,14 @@
 <style lang="sass">
-  @import '../../styleguide/inputs';
   @import '../../styleguide/colors';
 
   .filterable-list {
     height: calc(100% - 51px);
 
-    &-input {
-      padding: 4px;
-      &-field {
-        @include input();
-
-        padding: 10px 14px;
-      }
-    }
-
     &-readout {
       overflow-y: scroll;
       overflow-x: hidden;
-      // pane height minus header minus filter input,
-      // so it doesn't conflict with the pane tabs scrolling
-      height: calc(100% - 57px);
-      padding: 0 18px 18px;
+      min-height: 200px;
+      padding: 0 0 14px;
 
       &-list {
         list-style: none;
@@ -33,11 +21,6 @@
       // has reorder, so no search input
       height: 100%;
     }
-  }
-
-  // lists inside tabbed panes need slightly different heights
-  .pane-tabs-content .filterable-list {
-    height: 100%;
   }
 
   @keyframes shake {
@@ -56,17 +39,15 @@
 <template>
   <div class="filterable-list" :class="{ 'has-reorder': onReorder }">
     <div class="filterable-list-input" v-if="!onReorder">
-      <input
-        type="text"
-        class="filterable-list-input-field"
-        :placeholder="inputPlaceholder"
-        ref="search"
+      <ui-textbox
         v-model="query"
+        :label="inputPlaceholder"
+        :floatingLabel="true"
         @keyup.prevent
         @keydown.up.stop
         @keydown.down.stop="focusOnIndex(0)"
         @keydown.enter.stop.prevent="onEnterDown"
-        v-conditional-focus="focusIsNull">
+        v-conditional-focus="focusIsNull"></ui-textbox>
     </div>
     <div class="filterable-list-readout">
       <ul class="filterable-list-readout-list" ref="list">
@@ -100,6 +81,7 @@
   import listItem from './filterable-list-item.vue';
   import listAdd from './filterable-list-add.vue';
   import dragula from 'dragula';
+  import UiTextbox from 'keen/UiTextbox';
 
   // Placeholder for Dragula instance
   var drag;
@@ -175,7 +157,7 @@
         return _.isNull(this.focusIndex);
       },
       inputPlaceholder() {
-        return this.placeholder || 'Begin typing to filter list';
+        return this.placeholder || 'Filter List';
       },
       selectedIndex() {
         return _.findIndex(this.matches, (item) => item.selected);
@@ -233,7 +215,8 @@
     },
     components: {
       'list-item': listItem,
-      'list-add': listAdd
+      'list-add': listAdd,
+      UiTextbox
     }
   };
 </script>

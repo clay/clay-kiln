@@ -39,12 +39,25 @@
       margin: 0;
     }
 
+    .add-component-header-actions {
+      align-items: center;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .add-component-close-divider {
+      border-left: 1px solid $divider-color;
+      height: 22px;
+      margin-left: 10px;
+      width: 10px;
+    }
+
     .add-component-list {
       // fade this in after form opens
       display: block;
       height: calc(100% - 56px);
       opacity: 0;
-      padding: 16px 24px 24px;
+      padding: 14px;
       position: relative;
       width: 100%;
 
@@ -60,9 +73,13 @@
     <div class="add-component-modal" v-if="hasAddComponentModal" :style="{ top: modalTop, left: modalLeft }" @click.stop>
       <div class="add-component-header">
         <h2 class="add-component-header-title">Add Component</h2>
-        <ui-icon-button color="black" type="secondary" icon="close" ariaLabel="Close" tooltip="Close (ESC)" @click.stop="close"></ui-icon-button>
+        <div class="add-component-header-actions">
+          <ui-icon-button v-if="isFuzzy" type="secondary" color="black" icon="group_work" :tooltip="fuzzyTitle" @click.stop="fuzzyAdd"></ui-icon-button>
+          <div class="add-component-close-divider"></div>
+          <ui-icon-button color="black" type="secondary" icon="close" ariaLabel="Close" tooltip="Close (ESC)" @click.stop="close"></ui-icon-button>
+        </div>
       </div>
-      <filterable-list class="add-component-list" :content="components" :onClick="itemClick" :addTitle="fuzzyTitle" :onAdd="fuzzyAdd"></filterable-list>
+      <filterable-list class="add-component-list" :content="components" inputPlaceholder="Filter Components" :onClick="itemClick"></filterable-list>
     </div>
   </transition>
 </template>
@@ -110,6 +127,9 @@
         } else {
           return '50vw';
         }
+      },
+      isFuzzy() {
+        return this.config.isFuzzy;
       },
       fuzzyTitle() {
         return this.config.isFuzzy ? 'View All Components' : null;
