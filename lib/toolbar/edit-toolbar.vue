@@ -17,6 +17,10 @@
     top: 0;
     width: 100%;
   }
+
+  .edit-toggle-text {
+    font-weight: 700;
+  }
 </style>
 
 <template>
@@ -24,7 +28,7 @@
     <drawer></drawer>
     <ui-toolbar type="colored" text-color="white">
       <ui-button type="primary" color="primary" size="large" has-dropdown>
-        <span>Editing: {{ status }}</span>
+        <span class="edit-toggle-text">Editing: {{ status }}</span>
         <ui-menu slot="dropdown" :options="toggleOptions" has-icons @select="stopEditing"></ui-menu>
       </ui-button>
 
