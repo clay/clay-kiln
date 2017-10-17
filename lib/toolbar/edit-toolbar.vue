@@ -21,6 +21,7 @@
 
 <template>
   <div class="kiln-wrapper">
+    <drawer></drawer>
     <ui-toolbar type="colored" text-color="white">
       <ui-button type="primary" color="primary" size="large" has-dropdown>
         <span>Editing: {{ status }}</span>
@@ -71,6 +72,7 @@
   import UiButton from 'keen/UiButton';
   import UiIconButton from 'keen/UiIconButton';
   import UiMenu from 'keen/UiMenu';
+  import drawer from '../drawers/drawer.vue';
 
   export default {
     data() {
@@ -141,7 +143,8 @@
       UiIconButton,
       UiButton,
       UiMenu,
-      'progress-bar': progressBar
+      'progress-bar': progressBar,
+      drawer
     }, window.kiln.toolbarButtons)
   };
 </script>
