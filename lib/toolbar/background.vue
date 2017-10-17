@@ -17,7 +17,6 @@
     -webkit-overflow-scrolling: touch;
     position: fixed;
     top: 0;
-    transform: translateZ(0); // create a new viewport context
     width: 100%;
   }
 

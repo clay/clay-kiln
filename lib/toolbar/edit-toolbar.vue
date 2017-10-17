@@ -5,35 +5,33 @@
     @include toolbar-padding();
   }
 
-  .kiln-toolbar-wrapper {
+  .kiln-wrapper {
     @include toolbar-wrapper();
   }
 </style>
 
 <template>
   <div class="kiln-wrapper">
-    <background></background>
-    <div class="kiln-toolbar-wrapper">
-      <overlay></overlay>
-      <add-component></add-component>
-      <simple-modal></simple-modal>
-      <ui-toolbar type="colored" text-color="white">
-        <ui-button type="primary" color="primary" size="large" has-dropdown>
-          <span>Editing: {{ status }}</span>
-          <ui-menu slot="dropdown" :options="toggleOptions" has-icons @select="stopEditing"></ui-menu>
-        </ui-button>
+    <ui-toolbar type="colored" text-color="white">
+      <ui-button type="primary" color="primary" size="large" has-dropdown>
+        <span>Editing: {{ status }}</span>
+        <ui-menu slot="dropdown" :options="toggleOptions" has-icons @select="stopEditing"></ui-menu>
+      </ui-button>
 
-        <div class="kiln-toolbar-actions" slot="actions">
-          <ui-icon-button :disabled="!undoEnabled" color="white" size="large" type="secondary" icon="undo" tooltip="Undo" @click="undo"></ui-icon-button>
-          <ui-icon-button :disabled="!redoEnabled" color="white" size="large" type="secondary" icon="redo" tooltip="Redo" @click="redo"></ui-icon-button>
-          <component v-for="button in customButtons" :is="button"></component>
-          <ui-icon-button color="white" size="large" type="secondary" icon="people" tooltip="Contributors"></ui-icon-button>
-          <ui-icon-button color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page"></ui-icon-button>
-          <ui-icon-button color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview"></ui-icon-button>
-          <ui-icon-button color="white" size="large" type="secondary" icon="publish" tooltip="Publish"></ui-icon-button>
-        </div>
-      </ui-toolbar>
-    </div>
+      <div class="kiln-toolbar-actions" slot="actions">
+        <ui-icon-button :disabled="!undoEnabled" color="white" size="large" type="secondary" icon="undo" tooltip="Undo" @click="undo"></ui-icon-button>
+        <ui-icon-button :disabled="!redoEnabled" color="white" size="large" type="secondary" icon="redo" tooltip="Redo" @click="redo"></ui-icon-button>
+        <component v-for="button in customButtons" :is="button"></component>
+        <ui-icon-button color="white" size="large" type="secondary" icon="people" tooltip="Contributors"></ui-icon-button>
+        <ui-icon-button color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page"></ui-icon-button>
+        <ui-icon-button color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview"></ui-icon-button>
+        <ui-icon-button color="white" size="large" type="secondary" icon="publish" tooltip="Publish"></ui-icon-button>
+      </div>
+    </ui-toolbar>
+    <background></background>
+    <overlay></overlay>
+    <add-component></add-component>
+    <simple-modal></simple-modal>
   </div>
 </template>
 
