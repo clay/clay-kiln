@@ -6,11 +6,11 @@
 
   // progress bars
   .nprogress-container {
-    bottom: 100%;
     left: 0;
     overflow: visible;
     pointer-events: none;
     position: absolute;
+    top: 0;
     width: 100%;
 
     &.nprogress-custom-parent {
@@ -22,50 +22,19 @@
     #nprogress .bar {
       @include toolbar-layer();
 
-      background-color: transparent;
-      bottom: 0;
-      box-shadow: none;
+      background-color: $brand-primary-color;
+      box-shadow: $box-shadow $brand-primary-color;
       height: 3px;
       left: 0;
       position: absolute;
-      top: auto;
+      top: 0;
       width: 100%;
-    }
-
-    &.draft #nprogress .bar {
-      background-color: $draft;
-      box-shadow: $box-shadow $draft;
-    }
-
-    &.scheduled #nprogress .bar {
-      background-color: $scheduled;
-      box-shadow: $box-shadow $scheduled;
-    }
-
-    &.published #nprogress .bar {
-      background-color: $published;
-      box-shadow: $box-shadow $published;
-    }
-
-    &.offline #nprogress .bar {
-      background-color: $offline;
-      box-shadow: $box-shadow $offline;
-    }
-
-    &.error #nprogress .bar {
-      background-color: $error;
-      box-shadow: $box-shadow $error;
-    }
-
-    &.save #nprogress .bar {
-      background-color: $save;
-      box-shadow: $box-shadow $save;
     }
   }
 </style>
 
 <template>
-  <nprogress-container :class="progressColor"></nprogress-container>
+  <nprogress-container></nprogress-container>
 </template>
 
 <script>
@@ -139,7 +108,6 @@
 
   export default {
     computed: mapState({
-      progressColor: (state) => state.ui.progressColor,
       currentProgress: (state) => state.ui.currentProgress
     }),
     watch: {

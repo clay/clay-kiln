@@ -1,5 +1,6 @@
 <style lang="sass">
   @import '../../styleguide/toolbar';
+  @import '../../styleguide/colors';
 
   body {
     @include toolbar-padding();
@@ -7,6 +8,14 @@
 
   .kiln-wrapper {
     @include toolbar-wrapper();
+  }
+
+  .kiln-progress {
+    height: 3px;
+    left: 0;
+    position: relative;
+    top: 0;
+    width: 100%;
   }
 </style>
 
@@ -22,12 +31,15 @@
         <ui-icon-button :disabled="!undoEnabled" color="white" size="large" type="secondary" icon="undo" tooltip="Undo" @click="undo"></ui-icon-button>
         <ui-icon-button :disabled="!redoEnabled" color="white" size="large" type="secondary" icon="redo" tooltip="Redo" @click="redo"></ui-icon-button>
         <component v-for="button in customButtons" :is="button"></component>
-        <ui-icon-button color="white" size="large" type="secondary" icon="people" tooltip="Contributors"></ui-icon-button>
-        <ui-icon-button color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page"></ui-icon-button>
-        <ui-icon-button color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview"></ui-icon-button>
-        <ui-icon-button color="white" size="large" type="secondary" icon="publish" tooltip="Publish"></ui-icon-button>
+        <ui-icon-button color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click="toggleDrawer('people')"></ui-icon-button>
+        <ui-icon-button color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page" @click="toggleDrawer('components')"></ui-icon-button>
+        <ui-icon-button color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click="toggleDrawer('preview')"></ui-icon-button>
+        <ui-icon-button color="white" size="large" type="secondary" icon="publish" tooltip="Publish" @click="toggleDrawer('publish')"></ui-icon-button>
       </div>
     </ui-toolbar>
+    <div class="kiln-progress">
+      <progress-bar></progress-bar>
+    </div>
     <background></background>
     <overlay></overlay>
     <add-component></add-component>
@@ -60,80 +72,13 @@
   import UiIconButton from 'keen/UiIconButton';
   import UiMenu from 'keen/UiMenu';
 
-  /**
-   * get tabs for head component lists in the page and layout
-   * @param  {object} state
-   * @return {array}
-   */
-  function getHeadTabs(state) {
-    const layoutURI = _.get(state, 'page.data.layout'),
-      schema = getSchema(layoutURI),
-      lists = getListsInHead();
-
-    return _.reduce(lists, (result, list) => result.concat({
-      header: label(list.path, schema[list.path]),
-      content: {
-        component: 'head-components',
-        args: {
-          uri: layoutURI,
-          path: list.path,
-          isPage: _.get(schema, `${list.path}.${componentListProp}.page`) || false
-        }
-      }
-    }), []);
-  }
-
-  /**
-   * determine if a field in the schema has an invisible list
-   * @param  {object}  field
-   * @return {Boolean}
-   */
-  function isInvisibleList(field) {
-    return _.has(field, `${componentListProp}.invisible`);
-  }
-
-  /**
-   * find an element that matches a specific component's data-editable path
-   * @param  {string}  uri
-   * @param  {string}  path
-   * @return {Element|null}
-   */
-  function getListElement(uri, path) {
-    return find(`[${layoutAttr}="${uri}"] [${editAttr}="${path}"]`);
-  }
-
-  /**
-   * get tabs for invisible lists in the layout
-   * @param  {object} state
-   * @return {array}
-   */
-  function getInvisibleTabs(state) {
-    const layoutURI = _.get(state, 'page.data.layout'),
-      schema = getSchema(layoutURI);
-
-    return _.reduce(schema, (result, field, fieldName) => {
-      const listEl = getListElement(layoutURI, fieldName);
-
-      if (isInvisibleList(field) && !!listEl) {
-        result.push({
-          header: label(fieldName, field),
-          content: {
-            component: 'invisible-components',
-            args: {
-              uri: layoutURI,
-              path: fieldName,
-              listEl
-            }
-          }
-        });
-      }
-      return result;
-    }, []);
-  }
-
   export default {
+    data() {
+      return {};
+    },
     computed: mapState({
       pageState: (state) => state.page.state,
+      currentProgress: (state) => state.ui.currentProgress,
       undoEnabled: (state) => {
         return !state.undo.atStart && !state.ui.currentFocus && !state.ui.currentPane;
       },
@@ -169,52 +114,13 @@
           { label: 'Edit Mode', icon: 'mode_edit', disabled: true },
           { label: 'View Mode', icon: 'remove_red_eye' }
         ];
-      }
+      },
+      isDrawerOpen: (state) => !!state.ui.currentDrawer
     }),
     methods: {
       stopEditing() {
         this.$store.commit('STOP_EDITING');
         toggleEdit();
-      },
-      // note: these are separate methods because there might be additional
-      // logic that is specific to each button,
-      // e.g. running validation before opening the publish pane
-      toggleMenu(name, button) {
-        return getItem('claymenu:activetab').then((savedTab) => {
-          const activeTab = savedTab || 'All Pages',
-            options = {
-              name,
-              title: 'Clay Menu',
-              saveTab: 'claymenu',
-              size: 'xlarge',
-              height: 'tall',
-              clayHeader: true,
-              content: [{
-                header: 'My Pages',
-                active: activeTab === 'My Pages',
-                content: {
-                  component: 'page-list',
-                  args: {
-                    isMyPages: true
-                  }
-                }
-              },{
-                header: 'All Pages',
-                active: activeTab === 'All Pages', // note: this is the default
-                content: {
-                  component: 'page-list'
-                }
-              }, {
-                header: 'New Page',
-                active: activeTab === 'New Page',
-                content: {
-                  component: 'new-page'
-                }
-              }]
-            };
-
-          return this.$store.dispatch('togglePane', { options, button });
-        });
       },
       undo() {
         this.$store.dispatch('undo');
@@ -222,110 +128,20 @@
       redo() {
         this.$store.dispatch('redo');
       },
-      togglePeople(name, button) {
-        let options = {
-          name,
-          title: 'People',
-          content: {
-            component: 'people'
-          }
-        };
-
-        return this.$store.dispatch('togglePane', { options, button });
-      },
-      toggleComponents(name, button) {
-        return getItem('findonpage:activetab').then((savedTab) => {
-          const activeTab = savedTab || 'Visible';
-
-          let options = {
-              name,
-              title: 'Find on Page',
-              saveTab: 'findonpage',
-              height: 'medium-height',
-              content: [{
-                header: 'Visible',
-                active: activeTab === 'Visible',
-                content: {
-                  component: 'visible-components'
-                }
-              }]
-            },
-            headTabs = _.map(getHeadTabs(this.$store.state), (tab) => {
-              tab.active = activeTab === tab.header;
-              return tab;
-            }),
-            invisibleTabs = _.map(getInvisibleTabs(this.$store.state), (tab) => {
-              tab.active = activeTab === tab.header;
-              return tab;
-            });
-
-          // add head components (from page and layout)
-          options.content = options.content.concat(headTabs);
-          // add invisible components (from layout)
-          options.content = options.content.concat(invisibleTabs);
-
-          return this.$store.dispatch('togglePane', { options, button });
-        });
-      },
-      togglePreview(name, button) {
-        const options = {
-          name,
-          title: 'Preview',
-          height: 'preview-height',
-          content: {
-            component: 'preview-share'
-          }
-        };
-
-        return this.$store.dispatch('togglePane', { options, button });
-      },
-      togglePublish(name, button) {
-        const store = this.$store;
-
-        return this.$store.dispatch('validate').then((results) => {
-          const options = {
-            name,
-            title: 'Page Status',
-            height: results.errors.length > 0 ? 'medium-height' : 'publish-height',
-            content: [{
-              header: 'Publish',
-              disabled: results.errors.length > 0, // disable the publish tab if validation fails
-              content: {
-                component: 'edit-publish'
-              }
-            }, {
-              header: {
-                component: 'health-icon'
-              },
-              active: results.errors.length > 0,
-              content: {
-                component: 'page-health'
-              }
-            }, {
-              header: 'Location',
-              content: {
-                component: 'page-location'
-              }
-            }]
-          };
-
-          store.dispatch('togglePane', { options, button });
-        });
+      toggleDrawer(name) {
+        return this.$store.dispatch('toggleDrawer', name);
       }
     },
     components: _.merge({
-      'toolbar-button': button,
       background,
       overlay,
-      pane,
-      status,
-      'progress-bar': progressBar,
       'add-component': addComponent,
       'simple-modal': simpleModal,
       UiToolbar,
       UiIconButton,
       UiButton,
-      UiMenu
+      UiMenu,
+      'progress-bar': progressBar
     }, window.kiln.toolbarButtons)
   };
 </script>

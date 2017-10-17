@@ -1,5 +1,4 @@
 <style lang="sass">
-
   .kiln-field {
     border: none;
     flex: 0 0 100%;
@@ -10,6 +9,10 @@
     transition: opacity 300ms linear;
     visibility: visible;
     width: 100%;
+
+    .editor-inline & {
+      margin: 0;
+    }
 
     &.kiln-reveal-hide {
       // fade out, THEN remove the element from the space it takes up
