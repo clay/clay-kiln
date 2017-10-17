@@ -7,29 +7,6 @@
 
   .kiln-toolbar-wrapper {
     @include toolbar-wrapper();
-
-    top: calc(100% - 48px);
-  }
-
-  .kiln-toolbar {
-    @include toolbar();
-
-    .kiln-toolbar-inner {
-      // full width inner toolbar in edit mode
-      flex: 1 1 auto;
-      left: 0;
-      width: auto;
-    }
-
-    .clay-menu-button {
-      border-right: 1px solid $toolbar-view-border;
-    }
-
-    .publish {
-      @media screen and (min-width: 1024px) {
-        width: 130px; // largest width (scheduled)
-      }
-    }
   }
 </style>
 
@@ -37,30 +14,25 @@
   <div class="kiln-wrapper">
     <background></background>
     <div class="kiln-toolbar-wrapper">
-      <pane></pane>
       <overlay></overlay>
       <add-component></add-component>
       <simple-modal></simple-modal>
-      <progress-bar></progress-bar>
-      <status></status>
-      <section class="kiln-toolbar edit-mode">
-        <toolbar-button class="clay-menu-button" icon-name="menu" text="Clay" @click="toggleMenu"></toolbar-button>
-        <toolbar-button class="view-button" name="close" icon-name="close" text="Stop Editing" @click="stopEditing"></toolbar-button>
-        <div class="kiln-toolbar-inner">
-          <toolbar-button class="undo" :disabled="!undoEnabled" icon-name="undo" text="Undo" @click="undo"></toolbar-button>
-          <toolbar-button class="redo" :disabled="!redoEnabled" icon-name="redo" text="Redo" @click="redo"></toolbar-button>
+      <ui-toolbar type="colored" text-color="white">
+        <ui-button type="primary" color="primary" size="large" has-dropdown>
+          <span>Editing: {{ status }}</span>
+          <ui-menu slot="dropdown" :options="toggleOptions" has-icons @select="stopEditing"></ui-menu>
+        </ui-button>
+
+        <div class="kiln-toolbar-actions" slot="actions">
+          <ui-icon-button :disabled="!undoEnabled" color="white" size="large" type="secondary" icon="undo" tooltip="Undo" @click="undo"></ui-icon-button>
+          <ui-icon-button :disabled="!redoEnabled" color="white" size="large" type="secondary" icon="redo" tooltip="Redo" @click="redo"></ui-icon-button>
           <component v-for="button in customButtons" :is="button"></component>
-          <div class="flex-span flex-span-inner"></div>
-          <toolbar-button class="people" name="people" icon-name="people" text="People" @click="togglePeople"></toolbar-button>
-          <toolbar-button class="components" name="components" icon-name="find_in_page" text="Find on Page" @click="toggleComponents"></toolbar-button>
-          <toolbar-button class="preview" name="preview" icon-name="open_in_new" text="Preview" @click="togglePreview"></toolbar-button>
+          <ui-icon-button color="white" size="large" type="secondary" icon="people" tooltip="Contributors"></ui-icon-button>
+          <ui-icon-button color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page"></ui-icon-button>
+          <ui-icon-button color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview"></ui-icon-button>
+          <ui-icon-button color="white" size="large" type="secondary" icon="publish" tooltip="Publish"></ui-icon-button>
         </div>
-        <toolbar-button v-if="isLoading" class="publish loading" name="publish" icon-name="create" text="Loading&hellip;"></toolbar-button>
-        <toolbar-button v-else-if="pageState.scheduled" class="publish scheduled" name="publish" icon-name="schedule" text="Scheduled" @click="togglePublish"></toolbar-button>
-        <toolbar-button v-else-if="hasChanges" class="publish changes" name="publish" icon-name="unpubbed-changes" text="Unpublished Changes" @click="togglePublish"></toolbar-button>
-        <toolbar-button v-else-if="pageState.published" class="publish published" name="publish" icon-name="check_circle" text="Published" @click="togglePublish"></toolbar-button>
-        <toolbar-button v-else class="publish draft" name="publish" icon-name="create" text="Draft" @click="togglePublish"></toolbar-button>
-      </section>
+      </ui-toolbar>
     </div>
   </div>
 </template>
@@ -85,6 +57,10 @@
   import status from './status.vue';
   import addComponent from '../component-data/add-component.vue';
   import simpleModal from './simple-modal.vue';
+  import UiToolbar from 'keen/UiToolbar';
+  import UiButton from 'keen/UiButton';
+  import UiIconButton from 'keen/UiIconButton';
+  import UiMenu from 'keen/UiMenu';
 
   /**
    * get tabs for head component lists in the page and layout
@@ -160,7 +136,6 @@
   export default {
     computed: mapState({
       pageState: (state) => state.page.state,
-      isLoading: 'isLoading',
       undoEnabled: (state) => {
         return !state.undo.atStart && !state.ui.currentFocus && !state.ui.currentPane;
       },
@@ -179,6 +154,23 @@
         } else {
           return false;
         }
+      },
+      status() {
+        if (this.pageState.scheduled) {
+          return 'Scheduled';
+        } else if (this.hasChanges) {
+          return 'Unpublished Changes';
+        } else if (this.pageState.published) {
+          return 'Published';
+        } else {
+          return 'Draft';
+        }
+      },
+      toggleOptions() {
+        return [
+          { label: 'Edit Mode', icon: 'mode_edit', disabled: true },
+          { label: 'View Mode', icon: 'remove_red_eye' }
+        ];
       }
     }),
     methods: {
@@ -331,7 +323,11 @@
       status,
       'progress-bar': progressBar,
       'add-component': addComponent,
-      'simple-modal': simpleModal
+      'simple-modal': simpleModal,
+      UiToolbar,
+      UiIconButton,
+      UiButton,
+      UiMenu
     }, window.kiln.toolbarButtons)
   };
 </script>
