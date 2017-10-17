@@ -79,7 +79,7 @@
           <ui-icon-button color="black" type="secondary" icon="close" ariaLabel="Close" tooltip="Close (ESC)" @click.stop="close"></ui-icon-button>
         </div>
       </div>
-      <filterable-list class="add-component-list" :content="components" label="Filter Components" help="Or pick from your most used" :onClick="itemClick"></filterable-list>
+      <filterable-list class="add-component-list" :content="components" label="Find Component" help="Or pick from your most used components" :onClick="itemClick"></filterable-list>
     </div>
   </transition>
 </template>

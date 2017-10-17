@@ -40,6 +40,7 @@
       <pane></pane>
       <overlay></overlay>
       <add-component></add-component>
+      <simple-modal></simple-modal>
       <progress-bar></progress-bar>
       <status></status>
       <section class="kiln-toolbar edit-mode">
@@ -83,6 +84,7 @@
   import pane from '../panes/pane.vue';
   import status from './status.vue';
   import addComponent from '../component-data/add-component.vue';
+  import simpleModal from './simple-modal.vue';
 
   /**
    * get tabs for head component lists in the page and layout
@@ -328,7 +330,8 @@
       pane,
       status,
       'progress-bar': progressBar,
-      'add-component': addComponent
+      'add-component': addComponent,
+      'simple-modal': simpleModal
     }, window.kiln.toolbarButtons)
   };
 </script>

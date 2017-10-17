@@ -242,14 +242,9 @@ document.addEventListener('DOMContentLoaded', function () {
       store.dispatch('undo');
     } else if (key === '/' && e.shiftKey === true) {
       // cheat sheet
-      store.dispatch('openPane', {
+      store.dispatch('openModal', {
         title: 'Keyboard Shortcuts',
-        position: 'center',
-        size: 'large',
-        height: 'medium-height',
-        content: {
-          component: 'keyboard-shortcuts'
-        }
+        type: 'keyboard'
       });
     }
   });

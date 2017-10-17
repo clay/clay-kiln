@@ -347,17 +347,10 @@
         if (!description) {
           log.error(`Cannot open component information: "${this.componentLabel}" has no description!`, { action: 'openInfo' });
         } else {
-          return store.dispatch('openPane', {
+          return store.dispatch('openModal', {
             title: this.componentLabel,
-            position: 'center',
-            size: 'medium',
-            height: 'short',
-            content: {
-              component: 'info',
-              args: {
-                text: description
-              }
-            }
+            type: 'info',
+            data: description
           });
         }
       },

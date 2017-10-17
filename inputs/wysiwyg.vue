@@ -128,7 +128,7 @@
   @import '~quill/dist/quill.core.css';
   @import '~quill/dist/quill.bubble.css';
 
-  .wysiwyg-input {
+  .editor-inline .wysiwyg-input {
     @include normal-text();
 
     cursor: text;
@@ -150,6 +150,10 @@
   .ql-editor {
     overflow: visible;
     padding: 0;
+  }
+
+  .kiln-overlay-form .ql-container {
+    @include input-text();
   }
 
   .ql-container.ql-bubble:not(.ql-disabled) a {
