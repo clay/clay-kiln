@@ -14,6 +14,11 @@
     .ui-tabs__body {
       border: none;
       height: calc(100% - 48px);
+      padding: 0;
+    }
+
+    .ui-tab {
+      height: 100%;
     }
   }
 

@@ -7,10 +7,12 @@
 
   .invite-filter {
     flex: 0 0 auto;
+    padding: 16px 16px 0;
   }
 
   .invite-list {
-    flex: 1 0 auto;
+    flex: 0 1 100%;
+    padding: 16px 16px 0;
     overflow-y: scroll;
   }
 </style>

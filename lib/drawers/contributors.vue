@@ -1,6 +1,7 @@
 <style lang="sass">
   .contributors-list {
     height: 100%;
+    padding: 16px;
   }
 </style>
 

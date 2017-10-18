@@ -7,7 +7,7 @@
     cursor: default;
     display: flex;
     justify-content: flex-start;
-    padding: 16px 0;
+    padding: 12px 0;
     width: 100%;
 
     &.has-primary-action {
@@ -47,6 +47,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 100%;
   }
 
   .person-subtitle {
@@ -55,6 +56,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 100%;
   }
 
   .person-actions {
