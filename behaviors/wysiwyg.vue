@@ -227,8 +227,11 @@
 
   // add sanitization to all quill links
   Link.sanitize = (value) => {
-    if (!/^https?:/.test(value) && !/^\/\//.test(value)) {
-      // no protocol, add it
+    if (!/^\w+:/.test(value) && !/^#/.test(value)) {
+      // no protocol, and the link doesn't start with a hash (in-page links),
+      // so add http://
+      // note: links that start with // are an antipattern, and this will NOT handle them
+      // https://jeremywagner.me/blog/stop-using-the-protocol-relative-url
       value = `http://${value}`;
     }
     return originalLinkSanitize.call(Link, value);
