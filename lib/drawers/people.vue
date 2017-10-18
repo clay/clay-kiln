@@ -12,12 +12,36 @@
 
   .people-list {
     margin: 0;
-    padding: 0;
+    padding: 16px;
     list-style: none;
 
     .person {
-      align-items: flex-start;
+      align-items: center;
       display: flex;
+      justify-content: flex-start;
+      padding: 0;
+    }
+
+    .person-image {
+      border-radius: 50%;
+      flex: 0 0 40px;
+      height: 40px;
+      margin-right: 16px;
+      width: 40px;
+    }
+
+    .person-text {
+      display: flex;
+      flex: 0 1 100%;
+      flex-direction: column;
+    }
+
+    .person-name {
+      @include type-body();
+    }
+
+    .person-timestamp {
+      @include type-caption();
     }
   }
 </style>
@@ -28,8 +52,10 @@
     <ul class="people-list">
       <li v-for="person in people" class="person">
         <img v-if="person.imageUrl" class="person-image" :src="person.imageUrl" />
-        <span class="person-name">{{ person.name }}</span>
-        <span class="person-timestamp">{{ person.formattedTime }}</span>
+        <div class="person-text">
+          <span class="person-name">{{ person.name }}</span>
+          <span class="person-timestamp">{{ person.formattedTime }}</span>
+        </div>
       </li>
     </ul>
     <div class="person-add">

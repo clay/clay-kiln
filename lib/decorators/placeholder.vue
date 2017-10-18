@@ -58,6 +58,7 @@
     height: 100%;
     justify-content: center;
     padding: 16px 24px;
+    position: relative;
     width: 100%;
 
     .placeholder-add-component {
