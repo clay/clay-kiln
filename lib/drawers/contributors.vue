@@ -1,66 +1,17 @@
 <style lang="sass">
-  @import '../../styleguide/colors';
-  @import '../../styleguide/typography';
-
-  .people-title {
-    @include type-title();
-
-    border-bottom: 1px solid $divider-color;
-    padding: 16px;
-    margin: 0;
-  }
-
-  .people-list {
-    margin: 0;
-    padding: 16px;
-    list-style: none;
-
-    .person {
-      align-items: center;
-      display: flex;
-      justify-content: flex-start;
-      padding: 0;
-    }
-
-    .person-image {
-      border-radius: 50%;
-      flex: 0 0 40px;
-      height: 40px;
-      margin-right: 16px;
-      width: 40px;
-    }
-
-    .person-text {
-      display: flex;
-      flex: 0 1 100%;
-      flex-direction: column;
-    }
-
-    .person-name {
-      @include type-body();
-    }
-
-    .person-timestamp {
-      @include type-caption();
-    }
+  .contributors-list {
+    height: 100%;
   }
 </style>
 
 <template>
-  <div class="people-drawer">
-    <h2 class="people-title">Contributors</h2>
-    <ul class="people-list">
-      <li v-for="person in people" class="person">
-        <img v-if="person.imageUrl" class="person-image" :src="person.imageUrl" />
-        <div class="person-text">
-          <span class="person-name">{{ person.name }}</span>
-          <span class="person-timestamp">{{ person.formattedTime }}</span>
-        </div>
-      </li>
-    </ul>
-    <div class="person-add">
-      <button type="button" class="person-add-button" @click.stop="addPersonToPage">Add Person To Page</button>
-    </div>
+  <div class="contributors-list">
+    <person
+      v-for="contributor in contributors"
+      :id="contributor.username"
+      :image="contributor.imageUrl"
+      :name="contributor.name"
+      :subtitle="contributor.formattedTime"></person>
   </div>
 </template>
 
@@ -73,6 +24,7 @@
   import isTomorrow from 'date-fns/is_tomorrow';
   import isYesterday from 'date-fns/is_yesterday';
   import isThisYear from 'date-fns/is_this_year';
+  import person from '../utils/person.vue';
 
   /**
    * format time for pages
@@ -104,7 +56,7 @@
       return {};
     },
     asyncComputed: {
-      people() {
+      contributors() {
         // refresh the page state (from the pages index), in case new users have edited this page
         // between the time it loaded and the time you opened the people pane
         return this.$store.dispatch('getListData', { uri: _.get(this.$store, 'state.page.uri') }).then(() => {
@@ -118,18 +70,8 @@
         });
       }
     },
-    methods: {
-      addPersonToPage() {
-        const offset = _.get(this.$store, 'state.ui.currentPane.offset');
-
-        return this.$store.dispatch('openPane', {
-          title: 'Add Person To Page',
-          offset,
-          content: {
-            component: 'add-person-to-page'
-          }
-        })
-      }
+    components: {
+      person
     }
   };
 </script>

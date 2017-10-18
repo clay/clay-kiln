@@ -36,7 +36,7 @@
         <ui-icon-button :disabled="!undoEnabled" color="white" size="large" type="secondary" icon="undo" tooltip="Undo" @click="undo"></ui-icon-button>
         <ui-icon-button :disabled="!redoEnabled" color="white" size="large" type="secondary" icon="redo" tooltip="Redo" @click="redo"></ui-icon-button>
         <component v-for="button in customButtons" :is="button"></component>
-        <ui-icon-button color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click="toggleDrawer('people')"></ui-icon-button>
+        <ui-icon-button color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click="toggleDrawer('contributors')"></ui-icon-button>
         <ui-icon-button color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page" @click="toggleDrawer('components')"></ui-icon-button>
         <ui-icon-button color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click="toggleDrawer('preview')"></ui-icon-button>
         <ui-icon-button color="white" size="large" type="secondary" icon="publish" tooltip="Publish" @click="toggleDrawer('publish')"></ui-icon-button>

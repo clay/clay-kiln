@@ -10,6 +10,11 @@
     right: 0;
     top: 56px;
     width: 300px;
+
+    .ui-tabs__body {
+      border: none;
+      height: calc(100% - 48px);
+    }
   }
 
   .drawer-enter,
@@ -33,13 +38,20 @@
 
 <template>
   <transition name="drawer" mode="out-in">
-    <component v-if="isDrawerOpen" :is="name" class="right-drawer"></component>
+    <ui-tabs v-if="isDrawerOpen" class="right-drawer" backgroundColor="clear" :fullwidth="true">
+      <ui-tab v-for="tab in tabs" :title="tab.title">
+        <component :is="tab.component"></component>
+      </ui-tab>
+    </ui-tabs>
   </transition>
 </template>
 
 <script>
   import _ from 'lodash';
-  import people from './people.vue';
+  import UiTabs from 'keen/UiTabs';
+  import UiTab from 'keen/UiTab';
+  import contributors from './contributors.vue';
+  import addContributor from './add-contributor.vue';
 
   export default {
     computed: {
@@ -48,10 +60,24 @@
       },
       isDrawerOpen() {
         return !!this.name;
+      },
+      tabs() {
+        if (this.name === 'contributors') {
+          return [{
+            title: 'Contributors',
+            component: 'contributors'
+          }, {
+            title: 'Invite To Page',
+            component: 'add-contributor'
+          }];
+        }
       }
     },
     components: {
-      people
+      UiTabs,
+      UiTab,
+      contributors,
+      'add-contributor': addContributor
     }
   };
 </script>
