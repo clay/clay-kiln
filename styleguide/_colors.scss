@@ -12,8 +12,8 @@ $save: $md-blue;
 // base colors and opacities
 $pure-black: $md-black;
 $pure-white: $md-white;
-$brand-primary-color: $save;
-$brand-accent-color: $published;
+$brand-primary-color: $md-blue-grey;
+$brand-accent-color: $md-blue;
 
 $text-opacity: .87;
 $text-alt-opacity: .54;
@@ -43,9 +43,9 @@ $chip-delete-color: rgba(0, 0, 0, 0.26);
 $chip-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
 
 // placeholders
-$placeholder-color: $md-blue;
-$placeholder-bg-color: $md-blue-50;
-$permanent-placeholder-color: $md-grey-500;
+$placeholder-color: $md-blue-grey;
+$placeholder-bg-color: $md-blue-grey-50;
+$permanent-placeholder-color: $md-grey;
 $permanent-placeholder-bg-color: $md-grey-50;
 $placeholder-error-color: $md-red;
 $placeholder-error-bg-color: $md-red-50;

@@ -18,7 +18,7 @@
     width: 100%;
   }
 
-  .edit-toggle-text {
+  .toolbar-button-text {
     font-weight: 700;
   }
 </style>
@@ -27,8 +27,8 @@
   <div class="kiln-wrapper">
     <drawer></drawer>
     <ui-toolbar type="colored" text-color="white">
-      <ui-button type="primary" color="primary" size="large" has-dropdown>
-        <span class="edit-toggle-text">Editing: {{ status }}</span>
+      <ui-button type="primary" color="primary" size="large" icon="mode_edit" has-dropdown>
+        <span class="toolbar-button-text">{{ status }}</span>
         <ui-menu slot="dropdown" :options="toggleOptions" has-icons @select="stopEditing"></ui-menu>
       </ui-button>
 
@@ -39,7 +39,7 @@
         <ui-icon-button color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click="toggleDrawer('contributors')"></ui-icon-button>
         <ui-icon-button color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page" @click="toggleDrawer('components')"></ui-icon-button>
         <ui-icon-button color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click="toggleDrawer('preview')"></ui-icon-button>
-        <ui-icon-button color="white" size="large" type="secondary" icon="publish" tooltip="Publish" @click="toggleDrawer('publish')"></ui-icon-button>
+        <ui-button type="primary" color="primary" size="large"><span class="toolbar-button-text" @click="toggleDrawer('publish')">Publish</span></ui-button>
       </div>
     </ui-toolbar>
     <div class="kiln-progress">
