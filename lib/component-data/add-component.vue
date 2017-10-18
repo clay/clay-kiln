@@ -55,15 +55,11 @@
     .add-component-list {
       // fade this in after form opens
       display: block;
-      height: calc(100% - 56px);
+      height: 500px;
       opacity: 0;
-      padding: 0 8px;
+      padding: 8px;
       position: relative;
       width: 100%;
-
-      .filterable-list-readout {
-        height: 500px;
-      }
     }
   }
 </style>
@@ -79,7 +75,9 @@
           <ui-icon-button color="black" type="secondary" icon="close" ariaLabel="Close" tooltip="Close (ESC)" @click.stop="close"></ui-icon-button>
         </div>
       </div>
-      <filterable-list class="add-component-list" :content="components" label="Find Component" help="Or pick from your most used components" :onClick="itemClick"></filterable-list>
+      <div class="add-component-list">
+        <filterable-list :content="loaded ? components : preloadComponents" label="Find Component" help="Or pick from your most used components" :onClick="itemClick"></filterable-list>
+      </div>
     </div>
   </transition>
 </template>
@@ -100,17 +98,18 @@
     // go directly to opening a new modal, rather than calling the
     // openAddComponent action (which already determined the config for this)
     this.$store.commit(OPEN_ADD_COMPONENT, {
-      currentURI: this.args.currentURI,
-      parentURI: this.args.parentURI,
-      path: this.args.path,
-      available: this.args.allComponents
+      currentURI: this.config.currentURI,
+      parentURI: this.config.parentURI,
+      path: this.config.path,
+      available: this.config.allComponents
     });
   }
 
   export default {
     data() {
       return {
-        modalTop: '50vh'
+        modalTop: '50vh',
+        loaded: false
       };
     },
     computed: mapState({
@@ -136,6 +135,16 @@
       },
       fuzzyAdd() {
         return this.config.isFuzzy ? openAllComponents.bind(this) : null;
+      },
+      // get the list of all components, so we can calculate height of the pane synchronously
+      // (before the actual components() loads from the store)
+      preloadComponents() {
+        return _.map(this.config.available, (component) => {
+          return {
+            id: component,
+            title: label(component)
+          };
+        });
       }
     }),
     asyncComputed: {
@@ -158,6 +167,7 @@
               return val.id === otherVal.name;
             });
 
+          this.loaded = true; // switch to the sorted list
           return _.map(sortedComponents, (component) => {
             return {
               id: component.name,
@@ -191,10 +201,10 @@
           el.style.height = '100px'; // animate from 100px to auto height (auto)
           el.style.width = '100px'; // animate from 100px to auto width (600px)
           velocity(el, { opacity: 1 }, { duration: 100 });
-          velocity(el, { width: 600 }, { duration: 280 });
-          velocity(headerEl, { opacity: 1 }, { delay: 325, duration: 50 });
-          velocity(innerEl, { opacity: 1 }, { delay: 325, duration: 50 });
-          velocity(el, { height: finalHeight }, { delay: 35, duration: 340, complete: () => {
+          velocity(el, { width: 600 }, { duration: 180 });
+          velocity(headerEl, { opacity: 1 }, { delay: 225, duration: 50 });
+          velocity(innerEl, { opacity: 1 }, { delay: 225, duration: 50 });
+          velocity(el, { height: finalHeight }, { delay: 35, duration: 240, complete: () => {
             // set the height to auto, so forms can grow if the fields inside them grow
             // (e.g. adding complex-list items)
             // el.style.height = 'auto';
@@ -207,29 +217,11 @@
         const headerEl = find(el, '.add-component-header'),
           innerEl = find(el, '.add-component-list');
 
-        velocity(el, { width: 100 }, { delay: 55, duration: 320 });
-        velocity(el, { height: 100 }, { duration: 320 });
+        velocity(el, { width: 100 }, { delay: 55, duration: 220 });
+        velocity(el, { height: 100 }, { duration: 220 });
         velocity(headerEl, { opacity: 0 }, { duration: 50 });
         velocity(innerEl, { opacity: 0 }, { duration: 50 });
-        velocity(el, { opacity: 0 }, { delay: 220, duration: 100, complete: done });
-      },
-      onResize() {
-        this.$nextTick(() => {
-          const innerEl = find(this.$el, '.add-component-list'),
-            // note: we can't grab the scrollHeight of the innerEl, since it's always 100% height,
-            // but we can calculate the height of all the child fields
-            innerHeight = innerEl.clientHeight,
-            currentTop = parseInt(this.modalTop),
-            docHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
-            newHeight = innerHeight + 56, // header is 56px
-            isInsideViewport = currentTop + newHeight < docHeight;
-
-          if (isInsideViewport) {
-            velocity(this.$el, { height: newHeight }, { duration: 320 });
-          } else {
-            velocity(this.$el, { height: docHeight - currentTop }, { duration: 320 });
-          }
-        });
+        velocity(el, { opacity: 0 }, { delay: 120, duration: 100, complete: done });
       },
       close() {
         this.$store.dispatch('closeAddComponent');

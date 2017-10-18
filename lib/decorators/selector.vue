@@ -82,19 +82,10 @@
 
     background: $selector-bg;
     border: $thin-border;
+    box-shadow: $shadow-2dp;
     display: flex;
     pointer-events: all;
     position: absolute;
-
-    &:before {
-      border: $thin-padding;
-      content: '';
-      height: calc(100% + 4px);
-      left: -2px;
-      position: absolute;
-      top: -2px;
-      width: calc(100% + 4px);
-    }
 
     &:after {
       content: '';
@@ -124,11 +115,6 @@
       border-right: none;
       right: 0;
 
-      &:before {
-        border-right: none;
-        width: calc(100% + 2px);
-      }
-
       &:after {
         border-right: $thin-border;
         height: calc(100% + 2px);
@@ -140,11 +126,6 @@
     &.right {
       border-left: none;
       left: 0;
-
-      &:before {
-        border-left: none;
-        width: calc(100% + 2px);
-      }
 
       &:after {
         border-left: $thin-border;
@@ -158,11 +139,6 @@
       border-bottom: none;
       bottom: 0;
 
-      &:before {
-        border-bottom: none;
-        height: calc(100% + 2px);
-      }
-
       &:after {
         border-bottom: $thin-border;
         bottom: -1px;
@@ -174,12 +150,6 @@
     &.bottom {
       border-top: none;
       top: 0;
-
-      &:before {
-        border-top: none;
-        height: calc(100% + 2px);
-        top: 0;
-      }
 
       &:after {
         border-top: $thin-border;

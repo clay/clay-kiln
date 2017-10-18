@@ -2,16 +2,20 @@
   @import '../../styleguide/colors';
 
   .filterable-list {
-    height: calc(100% - 51px);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 
     &-input {
+      flex: 0 0 auto;
       margin: 8px 16px;
     }
 
     &-readout {
+      flex: 0 1 100%;
+      min-height: 200px;
       overflow-y: scroll;
       overflow-x: hidden;
-      min-height: 200px;
       padding: 0;
 
       &-list {
@@ -21,9 +25,14 @@
       }
     }
 
-    &.has-reorder &-readout {
-      // has reorder, so no search input
-      height: 100%;
+    &-add {
+      border-top: 1px solid $divider-color;
+      flex: 0 0 auto;
+      padding: 16px;
+
+      &-button {
+        width: 100%;
+      }
     }
   }
 
@@ -71,11 +80,10 @@
           :onReorder="onReorder"
           :focusOnIndex="focusOnIndex"
           :setActive="setActive"></list-item>
-        <list-add
-          v-if="onAdd"
-          :onClick="onAdd"
-          :title="addTitle"></list-add>
       </ul>
+      <div class="filterable-list-add">
+        <ui-button class="filterable-list-add-button" type="secondary" color="primary" v-if="onAdd" @click.stop="onAdd" icon="add">{{ addTitle || 'Add To List' }}</ui-button>
+      </div>
     </div>
   </div>
 </template>
@@ -85,9 +93,9 @@
   import _ from 'lodash';
   import { find } from '@nymag/dom';
   import listItem from './filterable-list-item.vue';
-  import listAdd from './filterable-list-add.vue';
   import dragula from 'dragula';
   import UiTextbox from 'keen/UiTextbox';
+  import UiButton from 'keen/UiButton';
 
   // Placeholder for Dragula instance
   var drag;
@@ -221,8 +229,8 @@
     },
     components: {
       'list-item': listItem,
-      'list-add': listAdd,
-      UiTextbox
+      UiTextbox,
+      UiButton
     }
   };
 </script>

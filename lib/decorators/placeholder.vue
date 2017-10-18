@@ -144,7 +144,7 @@
       <ui-icon class="placeholder-icon" icon="arrow_forward"></ui-icon>
       <span class="placeholder-text">{{ text }}</span>
     </div>
-    <ui-button v-else-if="isComponent" class="placeholder-add-component" icon="add" color="primary" :raised="true" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
+    <ui-button v-else-if="isComponent" class="placeholder-add-component" icon="add" color="primary" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
     <div v-else class="placeholder-label">
       <ui-icon v-if="!isPermanent" class="placeholder-icon" icon="add"></ui-icon>
       <span class="placeholder-text">{{ text }}</span>
