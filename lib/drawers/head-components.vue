@@ -49,7 +49,6 @@
         }
       },
       label() {
-        // this.uri will always be the layout uri, since that's where the schema for layout AND page lists is defined
         return label(this.path, this.schema);
       },
       placeholder() {
