@@ -77,6 +77,34 @@
       margin-top: 16px;
     }
   }
+
+  .publish-location {
+    border-bottom: 1px solid $divider-color;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+
+    .location-message {
+      @include type-subheading();
+
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .location-description {
+      @include type-body();
+
+      margin-top: 8px;
+    }
+
+    .location-input {
+      margin-top: 8px;
+    }
+
+    .location-submit {
+      margin-top: 16px;
+    }
+  }
 </style>
 
 <template>
@@ -93,13 +121,19 @@
     </div>
     <div class="publish-actions">
       <span class="action-message">{{ actionMessage }}</span>
-      <div class="schedule-form">
+      <form class="schedule-form" @submit.prevent="schedulePage">
         <ui-datepicker class="schedule-date" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date"></ui-datepicker>
         <ui-textbox class="schedule-time" v-model="timeValue" type="time" label="Time" placeholder="12:00 AM"></ui-textbox>
-      </div>
+      </form>
       <ui-button v-if="showSchedule" class="action-button" buttonType="button" color="primary" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
       <ui-button v-else class="action-button" buttonType="button" color="primary" @click.stop="publishPage">{{ actionMessage }}</ui-button>
     </div>
+    <form class="publish-location" @submit.prevent="saveLocation">
+      <span class="location-message">Custom URL</span>
+      <span class="location-description">Designate a custom URL for this page. This should only be used for special cases, such as index pages and static pages.</span>
+      <ui-textbox class="location-input" v-model="location" placeholder="/special-page.html" label="Enter Custom Location" :error="error" :invalid="isInvalid" @input="onLocationInput"></ui-textbox>
+      <ui-button class="location-submit" buttonType="submit" type="primary" color="default">Save</ui-button>
+    </form>
   </div>
 </template>
 
@@ -118,6 +152,7 @@
   import subWeeks from 'date-fns/sub_weeks';
   import isThisWeek from 'date-fns/is_this_week';
   import { mapState } from 'vuex';
+  import Routable from 'routable';
   import { uriToUrl } from '../utils/urls';
   import { htmlExt, editExt } from '../utils/references';
   import { START_PROGRESS, FINISH_PROGRESS } from '../toolbar/mutationTypes';
@@ -150,12 +185,23 @@
     }
   }
 
+  function isValidUrl(val, routes) {
+    return !!_.find(routes, function (route) {
+      const r = new Routable(route);
+
+      return r.test(val) || r.test('/' + val); // test with and without the beginning slash
+    });
+  }
+
   export default {
     data() {
       return {
         dateValue: null,
         timeValue: '',
-        today: new Date()
+        today: new Date(),
+        location: '',
+        error: 'Custom URL must match an available route!',
+        isInvalid: false
       };
     },
     computed: mapState({
@@ -265,7 +311,62 @@
       },
       formatDate(date) {
         return dateFormat(date, 'M/D/YY');
+      },
+      saveLocation() {
+        const prefix = _.get(this.$store, 'state.site.prefix'),
+          val = this.location,
+          store = this.$store;
+
+        let url;
+
+        // make sure we're not adding the site prefix twice!
+        // handle both /paths and http://full-urls
+        if (val.match(/^http/i)) {
+          // full url
+          url = val;
+        } else if (val === '/') {
+          // a single slash means this page should be the root url for a site, e.g. an index page
+          url = uriToUrl(prefix);
+        } else if (val.match(/^\/\S/i)) {
+          // already starts with a slash (but isn't the root url for a site)
+          url = uriToUrl(prefix + val);
+        } else if (val.match(/^\S/i)) {
+          // add the slash ourselves
+          url = uriToUrl(prefix + '/' + val);
+        } else if (val === '') {
+          // unset custom url
+          url === '';
+        }
+
+        store.dispatch('savePage', { customUrl: url }).then(() => {
+          if (url) {
+            store.dispatch('showStatus', { type: 'save', message: 'Saved custom page url' });
+          } else {
+            store.dispatch('showStatus', { type: 'save', message: 'Removed custom page url' });
+          }
+        });
+      },
+      onLocationInput() {
+        // validate that what the user typed in is routable
+        // note: if it's empty string, catch it early (removing custom urls is totally valid)
+        // note: if it's a full url, assume the user knows what they're doing and say it's valid
+        const val = this.location,
+          routes = _.get(this.$store, 'state.locals.routes');
+
+        if (val === '' || val.match(/^http/i) || isValidUrl(val, routes)) {
+          this.isInvalid = false;
+        } else {
+          this.isInvalid = true;
+        }
       }
+    },
+    mounted() {
+      const prefix = _.get(this.$store, 'state.site.prefix'),
+        customUrl = _.get(this.$store, 'state.page.data.customUrl') || '';
+
+      // get location when form opens
+      // remove prefix when displaying the url in the form. it'll be added when saving
+      this.location = customUrl.replace(uriToUrl(prefix), '');
     },
     components: {
       UiIcon,
