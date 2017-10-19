@@ -19,7 +19,7 @@
   }
 
   .toolbar-button-text {
-    font-weight: 700;
+    font-weight: bold;
   }
 </style>
 
@@ -36,10 +36,10 @@
         <ui-icon-button :disabled="!undoEnabled" color="white" size="large" type="secondary" icon="undo" tooltip="Undo" @click="undo"></ui-icon-button>
         <ui-icon-button :disabled="!redoEnabled" color="white" size="large" type="secondary" icon="redo" tooltip="Redo" @click="redo"></ui-icon-button>
         <component v-for="button in customButtons" :is="button"></component>
-        <ui-icon-button color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click="toggleDrawer('contributors')"></ui-icon-button>
-        <ui-icon-button color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page" @click="toggleDrawer('components')"></ui-icon-button>
-        <ui-icon-button color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click="toggleDrawer('preview')"></ui-icon-button>
-        <ui-button type="primary" color="primary" size="large"><span class="toolbar-button-text" @click="toggleDrawer('publish')">Publish</span></ui-button>
+        <ui-icon-button color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click.stop="toggleDrawer('contributors')"></ui-icon-button>
+        <ui-icon-button color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page" @click.stop="toggleDrawer('components')"></ui-icon-button>
+        <ui-icon-button color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click.stop="toggleDrawer('preview')"></ui-icon-button>
+        <ui-button type="primary" color="primary" size="large"><span class="toolbar-button-text" @click.stop="toggleDrawer('publish')">Publish</span></ui-button>
       </div>
     </ui-toolbar>
     <div class="kiln-progress">
@@ -55,21 +55,12 @@
 <script>
   import _ from 'lodash';
   import { mapState } from 'vuex';
-  import { find } from '@nymag/dom';
   import isAfter from 'date-fns/is_after';
   import addSeconds from 'date-fns/add_seconds';
   import toggleEdit from '../utils/toggle-edit';
-  import { getSchema } from '../core-data/components';
-  import { layoutAttr, editAttr, componentListProp } from '../utils/references';
-  import label from '../utils/label';
-  import { getListsInHead } from '../utils/head-components';
-  import { getItem } from '../utils/local';
   import progressBar from './progress.vue';
-  import button from './toolbar-button.vue';
   import background from './background.vue';
   import overlay from '../forms/overlay.vue';
-  import pane from '../panes/pane.vue';
-  import status from './status.vue';
   import addComponent from '../component-data/add-component.vue';
   import simpleModal from './simple-modal.vue';
   import UiToolbar from 'keen/UiToolbar';

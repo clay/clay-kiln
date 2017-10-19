@@ -44,9 +44,9 @@
 </style>
 
 <template>
-  <transition name="drawer" mode="out-in">
-    <ui-tabs v-if="isDrawerOpen" class="right-drawer" backgroundColor="clear" :fullwidth="true">
-      <ui-tab v-for="tab in tabs" :title="tab.title">
+  <transition name="drawer" mode="out-in" @after-enter="refreshTabs">
+    <ui-tabs ref="tabs" v-if="isDrawerOpen" class="right-drawer" backgroundColor="clear" :fullwidth="true">
+      <ui-tab v-for="tab in tabs" :title="tab.title" :selected="tab.selected" :disabled="tab.disabled">
         <component :is="tab.component" :args="tab.args"></component>
       </ui-tab>
     </ui-tabs>
@@ -68,6 +68,8 @@
   import headComponents from './head-components.vue';
   import invisibleComponents from './invisible-components.vue';
   import preview from './preview.vue';
+  import health from './health.vue';
+  import publish from './publish.vue';
 
   /**
    * get component lists in the <head> of the page
@@ -82,6 +84,7 @@
     return _.reduce(lists, (result, list) => result.concat({
       title: label(list.path, schema[list.path]),
       component: 'head-components',
+      selected: false,
       args: {
         path: list.path,
         schema: schema[list.path]
@@ -103,6 +106,7 @@
         return result.concat({
           title: label(fieldName, field),
           component: 'invisible-components',
+          selected: false,
           args: {
             path: fieldName,
             schema: field
@@ -122,11 +126,17 @@
       isDrawerOpen() {
         return !!this.name;
       },
+      tabType() {
+        return this.name === 'publish' ? 'icon-and-text' : 'text';
+      }
+    },
+    asyncComputed: {
       tabs() {
         if (this.name === 'contributors') {
           return [{
             title: 'Contributors',
-            component: 'contributors'
+            component: 'contributors',
+            selected: true
           }, {
             title: 'Invite To Page',
             component: 'add-contributor'
@@ -138,13 +148,41 @@
 
           return [{
             title: 'Visible',
-            component: 'visible-components'
+            component: 'visible-components',
+            selected: true
           }].concat(headLists).concat(invisibleLists);
         } else if (this.name === 'preview') {
           return [{
             title: 'Preview',
-            component: 'preview'
+            component: 'preview',
+            selected: true
           }];
+        } else if (this.name === 'publish') {
+          return this.$store.dispatch('validate').then(() => {
+            const errors = _.get(this.$store, 'state.validation.errors');
+
+            return [{
+              title: 'Health',
+              component: 'health',
+              selected: errors.length > 0
+            }, {
+              title: 'Publish',
+              component: 'publish',
+              selected: errors.length === 0,
+              disabled: errors.length > 0
+            }];
+          });
+        }
+      }
+    },
+    methods: {
+      refreshTabs() {
+        // refresh the tabs when we switch drawers,
+        // because it doesn't want to set the active tab automatically
+        if (this.$refs.tabs) {
+          const activeTab = _.find(this.$refs.tabs.tabs, (tab) => tab.selected);
+
+          this.$nextTick(() => this.$refs.tabs.setActiveTab(activeTab.id));
         }
       }
     },
@@ -156,7 +194,9 @@
       'visible-components': visibleComponents,
       'head-components': headComponents,
       'invisible-components': invisibleComponents,
-      preview
+      preview,
+      health,
+      publish
     }
   };
 </script>
