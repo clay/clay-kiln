@@ -1,5 +1,6 @@
 <style lang="sass">
   @import '../../styleguide/colors';
+  @import '../../styleguide/typography';
 
   .publish-drawer {
     padding: 16px 0;
@@ -7,16 +8,97 @@
 
   .publish-status {
     border-bottom: 1px solid $divider-color;
+    display: flex;
+    flex-direction: column;
     padding: 0 16px 16px;
+
+    .status-message {
+      @include type-subheading();
+
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .status-time {
+      @include type-body();
+
+      margin-top: 8px;
+    }
+
+    .status-link {
+      @include type-body();
+
+      align-items: center;
+      color: $brand-primary-color;
+      display: flex;
+      justify-content: flex-start;
+      margin-top: 8px;
+
+      .status-link-text {
+        font-weight: bold;
+        margin-left: 4px;
+        text-decoration: underline;
+      }
+    }
+
+    .status-undo-button {
+      margin-top: 16px;
+    }
+  }
+
+  .publish-actions {
+    border-bottom: 1px solid $divider-color;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+
+    .action-message {
+      @include type-subheading();
+
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .schedule-form {
+      align-items: flex-start;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      width: 100%;
+
+      .schedule-date,
+      .schedule-time {
+        margin: 0;
+        width: 48%;
+      }
+    }
+
+    .action-button {
+      margin-top: 16px;
+    }
   }
 </style>
 
 <template>
   <div class="publish-drawer">
     <div class="publish-status">
-      
+      <span class="status-message">{{ statusMessage }}</span>
+      <span class="status-time">{{ time }}</span>
+      <a v-if="isPublished" class="status-link" :href="url" target="_blank">
+        <ui-icon icon="open_in_new"></ui-icon>
+        <span class="status-link-text">View public page</span>
+      </a>
+      <ui-button v-if="isScheduled" class="status-undo-button" buttonType="button" color="primary" @click.stop="unschedulePage">Unschedule</ui-button>
+      <ui-button v-else-if="isPublished" class="status-undo-button" buttonType="button" color="primary" @click.stop="unpublishPage">Unpublish</ui-button>
     </div>
     <div class="publish-actions">
+      <span class="action-message">{{ actionMessage }}</span>
+      <div class="schedule-form">
+        <ui-datepicker class="schedule-date" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date"></ui-datepicker>
+        <ui-textbox class="schedule-time" v-model="timeValue" type="time" label="Time" placeholder="12:00 AM"></ui-textbox>
+      </div>
+      <ui-button v-if="showSchedule" class="action-button" buttonType="button" color="primary" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
+      <ui-button v-else class="action-button" buttonType="button" color="primary" @click.stop="publishPage">{{ actionMessage }}</ui-button>
     </div>
   </div>
 </template>
@@ -24,14 +106,172 @@
 
 <script>
   import _ from 'lodash';
+  import { parseDate as parseNaturalDate } from 'chrono-node';
+  import dateFormat from 'date-fns/format';
+  import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
+  import parseDate from 'date-fns/parse';
+  import getTime from 'date-fns/get_time';
+  import isToday from 'date-fns/is_today';
+  import isYesterday from 'date-fns/is_yesterday';
+  import isTomorrow from 'date-fns/is_tomorrow';
+  import addWeeks from 'date-fns/add_weeks';
+  import subWeeks from 'date-fns/sub_weeks';
+  import isThisWeek from 'date-fns/is_this_week';
+  import { mapState } from 'vuex';
+  import { uriToUrl } from '../utils/urls';
+  import { htmlExt, editExt } from '../utils/references';
+  import { START_PROGRESS, FINISH_PROGRESS } from '../toolbar/mutationTypes';
+  import UiIcon from 'keen/UiIcon';
+  import UiButton from 'keen/UiButton';
+  import UiDatepicker from 'keen/UiDatepicker';
+  import UiTextbox from 'keen/UiTextbox';
+  import logger from '../utils/log';
+
+  const log = logger(__filename);
+
+  function calendar(date) {
+    if (isToday(date)) {
+      // today
+      return distanceInWordsToNow(date, { includeSeconds: true, addSuffix: true });
+    } else if (isYesterday(date)) {
+      // yesterday
+      return `Yesterday at ${dateFormat(date, 'h:mm A')}`;
+    } else if (isTomorrow(date)) {
+      // tomorrow
+      return `Tomorrow at ${dateFormat(date, 'h:mm A')}`;
+    } else if (isThisWeek(addWeeks(date, 1))) {
+      // last week
+      return `Last ${dateFormat(date, 'dddd [at] h:mm A')}`;
+    } else if (isThisWeek(subWeeks(date, 1))) {
+      // next week
+      return dateFormat(date, 'dddd [at] h:mm A');
+    } else {
+      return dateFormat(date, 'M/D/YYYY [at] h:mm A');
+    }
+  }
 
   export default {
     data() {
-      return {}
+      return {
+        dateValue: null,
+        timeValue: '',
+        today: new Date()
+      };
     },
-    methods: {},
-    components: {
+    computed: mapState({
+      isPublished: (state) => state.page.state.published,
+      isScheduled: (state) => state.page.state.scheduled,
+      uri: (state) => state.page.uri,
+      url: (state) => state.page.state.url,
+      publishedDate: (state) => state.page.state.publishTime,
+      createdDate: (state) => state.page.state.createdAt,
+      scheduledDate: (state) => state.page.state.scheduledTime,
+      statusMessage() {
+        if (this.isScheduled) {
+          return `Scheduled ${distanceInWordsToNow(this.scheduledDate, { addSuffix: true })}`;
+        } if (this.isPublished) {
+          return `Published ${distanceInWordsToNow(this.publishedDate, { addSuffix: true })}`;
+        } else {
+          return `Draft Created ${distanceInWordsToNow(this.createdDate, { addSuffix: true })}`;
+        }
+      },
+      time() {
+        if (this.isScheduled) {
+          return dateFormat(this.scheduledDate, 'MMMM Do [at] h:mm A');
+        } if (this.isPublished) {
+          return dateFormat(this.publishedDate, 'MMMM Do [at] h:mm A');
+        } else {
+          return dateFormat(this.createdDate, 'MMMM Do [at] h:mm A');
+        }
+      },
+      showSchedule() {
+        return this.dateValue && this.timeValue;
+      },
+      actionMessage() {
+        if (this.isScheduled && this.showSchedule) {
+          return 'Reschedule';
+        } else if (this.showSchedule) {
+          return 'Schedule';
+        } else if (this.isPublished) {
+          return 'Republish';
+        } else {
+          return 'Publish';
+        }
+      }
+    }),
+    methods: {
+      unschedulePage() {
+        const store = this.$store;
 
+        store.commit(START_PROGRESS);
+        this.$store.dispatch('unschedulePage', this.uri)
+          .catch((e) => {
+            store.commit(FINISH_PROGRESS, 'error');
+            log.error(`Error unscheduling page: ${e.message}`, { action: 'unschedulePage' });
+            store.dispatch('showStatus', { type: 'error', message: 'Error unscheduling page!'});
+            throw e;
+          })
+          .then(() => {
+            store.commit(FINISH_PROGRESS);
+            store.dispatch('showStatus', { type: 'schedule', message: 'Unscheduled Page!' });
+          });
+      },
+      unpublishPage() {
+        const store = this.$store,
+          uri = this.uri;
+
+        store.commit(START_PROGRESS);
+        this.$store.dispatch('unpublishPage', uri)
+          .catch((e) => {
+            store.commit(FINISH_PROGRESS, 'error');
+            log.error(`Error unpublishing page: ${e.message}`, { action: 'unpublishPage' });
+            store.dispatch('showStatus', { type: 'error', message: 'Error unpublishing page!'});
+            throw e;
+          })
+          .then(() => {
+            if (_.includes(window.location.href, uriToUrl(uri))) {
+              // if we're already looking at /pages/whatever, display the status message
+              store.commit(FINISH_PROGRESS);
+              store.dispatch('showStatus', { type: 'draft', message: 'Unpublished Page!' });
+            } else {
+              // if we're looking at the published page, navigate to the latest version
+              window.location.href = `${uriToUrl(uri)}${htmlExt}${editExt}`;
+            }
+          });
+      },
+      schedulePage() {
+        // firefox uses a nonstandard AM/PM format, rather than the accepted W3C standard that other browsers use
+        // therefore, check for AM/PM
+        const date = dateFormat(this.dateValue, 'YYYY-MM-DD'),
+          time = dateFormat(parseNaturalDate(this.timeValue), 'HH:mm'),
+          datetime = parseDate(date + ' ' + time),
+          timestamp = getTime(datetime),
+          store = this.$store;
+
+        this.$store.commit(START_PROGRESS);
+        this.$store.dispatch('schedulePage', { uri: this.uri, timestamp }).then(() => {
+          store.commit(FINISH_PROGRESS);
+          store.dispatch('showStatus', { type: 'schedule', message: `Scheduled to publish ${calendar(datetime)}` });
+        });
+      },
+      publishPage() {
+        this.$store.dispatch('publishPage', this.uri)
+          .catch((e) => {
+            log.error(`Error publishing page: ${e.message}`, { action: 'publishPage' });
+            store.dispatch('showStatus', { type: 'error', message: 'Error publishing page!'});
+            throw e;
+          })
+          .then((url) => store.dispatch('showStatus', { type: 'publish', message: 'Published Page!', action: `<a href="${url}">View</a>` }));
+      },
+      formatDate(date) {
+        return dateFormat(date, 'M/D/YY');
+      }
+    },
+    components: {
+      UiIcon,
+      UiButton,
+      UiDatepicker,
+      UiTextbox
     }
   };
 </script>

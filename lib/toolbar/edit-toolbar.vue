@@ -39,7 +39,7 @@
         <ui-icon-button color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click.stop="toggleDrawer('contributors')"></ui-icon-button>
         <ui-icon-button color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page" @click.stop="toggleDrawer('components')"></ui-icon-button>
         <ui-icon-button color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click.stop="toggleDrawer('preview')"></ui-icon-button>
-        <ui-button type="primary" color="primary" size="large"><span class="toolbar-button-text" @click.stop="toggleDrawer('publish')">Publish</span></ui-button>
+        <ui-button type="primary" color="primary" size="large" @click.stop="toggleDrawer('publish')"><span class="toolbar-button-text">{{ publishAction }}</span></ui-button>
       </div>
     </ui-toolbar>
     <div class="kiln-progress">
@@ -75,6 +75,7 @@
     },
     computed: mapState({
       pageState: (state) => state.page.state,
+      isLoading: (state) => state.isLoading,
       currentProgress: (state) => state.ui.currentProgress,
       undoEnabled: (state) => {
         return !state.undo.atStart && !state.ui.currentFocus && !state.ui.currentPane;
@@ -96,7 +97,9 @@
         }
       },
       status() {
-        if (this.pageState.scheduled) {
+        if (this.isLoading) {
+          return ''; // still loading the page, don't display any status
+        } else if (this.pageState.scheduled) {
           return 'Scheduled';
         } else if (this.hasChanges) {
           return 'Unpublished Changes';
@@ -105,6 +108,9 @@
         } else {
           return 'Draft';
         }
+      },
+      publishAction() {
+        return this.pageState.published ? 'Republish' : 'Publish';
       },
       toggleOptions() {
         return [
