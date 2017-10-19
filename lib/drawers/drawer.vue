@@ -67,6 +67,7 @@
   import visibleComponents from './visible-components.vue';
   import headComponents from './head-components.vue';
   import invisibleComponents from './invisible-components.vue';
+  import preview from './preview.vue';
 
   /**
    * get component lists in the <head> of the page
@@ -139,6 +140,11 @@
             title: 'Visible',
             component: 'visible-components'
           }].concat(headLists).concat(invisibleLists);
+        } else if (this.name === 'preview') {
+          return [{
+            title: 'Preview',
+            component: 'preview'
+          }];
         }
       }
     },
@@ -149,7 +155,8 @@
       'add-contributor': addContributor,
       'visible-components': visibleComponents,
       'head-components': headComponents,
-      'invisible-components': invisibleComponents
+      'invisible-components': invisibleComponents,
+      preview
     }
   };
 </script>
