@@ -21,6 +21,7 @@
   import keyboardModal from './keyboard-modal.vue';
   import addContributorModal from './add-contributor-modal.vue';
   import addPageModal from './add-page-modal.vue';
+  import addUserModal from './add-user-modal.vue';
 
   export default {
     data() {
@@ -57,7 +58,8 @@
       info: infoModal,
       keyboard: keyboardModal,
       'add-contributor': addContributorModal,
-      'add-page': addPageModal
+      'add-page': addPageModal,
+      'add-user': addUserModal
     }
   };
 </script>

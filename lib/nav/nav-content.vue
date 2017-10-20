@@ -38,6 +38,7 @@
 <script>
   import _ from 'lodash';
   import newPage from './new-page.vue';
+  import users from './users.vue';
 
   export default {
     computed: {
@@ -46,7 +47,8 @@
       }
     },
     components: {
-      'new-page': newPage
+      'new-page': newPage,
+      users
     }
   };
 </script>

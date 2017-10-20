@@ -65,6 +65,10 @@
     display: flex;
     flex: 0 0 auto;
     margin-left: 16px;
+
+    & > * + * {
+      margin-left: 4px;
+    }
   }
 </style>
 
@@ -79,8 +83,8 @@
       <span v-if="subtitle" class="person-subtitle">{{ subtitle }}</span>
     </div>
     <div v-if="hasActions" class="person-actions">
-      <ui-switch v-if="hasToggle" :value="toggled" @input="onToggle"></ui-switch>
-      <ui-icon-button v-if="hasSecondaryAction" type="secondary" color="default" :icon="secondaryActionIcon" @click.stop="onSecondaryAction"></ui-icon-button>
+      <ui-switch v-if="hasToggle" :disabled="disabled" :value="toggled" @input="onToggle"></ui-switch>
+      <ui-icon-button v-if="hasSecondaryAction" :disabled="disabled" type="secondary" color="default" :icon="secondaryActionIcon" @click.stop="onSecondaryAction"></ui-icon-button>
     </div>
   </div>
 </template>
@@ -91,7 +95,7 @@
   import UiIcon from 'keen/UiIcon';
 
   export default {
-    props: ['id', 'image', 'name', 'subtitle', 'hasPrimaryAction', 'hasToggle', 'toggled', 'hasSecondaryAction', 'secondaryActionIcon'],
+    props: ['id', 'image', 'name', 'subtitle', 'hasPrimaryAction', 'hasToggle', 'toggled', 'hasSecondaryAction', 'secondaryActionIcon', 'disabled'],
     computed: {
       hasActions() {
         return this.hasToggle || this.hasSecondaryAction;
@@ -99,13 +103,19 @@
     },
     methods: {
       onClick() {
-        this.$emit('primary-click', this.id);
+        if (!this.disabled) {
+          this.$emit('primary-click', this.id);
+        }
       },
       onToggle(val) {
-        this.$emit('toggle', this.id, val);
+        if (!this.disabled) {
+          this.$emit('toggle', this.id, val);
+        }
       },
       onSecondaryAction() {
-        this.$emit('secondary-click', this.id);
+        if (!this.disabled) {
+          this.$emit('secondary-click', this.id);
+        }
       }
     },
     components: {
