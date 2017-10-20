@@ -26,7 +26,7 @@
 <template>
   <div class="kiln-wrapper">
     <drawer></drawer>
-    <ui-toolbar type="colored" text-color="white">
+    <ui-toolbar type="colored" text-color="white" @nav-icon-click="openNav">
       <ui-button type="primary" color="primary" size="large" icon="mode_edit" has-dropdown>
         <span class="toolbar-button-text">{{ status }}</span>
         <ui-menu slot="dropdown" :options="toggleOptions" has-icons @select="stopEditing"></ui-menu>
@@ -48,6 +48,8 @@
     <background></background>
     <overlay></overlay>
     <add-component></add-component>
+    <nav-background></nav-background>
+    <nav-menu></nav-menu>
     <simple-modal></simple-modal>
   </div>
 </template>
@@ -58,6 +60,7 @@
   import isAfter from 'date-fns/is_after';
   import addSeconds from 'date-fns/add_seconds';
   import toggleEdit from '../utils/toggle-edit';
+  import { getItem } from '../utils/local';
   import progressBar from './progress.vue';
   import background from './background.vue';
   import overlay from '../forms/overlay.vue';
@@ -68,6 +71,8 @@
   import UiIconButton from 'keen/UiIconButton';
   import UiMenu from 'keen/UiMenu';
   import drawer from '../drawers/drawer.vue';
+  import navBackground from '../nav/nav-background.vue';
+  import navMenu from '../nav/nav-menu.vue';
 
   export default {
     data() {
@@ -133,6 +138,13 @@
       },
       toggleDrawer(name) {
         return this.$store.dispatch('toggleDrawer', name);
+      },
+      openNav() {
+        return getItem('claymenu:activetab').then((savedTab) => {
+          const activeNav = savedTab || 'all-pages';
+
+          return this.$store.dispatch('openNav', activeNav);
+        });
       }
     },
     components: _.merge({
@@ -145,7 +157,9 @@
       UiButton,
       UiMenu,
       'progress-bar': progressBar,
-      drawer
+      drawer,
+      'nav-background': navBackground,
+      'nav-menu': navMenu
     }, window.kiln.toolbarButtons)
   };
 </script>

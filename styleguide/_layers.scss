@@ -32,6 +32,6 @@ $z-index-level-6: 1000000050;
   z-index: $z-index-level-5;
 }
 
-@mixin datepicker-layer {
-  z-index: $z-index-level-6; // must be above toolbar AND overlays
+@mixin nav-layer {
+  z-index: $z-index-level-6;
 }
