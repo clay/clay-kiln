@@ -82,7 +82,7 @@
           :setActive="setActive"></list-item>
       </ul>
       <div class="filterable-list-add">
-        <ui-button class="filterable-list-add-button" type="secondary" color="primary" v-if="onAdd" @click.stop="onAdd" icon="add">{{ addTitle || 'Add To List' }}</ui-button>
+        <ui-button class="filterable-list-add-button" type="primary" color="default" v-if="onAdd" @click.stop="onAdd" icon="add">{{ addTitle || 'Add To List' }}</ui-button>
       </div>
     </div>
   </div>

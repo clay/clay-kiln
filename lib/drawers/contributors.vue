@@ -1,7 +1,22 @@
 <style lang="sass">
+  @import '../../styleguide/colors';
+
   .contributors-list {
     height: 100%;
-    padding: 16px;
+    padding: 16px 0;
+
+    .person-item {
+      padding: 12px 16px;
+    }
+
+    .add-contributor-wrapper {
+      border-top: 1px solid $divider-color;
+      padding: 16px 16px 0;
+
+      .add-contributor-button {
+        width: 100%;
+      }
+    }
   }
 </style>
 
@@ -13,6 +28,9 @@
       :image="contributor.imageUrl"
       :name="contributor.name"
       :subtitle="contributor.formattedTime"></person>
+    <div class="add-contributor-wrapper">
+      <ui-button class="add-contributor-button" buttonType="button" type="primary" color="default" @click.stop="addContributor">Invite To Page</ui-button>
+    </div>
   </div>
 </template>
 
@@ -26,6 +44,7 @@
   import isYesterday from 'date-fns/is_yesterday';
   import isThisYear from 'date-fns/is_this_year';
   import person from '../utils/person.vue';
+  import UiButton from 'keen/UiButton';
 
   /**
    * format time for pages
@@ -71,8 +90,17 @@
         });
       }
     },
+    methods: {
+      addContributor() {
+        return this.$store.dispatch('openModal', {
+          title: 'Invite To Page',
+          type: 'add-contributor'
+        });
+      }
+    },
     components: {
-      person
+      person,
+      UiButton
     }
   };
 </script>

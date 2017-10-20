@@ -9,6 +9,7 @@
   import UiModal from 'keen/UiModal';
   import infoModal from './info-modal.vue';
   import keyboardModal from './keyboard-modal.vue';
+  import addContributorModal from './add-contributor-modal.vue';
 
   export default {
     data() {
@@ -43,7 +44,8 @@
     components: {
       UiModal,
       info: infoModal,
-      keyboard: keyboardModal
+      keyboard: keyboardModal,
+      'add-contributor': addContributorModal
     }
   };
 </script>

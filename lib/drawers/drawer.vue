@@ -63,7 +63,6 @@
   import UiTab from 'keen/UiTab';
   // components used in tabs
   import contributors from './contributors.vue';
-  import addContributor from './add-contributor.vue';
   import visibleComponents from './visible-components.vue';
   import headComponents from './head-components.vue';
   import invisibleComponents from './invisible-components.vue';
@@ -137,9 +136,6 @@
             title: 'Contributors',
             component: 'contributors',
             selected: true
-          }, {
-            title: 'Invite To Page',
-            component: 'add-contributor'
           }];
         } else if (this.name === 'components') {
           const state = _.get(this.$store, 'state'),
@@ -190,7 +186,6 @@
       UiTabs,
       UiTab,
       contributors,
-      'add-contributor': addContributor,
       'visible-components': visibleComponents,
       'head-components': headComponents,
       'invisible-components': invisibleComponents,

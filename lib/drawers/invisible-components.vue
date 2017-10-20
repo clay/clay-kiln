@@ -1,5 +1,5 @@
 <template>
-  <filterable-list :content="list" :label="placeholder" :onSettings="openSettings" :onDelete="removeComponent" :onReorder="reorderComponents" :addTitle="addTitle" :onAdd="openAddComponent"></filterable-list>
+  <filterable-list :content="list" :onSettings="openSettings" :onDelete="removeComponent" :onReorder="reorderComponents" :addTitle="addTitle" :onAdd="openAddComponent"></filterable-list>
 </template>
 
 <script>
@@ -44,14 +44,8 @@
         // todo: allow these in page data as well?
         return _.map(_.get(this.$store, `state.components['${this.uri}'].${this.path}`), formatComponents);
       },
-      label() {
-        return label(this.path, this.schema);
-      },
-      placeholder() {
-        return `Search ${this.label} components`;
-      },
       addTitle() {
-        return `Add component to ${this.label}`;
+        return `Add to ${label(this.path, this.schema)}`;
       }
     },
     methods: {

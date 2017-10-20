@@ -2,7 +2,9 @@
   .add-contributor {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    // take up the full height of the screen,
+    // since it needs to load async and we don't want it to jump
+    height: calc(100vh - 88px);
   }
 
   .invite-filter {
@@ -83,7 +85,11 @@
           body: {
             query: buildUserQuery(query),
             size: 500, // todo: paginate this once we redesign the clay menu (use the same pagination UI)
-            from: 0
+            from: 0,
+            sort: [
+              { name: { order: 'asc' }},
+              { username: { order: 'asc' }}
+            ]
           }
         }).then((res) => {
           const hits = _.get(res, 'hits.hits') || [],

@@ -36,7 +36,10 @@
       width: 100%;
     }
 
-    &-drag,
+    &-drag {
+      color: $text-hint-color;
+    }
+
     &-settings,
     &-delete {
       color: $text-alt-color;
@@ -90,8 +93,8 @@
       {{ item.title }}
     </button>
     <ui-ripple-ink v-if="onClick" ref="ripple" :trigger="item.id"></ui-ripple-ink>
-    <ui-icon-button v-if="onSettings" type="button" class="filterable-list-item-settings" tooltip="Open Settings" icon="settings" @click.stop="onSettings(item.id)"></ui-icon-button>
-    <ui-icon-button v-if="onDelete" type="button" class="filterable-list-item-delete" tooltip="Remove from List" icon="delete" @click.stop="onDelete(item.id)"></ui-icon-button>
+    <ui-icon-button v-if="onSettings" type="button" class="filterable-list-item-settings" :tooltip="settingsTooltip" icon="settings" @click.stop="onSettings(item.id)"></ui-icon-button>
+    <ui-icon-button v-if="onDelete" type="button" class="filterable-list-item-delete" :tooltip="removeTooltip" icon="delete" @click.stop="onDelete(item.id)"></ui-icon-button>
   </li>
 </template>
 
@@ -103,6 +106,14 @@
     props: ['item', 'index', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'focused', 'active', 'selected', 'focusOnIndex', 'setActive'],
     data() {
       return {};
+    },
+    computed: {
+      settingsTooltip() {
+        return `${this.item.title} Settings`;
+      },
+      removeTooltip() {
+        return `Remove ${this.item.title}`;
+      }
     },
     methods: {
       onEnterDown() {
