@@ -39,7 +39,7 @@
         <ui-icon-button color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click.stop="toggleDrawer('contributors')"></ui-icon-button>
         <ui-icon-button color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page" @click.stop="toggleDrawer('components')"></ui-icon-button>
         <ui-icon-button color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click.stop="toggleDrawer('preview')"></ui-icon-button>
-        <ui-button type="primary" color="accent" size="large" @click.stop="toggleDrawer('publish')"><span class="toolbar-button-text">{{ publishAction }}</span></ui-button>
+        <ui-button type="primary" color="primary" size="large" @click.stop="toggleDrawer('publish')"><span class="toolbar-button-text">{{ publishAction }}</span></ui-button>
       </div>
     </ui-toolbar>
     <div class="kiln-progress">
@@ -50,7 +50,9 @@
     <add-component></add-component>
     <nav-background></nav-background>
     <nav-menu></nav-menu>
+    <nav-content></nav-content>
     <simple-modal></simple-modal>
+    <confirm></confirm>
   </div>
 </template>
 
@@ -73,6 +75,8 @@
   import drawer from '../drawers/drawer.vue';
   import navBackground from '../nav/nav-background.vue';
   import navMenu from '../nav/nav-menu.vue';
+  import navContent from '../nav/nav-content.vue';
+  import confirm from './confirm.vue';
 
   export default {
     data() {
@@ -159,7 +163,9 @@
       'progress-bar': progressBar,
       drawer,
       'nav-background': navBackground,
-      'nav-menu': navMenu
+      'nav-menu': navMenu,
+      'nav-content': navContent,
+      confirm
     }, window.kiln.toolbarButtons)
   };
 </script>

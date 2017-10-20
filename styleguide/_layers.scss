@@ -10,6 +10,7 @@ $z-index-level-3: 1000000020;
 $z-index-level-4: 1000000030;
 $z-index-level-5: 1000000040;
 $z-index-level-6: 1000000050;
+$z-index-level-7: 1000000060;
 
 @mixin quick-bar-layer {
   z-index: $z-index-level-1;
@@ -24,14 +25,18 @@ $z-index-level-6: 1000000050;
   z-index: $z-index-level-3;
 }
 
-@mixin overlay-layer {
+@mixin toolbar-layer {
   z-index: $z-index-level-4;
 }
 
-@mixin toolbar-layer {
+@mixin overlay-layer {
   z-index: $z-index-level-5;
 }
 
 @mixin nav-layer {
   z-index: $z-index-level-6;
+}
+
+@mixin confirm-layer {
+  z-index: $z-index-level-7;
 }

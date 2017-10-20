@@ -1,5 +1,15 @@
+<style lang="sass">
+  @import '../../styleguide/layers';
+
+  .simple-modal.ui-modal__mask {
+    @include confirm-layer();
+
+    position: fixed;
+  }
+</style>
+
 <template>
-  <ui-modal ref="modal" :title="title" :size="size">
+  <ui-modal class="simple-modal" ref="modal" :title="title" :size="size">
     <component :is="type" :data="data"></component>
   </ui-modal>
 </template>
@@ -10,6 +20,7 @@
   import infoModal from './info-modal.vue';
   import keyboardModal from './keyboard-modal.vue';
   import addContributorModal from './add-contributor-modal.vue';
+  import addPageModal from './add-page-modal.vue';
 
   export default {
     data() {
@@ -45,7 +56,8 @@
       UiModal,
       info: infoModal,
       keyboard: keyboardModal,
-      'add-contributor': addContributorModal
+      'add-contributor': addContributorModal,
+      'add-page': addPageModal
     }
   };
 </script>

@@ -19,7 +19,7 @@
   }
 
   .nav-fade-enter-active, .nav-fade-leave-active {
-    transition: opacity 350ms $standard-curve;
+    transition: opacity $standard-time $standard-curve;
   }
 
   .nav-fade-enter, .nav-fade-leave-to {
@@ -61,7 +61,6 @@
   }
 
   export default {
-    props: [],
     data() {
       return {};
     },

@@ -22,8 +22,8 @@
     #nprogress .bar {
       @include toolbar-layer();
 
-      background-color: $brand-accent-color;
-      box-shadow: $box-shadow $brand-accent-color;
+      background-color: $brand-primary-color;
+      box-shadow: $box-shadow $brand-primary-color;
       height: 3px;
       left: 0;
       position: absolute;

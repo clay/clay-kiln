@@ -20,6 +20,9 @@
     <ui-fab size="small" color="default" icon="mode_edit" tooltip="Edit Page" tooltipPosition="right middle" class="view-edit-button" @click="startEditing"></ui-fab>
     <nav-background></nav-background>
     <nav-menu></nav-menu>
+    <nav-content></nav-content>
+    <simple-modal></simple-modal>
+    <confirm></confirm>
   </div>
 </template>
 
@@ -28,7 +31,10 @@
   import { getItem } from '../utils/local';
   import navBackground from '../nav/nav-background.vue';
   import navMenu from '../nav/nav-menu.vue';
+  import navContent from '../nav/nav-content.vue';
   import UiFab from 'keen/UiFab';
+  import simpleModal from './simple-modal.vue';
+  import confirm from './confirm.vue';
 
   export default {
     data() {
@@ -49,7 +55,10 @@
     components: {
       'nav-background': navBackground,
       'nav-menu': navMenu,
-      UiFab
+      'nav-content': navContent,
+      UiFab,
+      'simple-modal': simpleModal,
+      confirm
     }
   };
 </script>
