@@ -66,13 +66,13 @@
       @include type-subheading();
 
       color: $md-green;
-      font-weight: bold;
+      // font-weight: bold;
       margin-bottom: 8px;
-      text-transform: uppercase;
+      // text-transform: uppercase;
     }
 
     .valid-description {
-      @include type-body();
+      @include type-caption();
     }
   }
 
@@ -90,13 +90,13 @@
       @include type-subheading();
 
       color: $md-red;
-      font-weight: bold;
+      // font-weight: bold;
       margin-bottom: 8px;
-      text-transform: uppercase;
+      // text-transform: uppercase;
     }
 
     .error-description {
-      @include type-body();
+      @include type-caption();
     }
   }
 
@@ -114,13 +114,13 @@
       @include type-subheading();
 
       color: $md-orange;
-      font-weight: bold;
+      // font-weight: bold;
       margin-bottom: 8px;
-      text-transform: uppercase;
+      // text-transform: uppercase;
     }
 
     .warning-description {
-      @include type-body();
+      @include type-caption();
     }
   }
 </style>
@@ -144,7 +144,7 @@
     </div>
 
     <div v-for="warning in warnings" class="publish-warning">
-      <span class="warning-label">{{ warning.label }}:</span>
+      <span class="warning-label">{{ warning.label }}</span>
       <span class="warning-description">{{ warning.description }}</span>
       <span class="validation-info">Go To Components</span>
       <ul class="validation-items">

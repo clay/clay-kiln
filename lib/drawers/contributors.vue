@@ -3,7 +3,7 @@
 
   .contributors-list {
     height: 100%;
-    padding: 16px 0;
+    padding: 0;
 
     .person-item {
       padding: 12px 16px;
@@ -11,7 +11,7 @@
 
     .add-contributor-wrapper {
       border-top: 1px solid $divider-color;
-      padding: 16px 16px 0;
+      padding: 16px;
 
       .add-contributor-button {
         width: 100%;

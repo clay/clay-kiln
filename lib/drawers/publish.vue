@@ -14,19 +14,16 @@
 
     .status-message {
       @include type-subheading();
-
-      font-weight: bold;
-      text-transform: uppercase;
     }
 
     .status-time {
-      @include type-body();
+      @include type-caption();
 
       margin-top: 8px;
     }
 
     .status-link {
-      @include type-body();
+      @include type-caption();
 
       align-items: center;
       color: $brand-primary-color;
@@ -35,7 +32,6 @@
       margin-top: 8px;
 
       .status-link-text {
-        font-weight: bold;
         margin-left: 4px;
         text-decoration: underline;
       }
@@ -54,9 +50,6 @@
 
     .action-message {
       @include type-subheading();
-
-      font-weight: bold;
-      text-transform: uppercase;
     }
 
     .schedule-form {
@@ -80,21 +73,23 @@
 
   .publish-location {
     border-bottom: 1px solid $divider-color;
-    display: flex;
-    flex-direction: column;
-    padding: 16px;
+    padding: 0;
 
-    .location-message {
-      @include type-subheading();
+    .ui-collapsible__header {
+      background-color: $pure-white;
+    }
 
-      font-weight: bold;
-      text-transform: uppercase;
+    .ui-collapsible__body {
+      border: none;
+    }
+
+    .publish-location-form {
+      display: flex;
+      flex-direction: column;
     }
 
     .location-description {
       @include type-body();
-
-      margin-top: 8px;
     }
 
     .location-input {
@@ -128,12 +123,13 @@
       <ui-button v-if="showSchedule" class="action-button" buttonType="button" color="primary" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
       <ui-button v-else class="action-button" buttonType="button" color="primary" @click.stop="publishPage">{{ actionMessage }}</ui-button>
     </div>
-    <form class="publish-location" @submit.prevent="saveLocation">
-      <span class="location-message">Custom URL</span>
-      <span class="location-description">Designate a custom URL for this page. This should only be used for special cases, such as index pages and static pages.</span>
-      <ui-textbox class="location-input" v-model="location" placeholder="/special-page.html" label="Enter Custom Location" :error="error" :invalid="isInvalid" @input="onLocationInput"></ui-textbox>
-      <ui-button class="location-submit" buttonType="submit" type="primary" color="default">Save</ui-button>
-    </form>
+    <ui-collapsible :open="hasCustomLocation" class="publish-location" title="Custom URL">
+      <form class="publish-location-form" @submit.prevent="saveLocation">
+        <span class="location-description">Designate a custom URL for this page. This should only be used for special cases, such as index pages and static pages.</span>
+        <ui-textbox class="location-input" v-model="location" placeholder="/special-page.html" label="Enter Custom Location" :error="error" :invalid="isInvalid" @input="onLocationInput"></ui-textbox>
+        <ui-button class="location-submit" buttonType="submit" type="primary" color="default">Save</ui-button>
+      </form>
+    </ui-collapsible>
   </div>
 </template>
 
@@ -160,6 +156,7 @@
   import UiButton from 'keen/UiButton';
   import UiDatepicker from 'keen/UiDatepicker';
   import UiTextbox from 'keen/UiTextbox';
+  import UiCollapsible from 'keen/UiCollapsible';
   import logger from '../utils/log';
 
   const log = logger(__filename);
@@ -201,7 +198,8 @@
         today: new Date(),
         location: '',
         error: 'Custom URL must match an available route!',
-        isInvalid: false
+        isInvalid: false,
+        hasCustomLocation: false
       };
     },
     computed: mapState({
@@ -367,12 +365,17 @@
       // get location when form opens
       // remove prefix when displaying the url in the form. it'll be added when saving
       this.location = customUrl.replace(uriToUrl(prefix), '');
+      if (this.location) {
+        // if there's a custom location on mount, show the custom location section
+        this.hasCustomLocation = true;
+      }
     },
     components: {
       UiIcon,
       UiButton,
       UiDatepicker,
-      UiTextbox
+      UiTextbox,
+      UiCollapsible
     }
   };
 </script>
