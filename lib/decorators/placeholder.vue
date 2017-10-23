@@ -14,6 +14,10 @@
     cursor: text;
   }
 
+  .component-selector-wrapper *[data-editable].kiln-internals {
+    cursor: default;
+  }
+
   .kiln-inline-placeholder,
   .kiln-block-placeholder {
     transition: background-color 300ms $standard-curve;

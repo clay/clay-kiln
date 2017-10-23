@@ -86,6 +86,15 @@ $font-stack: 'Noto Sans', Arial, sans-serif;
   text-transform: uppercase;
 }
 
+@mixin type-list-header {
+  @include kiln-copy();
+
+  color: $text-alt-color;
+  font-size: 12px;
+  line-height: 12px; // single line
+  text-transform: uppercase;
+}
+
 // specific typographic styles in different parts of kiln
 // note: these should use the basic styles, above
 

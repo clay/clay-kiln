@@ -18,6 +18,7 @@
     outline: none;
     padding: 0 16px;
     position: relative;
+    width: 100%;
 
     &.is-large {
       height: 56px;

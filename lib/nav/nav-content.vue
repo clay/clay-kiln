@@ -50,6 +50,8 @@
   import _ from 'lodash';
   import newPage from './new-page.vue';
   import users from './users.vue';
+  import myPages from './my-pages.vue';
+  import allPages from './all-pages.vue';
 
   export default {
     computed: {
@@ -59,7 +61,9 @@
     },
     components: {
       'new-page': newPage,
-      users
+      users,
+      'my-pages': myPages,
+      'all-pages': allPages
     }
   };
 </script>

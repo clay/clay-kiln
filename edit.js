@@ -9,7 +9,6 @@ import store from './lib/core-data/store';
 import { decorateAll } from './lib/decorators';
 import { addSelectorButton } from './lib/utils/custom-buttons'; // eslint-disable-line
 import { add as addInput } from './lib/forms/inputs';
-import { add as addPane } from './lib/forms/panes';
 import toolbar from './lib/toolbar/edit-toolbar.vue';
 import { HIDE_STATUS } from './lib/toolbar/mutationTypes';
 import { init as initValidators } from './lib/validators';
@@ -31,7 +30,6 @@ velocity.defaults.queue = false;
 import { CLOSE_PANE } from './lib/panes/mutationTypes';
 
 const inputReq = require.context('./inputs', false, /\.vue$/),
-  paneReq = require.context('./panes', false, /\.vue$/),
   // todo: in the future, we should queue up the saves
   connectionLostMessage = 'Connection Lost. Changes will <strong>NOT</strong> be saved.',
   progressOptions = {
@@ -51,11 +49,6 @@ require.context('./styleguide', true, /^.*\.(scss|css)$/);
 // Add inputs
 inputReq.keys().forEach(function (key) {
   addInput(basename(key, extname(key)), inputReq(key));
-});
-
-// Add panes
-paneReq.keys().forEach(function (key) {
-  addPane(basename(key, extname(key)), paneReq(key));
 });
 
 // init validators

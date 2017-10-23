@@ -64,7 +64,7 @@
 
       .nav-menu-button,
       .nav-menu-divider {
-        display: block;
+        display: flex;
       }
 
       .nav-menu-button-small,
@@ -153,7 +153,13 @@
         }
       },
       navOptions() {
-        return ['My Pages', 'All Pages'];
+        return [{
+          label: 'My Pages',
+          disabled: this.currentNav === 'My Pages'
+        }, {
+          label: 'All Pages',
+          disabled: this.currentNav === 'All Pages'
+        }];
       },
       settingsOptions() {
         if (this.isAdmin) {
@@ -174,7 +180,9 @@
       closeNav() {
         this.$store.dispatch('closeNav');
       },
-      selectNavOption(value) {
+      selectNavOption(option) {
+        const value = option.label;
+
         switch (value) {
           case 'My Pages': return this.openNav('my-pages');
           case 'All Pages': return this.openNav('all-pages');

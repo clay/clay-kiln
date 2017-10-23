@@ -1,11 +1,9 @@
 import _ from 'lodash';
-import { basename, extname } from 'path';
 import keycode from 'keycode';
 import Vue from 'vue';
 import { pageUri } from '@nymag/dom';
 import addClayListeners from './lib/utils/shift-clay';
 import { addToolbarButton } from './lib/utils/custom-buttons'; // eslint-disable-line
-import { add as addPane } from './lib/forms/panes';
 import store from './lib/core-data/store';
 import toolbar from './lib/toolbar/view-toolbar.vue';
 import getSites from './lib/preloader/sites';
@@ -18,16 +16,9 @@ import conditionalFocus from './directives/conditional-focus';
 import hScrollDirective from './directives/horizontal-scroll';
 import 'keen-ui/src/bootstrap'; // import this once, for KeenUI components
 
-const paneReq = require.context('./panes', false, /\.vue$/);
-
 // register directives
 Vue.directive('conditional-focus', conditionalFocus());
 Vue.directive('h-scroll', hScrollDirective());
-
-// Add panes
-paneReq.keys().forEach(function (key) {
-  addPane(basename(key, extname(key)), paneReq(key));
-});
 
 // Require all scss/css files needed
 require.context('./styleguide', true, /^.*\.(scss|css)$/);
