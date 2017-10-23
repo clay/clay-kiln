@@ -18,6 +18,22 @@
     width: 100%;
   }
 
+  .toolbar-action-menu {
+    display: inline-flex;
+
+    @media screen and (min-width: 600px) {
+      display: none;
+    }
+  }
+
+  .toolbar-action-button {
+    display: none;
+
+    @media screen and (min-width: 600px) {
+      display: inline-flex;
+    }
+  }
+
   .toolbar-button-text {
     font-weight: bold;
   }
@@ -33,12 +49,18 @@
       </ui-button>
 
       <div class="kiln-toolbar-actions" slot="actions">
+        <!-- always display undo, redo, and any custom buttons -->
         <ui-icon-button :disabled="!undoEnabled" color="white" size="large" type="secondary" icon="undo" tooltip="Undo" @click="undo"></ui-icon-button>
         <ui-icon-button :disabled="!redoEnabled" color="white" size="large" type="secondary" icon="redo" tooltip="Redo" @click="redo"></ui-icon-button>
         <component v-for="button in customButtons" :is="button"></component>
-        <ui-icon-button color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click.stop="toggleDrawer('contributors')"></ui-icon-button>
-        <ui-icon-button color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page" @click.stop="toggleDrawer('components')"></ui-icon-button>
-        <ui-icon-button color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click.stop="toggleDrawer('preview')"></ui-icon-button>
+        <!-- display a dropdown menu of actions on smaller screens (viewport < 600px) -->
+        <ui-icon-button class="toolbar-action-menu" color="white" size="large" type="secondary" icon="more_vert" tooltip="Actions" has-dropdown ref="dropdownButton">
+          <ui-menu contain-focus has-icons slot="dropdown" :options="toolbarOptions" @close="$refs.dropdownButton.closeDropdown()" @select="toggleDrawerFromMenu"></ui-menu>
+        </ui-icon-button>
+        <!-- display individual buttons on larger screens (viewport >= 600px) -->
+        <ui-icon-button class="toolbar-action-button" color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click.stop="toggleDrawer('contributors')"></ui-icon-button>
+        <ui-icon-button class="toolbar-action-button" color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page" @click.stop="toggleDrawer('components')"></ui-icon-button>
+        <ui-icon-button class="toolbar-action-button" color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click.stop="toggleDrawer('preview')"></ui-icon-button>
         <ui-button type="primary" color="primary" size="large" @click.stop="toggleDrawer('publish')"><span class="toolbar-button-text">{{ publishAction }}</span></ui-button>
       </div>
     </ui-toolbar>
@@ -77,6 +99,9 @@
   import navMenu from '../nav/nav-menu.vue';
   import navContent from '../nav/nav-content.vue';
   import confirm from './confirm.vue';
+  import logger from '../utils/log';
+
+  const log = logger(__filename);
 
   export default {
     data() {
@@ -127,7 +152,19 @@
           { label: 'View Mode', icon: 'remove_red_eye' }
         ];
       },
-      isDrawerOpen: (state) => !!state.ui.currentDrawer
+      isDrawerOpen: (state) => !!state.ui.currentDrawer,
+      toolbarOptions() {
+        return [{
+          label: 'Contributors',
+          icon: 'people'
+        }, {
+          label: 'Find on Page',
+          icon: 'find_in_page'
+        }, {
+          label: 'Preview',
+          icon: 'open_in_new'
+        }];
+      }
     }),
     methods: {
       stopEditing() {
@@ -142,6 +179,14 @@
       },
       toggleDrawer(name) {
         return this.$store.dispatch('toggleDrawer', name);
+      },
+      toggleDrawerFromMenu(option) {
+        switch (option.label) {
+          case 'Contributors': return this.toggleDrawer('contributors');
+          case 'Find on Page': return this.toggleDrawer('components');
+          case 'Preview': return this.toggleDrawer('preview');
+          default: log.warn(`Unknown drawer: ${option.label}`);
+        }
       },
       openNav() {
         return getItem('claymenu:activetab').then((savedTab) => {
