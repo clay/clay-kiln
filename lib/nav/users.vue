@@ -44,7 +44,7 @@
       label="Search Users"
       :floatingLabel="true"
       :autofocus="true"
-      @keyup="filterList"></ui-textbox>
+      @input="filterList"></ui-textbox>
     <div class="users-list">
       <person
         v-for="(user, index) in users"
