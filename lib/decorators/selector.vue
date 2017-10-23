@@ -250,7 +250,6 @@
 <script>
   import _ from 'lodash';
   import getRect from 'element-client-rect';
-  import store from '../core-data/store';
   import { getData, getSchema } from '../core-data/components';
   import { getSettingsFields } from '../core-data/groups';
   import { getComponentName } from '../utils/references';
