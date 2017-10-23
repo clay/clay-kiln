@@ -16,19 +16,7 @@
   }
 
   .person-image {
-    border-radius: 50%;
-    flex: 0 0 40px;
-    height: 40px;
     margin-right: 16px;
-    width: 40px;
-
-    &.person-default-image {
-      align-items: center;
-      background-color: $md-grey-500;
-      color: $pure-white;
-      display: flex;
-      justify-content: center;
-    }
   }
 
   .person-text {
@@ -74,10 +62,7 @@
 
 <template>
   <div class="person-item" :class="{ 'has-primary-action': hasPrimaryAction }">
-    <img v-if="image" class="person-image" :src="image" @click.stop="onClick" />
-    <div v-else class="person-image person-default-image" @click.stop="onClick">
-      <ui-icon icon="person"></ui-icon>
-    </div>
+    <avatar class="person-image" :url="image" @click.stop="onClick"></avatar>
     <div class="person-text" @click.stop="onClick">
       <span v-if="name" class="person-name">{{ name }}</span>
       <span v-if="subtitle" class="person-subtitle">{{ subtitle }}</span>
@@ -92,7 +77,7 @@
 <script>
   import UiSwitch from 'keen/UiSwitch';
   import UiIconButton from 'keen/UiIconButton';
-  import UiIcon from 'keen/UiIcon';
+  import avatar from './avatar.vue';
 
   export default {
     props: ['id', 'image', 'name', 'subtitle', 'hasPrimaryAction', 'hasToggle', 'toggled', 'hasSecondaryAction', 'secondaryActionIcon', 'disabled'],
@@ -121,7 +106,7 @@
     components: {
       UiSwitch,
       UiIconButton,
-      UiIcon
+      avatar
     }
   };
 </script>

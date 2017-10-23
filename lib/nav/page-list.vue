@@ -14,7 +14,7 @@
       max-width: calc(100vw - 200px);
     }
 
-    @media screen and (min-width: 1056px) {
+    @media screen and (min-width: 1256px) {
       max-width: 1056px;
     }
   }
@@ -99,6 +99,11 @@
 
       &-status {
         flex: 0 0 $status-column;
+        text-align: right;
+
+        @media screen and (min-width: 1056px) {
+          text-align: left;
+        }
       }
 
       &-collaborators {
@@ -135,21 +140,21 @@
         <span class="page-list-selected-site">{{ selectedSite }}</span>
         <site-selector slot="dropdown" :sites="sites" :selectedSite="selectedSite" @close="$refs.sitesDropdown.closeDropdown()" @select="selectSite" @multi-select="selectMultipleSites"></site-selector>
       </ui-button>
-      <ui-textbox class="page-list-search" v-model="query" type="search" autofocus placeholder="Search by Title or Byline"></ui-textbox>
+      <ui-textbox class="page-list-search" v-model="query" type="search" autofocus placeholder="Search by Title or Byline" @input="filterList"></ui-textbox>
       <ui-icon-button class="page-list-status-small" type="secondary" icon="filter_list" has-dropdown ref="statusDropdown">
-        <status-selector slot="dropdown" :statuses="statuses" :vertical="true" @close="$refs.statusDropdown.closeDropdown()" @select="selectStatus"></status-selector>
+        <status-selector slot="dropdown" :selectedStatus="selectedStatus" :vertical="true" @close="$refs.statusDropdown.closeDropdown()" @select="selectStatus"></status-selector>
       </ui-icon-button>
-      <status-selector class="page-list-status-large" :statuses="statuses" @select="selectStatus"></status-selector>
+      <status-selector class="page-list-status-large" :selectedStatus="selectedStatus" @select="selectStatus"></status-selector>
     </div>
     <div class="page-list-headers">
-      <span v-if="selectedSites.length > 1" class="page-list-header page-list-header-site">Site</span>
+      <span v-if="multipleSitesSelected" class="page-list-header page-list-header-site">Site</span>
       <span class="page-list-header page-list-header-title">Title</span>
       <span class="page-list-header page-list-header-byline">Byline</span>
       <span class="page-list-header page-list-header-status">Status</span>
       <span class="page-list-header page-list-header-collaborators">Collaborators</span>
     </div>
     <div class="page-list-readout">
-      <page-list-item v-for="page in pages" :page="page"></page-list-item>
+      <page-list-item v-for="page in pages" :page="page" :multipleSitesSelected="multipleSitesSelected"></page-list-item>
       <div class="page-list-load-more" v-if="showLoadMore">
         <ui-button type="secondary" class="page-list-load-more-button" @click="fetchPages">Load More</ui-button>
       </div>
@@ -190,14 +195,12 @@
    * @param  {array} siteFilter
    * @param  {string} searchFilter
    * @param {number} offset
-   * @param {object} statuses
+   * @param {object} statusFilter
    * @param {boolean} isMyPages
    * @param {string} username
    * @return {object}
    */
   function buildQuery({ siteFilter, searchFilter, offset, statusFilter, isMyPages, username }) { // eslint-disable-line
-    const allStatuses = statusFilter.draft && statusFilter.published && statusFilter.scheduled;
-
     let query = {
       index: 'pages',
       type: 'general',
@@ -256,10 +259,10 @@
     }
 
     // filter by selected status
-    if (!allStatuses) {
-      // when all statuses are selected, it doesn't need to include a status filter in the query
+    if (statusFilter !== 'all') {
+      // when the 'all' status is selected, it doesn't need to include a status filter in the query
       // when a single status is selected, it does include the filter
-      if (statusFilter.draft) {
+      if (statusFilter === 'draft') {
         query.body.query.bool.must.push({
           term: {
             published: false
@@ -269,13 +272,13 @@
             scheduled: false
           }
         });
-      } else if (statusFilter.published) {
+      } else if (statusFilter === 'published') {
         query.body.query.bool.must.push({
           term: {
             published: true
           }
         });
-      } else if (statusFilter.scheduled) {
+      } else if (statusFilter === 'scheduled') {
         query.body.query.bool.must.push({
           term: {
             scheduled: true
@@ -296,19 +299,18 @@
         total: null,
         sites: getInitialSites.call(this),
         pages: [],
-        statuses: {
-          draft: true,
-          published: true,
-          scheduled: true
-        }
+        selectedStatus: 'all'
       };
     },
     computed: {
       selectedSites() {
         return _.filter(this.sites, 'selected');
       },
+      multipleSitesSelected() {
+        return this.selectedSites.length > 1;
+      },
       selectedSite() {
-        if (this.selectedSites.length > 1) {
+        if (this.multipleSitesSelected) {
           return 'Multiple';
         } else if (this.selectedSites.length === 1) {
           return _.head(this.selectedSites).name;
@@ -335,19 +337,15 @@
           return site;
         });
       },
-      onSearchKeyup: _.debounce(function () {
-        this.$store.commit('FILTER_PAGELIST_SEARCH', this.searchString);
+      filterList: _.debounce(function () {
+        this.$store.commit('FILTER_PAGELIST_SEARCH', this.query);
         this.offset = 0;
         this.fetchPages();
       }, 300),
-      selectStatus(status, value) {
-        let showAllStatuses, currentStatus;
+      selectStatus(status) {
+        this.selectedStatus = status;
 
-        this.statuses[status] = value;
-        showAllStatuses = this.statuses.draft && this.statuses.published && this.statuses.scheduled;
-        currentStatus = showAllStatuses ? 'all' : _.findKey(this.statuses, (status) => !!status);
-
-        this.$store.commit('FILTER_PAGELIST_STATUS', currentStatus);
+        this.$store.commit('FILTER_PAGELIST_STATUS', this.selectedStatus);
         this.offset = 0;
         this.fetchPages();
       },
@@ -358,23 +356,13 @@
           prefix = _.get(this.$store, 'state.site.prefix'),
           isMyPages = this.isMyPages,
           username = _.get(this.$store, 'state.user.username'),
-          statusFilter = this.statuses,
+          statusFilter = this.selectedStatus,
           query = buildQuery({ siteFilter, searchFilter, offset, statusFilter, isMyPages, username });
 
         return postJSON(prefix + searchRoute, query).then((res) => {
           const hits = _.get(res, 'hits.hits') || [],
             total = _.get(res, 'hits.total'),
-            pages = _.map(hits, (hit) => {
-              const src = hit._source;
-
-              return {
-                site: src.siteSlug,
-                uri: src.uri,
-                title: src.title,
-                titleTruncated: src.titleTruncated, // display truncated title (query by full title)
-                authors: src.authors
-              };
-            });
+            pages = _.map(hits, (hit) => hit._source);
 
           if (this.offset === 0) {
             this.pages = pages;

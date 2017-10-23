@@ -3,7 +3,7 @@
     align-items: center;
     display: flex;
 
-    .status-selector-checkbox {
+    .status-selector-radio {
       margin-left: 16px;
     }
 
@@ -12,8 +12,12 @@
       flex-direction: column;
       padding: 8px 16px;
 
-      .status-selector-checkbox {
+      .status-selector-radio {
         margin-left: 0;
+      }
+
+      .status-selector-radio + .status-selector-radio {
+        margin-top: 8px;
       }
     }
   }
@@ -21,24 +25,25 @@
 
 <template>
   <div class="status-selector" :class="{ 'is-vertical': vertical }">
-    <ui-checkbox class="status-selector-checkbox" label="Draft" :value="statuses.draft" @change="change('draft')"></ui-checkbox>
-    <ui-checkbox class="status-selector-checkbox" label="Scheduled" :value="statuses.scheduled" @change="change('scheduled')"></ui-checkbox>
-    <ui-checkbox class="status-selector-checkbox" label="Published" :value="statuses.published" @change="change('published')"></ui-checkbox>
+    <ui-radio class="status-selector-radio" label="All" :value="selectedStatus" trueValue="all" @input="input"></ui-radio>
+    <ui-radio class="status-selector-radio" label="Draft" :value="selectedStatus" trueValue="draft" @input="input"></ui-radio>
+    <ui-radio class="status-selector-radio" label="Scheduled" :value="selectedStatus" trueValue="scheduled" @input="input"></ui-radio>
+    <ui-radio class="status-selector-radio" label="Published" :value="selectedStatus" trueValue="published" @input="input"></ui-radio>
   </div>
 </template>
 
 <script>
-  import UiCheckbox from 'keen/UiCheckbox';
+  import UiRadio from 'keen/UiRadio';
 
   export default {
-    props: ['statuses', 'vertical'],
+    props: ['selectedStatus', 'vertical'],
     methods: {
-      change(status) {
-        this.$emit('select', status, !this.statuses[status]);
+      input(status) {
+        this.$emit('select', status);
       }
     },
     components: {
-      UiCheckbox
+      UiRadio
     }
   };
 </script>
