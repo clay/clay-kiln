@@ -31,7 +31,9 @@
 
 <template>
   <transition name="nav-content" mode="out-in">
-    <component class="nav-content" v-if="currentNav" :is="currentNav"></component>
+    <keep-alive>
+      <component class="nav-content" v-if="currentNav" :is="currentNav"></component>
+    </keep-alive>
   </transition>
 </template>
 
