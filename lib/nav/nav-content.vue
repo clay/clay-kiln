@@ -7,10 +7,19 @@
     @include nav-layer();
 
     background-color: $card-bg-color;
-    height: 100%;
+    height: calc(100vh - 48px);
+    max-width: 100vw;
     position: fixed;
-    left: 200px;
-    top: 0;
+    left: 0;
+    top: 48px;
+    width: 100%;
+
+    @media screen and (min-width: 600px) {
+      height: 100%;
+      left: 200px;
+      top: 0;
+      width: auto;
+    }
   }
 
   .nav-content-enter,

@@ -4,7 +4,6 @@
   .users-nav {
     display: flex;
     flex-direction: column;
-    height: 100%;
     width: 400px;
 
     .users-input {
@@ -14,7 +13,6 @@
 
     .users-list {
       flex: 0 1 100%;
-      min-height: 200px;
       overflow-y: scroll;
       overflow-x: hidden;
       padding: 0;

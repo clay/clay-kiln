@@ -49,15 +49,15 @@
       </ui-button>
 
       <div class="kiln-toolbar-actions" slot="actions">
-        <!-- always display undo, redo, and any custom buttons -->
-        <ui-icon-button :disabled="!undoEnabled" color="white" size="large" type="secondary" icon="undo" tooltip="Undo" @click="undo"></ui-icon-button>
-        <ui-icon-button :disabled="!redoEnabled" color="white" size="large" type="secondary" icon="redo" tooltip="Redo" @click="redo"></ui-icon-button>
+        <!-- always display custom buttons -->
         <component v-for="button in customButtons" :is="button"></component>
         <!-- display a dropdown menu of actions on smaller screens (viewport < 600px) -->
-        <ui-icon-button class="toolbar-action-menu" color="white" size="large" type="secondary" icon="more_vert" tooltip="Actions" has-dropdown ref="dropdownButton">
+        <ui-icon-button class="toolbar-action-menu" color="white" size="large" type="secondary" icon="more_vert" tooltip="Actions" has-dropdown ref="dropdownButton" @click="closeDrawer">
           <ui-menu contain-focus has-icons slot="dropdown" :options="toolbarOptions" @close="$refs.dropdownButton.closeDropdown()" @select="toggleDrawerFromMenu"></ui-menu>
         </ui-icon-button>
         <!-- display individual buttons on larger screens (viewport >= 600px) -->
+        <ui-icon-button class="toolbar-action-button" :disabled="!undoEnabled" color="white" size="large" type="secondary" icon="undo" tooltip="Undo" @click="undo"></ui-icon-button>
+        <ui-icon-button class="toolbar-action-button" :disabled="!redoEnabled" color="white" size="large" type="secondary" icon="redo" tooltip="Redo" @click="redo"></ui-icon-button>
         <ui-icon-button class="toolbar-action-button" color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click.stop="toggleDrawer('contributors')"></ui-icon-button>
         <ui-icon-button class="toolbar-action-button" color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page" @click.stop="toggleDrawer('components')"></ui-icon-button>
         <ui-icon-button class="toolbar-action-button" color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click.stop="toggleDrawer('preview')"></ui-icon-button>
@@ -155,6 +155,16 @@
       isDrawerOpen: (state) => !!state.ui.currentDrawer,
       toolbarOptions() {
         return [{
+          label: 'Undo',
+          icon: 'undo',
+          disabled: !this.undoEnabled
+        }, {
+          label: 'Redo',
+          icon: 'redo',
+          disabled: !this.redoEnabled
+        }, {
+          type: 'divider'
+        }, {
           label: 'Contributors',
           icon: 'people'
         }, {
@@ -172,21 +182,26 @@
         toggleEdit();
       },
       undo() {
-        this.$store.dispatch('undo');
+        return this.$store.dispatch('undo');
       },
       redo() {
-        this.$store.dispatch('redo');
+        return this.$store.dispatch('redo');
       },
       toggleDrawer(name) {
         return this.$store.dispatch('toggleDrawer', name);
       },
       toggleDrawerFromMenu(option) {
         switch (option.label) {
+          case 'Undo': return this.undo();
+          case 'Redo': return this.redo();
           case 'Contributors': return this.toggleDrawer('contributors');
           case 'Find on Page': return this.toggleDrawer('components');
           case 'Preview': return this.toggleDrawer('preview');
           default: log.warn(`Unknown drawer: ${option.label}`);
         }
+      },
+      closeDrawer() {
+        return this.$store.dispatch('closeDrawer');
       },
       openNav() {
         return getItem('claymenu:activetab').then((savedTab) => {
