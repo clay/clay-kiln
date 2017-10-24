@@ -8,13 +8,16 @@
   @import '../styleguide/colors';
 
   .autocomplete {
-    background-color: #FFFFFF;
-    border: 1px solid $save;
+    background-color: $card-bg-color;
+    box-shadow: 1px 2px 8px $md-grey-600;
+    display: block;
     list-style: none;
-    margin: 0;
+    margin: 0 0 8px;
     padding: 0;
     position: absolute;
+    top: 100%;
     width: 100%;
+    z-index: 1;
   }
 </style>
 
@@ -25,7 +28,7 @@
         :index="index"
         :focusIndex="activeIndex"
         :value="match"
-        :select="selectItem"></item>
+        :select="select"></item>
     </li>
   </ol>
 </template>
@@ -35,7 +38,7 @@
   import item from './autocomplete-item.vue';
 
   export default {
-    props: ['args', 'query', 'select', 'focusIndex', 'updateFocusIndex', 'updateMatches'],
+    props: ['args', 'select', 'query', 'focusIndex', 'updateFocusIndex', 'updateMatches'],
     data() {
       return {
         localIndex: null,
@@ -78,11 +81,6 @@
         this.prevFocusIndex = this.focusIndex;
         // Return the active index
         return activeIndex;
-      }
-    },
-    methods: {
-      selectItem(value) {
-        this.select(value);
       }
     },
     mounted() {

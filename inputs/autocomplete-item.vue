@@ -6,25 +6,25 @@
 
 <style lang="sass">
   @import '../styleguide/colors';
+  @import '../styleguide/typography';
 
   .autocomplete-item {
+    @include type-body();
+
     appearance: none;
     background: transparent;
-    border: none;
     cursor: pointer;
     display: block;
-    font-size: 13px;
-    padding: 5px 10px;
+    padding: 8px 12px;
     text-align: left;
+    top: 100%;
     width: 100%;
 
-    &.selected {
-      background: $save;
-      color: #FFFFFF;
-    }
-
     &:hover {
-      background: $placeholder-background;
+      background-color: rgba($pure-black, .06);
+    }
+    &.selected {
+      background-color: rgba($pure-black, 0.1);
     }
   }
 </style>
@@ -34,14 +34,12 @@
     class="autocomplete-item"
     v-bind:class="{ 'selected': isActive }"
     type="button"
-    @click="select(value)">
+    @click.stop.prevent="select(value)">
     {{ value }}
   </button>
 </template>
 
 <script>
-  import _ from 'lodash';
-
   export default {
     props: ['value', 'index', 'select', 'focusIndex'],
     data() {},
@@ -49,7 +47,6 @@
       isActive() {
         return this.index === this.focusIndex;
       }
-    },
-    methods: {}
+    }
   };
 </script>
