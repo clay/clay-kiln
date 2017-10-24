@@ -64,7 +64,6 @@
   .codemirror-wrapper {
     .CodeMirror {
       font-family: monospace;
-      opacity: 0;
       padding: 0;
       transition: all 200ms ease;
     }
@@ -81,10 +80,6 @@
     }
 
     &.is-active:not(.is-disabled) {
-      .CodeMirror {
-        opacity: 1;
-      }
-
       .ui-textbox__feedback {
         border-top: 2px solid $brand-primary-color;
       }
@@ -105,14 +100,14 @@
 </style>
 
 <template>
-  <div class="codemirror-wrapper ui-textbox has-label has-floating-label is-multi-line" :class="classes">
+  <div class="codemirror-wrapper ui-textbox has-label is-multi-line" :class="classes">
     <div class="ui-textbox__icon-wrapper" v-if="hasButton">
       <component :is="args.attachedButton.name" :name="name" :data="data" :schema="schema" :args="args.attachedButton" @disable="disableInput" @enable="enableInput"></component>
     </div>
 
     <div class="ui-textbox__content">
       <label class="ui-textbox__label">
-        <div class="ui-textbox__label-text" :class="labelClasses">{{ label }}</div>
+        <div class="ui-textbox__label-text is-floating">{{ label }}</div>
         <textarea class="ui-textbox__input codemirror" :value="data"></textarea>
       </label>
 
@@ -185,15 +180,6 @@
           { 'is-disabled': this.isDisabled }
         ];
       },
-      labelClasses() {
-        return {
-          'is-inline': this.isLabelInline,
-          'is-floating': !this.isLabelInline
-        };
-      },
-      isLabelInline() {
-        return (this.data || '').length === 0 && !this.isActive;
-      },
       hasFeedback() {
         return this.args.help || this.error;
       },
@@ -236,9 +222,7 @@
 
       // refresh the codemirror instance after it instantiates
       // wait until it gets redrawn in the dom first
-      setTimeout(function () {
-        editor.refresh();
-      }, 0);
+      this.$nextTick(() => editor.refresh());
 
       editor.on('change', function (instance) {
         store.commit(UPDATE_FORMDATA, { path: name, data: instance.getValue() });
