@@ -41,6 +41,7 @@
 
 <template>
   <div class="kiln-wrapper">
+    <alert-container></alert-container>
     <drawer></drawer>
     <ui-toolbar type="colored" text-color="white" @nav-icon-click="openNav">
       <ui-button type="primary" color="primary" size="large" icon="mode_edit" has-dropdown>
@@ -99,6 +100,7 @@
   import navMenu from '../nav/nav-menu.vue';
   import navContent from '../nav/nav-content.vue';
   import confirm from './confirm.vue';
+  import alertContainer from './alert-container.vue';
   import logger from '../utils/log';
 
   const log = logger(__filename);
@@ -225,7 +227,8 @@
       'nav-background': navBackground,
       'nav-menu': navMenu,
       'nav-content': navContent,
-      confirm
+      confirm,
+      'alert-container': alertContainer
     }, window.kiln.toolbarButtons)
   };
 </script>

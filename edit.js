@@ -10,7 +10,6 @@ import { decorateAll } from './lib/decorators';
 import { addSelectorButton } from './lib/utils/custom-buttons'; // eslint-disable-line
 import { add as addInput } from './lib/forms/inputs';
 import toolbar from './lib/toolbar/edit-toolbar.vue';
-import { HIDE_STATUS } from './lib/toolbar/mutationTypes';
 import { init as initValidators } from './lib/validators';
 import conditionalFocus from './directives/conditional-focus';
 import hScrollDirective from './directives/horizontal-scroll';
@@ -124,15 +123,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (!navigator.onLine) {
         // test connection loss on page load
-        store.dispatch('showStatus', { type: 'offline', message: connectionLostMessage, isPermanent: true});
+        store.dispatch('addAlert', { type: 'error', text: connectionLostMessage, permanent: true });
       } else if (getLastEditUser(store)) {
         // show message if another user has edited this page in the last 5 minutes
-        store.dispatch('showStatus', { type: 'save', message: `Edited less than 5 minutes ago by ${getLastEditUser(store)}` });
+        store.dispatch('addAlert', { type: 'info', text: `Edited less than 5 minutes ago by ${getLastEditUser(store)}` });
       }
 
       // display a status message if you're editing a page template
       if (currentPageTemplate) {
-        store.dispatch('showStatus', { type: 'warning', message: `You are currently editing the "${currentPageTemplate.title}" template. Changes you make will be reflected on new pages that use this template.`, isPermanent: true, dismissable: true });
+        store.dispatch('addAlert', { type: 'warning', text: `You are currently editing the "${currentPageTemplate.title}" template. Changes you make will be reflected on new pages that use this template.` });
       }
     });
 
@@ -202,12 +201,11 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   window.addEventListener('online', function () {
-    store.commit(HIDE_STATUS); // in case there are any status messages open, close them
+    store.dispatch('removeAlert', { type: 'error', text: connectionLostMessage, permanent: true });
   });
 
   window.addEventListener('offline', function () {
-    // todo: turn any progress indicators to grey and end them
-    store.dispatch('showStatus', { type: 'offline', message: connectionLostMessage, isPermanent: true});
+    store.dispatch('addAlert', { type: 'error', text: connectionLostMessage, permanent: true });
   });
 
   // navigate components when hitting ↑ / ↓ arrows (if there's a component selected)
