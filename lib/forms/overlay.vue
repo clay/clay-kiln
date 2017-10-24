@@ -265,10 +265,10 @@
           el.style.height = '100px'; // animate from 100px to auto height (auto)
           el.style.width = '100px'; // animate from 100px to auto width (600px)
           velocity(el, { opacity: 1 }, { duration: 100 });
-          velocity(el, { width: 600 }, { duration: 280 });
-          velocity(headerEl, { opacity: 1 }, { delay: 325, duration: 50 });
-          velocity(innerEl, { opacity: 1 }, { delay: 325, duration: 50 });
-          velocity(el, { height: finalHeight }, { delay: 35, duration: 340, complete: () => {
+          velocity(el, { width: 600 }, { duration: 180 });
+          velocity(headerEl, { opacity: 1 }, { delay: 225, duration: 50 });
+          velocity(innerEl, { opacity: 1 }, { delay: 225, duration: 50 });
+          velocity(el, { height: finalHeight }, { delay: 35, duration: 240, complete: () => {
             // set the height to auto, so forms can grow if the fields inside them grow
             // (e.g. adding complex-list items)
             // el.style.height = 'auto';
@@ -286,11 +286,11 @@
         const headerEl = find(el, '.form-header'),
           innerEl = find(el, '.form-contents');
 
-        velocity(el, { width: 100 }, { delay: 55, duration: 320 });
-        velocity(el, { height: 100 }, { duration: 320 });
+        velocity(el, { width: 100 }, { delay: 55, duration: 220 });
+        velocity(el, { height: 100 }, { duration: 220 });
         velocity(headerEl, { opacity: 0 }, { duration: 50 });
         velocity(innerEl, { opacity: 0 }, { duration: 50 });
-        velocity(el, { opacity: 0 }, { delay: 220, duration: 100, complete: done });
+        velocity(el, { opacity: 0 }, { delay: 120, duration: 100, complete: done });
       },
       onResize() {
         this.$nextTick(() => {
@@ -304,9 +304,9 @@
             isInsideViewport = currentTop + newHeight < docHeight;
 
           if (isInsideViewport) {
-            velocity(this.$el, { height: newHeight }, { duration: 320 });
+            velocity(this.$el, { height: newHeight }, { duration: 220 });
           } else {
-            velocity(this.$el, { height: docHeight - currentTop }, { duration: 320 });
+            velocity(this.$el, { height: docHeight - currentTop }, { duration: 220 });
           }
         });
       },

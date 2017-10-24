@@ -19,12 +19,17 @@
     &-site {
       @include type-button();
 
+      display: none;
       flex: 0 0 $site-column;
       overflow: hidden;
       padding-right: 16px;
       text-overflow: ellipsis;
       text-transform: uppercase;
       white-space: nowrap;
+
+      @media screen and (min-width: 904px) {
+        display: block;
+      }
     }
 
     &-title {
