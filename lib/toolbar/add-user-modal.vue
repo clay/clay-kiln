@@ -81,11 +81,11 @@
           .then(() => store.dispatch('closePane'))
           .then(() => {
             store.dispatch('finishProgress', 'save');
-            store.dispatch('showStatus', { type: 'save', message: `Added ${username} to all sites!` });
+            store.dispatch('showSnackbar', `Added ${username} to Clay`);
           }).catch((e) => {
-            log.error(e.message, { action: 'createUser', username: user.username, provider: user.provider });
+            log.error(`Error adding ${username} to Clay: ${e.message}`, { action: 'createUser', username: user.username, provider: user.provider });
             store.dispatch('finishProgress', 'error');
-            store.dispatch('showStatus', { type: 'error', message: `Error adding ${username} to Clay: ${e.message}` });
+            store.dispatch('showSnackbar', `Error adding ${username} to Clay`);
           });
       }
     },

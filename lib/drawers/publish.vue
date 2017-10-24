@@ -248,16 +248,20 @@
         const store = this.$store;
 
         store.commit(START_PROGRESS);
-        this.$store.dispatch('unschedulePage', this.uri)
+        store.dispatch('unschedulePage', this.uri)
           .catch((e) => {
             store.commit(FINISH_PROGRESS, 'error');
             log.error(`Error unscheduling page: ${e.message}`, { action: 'unschedulePage' });
-            store.dispatch('showStatus', { type: 'error', message: 'Error unscheduling page!'});
+            store.dispatch('showSnackbar', {
+              message: 'Error unscheduling page',
+              action: 'Retry',
+              onActionClick: () => this.unschedulePage()
+            });
             throw e;
           })
           .then(() => {
             store.commit(FINISH_PROGRESS);
-            store.dispatch('showStatus', { type: 'schedule', message: 'Unscheduled Page!' });
+            store.dispatch('showSnackbar', 'Unscheduled Page');
           });
       },
       unpublishPage() {
@@ -269,14 +273,18 @@
           .catch((e) => {
             store.commit(FINISH_PROGRESS, 'error');
             log.error(`Error unpublishing page: ${e.message}`, { action: 'unpublishPage' });
-            store.dispatch('showStatus', { type: 'error', message: 'Error unpublishing page!'});
+            store.dispatch('showSnackbar', {
+              message: 'Error unpublishing page',
+              action: 'Retry',
+              onActionClick: () => this.unpublishPage()
+            });
             throw e;
           })
           .then(() => {
             if (_.includes(window.location.href, uriToUrl(uri))) {
               // if we're already looking at /pages/whatever, display the status message
               store.commit(FINISH_PROGRESS);
-              store.dispatch('showStatus', { type: 'draft', message: 'Unpublished Page!' });
+              store.dispatch('showSnackbar', 'Unpublished Page');
             } else {
               // if we're looking at the published page, navigate to the latest version
               window.location.href = `${uriToUrl(uri)}${htmlExt}${editExt}`;
@@ -293,27 +301,53 @@
           store = this.$store;
 
         this.$store.commit(START_PROGRESS);
-        this.$store.dispatch('schedulePage', { uri: this.uri, timestamp }).then(() => {
-          store.commit(FINISH_PROGRESS);
-          store.dispatch('showStatus', { type: 'schedule', message: `Scheduled to publish ${calendar(datetime)}` });
-        });
+        this.$store.dispatch('schedulePage', { uri: this.uri, timestamp })
+          .catch((e) => {
+            log.error(`Error scheduling page: ${e.message}`, { action: 'schedulePage' });
+            this.$store.dispatch('showSnackbar', {
+              message: 'Error scheduling page',
+              action: 'Retry',
+              onActionClick: () => this.schedulePage()
+            });
+            throw e;
+          })
+          .then(() => {
+            store.commit(FINISH_PROGRESS);
+            // reset date and time values
+            this.dateValue = null;
+            this.timeValue = '';
+            store.dispatch('showSnackbar', {
+              message: `Scheduled to publish ${calendar(datetime)}`,
+              action: 'Undo',
+              onActionClick: () => this.unschedulePage()
+            });
+          });
       },
       publishPage() {
         this.$store.dispatch('publishPage', this.uri)
           .catch((e) => {
             log.error(`Error publishing page: ${e.message}`, { action: 'publishPage' });
-            store.dispatch('showStatus', { type: 'error', message: 'Error publishing page!'});
+            this.$store.dispatch('showSnackbar', {
+              message: 'Error publishing page',
+              action: 'Retry',
+              onActionClick: () => this.publishPage()
+            });
             throw e;
           })
-          .then((url) => store.dispatch('showStatus', { type: 'publish', message: 'Published Page!', action: `<a href="${url}">View</a>` }));
+          .then(() => this.$store.dispatch('showSnackbar', {
+            message: 'Published Page',
+            action: 'Undo',
+            onActionClick: () => this.unpublishPage()
+          }));
       },
       formatDate(date) {
         return dateFormat(date, 'M/D/YY');
       },
-      saveLocation() {
+      saveLocation(undoUrl) {
         const prefix = _.get(this.$store, 'state.site.prefix'),
-          val = this.location,
-          store = this.$store;
+          val = undoUrl || this.location,
+          store = this.$store,
+          oldUrl = _.get(store, 'state.page.data.customUrl');
 
         let url;
 
@@ -337,10 +371,16 @@
         }
 
         store.dispatch('savePage', { customUrl: url }).then(() => {
-          if (url) {
-            store.dispatch('showStatus', { type: 'save', message: 'Saved custom page url' });
+          if (url && !undoUrl) {
+            store.dispatch('showSnackbar', 'Saved custom page url');
           } else {
-            store.dispatch('showStatus', { type: 'save', message: 'Removed custom page url' });
+            store.dispatch('showSnackbar', {
+              message: 'Removed custom page url',
+              action: 'Undo',
+              onActionClick: () => {
+                this.saveLocation(oldUrl);
+              }
+            });
           }
         });
       },

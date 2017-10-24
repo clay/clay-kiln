@@ -62,7 +62,7 @@
           this.label = 'CSV File Uploaded';
         };
         reader.onerror = () => {
-          store.dispatch('showStatus', 'error', `Unable to read ${file.fileName}`);
+          store.dispatch('showSnackbar', `Unable to read ${file.fileName}`);
         };
       }
     }

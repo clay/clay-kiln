@@ -107,13 +107,13 @@
         return this.$store.dispatch('updatePageList', { user })
           .then(() => {
             this.$store.dispatch('finishProgress');
-            this.$store.dispatch('showStatus', { type: 'save', message: `Added ${user.username} to this page!` });
+            this.$store.dispatch('showSnackbar', `Added ${user.username} to this page`); // todo: allow undoing this
             return this.$store.dispatch('closePane');
           })
           .catch((e) => {
-            log.error(e.message, { action: 'addPersonToPage' });
+            log.error(`Error adding ${user.username} to page: ${e.message}`, { action: 'addPersonToPage' });
             store.dispatch('finishProgress');
-            store.dispatch('showStatus', { type: 'error', message: `Error adding ${user.username} to page: ${e.message}` });
+            store.dispatch('showSnackbar', `Error adding ${user.username} to page`);
           });
       }
     },

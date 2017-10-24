@@ -39,11 +39,11 @@
           .then(() => this.$store.dispatch('closePane'))
           .then(() => {
             this.$store.dispatch('closeModal');
-            this.$store.dispatch('showStatus', { type: 'save', message: `Added ${title} to Page Templates!` });
+            this.$store.dispatch('showSnackbar', `Added ${title} to Page Templates`);
           }).catch((e) => {
-            log.error(e.message, { action: 'addPage', uri });
+            log.error(`Error adding ${title} to Page Templates: ${e.message}`, { action: 'addPage', uri });
             this.$store.dispatch('closeModal');
-            this.$store.dispatch('showStatus', { type: 'error', message: `Error adding ${title} to Page Templates: ${e.message}` });
+            this.$store.dispatch('showSnackbar', `Error adding ${title} to Page Templates`);
           });
       }
     },

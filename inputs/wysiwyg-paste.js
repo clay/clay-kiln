@@ -110,7 +110,7 @@ export function matchComponents(strings, rules) {
     });
 
     if (!matchedRule) {
-      store.dispatch('showStatus', { type: 'error', message: `Error pasting text: No rule found for "${_.truncate(cleanStr, { length: 40, omission: '…' })}"`});
+      store.dispatch('showSnackbar', `No paste rule for "${_.truncate(cleanStr, { length: 20, omission: '…' })}"`);
       throw new Error('No matching paste rule for ' + cleanStr);
     }
 

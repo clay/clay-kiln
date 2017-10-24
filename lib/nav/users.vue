@@ -68,9 +68,12 @@
   import _ from 'lodash';
   import { postJSON, save, remove } from '../core-data/api';
   import { searchRoute } from '../utils/references';
+  import logger from '../utils/log';
   import person from '../utils/person.vue';
   import UiTextbox from 'keen/UiTextbox';
   import UiButton from 'keen/UiButton';
+
+  const log = logger(__filename);
 
   function buildUserQuery(query) {
     const str = _.isString(query) && query.toLowerCase() || '';
@@ -180,10 +183,15 @@
           prefix = _.get(store, 'state.site.prefix');
 
         this.users.splice(index, 1);
-        return remove(prefix + '/users/' + id).then(() => {
-          store.dispatch('showStatus', { type: 'save', message: `Removed ${username} from all sites!` });
+        return remove(prefix + '/users/' + id).then((oldUser) => {
+          store.dispatch('showSnackbar', {
+            message: `Removed ${username} from Clay`,
+            action: 'Undo',
+            onActionClick: () => postJSON(prefix + '/users', oldUser)
+          });
         }).catch((e) => {
-          store.dispatch('showStatus', { type: 'error', message: `Error removing ${username} from Clay: ${e.message}` });
+          log.error(`Error removing ${username} from Clay: ${e.message}`, { action: 'onDeleteConfirm' });
+          store.dispatch('showSnackbar', `Error removing ${username} from Clay`);
         });
       },
       addUser() {
