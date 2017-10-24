@@ -12,7 +12,7 @@
     // height is computed when rendering, so we can animate it
     display: block;
     height: auto;
-    max-height: 100vh;
+    max-height: calc(100vh - 100px);
     max-width: 100vw;
     opacity: 0;
     position: fixed;
