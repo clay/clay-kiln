@@ -151,9 +151,11 @@
       update(val) {
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: val });
       },
-      closeFormOnEnter() {
-        // close form when hitting enter in text fields
-        this.$store.dispatch('unfocus');
+      closeFormOnEnter(e) {
+        if (!this.isMultiline || e.metaKey || e.ctrlKey) {
+          // close form when hitting enter in text fields
+          this.$store.dispatch('unfocus');
+        }
       },
       disableInput() {
         this.isDisabled = true;
