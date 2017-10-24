@@ -1,6 +1,7 @@
 <style lang="sass">
   @import '../../styleguide/toolbar';
   @import '../../styleguide/colors';
+  @import '../../styleguide/layers';
 
   body {
     @include toolbar-padding();
@@ -8,6 +9,13 @@
 
   .kiln-wrapper {
     @include toolbar-wrapper();
+
+    .ui-snackbar-container {
+      @include confirm-layer();
+
+      bottom: 0;
+      position: fixed;
+    }
   }
 
   .kiln-progress {
@@ -76,6 +84,7 @@
     <nav-content></nav-content>
     <simple-modal></simple-modal>
     <confirm></confirm>
+    <ui-snackbar-container ref="snacks"></ui-snackbar-container>
   </div>
 </template>
 
@@ -95,6 +104,7 @@
   import UiButton from 'keen/UiButton';
   import UiIconButton from 'keen/UiIconButton';
   import UiMenu from 'keen/UiMenu';
+  import UiSnackbarContainer from 'keen/UiSnackbarContainer';
   import drawer from '../drawers/drawer.vue';
   import navBackground from '../nav/nav-background.vue';
   import navMenu from '../nav/nav-menu.vue';
@@ -176,8 +186,19 @@
           label: 'Preview',
           icon: 'open_in_new'
         }];
+      },
+      snackbar() {
+        return _.get(this.$store, 'state.ui.snackbar') && _.toPlainObject(_.get(this.$store, 'state.ui.snackbar'));
       }
     }),
+    watch: {
+      snackbar(val) {
+        if (val) {
+          this.$refs.snacks.createSnackbar(val);
+          this.$store.dispatch('hideSnackbar'); // clear the store
+        }
+      }
+    },
     methods: {
       stopEditing() {
         this.$store.commit('STOP_EDITING');
@@ -222,6 +243,7 @@
       UiIconButton,
       UiButton,
       UiMenu,
+      UiSnackbarContainer,
       'progress-bar': progressBar,
       drawer,
       'nav-background': navBackground,
