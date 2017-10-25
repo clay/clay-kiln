@@ -3,7 +3,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import NProgress from 'vue-nprogress';
 import keycode from 'keycode';
-import velocity from 'velocity-animate';
+import velocity from 'velocity-animate/velocity.min.js';
 import differenceInMinutes from 'date-fns/difference_in_minutes';
 import store from './lib/core-data/store';
 import { decorateAll } from './lib/decorators';

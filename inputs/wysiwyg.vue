@@ -231,7 +231,7 @@
 </template>
 
 <script>
-  import Quill from 'quill';
+  import Quill from 'quill/dist/quill.min.js';
   import _ from 'lodash';
   import { find } from '@nymag/dom';
   import { getComponentName, refAttr, editAttr } from '../lib/utils/references';

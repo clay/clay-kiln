@@ -26,7 +26,7 @@
     width: 100%;
   }
 
-  .toolbar-action-menu {
+  .toolbar-action-menu.ui-icon-button {
     display: inline-flex;
 
     @media screen and (min-width: 600px) {
@@ -34,7 +34,7 @@
     }
   }
 
-  .toolbar-action-button {
+  .toolbar-action-button.ui-icon-button {
     display: none;
 
     @media screen and (min-width: 600px) {

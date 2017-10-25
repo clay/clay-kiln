@@ -13,6 +13,11 @@
     top: 56px;
     width: $drawer-width;
 
+    &.ui-tabs {
+      margin-bottom: 0;
+      width: $drawer-width;
+    }
+
     .ui-tabs__body {
       border: none;
       height: calc(100% - 48px);

@@ -13,6 +13,7 @@
   * **url** - to get data from
   * **property** - to get from the returned data
   * **moreMagic** - to run the returned value through more transforms, api calls, etc
+  * **tooltip** - text that will display in a tooltip. used to explain what each button is doing, so make it concise!
 
   ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
 
@@ -117,7 +118,7 @@
 </style>
 
 <template>
-  <ui-icon-button color="default" type="secondary" ariaLabel="Do Magic" :loading="loading" @click.stop.prevent="doMagic">
+  <ui-icon-button color="default" type="secondary" ariaLabel="Do Magic" :loading="loading" :tooltip="args.tooltip" @click.stop.prevent="doMagic">
     <icon name="magic-button" class="magic-button-icon"></icon>
   </ui-icon-button>
 </template>

@@ -86,7 +86,7 @@
   import _ from 'lodash';
   import { find } from '@nymag/dom';
   import { mapState } from 'vuex';
-  import velocity from 'velocity-animate';
+  import velocity from 'velocity-animate/velocity.min.js';
   import { getItem, updateArray } from '../utils/local';
   import label from '../utils/label';
   import { getComponentName } from '../utils/references';

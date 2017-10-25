@@ -398,6 +398,7 @@ Append a magic button to an input.
 * **url** - to get data from
 * **property** - to get from the returned data
 * **moreMagic** - to run the returned value through more transforms, api calls, etc
+* **tooltip** - text that will display in a tooltip. used to explain what each button is doing, so make it concise!
 
 ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
 

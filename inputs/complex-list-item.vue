@@ -54,7 +54,7 @@
 <script>
   import _ from 'lodash';
   import { fieldProp } from '../lib/utils/references';
-  import velocity from 'velocity-animate';
+  import velocity from 'velocity-animate/velocity.min.js';
   import field from '../lib/forms/field.vue';
   import UiButton from 'keen/UiButton';
 

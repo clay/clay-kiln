@@ -142,7 +142,7 @@
   import _ from 'lodash';
   import { find } from '@nymag/dom';
   import { mapState } from 'vuex';
-  import velocity from 'velocity-animate';
+  import velocity from 'velocity-animate/velocity.min.js';
   import { getSchema } from '../core-data/components';
   import label from '../utils/label';
   import logger from '../utils/log';

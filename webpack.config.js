@@ -31,7 +31,8 @@ let plugins = [
       LOG: '"trace"'
     }
   }),
-  new webpack.optimize.ModuleConcatenationPlugin()
+  new webpack.optimize.ModuleConcatenationPlugin(),
+  new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/) // some dependency is using moment.js (allow that, but make them drop their 300kB of locales)
 ];
 
 if (prod) {
@@ -92,18 +93,12 @@ module.exports = {
   module: {
     rules: [{
       // todo: remove vue-unit (and update vue-unit dep) once vue-unit hits 0.3.0
-      test: /node_modules\/(vue-unit|keen-ui)\//,
-      loader: 'babel-loader',
-      options: {
-        cacheDirectory: true
-      }
+      test: /node_modules\/(vue-unit|keen-ui|striptags)\//,
+      loader: 'babel-loader'
     }, {
       test: /\.js$/,
       exclude: /node_modules/,
-      loader: 'babel-loader',
-      options: {
-        cacheDirectory: true
-      }
+      loader: 'babel-loader'
     }, {
       test: /\.scss|.css$/,
       use: styles.extract({
@@ -117,6 +112,7 @@ module.exports = {
       test: /\.vue$/,
       loader: 'vue-loader',
       options: {
+        esModule: false, // todo: enable this when we can use it with keenUI
         loaders: {
           css: 'vue-style-loader!css-loader!postcss-loader',
           sass: 'vue-style-loader!css-loader!postcss-loader!sass-loader?data=@import "styleguide/keen-variables.scss";',
