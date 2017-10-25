@@ -1,13 +1,8 @@
 @import '~keen-ui/src/styles/md-colors'; // material design color palette
 
 // states (used by progress bar, status message, publish button)
-$draft: $md-purple;
 $scheduled: $md-orange;
 $published: $md-green;
-$offline: $md-grey;
-$error: $md-red;
-$warning: $scheduled;
-$save: $md-blue-grey;
 
 // base colors and opacities
 $pure-black: $md-black;
@@ -26,6 +21,9 @@ $text-color: rgba($pure-black, $text-opacity);
 $text-alt-color: rgba($pure-black, $text-alt-opacity);
 $text-hint-color: rgba($pure-black, $text-hint-opacity);
 $text-disabled-color: $text-hint-color;
+$text-selection: $md-light-blue-200;
+$keyboard-key-color: $md-grey-100;
+$keyboard-key-inset-shadow: rgba(0, 0, 0, .07);
 
 // layout colors
 $divider-color: rgba($pure-black, $divider-opacity);
@@ -50,6 +48,11 @@ $permanent-placeholder-bg-color: $md-grey-50;
 $placeholder-error-color: $md-red;
 $placeholder-error-bg-color: $md-red-50;
 
+// selectors
+$mini-selector-color: $brand-primary-color;
+$mini-selector-border-padding: $pure-white;
+$selector-bg: rgba(255, 255, 255, .95);
+
 // lists
 $list-bg: $pure-white;
 $list-bg-hover: $md-grey-200;
@@ -68,79 +71,6 @@ $shadow-8dp: 0 8px 10px 1px rgba(0, 0, 0, .14), 0 3px 14px 2px rgba(0, 0, 0, .12
 // 16dp - nav drawer, modal bottom sheet
 $shadow-16dp: 0 16px 24px 2px rgba(0, 0, 0, .14), 0 6px 30px 5px rgba(0, 0, 0, .12), 0 8px 10px -5px rgba(0, 0, 0, .2);
 
-// OLD COLORS:
-
-// Toolbar - View Mode
-$toolbar-view: #585c60;
-$toolbar-view-border: #898c8f;
-
-// Toolbar - Edit Mode
-$toolbar-edit: #999c9e;
-$toolbar-edit-border: #b7b9ba;
-
-// toolbar icons
-$toolbar-icons: #f9f9f9;
-
-// typography
-$title: #5b5b5b; // used for pane, selector, etc titles
-$subtitle: #3c3c3c; // used for pane tabs, subtitles
-$label: #3c3c3c; // used for field labels
-$text: #000; // used for field descriptions, pane items, general text
-$subtext: #888888; // used for secondary text
-$page-list-text: #727272;
-$tooltip-text: #fff;
-
-// selector borders
-$selector-border: #727272;
-$selector-icon: #727272;
-$selector-text: #727272;
-$selector-bg: rgba(255, 255, 255, .95); // background of selector menus
-$selector-divider: #d6d6d6;
-$mini-selector-color: $save;
-$mini-selector-border-padding: #fff;
-
-// placeholder colors
-$placeholder-label: $title;
-$placeholder-label-border: #abdaee;
-$permanent-placeholder-label: #a6a6a6;
-$permanent-placeholder-label-border: #ccc;
-$placeholder-border: $save;
-$placeholder-background: #eff8fc;
-$permanent-placeholder-border: $selector-border;
-$permanent-placeholder-background: #f5f5f5;
-
-// inputs
-$input-border: #c3c3c3;
-$input-background: #fff;
-$input-text: $text;
-$input-placeholder: #9b9b9b;
-$input-disabled-text: $offline;
-$input-shadow: #d6d6d6;
-
-// forms and inputs
-$behavior-required: $save;
-$text-selection: #7edbfc;
-$light-error: #f6cbc6;
-$bright-error: #dd2f1c;
-$button-outline: #4d4d4d;
-$button-disabled: #c3c3c3;
-$button-disabled-light: #e7e7e7;
-
-// panes
-$pane-icon: $title;
-$pane-header-border: $input-border;
-$pane-border: #979797;
-$pane-tab-active: #bdbdbd;
-$pane-list-divider: #f4f4f4;
-$preview-icon: #4a4a4a;
-$pane-background: #fff;
-
-// overlays and shadows
-$overlay-background: rgba(17, 17, 17, .5);
-$overlay-shadow: rgba(0, 0, 0, .07);
-$drag-shadow: rgba(0, 0, 0, .3); // different use case than input-shadow
-$drag-error: rgba(215, 39, 39, .41);
-$drag-saving: rgba($save, .41);
-
-// page list icons
-$triforce-disabled: #dadbdc;
+// dragdrop colors
+$drag-saving: rgba($brand-primary-color, .41);
+$drag-shadow: rgba(0, 0, 0, .3);

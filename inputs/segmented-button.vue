@@ -80,7 +80,7 @@
       flex-flow: row nowrap;
       float: left;
       margin: 10px 0;
-      transition: 300ms $toggle-curve;
+      transition: $standard-time $toggle-curve;
       will-change: background, box-shadow;
 
       &.is-selected {

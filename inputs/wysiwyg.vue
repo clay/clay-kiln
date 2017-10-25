@@ -153,7 +153,11 @@
   }
 
   .kiln-overlay-form .ql-container {
-    @include input-text();
+    @include type-body();
+
+    font-size: 16px;
+    letter-spacing: normal;
+    line-height: normal;
   }
 
   .ql-container.ql-bubble:not(.ql-disabled) a {
@@ -168,7 +172,7 @@
   .ql-container.ql-bubble:not(.ql-disabled) a::before {
     @include type-caption();
 
-    color: $tooltip-text;
+    color: $pure-white;
   }
 
   // toolbar phrase button

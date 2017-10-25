@@ -11,7 +11,7 @@
     }
 
     .shortcut + .shortcut {
-      border-top: 1px solid $pane-list-divider;
+      border-top: 1px solid $divider-color;
       margin-top: 10px;
     }
 
@@ -24,9 +24,9 @@
     }
 
     .shortcut-title {
-      @include input-label();
+      @include type-subheading();
 
-      color: $subtitle;
+      color: $md-grey-800;
       flex: 1 0 auto;
     }
 
@@ -47,7 +47,7 @@
     }
 
     .shortcut-description {
-      @include tertiary-text();
+      @include type-caption();
 
       flex: 1 0 100%;
       margin-top: 5px;

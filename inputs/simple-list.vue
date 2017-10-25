@@ -115,7 +115,7 @@
 
     .list-items-enter-active,
     .list-items-leave-active {
-      transition: opacity 300ms $standard-curve;
+      transition: opacity $standard-time $standard-curve;
     }
   }
 </style>

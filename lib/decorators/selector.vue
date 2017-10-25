@@ -1,7 +1,6 @@
 <style lang="sass">
   @import '../../styleguide/colors';
   @import '../../styleguide/layers';
-  @import '../../styleguide/buttons';
 
   // size of the thick component border
   $border-size: 3px;

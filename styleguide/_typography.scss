@@ -95,107 +95,31 @@ $font-stack: 'Noto Sans', Arial, sans-serif;
   text-transform: uppercase;
 }
 
-// specific typographic styles in different parts of kiln
-// note: these should use the basic styles, above
-
-// headers for panes and overlays
-@mixin header {
-  @include type-headline();
-}
-
-// subheader for pane tabs and form sections
-@mixin subheader {
-  @include type-subheading();
-}
-
-// text in form inputs
-@mixin input-text {
-  @include type-body();
-
-  font-size: 16px;
-  letter-spacing: normal;
-  line-height: normal;
-}
-
-// form labels
-@mixin input-label {
-  @include type-body();
-
-  font-size: 15px;
-  letter-spacing: normal;
-  line-height: normal;
-  margin-bottom: 0;
-  top: 26px; // float label
-}
-
-// form help / error text
-@mixin input-help {
-  @include type-body();
-
-  color: $text-alt-color;
-  line-height: 1.2;
-}
-
-// placeholder typography
-@mixin placeholder-primary {
-  @include type-body();
-
-  color: $text-alt-color;
-  font-weight: bold;
-  text-align: left;
-}
-
-@mixin placeholder-secondary {
-  @include type-caption();
-
-  line-height: 20px;
-  text-align: left;
-  text-transform: uppercase;
-}
-
-// used as kiln text in panes and forms
-@mixin primary-text {
-  @include type-body();
-}
-
-// secondary emphasis, used in panes and forms
-@mixin secondary-text {
-  @include type-body();
-
-  color: $text-alt-color;
-}
-
-@mixin tertiary-text {
-  @include type-caption();
-
-  font-style: italic;
-}
-
 // links
 @mixin link {
   @include type-body();
 
-  color: rgba($save, $text-opacity);
+  color: rgba($md-blue, $text-opacity);
   text-decoration: none;
 
   &:active,
   &:visited {
-    color: rgba($save, $text-opacity);
+    color: rgba($md-blue, $text-opacity);
     text-decoration: none;
   }
 
   &:hover {
-    color: rgba($save, $text-alt-opacity);
+    color: rgba($md-blue, $text-alt-opacity);
     text-decoration: none;
   }
 }
 
 // keys
 @mixin keyboard-keys {
-  background-color: $toolbar-icons;
-  border: 1px solid $input-border;
+  background-color: $keyboard-key-color;
+  border: 1px solid $md-grey-400;
   border-radius: 3px;
-  box-shadow: 0 1px 0 $overlay-shadow, 0 0 0 2px $pane-background inset;
+  box-shadow: 0 1px 0 $keyboard-key-inset-shadow, 0 0 0 2px $pure-white inset;
   color: $text-color;
   display: inline-block;
   font-size: 14px;

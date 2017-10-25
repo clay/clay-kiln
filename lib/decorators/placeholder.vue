@@ -20,12 +20,12 @@
 
   .kiln-inline-placeholder,
   .kiln-block-placeholder {
-    transition: background-color 300ms $standard-curve;
+    transition: background-color $standard-time $standard-curve;
 
     .placeholder-label,
     .placeholder-icon,
     .placeholder-text {
-      transition: color 300ms $standard-curve;
+      transition: color $standard-time $standard-curve;
     }
   }
 

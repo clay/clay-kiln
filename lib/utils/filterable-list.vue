@@ -1,5 +1,6 @@
 <style lang="sass">
   @import '../../styleguide/colors';
+  @import '../../styleguide/animations';
 
   .filterable-list {
     display: flex;
@@ -44,7 +45,7 @@
 
   .kiln-shake {
     animation-name: shake;
-    animation-duration: 300ms;
+    animation-duration: $standard-time;
     animation-fill-mode: both;
   }
 </style>

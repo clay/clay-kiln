@@ -19,7 +19,7 @@
     outline: 0;
     padding: 0 8px;
     position: relative;
-    transition: color 300ms $toggle-curve;
+    transition: color $standard-time $toggle-curve;
 
     &:before {
       border-radius: inherit;
@@ -30,7 +30,7 @@
       opacity: .12;
       position: absolute;
       top: 0;
-      transition: 300ms $toggle-curve;
+      transition: $standard-time $toggle-curve;
       width: 100%;
     }
 

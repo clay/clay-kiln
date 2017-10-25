@@ -1,4 +1,5 @@
 @import 'colors';
+@import 'animations';
 
 /* mirror is the element added while you are dragging. */
 .gu-mirror {
@@ -42,7 +43,7 @@
 /* Indicate that the re-ordering has not been saved. */
 .dragula-not-saved {
   background: $drag-saving !important;
-  transition: background-color 300ms linear;
+  transition: background-color $standard-time linear;
 }
 
 // overlay div on top of iframes

@@ -74,7 +74,7 @@
     }
 
     &-delete {
-      border-left: 1px solid $pane-list-divider;
+      border-left: 1px solid $divider-color;
     }
   }
 </style>

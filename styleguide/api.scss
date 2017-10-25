@@ -1,20 +1,13 @@
 // the classes in this file are usable throughout kiln and within kiln plugins
-// we're pre-1.0 right now, but when our api is stabilized these will affect
-// the semantic versioning
 
 @import 'mixins';
 @import 'colors';
-@import 'buttons';
 
 // generic class to hide elements
 .kiln-hide {
   @include kiln-hide();
 }
 
-// generic class for buttons in component selectors
-// todo: change/remove this after we migrate to material design buttons
-.expanded-selector-button {
-  @include icon-button($mini-selector-color, 18px);
-
-  padding: 14px;
+.kiln-clearfix {
+  @include clearfix();
 }

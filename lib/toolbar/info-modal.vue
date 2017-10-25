@@ -2,7 +2,7 @@
   @import '../../styleguide/typography';
 
   .info-text {
-    @include primary-text();
+    @include type-body();
 
     line-height: 20px;
     margin: 0;

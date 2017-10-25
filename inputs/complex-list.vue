@@ -55,7 +55,7 @@
 
   .hide-show-enter-active,
   .hide-show-leave-active {
-    transition: opacity 300ms $standard-curve;
+    transition: opacity $standard-time $standard-curve;
   }
 </style>
 

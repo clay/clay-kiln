@@ -25,7 +25,7 @@
     justify-content: center;
     margin: 5px 5px 5px 0;
     padding: 0;
-    transition: all 300ms $standard-curve;
+    transition: all $standard-time $standard-curve;
     user-select: none;
     white-space: nowrap;
 
@@ -86,7 +86,7 @@
       justify-content: center;
       margin-right: 6px;
       padding: 0 0 0 1px;
-      transition: background-color 300ms $standard-curve, color 300ms $standard-curve;
+      transition: background-color $standard-time $standard-curve, color $standard-time $standard-curve;
       width: 20px;
 
       .ui-icon {
@@ -115,7 +115,7 @@
 
     .badge-enter-active,
     .badge-leave-active {
-      transition: opacity 300ms $standard-curve;
+      transition: opacity $standard-time $standard-curve;
     }
   }
 </style>

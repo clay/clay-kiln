@@ -1,4 +1,6 @@
 <style lang="sass">
+  @import '../../styleguide/animations';
+
   .kiln-field {
     border: none;
     flex: 0 0 100%;
@@ -6,7 +8,7 @@
     opacity: 1;
     padding: 0;
     position: relative;
-    transition: opacity 300ms linear;
+    transition: opacity $standard-time $standard-curve;
     visibility: visible;
     width: 100%;
 
@@ -19,7 +21,7 @@
       // (by using margin-top, which can be transitioned and thus delayed)
       margin-top: -100px;
       opacity: 0;
-      transition: visibility 0ms 300ms, margin-top 0ms 300ms, opacity 300ms linear;
+      transition: visibility 0ms $standard-time, margin-top 0ms $standard-time, opacity $standard-time $standard-curve;
       visibility: hidden;
     }
   }
