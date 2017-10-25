@@ -17,6 +17,7 @@ import utilsAPI from './lib/utils/api';
 import { hasClickedFocusableEl } from './lib/decorators/focus';
 import { hasClickedSelectableEl } from './lib/decorators/select';
 import { META_PRESS, META_UNPRESS } from './lib/preloader/mutationTypes';
+import { getEventPath } from './lib/utils/events';
 import { standardCurve } from './lib/utils/references';
 import 'keen-ui/src/bootstrap'; // import this once, for KeenUI components
 import 'velocity-animate/velocity.ui.min.js'; // import this once, for velocity ui stuff
@@ -137,11 +138,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // when clicks bubble up to the document, close the current form or pane / unselect components
   document.body.addEventListener('click', (e) => {
+    if (_.find(getEventPath(e), (el) => el.classList && el.classList.contains('ui-calendar'))) {
+      return;
+    }
+
     if (_.get(store, 'state.ui.currentFocus') && !hasClickedFocusableEl(e) && !window.kiln.isInvalidDrag) {
       // always unfocus if clicking out of the current focus (and not directly clicking into another focusable el)
       // note: isInvalidDrag is set when dragging to select text in a text/wysiwyg field,u
       // since if you drag outside the form it'll trigger a click. ♥ browsers ♥
       store.dispatch('unfocus').catch(_.noop);
+    } else if (_.get(store, 'state.ui.currentAddComponentModal')) {
+      store.dispatch('closeAddComponent');
     } else if (_.get(store, 'state.ui.currentSelection') && !hasClickedSelectableEl(e) && !window.kiln.isInvalidDrag) {
       // unselect if clicking out of the current selection (if user isn't trying to select text)
       // note: stopSelection is set in the 'select' action. see the comments there for details
@@ -150,13 +157,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // unset isInvalidDrag after checking for unfocus / unselect
     window.kiln.isInvalidDrag = false;
-
-    // Close a pane
-    if (_.get(store, 'state.ui.currentPane')) {
-      store.commit(CLOSE_PANE, null);
-    } else if (_.get(store, 'state.ui.currentAddComponentModal')) {
-      store.dispatch('closeAddComponent');
-    }
   });
 
   // when ESC bubbles up to the document, close the current form or pane / unselect components
@@ -168,14 +168,10 @@ document.addEventListener('DOMContentLoaded', function () {
       // press esc again to unselect a component
       if (_.get(store, 'state.ui.currentFocus')) {
         store.dispatch('unfocus').catch(_.noop);
-      } else if (_.get(store, 'state.ui.currentSelection')) {
-        store.dispatch('unselect');
-      }
-
-      if (_.get(store, 'state.ui.currentPane')) {
-        store.commit(CLOSE_PANE, null);
       } else if (_.get(store, 'state.ui.currentAddComponentModal')) {
         store.dispatch('closeAddComponent');
+      } else if (_.get(store, 'state.ui.currentSelection')) {
+        store.dispatch('unselect');
       }
     } else if (key === 'ctrl' || key === 'left command') {
       // pressing and holding meta key will unlock additional functionality,
