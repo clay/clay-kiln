@@ -93,11 +93,17 @@ module.exports = {
     rules: [{
       // todo: remove vue-unit (and update vue-unit dep) once vue-unit hits 0.3.0
       test: /node_modules\/(vue-unit|keen-ui)\//,
-      loader: 'babel-loader'
+      loader: 'babel-loader',
+      options: {
+        cacheDirectory: true
+      }
     }, {
       test: /\.js$/,
       exclude: /node_modules/,
-      loader: 'babel-loader'
+      loader: 'babel-loader',
+      options: {
+        cacheDirectory: true
+      }
     }, {
       test: /\.scss|.css$/,
       use: styles.extract({
