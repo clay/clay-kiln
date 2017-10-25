@@ -40,7 +40,7 @@
 
 <template>
   <div class="complex-list-item" :class="{ 'is-expanded': isCurrentItem }" :ref="name" @click.stop="onClick">
-    <field v-for="(field, fieldIndex) in fieldNames" :class="{ 'first-field': fieldIndex === 0 }" :name="name + '.' + field" :data="fields[field]" :schema="fieldSchemas[field]"></field>
+    <field v-for="(field, fieldIndex) in fieldNames" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="name + '.' + field" :data="fields[field]" :schema="fieldSchemas[field]"></field>
     <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
     <transition name="complex-list-item-actions" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
       <div v-if="isCurrentItem" class="complex-list-item-actions ui-button-group">

@@ -112,7 +112,7 @@
     <span class="ui-textbox__label">
       <div class="ui-textbox__label-text is-floating">{{ label }}</div>
       <div class="button-toggle" :class="{ 'is-selected': isSelected }">
-        <segmented-button-segment v-for="option in options" :name="name" :option="option" :update="update"></segmented-button-segment>
+        <segmented-button-segment v-for="(option, optionIndex) in options" :key="optionIndex" :name="name" :option="option" :update="update"></segmented-button-segment>
       </div>
     </span>
 

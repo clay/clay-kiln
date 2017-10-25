@@ -107,7 +107,7 @@
         <div class="form-header-actions">
           <ui-icon-button v-if="componentLabel" type="secondary" color="black" icon="info_outline" :tooltip="`${componentLabel} Info`" @click.stop="openInfo"></ui-icon-button>
           <ui-icon-button v-if="hasSettings" type="secondary" color="black" icon="settings" :tooltip="`${componentLabel} Settings`" @click.stop="openSettings"></ui-icon-button>
-          <component v-for="button in customButtons" :is="button"></component>
+          <component v-for="(button, index) in customButtons" :is="button" :key="index"></component>
           <ui-icon-button v-if="hasRemove" type="secondary" color="black" icon="delete" :tooltip="`Remove ${componentLabel}`" @click.stop="removeComponent"></ui-icon-button>
           <ui-icon-button v-if="hasAddComponent" type="secondary" color="black" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
           <ui-icon-button v-if="hasReplaceComponent" type="secondary" color="black" icon="swap_vert" :tooltip="`Replace ${componentLabel}`"></ui-icon-button>
@@ -117,18 +117,18 @@
       </div>
       <div class="form-contents">
         <ui-tabs v-if="hasSections" fullwidth ref="tabs">
-          <ui-tab v-for="(section, index) in sections" :title="section.title">
+          <ui-tab v-for="(section, index) in sections" :key="index" :title="section.title">
             <div class="input-container-wrapper">
               <div class="input-container">
-                <field v-for="(field, fieldIndex) in section.fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]" @resize="onResize"></field>
-                <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
+                <field v-for="(field, fieldIndex) in section.fields" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]" @resize="onResize"></field>
+                <div v-if="section.hasRequiredFields" class="required-footer">* Required fields</div>
               </div>
             </div>
           </ui-tab>
         </ui-tabs>
         <div v-else class="input-container-wrapper">
           <div class="input-container">
-            <field v-for="(field, fieldIndex) in sections[0].fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]" @resize="onResize"></field>
+            <field v-for="(field, fieldIndex) in sections[0].fields" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]" @resize="onResize"></field>
             <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
           </div>
         </div>
@@ -194,7 +194,8 @@
           return _.map(sections, (section) => {
             return {
               title: section.title,
-              fields: section.fields
+              fields: section.fields,
+              hasRequiredFields: _.some(this.schema, (val, key) => _.includes(Object.keys(section.fields), key) && _.has(val, `${fieldProp}.validate.required`))
             };
           });
         } else {

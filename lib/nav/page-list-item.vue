@@ -168,7 +168,7 @@
       <span v-if="statusTime" class="status-time">{{ statusTime }}</span>
     </div>
     <div class="page-list-item-collaborators">
-      <collaborator v-for="user in users" :user="user"></collaborator>
+      <collaborator v-for="user in users" :user="user" :key="user.username"></collaborator>
     </div>
   </div>
 </template>

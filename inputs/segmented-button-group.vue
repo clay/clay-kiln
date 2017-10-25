@@ -110,7 +110,7 @@
   <div class="segmented-button-group has-label has-floating-label" :class="{ 'is-invalid': this.isInvalid }">
     <span class="ui-textbox__label">
       <div class="ui-textbox__label-text is-floating">{{ label }}</div>
-      <div v-for="option in options" class="segmented-button-group-input">
+      <div v-for="(option, index) in options" :key="index" class="segmented-button-group-input">
         <segmented-button :name="name" :data="data" :schema="option.schema" :args="option.args"></segmented-button>
       </div>
     </span>

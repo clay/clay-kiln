@@ -154,7 +154,7 @@
       <span class="page-list-header page-list-header-collaborators">Collaborators</span>
     </div>
     <div class="page-list-readout">
-      <page-list-item v-for="page in pages" :page="page" :multipleSitesSelected="multipleSitesSelected"></page-list-item>
+      <page-list-item v-for="(page, pageIndex) in pages" :key="pageIndex" :page="page" :multipleSitesSelected="multipleSitesSelected"></page-list-item>
       <div class="page-list-load-more" v-if="showLoadMore">
         <ui-button type="secondary" class="page-list-load-more-button" @click="fetchPages">Load More</ui-button>
       </div>

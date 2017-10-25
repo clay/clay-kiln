@@ -46,6 +46,7 @@
     <div class="users-list">
       <person
         v-for="(user, index) in users"
+        :key="user.id"
         :id="user.id"
         :image="user.imageUrl"
         :name="user.name"

@@ -25,6 +25,7 @@
     <div class="invite-list">
       <person
         v-for="user in users"
+        :key="user.username"
         :id="user.username"
         :image="user.imageUrl"
         :name="user.name"

@@ -59,7 +59,7 @@
 
       <div class="kiln-toolbar-actions" slot="actions">
         <!-- always display custom buttons -->
-        <component v-for="button in customButtons" :is="button"></component>
+        <component v-for="(button, index) in customButtons" :is="button" :key="index"></component>
         <!-- display a dropdown menu of actions on smaller screens (viewport < 600px) -->
         <ui-icon-button class="toolbar-action-menu" color="white" size="large" type="secondary" icon="more_vert" tooltip="Actions" has-dropdown ref="dropdownButton" @click="closeDrawer">
           <ui-menu contain-focus has-icons slot="dropdown" :options="toolbarOptions" @close="$refs.dropdownButton.closeDropdown()" @select="toggleDrawerFromMenu"></ui-menu>

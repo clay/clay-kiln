@@ -23,7 +23,7 @@
 
 <template>
   <div class="alert-container">
-    <ui-alert v-for="(alert, index) in alerts" :type="alert.type" :dismissible="!alert.permanent" @dismiss="dismissAlert(index)">
+    <ui-alert v-for="(alert, index) in alerts" :key="index" :type="alert.type" :dismissible="!alert.permanent" @dismiss="dismissAlert(index)">
       <span v-html="alert.text"></span>
     </ui-alert>
   </div>

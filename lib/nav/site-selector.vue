@@ -40,7 +40,7 @@
       <ui-button type="secondary" :color="multiSelectColor" @click="multiSelect">{{ multiSelectText }}</ui-button>
     </div>
     <div class="site-selector-body">
-      <ui-checkbox v-for="site in sites" :label="site.name" :value="site.selected" @change="select(site.slug)"></ui-checkbox>
+      <ui-checkbox v-for="site in sites" :key="site.slug" :label="site.name" :value="site.selected" @change="select(site.slug)"></ui-checkbox>
     </div>
   </div>
 </template>

@@ -24,6 +24,7 @@
   <div class="contributors-list">
     <person
       v-for="contributor in contributors"
+      :key="contributor.username"
       :id="contributor.username"
       :image="contributor.imageUrl"
       :name="contributor.name"
