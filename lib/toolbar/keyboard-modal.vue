@@ -69,12 +69,16 @@
 
 
 <script>
+  import _ from 'lodash';
+
+  const metaKey = _.get(window, 'navigator.platform') === 'MacIntel' ? '⌘' : 'Ctrl';
+
   export default {
     data() {
       return {
         shortcuts: [{
           title: 'Undo and Redo',
-          keys: ['⌘/Ctrl+Z', 'Shift+⌘/Ctrl+Z'],
+          keys: [`${metaKey}+Z`, `Shift+${metaKey}+Z`],
           description: 'Undo (or redo) your saves, up to 50 times. Navigating away from the page will erase the save history.'
         }, {
           title: 'Navigate Components',
@@ -114,7 +118,7 @@
           description: 'In field where it is enabled, Tab will insert a bullet (•) at the beginning of a line.'
         }, {
           title: 'Format Text',
-          keys: ['⌘/Ctrl+B', '⌘/Ctrl+I', '⌘/Ctrl+U', '⌘/Ctrl+K'],
+          keys: [`${metaKey}+B`, `${metaKey}+I`, `${metaKey}+U`, `${metaKey}+K`],
           description: 'In a field where it is enabled, embolden, italicize, underline, or create a link from the highlighted text.'
         }]
       };
