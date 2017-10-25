@@ -50,7 +50,6 @@
 
         this.$store.dispatch('select', el);
         this.$store.dispatch('scrollToComponent', el);
-        this.$store.dispatch('closePane');
       }
     },
     components: {

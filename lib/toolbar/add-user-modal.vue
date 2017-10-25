@@ -78,8 +78,8 @@
 
         store.dispatch('startProgress', 'save');
         return postJSON(prefix + '/users', user)
-          .then(() => store.dispatch('closePane'))
           .then(() => {
+            store.dispatch('closeModal');
             store.dispatch('finishProgress', 'save');
             store.dispatch('showSnackbar', `Added ${username} to Clay`);
           }).catch((e) => {

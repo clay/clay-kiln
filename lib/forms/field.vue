@@ -17,7 +17,7 @@
     &.kiln-reveal-hide {
       // fade out, THEN remove the element from the space it takes up
       // (by using margin-top, which can be transitioned and thus delayed)
-      margin-top: -1000px;
+      margin-top: -100px;
       opacity: 0;
       transition: visibility 0ms 300ms, margin-top 0ms 300ms, opacity 300ms linear;
       visibility: hidden;

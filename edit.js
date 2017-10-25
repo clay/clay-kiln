@@ -12,7 +12,6 @@ import { add as addInput } from './lib/forms/inputs';
 import toolbar from './lib/toolbar/edit-toolbar.vue';
 import { init as initValidators } from './lib/validators';
 import conditionalFocus from './directives/conditional-focus';
-import hScrollDirective from './directives/horizontal-scroll';
 import utilsAPI from './lib/utils/api';
 import { hasClickedFocusableEl } from './lib/decorators/focus';
 import { hasClickedSelectableEl } from './lib/decorators/select';
@@ -25,9 +24,6 @@ import 'velocity-animate/velocity.ui.min.js'; // import this once, for velocity 
 // set animation defaults
 velocity.defaults.easing = standardCurve;
 velocity.defaults.queue = false;
-
-// TODO: Figure out saving/closing and reverting in panes
-import { CLOSE_PANE } from './lib/panes/mutationTypes';
 
 const inputReq = require.context('./inputs', false, /\.vue$/),
   // todo: in the future, we should queue up the saves
@@ -65,7 +61,6 @@ Vue.config.keyCodes.comma = 188;
 
 // register directives
 Vue.directive('conditional-focus', conditionalFocus());
-Vue.directive('h-scroll', hScrollDirective());
 
 // export api for plugins, validators, inputs, buttons, etc
 window.kiln = window.kiln || {};

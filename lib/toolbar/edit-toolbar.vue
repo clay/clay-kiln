@@ -122,7 +122,6 @@
     computed: mapState({
       pageState: (state) => state.page.state,
       isLoading: (state) => state.isLoading,
-      currentProgress: (state) => state.ui.currentProgress,
       undoEnabled: (state) => {
         return !state.undo.atStart && !state.ui.currentFocus && !state.ui.currentPane;
       },
@@ -164,7 +163,6 @@
           { label: 'View Mode', icon: 'remove_red_eye' }
         ];
       },
-      isDrawerOpen: (state) => !!state.ui.currentDrawer,
       toolbarOptions() {
         return [{
           label: 'Undo',

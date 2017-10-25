@@ -36,7 +36,7 @@
           id = uri.match(/pages\/([A-Za-z0-9\-]+)/)[1];
 
         return this.$store.dispatch('updateList', { listName: 'new-pages', fn: (items) => items.concat([{ id, title }])})
-          .then(() => this.$store.dispatch('closePane'))
+          .then(() => this.$store.dispatch('closeModal'))
           .then(() => {
             this.$store.dispatch('closeModal');
             this.$store.dispatch('showSnackbar', `Added ${title} to Page Templates`);

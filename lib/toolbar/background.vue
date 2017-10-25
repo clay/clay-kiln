@@ -70,9 +70,8 @@
     computed: {
       displayBackground() {
         const formIsOpen = _.get(this.$store, 'state.ui.currentForm') && !_.get(this.$store, 'state.ui.currentForm.inline'),
-          paneIsOpen = !_.isNull(this.$store.state.ui.currentPane),
           addComponentModalIsOpen = !_.isNull(this.$store.state.ui.currentAddComponentModal),
-          shouldDisplay = formIsOpen || paneIsOpen || addComponentModalIsOpen;
+          shouldDisplay = formIsOpen || addComponentModalIsOpen;
 
         // Toggle the `noscroll` class
         toggleNoScroll(shouldDisplay);

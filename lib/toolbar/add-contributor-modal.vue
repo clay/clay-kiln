@@ -108,7 +108,7 @@
           .then(() => {
             this.$store.dispatch('finishProgress');
             this.$store.dispatch('showSnackbar', `Added ${user.username} to this page`); // todo: allow undoing this
-            return this.$store.dispatch('closePane');
+            return this.$store.dispatch('closeModal');
           })
           .catch((e) => {
             log.error(`Error adding ${user.username} to page: ${e.message}`, { action: 'addPersonToPage' });
