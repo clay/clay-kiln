@@ -250,7 +250,6 @@
 <script>
   import _ from 'lodash';
   import getRect from 'element-client-rect';
-  import store from '../core-data/store';
   import { getData, getSchema } from '../core-data/components';
   import { getSettingsFields } from '../core-data/groups';
   import { getComponentName } from '../utils/references';
@@ -294,7 +293,7 @@
     },
     computed: {
       currentComponent() {
-        return _.get(store, 'state.ui.currentSelection') || {};
+        return _.get(this.$store, 'state.ui.currentSelection') || {};
       },
       uri() {
         return this.currentComponent.uri;
@@ -313,10 +312,10 @@
         return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable;
       },
       hasAddComponent() {
-        return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable && !_.get(store, 'state.ui.metaKey');
+        return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable && !_.get(this.$store, 'state.ui.metaKey');
       },
       hasDuplicateComponent() {
-        return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable && _.get(store, 'state.ui.metaKey');
+        return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable && _.get(this.$store, 'state.ui.metaKey');
       },
       hasReplaceComponent() {
         return this.parentField && this.parentField.type === 'prop' && this.parentField.isEditable;
@@ -347,12 +346,12 @@
     },
     methods: {
       openInfo() {
-        const description = _.get(store, `state.schemas['${this.componentName}']._description`);
+        const description = _.get(this.$store, `state.schemas['${this.componentName}']._description`);
 
         if (!description) {
           log.error(`Cannot open component information: "${this.componentLabel}" has no description!`, { action: 'openInfo' });
         } else {
-          return store.dispatch('openPane', {
+          return this.$store.dispatch('openPane', {
             title: this.componentLabel,
             position: 'center',
             size: 'medium',
@@ -367,10 +366,10 @@
         }
       },
       openSettings() {
-        return store.dispatch('focus', { uri: this.uri, path: 'settings' });
+        return this.$store.dispatch('focus', { uri: this.uri, path: 'settings' });
       },
       openAddComponentPane() {
-        return store.dispatch('openAddComponents', {
+        return this.$store.dispatch('openAddComponents', {
           currentURI: this.uri,
           parentURI: this.currentComponent.parentURI,
           path: this.parentField.path
@@ -379,19 +378,19 @@
       duplicateComponent() {
         const name = getComponentName(this.uri);
 
-        store.commit('DUPLICATE_COMPONENT', name);
-        return store.dispatch('addComponents', {
+        this.$store.commit('DUPLICATE_COMPONENT', name);
+        return this.$store.dispatch('addComponents', {
           currentURI: this.uri,
           parentURI: this.currentComponent.parentURI,
           path: this.parentField.path,
           components: [{ name }]
-        }).then((newEl) => store.dispatch('select', newEl));
+        }).then((newEl) => this.$store.dispatch('select', newEl));
       },
       removeComponent() {
         const el = this.currentComponent.el;
 
-        store.dispatch('unselect');
-        return store.dispatch('unfocus').then(() => store.dispatch('removeComponent', el));
+        this.$store.dispatch('unselect');
+        return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', el));
       },
       setSelectorPosition() {
         this.selectorPosition = calculateSelectorPosition(this.$options.componentEl);
