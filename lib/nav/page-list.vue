@@ -138,7 +138,7 @@
     <div class="page-list-controls">
       <ui-button buttonType="button" class="page-list-sites" type="secondary" color="primary" has-dropdown ref="sitesDropdown" @dropdown-open="onPopoverOpen" @dropdown-close="onPopoverClose">
         <span class="page-list-selected-site">{{ selectedSite }}</span>
-        <site-selector slot="dropdown" :sites="sites" :selectedSite="selectedSite" @select="selectSite" @multi-select="selectMultipleSites"></site-selector>
+        <site-selector slot="dropdown" :sites="sites" @select="selectSite" @multi-select="selectMultipleSites"></site-selector>
       </ui-button>
       <ui-textbox class="page-list-search" v-model="query" type="search" autofocus placeholder="Search by Title or Byline" @input="filterList"></ui-textbox>
       <ui-icon-button class="page-list-status-small" type="secondary" icon="filter_list" has-dropdown ref="statusDropdown" @dropdown-open="onPopoverOpen" @dropdown-close="onPopoverClose">
