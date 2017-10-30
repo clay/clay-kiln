@@ -65,6 +65,7 @@
       <transition-group mode="out-in" name="hide-show" tag="div" class="complex-list-items" @after-enter="onResize" @after-leave="onResize">
         <item v-if="items.length" v-for="(item, index) in items"
           :index="index"
+          :total="items.length"
           :name="name + '.' + index"
           :data="item"
           :schema="args.props"
