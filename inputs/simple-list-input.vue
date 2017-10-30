@@ -27,6 +27,7 @@
     <input
       type="text"
       class="ui-textbox__input simple-list-add"
+      ref="input"
       v-model="val"
       @input="onChange"
       @keydown.enter.prevent="onEnter"
@@ -54,6 +55,7 @@
 
 <script>
   import _ from 'lodash';
+  import { isFirstField } from '../lib/forms/field-helpers';
   import autocomplete from './autocomplete.vue';
 
   export default {
@@ -145,6 +147,11 @@
       },
       updateFocusIndex(val) {
         this.autocompleteIndex = val;
+      }
+    },
+    mounted() {
+      if (isFirstField(this.$el)) {
+        this.$refs.input.focus();
       }
     },
     components: {
