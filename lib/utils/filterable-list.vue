@@ -75,6 +75,7 @@
           :active="activeIndex === index"
           :selected="selectedIndex === index"
           :key="item.id"
+          :settingsTitle="settingsTitle"
           :onClick="onClick"
           :onSettings="onSettings"
           :onDelete="onDelete"
@@ -156,7 +157,7 @@
   }
 
   export default {
-    props: ['content', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'onAdd', 'addTitle', 'label', 'help'],
+    props: ['content', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'onAdd', 'addTitle', 'label', 'help', 'settingsTitle'],
     data() {
       return {
         query: '',
