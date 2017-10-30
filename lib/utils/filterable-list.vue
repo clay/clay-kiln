@@ -95,7 +95,7 @@
         @keydown.enter.stop.prevent="onEnterDown"
         v-conditional-focus="focusIsNull"></ui-textbox>
     </div>
-    <div class="filterable-list-headers">
+    <div v-if="headerTitle" class="filterable-list-headers">
       <span v-if="onReorder" class="filterable-list-header filterable-list-header-drag"><!-- no header --></span>
       <span class="filterable-list-header filterable-list-header-title">{{ headerTitle }}</span>
       <span v-if="onSettings || onDelete" class="filterable-list-header filterable-list-header-actions" :class="{ 'filterable-list-header-actions-2': onSettings && onDelete }">Actions</span>
