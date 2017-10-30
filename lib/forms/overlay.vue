@@ -187,21 +187,25 @@
         }
       },
       hasSections: (state) => state.ui.currentForm.schema.sections && state.ui.currentForm.schema.sections.length > 1,
-      sections: (state) => {
-        const sections = state.ui.currentForm.schema.sections;
+      sections() {
+        const currentForm = _.get(this.$store, 'state.ui.currentForm'),
+          sections = _.get(currentForm, 'schema.sections'),
+          fields = _.get(currentForm, 'schema.fields'),
+          path = _.get(currentForm, 'path'),
+          schema = this.schema;
 
         if (!_.isEmpty(sections)) {
           return _.map(sections, (section) => {
             return {
               title: section.title,
               fields: section.fields,
-              hasRequiredFields: _.some(this.schema, (val, key) => _.includes(Object.keys(section.fields), key) && _.has(val, `${fieldProp}.validate.required`))
+              hasRequiredFields: _.some(schema, (val, key) => _.includes(Object.keys(section.fields), key) && _.has(val, `${fieldProp}.validate.required`))
             };
           });
         } else {
           // no sections, so return a single "section" with all the fields
           return [{
-            fields: state.ui.currentForm.schema.fields || [state.ui.currentForm.path], // group or single field
+            fields: fields || [path], // group or single field
           }];
         }
       },
