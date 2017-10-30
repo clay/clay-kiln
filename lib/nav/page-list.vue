@@ -136,13 +136,13 @@
 <template>
   <div class="page-list">
     <div class="page-list-controls">
-      <ui-button buttonType="button" class="page-list-sites" type="secondary" color="primary" has-dropdown ref="sitesDropdown">
+      <ui-button buttonType="button" class="page-list-sites" type="secondary" color="primary" has-dropdown ref="sitesDropdown" @dropdown-open="onPopoverOpen" @dropdown-close="onPopoverClose">
         <span class="page-list-selected-site">{{ selectedSite }}</span>
-        <site-selector slot="dropdown" :sites="sites" :selectedSite="selectedSite" @close="$refs.sitesDropdown.closeDropdown()" @select="selectSite" @multi-select="selectMultipleSites"></site-selector>
+        <site-selector slot="dropdown" :sites="sites" :selectedSite="selectedSite" @select="selectSite" @multi-select="selectMultipleSites"></site-selector>
       </ui-button>
       <ui-textbox class="page-list-search" v-model="query" type="search" autofocus placeholder="Search by Title or Byline" @input="filterList"></ui-textbox>
-      <ui-icon-button class="page-list-status-small" type="secondary" icon="filter_list" has-dropdown ref="statusDropdown">
-        <status-selector slot="dropdown" :selectedStatus="selectedStatus" :vertical="true" @close="$refs.statusDropdown.closeDropdown()" @select="selectStatus"></status-selector>
+      <ui-icon-button class="page-list-status-small" type="secondary" icon="filter_list" has-dropdown ref="statusDropdown" @dropdown-open="onPopoverOpen" @dropdown-close="onPopoverClose">
+        <status-selector slot="dropdown" :selectedStatus="selectedStatus" :vertical="true" @select="selectStatus"></status-selector>
       </ui-icon-button>
       <status-selector class="page-list-status-large" :selectedStatus="selectedStatus" @select="selectStatus"></status-selector>
     </div>
@@ -154,7 +154,7 @@
       <span class="page-list-header page-list-header-collaborators">Collaborators</span>
     </div>
     <div class="page-list-readout">
-      <page-list-item v-for="(page, pageIndex) in pages" :key="pageIndex" :page="page" :multipleSitesSelected="multipleSitesSelected"></page-list-item>
+      <page-list-item v-for="(page, pageIndex) in pages" :key="pageIndex" :page="page" :multipleSitesSelected="multipleSitesSelected" :isPopoverOpen="isPopoverOpen"></page-list-item>
       <div class="page-list-load-more" v-if="showLoadMore">
         <ui-button type="secondary" class="page-list-load-more-button" @click="fetchPages">Load More</ui-button>
       </div>
@@ -299,7 +299,8 @@
         total: null,
         sites: getInitialSites.call(this),
         pages: [],
-        selectedStatus: 'all'
+        selectedStatus: 'all',
+        isPopoverOpen: false
       };
     },
     computed: {
@@ -323,6 +324,12 @@
       }
     },
     methods: {
+      onPopoverOpen() {
+        this.isPopoverOpen = true;
+      },
+      onPopoverClose() {
+        this.isPopoverOpen = false;
+      },
       selectSite(slug) {
         const site = _.find(this.sites, (s) => s.slug === slug);
 

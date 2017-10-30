@@ -157,7 +157,7 @@
 <template>
   <div class="page-list-item">
     <div v-if="multipleSitesSelected" class="page-list-item-site">{{ site }}</div>
-    <a class="page-list-item-title" :href="url" target="_blank">
+    <a class="page-list-item-title" :href="url" target="_blank" @click="onUrlClick">
       <span v-if="multipleSitesSelected" class="page-list-item-site-small">{{ site }}</span>
       <span class="page-list-item-title-inner" :class="{ 'no-title': !page.titleTruncated }">{{ title }}</span>
       <span class="page-list-item-byline-small" :class="{ 'no-byline': !page.authors.length }">{{ firstAuthor }}</span>
@@ -236,7 +236,7 @@
   }
 
   export default {
-    props: ['page', 'multipleSitesSelected'],
+    props: ['page', 'multipleSitesSelected', 'isPopoverOpen'],
     computed: {
       url() {
         return this.page.url || generatePageUrl(this.page, _.get(this.$store, 'state.allSites'));
@@ -283,6 +283,14 @@
       },
       users() {
         return this.page.users;
+      }
+    },
+    methods: {
+      onUrlClick(e) {
+        if (this.isPopoverOpen) {
+          // don't navigate links if the site select or status select popover menus are open
+          e.preventDefault();
+        }
       }
     },
     components: {
