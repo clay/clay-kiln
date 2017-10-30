@@ -1,5 +1,6 @@
 <style lang="sass">
   @import '../../styleguide/colors';
+  @import '../../styleguide/typography';
 
   .users-nav {
     display: flex;
@@ -8,7 +9,33 @@
 
     .users-input {
       flex: 0 0 auto;
-      margin: 8px 16px;
+      margin: 16px;
+    }
+
+    .users-headers {
+      @include type-list-header();
+
+      align-items: center;
+      background-color: $md-grey-50;
+      border-top: 1px solid $divider-color;
+      display: flex;
+      flex: 0 0 auto;
+      padding: 8px 16px;
+
+      .users-header {
+        &-name {
+          flex: 0 1 100%;
+          padding-left: 56px;
+        }
+
+        &-admin {
+          flex: 0 0 36px;
+        }
+
+        &-remove {
+          flex: 0 0 36px;
+        }
+      }
     }
 
     .users-list {
@@ -43,6 +70,11 @@
       :floatingLabel="true"
       :autofocus="true"
       @input="filterList"></ui-textbox>
+    <div class="users-headers">
+      <span class="users-header users-header-name">User Info</span>
+      <span class="users-header users-header-admin">Admin</span>
+      <span class="users-header users-header-remove"><!-- self explanatory --></span>
+    </div>
     <div class="users-list">
       <person
         v-for="(user, index) in users"
@@ -56,6 +88,7 @@
         :hasSecondaryAction="true"
         secondaryActionIcon="delete"
         :disabled="user.isCurrentUser"
+        toggleTitle="Toggle Admin"
         @toggle="toggleAdmin"
         @secondary-click="deleteUser"></person>
     </div>
