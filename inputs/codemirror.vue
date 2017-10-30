@@ -215,7 +215,12 @@
           lint: true,
           styleActiveLine: true,
           lineNumbers: true,
-          tabSize: 2
+          tabSize: 2,
+          extraKeys: {
+            // close form when hitting meta+enter on both windows and macos
+            'Cmd-Enter': () => this.$store.dispatch('unfocus'),
+            'Ctrl-Enter': () => this.$store.dispatch('unfocus')
+          }
         }),
         store = this.$store,
         name = this.name;
@@ -224,9 +229,7 @@
       // wait until it gets redrawn in the dom first
       this.$nextTick(() => editor.refresh());
 
-      editor.on('change', function (instance) {
-        store.commit(UPDATE_FORMDATA, { path: name, data: instance.getValue() });
-      });
+      editor.on('change', (instance) => store.commit(UPDATE_FORMDATA, { path: name, data: instance.getValue() }));
 
       editor.on('focus', this.onFocus);
       editor.on('blur', this.onBlur);

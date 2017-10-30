@@ -84,7 +84,7 @@
     "optimize-css-assets-webpack-plugin": "^3.2.0",
     "postcss-loader": "^2.0.8",
     "promise-queue": "^2.2.3",
-    "quill": "^1.3.0",
+    "quill": "^1.3.3",
     "quill-delta": "^3.6.2",
     "raw-loader": "^0.5.1",
     "routable": "0.0.5",

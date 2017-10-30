@@ -691,6 +691,14 @@
                   }
                 }
               },
+              closeForm: {
+                key: 'enter',
+                shiftKey: false,
+                shortKey: true,
+                handler() {
+                  store.dispatch('unfocus');
+                }
+              },
               backspace: {
                 key: 'backspace',
                 shiftKey: null,
