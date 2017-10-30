@@ -85,10 +85,19 @@
     },
     mounted() {
       const listName = this.args.list,
-        lists = this.$store.state.lists;
+        lists = this.$store.state.lists,
+        items = _.get(lists, `${listName}.items`);
 
-      return this.$store.dispatch('getList', listName).then(() => {
-        this.listItems = _.map(_.get(lists, `${listName}.items`), (item) => _.isObject(item) ? item.text : item);
+      let promise;
+
+      if (items) {
+        promise = Promise.resolve(items);
+      } else {
+        promise = this.$store.dispatch('getList', listName).then(() => _.get(lists, `${listName}.items`));
+      }
+
+      return promise.then((listItems) => {
+        this.listItems = _.map(listItems, (item) => _.isObject(item) ? item.text : item);
       });
     },
     components: {
