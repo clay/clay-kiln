@@ -44,6 +44,7 @@
 
       &.validation-item-link {
         color: $brand-primary-color;
+        cursor: pointer;
         font-weight: bold;
         text-decoration: underline;
       }

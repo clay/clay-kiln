@@ -120,9 +120,6 @@ module.exports = {
           docs: docs.extract('raw-loader')
         }
       }
-    }, {
-      test: /\.woff2$/,
-      loader: 'url-loader?limit=65000&mimetype=application/font-woff2&name=public/fonts/[name].[ext]'
     }]
   },
   resolve: {

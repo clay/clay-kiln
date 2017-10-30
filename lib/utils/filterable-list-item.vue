@@ -25,6 +25,10 @@
       width: 0%;
     }
 
+    &.clickable {
+      cursor: pointer;
+    }
+
     &.clickable:hover,
     &.clickable.focused {
       background-color: $list-bg-hover;
