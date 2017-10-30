@@ -50,6 +50,12 @@
 
     .action-message {
       @include type-subheading();
+
+      align-items: center;
+      display: flex;
+      height: 32px;
+      justify-content: space-between;
+      margin-top: -6px;
     }
 
     .schedule-form {
@@ -115,12 +121,12 @@
       <ui-button v-else-if="isPublished" class="status-undo-button" buttonType="button" color="primary" @click.stop="unpublishPage">Unpublish</ui-button>
     </div>
     <div class="publish-actions">
-      <span class="action-message">{{ actionMessage }}</span>
+      <span class="action-message">{{ actionMessage }} <ui-icon-button v-if="showSchedule" icon="close" buttonType="button" type="secondary" color="default" size="small" tooltip="Clear Date/Time" tooltipPosition="left middle" @click.stop="clearScheduleForm"></ui-icon-button></span>
       <form class="schedule-form" @submit.prevent="schedulePage">
         <ui-datepicker class="schedule-date" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date"></ui-datepicker>
         <ui-textbox class="schedule-time" v-model="timeValue" type="time" label="Time" placeholder="12:00 AM"></ui-textbox>
       </form>
-      <ui-button v-if="showSchedule" class="action-button" buttonType="button" color="primary" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
+      <ui-button v-if="showSchedule" :disabled="disableSchedule" class="action-button" buttonType="button" color="primary" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
       <ui-button v-else class="action-button" buttonType="button" color="primary" @click.stop="publishPage">{{ actionMessage }}</ui-button>
     </div>
     <ui-collapsible :open="hasCustomLocation" class="publish-location" title="Custom URL">
@@ -157,6 +163,7 @@
   import UiDatepicker from 'keen/UiDatepicker';
   import UiTextbox from 'keen/UiTextbox';
   import UiCollapsible from 'keen/UiCollapsible';
+  import UiIconButton from 'keen/UiIconButton';
   import logger from '../utils/log';
 
   const log = logger(__filename);
@@ -229,7 +236,10 @@
         }
       },
       showSchedule() {
-        return this.dateValue && this.timeValue;
+        return this.dateValue || this.timeValue;
+      },
+      disableSchedule() {
+        return this.dateValue && !this.timeValue || this.timeValue && !this.dateValue;
       },
       actionMessage() {
         if (this.isScheduled && this.showSchedule) {
@@ -237,9 +247,9 @@
         } else if (this.showSchedule) {
           return 'Schedule';
         } else if (this.isPublished) {
-          return 'Republish';
+          return 'Republish Now';
         } else {
-          return 'Publish';
+          return 'Publish Now';
         }
       }
     }),
@@ -343,6 +353,10 @@
       formatDate(date) {
         return dateFormat(date, 'M/D/YY');
       },
+      clearScheduleForm() {
+        this.dateValue = null;
+        this.timeValue = '';
+      },
       saveLocation(undoUrl) {
         const prefix = _.get(this.$store, 'state.site.prefix'),
           val = undoUrl || this.location,
@@ -415,7 +429,8 @@
       UiButton,
       UiDatepicker,
       UiTextbox,
-      UiCollapsible
+      UiCollapsible,
+      UiIconButton
     }
   };
 </script>
