@@ -5,8 +5,8 @@
 </style>
 
 <template>
-  <filterable-list v-if="isAdmin" class="new-page-nav" :content="pages" :onClick="itemClick" label="Search Page Templates" :onSettings="editTemplate" settingsTitle="Edit Template" :onDelete="removeTemplate" :onAdd="addTemplate" :addTitle="addTitle"></filterable-list>
-  <filterable-list v-else  class="new-page-nav":content="pages" :onClick="itemClick" label="Search Page Templates"></filterable-list>
+  <filterable-list v-if="isAdmin" class="new-page-nav" :content="pages" :onClick="itemClick" label="Search Page Templates" :onSettings="editTemplate" settingsTitle="Edit Template" :onDelete="removeTemplate" :onAdd="addTemplate" :addTitle="addTitle" headerTitle="Page Template"></filterable-list>
+  <filterable-list v-else  class="new-page-nav":content="pages" :onClick="itemClick" label="Search Page Templates" headerTitle="Page Template"></filterable-list>
 </template>
 
 <script>
