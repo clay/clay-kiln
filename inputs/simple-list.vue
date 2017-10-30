@@ -101,6 +101,7 @@
       flex: 0 0 auto;
       flex-flow: row wrap;
       justify-content: flex-start;
+      max-width: 100%;
     }
 
     .list-items-enter,
