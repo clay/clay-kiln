@@ -70,6 +70,7 @@
 
       .ui-tabs__body {
         border: none;
+        height: 100%;
         // input container already has padding
         padding: 0;
       }
@@ -118,7 +119,7 @@
       <div class="form-contents">
         <ui-tabs v-if="hasSections" fullwidth ref="tabs">
           <ui-tab v-for="(section, index) in sections" :key="index" :title="section.title">
-            <div class="input-container-wrapper">
+            <div class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 104px)`}">
               <div class="input-container">
                 <field v-for="(field, fieldIndex) in section.fields" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]" @resize="onResize"></field>
                 <div v-if="section.hasRequiredFields" class="required-footer">* Required fields</div>
@@ -126,7 +127,7 @@
             </div>
           </ui-tab>
         </ui-tabs>
-        <div v-else class="input-container-wrapper">
+        <div v-else class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 56px)`}">
           <div class="input-container">
             <field v-for="(field, fieldIndex) in sections[0].fields" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]" @resize="onResize"></field>
             <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
@@ -278,6 +279,7 @@
             // (e.g. adding complex-list items)
             // el.style.height = 'auto';
             el.style.maxHeight = `calc(100vh - ${this.formTop})`;
+            el.style.height = 'auto';
 
             // manually reset the initial width of the indicator, see https://github.com/JosephusPaye/Keen-UI/issues/328
             if (this.$refs.tabs) {
