@@ -2,6 +2,7 @@
   @import '../../styleguide/colors';
   @import '../../styleguide/layers';
   @import '../../styleguide/cards';
+  @import '../../styleguide/typography';
 
   .add-component-modal {
     @include overlay-layer();
