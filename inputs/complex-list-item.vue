@@ -47,6 +47,7 @@
     @include type-button();
 
     align-items: center;
+    color: $text-alt-color;
     display: flex;
     flex: 0 0 auto;
     height: 36px;
