@@ -128,7 +128,7 @@
     @keydown.shift.tab="selectItem(index - 1)"
     @keydown.right="selectItem(index + 1)"
     @keydown.tab.prevent="selectItem(index + 1)"
-    @keydown.delete="removeItem"
+    @keydown.delete.prevent="removeItem"
     @click.stop.prevent="selectItem(index)"
     v-conditional-focus="isCurrentItem">
     <transition name="badge">
