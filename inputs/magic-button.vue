@@ -19,7 +19,7 @@
 
   Magic buttons are extremely powerful, but can be a little confusing to configure. This is what they generally look like:
 
-  1. specify a `field` or `component`. The button will grab the value or ref, respectively
+  1. specify a `field` or `component`. The button will grab the value or ref, respectively. If you specify either as an array, it will look for the first field/component, then fall back to the next ones specified in the array if necessary (if the field is empty, or the component isn't on the page)
   2. specify a `transform`. Transforms are useful when doing api calls with that data
   2. specify a `transformArg` if you need to send more information to the transform.
   3. specify a `store` path or `url` if you need to grab data from somewhere. The request will be prefixed with the `store`/`url` string you pass in.
@@ -36,6 +36,7 @@
 
   ```yaml
   field: primaryHeadline
+  tooltip: Use Primary Headline
   ```
 
   ### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab a caption from mediaplay"
@@ -45,6 +46,7 @@
   transform: mediaplayUrl (to change the image url into a string we can query mediaplay's api with)
   url: [mediaplay api url]
   property: metadata.caption
+  tooltip: Fetch caption from Mediaplay
   ```
 
   ### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab the url of the first mediaplay-image on this page"
@@ -53,6 +55,7 @@
   component: mediaplay-image
   store: components
   property: url
+  tooltip: Fetch First Image
   ```
 
   ### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab a list of items keyed by some component uri"
@@ -61,6 +64,7 @@
   component: mediaplay-image
   transform: getComponentInstance (this transforms the full component uri into a ref we can pop onto the end of our site prefix)
   url: $SITE_PREFIX/lists/images (this is a ~ special token ~ that evaluates to the prefix of current site, so you can do api calls against your own clay instance)
+  tooltip: Fetch Images
   ```
 
   ### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab the image url from a lede component, then ask mediaplay for the caption"
@@ -74,6 +78,7 @@
       transform: mediaplayUrl (to change the image url into a string we can query mediaplay's api with)
       url: [mediaplay api url]
       property: metadata.caption
+  tooltip: Fetch Caption For Lede Image
   ```
 
   ### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab the tv show name and use it to automatically format an image url"
@@ -82,6 +87,7 @@
   field: showName
   transform: formatUrl
   transformArg: [base image url]/recaps-$DATAFIELD.png ($DATAFIELD is the placeholder in our formatUrl transform)
+  tooltip: Fetch TV Show Image
   ```
 
   ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
@@ -147,25 +153,71 @@
 
     if (firstComponent) {
       return firstComponent.getAttribute(refAttr);
-    } else {
-      return '';
+    }
+  }
+
+  /**
+   * get the initial data from a field or fields
+   * @param  {string|array} field (or multiple fallbacks)
+   * @return {string}
+   */
+  function getDataForFields(field) {
+    if (_.isString(field) && field !== '') {
+      return getFieldData(this.$store, field, this.name, _.get(this.$store, 'state.ui.currentForm.uri')) || '';
+    } else if (_.isArray(field) && field.length) {
+      let found = null;
+
+      _.each(field, (fieldName) => {
+        const data = getFieldData(this.$store, fieldName, this.name, _.get(this.$store, 'state.ui.currentForm.uri'));
+
+        if (data) {
+          found = data;
+          return false;
+        }
+      });
+
+      return found || '';
+    }
+  }
+
+  /**
+   * get the initial data from a component or components
+   * @param  {string|array} component (or multiple fallbacks)
+   * @return {string}
+   */
+  function getDataForComponents(component) {
+    if (_.isString(component) && component !== '') {
+      return findComponent(component) || '';
+    } else if (_.isArray(component) && component.length) {
+      let found = null;
+
+      _.each(component, (componentName) => {
+        const data = findComponent(componentName);
+
+        if (data) {
+          found = data;
+          return false;
+        }
+      });
+
+      return found || '';
     }
   }
 
   /**
    * get the initial data from a field or component
-   * @param {string} field
-   * @param {string} component
+   * note: if field is an array, look through each to find the first field that is NOT empty
+   * note: if component is an array, find the first component ref that exists on the page
+   * note: always look for fields before component refs
+   * @param {string|array} field
+   * @param {string|array} component
    * @returns {string}
    */
   function getData(field, component) {
-    // if they specify a field to pull data from, get the data
-    // otherwise, if they specify a component to pull data from, find it on the page
-    // otherwise, return emptystring (it may be transformed)
     if (!_.isEmpty(field)) {
-      return getFieldData(this.$store, field, this.name, _.get(this.$store, 'state.ui.currentForm.uri'));
+      return getDataForFields(field);
     } else if (!_.isEmpty(component)) {
-      return findComponent(component);
+      return getDataForComponents(component);
     } else {
       return '';
       // note: to keep things sane when using transforms and api calls,
