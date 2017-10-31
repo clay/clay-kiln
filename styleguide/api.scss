@@ -50,7 +50,7 @@
 }
 
 .kiln-link {
-  @include type-link();
+  @include link();
 }
 
 .kiln-keyboard {
