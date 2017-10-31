@@ -5,7 +5,7 @@
 </docs>
 
 <template>
-  <ui-icon-button color="default" type="secondary" ariaLabel="Lock" :icon="icon" @click.stop.prevent="toggleLock"></ui-icon-button>
+  <ui-icon-button buttonType="button" color="default" type="secondary" ariaLabel="Lock" :icon="icon" @click.stop.prevent="toggleLock"></ui-icon-button>
 </template>
 
 <script>

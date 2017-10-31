@@ -124,7 +124,7 @@
 </style>
 
 <template>
-  <ui-icon-button color="default" type="secondary" ariaLabel="Do Magic" :loading="loading" :tooltip="args.tooltip" @click.stop.prevent="doMagic">
+  <ui-icon-button buttonType="button" color="default" type="secondary" ariaLabel="Do Magic" :loading="loading" :tooltip="args.tooltip" @click.stop.prevent="doMagic">
     <icon name="magic-button" class="magic-button-icon"></icon>
   </ui-icon-button>
 </template>

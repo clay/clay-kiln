@@ -53,13 +53,13 @@
         }
       }
     },
-    components: {
+    components: _.merge({
       UiModal,
       info: infoModal,
       keyboard: keyboardModal,
       'add-contributor': addContributorModal,
       'add-page': addPageModal,
       'add-user': addUserModal
-    }
+    }, window.kiln.modals)
   };
 </script>

@@ -71,7 +71,7 @@
       <div class="add-component-header">
         <h2 class="add-component-header-title">Add Component</h2>
         <div class="add-component-header-actions">
-          <ui-icon-button v-if="isFuzzy" type="secondary" color="black" icon="list" :tooltip="fuzzyTitle" @click.stop="fuzzyAdd"></ui-icon-button>
+          <ui-icon-button buttonType="button" v-if="isFuzzy" type="secondary" color="black" icon="list" :tooltip="fuzzyTitle" @click.stop="fuzzyAdd"></ui-icon-button>
           <div class="add-component-close-divider"></div>
           <ui-icon-button color="black" type="secondary" icon="close" ariaLabel="Close" tooltip="Close (ESC)" @click.stop="close"></ui-icon-button>
         </div>
