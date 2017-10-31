@@ -60,6 +60,6 @@
       'add-contributor': addContributorModal,
       'add-page': addPageModal,
       'add-user': addUserModal
-    }, window.kiln.modals)
+    }, _.get(window, 'kiln.modals', {}))
   };
 </script>

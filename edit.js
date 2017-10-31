@@ -89,6 +89,7 @@ function getLastEditUser(store) {
 // when this event fires
 document.addEventListener('DOMContentLoaded', function () {
   new Vue({
+    debug: process.env.NODE_ENV !== 'production',
     strict: true,
     el: '#kiln-app',
     render(h) {
