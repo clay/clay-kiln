@@ -86,6 +86,7 @@
 <template>
   <div v-if="hasOptions" class="editor-radios">
     <ui-radio-group
+    color="accent"
     :name="name"
     :value="data"
     :label="label"

@@ -68,7 +68,7 @@
       <span v-if="subtitle" class="person-subtitle">{{ subtitle }}</span>
     </div>
     <div v-if="hasActions" class="person-actions">
-      <ui-switch v-if="hasToggle" ref="toggle" :disabled="disabled" :value="toggled" @input="onToggle"></ui-switch>
+      <ui-switch v-if="hasToggle" ref="toggle" color="accent" :disabled="disabled" :value="toggled" @input="onToggle"></ui-switch>
       <ui-tooltip v-if="hasToggle && toggleTitle" trigger="toggle">{{ toggleTitle }}</ui-tooltip>
       <ui-icon-button v-if="hasSecondaryAction" :disabled="disabled" type="secondary" color="default" :icon="secondaryActionIcon" @click.stop="onSecondaryAction"></ui-icon-button>
     </div>

@@ -70,7 +70,7 @@
           <span class="complex-list-item-actions-left">Item {{ index + 1 }}/{{ total }}</span>
           <div class="complex-list-item-actions-right ui-button-group">
             <ui-button buttonType="button" type="secondary" color="red" icon="delete" @click.stop.prevent="removeItem(index)">Remove</ui-button>
-            <ui-button buttonType="button" type="secondary" color="primary" icon="add" @click.stop.prevent="addItemAndUnselect(index)">Add Another</ui-button>
+            <ui-button buttonType="button" type="secondary" color="accent" icon="add" @click.stop.prevent="addItemAndUnselect(index)">Add Another</ui-button>
           </div>
         </div>
       </div>

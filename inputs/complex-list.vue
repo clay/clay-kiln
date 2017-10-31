@@ -77,7 +77,7 @@
         </item>
       </transition-group>
     </div>
-    <ui-button v-else buttonType="button" color="primary" icon="add" @click.stop.prevent="addItem(-1)">Add Items</ui-button>
+    <ui-button v-else buttonType="button" color="accent" icon="add" @click.stop.prevent="addItem(-1)">Add Items</ui-button>
   </transition>
 </template>
 

@@ -117,7 +117,7 @@
         </div>
       </div>
       <div class="form-contents">
-        <ui-tabs v-if="hasSections" fullwidth ref="tabs">
+        <ui-tabs v-if="hasSections" fullwidth ref="tabs" textColorActive="accent" indicatorColor="accent">
           <ui-tab v-for="(section, index) in sections" :key="index" :title="section.title">
             <div class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 104px)`}">
               <div class="input-container">

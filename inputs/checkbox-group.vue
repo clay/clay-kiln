@@ -86,6 +86,7 @@
 <template>
   <div v-if="hasOptions" class="checkbox-group">
     <ui-checkbox-group
+    color="accent"
     :value="checkedArray"
     :options="options"
     :name="name"

@@ -27,7 +27,7 @@
 <template>
   <div class="site-selector">
     <div class="site-selector-body">
-      <ui-checkbox v-for="site in sites" :key="site.slug" :label="site.name" :value="site.selected" @change="select(site.slug)"></ui-checkbox>
+      <ui-checkbox v-for="site in sites" color="accent" :key="site.slug" :label="site.name" :value="site.selected" @change="select(site.slug)"></ui-checkbox>
     </div>
     <div class="site-selector-footer">
       <ui-button type="secondary" :color="multiSelectColor" @click="multiSelect">{{ multiSelectText }}</ui-button>
@@ -47,7 +47,7 @@
         return _.every(this.sites, (site) => site.selected);
       },
       multiSelectColor() {
-        return this.allSitesSelected ? 'red' : 'primary';
+        return this.allSitesSelected ? 'red' : 'accent';
       },
       multiSelectText() {
         return this.allSitesSelected ? 'Select None' : 'Select All';

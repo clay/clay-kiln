@@ -117,17 +117,17 @@
         <ui-icon icon="open_in_new"></ui-icon>
         <span class="status-link-text">View public page</span>
       </a>
-      <ui-button v-if="isScheduled" class="status-undo-button" buttonType="button" color="primary" @click.stop="unschedulePage">Unschedule</ui-button>
-      <ui-button v-else-if="isPublished" class="status-undo-button" buttonType="button" color="primary" @click.stop="unpublishPage">Unpublish</ui-button>
+      <ui-button v-if="isScheduled" class="status-undo-button" buttonType="button" color="accent" @click.stop="unschedulePage">Unschedule</ui-button>
+      <ui-button v-else-if="isPublished" class="status-undo-button" buttonType="button" color="accent" @click.stop="unpublishPage">Unpublish</ui-button>
     </div>
     <div class="publish-actions">
       <span class="action-message">{{ actionMessage }} <ui-icon-button v-if="showSchedule" icon="close" buttonType="button" type="secondary" color="default" size="small" tooltip="Clear Date/Time" tooltipPosition="left middle" @click.stop="clearScheduleForm"></ui-icon-button></span>
       <form class="schedule-form" @submit.prevent="schedulePage">
-        <ui-datepicker class="schedule-date" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date"></ui-datepicker>
+        <ui-datepicker class="schedule-date" color="accent" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date"></ui-datepicker>
         <ui-textbox class="schedule-time" v-model="timeValue" type="time" label="Time" placeholder="12:00 AM"></ui-textbox>
       </form>
-      <ui-button v-if="showSchedule" :disabled="disableSchedule" class="action-button" buttonType="button" color="primary" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
-      <ui-button v-else class="action-button" buttonType="button" color="primary" @click.stop="publishPage">{{ actionMessage }}</ui-button>
+      <ui-button v-if="showSchedule" :disabled="disableSchedule" class="action-button" buttonType="button" color="accent" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
+      <ui-button v-else class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
     </div>
     <ui-collapsible :open="hasCustomLocation" class="publish-location" title="Custom URL">
       <form class="publish-location-form" @submit.prevent="saveLocation">

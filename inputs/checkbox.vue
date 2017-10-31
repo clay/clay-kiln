@@ -16,7 +16,7 @@
 
 <template>
   <div class="kiln-single-checkbox">
-    <ui-checkbox :name="name" :label="label" :value="data" @input="update"></ui-checkbox>
+    <ui-checkbox color="accent" :name="name" :label="label" :value="data" @input="update"></ui-checkbox>
     <div class="ui-textbox__feedback" v-if="args.help">
       <div class="ui-textbox__feedback-text">{{ args.help }}</div>
     </div>

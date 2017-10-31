@@ -25,10 +25,10 @@
 
 <template>
   <div class="status-selector" :class="{ 'is-vertical': vertical }">
-    <ui-radio class="status-selector-radio" label="All" :value="selectedStatus" trueValue="all" @input="input"></ui-radio>
-    <ui-radio class="status-selector-radio" label="Draft" :value="selectedStatus" trueValue="draft" @input="input"></ui-radio>
-    <ui-radio class="status-selector-radio" label="Scheduled" :value="selectedStatus" trueValue="scheduled" @input="input"></ui-radio>
-    <ui-radio class="status-selector-radio" label="Published" :value="selectedStatus" trueValue="published" @input="input"></ui-radio>
+    <ui-radio class="status-selector-radio" color="accent" label="All" :value="selectedStatus" trueValue="all" @input="input"></ui-radio>
+    <ui-radio class="status-selector-radio" color="accent" label="Draft" :value="selectedStatus" trueValue="draft" @input="input"></ui-radio>
+    <ui-radio class="status-selector-radio" color="accent" label="Scheduled" :value="selectedStatus" trueValue="scheduled" @input="input"></ui-radio>
+    <ui-radio class="status-selector-radio" color="accent" label="Published" :value="selectedStatus" trueValue="published" @input="input"></ui-radio>
   </div>
 </template>
 

@@ -21,7 +21,7 @@
 
 <template>
   <div class="kiln-csv-upload">
-    <ui-fileupload :name="name" :label="label" accept=".csv" @change="update"></ui-fileupload>
+    <ui-fileupload color="accent" :name="name" :label="label" accept=".csv" @change="update"></ui-fileupload>
     <div class="ui-textbox__feedback" v-if="args.help">
       <div class="ui-textbox__feedback-text">{{ args.help }}</div>
     </div>
