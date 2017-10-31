@@ -53,13 +53,13 @@
         }
       }
     },
-    components: _.merge({
+    components: _.merge(_.get(window, 'kiln.modals', {}), {
       UiModal,
       info: infoModal,
       keyboard: keyboardModal,
       'add-contributor': addContributorModal,
       'add-page': addPageModal,
       'add-user': addUserModal
-    }, _.get(window, 'kiln.modals', {}))
+    })
   };
 </script>
