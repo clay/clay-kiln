@@ -215,7 +215,7 @@
    */
   function getData(field, component) {
     if (!_.isEmpty(field)) {
-      return getDataForFields(field);
+      return getDataForFields.call(this, field);
     } else if (!_.isEmpty(component)) {
       return getDataForComponents(component);
     } else {
