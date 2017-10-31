@@ -1,7 +1,7 @@
 // the classes in this file are usable throughout kiln and within kiln plugins
 
 @import 'mixins';
-@import 'colors';
+@import 'typography';
 
 // generic class to hide elements
 .kiln-hide {
@@ -10,4 +10,53 @@
 
 .kiln-clearfix {
   @include clearfix();
+}
+
+// exported typography
+.kiln-normal-text {
+  @include normal-text();
+}
+
+.kiln-display1 {
+  @include type-display1();
+}
+
+.kiln-headline {
+  @include type-headline();
+}
+
+.kiln-title {
+  @include type-title();
+}
+
+.kiln-subheading {
+  @include type-subheading();
+}
+
+.kiln-body {
+  @include type-body();
+}
+
+.kiln-caption {
+  @include type-caption();
+}
+
+.kiln-button {
+  @include type-button();
+}
+
+.kiln-list-header {
+  @include type-list-header();
+}
+
+.kiln-link {
+  @include type-link();
+}
+
+.kiln-keyboard {
+  @include keyboard-keys();
+}
+
+.kiln-code {
+  @include code();
 }
