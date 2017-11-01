@@ -350,11 +350,11 @@
         this.$store.dispatch('unfocus');
       }
     },
-    components: {
+    components: _.merge(_.get(window, 'kiln.selectorButtons', {}), {
       field,
       UiIconButton,
       UiTabs,
       UiTab
-    }
+    })
   };
 </script>
