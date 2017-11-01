@@ -102,14 +102,14 @@
   <transition name="nav-menu" v-if="displayNavMenu">
       <nav class="nav-menu">
         <!-- nav menu buttons on small viewport (< 600px) -->
-        <ui-icon-button class="nav-menu-button-small" type="secondary" color="white" icon="arrow_back" @click="closeNav"></ui-icon-button>
+        <ui-icon-button class="nav-menu-button-small" buttonType="button" type="secondary" color="white" icon="arrow_back" @click="closeNav"></ui-icon-button>
         <ui-button buttonType="button" class="nav-menu-button-small nav-menu-button-small-white" type="primary" color="none" has-dropdown>
           <span class="nav-button-small-text">{{ currentNav }}</span>
           <ui-menu slot="dropdown" :options="navOptions" @select="selectNavOption"></ui-menu>
         </ui-button>
         <div class="nav-menu-divider-small"></div>
-        <ui-icon-button class="nav-menu-button-small" color="white" type="secondary" icon="add" tooltip="New Page" @click="openNav('new-page')"></ui-icon-button>
-        <ui-icon-button class="nav-menu-button-small" color="white" type="secondary" icon="more_vert" has-dropdown ref="dropdownButton">
+        <ui-icon-button class="nav-menu-button-small" buttonType="button" color="white" type="secondary" icon="add" tooltip="New Page" @click="openNav('new-page')"></ui-icon-button>
+        <ui-icon-button class="nav-menu-button-small" buttonType="button" color="white" type="secondary" icon="more_vert" has-dropdown ref="dropdownButton">
           <ui-menu slot="dropdown" :options="settingsOptions" @close="$refs.dropdownButton.closeDropdown()" @select="selectSettingsOption"></ui-menu>
         </ui-icon-button>
         <!-- nav menu buttons on large viewport (600px+) -->

@@ -358,6 +358,6 @@
       // setup event listener, so it can be removed later
       setupResizeListener.call(this);
     },
-    components: _.merge(_.get(window, 'kiln.selectorButtons', {}), { UiIconButton })
+    components: _.merge({}, _.get(window, 'kiln.selectorButtons', {}), { UiIconButton })
   };
 </script>
