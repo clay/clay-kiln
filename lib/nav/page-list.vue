@@ -10,12 +10,12 @@
 
     // note: left nav menu appears at 600px (it's 200px wide),
     // so all other breakpoints go from 800px
-    @media screen and (min-width: 600px) {
+    @media screen and (min-width: $site-title-status-columns) {
       max-width: calc(100vw - 200px);
     }
 
-    @media screen and (min-width: 1256px) {
-      max-width: 1056px;
+    @media screen and (min-width: $all-columns-sidebar) {
+      max-width: $all-columns;
     }
   }
 
@@ -26,7 +26,7 @@
     padding: 8px;
     width: 100%;
 
-    @media screen and (min-width: 800px) {
+    @media screen and (min-width: $site-title-status-columns-sidebar) {
       padding: 16px 16px 16px 8px;
     }
   }
@@ -36,7 +36,7 @@
     margin-right: 8px;
     max-width: 140px;
 
-    @media screen and (min-width: 800px) {
+    @media screen and (min-width: $site-title-status-columns-sidebar) {
       max-width: 300px;
     }
   }
@@ -50,7 +50,7 @@
     flex: 0 0 auto;
     margin-left: 8px;
 
-    @media screen and (min-width: 1056px) {
+    @media screen and (min-width: $all-columns-sidebar) {
       display: none;
     }
   }
@@ -60,7 +60,7 @@
     flex: 0 0 auto;
     margin-left: 16px;
 
-    @media screen and (min-width: 1056px) {
+    @media screen and (min-width: $all-columns-sidebar) {
       display: flex;
     }
   }
@@ -75,7 +75,7 @@
     flex: 0 0 auto;
     padding: 8px 16px;
 
-    @media screen and (min-width: 800px) {
+    @media screen and (min-width: $site-title-status-columns-sidebar) {
       display: flex;
     }
 
@@ -92,7 +92,7 @@
         display: none;
         flex: 0 0 $byline-column;
 
-        @media screen and (min-width: 904px) {
+        @media screen and (min-width: $site-title-byline-status-columns-sidebar) {
           display: inline;
         }
       }
@@ -101,7 +101,7 @@
         flex: 0 0 $status-column;
         text-align: right;
 
-        @media screen and (min-width: 1056px) {
+        @media screen and (min-width: $all-columns-sidebar) {
           text-align: left;
         }
       }
@@ -110,7 +110,7 @@
         display: none;
         flex: 0 0 $collaborators-column;
 
-        @media screen and (min-width: 1056px) {
+        @media screen and (min-width: $all-columns-sidebar) {
           display: inline;
         }
       }

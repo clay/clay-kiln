@@ -2,8 +2,7 @@
   @import '../../styleguide/colors';
   @import '../../styleguide/animations';
   @import '../../styleguide/layers';
-
-  $nav-menu-width: 200px;
+  @import '../../styleguide/clay-menu-columns';
 
   .nav-menu {
     @include nav-layer();
