@@ -264,7 +264,9 @@
             this.formTop = `${docHeight / 2 - halfFinalHeight}px`;
           } else {
             const heightPlusMargin = finalHeight / 2 + 20,
-              isInsideViewport = posY > heightPlusMargin && posY < docHeight - heightPlusMargin;
+              isInsideViewport = posY > heightPlusMargin && posY < docHeight - heightPlusMargin - 500;
+              // give the bottom calculation about 500px more room, so complex-list items
+              // don't overflow the bottom of the viewport (if they're opened when they don't have any items yet)
 
             this.formTop = isInsideViewport ? `${posY - halfFinalHeight}px` : `${docHeight / 2 - halfFinalHeight}px`;
           }
