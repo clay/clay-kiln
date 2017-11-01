@@ -2,6 +2,7 @@
 
 @import 'mixins';
 @import 'typography';
+@import 'colors';
 
 // generic class to hide elements
 .kiln-hide {
@@ -59,4 +60,15 @@
 
 .kiln-code {
   @include code();
+}
+
+// color classes are useful for kiln plugins that use KeenUI components,
+// as those components may use the `color` of the containing element to
+// determine their colors (e.g. ui-ripple-ink)
+.kiln-primary-color {
+  color: $brand-primary-color;
+}
+
+.kiln-accent-color {
+  color: $brand-accent-color;
 }

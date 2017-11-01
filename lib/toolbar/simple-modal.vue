@@ -23,6 +23,21 @@
   import addPageModal from './add-page-modal.vue';
   import addUserModal from './add-user-modal.vue';
 
+  const noscrollClass = 'noscroll',
+    htmlElement = document.documentElement;
+
+  /**
+   * Toggle the `noscroll` class
+   * @param  {Boolean} show
+   */
+  function toggleNoScroll(show) {
+    if (show) {
+      htmlElement.classList.add(noscrollClass);
+    } else if (!show && htmlElement.classList.contains(noscrollClass)) {
+      htmlElement.classList.remove(noscrollClass);
+    }
+  }
+
   export default {
     data() {
       return {};
@@ -47,8 +62,10 @@
     watch: {
       modal(val) {
         if (val) {
+          toggleNoScroll(true);
           this.$refs.modal.open();
         } else {
+          toggleNoScroll(false);
           this.$refs.modal.close();
         }
       }
