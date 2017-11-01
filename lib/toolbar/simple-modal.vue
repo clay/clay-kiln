@@ -9,7 +9,7 @@
 </style>
 
 <template>
-  <ui-modal class="simple-modal" ref="modal" :title="title" :size="size">
+  <ui-modal class="simple-modal" ref="modal" :title="title" :size="size" @open="onOpen" @close="onClose">
     <component :is="type" :data="data"></component>
   </ui-modal>
 </template>
@@ -62,12 +62,18 @@
     watch: {
       modal(val) {
         if (val) {
-          toggleNoScroll(true);
           this.$refs.modal.open();
         } else {
-          toggleNoScroll(false);
           this.$refs.modal.close();
         }
+      }
+    },
+    methods: {
+      onOpen() {
+        toggleNoScroll(true);
+      },
+      onClose() {
+        toggleNoScroll(false);
       }
     },
     components: _.merge(_.get(window, 'kiln.modals', {}), {
