@@ -371,13 +371,13 @@
             total = _.get(res, 'hits.total'),
             pages = _.map(hits, (hit) => hit._source);
 
-          if (this.offset === 0) {
+          if (offset === 0) {
             this.pages = pages;
           } else {
             this.pages = this.pages.concat(pages);
           }
 
-          this.offset = this.offset + pages.length;
+          this.offset = offset + pages.length;
           this.total = total; // update the total for this particular query
           // (it's used to hide the "load more" button)
         });
