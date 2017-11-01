@@ -10,7 +10,7 @@
 
 <template>
   <form class="add-page-modal" @submit.prevent="addPage">
-    <ui-textbox class="add-page-input" v-model="title" :required="true" :autofocus="true" :floatingLabel="true" label="Template Name" help="The current page will be available as a template in the New Pages list, allowing other people to create pages based on it"></ui-textbox>
+    <ui-textbox class="add-page-input" v-model.trim="title" :required="true" :autofocus="true" :floatingLabel="true" label="Template Name" help="The current page will be available as a template in the New Pages list, allowing other people to create pages based on it"></ui-textbox>
     <ui-button class="add-page-button" color="accent" :disabled="title === ''">Add Page Template</ui-button>
   </form>
 </template>

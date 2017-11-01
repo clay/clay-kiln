@@ -21,7 +21,7 @@
 
 <template>
   <div class="add-contributor">
-    <ui-textbox class="invite-filter" v-model="query" type="search" label="Search for Someone" :autofocus="true" :floatingLabel="true" ref="searchInput" @keydown="filterList"></ui-textbox>
+    <ui-textbox class="invite-filter" v-model.trim="query" type="search" label="Search for Someone" :autofocus="true" :floatingLabel="true" ref="searchInput" @keydown="filterList"></ui-textbox>
     <div class="invite-list">
       <person
         v-for="user in users"

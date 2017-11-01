@@ -140,7 +140,7 @@
         <span class="page-list-selected-site">{{ selectedSite }}</span>
         <site-selector slot="dropdown" :sites="sites" @select="selectSite" @multi-select="selectMultipleSites"></site-selector>
       </ui-button>
-      <ui-textbox class="page-list-search" v-model="query" type="search" autofocus placeholder="Search by Title or Byline" @input="filterList"></ui-textbox>
+      <ui-textbox class="page-list-search" v-model.trim="query" type="search" autofocus placeholder="Search by Title or Byline" @input="filterList"></ui-textbox>
       <ui-icon-button class="page-list-status-small" type="secondary" icon="filter_list" has-dropdown ref="statusDropdown" @dropdown-open="onPopoverOpen" @dropdown-close="onPopoverClose">
         <status-selector slot="dropdown" :selectedStatus="selectedStatus" :vertical="true" @select="selectStatus"></status-selector>
       </ui-icon-button>

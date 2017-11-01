@@ -28,7 +28,7 @@
       type="text"
       class="ui-textbox__input simple-list-add"
       ref="input"
-      v-model="val"
+      v-model.trim="val"
       @input="onChange"
       @keydown.enter.prevent="onEnter"
       @keydown.tab="addItem"

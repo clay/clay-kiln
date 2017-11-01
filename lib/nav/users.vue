@@ -64,7 +64,7 @@
 <template>
   <div class="users-nav">
     <ui-textbox
-      v-model="query"
+      v-model.trim="query"
       class="users-input"
       label="Search Users"
       :floatingLabel="true"

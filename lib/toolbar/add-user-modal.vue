@@ -25,7 +25,7 @@
 
 <template>
   <form class="add-user-modal" @submit.prevent="createUser">
-    <ui-textbox class="add-user-username" v-model="username" :required="true" :autofocus="true" :floatingLabel="true" label="Username"></ui-textbox>
+    <ui-textbox class="add-user-username" v-model.trim="username" :required="true" :autofocus="true" :floatingLabel="true" label="Username"></ui-textbox>
     <ui-select class="add-user-provider" :disabled="providers.length < 2" v-model="provider" :options="providers" label="Provider" :floatingLabel="true"></ui-select>
     <ui-switch class="add-user-admin" color="accent" v-model="isAdmin" label="Admin"></ui-switch>
     <span class="add-user-info">While <em>all</em> accounts can edit, only admins can manage users, create and edit page templates, and change permissions.</span>

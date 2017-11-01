@@ -84,7 +84,7 @@
   <div class="filterable-list" :class="{ 'has-reorder': onReorder }">
     <div class="filterable-list-input" v-if="!onReorder">
       <ui-textbox
-        v-model="query"
+        v-model.trim="query"
         :label="inputLabel"
         :floatingLabel="true"
         :help="help"
