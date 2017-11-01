@@ -27,7 +27,7 @@
       :key="contributor.username"
       :id="contributor.username"
       :image="contributor.imageUrl"
-      :name="contributor.name"
+      :name="contributor.name || contributor.username"
       :subtitle="contributor.formattedTime"></person>
     <div class="add-contributor-wrapper">
       <ui-button class="add-contributor-button" buttonType="button" type="primary" color="default" @click.stop="addContributor">Invite To Page</ui-button>
@@ -76,19 +76,12 @@
     data() {
       return {};
     },
-    asyncComputed: {
+    computed: {
       contributors() {
-        // refresh the page state (from the pages index), in case new users have edited this page
-        // between the time it loaded and the time you opened the people pane
-        return this.$store.dispatch('getListData', { uri: _.get(this.$store, 'state.page.uri') }).then(() => {
-          // getListData sets the store, which we then pull from
-          const state = _.cloneDeep(_.get(this.$store, 'state.page.state'));
-
-          return _.map(state.users, (user) => {
-            user.formattedTime = formatStatusTime(user.updateTime);
-            return user;
-          }).reverse();
-        });
+        return _.map(_.cloneDeep(_.get(this.$store, 'state.page.state.users', [])), (user) => {
+          user.formattedTime = formatStatusTime(user.updateTime);
+          return user;
+        }).reverse();
       }
     },
     methods: {
