@@ -8,6 +8,7 @@
     align-items: center;
     background-color: $pure-black;
     border: none;
+    border-radius: 0;
     color: $pure-white;
     cursor: pointer;
     display: flex;
