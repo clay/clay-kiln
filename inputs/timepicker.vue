@@ -127,7 +127,7 @@
       }
     },
     mounted() {
-      this.timeValue = _.isString(this.data) ? this.data : '';
+      this.timeValue = _.isString(this.data) ? dateFormat(this.data, 'h:mm A') : '';
     },
     methods: {
       // every time the value of the input changes, update the store
