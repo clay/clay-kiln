@@ -63,6 +63,7 @@
     :error="errorMessage"
     :disabled="isDisabled"
     iconPosition="right"
+    pickerType="modal"
     @input="update">
     <component v-if="hasButton" slot="icon" :is="args.attachedButton.name" :name="name" :data="data" :schema="schema" :args="args.attachedButton" @disable="disableInput" @enable="enableInput"></component>
   </ui-datepicker>
