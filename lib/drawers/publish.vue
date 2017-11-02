@@ -123,7 +123,7 @@
     <div class="publish-actions">
       <span class="action-message">{{ actionMessage }} <ui-icon-button v-if="showSchedule" icon="close" buttonType="button" type="secondary" color="default" size="small" tooltip="Clear Date/Time" tooltipPosition="left middle" @click.stop="clearScheduleForm"></ui-icon-button></span>
       <form class="schedule-form" @submit.prevent="schedulePage">
-        <ui-datepicker class="schedule-date" pickerType="modal" color="accent" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date"></ui-datepicker>
+        <ui-datepicker class="schedule-date" color="accent" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date"></ui-datepicker>
         <ui-textbox class="schedule-time" v-model="timeValue" type="time" label="Time" placeholder="12:00 AM"></ui-textbox>
       </form>
       <ui-button v-if="showSchedule" :disabled="disableSchedule" class="action-button" buttonType="button" color="accent" @click.stop="schedulePage">{{ actionMessage }}</ui-button>

@@ -51,7 +51,7 @@
 
 <template>
   <ui-textbox
-    :value="data"
+    :value="data || ''"
     :invalid="isInvalid"
     :required="isRequired"
     :label="label"
