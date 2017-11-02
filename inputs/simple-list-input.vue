@@ -99,7 +99,14 @@
       },
       // Add an item to the array
       addItem() {
-        const hasItem = !!_.find(this.items, (item) => item.text === this.val);
+        let hasItem;
+
+        if (_.isNumber(this.autocompleteIndex)) {
+          this.val = this.autocompleteOptions[this.autocompleteIndex] || '';
+          this.displayAutocomplete = false;
+        }
+
+        hasItem = !!_.find(this.items, (item) => item.text === this.val);
 
         if (this.val && (!hasItem || hasItem && this.allowRepeatedItems)) {
           this.$emit('add', { text: this.val });
@@ -107,8 +114,8 @@
           // Zero out values
           this.val = '';
           this.$emit('select', null);
-          // this.autocompleteIndex = null;
         }
+        this.autocompleteIndex = null;
       },
       onAutocompleteSelect(val) {
         this.val = val;
