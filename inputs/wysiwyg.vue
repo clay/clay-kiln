@@ -142,6 +142,11 @@
     }
   }
 
+  .editor-inline .ql-container,
+  .editor-inline .ql-editor {
+    @include normal-text();
+  }
+
   .wysiwyg-input *::selection {
     background-color: $text-selection;
   }
