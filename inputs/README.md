@@ -448,7 +448,7 @@ tooltip: Fetch First Image
 ```yaml
 component: mediaplay-image
 transform: getComponentInstance (this transforms the full component uri into a ref we can pop onto the end of our site prefix)
-url: $SITE_PREFIX/lists/images (this is a ~ special token ~ that evaluates to the prefix of current site, so you can do api calls against your own clay instance)
+url: $SITE_PREFIX/_lists/images (this is a ~ special token ~ that evaluates to the prefix of current site, so you can do api calls against your own clay instance)
 tooltip: Fetch Images
 ```
 
@@ -754,7 +754,7 @@ An array of strings (or objects with a `text` property, if you add the `property
 * **propertyName** - appends double-click functionality to items in the list. The data will be an array of objects with `text` properties, as well as the value of this argument. e.g. `propertyName: bar` will make the data look like `[{ text: 'foo', bar: 'baz' }]`
 * **badge** - name of the icon (or a two-character string) that should be displayed in the simple list item when editing. Icon names can be anything from the [Material Design Icon Set](https://material.io/icons/), or you can use two initials
 * **allowRepeatedItems** - allow the same item more than once. defaults to false
-* **autocomplete** - object with autocomplete options. Currently this is just the key `list` where the value is the name of a list that Amphora knows about accessible via `/<site>/lists/<listName>`. Example:
+* **autocomplete** - object with autocomplete options. Currently this is just the key `list` where the value is the name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`. Example:
 
 ```yaml
   -

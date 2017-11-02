@@ -101,7 +101,7 @@
 <script>
   import _ from 'lodash';
   import { postJSON, save, remove } from '../core-data/api';
-  import { searchRoute } from '../utils/references';
+  import { searchRoute, usersRoute, usersBareRoute } from '../utils/references';
   import logger from '../utils/log';
   import person from '../utils/person.vue';
   import UiTextbox from 'keen/UiTextbox';
@@ -166,7 +166,7 @@
               const src = hit._source;
 
               return {
-                id: hit._id, // PUT to prefix + /users/ + id to update user (e.g. to toggle admin)
+                id: hit._id, // PUT to prefix + /_users/ + id to update user (e.g. to toggle admin)
                 username: src.username,
                 provider: src.provider,
                 auth: src.auth,
@@ -198,7 +198,7 @@
             this.users[index].auth = 'write';
           }
 
-          return save(prefix + '/users/' + id, _.omit(this.users[index], ['id', 'isCurrentUser']));
+          return save(prefix + usersRoute + id, _.omit(this.users[index], ['id', 'isCurrentUser']));
         }
       },
       deleteUser(id) {
@@ -217,11 +217,11 @@
           prefix = _.get(store, 'state.site.prefix');
 
         this.users.splice(index, 1);
-        return remove(prefix + '/users/' + id).then((oldUser) => {
+        return remove(prefix + usersRoute + id).then((oldUser) => {
           store.dispatch('showSnackbar', {
             message: `Removed ${username} from Clay`,
             action: 'Undo',
-            onActionClick: () => postJSON(prefix + '/users', oldUser)
+            onActionClick: () => postJSON(prefix + usersBareRoute, oldUser)
           });
         }).catch((e) => {
           log.error(`Error removing ${username} from Clay: ${e.message}`, { action: 'onDeleteConfirm' });

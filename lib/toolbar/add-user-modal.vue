@@ -37,6 +37,7 @@
   import _ from 'lodash';
   import { postJSON } from '../core-data/api';
   import logger from '../utils/log';
+  import { usersBareRoute } from '../utils/references';
   import UiTextbox from 'keen/UiTextbox';
   import UiSelect from 'keen/UiSelect';
   import UiSwitch from 'keen/UiSwitch';
@@ -77,7 +78,7 @@
           };
 
         store.dispatch('startProgress', 'save');
-        return postJSON(prefix + '/users', user)
+        return postJSON(prefix + usersBareRoute, user)
           .then(() => {
             store.dispatch('closeModal');
             store.dispatch('finishProgress', 'save');

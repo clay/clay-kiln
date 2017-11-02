@@ -63,7 +63,7 @@
   ```yaml
   component: mediaplay-image
   transform: getComponentInstance (this transforms the full component uri into a ref we can pop onto the end of our site prefix)
-  url: $SITE_PREFIX/lists/images (this is a ~ special token ~ that evaluates to the prefix of current site, so you can do api calls against your own clay instance)
+  url: $SITE_PREFIX/_lists/images (this is a ~ special token ~ that evaluates to the prefix of current site, so you can do api calls against your own clay instance)
   tooltip: Fetch Images
   ```
 
