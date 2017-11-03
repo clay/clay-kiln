@@ -10,7 +10,7 @@
     "test-local": "BABEL_ENV=test npm run lint && BABEL_ENV=test npm run karma -- karma.local.conf.js",
     "build": "BABEL_ENV=build webpack",
     "watch": "BABEL_ENV=build webpack -w",
-    "prepublish": "BABEL_ENV=build webpack -p"
+    "prepublishOnly": "BABEL_ENV=build webpack -p"
   },
   "repository": {
     "type": "git",
