@@ -4,13 +4,18 @@
   "description": "Editor tools for Clay",
   "template": "template.handlebars",
   "scripts": {
-    "lint": "eslint client.js behaviors controllers services decorators validators",
+    "lint": "npm run docs:clean && eslint client.js behaviors controllers services decorators validators",
     "karma": "karma start",
-    "test": "npm run lint && npm run karma",
+    "test": "npm run docs:clean && npm run lint && npm run karma",
     "test-local": "BABEL_ENV=test npm run lint && BABEL_ENV=test npm run karma -- karma.local.conf.js",
     "build": "BABEL_ENV=build webpack",
     "watch": "BABEL_ENV=build webpack -w",
-    "prepublish": "BABEL_ENV=build webpack -p"
+    "prepublish": "BABEL_ENV=build webpack -p",
+    "docs:clean": "rimraf ./_book",
+    "docs:prepare": "gitbook install",
+    "docs:watch": "npm run docs:prepare && gitbook serve",
+    "docs:build": "gitbook build ./",
+    "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'update book' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'update book' && git push git@github.com:clay/clay-kiln gh-pages --force"
   },
   "repository": {
     "type": "git",
@@ -61,6 +66,9 @@
     "eslint-plugin-html": "^2.0.0",
     "extract-text-webpack-plugin": "^2.0.0-rc.2",
     "file-loader": "^0.10.1",
+    "gitbook-cli": "^2.3.2",
+    "gitbook-plugin-anchorjs": "^1.1.1",
+    "gitbook-plugin-github": "^3.0.0",
     "hash-sum": "^1.0.2",
     "he": "^1.1.1",
     "html-tags": "^1.1.1",
@@ -109,5 +117,8 @@
     "vuex": "^2.3.1",
     "webpack": "^2.2.1",
     "whatwg-fetch": "^1.0.0"
+  },
+  "dependencies": {
+    "gitbook-plugin-github": "^2.0.0"
   }
 }
