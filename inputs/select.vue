@@ -195,9 +195,21 @@
     },
     methods: {
       update(option) {
-        const val = option.value;
+        if (_.isArray(option)) {
+          // new array of checked options
+          const newData = _.reduce(_.cloneDeep(this.data), (obj, val, key) => {
+            if (_.find(option, (item) => item.value === key)) {
+              return _.assign(obj, { [key]: true });
+            } else {
+              return _.assign(obj, { [key]: false });
+            }
+          }, {});
 
-        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: val });
+          this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: newData });
+        } else if (_.isObject(option)) {
+          // single new checked option
+          this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: option.value });
+        }
       },
       disableInput() {
         this.isDisabled = true;
