@@ -398,12 +398,13 @@ Append a magic button to an input.
 * **url** - to get data from
 * **property** - to get from the returned data
 * **moreMagic** - to run the returned value through more transforms, api calls, etc
+* **tooltip** - text that will display in a tooltip. used to explain what each button is doing, so make it concise!
 
 ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
 
 Magic buttons are extremely powerful, but can be a little confusing to configure. This is what they generally look like:
 
-1. specify a `field` or `component`. The button will grab the value or ref, respectively
+1. specify a `field` or `component`. The button will grab the value or ref, respectively. If you specify either as an array, it will look for the first field/component, then fall back to the next ones specified in the array if necessary (if the field is empty, or the component isn't on the page)
 2. specify a `transform`. Transforms are useful when doing api calls with that data
 2. specify a `transformArg` if you need to send more information to the transform.
 3. specify a `store` path or `url` if you need to grab data from somewhere. The request will be prefixed with the `store`/`url` string you pass in.
@@ -420,6 +421,7 @@ _Note: MediaPlay is the name of our image server._
 
 ```yaml
 field: primaryHeadline
+tooltip: Use Primary Headline
 ```
 
 ### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab a caption from mediaplay"
@@ -429,6 +431,7 @@ field: url
 transform: mediaplayUrl (to change the image url into a string we can query mediaplay's api with)
 url: [mediaplay api url]
 property: metadata.caption
+tooltip: Fetch caption from Mediaplay
 ```
 
 ### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab the url of the first mediaplay-image on this page"
@@ -437,6 +440,7 @@ property: metadata.caption
 component: mediaplay-image
 store: components
 property: url
+tooltip: Fetch First Image
 ```
 
 ### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab a list of items keyed by some component uri"
@@ -444,7 +448,8 @@ property: url
 ```yaml
 component: mediaplay-image
 transform: getComponentInstance (this transforms the full component uri into a ref we can pop onto the end of our site prefix)
-url: $SITE_PREFIX/lists/images (this is a ~ special token ~ that evaluates to the prefix of current site, so you can do api calls against your own clay instance)
+url: $SITE_PREFIX/_lists/images (this is a ~ special token ~ that evaluates to the prefix of current site, so you can do api calls against your own clay instance)
+tooltip: Fetch Images
 ```
 
 ### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab the image url from a lede component, then ask mediaplay for the caption"
@@ -458,6 +463,7 @@ moreMagic:
     transform: mediaplayUrl (to change the image url into a string we can query mediaplay's api with)
     url: [mediaplay api url]
     property: metadata.caption
+tooltip: Fetch Caption For Lede Image
 ```
 
 ### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab the tv show name and use it to automatically format an image url"
@@ -466,6 +472,7 @@ moreMagic:
 field: showName
 transform: formatUrl
 transformArg: [base image url]/recaps-$DATAFIELD.png ($DATAFIELD is the placeholder in our formatUrl transform)
+tooltip: Fetch TV Show Image
 ```
 
 ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
@@ -747,7 +754,7 @@ An array of strings (or objects with a `text` property, if you add the `property
 * **propertyName** - appends double-click functionality to items in the list. The data will be an array of objects with `text` properties, as well as the value of this argument. e.g. `propertyName: bar` will make the data look like `[{ text: 'foo', bar: 'baz' }]`
 * **badge** - name of the icon (or a two-character string) that should be displayed in the simple list item when editing. Icon names can be anything from the [Material Design Icon Set](https://material.io/icons/), or you can use two initials
 * **allowRepeatedItems** - allow the same item more than once. defaults to false
-* **autocomplete** - object with autocomplete options. Currently this is just the key `list` where the value is the name of a list that Amphora knows about accessible via `/<site>/lists/<listName>`. Example:
+* **autocomplete** - object with autocomplete options. Currently this is just the key `list` where the value is the name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`. Example:
 
 ```yaml
   -

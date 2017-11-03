@@ -1,4 +1,4 @@
-import Quill from 'quill';
+import Quill from 'quill/dist/quill.min.js';
 import * as lib from './wysiwyg-phrase';
 
 const icons = Quill.import('ui/icons');

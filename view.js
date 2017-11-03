@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
   store.commit(PRELOAD_SITE, window.kiln.preloadSite);
 
   new Vue({
+    debug: process.env.NODE_ENV !== 'production',
     strict: true,
     el: '#kiln-app',
     render(h) {

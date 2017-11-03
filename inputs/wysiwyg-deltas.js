@@ -1,4 +1,4 @@
-import Quill from 'quill';
+import Quill from 'quill/dist/quill.min.js';
 import _ from 'lodash';
 
 const Delta = Quill.import('delta');

@@ -25,6 +25,10 @@
       width: 0%;
     }
 
+    &.clickable {
+      cursor: pointer;
+    }
+
     &.clickable:hover,
     &.clickable.focused {
       background-color: $list-bg-hover;
@@ -103,13 +107,13 @@
   import UiRippleInk from 'keen/UiRippleInk';
 
   export default {
-    props: ['item', 'index', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'focused', 'active', 'selected', 'focusOnIndex', 'setActive'],
+    props: ['item', 'index', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'focused', 'active', 'selected', 'focusOnIndex', 'setActive', 'settingsTitle'],
     data() {
       return {};
     },
     computed: {
       settingsTooltip() {
-        return `${this.item.title} Settings`;
+        return this.settingsTitle || `${this.item.title} Settings`;
       },
       removeTooltip() {
         return `Remove ${this.item.title}`;

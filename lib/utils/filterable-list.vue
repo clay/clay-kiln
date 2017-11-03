@@ -1,6 +1,7 @@
 <style lang="sass">
   @import '../../styleguide/colors';
   @import '../../styleguide/animations';
+  @import '../../styleguide/typography';
 
   .filterable-list {
     display: flex;
@@ -9,7 +10,36 @@
 
     &-input {
       flex: 0 0 auto;
-      margin: 8px 16px;
+      margin: 16px;
+    }
+
+    &-headers {
+      @include type-list-header();
+
+      align-items: center;
+      background-color: $md-grey-50;
+      border-top: 1px solid $divider-color;
+      display: flex;
+      flex: 0 0 auto;
+      padding: 8px 16px;
+
+      .filterable-list-header {
+        &-drag {
+          flex: 0 0 36px;
+        }
+
+        &-title {
+          flex: 0 1 100%;
+        }
+
+        &-actions {
+          flex: 0 0 36px;
+
+          &-2 {
+            flex: 0 0 72px;
+          }
+        }
+      }
     }
 
     &-readout {
@@ -54,7 +84,7 @@
   <div class="filterable-list" :class="{ 'has-reorder': onReorder }">
     <div class="filterable-list-input" v-if="!onReorder">
       <ui-textbox
-        v-model="query"
+        v-model.trim="query"
         :label="inputLabel"
         :floatingLabel="true"
         :help="help"
@@ -64,6 +94,11 @@
         @keydown.down.stop="focusOnIndex(0)"
         @keydown.enter.stop.prevent="onEnterDown"
         v-conditional-focus="focusIsNull"></ui-textbox>
+    </div>
+    <div v-if="headerTitle" class="filterable-list-headers">
+      <span v-if="onReorder" class="filterable-list-header filterable-list-header-drag"><!-- no header --></span>
+      <span class="filterable-list-header filterable-list-header-title">{{ headerTitle }}</span>
+      <span v-if="onSettings || onDelete" class="filterable-list-header filterable-list-header-actions" :class="{ 'filterable-list-header-actions-2': onSettings && onDelete }">Actions</span>
     </div>
     <div class="filterable-list-readout">
       <ul class="filterable-list-readout-list" ref="list">
@@ -75,6 +110,7 @@
           :active="activeIndex === index"
           :selected="selectedIndex === index"
           :key="item.id"
+          :settingsTitle="settingsTitle"
           :onClick="onClick"
           :onSettings="onSettings"
           :onDelete="onDelete"
@@ -82,8 +118,8 @@
           :focusOnIndex="focusOnIndex"
           :setActive="setActive"></list-item>
       </ul>
-      <div class="filterable-list-add">
-        <ui-button class="filterable-list-add-button" type="primary" color="default" v-if="onAdd" @click.stop="onAdd" :icon="addIcon">{{ addTitle || 'Add To List' }}</ui-button>
+      <div v-if="onAdd" class="filterable-list-add">
+        <ui-button class="filterable-list-add-button" type="primary" color="default" @click.stop="onAdd" :icon="addIcon">{{ addTitle || 'Add To List' }}</ui-button>
       </div>
     </div>
   </div>
@@ -156,7 +192,7 @@
   }
 
   export default {
-    props: ['content', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'onAdd', 'addTitle', 'label', 'help'],
+    props: ['content', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'onAdd', 'addTitle', 'label', 'help', 'settingsTitle', 'headerTitle'],
     data() {
       return {
         query: '',

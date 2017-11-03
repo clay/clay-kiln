@@ -3,13 +3,12 @@ import _ from 'lodash';
 import Vue from 'vue';
 import NProgress from 'vue-nprogress';
 import keycode from 'keycode';
-import velocity from 'velocity-animate';
+import velocity from 'velocity-animate/velocity.min.js';
 import differenceInMinutes from 'date-fns/difference_in_minutes';
 import store from './lib/core-data/store';
 import { decorateAll } from './lib/decorators';
 import { addSelectorButton } from './lib/utils/custom-buttons'; // eslint-disable-line
 import { add as addInput } from './lib/forms/inputs';
-import toolbar from './lib/toolbar/edit-toolbar.vue';
 import { init as initValidators } from './lib/validators';
 import conditionalFocus from './directives/conditional-focus';
 import utilsAPI from './lib/utils/api';
@@ -88,17 +87,21 @@ function getLastEditUser(store) {
 // note: preloaded data, external inputs, decorators, and validation rules should already be added
 // when this event fires
 document.addEventListener('DOMContentLoaded', function () {
+  const toolbar = require('./lib/toolbar/edit-toolbar.vue');
+  // instantiate toolbar on DOMContentLoaded, so custom buttons and modals can be
+  // added as child components to the toolbar and simple-modal
+
+  Vue.component('edit-toolbar', toolbar);
+
   new Vue({
+    debug: process.env.NODE_ENV !== 'production',
     strict: true,
     el: '#kiln-app',
     render(h) {
       return h('edit-toolbar');
     },
     store,
-    nprogress,
-    components: {
-      'edit-toolbar': toolbar
-    }
+    nprogress
   });
 
   // page load indicator. will be finished by the preloader

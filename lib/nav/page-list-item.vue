@@ -12,7 +12,7 @@
     min-height: 48px;
     padding: 0 16px;
 
-    @media screen and (min-width: 904px) {
+    @media screen and (min-width: $site-title-byline-status-columns-sidebar) {
       flex: 0 0 48px;
     }
 
@@ -27,7 +27,7 @@
       text-transform: uppercase;
       white-space: nowrap;
 
-      @media screen and (min-width: 904px) {
+      @media screen and (min-width: $site-title-byline-status-columns-sidebar) {
         display: block;
       }
     }
@@ -60,7 +60,7 @@
         text-transform: uppercase;
         width: 100%;
 
-        @media screen and (min-width: 904px) {
+        @media screen and (min-width: $site-title-byline-status-columns-sidebar) {
           display: none;
         }
       }
@@ -76,7 +76,7 @@
           font-style: italic;
         }
 
-        @media screen and (min-width: 904px) {
+        @media screen and (min-width: $site-title-byline-status-columns-sidebar) {
           display: none;
         }
       }
@@ -95,11 +95,11 @@
         color: $text-alt-color;
       }
 
-      @media screen and (min-width: 904px) {
+      @media screen and (min-width: $site-title-byline-status-columns-sidebar) {
         display: inline;
       }
 
-      @media screen and (min-width: 1056px) {
+      @media screen and (min-width: $all-columns-sidebar) {
         padding-right: 16px;
       }
     }
@@ -112,7 +112,7 @@
       min-width: 0;
       padding: 16px 0;
 
-      @media screen and (min-width: 1056px) {
+      @media screen and (min-width: $all-columns-sidebar) {
         align-items: flex-start;
       }
 
@@ -147,7 +147,7 @@
       display: none;
       flex: 0 0 $collaborators-column;
 
-      @media screen and (min-width: 1056px) {
+      @media screen and (min-width: $all-columns-sidebar) {
         display: flex;
       }
     }
@@ -157,7 +157,7 @@
 <template>
   <div class="page-list-item">
     <div v-if="multipleSitesSelected" class="page-list-item-site">{{ site }}</div>
-    <a class="page-list-item-title" :href="url" target="_blank">
+    <a class="page-list-item-title" :href="url" target="_blank" @click="onUrlClick">
       <span v-if="multipleSitesSelected" class="page-list-item-site-small">{{ site }}</span>
       <span class="page-list-item-title-inner" :class="{ 'no-title': !page.titleTruncated }">{{ title }}</span>
       <span class="page-list-item-byline-small" :class="{ 'no-byline': !page.authors.length }">{{ firstAuthor }}</span>
@@ -168,7 +168,7 @@
       <span v-if="statusTime" class="status-time">{{ statusTime }}</span>
     </div>
     <div class="page-list-item-collaborators">
-      <collaborator v-for="user in users" :user="user"></collaborator>
+      <collaborator v-for="user in users" :user="user" :key="user.username"></collaborator>
     </div>
   </div>
 </template>
@@ -236,7 +236,7 @@
   }
 
   export default {
-    props: ['page', 'multipleSitesSelected'],
+    props: ['page', 'multipleSitesSelected', 'isPopoverOpen'],
     computed: {
       url() {
         return this.page.url || generatePageUrl(this.page, _.get(this.$store, 'state.allSites'));
@@ -282,7 +282,15 @@
         return this.page.titleTruncated || 'No Title';
       },
       users() {
-        return this.page.users;
+        return _.take(this.page.users, 4);
+      }
+    },
+    methods: {
+      onUrlClick(e) {
+        if (this.isPopoverOpen) {
+          // don't navigate links if the site select or status select popover menus are open
+          e.preventDefault();
+        }
       }
     },
     components: {

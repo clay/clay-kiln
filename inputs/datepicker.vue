@@ -51,6 +51,7 @@
 
 <template>
   <ui-datepicker
+    color="accent"
     :value="parsedData"
     :invalid="isInvalid"
     :required="isRequired"

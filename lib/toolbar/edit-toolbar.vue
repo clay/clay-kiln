@@ -26,7 +26,7 @@
     width: 100%;
   }
 
-  .toolbar-action-menu {
+  .toolbar-action-menu.ui-icon-button {
     display: inline-flex;
 
     @media screen and (min-width: 600px) {
@@ -34,12 +34,20 @@
     }
   }
 
-  .toolbar-action-button {
+  .toolbar-action-button.ui-icon-button {
     display: none;
+
+    &.is-open-drawer {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
 
     @media screen and (min-width: 600px) {
       display: inline-flex;
     }
+  }
+
+  .toolbar-publish-button.is-open-drawer {
+    background-color: rgba(0, 0, 0, 0.3);
   }
 
   .toolbar-button-text {
@@ -59,7 +67,7 @@
 
       <div class="kiln-toolbar-actions" slot="actions">
         <!-- always display custom buttons -->
-        <component v-for="button in customButtons" :is="button"></component>
+        <component v-for="(button, index) in customButtons" :is="button" :key="index"></component>
         <!-- display a dropdown menu of actions on smaller screens (viewport < 600px) -->
         <ui-icon-button class="toolbar-action-menu" color="white" size="large" type="secondary" icon="more_vert" tooltip="Actions" has-dropdown ref="dropdownButton" @click="closeDrawer">
           <ui-menu contain-focus has-icons slot="dropdown" :options="toolbarOptions" @close="$refs.dropdownButton.closeDropdown()" @select="toggleDrawerFromMenu"></ui-menu>
@@ -67,10 +75,10 @@
         <!-- display individual buttons on larger screens (viewport >= 600px) -->
         <ui-icon-button class="toolbar-action-button" :disabled="!undoEnabled" color="white" size="large" type="secondary" icon="undo" tooltip="Undo" @click="undo"></ui-icon-button>
         <ui-icon-button class="toolbar-action-button" :disabled="!redoEnabled" color="white" size="large" type="secondary" icon="redo" tooltip="Redo" @click="redo"></ui-icon-button>
-        <ui-icon-button class="toolbar-action-button" color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click.stop="toggleDrawer('contributors')"></ui-icon-button>
-        <ui-icon-button class="toolbar-action-button" color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page" @click.stop="toggleDrawer('components')"></ui-icon-button>
-        <ui-icon-button class="toolbar-action-button" color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click.stop="toggleDrawer('preview')"></ui-icon-button>
-        <ui-button type="primary" color="primary" size="large" @click.stop="toggleDrawer('publish')"><span class="toolbar-button-text">{{ publishAction }}</span></ui-button>
+        <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'contributors' }" color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click.stop="toggleDrawer('contributors')"></ui-icon-button>
+        <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'components' }" color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page" @click.stop="toggleDrawer('components')"></ui-icon-button>
+        <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'preview' }" color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click.stop="toggleDrawer('preview')"></ui-icon-button>
+        <ui-button class="toolbar-publish-button" :class="{ 'is-open-drawer': currentDrawer === 'publish' }" type="primary" color="primary" size="large" @click.stop="toggleDrawer('publish')"><span class="toolbar-button-text">{{ publishAction }}</span></ui-button>
       </div>
     </ui-toolbar>
     <div class="kiln-progress">
@@ -187,6 +195,9 @@
       },
       snackbar() {
         return _.get(this.$store, 'state.ui.snackbar') && _.toPlainObject(_.get(this.$store, 'state.ui.snackbar'));
+      },
+      currentDrawer() {
+        return _.get(this.$store, 'state.ui.currentDrawer');
       }
     }),
     watch: {

@@ -8,6 +8,7 @@
   @import '../styleguide/forms';
   @import '../styleguide/colors';
   @import '../styleguide/animations';
+  @import '../styleguide/typography';
 
   .complex-list-item {
     @include form();
@@ -32,20 +33,46 @@
   }
 
   .complex-list-item-actions {
-    justify-content: space-between;
     margin-top: 10px;
     width: 100%;
+  }
+
+  .complex-list-item-actions-inner {
+    align-items: center;
+    display: flex;
+    width: 100%;
+  }
+
+  .complex-list-item-actions-left {
+    @include type-button();
+
+    align-items: center;
+    color: $text-alt-color;
+    display: flex;
+    flex: 0 0 auto;
+    height: 36px;
+  }
+
+  .complex-list-item-actions-right {
+    display: flex;
+    flex: 1 0 auto;
+    justify-content: flex-end;
   }
 </style>
 
 <template>
   <div class="complex-list-item" :class="{ 'is-expanded': isCurrentItem }" :ref="name" @click.stop="onClick">
-    <field v-for="(field, fieldIndex) in fieldNames" :class="{ 'first-field': fieldIndex === 0 }" :name="name + '.' + field" :data="fields[field]" :schema="fieldSchemas[field]"></field>
+    <field v-for="(field, fieldIndex) in fieldNames" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="name + '.' + field" :data="fields[field]" :schema="fieldSchemas[field]"></field>
     <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
     <transition name="complex-list-item-actions" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
-      <div v-if="isCurrentItem" class="complex-list-item-actions ui-button-group">
-        <ui-button buttonType="button" type="secondary" color="red" icon="delete" @click.stop.prevent="removeItem(index)">Remove Item</ui-button>
-        <ui-button buttonType="button" type="secondary" color="primary" icon="add" @click.stop.prevent="addItemAndUnselect(index)">Add Item</ui-button>
+      <div v-if="isCurrentItem" class="complex-list-item-actions">
+        <div class="complex-list-item-actions-inner ui-button-group">
+          <span class="complex-list-item-actions-left">Item {{ index + 1 }}/{{ total }}</span>
+          <div class="complex-list-item-actions-right ui-button-group">
+            <ui-button buttonType="button" type="secondary" color="red" icon="delete" @click.stop.prevent="removeItem(index)">Remove</ui-button>
+            <ui-button buttonType="button" type="secondary" color="accent" icon="add" @click.stop.prevent="addItemAndUnselect(index)">Add Another</ui-button>
+          </div>
+        </div>
       </div>
     </transition>
   </div>
@@ -54,13 +81,14 @@
 <script>
   import _ from 'lodash';
   import { fieldProp } from '../lib/utils/references';
-  import velocity from 'velocity-animate';
+  import velocity from 'velocity-animate/velocity.min.js';
   import field from '../lib/forms/field.vue';
   import UiButton from 'keen/UiButton';
 
   export default {
     props: [
       'index',
+      'total',
       'name',
       'data',
       'schema',

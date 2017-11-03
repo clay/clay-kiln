@@ -8,6 +8,7 @@
     align-items: center;
     background-color: $pure-black;
     border: none;
+    border-radius: 0;
     color: $pure-white;
     cursor: pointer;
     display: flex;
@@ -25,7 +26,7 @@
     }
 
     &.is-selected:not(:hover) {
-      background-color: $brand-primary-color;
+      background-color: $md-blue-grey-800;
     }
 
     &:hover {
@@ -39,7 +40,7 @@
 </style>
 
 <template>
-  <button ref="button" type="button" class="nav-menu-button" :class="{ 'is-selected': isSelected, 'is-large': size === 'large' }" @click.stop="onClick">
+  <button ref="button" type="button" class="nav-menu-button" :class="{ 'is-selected': isSelected, 'is-large': size === 'large' }" @click="onClick">
     <ui-icon v-if="icon" :icon="icon"></ui-icon>
     <span class="nav-menu-button-text"><slot></slot></span>
     <ui-ripple-ink trigger="button"></ui-ripple-ink>

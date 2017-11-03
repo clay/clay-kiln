@@ -1,5 +1,5 @@
 import * as lib from './wysiwyg-deltas';
-import Quill from 'quill';
+import Quill from 'quill/dist/quill.min.js';
 
 const Delta = Quill.import('delta');
 

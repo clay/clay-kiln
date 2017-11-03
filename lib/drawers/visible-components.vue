@@ -1,5 +1,5 @@
 <template>
-  <filterable-list :content="components" :onClick="itemClick" placeholder="Search visible components"></filterable-list>
+  <filterable-list :content="components" :onClick="itemClick" label="Search visible components" headerTitle="Component"></filterable-list>
 </template>
 
 <script>

@@ -25,7 +25,7 @@
         return _.get(this.$store, 'state.ui.currentConfirm.title') || 'Confirm Changes';
       },
       type() {
-        return _.get(this.$store, 'state.ui.currentConfirm.type') || 'primary';
+        return _.get(this.$store, 'state.ui.currentConfirm.type') || 'accent';
       },
       button() {
         return _.get(this.$store, 'state.ui.currentConfirm.button') || 'OK';

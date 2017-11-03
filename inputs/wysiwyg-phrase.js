@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import Quill from 'quill';
+import Quill from 'quill/dist/quill.min.js';
 
 const Inline = Quill.import('blots/inline'),
   toolbarIcons = Quill.import('ui/icons');

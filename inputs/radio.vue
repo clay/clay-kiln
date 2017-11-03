@@ -77,15 +77,16 @@
   @import '../styleguide/typography';
 
   .editor-no-options {
-    @include type-caption();
+    @include type-body();
 
-    font-style: italic;
+    color: $text-disabled-color;
   }
 </style>
 
 <template>
   <div v-if="hasOptions" class="editor-radios">
     <ui-radio-group
+    color="accent"
     :name="name"
     :value="data"
     :label="label"

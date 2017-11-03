@@ -85,9 +85,9 @@
   @import '../styleguide/typography';
 
   .editor-no-options {
-    @include type-caption();
+    @include type-body();
 
-    font-style: italic;
+    color: $text-disabled-color;
   }
 </style>
 

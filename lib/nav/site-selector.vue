@@ -11,36 +11,26 @@
     }
   }
 
-  .site-selector-header {
-    align-items: center;
-    border-bottom: 1px solid $divider-color;
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 16px;
-  }
-
-  .site-selector-header-current {
-    @include type-button();
-
-    text-transform: uppercase;
-  }
-
   .site-selector-body {
     column-count: 2;
     column-gap: 16px;
     display: block;
     padding: 16px;
   }
+
+  .site-selector-footer {
+    padding: 0 16px 16px;
+    width: 100%;
+  }
 </style>
 
 <template>
   <div class="site-selector">
-    <div class="site-selector-header">
-      <span class="site-selector-header-current">{{ selectedSite }}</span>
-      <ui-button type="secondary" :color="multiSelectColor" @click="multiSelect">{{ multiSelectText }}</ui-button>
-    </div>
     <div class="site-selector-body">
-      <ui-checkbox v-for="site in sites" :label="site.name" :value="site.selected" @change="select(site.slug)"></ui-checkbox>
+      <ui-checkbox v-for="site in sites" color="accent" :key="site.slug" :label="site.name" :value="site.selected" @change="select(site.slug)"></ui-checkbox>
+    </div>
+    <div class="site-selector-footer">
+      <ui-button type="secondary" :color="multiSelectColor" @click="multiSelect">{{ multiSelectText }}</ui-button>
     </div>
   </div>
 </template>
@@ -51,13 +41,13 @@
   import UiCheckbox from 'keen/UiCheckbox';
 
   export default {
-    props: ['sites', 'selectedSite'],
+    props: ['sites'],
     computed: {
       allSitesSelected() {
         return _.every(this.sites, (site) => site.selected);
       },
       multiSelectColor() {
-        return this.allSitesSelected ? 'red' : 'primary';
+        return this.allSitesSelected ? 'red' : 'accent';
       },
       multiSelectText() {
         return this.allSitesSelected ? 'Select None' : 'Select All';

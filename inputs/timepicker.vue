@@ -51,12 +51,11 @@
 
 <template>
   <ui-textbox
-    :value="data"
+    v-model="timeValue"
     :invalid="isInvalid"
     :required="isRequired"
     :label="label"
-    :floatingLabel="true"
-    :help="args.help"
+    :help="timeHelp"
     :error="errorMessage"
     :disabled="isDisabled"
     iconPosition="right"
@@ -73,7 +72,7 @@
   import { shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
   import label from '../lib/utils/label';
   import logger from '../lib/utils/log';
-  import UiDatepicker from 'keen/UiDatepicker';
+  import UiTextbox from 'keen/UiTextbox';
 
   const log = logger(__filename);
 
@@ -81,10 +80,20 @@
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {
-        isDisabled: false
+        isDisabled: false,
+        timeValue: ''
       };
     },
     computed: {
+      timeHelp() {
+        const parsed = parseNaturalDate(this.timeValue);
+
+        if (parsed) {
+          return `${this.args.help} (Parsed as ${dateFormat(parsed, 'h:mm A')})`;
+        } else {
+          return this.args.help;
+        }
+      },
       isRequired() {
         return _.get(this.args, 'validate.required') === true || shouldBeRequired(this.args.validate, this.$store, this.name);
       },
@@ -104,18 +113,30 @@
         }
       },
       errorMessage() {
-        return getValidationError(this.data, this.args.validate, this.$store, this.name);
+        const validationError = getValidationError(this.timeValue, this.args.validate, this.$store, this.name),
+          parsed = parseNaturalDate(this.timeValue);
+
+        if (validationError) {
+          return validationError;
+        } else if (!parsed) {
+          return `${this.args.help} (Please enter a valid time)`;
+        }
       },
       isInvalid() {
         return !!this.errorMessage;
       }
     },
+    mounted() {
+      this.timeValue = _.isString(this.data) ? dateFormat(this.data, 'h:mm A') : '';
+    },
     methods: {
       // every time the value of the input changes, update the store
       update(val) {
-        const formatted = dateFormat(parseNaturalDate(val), 'HH:mm');
+        const parsed = parseNaturalDate(val);
 
-        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: formatted });
+        if (parsed) {
+          this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: dateFormat(parsed, 'HH:mm') });
+        }
       },
       disableInput() {
         this.isDisabled = true;
@@ -124,6 +145,6 @@
         this.isDisabled = false;
       }
     },
-    components: _.merge(window.kiln.inputs, { UiDatepicker }) // attached button
+    components: _.merge(window.kiln.inputs, { UiTextbox }) // attached button
   };
 </script>

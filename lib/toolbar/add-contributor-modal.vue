@@ -21,10 +21,11 @@
 
 <template>
   <div class="add-contributor">
-    <ui-textbox class="invite-filter" v-model="query" type="search" label="Search for Someone" :autofocus="true" :floatingLabel="true" ref="searchInput" @keydown="filterList"></ui-textbox>
+    <ui-textbox class="invite-filter" v-model.trim="query" type="search" label="Search for Someone" :autofocus="true" :floatingLabel="true" ref="searchInput" @keydown="filterList"></ui-textbox>
     <div class="invite-list">
       <person
         v-for="user in users"
+        :key="user.username"
         :id="user.username"
         :image="user.imageUrl"
         :name="user.name"
@@ -32,8 +33,8 @@
         :hasPrimaryAction="true"
         :hasSecondaryAction="true"
         secondaryActionIcon="person_add"
-        @primary-click="addPerson"
-        @secondary-click="addPerson"></person>
+        @primary-click="addPerson(user)"
+        @secondary-click="addPerson(user)"></person>
     </div>
   </div>
 </template>
@@ -103,17 +104,19 @@
         this.fetchUsers();
       }, 300),
       addPerson(user) {
+        const name = user.name || user.username;
+
         this.$store.dispatch('startProgress');
         return this.$store.dispatch('updatePageList', { user })
           .then(() => {
             this.$store.dispatch('finishProgress');
-            this.$store.dispatch('showSnackbar', `Added ${user.username} to this page`); // todo: allow undoing this
+            this.$store.dispatch('showSnackbar', `Added ${name} to this page`); // todo: allow undoing this
             return this.$store.dispatch('closeModal');
           })
           .catch((e) => {
-            log.error(`Error adding ${user.username} to page: ${e.message}`, { action: 'addPersonToPage' });
+            log.error(`Error adding ${name} to page: ${e.message}`, { action: 'addPersonToPage' });
             store.dispatch('finishProgress');
-            store.dispatch('showSnackbar', `Error adding ${user.username} to page`);
+            store.dispatch('showSnackbar', `Error adding ${name} to page`);
           });
       }
     },

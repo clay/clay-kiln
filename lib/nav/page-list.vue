@@ -10,12 +10,12 @@
 
     // note: left nav menu appears at 600px (it's 200px wide),
     // so all other breakpoints go from 800px
-    @media screen and (min-width: 600px) {
+    @media screen and (min-width: $site-title-status-columns) {
       max-width: calc(100vw - 200px);
     }
 
-    @media screen and (min-width: 1256px) {
-      max-width: 1056px;
+    @media screen and (min-width: $all-columns-sidebar) {
+      max-width: $all-columns;
     }
   }
 
@@ -26,7 +26,7 @@
     padding: 8px;
     width: 100%;
 
-    @media screen and (min-width: 800px) {
+    @media screen and (min-width: $site-title-status-columns-sidebar) {
       padding: 16px 16px 16px 8px;
     }
   }
@@ -36,7 +36,7 @@
     margin-right: 8px;
     max-width: 140px;
 
-    @media screen and (min-width: 800px) {
+    @media screen and (min-width: $site-title-status-columns-sidebar) {
       max-width: 300px;
     }
   }
@@ -50,7 +50,7 @@
     flex: 0 0 auto;
     margin-left: 8px;
 
-    @media screen and (min-width: 1056px) {
+    @media screen and (min-width: $all-columns-sidebar) {
       display: none;
     }
   }
@@ -60,7 +60,7 @@
     flex: 0 0 auto;
     margin-left: 16px;
 
-    @media screen and (min-width: 1056px) {
+    @media screen and (min-width: $all-columns-sidebar) {
       display: flex;
     }
   }
@@ -75,7 +75,7 @@
     flex: 0 0 auto;
     padding: 8px 16px;
 
-    @media screen and (min-width: 800px) {
+    @media screen and (min-width: $site-title-status-columns-sidebar) {
       display: flex;
     }
 
@@ -92,7 +92,7 @@
         display: none;
         flex: 0 0 $byline-column;
 
-        @media screen and (min-width: 904px) {
+        @media screen and (min-width: $site-title-byline-status-columns-sidebar) {
           display: inline;
         }
       }
@@ -101,7 +101,7 @@
         flex: 0 0 $status-column;
         text-align: right;
 
-        @media screen and (min-width: 1056px) {
+        @media screen and (min-width: $all-columns-sidebar) {
           text-align: left;
         }
       }
@@ -110,7 +110,7 @@
         display: none;
         flex: 0 0 $collaborators-column;
 
-        @media screen and (min-width: 1056px) {
+        @media screen and (min-width: $all-columns-sidebar) {
           display: inline;
         }
       }
@@ -136,13 +136,13 @@
 <template>
   <div class="page-list">
     <div class="page-list-controls">
-      <ui-button buttonType="button" class="page-list-sites" type="secondary" color="primary" has-dropdown ref="sitesDropdown">
+      <ui-button buttonType="button" class="page-list-sites" type="secondary" color="default" has-dropdown ref="sitesDropdown" @dropdown-open="onPopoverOpen" @dropdown-close="onPopoverClose">
         <span class="page-list-selected-site">{{ selectedSite }}</span>
-        <site-selector slot="dropdown" :sites="sites" :selectedSite="selectedSite" @close="$refs.sitesDropdown.closeDropdown()" @select="selectSite" @multi-select="selectMultipleSites"></site-selector>
+        <site-selector slot="dropdown" :sites="sites" @select="selectSite" @multi-select="selectMultipleSites"></site-selector>
       </ui-button>
-      <ui-textbox class="page-list-search" v-model="query" type="search" autofocus placeholder="Search by Title or Byline" @input="filterList"></ui-textbox>
-      <ui-icon-button class="page-list-status-small" type="secondary" icon="filter_list" has-dropdown ref="statusDropdown">
-        <status-selector slot="dropdown" :selectedStatus="selectedStatus" :vertical="true" @close="$refs.statusDropdown.closeDropdown()" @select="selectStatus"></status-selector>
+      <ui-textbox class="page-list-search" v-model.trim="query" type="search" autofocus placeholder="Search by Title or Byline" @input="filterList"></ui-textbox>
+      <ui-icon-button class="page-list-status-small" type="secondary" icon="filter_list" has-dropdown ref="statusDropdown" @dropdown-open="onPopoverOpen" @dropdown-close="onPopoverClose">
+        <status-selector slot="dropdown" :selectedStatus="selectedStatus" :vertical="true" @select="selectStatus"></status-selector>
       </ui-icon-button>
       <status-selector class="page-list-status-large" :selectedStatus="selectedStatus" @select="selectStatus"></status-selector>
     </div>
@@ -154,7 +154,7 @@
       <span class="page-list-header page-list-header-collaborators">Collaborators</span>
     </div>
     <div class="page-list-readout">
-      <page-list-item v-for="page in pages" :page="page" :multipleSitesSelected="multipleSitesSelected"></page-list-item>
+      <page-list-item v-for="(page, pageIndex) in pages" :key="pageIndex" :page="page" :multipleSitesSelected="multipleSitesSelected" :isPopoverOpen="isPopoverOpen"></page-list-item>
       <div class="page-list-load-more" v-if="showLoadMore">
         <ui-button type="secondary" class="page-list-load-more-button" @click="fetchPages">Load More</ui-button>
       </div>
@@ -299,7 +299,8 @@
         total: null,
         sites: getInitialSites.call(this),
         pages: [],
-        selectedStatus: 'all'
+        selectedStatus: 'all',
+        isPopoverOpen: false
       };
     },
     computed: {
@@ -323,6 +324,12 @@
       }
     },
     methods: {
+      onPopoverOpen() {
+        this.isPopoverOpen = true;
+      },
+      onPopoverClose() {
+        this.isPopoverOpen = false;
+      },
       selectSite(slug) {
         const site = _.find(this.sites, (s) => s.slug === slug);
 
@@ -364,13 +371,13 @@
             total = _.get(res, 'hits.total'),
             pages = _.map(hits, (hit) => hit._source);
 
-          if (this.offset === 0) {
+          if (offset === 0) {
             this.pages = pages;
           } else {
             this.pages = this.pages.concat(pages);
           }
 
-          this.offset = this.offset + pages.length;
+          this.offset = offset + pages.length;
           this.total = total; // update the total for this particular query
           // (it's used to hide the "load more" button)
         });

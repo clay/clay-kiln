@@ -142,6 +142,11 @@
     }
   }
 
+  .editor-inline .ql-container,
+  .editor-inline .ql-editor {
+    @include normal-text();
+  }
+
   .wysiwyg-input *::selection {
     background-color: $text-selection;
   }
@@ -231,7 +236,7 @@
 </template>
 
 <script>
-  import Quill from 'quill';
+  import Quill from 'quill/dist/quill.min.js';
   import _ from 'lodash';
   import { find } from '@nymag/dom';
   import { getComponentName, refAttr, editAttr } from '../lib/utils/references';
@@ -689,6 +694,14 @@
                       return true;
                     }
                   }
+                }
+              },
+              closeForm: {
+                key: 'enter',
+                shiftKey: false,
+                shortKey: true,
+                handler() {
+                  store.dispatch('unfocus');
                 }
               },
               backspace: {

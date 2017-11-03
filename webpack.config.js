@@ -30,7 +30,9 @@ let plugins = [
       KILN_VERSION: `"${kilnVersion}"`,
       LOG: '"trace"'
     }
-  })
+  }),
+  new webpack.optimize.ModuleConcatenationPlugin(),
+  new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/) // some dependency (chrono-node) is using moment.js (allow that, but make them drop their 300kB of locales)
 ];
 
 if (prod) {
@@ -90,8 +92,8 @@ module.exports = {
   },
   module: {
     rules: [{
-      // todo: remove this (and update vue-unit dep) once vue-unit hits 0.3.0
-      test: /node_modules\/(vue-unit|keen-ui)\//,
+      // todo: remove vue-unit (and update vue-unit dep) once vue-unit hits 0.3.0
+      test: /node_modules\/(vue-unit|keen-ui|striptags)\//,
       loader: 'babel-loader'
     }, {
       test: /\.js$/,
@@ -110,16 +112,24 @@ module.exports = {
       test: /\.vue$/,
       loader: 'vue-loader',
       options: {
+        esModule: false, // todo: enable this when we can use it with keenUI
+        extractCSS: true,
         loaders: {
-          css: 'vue-style-loader!css-loader!postcss-loader',
-          sass: 'vue-style-loader!css-loader!postcss-loader!sass-loader?data=@import "styleguide/keen-variables.scss";',
-          scss: 'vue-style-loader!css-loader!postcss-loader!sass-loader?data=@import "styleguide/keen-variables.scss";',
+          css: styles.extract({
+            fallback: 'style-loader',
+            use: ['css-loader', 'postcss-loader', 'sass-loader?data=@import "styleguide/keen-variables.scss";']
+          }),
+          sass: styles.extract({
+            fallback: 'style-loader',
+            use: ['css-loader', 'postcss-loader', 'sass-loader?data=@import "styleguide/keen-variables.scss";']
+          }),
+          scss: styles.extract({
+            fallback: 'style-loader',
+            use: ['css-loader', 'postcss-loader', 'sass-loader?data=@import "styleguide/keen-variables.scss";']
+          }),
           docs: docs.extract('raw-loader')
         }
       }
-    }, {
-      test: /\.woff2$/,
-      loader: 'url-loader?limit=65000&mimetype=application/font-woff2&name=public/fonts/[name].[ext]'
     }]
   },
   resolve: {

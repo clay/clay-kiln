@@ -70,6 +70,7 @@
 
       .ui-tabs__body {
         border: none;
+        height: 100%;
         // input container already has padding
         padding: 0;
       }
@@ -107,7 +108,7 @@
         <div class="form-header-actions">
           <ui-icon-button v-if="componentLabel" type="secondary" color="black" icon="info_outline" :tooltip="`${componentLabel} Info`" @click.stop="openInfo"></ui-icon-button>
           <ui-icon-button v-if="hasSettings" type="secondary" color="black" icon="settings" :tooltip="`${componentLabel} Settings`" @click.stop="openSettings"></ui-icon-button>
-          <component v-for="button in customButtons" :is="button"></component>
+          <component v-for="(button, index) in customButtons" :is="button" :key="index"></component>
           <ui-icon-button v-if="hasRemove" type="secondary" color="black" icon="delete" :tooltip="`Remove ${componentLabel}`" @click.stop="removeComponent"></ui-icon-button>
           <ui-icon-button v-if="hasAddComponent" type="secondary" color="black" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
           <ui-icon-button v-if="hasReplaceComponent" type="secondary" color="black" icon="swap_vert" :tooltip="`Replace ${componentLabel}`"></ui-icon-button>
@@ -117,18 +118,18 @@
       </div>
       <div class="form-contents">
         <ui-tabs v-if="hasSections" fullwidth ref="tabs">
-          <ui-tab v-for="(section, index) in sections" :title="section.title">
-            <div class="input-container-wrapper">
+          <ui-tab v-for="(section, index) in sections" :key="index" :title="section.title">
+            <div class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 104px)`}">
               <div class="input-container">
-                <field v-for="(field, fieldIndex) in section.fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]" @resize="onResize"></field>
-                <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
+                <field v-for="(field, fieldIndex) in section.fields" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]" @resize="onResize"></field>
+                <div v-if="section.hasRequiredFields" class="required-footer">* Required fields</div>
               </div>
             </div>
           </ui-tab>
         </ui-tabs>
-        <div v-else class="input-container-wrapper">
+        <div v-else class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 56px)`}">
           <div class="input-container">
-            <field v-for="(field, fieldIndex) in sections[0].fields" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]" @resize="onResize"></field>
+            <field v-for="(field, fieldIndex) in sections[0].fields" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]" @resize="onResize"></field>
             <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
           </div>
         </div>
@@ -142,7 +143,7 @@
   import _ from 'lodash';
   import { find } from '@nymag/dom';
   import { mapState } from 'vuex';
-  import velocity from 'velocity-animate';
+  import velocity from 'velocity-animate/velocity.min.js';
   import { getSchema } from '../core-data/components';
   import label from '../utils/label';
   import logger from '../utils/log';
@@ -187,20 +188,25 @@
         }
       },
       hasSections: (state) => state.ui.currentForm.schema.sections && state.ui.currentForm.schema.sections.length > 1,
-      sections: (state) => {
-        const sections = state.ui.currentForm.schema.sections;
+      sections() {
+        const currentForm = _.get(this.$store, 'state.ui.currentForm'),
+          sections = _.get(currentForm, 'schema.sections'),
+          fields = _.get(currentForm, 'schema.fields'),
+          path = _.get(currentForm, 'path'),
+          schema = this.schema;
 
         if (!_.isEmpty(sections)) {
           return _.map(sections, (section) => {
             return {
               title: section.title,
-              fields: section.fields
+              fields: section.fields,
+              hasRequiredFields: _.some(schema, (val, key) => _.includes(Object.keys(section.fields), key) && _.has(val, `${fieldProp}.validate.required`))
             };
           });
         } else {
           // no sections, so return a single "section" with all the fields
           return [{
-            fields: state.ui.currentForm.schema.fields || [state.ui.currentForm.path], // group or single field
+            fields: fields || [path], // group or single field
           }];
         }
       },
@@ -258,7 +264,9 @@
             this.formTop = `${docHeight / 2 - halfFinalHeight}px`;
           } else {
             const heightPlusMargin = finalHeight / 2 + 20,
-              isInsideViewport = posY > heightPlusMargin && posY < docHeight - heightPlusMargin;
+              isInsideViewport = posY > heightPlusMargin && posY < docHeight - heightPlusMargin - 500;
+              // give the bottom calculation about 500px more room, so complex-list items
+              // don't overflow the bottom of the viewport (if they're opened when they don't have any items yet)
 
             this.formTop = isInsideViewport ? `${posY - halfFinalHeight}px` : `${docHeight / 2 - halfFinalHeight}px`;
           }
@@ -273,6 +281,7 @@
             // (e.g. adding complex-list items)
             // el.style.height = 'auto';
             el.style.maxHeight = `calc(100vh - ${this.formTop})`;
+            el.style.height = 'auto';
 
             // manually reset the initial width of the indicator, see https://github.com/JosephusPaye/Keen-UI/issues/328
             if (this.$refs.tabs) {
@@ -343,11 +352,11 @@
         this.$store.dispatch('unfocus');
       }
     },
-    components: {
+    components: _.merge({}, _.get(window, 'kiln.selectorButtons', {}), {
       field,
       UiIconButton,
       UiTabs,
       UiTab
-    }
+    })
   };
 </script>

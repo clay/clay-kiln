@@ -1,5 +1,6 @@
 <style lang="sass">
   @import '../../styleguide/colors';
+  @import '../../styleguide/typography';
 
   .users-nav {
     display: flex;
@@ -8,7 +9,33 @@
 
     .users-input {
       flex: 0 0 auto;
-      margin: 8px 16px;
+      margin: 16px;
+    }
+
+    .users-headers {
+      @include type-list-header();
+
+      align-items: center;
+      background-color: $md-grey-50;
+      border-top: 1px solid $divider-color;
+      display: flex;
+      flex: 0 0 auto;
+      padding: 8px 16px;
+
+      .users-header {
+        &-name {
+          flex: 0 1 100%;
+          padding-left: 56px;
+        }
+
+        &-admin {
+          flex: 0 0 36px;
+        }
+
+        &-remove {
+          flex: 0 0 36px;
+        }
+      }
     }
 
     .users-list {
@@ -37,15 +64,21 @@
 <template>
   <div class="users-nav">
     <ui-textbox
-      v-model="query"
+      v-model.trim="query"
       class="users-input"
       label="Search Users"
       :floatingLabel="true"
       :autofocus="true"
       @input="filterList"></ui-textbox>
+    <div class="users-headers">
+      <span class="users-header users-header-name">User Info</span>
+      <span class="users-header users-header-admin">Admin</span>
+      <span class="users-header users-header-remove"><!-- self explanatory --></span>
+    </div>
     <div class="users-list">
       <person
         v-for="(user, index) in users"
+        :key="user.id"
         :id="user.id"
         :image="user.imageUrl"
         :name="user.name"
@@ -55,6 +88,7 @@
         :hasSecondaryAction="true"
         secondaryActionIcon="delete"
         :disabled="user.isCurrentUser"
+        toggleTitle="Toggle Admin"
         @toggle="toggleAdmin"
         @secondary-click="deleteUser"></person>
     </div>
@@ -67,7 +101,7 @@
 <script>
   import _ from 'lodash';
   import { postJSON, save, remove } from '../core-data/api';
-  import { searchRoute } from '../utils/references';
+  import { searchRoute, usersRoute, usersBareRoute } from '../utils/references';
   import logger from '../utils/log';
   import person from '../utils/person.vue';
   import UiTextbox from 'keen/UiTextbox';
@@ -132,7 +166,7 @@
               const src = hit._source;
 
               return {
-                id: hit._id, // PUT to prefix + /users/ + id to update user (e.g. to toggle admin)
+                id: hit._id, // PUT to prefix + /_users/ + id to update user (e.g. to toggle admin)
                 username: src.username,
                 provider: src.provider,
                 auth: src.auth,
@@ -164,7 +198,7 @@
             this.users[index].auth = 'write';
           }
 
-          return save(prefix + '/users/' + id, _.omit(this.users[index], ['id', 'isCurrentUser']));
+          return save(prefix + usersRoute + id, _.omit(this.users[index], ['id', 'isCurrentUser']));
         }
       },
       deleteUser(id) {
@@ -183,11 +217,11 @@
           prefix = _.get(store, 'state.site.prefix');
 
         this.users.splice(index, 1);
-        return remove(prefix + '/users/' + id).then((oldUser) => {
+        return remove(prefix + usersRoute + id).then((oldUser) => {
           store.dispatch('showSnackbar', {
             message: `Removed ${username} from Clay`,
             action: 'Undo',
-            onActionClick: () => postJSON(prefix + '/users', oldUser)
+            onActionClick: () => postJSON(prefix + usersBareRoute, oldUser)
           });
         }).catch((e) => {
           log.error(`Error removing ${username} from Clay: ${e.message}`, { action: 'onDeleteConfirm' });

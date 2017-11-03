@@ -1,5 +1,5 @@
 <template>
-  <filterable-list :content="list" :onSettings="openSettings" :onDelete="removeComponent" :onReorder="reorderComponents" :addTitle="addTitle" :onAdd="openAddComponent"></filterable-list>
+  <filterable-list :content="list" :onSettings="openSettings" :onDelete="removeComponent" :onReorder="reorderComponents" :addTitle="addTitle" :onAdd="openAddComponent" headerTitle="Component"></filterable-list>
 </template>
 
 <script>

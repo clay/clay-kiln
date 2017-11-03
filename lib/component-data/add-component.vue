@@ -2,6 +2,7 @@
   @import '../../styleguide/colors';
   @import '../../styleguide/layers';
   @import '../../styleguide/cards';
+  @import '../../styleguide/typography';
 
   .add-component-modal {
     @include overlay-layer();
@@ -70,7 +71,7 @@
       <div class="add-component-header">
         <h2 class="add-component-header-title">Add Component</h2>
         <div class="add-component-header-actions">
-          <ui-icon-button v-if="isFuzzy" type="secondary" color="black" icon="search" :tooltip="fuzzyTitle" @click.stop="fuzzyAdd"></ui-icon-button>
+          <ui-icon-button buttonType="button" v-if="isFuzzy" type="secondary" color="black" icon="list" :tooltip="fuzzyTitle" @click.stop="fuzzyAdd"></ui-icon-button>
           <div class="add-component-close-divider"></div>
           <ui-icon-button color="black" type="secondary" icon="close" ariaLabel="Close" tooltip="Close (ESC)" @click.stop="close"></ui-icon-button>
         </div>
@@ -86,7 +87,7 @@
   import _ from 'lodash';
   import { find } from '@nymag/dom';
   import { mapState } from 'vuex';
-  import velocity from 'velocity-animate';
+  import velocity from 'velocity-animate/velocity.min.js';
   import { getItem, updateArray } from '../utils/local';
   import label from '../utils/label';
   import { getComponentName } from '../utils/references';

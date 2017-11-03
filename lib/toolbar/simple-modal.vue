@@ -9,7 +9,7 @@
 </style>
 
 <template>
-  <ui-modal class="simple-modal" ref="modal" :title="title" :size="size">
+  <ui-modal class="simple-modal" ref="modal" :title="title" :size="size" @open="onOpen" @close="onClose">
     <component :is="type" :data="data"></component>
   </ui-modal>
 </template>
@@ -22,6 +22,21 @@
   import addContributorModal from './add-contributor-modal.vue';
   import addPageModal from './add-page-modal.vue';
   import addUserModal from './add-user-modal.vue';
+
+  const noscrollClass = 'noscroll',
+    htmlElement = document.documentElement;
+
+  /**
+   * Toggle the `noscroll` class
+   * @param  {Boolean} show
+   */
+  function toggleNoScroll(show) {
+    if (show) {
+      htmlElement.classList.add(noscrollClass);
+    } else if (!show && htmlElement.classList.contains(noscrollClass)) {
+      htmlElement.classList.remove(noscrollClass);
+    }
+  }
 
   export default {
     data() {
@@ -53,13 +68,21 @@
         }
       }
     },
-    components: {
+    methods: {
+      onOpen() {
+        toggleNoScroll(true);
+      },
+      onClose() {
+        toggleNoScroll(false);
+      }
+    },
+    components: _.merge(_.get(window, 'kiln.modals', {}), {
       UiModal,
       info: infoModal,
       keyboard: keyboardModal,
       'add-contributor': addContributorModal,
       'add-page': addPageModal,
       'add-user': addUserModal
-    }
+    })
   };
 </script>

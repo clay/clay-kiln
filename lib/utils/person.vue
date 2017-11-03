@@ -68,7 +68,8 @@
       <span v-if="subtitle" class="person-subtitle">{{ subtitle }}</span>
     </div>
     <div v-if="hasActions" class="person-actions">
-      <ui-switch v-if="hasToggle" :disabled="disabled" :value="toggled" @input="onToggle"></ui-switch>
+      <ui-switch v-if="hasToggle" ref="toggle" color="accent" :disabled="disabled" :value="toggled" @input="onToggle"></ui-switch>
+      <ui-tooltip v-if="hasToggle && toggleTitle" trigger="toggle">{{ toggleTitle }}</ui-tooltip>
       <ui-icon-button v-if="hasSecondaryAction" :disabled="disabled" type="secondary" color="default" :icon="secondaryActionIcon" @click.stop="onSecondaryAction"></ui-icon-button>
     </div>
   </div>
@@ -77,10 +78,11 @@
 <script>
   import UiSwitch from 'keen/UiSwitch';
   import UiIconButton from 'keen/UiIconButton';
+  import UiTooltip from 'keen/UiTooltip';
   import avatar from './avatar.vue';
 
   export default {
-    props: ['id', 'image', 'name', 'subtitle', 'hasPrimaryAction', 'hasToggle', 'toggled', 'hasSecondaryAction', 'secondaryActionIcon', 'disabled'],
+    props: ['id', 'image', 'name', 'subtitle', 'hasPrimaryAction', 'hasToggle', 'toggled', 'hasSecondaryAction', 'secondaryActionIcon', 'disabled', 'toggleTitle'],
     computed: {
       hasActions() {
         return this.hasToggle || this.hasSecondaryAction;
@@ -106,6 +108,7 @@
     components: {
       UiSwitch,
       UiIconButton,
+      UiTooltip,
       avatar
     }
   };
