@@ -51,6 +51,8 @@
 
 <template>
   <ui-textbox
+    type="time"
+    placeholder="12:00 AM"
     v-model="timeValue"
     :invalid="isInvalid"
     :required="isRequired"
