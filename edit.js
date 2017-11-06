@@ -110,6 +110,11 @@ document.addEventListener('DOMContentLoaded', function () {
   // add external plugins
   _.forOwn(window.kiln.plugins || {}, (plugin) => plugin(store));
 
+  // add `kiln-edit-mode` class to body. this allows certain components
+  // (e.g. embeds that rely on client-side js, which doesn't run in edit mode)
+  // to add special edit-mode-only styling
+  document.body.classList.add('kiln-edit-mode');
+
   store.dispatch('preload')
     .then(() => decorateAll())
     .then(() => store.dispatch('openHashedForm'))
