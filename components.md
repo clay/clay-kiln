@@ -26,7 +26,7 @@ The root element of `<body>` components may include other attributes, such as `d
 
 Templates must be precompiled and added to `window.kiln.componentTemplates` for Kiln to re-render components after saving.
 
-## Models and Controllers
+## Model and Controller
 
 Modals \(`model.js`\) and controllers \(`client.js` or `controller.js`\) are two types of JavaScript files your components may contain \(a third — `upgrade.js` — is [only used in Amphora](http://clay.github.io/amphora/docs/upgrade.html)\). Models allow components to perform logic on their data before saving and rendering, while controllers add client-side functionality to components. Both are optional.
 
@@ -34,7 +34,23 @@ Controllers are _never_ run in edit mode, as they have the potential to interfer
 
 Models are called when components save and re-render themselves. Both the `save()` and `render()` methods are optional, as many components require either one or the other. They both have the same function signature, and may return objects \(the component data\) or promises \(that resolve to the component data\).
 
+```js
+module.exports.save = (uri, data, locals) => {
+  // do some logic, then return the data that should save into the db
+};
+
+module.exports.render = (uri, data, locals) => {
+  // do some logic, then return the data that should be sent to handlebars
+};
+```
+
 Note: If in doubt, use the `save()` method, as it only runs when data is saved. Calling the `render()` method \(every time a component renders\) to do slow or intensive logic will slow down your component for end-users.
 
+Models must be compiled and added to `window.kiln.componentModels` for Kiln to call them when saving and re-rendering components.
 
+## Schema
+
+Schemas \(or _schemata_, for pedants like myself\) are the main connective tissue between components and Kiln. They define what kinds of fields components have, as well as how those fields are grouped. They also provide `_description` text for the components' Info Modals.
+
+Schemas for components that are currently on the page are automatically parsed by Amphora and added to the page when Kiln loads. Schemas for other components are added when those components are added.
 
