@@ -26,7 +26,7 @@ window.loggerStub = {
   error: sinon.spy()
 };
 
-sinon.stub(logger, 'default', () => {
+sinon.stub(logger, 'default').callsFake(() => {
   // return the same instances of our logging spies every time
   // we create a new logger
   return window.loggerStub;

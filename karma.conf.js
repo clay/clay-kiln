@@ -10,12 +10,15 @@ const path = require('path'),
       'test/setup.js': ['webpack', 'sourcemap']
     },
     frameworks: ['mocha', 'sinon-chai'],
+    webpackMiddleware: {
+      noInfo: true
+    },
     webpack: {
       target: 'web',
       module: {
         rules: [{
-          // todo: remove this (and update vue-unit dep) once vue-unit hits 0.3.0
-          test: /node_modules\/vue-unit\//,
+          // todo: remove vue-unit (and update vue-unit dep) once vue-unit hits 0.3.0
+          test: /node_modules\/(vue-unit|keen-ui|striptags)\//,
           loader: 'babel-loader'
         }, {
           test: /\.js$/,
@@ -26,13 +29,22 @@ const path = require('path'),
           use: 'raw-loader'
         }, {
           test: /\.vue$/,
-          loader: 'vue-loader'
+          loader: 'vue-loader',
+          options: {
+            esModule: false, // todo: enable this when we can use it with keenUI
+            extractCSS: true,
+            loaders: {
+              css: 'css-loader!postcss-loader!sass-loader?data=@import "styleguide/keen-variables.scss";',
+              sass: 'css-loader!postcss-loader!sass-loader?data=@import "styleguide/keen-variables.scss";',
+              scss: 'css-loader!postcss-loader!sass-loader?data=@import "styleguide/keen-variables.scss";'
+            }
+          }
         }]
       },
       resolve: {
         extensions: ['.js', '.json', '.vue'],
         alias: {
-          keen: path.resolve(__dirname, 'node_modules/keen-ui/lib')
+          keen: path.resolve(__dirname, 'node_modules/keen-ui/src')
         }
       },
       devtool: '#inline-source-map',
