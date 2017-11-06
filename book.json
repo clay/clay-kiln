@@ -2,6 +2,7 @@
   "gitbook": "3.2.3",
   "title": "Kiln",
   "structure": {
+    "root": "intro.md",
     "summary": "SUMMARY.md",
     "glossary": "GLOSSARY.md"
   },
