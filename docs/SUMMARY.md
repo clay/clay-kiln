@@ -1,6 +1,6 @@
 # Summary
 
-* [Introduction](README.md)
+* [Introduction](intro.md)
 * [Components](docs/components.md)
   * [Manipulating Components](docs/manipulating-components.md)
   * [Editing Components](docs/editing-components.md)

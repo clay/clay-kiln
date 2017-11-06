@@ -50,3 +50,15 @@ Make sure you add that component list to your layout template, and double check 
 ```handlebars
 <div class="kiln-internals">{{ > component-list kilnInternals }}</div>
 ```
+
+## User Experience
+
+On public-facing pages, Kiln will add a very small snippet of JavaScript that enabled users to type <kbd>Shift+CLAY</kbd> to redirect them to the Clay login page, `/_auth/login`.
+
+When users are logged-in, they will see some Kiln buttons in the top left corner which will allow them to access the Clay Menu and enter Edit Mode.
+
+When users are in Edit Mode, they will see a toolbar across the top of the screen which will enable all Kiln functionality on the current page.
+
+> #### info::Note
+>
+> Users may also enter edit mode directly on any page by appending `?edit=true` to the URL.
