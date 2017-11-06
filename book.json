@@ -2,10 +2,10 @@
   "gitbook": "3.2.3",
   "title": "Kiln",
   "structure": {
-    "summary": "README.md",
-    "glossary": "GLOSSARY.md"
+    "summary": "docs/SUMMARY.md",
+    "glossary": "docs/GLOSSARY.md"
   },
-  "root": "./docs",
+  "root": "./",
   "plugins": [
     "github",
     "anchorjs",
