@@ -1,5 +1,4 @@
-#
-Kiln
+# Kiln
 
 <img src="http://i.imgur.com/RleQNNh.png?1" alt="illustration of a kiln" style="float: left;width: 150px;padding-right: 20px;" />
 
