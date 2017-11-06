@@ -1,6 +1,6 @@
 # Kiln
 
-<img src="http://i.imgur.com/RleQNNh.png?1" alt="illustration of a kiln" height="150" align="left">
+<img src="http://i.imgur.com/RleQNNh.png?1" alt="illustration of a kiln" height="150" styles="float: left;">
 
 🔥 Editing tools for Clay 🔥
 
