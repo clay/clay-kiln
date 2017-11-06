@@ -4,4 +4,5 @@
 * [Components](docs/components.md)
   * [Manipulating Components](docs/manipulating-components.md)
   * [Editing Components](docs/editing-components.md)
-* [Glossary](docs/glossary.md)
+* [The Kiln UI](docs/kiln-ui.md)
+* [Glossary](docs/GLOSSARY.md)
