@@ -27,22 +27,22 @@ As Kiln itself is a component, it must be included in your layouts and have some
 
 ```yaml
 components:
-clay-kiln:
-instances:
-general:
-allow: true
+  clay-kiln:
+    instances:
+      general:
+        allow: true
 ```
 
 Then create a _non-editable_ component list in your layout (preferably near the end), and add a reference to your Kiln instance:
 
 ```yaml
 components:
-layout:
-instances:
-article:
-kilnInternals:
--
-_ref: /components/clay-kiln/instances/general
+  layout:
+    instances:
+      article:
+        kilnInternals:
+          -
+            _ref: /components/clay-kiln/instances/general
 ```
 
 Make sure you add that component list to your layout template, and double check that it isn't editable:
