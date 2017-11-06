@@ -68,6 +68,7 @@
     "file-loader": "^1.1.5",
     "gitbook-cli": "^2.3.2",
     "gitbook-plugin-anchorjs": "^1.1.1",
+    "gitbook-plugin-bootstrap-callout": "^0.1.2",
     "gitbook-plugin-github": "^3.0.0",
     "hash-sum": "^1.0.2",
     "he": "^1.1.1",
