@@ -24,7 +24,9 @@ For components that live in the `<head>` of the page, templates are handled a li
 
 The root element of `<body>` components may include other attributes, such as `data-editable` or `data-placeholder` \(more on those in Editing Components\), and must be _relatively positioned_ so the Component Selectors can display correctly.
 
-Templates must be precompiled and added to `window.kiln.componentTemplates` for Kiln to re-render components after saving.
+> #### info::Note
+>
+> Templates must be precompiled and added to `window.kiln.componentTemplates` for Kiln to re-render components after saving.
 
 ## Model and Controller
 
@@ -44,7 +46,9 @@ module.exports.render = (uri, data, locals) => {
 };
 ```
 
-Note: If in doubt, use the `save()` method, as it only runs when data is saved. Calling the `render()` method \(every time a component renders\) to do slow or intensive logic will slow down your component for end-users.
+> #### info::Note
+>
+> If in doubt, use the `save()` method, as it only runs when data is saved. Calling the `render()` method \(every time a component renders\) to do slow or intensive logic will slow down your component for end-users.
 
 Models must be compiled and added to `window.kiln.componentModels` for Kiln to call them when saving and re-rendering components.
 
