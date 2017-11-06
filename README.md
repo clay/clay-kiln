@@ -2,9 +2,12 @@
 
 <img src="http://i.imgur.com/RleQNNh.png?1" alt="illustration of a kiln" height="150" align="left">
 
+🔥 Editing tools for Clay 🔥
+
 [![CircleCI](https://circleci.com/gh/clay/clay-kiln.svg?style=svg)](https://circleci.com/gh/clay/clay-kiln) [![Coverage Status](https://coveralls.io/repos/nymag/clay-kiln/badge.svg?branch=master&service=github&t=C3xeVy)](https://coveralls.io/github/nymag/clay-kiln?branch=master)
 
-🔥 Editing tools for Clay 🔥
+Powering [New York Magazine](http://nymag.com/), [Vulture](http://www.vulture.com/), [The Cut](http://www,thecut.com/), [Grub Street](http://www.grubstreet.com/).  
+Created by New York Media.
 
 ## Install
 
