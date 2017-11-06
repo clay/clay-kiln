@@ -18,8 +18,7 @@
     cursor: default;
   }
 
-  .kiln-inline-placeholder,
-  .kiln-block-placeholder {
+  .kiln-placeholder {
     transition: background-color $standard-time $standard-curve;
 
     .placeholder-label,
@@ -29,32 +28,8 @@
     }
   }
 
-  .kiln-inline-placeholder {
-    display: inline-block;
-
-    .placeholder-label {
-      display: inline-block;
-      position: relative;
-    }
-
-    .placeholder-icon {
-      color: $placeholder-color;
-      pointer-events: none;
-      position: absolute;
-      right: calc(100% + 5px);
-      top: 0;
-    }
-
-    .placeholder-text {
-      @include normal-text();
-
-      color: $text-alt-color;
-      cursor: text;
-    }
-  }
-
   .kiln-permanent-placeholder,
-  .kiln-block-placeholder {
+  .kiln-placeholder {
     align-items: center;
     border-radius: 2px;
     cursor: pointer;
@@ -106,7 +81,7 @@
     }
   }
 
-  .kiln-block-placeholder {
+  .kiln-placeholder {
     background-color: $placeholder-bg-color;
 
     .placeholder-label {
@@ -143,12 +118,8 @@
 </style>
 
 <template>
-  <div :class="{ 'kiln-inline-placeholder': isInline, 'kiln-permanent-placeholder': isPermanent && !isInline, 'kiln-block-placeholder': !isPermanent && !isInline, 'kiln-error-placeholder': isError }" :style="{ minHeight: placeholderHeight }" :ref="uid">
-    <div v-if="isInline" class="placeholder-label">
-      <ui-icon class="placeholder-icon" icon="arrow_forward"></ui-icon>
-      <span class="placeholder-text">{{ text }}</span>
-    </div>
-    <ui-button v-else-if="isComponent" class="placeholder-add-component" icon="add" color="primary" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
+  <div :class="{ 'kiln-permanent-placeholder': isPermanent, 'kiln-placeholder': !isPermanent, 'kiln-error-placeholder': isError }" :style="{ minHeight: placeholderHeight }" :ref="uid">
+    <ui-button v-if="isComponent" class="placeholder-add-component" icon="add" color="primary" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
     <div v-else class="placeholder-label">
       <ui-icon v-if="!isPermanent" class="placeholder-icon" icon="add"></ui-icon>
       <span class="placeholder-text">{{ text }}</span>
@@ -161,7 +132,7 @@
   import _ from 'lodash';
   import cuid from 'cuid';
   import store from '../core-data/store';
-  import { placeholderProp, componentListProp, componentProp, fieldProp } from '../utils/references';
+  import { placeholderProp, componentListProp, componentProp } from '../utils/references';
   import { getData } from '../core-data/components';
   import { get } from '../core-data/groups';
   import label from '../utils/label';
@@ -184,9 +155,6 @@
       },
       isPermanent() {
         return !!_.get(getSchema(this.$options), `${placeholderProp}.permanent`);
-      },
-      isInline() {
-        return _.get(getSchema(this.$options), `${fieldProp}.input`) === 'inline';
       },
       isError() {
         return _.find(_.get(store, 'state.validation.errors', []), (error) => _.find(error.items, (item) => item.uri === this.$options.uri && item.path === this.$options.path));
@@ -220,15 +188,11 @@
         const placeholderHeight = parseInt(getSchema(this.$options)[placeholderProp].height, 10) || 100, // default to 100px
           parentHeight = parseInt(this.$options.parentHeight, 10) || 0; // default to 0 for comparison purposes
 
-        if (this.isInline) {
-          return 'none'; // no min-height for inline placeholders
-        } else {
-          // if the parent element (the element with `data-editable` or `data-placeholder`)
-          // is larger than the specified placeholder height, use that instead.
-          // this is useful for having different-sized placeholders for different-sized instances
-          // of the same component, e.g. ads
-          return parentHeight > placeholderHeight ? `${parentHeight}px` : `${placeholderHeight}px`;
-        }
+        // if the parent element (the element with `data-editable` or `data-placeholder`)
+        // is larger than the specified placeholder height, use that instead.
+        // this is useful for having different-sized placeholders for different-sized instances
+        // of the same component, e.g. ads
+        return parentHeight > placeholderHeight ? `${parentHeight}px` : `${placeholderHeight}px`;
       }
     },
     methods: {
