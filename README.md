@@ -1,10 +1,6 @@
 # Kiln
 
-![Kiln](http://i.imgur.com/RleQNNh.png?1)
-
-[![CircleCI](https://circleci.com/gh/clay/clay-kiln.svg?style=svg)](https://circleci.com/gh/clay/clay-kiln) [![Coverage Status](https://coveralls.io/repos/nymag/clay-kiln/badge.svg?branch=master&service=github&t=C3xeVy)](https://coveralls.io/github/nymag/clay-kiln?branch=master)
-
-🔥 Editing tools for Clay 🔥
+![Kiln](http://i.imgur.com/RleQNNh.png?1) [![CircleCI](https://circleci.com/gh/clay/clay-kiln.svg?style=svg)](https://circleci.com/gh/clay/clay-kiln) [![Coverage Status](https://coveralls.io/repos/nymag/clay-kiln/badge.svg?branch=master&service=github&t=C3xeVy)](https://coveralls.io/github/nymag/clay-kiln?branch=master)<br />🔥 Editing tools for Clay 🔥
 
 ## Install
 
