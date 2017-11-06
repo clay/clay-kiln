@@ -1,8 +1,8 @@
 # Summary
 
 * [Introduction](intro.md)
-* [Components](docs/components.md)
-  * [Manipulating Components](docs/manipulating-components.md)
-  * [Editing Components](docs/editing-components.md)
-* [The Kiln UI](docs/kiln-ui.md)
-* [Glossary](docs/GLOSSARY.md)
+* [Components](components.md)
+  * [Manipulating Components](manipulating-components.md)
+  * [Editing Components](editing-components.md)
+* [The Kiln UI](kiln-ui.md)
+* [Glossary](GLOSSARY.md)
