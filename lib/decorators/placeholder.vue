@@ -97,11 +97,8 @@
     }
   }
 
-  .kiln-error-placeholder {
-    &.kiln-block-placeholder {
-      // inline placeholders don't have a background-color
-      background-color: $placeholder-error-bg-color;
-    }
+  .kiln-placeholder.kiln-error-placeholder {
+    background-color: $placeholder-error-bg-color;
 
     .placeholder-label {
       color: $placeholder-error-color;
