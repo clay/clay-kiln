@@ -104,6 +104,8 @@ The data for component lists inside components (including layouts) looks like an
 {
   "myList": [{
     "_ref": "domain.com/_components/some-component/instances/some-instance"
+  }, {
+    "_ref": "domain.com/_components/some-other-component/instances/some-instance"
   }]
 }
 ```
@@ -112,7 +114,10 @@ Meanwhile, the data for component lists inside page data looks like an array of 
 
 ```json
 {
-  "myList": ["domain.com/_components/some-component/instances/some-instance"]
+  "myList": [
+    "domain.com/_components/some-component/instances/some-instance",
+    "domain.com/_components/some-other-component/instances/some-instance"
+  ]
 }
 ```
 
