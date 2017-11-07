@@ -15,6 +15,8 @@ title:
 
 When someone clicks the title, it will open an inline WYSIWYG form. The field will inherit styles from your component, for a proper WYSYWIG experience.
 
+![](images/inline_form.png)
+
 ## Placeholders
 
 Placeholders display when fields are empty, and are used to prompt end users to add information. They can be added to any field or group.
@@ -64,6 +66,115 @@ Any fields and groups that aren't inline WYSIWYG inputs will display in overlays
 ```handlebars
 <div data-editable="myField"></div>
 ```
+
+Overlay forms frequently consist of a single field. This is a perfectly acceptable user experience, because overlay forms will open where the user clicks.
+
+![](images/overlay_form_single_field.png)
+
+### Groups
+
+For forms with multiple fields, those fields must be combined into groups. A group must have a `fields` property, and may have `_label` and `_placeholder` properties.
+
+```yaml
+title:
+  _label: Title
+  _has: text
+
+url:
+  _label: URL
+  _has:
+    input: text
+    type: url
+
+_groups:
+  link:
+    _label: Link Information
+    fields:
+      - title
+      - url
+```
+
+When end users click the `data-editable` attribute that points to this group, it will open an overlay form with all of the group's fields, in order.
+
+```handlebars
+<a data-editable="link" href="{{ url }}">{{ title }}</a>
+```
+
+### Group Placeholders
+
+If you add a `_placeholder` to a group, you must either make it permanent or specify what fields it should check with `ifEmpty`.
+
+```yaml
+_groups:
+  link:
+    _label: Link Information
+    _placeholder:
+      text: Link
+      height: 24px
+      ifEmpty: url
+    fields:
+      - title
+      - url
+```
+
+Placeholders in groups may check multiple fields with `ifEmpty`. This is useful for components with editable links, as you'll usually want to display a placeholder when either the url or the link text are empty. Operators are case-insensitive, and you can use `AND`, `OR`, or `XOR`.
+
+```yaml
+_groups:
+  link:
+    _label: Link Information
+    _placeholder:
+      text: Link
+      height: 24px
+      ifEmpty: url or title
+    fields:
+      - title
+      - url
+```
+
+> #### info::Using XOR
+>
+> Please note that when comparing _more than two fields_, you cannot use `XOR` (as it's logically impossible to XOR more than two boolean values). For `AND`, `OR`, and `XOR` you must also use the same comparator between each field rather than mixing and matching them.
+
+### Settings Group
+
+The _Component Settings Form_ is a special type of overlay form that's created when you add a group called `settings` to your schema. Components with `settings` groups get a button in their component selector to open the settings form, so don't add `data-editable="settings"` to any elements in the template. Settings groups must not have `_label` (their form will be titled "[Component Name] Settings"), though they may have `_placeholder` (this is useful for permanent placeholders).
+
+```yaml
+_groups:
+  settings:
+    fields:
+      - title
+      - url
+```
+
+![](images/settings_form.png)
+
+> #### info::Head and Invisible Component Settings
+>
+> Components in `<head>` or invisible lists must have _all_ of their fields available in settings forms, as they don't have any visible elements that can be clicked. The settings forms are accesible from the [Find on Page drawer](manipulating-components.md#head-lists)
+
+Settings forms are useful for `<head>` and invisible components, as well as _optional_ fields that aren't frequently accessed. They're also useful to provide manual fallbacks for automatic component logic, such as fields that are generated in `model.js` files.
+
+### Tabbed Form Sections
+
+Overlay and settings forms may split their fields into tabs. This is useful to group related fields by feature, or to provide a consistent tab for fields that override others. Sections are declared by wrapping the section name in parenthesis in the `fields` property.
+
+```yaml
+_groups:
+  settings:
+    fields:
+      - imageUrl
+      - caption
+      - slideshowType (Slideshow)
+      - slideshowLink (Slideshow)
+      - slideshowButtonText (Slideshow)
+      - sass (Custom Styles)
+```
+
+If you specify sections for some fields but leave the other fields blank, they'll be added to a _General_ section. Fields and sections will appear in the form in the order they've been listed.
+
+![](images/form_tabs.png)
 
 ## Field Configuration
 
@@ -167,6 +278,8 @@ adName:
 ```
 
 ![](images/locked_field.png)
+
+Clicking the lock toggles the input between disabled and enabled state.
 
 ![](images/unlocked_field.png)
 

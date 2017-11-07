@@ -1,5 +1,7 @@
 # Manipulating Components
 
+![](images/add_component.png)
+
 ## Component Lists
 
 Components are added, removed, and reordered in fields called _component lists_, of which there are **four types**.
@@ -63,6 +65,8 @@ myList:
 ```
 
 Head component lists get added as tabs to the _Find on Page_ drawer in Kiln automatically, allowing them to be edited.
+
+![](images/head_list.png)
 
 ### Invisible Lists
 
@@ -144,3 +148,5 @@ content:
 Additionally, all types of component lists may be set to _fuzzy_. The default `include` list is appropriate for most situations, but there are certain scenarios where you might want to be less strict. For example, the body of an article might be restricted to paragraphs and images 99% of the time, but you still want to allow your interactives team to create one-off components and add them through Kiln's UI.
 
 You may make any component list _fuzzy_ by adding that property in the config. This will add a _View All Components_ button into the header of the Add Components modal, which will list _all components available in your Clay installation_.
+
+![](images/fuzzy_list.png)
