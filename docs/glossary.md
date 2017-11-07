@@ -36,10 +36,6 @@ Property to subscribe to. Will call `model.save()` _after_ it subscribes.
 
 Configuration for an input. May be the name of the input (if it doesn't have any arguments), or an object with an `input` property.
 
-## `help`
-
-Help text for a field. Also used by component READMEs.
-
 ## `attachedButton`
 
 Icon button attached to a field. May be the name of the button (if it doesn't have any arguments), or an object with a `name` property.
