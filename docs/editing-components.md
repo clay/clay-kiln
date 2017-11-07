@@ -2,6 +2,8 @@
 
 Components are edited through the fields and forms that are declared in their `schema.yml` file. This means that developers have maximum flexibility with the template and styling of their components, but end users get a consistent and manageable editing experience.
 
+## Inline WYSIWYG
+
 The simplest possible form is an inline WYSIWYG field. It consists of a property in the schema, and a `data-editable` attribute on the editable element in the template.
 
 ```yaml

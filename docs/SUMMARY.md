@@ -13,7 +13,7 @@
     * [Site-Specific Components](manipulating-components.md#site-specific-components)
     * [Fuzzy Lists](manipulating-components.md#fuzzy-lists)
   * [Editing Components](editing-components.md)
-    * [Inline WYSIWYG](editing-components.md)
+    * [Inline WYSIWYG](editing-components.md#inline-wysiwyg)
     * [Placeholders](editing-components.md#placeholders)
     * [Overlay Forms](editing-components.md#editing-components-with-forms)
     * [Groups](editing-components.md#groups)
