@@ -88,7 +88,7 @@
     <ui-radio-group
     color="accent"
     :name="name"
-    :value="data"
+    :value="data || ''"
     :label="label"
     :options="options"
     :vertical="isVertical"
