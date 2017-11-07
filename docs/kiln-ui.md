@@ -23,7 +23,7 @@ This mode displays the page without any client-side controllers, allowing Kiln t
 
 ![](images/edit_mode.png)
 
-### Component Selectors
+## Component Selectors
 
 Attached to every component is a component selector, which displays when the component is hovered over or clicked. Depending on the component and where it exists on the page, the selector may have these buttons:
 
