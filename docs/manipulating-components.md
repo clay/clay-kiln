@@ -40,7 +40,7 @@ myList:
       - some-other-component
 ```
 
-![](/assets/Screen Shot 2017-11-06 at 5.05.36 PM.png)
+![](assets/Screen Shot 2017-11-06 at 5.05.36 PM.png)
 
 ### Head Lists
 
