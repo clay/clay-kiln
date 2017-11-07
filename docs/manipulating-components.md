@@ -14,7 +14,7 @@ Components that contain child component lists need to do two things: Render an _
 
 > #### info::Note
 >
-> You'll notice that `data-editable` is the same attribute used to specify editable fields. The `> component-list` is a [special handlebars partial](https://github.com/nymag/nymag-handlebars#partials) that renders a list of components with their data.
+> You'll notice that `data-editable` is the same attribute used to specify editable fields. The `component-list` handlebars partial comes from [our included library of helpers and partials](https://github.com/nymag/nymag-handlebars#partials), and renders a list of components with their data.
 
 ```yaml
 myList:
