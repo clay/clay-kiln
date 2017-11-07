@@ -26,43 +26,43 @@
     pointer-events: none;
     position: absolute;
 
-    &.left,
-    &.right {
+    &.selector-left,
+    &.selector-right {
       height: 100%;
       min-height: $min-border-length;
       top: 0;
     }
 
-    &.top,
-    &.bottom {
+    &.selector-top,
+    &.selector-bottom {
       left: 0;
       min-width: $min-border-length;
       width: 100%;
     }
 
-    &.left {
+    &.selector-left {
       border-right: $thick-border;
       right: calc(100% + #{$offset});
     }
 
-    &.right {
+    &.selector-right {
       border-left: $thick-border;
       left: calc(100% + #{$offset});
     }
 
-    &.top {
+    &.selector-top {
       border-bottom: $thick-border;
       bottom: calc(100% + #{$offset});
     }
 
-    &.bottom {
+    &.selector-bottom {
       border-top: $thick-border;
       top: calc(100% + #{$offset});
     }
 
     // if we absolutely, positively have no space for the mini-selector,
     // simply hide it (we already have the expanded selector)
-    &.hidden {
+    &.selector-hidden {
       display: none;
     }
   }
@@ -93,16 +93,16 @@
       width: 100%;
     }
 
-    &.left,
-    &.right {
+    &.selector-left,
+    &.selector-right {
       align-items: flex-start;
       flex-direction: column;
       height: auto;
       justify-content: center;
     }
 
-    &.top,
-    &.bottom {
+    &.selector-top,
+    &.selector-bottom {
       align-items: center;
       flex-direction: row;
       justify-content: flex-start;
@@ -110,7 +110,7 @@
     }
 
     // nudge the quick bar so the border lines up with the thick border
-    &.left {
+    &.selector-left {
       border-right: none;
       right: 0;
 
@@ -122,7 +122,7 @@
       }
     }
 
-    &.right {
+    &.selector-right {
       border-left: none;
       left: 0;
 
@@ -134,7 +134,7 @@
       }
     }
 
-    &.top {
+    &.selector-top {
       border-bottom: none;
       bottom: 0;
 
@@ -146,7 +146,7 @@
       }
     }
 
-    &.bottom {
+    &.selector-bottom {
       border-top: none;
       top: 0;
 
@@ -166,21 +166,21 @@
       width: 46px;
       z-index: 1;
 
-      .left &.quick-bar-add,
-      .left &.quick-bar-replace,
-      .left &.quick-bar-dupe,
-      .right &.quick-bar-add,
-      .right &.quick-bar-replace,
-      .right &.quick-bar-dupe {
+      .selector-left &.quick-bar-add,
+      .selector-left &.quick-bar-replace,
+      .selector-left &.quick-bar-dupe,
+      .selector-right &.quick-bar-add,
+      .selector-right &.quick-bar-replace,
+      .selector-right &.quick-bar-dupe {
         border-top: $thin-border;
       }
 
-      .top &.quick-bar-add,
-      .top &.quick-bar-replace,
-      .top &.quick-bar-dupe,
-      .bottom &.quick-bar-add,
-      .bottom &.quick-bar-replace,
-      .bottom &.quick-bar-dupe {
+      .selector-top &.quick-bar-add,
+      .selector-top &.quick-bar-replace,
+      .selector-top &.quick-bar-dupe,
+      .selector-bottom &.quick-bar-add,
+      .selector-bottom &.quick-bar-replace,
+      .selector-bottom &.quick-bar-dupe {
         border-left: $thin-border;
       }
     }
@@ -224,15 +224,15 @@
       selectorDimension = 50;
 
     if (rect.left > selectorDimension) {
-      return 'left';
+      return 'selector-left';
     } else if (rect.bottom > selectorDimension) {
-      return 'bottom';
+      return 'selector-bottom';
     } else if (rect.right > selectorDimension) {
-      return 'right';
+      return 'selector-right';
     } else if (rect.top > selectorDimension) {
-      return 'top';
+      return 'selector-top';
     } else {
-      return 'hidden';
+      return 'selector-hidden';
     }
   }
 
