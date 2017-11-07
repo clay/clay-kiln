@@ -30,7 +30,7 @@ The root element of `<body>` components may include other attributes, such as `d
 
 ## Model and Controller
 
-Modals \(`model.js`\) and controllers \(`client.js` or `controller.js`\) are two types of JavaScript files your components may contain \(a third — `upgrade.js` — is [only used in Amphora](http://clay.github.io/amphora/docs/upgrade.html)\). Models allow components to perform logic on their data before saving and rendering, while controllers add client-side functionality to components. Both are optional.
+Models \(`model.js`\) and controllers \(`client.js` or `controller.js`\) are two types of JavaScript files your components may contain \(a third — `upgrade.js` — is [only used in Amphora](http://clay.github.io/amphora/docs/upgrade.html)\). Models allow components to perform logic on their data before saving and rendering, while controllers add client-side functionality to components. Both are optional.
 
 Controllers are _never_ run in edit mode, as they have the potential to interfere with Kiln. This means that certain embeds \(which rely on 3rd party JavaScript\) may need styling in edit mode. You may take advantage of the `.kiln-edit-mode` class on the `<body>` tag for this purpose.
 
