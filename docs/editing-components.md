@@ -55,6 +55,8 @@ adSizes:
     permanent: true
 ```
 
+Placeholders can display the value of a field, which is useful for components not visible during edit mode, e.g. third-party embeds. The syntax for displaying a value in the placeholder text is `${fieldName}`, which is similar to [JavaScript template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals). Note that `permanent` must be enabled.
+
 ![](images/permanent_placeholder.png)
 
 ## Editing Components with Forms

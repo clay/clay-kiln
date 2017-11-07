@@ -25,4 +25,8 @@
   * [View Mode](kiln-ui.md#view-mode)
   * [Edit Mode](kiln-ui.md#edit-mode)
   * [Component Selectors](kiln-ui.md#component-selectors)
+* [API](api.md)
+  * [CSS Classes](api.md#css-classes)
+  * [JS Utils](api.md#javascript-utilities)
+  * [Vue.js Components](api.md#vue.js-components)
 * [Glossary](GLOSSARY.md)
