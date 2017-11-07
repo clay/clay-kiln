@@ -29,7 +29,7 @@ title:
 
 The placeholder will display inside of the element with the relevant `data-editable` attribute.
 
-![](assets/Screen Shot 2017-11-07 at 10.30.47 AM)
+![](/docs/assets/Screen Shot 2017-11-07 at 10.30.47 AM)
 
 > #### info::Placeholder Heights
 >
@@ -51,13 +51,13 @@ adSizes:
     permanent: true
 ```
 
-![](assets/Screen Shot 2017-11-07 at 10.56.26 AM)
+![](/docs/assets/Screen Shot 2017-11-07 at 10.56.26 AM)
 
 ## Editing Components with Forms
 
 Inline WYSIWYG fields can accomplish a lot, but not every bit of data in a component is a string of formatted text. For everything else, there's overlay forms.
 
-![](assets/Screen Shot 2017-11-07 at 11.05.37 AM)
+![](/docs/assets/Screen Shot 2017-11-07 at 11.05.37 AM)
 
 Any fields and groups that aren't inline WYSIWYG inputs will display in overlays. Kiln provides an [ever-growing variety of fields](inputs.md) that can be used to edit almost any kind of data you desire. To open these forms, add a `data-editable` attribute on the relevant element and point it to a field or group.
 
@@ -166,9 +166,9 @@ adName:
     attachedButton: lock
 ```
 
-![](assets/Screen Shot 2017-11-07 at 11.36.42 AM)
+![](/docs/assets/Screen Shot 2017-11-07 at 11.36.42 AM)
 
-![](assets/Screen Shot 2017-11-07 at 11.36.56 AM)
+![](/docs/assets/Screen Shot 2017-11-07 at 11.36.56 AM)
 
 **Magic Button** is a button that fetches data, allowing quick population of fields based on other fields, other component data, or the result of api calls.
 
@@ -248,4 +248,4 @@ If you have data you want to propagate when publishing (which happens server-sid
 
 Kiln itself subscribes to a few specific properties, which it uses to update its index of pages. Publishing to `kilnTitle` will update the page title, and `kilnAuthors` will update the page authors. You can see the results in the Clay Menu.
 
-![](assets/Screen Shot 2017-11-07 at 11.54.54 AM)
+![](/docs/assets/Screen Shot 2017-11-07 at 11.54.54 AM)
