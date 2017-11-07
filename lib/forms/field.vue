@@ -1,47 +1,45 @@
 <style lang="sass">
-  @import '../../styleguide/forms';
+  @import '../../styleguide/animations';
 
   .kiln-field {
-    @include field();
-
+    border: none;
+    flex: 0 0 100%;
+    margin: 0 0 16px;
     opacity: 1;
-    transition: opacity 300ms linear;
+    padding: 0;
+    position: relative;
+    transition: opacity $standard-time $standard-curve;
     visibility: visible;
+    width: 100%;
+
+    .editor-inline & {
+      margin: 0;
+    }
 
     &.kiln-reveal-hide {
       // fade out, THEN remove the element from the space it takes up
       // (by using margin-top, which can be transitioned and thus delayed)
-      margin-top: -1000px;
+      margin-top: -100px;
       opacity: 0;
-      transition: visibility 0ms 300ms, margin-top 0ms 300ms, opacity 300ms linear;
+      transition: visibility 0ms $standard-time, margin-top 0ms $standard-time, opacity $standard-time $standard-curve;
       visibility: hidden;
-    }
-  }
-
-  .editor-inline {
-    .kiln-field {
-      text-align: left; // override component styling
     }
   }
 </style>
 
 <template>
-  <fieldset class="kiln-field" v-if="beforeBehaviors.length || mainBehaviors.length || afterBehaviors.length">
-    <div class="field-before">
-      <component v-for="behavior in beforeBehaviors" :is="behavior.fn" :name="name" :data="data" :schema="schema" :args="behavior.args"></component>
-    </div>
-    <div class="field-main" :class="mainLengthClass">
-      <component v-for="behavior in mainBehaviors" :is="behavior.fn" :name="name" :data="data" :schema="schema" :args="behavior.args"></component>
-    </div>
-    <div class="field-after">
-      <component v-for="behavior in afterBehaviors" :is="behavior.fn" :name="name" :data="data" :schema="schema" :args="behavior.args"></component>
-    </div>
+  <fieldset class="kiln-field" :class="{ 'kiln-reveal-hide': !isShown }" v-if="inputName">
+    <component :is="inputName" :name="name" :data="data" :schema="schema" :args="expandedInput" @resize="onResize"></component>
   </fieldset>
 </template>
 
 <script>
-  import { fieldProp } from '../utils/references';
-  import { expand } from './behaviors';
+  import _ from 'lodash';
+  import { fieldProp, inputProp, revealProp } from '../utils/references';
+  import { getFieldData } from './field-helpers';
+  import { filterBySite } from '../utils/site-filter';
+  import { compare } from '../utils/comparators';
+  import { expand } from './inputs';
 
   export default {
     props: ['name', 'data', 'schema'],
@@ -49,26 +47,42 @@
       return {};
     },
     computed: {
-      behaviors() {
+      expandedInput() {
         return expand(this.schema[fieldProp]);
       },
-      // behaviors are added to the slot they expose (in exports.slot)
-      // before is for label, description, and other behaviors that go at the top of a field
-      beforeBehaviors() {
-        return this.behaviors.filter((b) => b.slot === 'before');
+      inputName() {
+        return this.expandedInput[inputProp];
       },
-      // main is the main input of a field. it _should_ only have one behavior
-      mainBehaviors() {
-        return this.behaviors.filter((b) => b.slot === 'main');
-      },
-      mainLengthClass() {
-        return `main-${this.mainBehaviors.length}`;
-      },
-      // after is for soft-maxlength and other behaviors that go at the bottom of a field
-      afterBehaviors() {
-        return this.behaviors.filter((b) => b.slot === 'after');
+      isShown() {
+        const revealConfig = _.get(this.schema, revealProp, {}),
+          currentSlug = _.get(this.$store, 'state.site.slug'),
+          uri = _.get(this.$store, 'state.ui.currentForm.uri'),
+          field = revealConfig.field,
+          operator = revealConfig.operator,
+          value = revealConfig.value,
+          sites = revealConfig.sites,
+          data = getFieldData(this.$store, field, this.name, uri);
+
+        if (sites && field) {
+          // if there is site logic, run it before field logic
+          // and return a boolean based on both checks
+          return filterBySite([{ sites }], currentSlug).length && compare({ data, operator, value });
+        } else if (sites) {
+          // only check the site logic
+          return filterBySite([{ sites }], currentSlug).length;
+        } else if (field) {
+          // only check field logic
+          return compare({ data, operator, value });
+        } else {
+          return true; // show the field if no _reveal config
+        }
       }
     },
-    components: window.kiln.behaviors
+    methods: {
+      onResize() {
+        this.$emit('resize'); // pass this to the form component
+      }
+    },
+    components: window.kiln.inputs
   };
 </script>

@@ -1,161 +1,141 @@
 @import 'colors';
 
 // general typography
-// todo: possibly switch to system styles if they work for us
-//$system-fonts: -apple-system, '.SFNSText-Regular', 'San Francisco', 'Roboto', 'Segoe UI', 'Helvetica Neue', 'Lucida Grande', sans-serif;
-$open-sans: 'OpenSans';
-$open-sans-italic: 'OpenSans-Italic';
-$open-sans-bold: 'OpenSans-Bold';
-$open-sans-semibold: 'OpenSans-SemiBold';
-$open-sans-light: 'OpenSans-Light';
-$system-fonts: Helvetica, Arial, sans-serif;
-$combined-fonts: $open-sans, $system-fonts;
-$bold-stack: $open-sans-bold, $system-fonts;
-$italic-stack: $open-sans-italic, $system-fonts;
-$semibold-stack: $open-sans-semibold, $system-fonts;
-$light-stack: $open-sans-light, $system-fonts;
+$font-stack: 'Noto Sans', Arial, sans-serif;
 
 // text that should have the same style as the component it's in
 @mixin normal-text {
-  color: $text;
+  color: inherit;
   font-family: inherit;
   font-size: inherit;
+  line-height: inherit;
   word-break: inherit;
 }
 
-// our typography
+// all kiln typography starts from this baseline
 @mixin kiln-copy {
-  font-family: $combined-fonts;
+  font-family: $font-stack;
   font-size: 14px;
   font-style: normal;
-  font-weight: 400;
+  font-weight: normal;
   text-decoration: none;
+  // enable ligatures
+  text-rendering: optimizeLegibility;
 }
 
-// headers for panes and overlays
-@mixin header {
+// typographic hierarchy
+@mixin type-display1 {
   @include kiln-copy();
 
-  color: $title;
-  font-family: $semibold-stack;
+  color: $text-alt-color;
+  font-size: 34px;
+  letter-spacing: normal;
+  line-height: 40px;
+}
+
+@mixin type-headline {
+  @include kiln-copy();
+
+  color: $text-color;
+  font-size: 24px;
+  letter-spacing: normal;
+  line-height: 32px;
+}
+
+@mixin type-title {
+  @include kiln-copy();
+
+  color: $text-color;
   font-size: 18px;
+  letter-spacing: 0.005em;
+  line-height: 20px; // single line
 }
 
-// subheader for pane tabs and form sections
-@mixin subheader {
+@mixin type-subheading {
   @include kiln-copy();
 
-  color: $subtitle;
+  color: $text-color;
   font-size: 15px;
+  letter-spacing: 0.01em;
+  line-height: 22.5px;
 }
 
-// Form input labels
-@mixin input-text {
+@mixin type-body {
   @include kiln-copy();
 
-  color: $text;
-}
-
-// component selector labels
-@mixin selector-label {
-  @include kiln-copy();
-
-  color: $selector-text;
-  display: inline-block;
-  font-family: $semibold-stack;
-  font-size: 13px;
-  margin: 0;
-  text-transform: uppercase;
-}
-
-// form labels
-@mixin input-label {
-  @include kiln-copy();
-
-  color: $label;
-  font-family: $bold-stack;
-  font-size: 13px;
-  text-transform: uppercase;
-}
-
-// placeholder typography
-@mixin placeholder-primary {
-  font-family: $semibold-stack;
+  color: $text-color;
   font-size: 14px;
-  font-style: normal;
+  letter-spacing: 0.01em;
   line-height: 20px;
-  text-align: left;
-  text-decoration: none;
 }
 
-@mixin placeholder-secondary {
-  font-family: $semibold-stack;
-  font-size: 11px;
-  font-style: normal;
-  line-height: 18px;
-  text-align: left;
-  text-decoration: none;
+@mixin type-caption {
+  @include kiln-copy();
+
+  color: $text-alt-color;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+@mixin type-button {
+  @include kiln-copy();
+
+  color: $text-color;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  line-height: 14px; // single line
   text-transform: uppercase;
 }
 
-// used as kiln text in panes and forms
-@mixin primary-text {
+@mixin type-list-header {
   @include kiln-copy();
 
-  color: $text;
-}
-
-// secondary emphasis, used in panes and forms
-@mixin secondary-text {
-  @include kiln-copy();
-
-  color: $subtext;
-}
-
-@mixin tertiary-text {
-  @include kiln-copy();
-
-  color: $subtext;
-  font-family: $italic-stack;
+  color: $text-alt-color;
   font-size: 12px;
+  line-height: 12px; // single line
+  text-transform: uppercase;
 }
 
 // links
 @mixin link {
-  @include kiln-copy();
+  @include type-body();
 
-  color: $save;
+  color: rgba($md-blue, $text-opacity);
   text-decoration: none;
 
-  &:hover,
   &:active,
   &:visited {
-    color: $save;
+    color: rgba($md-blue, $text-opacity);
+    text-decoration: none;
+  }
+
+  &:hover {
+    color: rgba($md-blue, $text-alt-opacity);
     text-decoration: none;
   }
 }
 
 // keys
 @mixin keyboard-keys {
-  background-color: $toolbar-icons;
-  border: 1px solid $input-border;
+  background-color: $keyboard-key-color;
+  border: 1px solid $md-grey-400;
   border-radius: 3px;
-  box-shadow: 0 1px 0 $overlay-shadow, 0 0 0 2px $pane-background inset;
-  color: $label;
+  box-shadow: 0 1px 0 $keyboard-key-inset-shadow, 0 0 0 2px $pure-white inset;
+  color: $text-color;
   display: inline-block;
   font-size: 14px;
   font-family: monospace, sans-serif;
-  font-weight: 500;
+  font-weight: normal;
   padding: 4px 8px;
   line-height: 13px;
 }
 
 @mixin code {
-  color: $label;
+  color: $text-color;
   font-family: 'Consolas', 'Menlo', monospace;
   font-size: 14px;
   font-style: normal;
-  font-weight: 500;
+  font-weight: normal;
   line-height: 20px;
   text-decoration: none;
 }

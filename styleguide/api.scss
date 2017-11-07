@@ -1,20 +1,74 @@
 // the classes in this file are usable throughout kiln and within kiln plugins
-// we're pre-1.0 right now, but when our api is stabilized these will affect
-// the semantic versioning
 
 @import 'mixins';
+@import 'typography';
 @import 'colors';
-@import 'buttons';
 
 // generic class to hide elements
 .kiln-hide {
   @include kiln-hide();
 }
 
-// generic class for buttons in component selectors
-// todo: change/remove this after we migrate to material design buttons
-.expanded-selector-button {
-  @include icon-button($mini-selector-color, 18px);
+.kiln-clearfix {
+  @include clearfix();
+}
 
-  padding: 14px;
+// exported typography
+.kiln-normal-text {
+  @include normal-text();
+}
+
+.kiln-display1 {
+  @include type-display1();
+}
+
+.kiln-headline {
+  @include type-headline();
+}
+
+.kiln-title {
+  @include type-title();
+}
+
+.kiln-subheading {
+  @include type-subheading();
+}
+
+.kiln-body {
+  @include type-body();
+}
+
+.kiln-caption {
+  @include type-caption();
+}
+
+.kiln-button {
+  @include type-button();
+}
+
+.kiln-list-header {
+  @include type-list-header();
+}
+
+.kiln-link {
+  @include link();
+}
+
+.kiln-keyboard {
+  @include keyboard-keys();
+}
+
+.kiln-code {
+  @include code();
+}
+
+// color classes are useful for kiln plugins that use KeenUI components,
+// as those components may use the `color` of the containing element to
+// determine their colors (e.g. ui-ripple-ink)
+.kiln-primary-color {
+  color: $brand-primary-color;
+}
+
+.kiln-accent-color {
+  color: $brand-accent-color;
 }

@@ -1,5 +1,6 @@
-const ExtractTextPlugin = require('extract-text-webpack-plugin'),
-  docs = new ExtractTextPlugin('behaviors/README.md'),
+const path = require('path'),
+  ExtractTextPlugin = require('extract-text-webpack-plugin'),
+  docs = new ExtractTextPlugin('docs/inputs.md'),
   styles = new ExtractTextPlugin('dist/clay-kiln-[name].css'),
   webpack = require('webpack'),
   LodashModuleReplacementPlugin = require('lodash-webpack-plugin'),
@@ -26,9 +27,12 @@ let plugins = [
   }),
   new webpack.DefinePlugin({
     'process.env': {
-      KILN_VERSION: `"${kilnVersion}"`
+      KILN_VERSION: `"${kilnVersion}"`,
+      LOG: '"trace"'
     }
-  })
+  }),
+  new webpack.optimize.ModuleConcatenationPlugin(),
+  new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/) // some dependency (chrono-node) is using moment.js (allow that, but make them drop their 300kB of locales)
 ];
 
 if (prod) {
@@ -88,8 +92,8 @@ module.exports = {
   },
   module: {
     rules: [{
-      // todo: remove this (and update vue-unit dep) once vue-unit hits 0.3.0
-      test: /node_modules\/vue-unit\//,
+      // todo: remove vue-unit (and update vue-unit dep) once vue-unit hits 0.3.0
+      test: /node_modules\/(vue-unit|keen-ui|striptags)\//,
       loader: 'babel-loader'
     }, {
       test: /\.js$/,
@@ -108,16 +112,34 @@ module.exports = {
       test: /\.vue$/,
       loader: 'vue-loader',
       options: {
+        esModule: false, // todo: enable this when we can use it with keenUI
+        extractCSS: true,
         loaders: {
-          css: 'vue-style-loader!css-loader!postcss-loader',
-          sass: 'vue-style-loader!css-loader!postcss-loader!sass-loader',
+          css: styles.extract({
+            fallback: 'style-loader',
+            use: ['css-loader', 'postcss-loader', 'sass-loader?data=@import "styleguide/keen-variables.scss";']
+          }),
+          sass: styles.extract({
+            fallback: 'style-loader',
+            use: ['css-loader', 'postcss-loader', 'sass-loader?data=@import "styleguide/keen-variables.scss";']
+          }),
+          scss: styles.extract({
+            fallback: 'style-loader',
+            use: ['css-loader', 'postcss-loader', 'sass-loader?data=@import "styleguide/keen-variables.scss";']
+          }),
           docs: docs.extract('raw-loader')
         }
       }
-    }, {
-      test: /\.woff2$/,
-      loader: 'url-loader?limit=65000&mimetype=application/font-woff2&name=public/fonts/[name].[ext]'
     }]
+  },
+  resolve: {
+    // note: when importing vue components, you don't have to specify .vue
+    // also, when importing keen-ui components, do so as `keen/UiComponentName`,
+    // so they get imported correctly when testing
+    extensions: ['.js', '.json', '.vue'],
+    alias: {
+      keen: path.resolve(__dirname, 'node_modules/keen-ui/src')
+    }
   },
   plugins: plugins
 };

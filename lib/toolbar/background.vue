@@ -1,14 +1,14 @@
 <style lang="sass">
   @import '../../styleguide/colors';
   @import '../../styleguide/layers';
-  @import '../../styleguide/typography';
+  @import '../../styleguide/animations';
 
   $overlay-margin: 10vh;
 
   .editor-overlay-background {
     @include overlay-layer();
 
-    background-color: $overlay-background;
+    background-color: $ui-modal-mask-background;
     display: block;
     height: 100%;
     left: 0;
@@ -17,12 +17,11 @@
     -webkit-overflow-scrolling: touch;
     position: fixed;
     top: 0;
-    transform: translateZ(0); // create a new viewport context
     width: 100%;
   }
 
   .fade-enter-active, .fade-leave-active {
-    transition: opacity 350ms ease-out;
+    transition: opacity 350ms $standard-curve;
   }
 
   .fade-enter, .fade-leave-to {
@@ -46,8 +45,7 @@
 
 
 <script>
-  import { isNull } from 'lodash';
-  import { displayProp } from '../utils/references';
+  import _ from 'lodash';
 
   const noscrollClass = 'noscroll',
     htmlElement = document.documentElement;
@@ -59,7 +57,7 @@
   function toggleNoScroll(show) {
     if (show) {
       htmlElement.classList.add(noscrollClass);
-    } else if (!show && htmlElement.classList.contains(noscrollClass)){
+    } else if (!show && htmlElement.classList.contains(noscrollClass)) {
       htmlElement.classList.remove(noscrollClass);
     }
   }
@@ -67,18 +65,18 @@
   export default {
     props: [],
     data() {
-      return {}
+      return {};
     },
     computed: {
       displayBackground() {
-        var isOverlayForm = !isNull(this.$store.state.ui.currentForm) && this.$store.state.ui.currentForm.schema[displayProp] !== 'inline',
-          paneIsOpen = !isNull(this.$store.state.ui.currentPane),
-          showbackground = isOverlayForm || paneIsOpen;
+        const formIsOpen = _.get(this.$store, 'state.ui.currentForm') && !_.get(this.$store, 'state.ui.currentForm.inline'),
+          addComponentModalIsOpen = !_.isNull(this.$store.state.ui.currentAddComponentModal),
+          shouldDisplay = formIsOpen || addComponentModalIsOpen;
 
         // Toggle the `noscroll` class
-        toggleNoScroll(showbackground);
+        toggleNoScroll(shouldDisplay);
         // Return test
-        return showbackground;
+        return shouldDisplay;
       }
     },
     methods: {

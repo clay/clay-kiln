@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 import { beforeEachHooks, afterEachHooks, mount } from 'vue-unit/src';
 import * as logger from '../lib/utils/log'; // allow us to stub the default
 
-const testsContext = require.context('../', true, /^\.\/(lib|behaviors)\/.*?\.test\.js$/);
+const testsContext = require.context('../', true, /^\.\/(lib|inputs)\/.*?\.test\.js$/);
 
 let defaultStore;
 
@@ -26,7 +26,7 @@ window.loggerStub = {
   error: sinon.spy()
 };
 
-sinon.stub(logger, 'default', () => {
+sinon.stub(logger, 'default').callsFake(() => {
   // return the same instances of our logging spies every time
   // we create a new logger
   return window.loggerStub;

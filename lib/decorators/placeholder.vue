@@ -1,7 +1,7 @@
 <style lang="sass">
   @import '../../styleguide/colors';
   @import '../../styleguide/typography';
-  @import '../../styleguide/buttons';
+  @import '../../styleguide/animations';
 
   // all editable elements should have some kind of ux showing they can be edited
   .component-selector-wrapper *[data-editable] {
@@ -14,219 +14,129 @@
     cursor: text;
   }
 
-  // styles shared between regular and permanent placeholders
-  .component-selector-wrapper .kiln-placeholder,
-  .component-selector-wrapper .kiln-permanent-placeholder {
+  .component-selector-wrapper *[data-editable].kiln-internals {
+    cursor: default;
+  }
+
+  .kiln-placeholder {
+    transition: background-color $standard-time $standard-curve;
+
+    .placeholder-label,
+    .placeholder-icon,
+    .placeholder-text {
+      transition: color $standard-time $standard-curve;
+    }
+  }
+
+  .kiln-permanent-placeholder,
+  .kiln-placeholder {
     align-items: center;
-    // everything inside a regular placeholder should use the pointer,
-    // even if that placeholder is inside a paragraph/blockquote
+    border-radius: 2px;
     cursor: pointer;
     display: flex;
-    flex-direction: column;
     height: 100%;
     justify-content: center;
-    padding: 8px;
+    padding: 16px 24px;
     position: relative;
     width: 100%;
 
-    .placeholder-top,
-    .placeholder-bottom {
-      display: flex;
-      flex-flow: row wrap;
-      min-width: 60%;
-      width: auto;
-    }
-
-    .placeholder-label {
-      @include placeholder-primary();
-
-      border-bottom-style: solid;
-      border-bottom-width: 4px;
-      flex: 1 1 100%;
-    }
-
-    .placeholder-this-page,
-    .placeholder-many-pages {
-      @include placeholder-secondary();
-
-      align-items: flex-start;
-      flex: 0 1 auto;
-
-      svg {
-        height: 11px;
-        margin: 4px 4px 0 0;
-        width: 11px;
-      }
-    }
-
-    .placeholder-required {
-      @include placeholder-secondary();
-
-      display: block;
-      flex: 1 0 auto;
-      text-align: right;
-    }
-
     .placeholder-add-component {
-      display: block;
       flex: 0 0 auto;
     }
 
-    // single line styles (when placeholders are not tall enough to fit multiple lines)
-    &.single-line {
-      flex-direction: row;
-
-      .placeholder-top {
-        flex-flow: row; // no wrap
-        justify-content: flex-start;
-      }
-
-      .placeholder-bottom {
-        flex-flow: row; // no wrap
-        justify-content: flex-start;
-        min-width: 0;
-      }
-
-      .placeholder-this-page,
-      .placeholder-many-pages {
-        order: 1;
-
-        svg {
-          margin-top: 4px;
-        }
-      }
-
-      .placeholder-location-text {
-        display: none; // hide 'this page' / 'multiple pages'
-      }
-
-      .placeholder-label {
-        border: none;
-        flex: 0 1 auto; // allow word wrapping
-        margin: 0 4px;
-        order: 2;
-      }
-
-      .placeholder-required {
-        flex: 0 0 auto;
-        margin: 2px 0 0 4px;
-        order: 3;
-        text-align: left;
-      }
-
-      .placeholder-add-component {
-        margin: 0;
-      }
-    }
-  }
-
-  // multi-page / single-page toggle
-  .placeholder-this-page {
-    display: none;
-  }
-
-  .placeholder-many-pages {
-    display: flex;
-  }
-
-  .kiln-page-area .placeholder-this-page {
-    display: flex;
-  }
-
-  .kiln-page-area .placeholder-many-pages {
-    display: none;
-  }
-
-  // regular placeholder - displays when field is empty
-  .kiln-placeholder {
-    background-color: $placeholder-background;
-    border: 1px dashed $placeholder-border;
-
-    svg,
-    svg * {
-      fill: $placeholder-label-border;
-    }
-
     .placeholder-label {
-      border-bottom-color: $placeholder-label-border;
-      color: $placeholder-label;
+      align-items: center;
+      display: flex;
+      flex: 1 1 auto;
+      flex-flow: row wrap;
+      justify-content: center;
     }
 
-    .placeholder-this-page,
-    .placeholder-many-pages,
-    .placeholder-required {
-      color: $placeholder-border;
+    .placeholder-icon {
+      flex: 0 0 auto;
     }
 
-    .placeholder-add-component {
-      @include button-outlined($placeholder-border, $placeholder-background);
-      @include placeholder-secondary();
+    .placeholder-text {
+      @include type-button();
 
-      margin: 16px auto 0;
-      padding: 8px;
+      flex: 0 1 auto;
+      line-height: 18px;
+      text-align: center;
     }
   }
 
-  // permanent placeholder - always displays, even when there is data in fields
   .kiln-permanent-placeholder {
-    background-color: $permanent-placeholder-background;
-    border: 1px dotted $permanent-placeholder-border;
-
-    svg,
-    svg * {
-      fill: $permanent-placeholder-label-border;
-    }
+    background-color: $permanent-placeholder-bg-color;
 
     .placeholder-label {
-      border-bottom-color: $permanent-placeholder-label-border;
-      color: $permanent-placeholder-label;
+      color: $permanent-placeholder-color;
     }
 
-    .placeholder-this-page,
-    .placeholder-many-pages,
-    .placeholder-required {
-      color: $permanent-placeholder-label;
+    .placeholder-icon {
+      color: $permanent-placeholder-color;
     }
 
-    // permanent placeholders should probably never show this button,
-    // but let's add styles just in case
-    .placeholder-add-component {
-      @include button-outlined($permanent-placeholder-label, $permanent-placeholder-background);
-      @include placeholder-secondary();
+    .placeholder-text {
+      color: $permanent-placeholder-color;
+    }
+  }
 
-      margin: 16px auto 0;
-      padding: 8px;
+  .kiln-placeholder {
+    background-color: $placeholder-bg-color;
+
+    .placeholder-label {
+      color: $placeholder-color;
+    }
+
+    .placeholder-icon {
+      color: $placeholder-color;
+    }
+
+    .placeholder-text {
+      color: $placeholder-color;
+    }
+  }
+
+  .kiln-placeholder.kiln-error-placeholder {
+    background-color: $placeholder-error-bg-color;
+
+    .placeholder-label {
+      color: $placeholder-error-color;
+    }
+
+    .placeholder-icon {
+      color: $placeholder-error-color;
+    }
+
+    .placeholder-text {
+      color: $placeholder-error-color;
     }
   }
 </style>
 
 <template>
-  <div data-ignore :class="[isPermanent ? permanentClass : temporaryClass, { 'single-line': isSingleLine }]" :style="{ minHeight: placeholderHeight }">
-    <div class="placeholder-top">
-      <span class="placeholder-label">{{ text }}</span>
-      <span class="placeholder-location">
-        <span class="placeholder-this-page" title="This Page"><icon name="this-page"></icon><span class="placeholder-location-text placeholder-this-page"> This Page</span></span>
-        <span class="placeholder-many-pages" title="Multiple Pages"><icon name="many-pages"></icon><span class="placeholder-location-text placeholder-many-pages"> Multiple Pages</span></span>
-      </span>
-      <span v-if="isRequired" class="placeholder-required">Required</span>
-    </div>
-    <div v-if="canAddComponent" class="placeholder-bottom">
-      <span class="placeholder-add-component" :title="addComponentTitle" @click.stop="openAddComponentPane">{{ addComponentTitle }}</span>
+  <div :class="{ 'kiln-permanent-placeholder': isPermanent, 'kiln-placeholder': !isPermanent, 'kiln-error-placeholder': isError }" :style="{ minHeight: placeholderHeight }" :ref="uid">
+    <ui-button v-if="isComponent" class="placeholder-add-component" icon="add" color="primary" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
+    <div v-else class="placeholder-label">
+      <ui-icon v-if="!isPermanent" class="placeholder-icon" icon="add"></ui-icon>
+      <span class="placeholder-text">{{ text }}</span>
+      <ui-ripple-ink v-if="!isPermanent" :trigger="uid"></ui-ripple-ink>
     </div>
   </div>
 </template>
 
 <script>
   import _ from 'lodash';
+  import cuid from 'cuid';
   import store from '../core-data/store';
   import { placeholderProp, componentListProp, componentProp } from '../utils/references';
   import { getData } from '../core-data/components';
   import { get } from '../core-data/groups';
   import label from '../utils/label';
   import interpolate from '../utils/interpolate';
-  import icon from '../utils/icon.vue';
-
-  const SINGLE_LINE_HEIGHT = 50;
+  import UiIcon from 'keen/UiIcon';
+  import UiButton from 'keen/UiButton';
+  import UiRippleInk from 'keen/UiRippleInk';
 
   function getSchema(options) {
     return get(options.uri, options.path).schema;
@@ -234,17 +144,17 @@
 
   export default {
     data() {
-      return {
-        permanentClass: 'kiln-permanent-placeholder',
-        temporaryClass: 'kiln-placeholder'
-      };
+      return {};
     },
     computed: {
+      uid() {
+        return cuid();
+      },
       isPermanent() {
         return !!_.get(getSchema(this.$options), `${placeholderProp}.permanent`);
       },
-      isRequired() {
-        return !!getSchema(this.$options)[placeholderProp].required;
+      isError() {
+        return _.find(_.get(store, 'state.validation.errors', []), (error) => _.find(error.items, (item) => item.uri === this.$options.uri && item.path === this.$options.path));
       },
       text() {
         const subSchema = getSchema(this.$options),
@@ -259,12 +169,12 @@
           return label(this.$options.path, subSchema);
         }
       },
-      canAddComponent() {
+      isComponent() {
         const subSchema = getSchema(this.$options);
 
         return !!subSchema[componentListProp] || !!subSchema[componentProp];
       },
-      addComponentTitle() {
+      addComponentText() {
         const subSchema = getSchema(this.$options),
           componentsToAdd = _.get(subSchema, `${componentListProp}.include`) || _.get(subSchema, `${componentProp}.include`),
           hasOneComponent = componentsToAdd && componentsToAdd.length === 1;
@@ -280,25 +190,24 @@
         // this is useful for having different-sized placeholders for different-sized instances
         // of the same component, e.g. ads
         return parentHeight > placeholderHeight ? `${parentHeight}px` : `${placeholderHeight}px`;
-      },
-      isSingleLine() {
-        // note: this.placeholderHeight is a computed property. getters are cool!
-        return parseInt(this.placeholderHeight, 10) < SINGLE_LINE_HEIGHT;
       }
     },
     methods: {
-      openAddComponentPane() {
+      openAddComponentPane(e) {
         const parentURI = this.$options.uri,
           path = this.$options.path;
 
-        return store.dispatch('openAddComponents', {
+        return store.dispatch('openAddComponent', {
           parentURI,
-          path
+          path,
+          pos: { x: e.clientX, y: e.clientY }
         });
       }
     },
     components: {
-      icon
+      UiIcon,
+      UiButton,
+      UiRippleInk
     }
   };
 </script>

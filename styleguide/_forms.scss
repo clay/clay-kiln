@@ -1,9 +1,10 @@
 @import 'mixins';
-@import 'buttons';
 @import 'typography';
 @import 'colors';
 
 @mixin form {
+  align-items: flex-start;
+  cursor: auto;
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -36,41 +37,5 @@
   // hidden submit button that's added to the form if it's not valid
   .hidden-submit {
     display: none;
-  }
-}
-
-@mixin field() {
-  @include clearfix();
-
-  border: none;
-  flex: 0 0 100%;
-  margin: 0;
-  min-width: 100px;
-  padding: 0;
-  position: relative;
-
-  // Spacing between fields
-  & + & {
-    margin-top: 30px;
-  }
-
-  .field-before,
-  .field-main,
-  .field-after {
-    clear: both;
-  }
-
-  // if the main field has multiple items (e.g. a button before/after an input),
-  // set the width so they're all on the same line
-  .main-2 > input,
-  .main-2 > textarea,
-  .main-2 > .wysiwyg-input {
-    width: calc(100% - 44px);
-  }
-
-  .main-3 > input,
-  .main-3 > textarea,
-  .main-3 > .wysiwyg-input {
-    width: calc(100% - 88px);
   }
 }
