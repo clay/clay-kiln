@@ -30,4 +30,5 @@
   * [JS Utils](api.md#javascript-utilities)
   * [Vue Components](api.md#vue-components)
   * [Vuex State](api.md#vuex-state)
+  * [Vuex Actions](vuex-actions.md)
 * [Glossary](GLOSSARY.md)
