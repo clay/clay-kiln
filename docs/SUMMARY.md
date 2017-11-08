@@ -28,5 +28,6 @@
 * [API](api.md)
   * [CSS Classes](api.md#css-classes)
   * [JS Utils](api.md#javascript-utilities)
-  * [Vue.js Components](api.md#vue.js-components)
+  * [Vue Components](api.md#vue-components)
+  * [Vuex State](api.md#vuex-state)
 * [Glossary](GLOSSARY.md)
