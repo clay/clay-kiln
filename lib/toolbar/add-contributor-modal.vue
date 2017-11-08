@@ -20,7 +20,7 @@
 </style>
 
 <template>
-  <div class="add-contributor">
+  <div class="add-contributor" keep-alive>
     <ui-textbox class="invite-filter" v-model.trim="query" type="search" label="Search for Someone" :autofocus="true" :floatingLabel="true" ref="searchInput" @keydown="filterList"></ui-textbox>
     <div class="invite-list">
       <person
