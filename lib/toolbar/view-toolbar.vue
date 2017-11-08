@@ -5,6 +5,12 @@
   .kiln-wrapper.view-mode {
     @include toolbar-wrapper();
 
+    pointer-events: none;
+
+    & > * {
+      pointer-events: all;
+    }
+
     .view-menu-button {
       margin: 10px;
     }
