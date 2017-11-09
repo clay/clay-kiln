@@ -1,6 +1,7 @@
 import keycode from 'keycode';
 import Vue from 'vue';
 import { pageUri } from '@nymag/dom';
+import NProgress from 'vue-nprogress';
 import addClayListeners from './lib/utils/shift-clay';
 import { addToolbarButton } from './lib/utils/custom-buttons'; // eslint-disable-line
 import store from './lib/core-data/store';
@@ -12,6 +13,17 @@ import { META_PRESS, META_UNPRESS } from './lib/preloader/mutationTypes';
 import { props } from './lib/utils/promises';
 import conditionalFocus from './directives/conditional-focus';
 import 'keen-ui/src/bootstrap'; // import this once, for KeenUI components
+
+const progressOptions = {
+    parent: '.nprogress-container',
+    template: '<div class="bar" role="bar"></div>',
+    showSpinner: false,
+    easing: 'linear',
+    speed: 500,
+    trickle: false,
+    minimum: 0.001
+  },
+  nprogress = new NProgress(progressOptions);
 
 // register directives
 Vue.directive('conditional-focus', conditionalFocus());
@@ -35,6 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return h('view-toolbar');
     },
     store,
+    nprogress,
     components: {
       'view-toolbar': toolbar
     }
