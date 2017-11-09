@@ -16,21 +16,29 @@
       margin: 0;
     }
 
-    &.kiln-reveal-hide {
-      // fade out, THEN remove the element from the space it takes up
-      // (by using margin-top, which can be transitioned and thus delayed)
-      margin-top: -100px;
+    .reveal-enter,
+    .reveal-leave-to {
       opacity: 0;
-      transition: visibility 0ms $standard-time, margin-top 0ms $standard-time, opacity $standard-time $standard-curve;
-      visibility: hidden;
+    }
+
+    .reveal-enter-to,
+    .reveal-leave {
+      opacity: 1;
+    }
+
+    .reveal-enter-active,
+    .reveal-leave-active {
+      transition: opacity $standard-time $standard-curve;
     }
   }
 </style>
 
 <template>
-  <fieldset class="kiln-field" :class="{ 'kiln-reveal-hide': !isShown }" v-if="inputName">
-    <component :is="inputName" :name="name" :data="data" :schema="schema" :args="expandedInput" @resize="onResize"></component>
-  </fieldset>
+  <transition name="reveal" mode="out-in">
+    <fieldset class="kiln-field" v-if="inputName && isShown">
+      <component :is="inputName" :name="name" :data="data" :schema="schema" :args="expandedInput" @resize="onResize"></component>
+    </fieldset>
+  </transition>
 </template>
 
 <script>
@@ -62,6 +70,9 @@
           value = revealConfig.value,
           sites = revealConfig.sites,
           data = getFieldData(this.$store, field, this.name, uri);
+
+        console.log(this.schema, revealProp, revealConfig)
+        console.log(field, operator, value, data)
 
         if (sites && field) {
           // if there is site logic, run it before field logic
