@@ -28,6 +28,12 @@ const progressOptions = {
 // register directives
 Vue.directive('conditional-focus', conditionalFocus());
 
+// add progress bar
+Vue.use(NProgress, {
+  router: false,
+  http: false
+});
+
 // Require all scss/css files needed
 require.context('./styleguide', true, /^.*\.(scss|css)$/);
 

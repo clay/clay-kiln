@@ -73,7 +73,7 @@
           username = this.username,
           user = {
             username: username,
-            provider: this.provider,
+            provider: this.provider.value,
             auth: this.isAdmin ? 'admin' : 'write'
           };
 
