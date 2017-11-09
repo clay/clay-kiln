@@ -21,6 +21,7 @@
     * [Tabbed Forms](editing-components.md#tabbed-form-sections)
     * [Fields](editing-components.md#field-configuration)
     * [Cross Component Communication](editing-components.md#cross-component-communication)
+  * [Inputs](inputs.md)
 * [The Kiln UI](kiln-ui.md)
   * [View Mode](kiln-ui.md#view-mode)
   * [Edit Mode](kiln-ui.md#edit-mode)
