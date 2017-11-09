@@ -165,12 +165,13 @@
     },
     methods: {
       update(newCheckedItems) {
-        const newData = _.reduce(_.cloneDeep(this.data), (obj, val, key) => {
-          if (_.includes(newCheckedItems, key)) {
-            return _.assign(obj, { [key]: true });
+        const newData = _.reduce(this.options, (obj, option) => {
+          if (_.includes(newCheckedItems, option.value)) {
+            obj[option.value] = true;
           } else {
-            return _.assign(obj, { [key]: false });
+            obj[option.value] = false;
           }
+          return obj;
         }, {});
 
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: newData });

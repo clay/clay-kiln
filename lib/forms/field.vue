@@ -71,9 +71,6 @@
           sites = revealConfig.sites,
           data = getFieldData(this.$store, field, this.name, uri);
 
-        console.log(this.schema, revealProp, revealConfig)
-        console.log(field, operator, value, data)
-
         if (sites && field) {
           // if there is site logic, run it before field logic
           // and return a boolean based on both checks
