@@ -134,7 +134,6 @@
     cursor: text;
     min-height: 19px;
     outline: none;
-    text-align: left;
     white-space: normal;
 
     &::selection {
