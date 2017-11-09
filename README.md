@@ -42,7 +42,7 @@ components:
       article:
         kilnInternals:
           -
-            _ref: /components/clay-kiln/instances/general
+            _ref: /_components/clay-kiln/instances/general
 ```
 
 Make sure you add that component list to your layout template, and double check that it isn't editable:
