@@ -16,7 +16,7 @@ Components that contain child component lists need to do two things: Render an _
 
 > #### info::Note
 >
-> You'll notice that `data-editable` is the same attribute used to specify editable fields. The `component-list` handlebars partial comes from [our included library of helpers and partials](https://github.com/clay/handlebars#partials), and renders a list of components with their data.
+> You'll notice that `data-editable` is the same attribute used to specify editable fields. The `component-list` handlebars partial comes from [our included library of helpers and partials](https://github.com/clay/handlebars#partials), and renders a list of components with their data. The element with `data-editable` must be the _immediate parent_ of the components in the list.
 
 ```yaml
 myList:
