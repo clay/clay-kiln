@@ -23,7 +23,8 @@
       width: 100%;
     }
 
-    .view-edit-button {
+    .view-edit-button,
+    .view-new-button {
       margin: 10px 18px;
     }
 
@@ -44,6 +45,7 @@
     </div>
     <ui-fab size="normal" color="primary" icon="menu" tooltip="Clay Menu" tooltipPosition="right middle" class="view-menu-button" @click="openNav"></ui-fab>
     <ui-fab size="small" color="default" icon="mode_edit" tooltip="Edit Page" tooltipPosition="right middle" class="view-edit-button" @click="startEditing"></ui-fab>
+    <ui-fab size="small" color="default" icon="add" tooltip="New Page" tooltipPosition="right middle" class="view-new-button" @click="openNewPage"></ui-fab>
     <nav-background></nav-background>
     <nav-menu></nav-menu>
     <nav-content></nav-content>
@@ -94,6 +96,9 @@
 
           return this.$store.dispatch('openNav', activeNav);
         });
+      },
+      openNewPage() {
+        return this.$store.dispatch('openNav', 'new-page');
       }
     },
     components: {
