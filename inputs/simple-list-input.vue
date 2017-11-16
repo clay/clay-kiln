@@ -1,9 +1,3 @@
-<docs>
-  # simple-list-input
-
-  A component which represents the text input in the `simple-list` input. Functionality is derived from its parent.
-</docs>
-
 <style lang="sass">
   .simple-list-input {
     align-items: center;

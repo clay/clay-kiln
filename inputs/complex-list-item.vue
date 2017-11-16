@@ -1,9 +1,3 @@
-<docs>
-  # complex-list-item
-
-  A component which represents a single item in the `complex-list` input. Functionality is derived from its parent. Behaves similar to a field, as it transcludes other inputs via the same mechanism that field uses.
-</docs>
-
 <style lang="sass">
   @import '../styleguide/forms';
   @import '../styleguide/colors';

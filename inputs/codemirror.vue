@@ -1,11 +1,15 @@
 <docs>
-  # codemirror
+  # `codemirror`
 
   A syntax-highlighted text area. Useful for writing css, sass, yaml, or other code in the editor.
 
-  ## Arguments
+  ### Codemirror Arguments
 
   * **mode** _(required)_ the language used
+  * **help** - description / helper text for the field
+  * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
+  * **validate.required** - either `true` or an object that described the conditions that should make this field required
+  * **validate.requiredMessage** - will appear when required validation fails
 
   The mode of the editor sets syntax highlighting, linting, and other functionality. Currently, we support these modes:
 
@@ -13,48 +17,9 @@
   * `text/x-scss` - sass/scss mode (useful for per-instance styles)
   * `text/x-yaml` - yaml mode (useful for writing elasticsearch queries)
 
-  _Note:_ We will add more supported modes as we find use cases for them. See [this link](http://codemirror.net/mode/) for the full list of modes supported in codemirror.
-
-  ### Shared Arguments
-
-  This input shares certain arguments with other inputs:
-
-  * **help** - description / helper text for the field
-  * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
-  * **validate** - an object that contains pre-publish validation rules:
-
-  * **validate.required** - either `true` or an object that described the conditions that should make this field required
-
-  Validation rules may also have custom error messages, that will appear in the same place as the help text. If you do not specify a message, default error messages will appear.
-
-  * **validate.requiredMessage** - will appear when required validation fails
-
-  ### Conditional Required Arguments
-
-  * **field** to compare against (inside complex-list item, current form, or current component)
-  * **operator** _(optional)_ to use for the comparison
-  * **value** _(optional)_ to compare the field against
-
-  If neither `operator` nor `value` are specified, this will make the current field required if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality.
-
-  Operators:
-
-  * `===`
-  * `!==`
-  * `<`
-  * `>`
-  * `<=`
-  * `>=`
-  * `typeof`
-  * `regex`
-  * `empty` (only checks field data, no value needed)
-  * `not-empty` (only checks field data, no value needed)
-  * `truthy` (only checks field data, no value needed)
-  * `falsy` (only checks field data, no value needed)
-
-  _Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story` (don't worry about spaces!)
-
-  Note: labels are pulled from the field's `_label` property.
+  > #### info::Note
+  >
+  > We will add more supported modes as we find use cases for them. See [the full list of modes supported in codemirror.](http://codemirror.net/mode/)
 </docs>
 
 <style lang="sass">

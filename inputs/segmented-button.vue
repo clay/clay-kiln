@@ -1,56 +1,21 @@
 <docs>
-  # segmented-button
+  # `segmented-button`
 
   A group of buttons allowing the user to select one (or more!) of a few related options.
 
-  ## Arguments
+  ### Segmented Button Arguments
 
   * **multiple** - allow multiple things to be selected. `false` by default
   * **options** - an array of options
+  * **help** - description / helper text for the field
+  * **validate.required** - either `true` or an object that described the conditions that should make this field required
+  * **validate.requiredMessage** - will appear when required validation fails
 
   Each option should be an object with `icon`, `text`, and `value` properties. Icons will be displayed in the buttons, and text will be used for tooltips.
 
-  Note: By default, the data for this field will be the selected option's `value`. If multiple selection is turned on, it'll be an object with boolean values keyed to each option's `value`, similar to `checkbox-group`.
-
-  ### Shared Arguments
-
-  This input shares certain arguments with other inputs:
-
-  * **help** - description / helper text for the field
-  * **validate** - an object that contains pre-publish validation rules:
-
-  * **validate.required** - either `true` or an object that described the conditions that should make this field required
-
-  Validation rules may also have custom error messages, that will appear in the same place as the help text. If you do not specify a message, default error messages will appear.
-
-  * **validate.requiredMessage** - will appear when required validation fails
-
-  ### Conditional Required Arguments
-
-  * **field** to compare against (inside complex-list item, current form, or current component)
-  * **operator** _(optional)_ to use for the comparison
-  * **value** _(optional)_ to compare the field against
-
-  If neither `operator` nor `value` are specified, this will make the current field required if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality.
-
-  Operators:
-
-  * `===`
-  * `!==`
-  * `<`
-  * `>`
-  * `<=`
-  * `>=`
-  * `typeof`
-  * `regex`
-  * `empty` (only checks field data, no value needed)
-  * `not-empty` (only checks field data, no value needed)
-  * `truthy` (only checks field data, no value needed)
-  * `falsy` (only checks field data, no value needed)
-
-  _Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story` (don't worry about spaces!)
-
-  Note: labels are pulled from the field's `_label` property.
+  > #### info::Data Format
+  >
+  > By default, the data for this field will be the selected option's `value`. If multiple selection is turned on, it'll be an object with boolean values keyed to each option's `value`, similar to `checkbox-group`.
 </docs>
 
 <style lang="sass">

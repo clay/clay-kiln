@@ -1,24 +1,32 @@
 <docs>
-  # wysiwyg
+  # `wysiwyg`
 
   A multi-line text input which allows a rich editing experience. Uses [Quill](http://quilljs.com/). Inline inputs (which can only be wysiwyg) have the same arguments as normal wysiwyg, but will inherit styles from their parent component.
 
-  ## Arguments
+  ### WYSIWYG Arguments
 
   * **buttons** - array of button names (strings) or groups (arrays) for text styling, passed directly into Quill (defaults to "remove formatting")
   * **type** - `single-line`, `multi-line`, or `multi-component`. (defaults to `single-line`)
   * **pseudoBullet** - boolean to enable <kbd>tab</kbd> to create pseudo bullet points
   * **paste** - array of paste rules for parsing pasted content and creating new components
+  * **help** - description / helper text for the field
+  * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
+  * **validate.required** - either `true` or an object that described the conditions that should make this field required
+  * **validate.min** - minimum length that the field must meet
+  * **validate.max** - maximum length that the field must not exceed
+  * **validate.pattern** - regex pattern
+  * **validate.requiredMessage** - will appear when required validation fails
+  * **validate.minMessage** - will appear when minimum validation fails
+  * **validate.maxMessage** - will appear when maximum validation fails
+  * **validate.patternMessage** - will appear when pattern validation fails (very handy to set, as the default message is vague)
 
   The buttons allowed in our wysiwyg behavior are [defined in Quill's documentation](http://quilljs.com/docs/modules/toolbar/)
-
-  By default, wysiwyg fields will use the styles of the containing component. To use our kiln input styling, set `styled` to `true`.
 
   The default `type` -- `single-line` -- allows entering one line of rich text, but prevents users from creating new paragraphs or applying paste rules.
 
   `multi-line` is used for components like blockquotes or lists, and allows paste rules to create new block-level elements in the same component's field (but not create different components).
 
-  `multi-component` enables more affordances, including:
+  `multi-component` (which is usually used when the input is `inline`, but may be used in normal `wysiwyg` inputs) enables more affordances, including:
 
   * keyboard navigation across components (up and down arrows)
   * <kbd>enter</kbd> creating new components (and splitting text in front of the cursor into them)
@@ -33,93 +41,24 @@
   * `field` - the name of the field that the captured data should be populated to on the new component. the (last) new component will focus this field after it's added (note: this is limited to a single regex capture group)
   * `group` - (optional) the group that should be focused when the (last) new component is added (instead of the specific field). this is useful for components with forms that contain both the specified field and other things, and preserves the same editing experience as editing that component normally
 
-  ## Example
-
   ```
-  text:
-    _placeholder:
-      height: 50px
-      text: New Paragraph
-      required: true
-    _has:
-      input: inline
-      type: 'multi-component'
-      pseudoBullet: true
-      buttons:
-        - bold
-        - italic
-        - strike
-        - link
-        -
-          script: sub
-      paste:
-        -
-          match: (https?://twitter\.com/\w+?/status/\d+)
-          matchLink: true
-          component: clay-tweet
-          field: url
-        -
-          match: (https?://www\.facebook\.com/.+?/posts/\d+)
-          matchLink: true
-          component: clay-facebook-post
-          field: url
-          group: inlineForm
-        -
-          match: <blockquote>(.*?)(?:</blockquote>)?
-          component: blockquote
-          field: text
-        -
-          match: (.*)
-          component: clay-paragraph
-          field: text
+  paste:
+    - match: (https?://twitter\.com/\w+?/status/\d+)
+      matchLink: true
+      component: clay-tweet
+      field: url
+    - match: (https?://www\.facebook\.com/.+?/posts/\d+)
+      matchLink: true
+      component: clay-facebook-post
+      field: url
+      group: inlineForm
+    - match: <blockquote>(.*?)(?:</blockquote>)?
+      component: blockquote
+      field: text
+    - match: (.*)
+      component: clay-paragraph
+      field: text
   ```
-
-  ### Shared Arguments
-
-  This input shares certain arguments with other inputs:
-
-  * **help** - description / helper text for the field
-  * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
-  * **validate** - an object that contains pre-publish validation rules:
-
-  * **validate.required** - either `true` or an object that described the conditions that should make this field required
-  * **validate.min** - minimum number (for `type=numer`) or length (for other types) that the field must meet
-  * **validate.max** - maximum number (for `type=number`) or length (for other types) that the field must not exceed
-  * **validate.pattern** - regex pattern
-
-  Validation rules may also have custom error messages, that will appear in the same place as the help text. If you do not specify a message, default error messages will appear.
-
-  * **validate.requiredMessage** - will appear when required validation fails
-  * **validate.minMessage** - will appear when minimum validation fails
-  * **validate.maxMessage** - will appear when maximum validation fails
-  * **validate.patternMessage** - will appear when pattern validation fails (very handy to set, as the default message is vague)
-
-  ### Conditional Required Arguments
-
-  * **field** to compare against (inside complex-list item, current form, or current component)
-  * **operator** _(optional)_ to use for the comparison
-  * **value** _(optional)_ to compare the field against
-
-  If neither `operator` nor `value` are specified, this will make the current field required if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality.
-
-  Operators:
-
-  * `===`
-  * `!==`
-  * `<`
-  * `>`
-  * `<=`
-  * `>=`
-  * `typeof`
-  * `regex`
-  * `empty` (only checks field data, no value needed)
-  * `not-empty` (only checks field data, no value needed)
-  * `truthy` (only checks field data, no value needed)
-  * `falsy` (only checks field data, no value needed)
-
-  _Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story` (don't worry about spaces!)
-
-  Note: labels are pulled from the field's `_label` property.
 </docs>
 
 <style lang="sass">

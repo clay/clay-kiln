@@ -1,5 +1,5 @@
 <docs>
-  # checkbox
+  # `checkbox`
 
   A single checkbox, allowing the user to toggle something on or off.
 
@@ -11,7 +11,13 @@
     _has: checkbox
   ```
 
-  Note: Single checkboxes don't have validation, but may have help text below them.
+  ### Checkbox Arguments
+
+  * **help** - description / helper text for the field
+
+  > #### info::Note
+  >
+  > Single checkboxes don't have validation.
 </docs>
 
 <template>

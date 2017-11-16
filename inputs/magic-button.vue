@@ -1,9 +1,9 @@
 <docs>
-  # magic-button
+  # `magic-button`
 
   Append a magic button to an input.
 
-  ## Arguments
+  ### Magic Button Arguments
 
   * **field** - a field to grab the value from (in the current complex list, form, or component)
   * **component** - a name of a component to grab the component ref/uri from
@@ -14,6 +14,8 @@
   * **property** - to get from the returned data
   * **moreMagic** - to run the returned value through more transforms, api calls, etc
   * **tooltip** - text that will display in a tooltip. used to explain what each button is doing, so make it concise!
+
+  ### Magic Button Usage
 
   ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
 
@@ -28,18 +30,18 @@
 
   **All of these arguments are optional!**
 
-  ## Here are some examples:
+  #### Here are some examples:
 
   _Note: MediaPlay is the name of our image server._
 
-  ### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "just grab the primary headline"
+  ##### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "just grab the primary headline"
 
   ```yaml
   field: primaryHeadline
   tooltip: Use Primary Headline
   ```
 
-  ### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab a caption from mediaplay"
+  ##### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab a caption from mediaplay"
 
   ```yaml
   field: url
@@ -49,7 +51,7 @@
   tooltip: Fetch caption from Mediaplay
   ```
 
-  ### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab the url of the first mediaplay-image on this page"
+  ##### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab the url of the first mediaplay-image on this page"
 
   ```yaml
   component: mediaplay-image
@@ -58,7 +60,7 @@
   tooltip: Fetch First Image
   ```
 
-  ### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab a list of items keyed by some component uri"
+  ##### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab a list of items keyed by some component uri"
 
   ```yaml
   component: mediaplay-image
@@ -67,7 +69,7 @@
   tooltip: Fetch Images
   ```
 
-  ### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab the image url from a lede component, then ask mediaplay for the caption"
+  ##### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab the image url from a lede component, then ask mediaplay for the caption"
 
   ```yaml
   component: feature-lede
@@ -81,7 +83,7 @@
   tooltip: Fetch Caption For Lede Image
   ```
 
-  ### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab the tv show name and use it to automatically format an image url"
+  ##### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab the tv show name and use it to automatically format an image url"
 
   ```yaml
   field: showName

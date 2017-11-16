@@ -1,9 +1,3 @@
-<docs>
-  # autocomplete
-
-  Autocomplete for `simple-list`.
-</docs>
-
 <style lang="sass">
   @import '../styleguide/colors';
 
