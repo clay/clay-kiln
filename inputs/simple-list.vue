@@ -1,14 +1,20 @@
 <docs>
-  # simple-list
+  # `simple-list`
 
   An array of strings (or objects with a `text` property, if you add the `propertyName` argument). Useful for lists of items such as tags, keywords, or author names.
 
-  ## Arguments
+  ### Simple List Arguments
 
   * **propertyName** - appends double-click functionality to items in the list. The data will be an array of objects with `text` properties, as well as the value of this argument. e.g. `propertyName: bar` will make the data look like `[{ text: 'foo', bar: 'baz' }]`
   * **badge** - name of the icon (or a two-character string) that should be displayed in the simple list item when editing. Icon names can be anything from the [Material Design Icon Set](https://material.io/icons/), or you can use two initials
   * **allowRepeatedItems** - allow the same item more than once. defaults to false
   * **autocomplete** - object with autocomplete options. Currently this is just the key `list` where the value is the name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`. Example:
+  * **help** - description / helper text for the field
+  * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
+  * **validate.required** - either `true` or an object that described the conditions that should make this field required
+  * **validate.max** - maximum number of items that the field must not exceed
+  * **validate.requiredMessage** - will appear when required validation fails
+  * **validate.maxMessage** - will appear when maximum validation fails
 
   ```yaml
     -
@@ -17,50 +23,7 @@
         list: authors
   ```
 
-  ### Shared Arguments
-
-  This input shares certain arguments with other inputs:
-
-  * **help** - description / helper text for the field
-  * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
-  * **validate** - an object that contains pre-publish validation rules:
-
-  * **validate.required** - either `true` or an object that described the conditions that should make this field required
-  * **validate.max** - maximum number of items that the field must not exceed
-
-  Validation rules may also have custom error messages, that will appear in the same place as the help text. If you do not specify a message, default error messages will appear.
-
-  * **validate.requiredMessage** - will appear when required validation fails
-  * **validate.maxMessage** - will appear when maximum validation fails
-
-  ### Conditional Required Arguments
-
-  * **field** to compare against (inside complex-list item, current form, or current component)
-  * **operator** _(optional)_ to use for the comparison
-  * **value** _(optional)_ to compare the field against
-
-  If neither `operator` nor `value` are specified, this will make the current field required if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality.
-
-  Operators:
-
-  * `===`
-  * `!==`
-  * `<`
-  * `>`
-  * `<=`
-  * `>=`
-  * `typeof`
-  * `regex`
-  * `empty` (only checks field data, no value needed)
-  * `not-empty` (only checks field data, no value needed)
-  * `truthy` (only checks field data, no value needed)
-  * `falsy` (only checks field data, no value needed)
-
-  _Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story` (don't worry about spaces!)
-
-  Note: labels are pulled from the field's `_label` property.
-
-  ## Usage
+  ### Simple List Usage
 
   * Type something and press <kbd>enter</kbd>, <kbd>tab</kbd>, or <kbd>,</kbd> (comma) to add it as an item
   * Delete items by clicking the `x` button or selecting them and pressing <kbd>backspace</kbd>
@@ -68,8 +31,6 @@
   * Pressing <kbd>backspace</kbd> in an empty text input will select the last item in the list
   * If `propertyName` is defined, you can double-click items to set the "primary" item. This will add a badge to the primary item. Only one item may be "primary" at a time
   * Double-clikcing the "primary" item will unset it as the "primary" item
-
-  ## Example
 
   ```yaml
   tags:

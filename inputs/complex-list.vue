@@ -1,21 +1,19 @@
 <docs>
-  # complex-list
+  # `complex-list`
 
   An array of objects with arbitrary properties. Each property may have any inputs a field is allowed to have, including custom inputs. Complex-list is similar to [Angular's _transcluded directives_](https://nulogy.com/who-we-are/company-blog/articles/transclusion-in-angular/) or [Advanced Custom Fields' _repeater field_](https://www.advancedcustomfields.com/add-ons/repeater-field/), in that each item in the list is treated like a separate field. Like fields, items must also have `_label`, but may not have `_placeholder`.
 
-  ## Arguments
+  ### Complex List Arguments
 
   * **props** an array of objects, represending the fields in each item. Each item should have a name, defined by `prop: 'name'`, as well as `_label` and the input that item uses.
 
-  ## Usage
+  ### Complex List Usage
 
   * When a complex-list is empty, it will display a `add` button to add the initial item
   * Items can be added by clicking the `add` button
   * When a complex-list is _not_ empty, the focused item will have actions it, with `add` and `remove` buttons
   * Items can be removed by clicking the `remove` button
   * Items in a complex-list cannot be reordered, but can be added and removed from anywhere in the list.
-
-  ## Example
 
   ```yaml
   links:
@@ -33,6 +31,10 @@
           _label: Title
           _has: text
   ```
+
+  > #### info::Note
+  >
+  > Complex lists don't have any of the common shared arguments, and don't display a field label.
 </docs>
 
 <style lang="sass">

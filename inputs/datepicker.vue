@@ -1,52 +1,18 @@
 <docs>
-  # datepicker
+  # `datepicker`
 
   A material design calendar picker. Allows specifying minimim and maximum dates
 
-  ### Shared Arguments
-
-  This input shares certain arguments with other inputs:
+  ### Datepicker Arguments
 
   * **help** - description / helper text for the field
   * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
-  * **validate** - an object that contains pre-publish validation rules:
-
   * **validate.required** - either `true` or an object that described the conditions that should make this field required
   * **validate.min** - minimum date, specified in YYYY-MM-DD
   * **validate.max** - maximum date, specified in YYYY-MM-DD
-
-  Validation rules may also have custom error messages, that will appear in the same place as the help text. If you do not specify a message, default error messages will appear.
-
   * **validate.requiredMessage** - will appear when required validation fails
   * **validate.minMessage** - will appear when minimum validation fails
   * **validate.maxMessage** - will appear when maximum validation fails
-
-  ### Conditional Required Arguments
-
-  * **field** to compare against (inside complex-list item, current form, or current component)
-  * **operator** _(optional)_ to use for the comparison
-  * **value** _(optional)_ to compare the field against
-
-  If neither `operator` nor `value` are specified, this will make the current field required if the compared field has any data (i.e. if it's not empty). If only the value is specified, it'll default to strict equality.
-
-  Operators:
-
-  * `===`
-  * `!==`
-  * `<`
-  * `>`
-  * `<=`
-  * `>=`
-  * `typeof`
-  * `regex`
-  * `empty` (only checks field data, no value needed)
-  * `not-empty` (only checks field data, no value needed)
-  * `truthy` (only checks field data, no value needed)
-  * `falsy` (only checks field data, no value needed)
-
-  _Note:_ You can compare against deep fields (like checkbox-group) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story` (don't worry about spaces!)
-
-  Note: labels are pulled from the field's `_label` property.
 </docs>
 
 <template>

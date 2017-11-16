@@ -1,9 +1,3 @@
-<docs>
-  # simple-list-item
-
-  A component which represents a single item in the `simple-list` input. Functionality is derived from its parent.
-</docs>
-
 <style lang="sass">
   @import '../styleguide/typography';
   @import '../styleguide/colors';

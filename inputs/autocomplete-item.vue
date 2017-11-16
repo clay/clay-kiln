@@ -1,9 +1,3 @@
-<docs>
-  # autocomplete-item
-
-  Individual autocomplete item, used by `autocomplete` (which is itself used by `simple-list`).
-</docs>
-
 <style lang="sass">
   @import '../styleguide/colors';
   @import '../styleguide/typography';

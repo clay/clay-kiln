@@ -1,12 +1,13 @@
 <docs>
-  # csv
+  # `csv`
 
-  A button that allows uploading csv data. Note: the data isn't editable once it's uploaded, but should be re-uploaded from a csv file when it needs to be changed.
+  A button that allows uploading CSV data. Note: the data isn't editable once it's uploaded, but should be re-uploaded from a CSV file when it needs to be changed.
 
-  ## Arguments
+  ### CSV Arguments
 
   * **delimiter** - alternate delimiter (defaults to comma, of course)
   * **quote** - alternate quote to use (defaults to one double-quote)
+  * **help** - description / helper text for the field
 
   Note: Certain spreadsheet editors like Google Spreadsheets will use triple-quotes if you use both quotes and commas in your cells. Make sure you account for that by changing the `quote` argument:
 
@@ -16,7 +17,9 @@
     quote: '"""'
   ```
 
-  Note: CSV buttons don't have validation, but may have help text below them.
+  > #### info::Note
+  >
+  > CSV buttons don't have validation or attached buttons.
 </docs>
 
 <template>
