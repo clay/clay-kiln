@@ -6,7 +6,6 @@ import keycode from 'keycode';
 import velocity from 'velocity-animate/velocity.min.js';
 import differenceInMinutes from 'date-fns/difference_in_minutes';
 import store from './lib/core-data/store';
-import { decorateAll } from './lib/decorators';
 import { addSelectorButton } from './lib/utils/custom-buttons'; // eslint-disable-line
 import { add as addInput } from './lib/forms/inputs';
 import { init as initValidators } from './lib/validators';
@@ -116,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.body.classList.add('kiln-edit-mode');
 
   store.dispatch('preload')
-    .then(() => decorateAll())
+    .then(() => require('./lib/decorators').decorateAll())
     .then(() => store.dispatch('openHashedForm'))
     .then(() => store.dispatch('getList', 'new-pages'))
     .then(() => {
