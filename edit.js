@@ -182,6 +182,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  document.body.addEventListener('mousemove', _.debounce((e) => {
+    if (_.get(store, 'state.ui.metaKey') && !e.ctrlKey && !e.metaKey) {
+      store.commit(META_UNPRESS);
+    }
+  }), 100);
+
   // when user stops pressing a key, toggle this off
   document.body.addEventListener('keyup', (e) => {
     const key = keycode(e);

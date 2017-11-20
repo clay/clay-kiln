@@ -111,6 +111,8 @@
           <ui-icon-button v-if="hasSettings" type="secondary" color="black" icon="settings" :tooltip="`${componentLabel} Settings`" @click.stop="openSettings"></ui-icon-button>
           <component v-for="(button, index) in customButtons" :is="button" :key="index"></component>
           <ui-icon-button v-if="hasRemove" type="secondary" color="black" icon="delete" :tooltip="`Remove ${componentLabel}`" @click.stop="removeComponent"></ui-icon-button>
+          <ui-icon-button v-if="hasDuplicateComponent" type="secondary" color="black" icon="add_circle_outline" :tooltip="`Duplicate ${componentLabel}`" @click.stop="duplicateComponent"></ui-icon-button>
+          <ui-icon-button v-if="hasDuplicateComponentWithData" type="secondary" color="black" icon="add_circle" :tooltip="`Duplicate ${componentLabel} (including data)`" @click.stop="duplicateComponentWithData"></ui-icon-button>
           <ui-icon-button v-if="hasAddComponent" type="secondary" color="black" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
           <ui-icon-button v-if="hasReplaceComponent" type="secondary" color="black" icon="swap_vert" :tooltip="`Replace ${componentLabel}`"></ui-icon-button>
           <div class="form-close-divider"></div>
@@ -228,6 +230,12 @@
       hasRemove(state) {
         // note: this only shows up if the component that contains this form is selected
         return this.isCurrentlySelected && _.get(state, 'ui.currentSelection.parentField.type') === 'list' && _.get(state, 'ui.currentSelection.parentField.isEditable');
+      },
+      hasDuplicateComponent(state) {
+        return this.isCurrentlySelected && _.get(state, 'ui.currentSelection.parentField.type') === 'list' && _.get(state, 'ui.currentSelection.parentField.isEditable') && !_.get(state, 'ui.metaKey');
+      },
+      hasDuplicateComponentWithData(state) {
+        return this.isCurrentlySelected && _.get(state, 'ui.currentSelection.parentField.type') === 'list' && _.get(state, 'ui.currentSelection.parentField.isEditable') && _.get(state, 'ui.metaKey');
       },
       hasAddComponent(state) {
         // note: this only shows up if the component that contains this form is selected
@@ -350,6 +358,31 @@
           parentURI: _.get(this.$store, 'state.ui.currentSelection.parentURI'),
           path: _.get(this.$store, 'state.ui.currentSelection.parentField.path')
         });
+      },
+      duplicateComponent() {
+        const uri = _.get(this.$store, 'state.ui.currentForm.uri'),
+          name = getComponentName(uri);
+
+        this.$store.commit('DUPLICATE_COMPONENT', name);
+        return this.$store.dispatch('addComponents', {
+          currentURI: uri,
+          parentURI: _.get(this.$store, 'state.ui.currentSelection.parentURI'),
+          path: _.get(this.$store, 'state.ui.currentSelection.parentField.path'),
+          components: [{ name }]
+        }).then((newEl) => this.$store.dispatch('select', newEl));
+      },
+      duplicateComponentWithData() {
+        const uri = _.get(this.$store, 'state.ui.currentForm.uri'),
+          name = getComponentName(uri),
+          data = _.get(this.$store, `state.components["${uri}"]`);
+
+        this.$store.commit('DUPLICATE_COMPONENT_WITH_DATA', name);
+        return this.$store.dispatch('addComponents', {
+          currentURI: uri,
+          parentURI: _.get(this.$store, 'state.ui.currentSelection.parentURI'),
+          path: _.get(this.$store, 'state.ui.currentSelection.parentField.path'),
+          components: [{ name, data }]
+        }).then((newEl) => this.$store.dispatch('select', newEl));
       },
       save() {
         this.$store.dispatch('unfocus');
