@@ -89,7 +89,7 @@
     </div>
 
     <div class="ui-textbox__content">
-      <label class="ui-textbox__label">
+      <label class="ui-textbox__label" @click.prevent>
         <div class="ui-textbox__label-text" :class="labelClasses">{{ label }}</div>
         <div class="simple-list-items ui-textbox__input">
           <transition-group name="list-items" tag="div" class="simple-list-items-wrapper">
