@@ -112,6 +112,12 @@
     methods: {
       // every time the value of the input changes, update the store
       update(val) {
+        if (_.isString(val)) {
+          // remove 'line separator' and 'paragraph separator' characters from text inputs
+          // (not visible in text editors, but get added when pasting from pdfs and old systems)
+          val = val.replace(/(\u2028|\u2029)/g, '');
+        }
+
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: val });
       },
       closeFormOnEnter(e) {
