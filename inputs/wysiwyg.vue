@@ -123,6 +123,13 @@
     z-index: 1;
   }
 
+  // larger toolbar
+  .ql-bubble.ql-toolbar button,
+  .ql-bubble .ql-toolbar button {
+    height: 32px;
+    width: 32px;
+  }
+
   // toolbar phrase button
   .kiln-phrase-button {
     // todo: make buttons more material-design-y
