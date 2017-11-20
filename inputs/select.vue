@@ -1,7 +1,7 @@
 <docs>
   # `select`
 
-  An enhanced browser `<select>` element, allowing the user to select one (or more!) of a few related options.
+  An enhanced browser `<select>` element, allowing the user to select one (or more!) of a few related options. [Uses Keen's UISelect](https://josephuspaye.github.io/Keen-UI/#/ui-select).
 
   ### Select Arguments
 

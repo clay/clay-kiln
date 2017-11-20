@@ -1,7 +1,7 @@
 <docs>
   # `checkbox`
 
-  A single checkbox, allowing the user to toggle something on or off.
+  A single checkbox, allowing the user to toggle something on or off. [Uses Keen's UICheckbox](https://josephuspaye.github.io/Keen-UI/#/ui-checkbox).
 
   In practice, it's usually best to use a conversational tone / question as the checkbox label, e.g.
 

@@ -1,7 +1,7 @@
 <docs>
   # `text`
 
-  A basic text input. Can be single line or multi-line. Uses the float label pattern.
+  A basic text input. Can be single line or multi-line. Uses the float label pattern. [Uses Keen's UITextbox](https://josephuspaye.github.io/Keen-UI/#/ui-textbox).
 
   ### Text Arguments
 

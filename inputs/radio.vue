@@ -1,7 +1,7 @@
 <docs>
   # `radio`
 
-  A group of radio buttons, allowing the user to select one of a few related options. You can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components)
+  A group of radio buttons, allowing the user to select one of a few related options. You can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components). [Uses Keen's UIRadioGroup](https://josephuspaye.github.io/Keen-UI/#/ui-radio-group).
 
   ```yaml
       input: radio

@@ -1,7 +1,7 @@
 <docs>
   # `datepicker`
 
-  A material design calendar picker. Allows specifying minimim and maximum dates
+  A material design calendar picker. Allows specifying minimim and maximum dates. [Uses Keen's UIDatepicker](https://josephuspaye.github.io/Keen-UI/#/ui-datepicker).
 
   ### Datepicker Arguments
 

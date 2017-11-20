@@ -1,7 +1,7 @@
 
 # `checkbox-group`
 
-A group of checkboxes, allowing the user to toggle on or off related items. You can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components)
+A group of checkboxes, allowing the user to toggle on or off related items. You can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components). [Uses Keen's UICheckboxGroup](https://josephuspaye.github.io/Keen-UI/#/ui-checkbox-group).
 
 ```yaml
     input: checkbox-group
@@ -37,7 +37,7 @@ field1:
 
 # `checkbox`
 
-A single checkbox, allowing the user to toggle something on or off.
+A single checkbox, allowing the user to toggle something on or off. [Uses Keen's UICheckbox](https://josephuspaye.github.io/Keen-UI/#/ui-checkbox).
 
 In practice, it's usually best to use a conversational tone / question as the checkbox label, e.g.
 
@@ -138,7 +138,7 @@ _has:
 
 # `datepicker`
 
-A material design calendar picker. Allows specifying minimim and maximum dates
+A material design calendar picker. Allows specifying minimim and maximum dates. [Uses Keen's UIDatepicker](https://josephuspaye.github.io/Keen-UI/#/ui-datepicker).
 
 ### Datepicker Arguments
 
@@ -317,7 +317,7 @@ tooltip: Fetch TV Show Image
 
 # `radio`
 
-A group of radio buttons, allowing the user to select one of a few related options. You can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components)
+A group of radio buttons, allowing the user to select one of a few related options. You can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components). [Uses Keen's UIRadioGroup](https://josephuspaye.github.io/Keen-UI/#/ui-radio-group).
 
 ```yaml
     input: radio
@@ -389,7 +389,7 @@ Each option should be an object with `title` and `values` properties. The `value
 
 # `select`
 
-An enhanced browser `<select>` element, allowing the user to select one (or more!) of a few related options.
+An enhanced browser `<select>` element, allowing the user to select one (or more!) of a few related options. [Uses Keen's UISelect](https://josephuspaye.github.io/Keen-UI/#/ui-select).
 
 ### Select Arguments
 
@@ -477,7 +477,7 @@ tags:
 
 # `text`
 
-A basic text input. Can be single line or multi-line. Uses the float label pattern.
+A basic text input. Can be single line or multi-line. Uses the float label pattern. [Uses Keen's UITextbox](https://josephuspaye.github.io/Keen-UI/#/ui-textbox).
 
 ### Text Arguments
 
