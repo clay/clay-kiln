@@ -19,6 +19,7 @@
     &-site {
       @include type-button();
 
+      cursor: pointer;
       display: none;
       flex: 0 0 $site-column;
       overflow: hidden;
@@ -85,6 +86,7 @@
     &-byline {
       @include type-body();
 
+      cursor: pointer;
       display: none;
       flex: 0 0 $byline-column;
       overflow: hidden;
@@ -93,6 +95,7 @@
 
       &.no-byline {
         color: $text-alt-color;
+        cursor: normal;
       }
 
       @media screen and (min-width: $site-title-byline-status-columns-sidebar) {
@@ -106,6 +109,7 @@
 
     &-status {
       align-items: flex-end;
+      cursor: pointer;
       display: flex;
       flex: 0 0 $status-column;
       flex-direction: column;
@@ -151,24 +155,28 @@
         display: flex;
       }
     }
+
+    &-collaborator {
+      cursor: pointer;
+    }
   }
 </style>
 
 <template>
   <div class="page-list-item">
-    <div v-if="multipleSitesSelected" class="page-list-item-site">{{ site }}</div>
+    <div v-if="multipleSitesSelected" class="page-list-item-site" @click.stop="filterSite">{{ siteName }}</div>
     <a class="page-list-item-title" :href="url" target="_blank" @click="onUrlClick">
-      <span v-if="multipleSitesSelected" class="page-list-item-site-small">{{ site }}</span>
+      <span v-if="multipleSitesSelected" class="page-list-item-site-small">{{ siteName }}</span>
       <span class="page-list-item-title-inner" :class="{ 'no-title': !page.titleTruncated }">{{ title }}</span>
       <span class="page-list-item-byline-small" :class="{ 'no-byline': !page.authors.length }">{{ firstAuthor }}</span>
     </a>
-    <div class="page-list-item-byline" :class="{ 'no-byline': !page.authors.length }">{{ firstAuthor }}</div>
-    <div class="page-list-item-status">
+    <div class="page-list-item-byline" :class="{ 'no-byline': !page.authors.length }" @click.stop="filterAuthor">{{ firstAuthor }}</div>
+    <div class="page-list-item-status" @click.stop="filterStatus">
       <span class="status-message" :class="status">{{ statusMessage }}</span>
       <span v-if="statusTime" class="status-time">{{ statusTime }}</span>
     </div>
     <div class="page-list-item-collaborators">
-      <collaborator v-for="user in users" :user="user" :key="user.username"></collaborator>
+      <collaborator class="page-list-item-collaborator" v-for="user in users" :user="user" :key="user.username" @select="filterUser"></collaborator>
     </div>
   </div>
 </template>
@@ -274,9 +282,10 @@
         return this.pageStatus.statusTime;
       },
       site() {
-        const site = _.find(_.get(this.$store, 'state.allSites'), (site) => site.slug === this.page.siteSlug);
-
-        return site.name;
+        return _.find(_.get(this.$store, 'state.allSites'), (site) => site.slug === this.page.siteSlug);
+      },
+      siteName() {
+        return this.site && this.site.name;
       },
       title() {
         return this.page.titleTruncated || 'No Title';
@@ -291,6 +300,19 @@
           // don't navigate links if the site select or status select popover menus are open
           e.preventDefault();
         }
+      },
+      // click items in the list to filter by that thing
+      filterSite() {
+        this.$emit('setSite', this.site.slug);
+      },
+      filterAuthor() {
+        this.$emit('setQuery', this.firstAuthor);
+      },
+      filterStatus() {
+        this.$emit('setStatus', this.status);
+      },
+      filterUser(username) {
+        this.$emit('setQuery', `user:${username}`);
       }
     },
     components: {

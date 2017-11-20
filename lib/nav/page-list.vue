@@ -154,7 +154,15 @@
       <span class="page-list-header page-list-header-collaborators">Collaborators</span>
     </div>
     <div class="page-list-readout">
-      <page-list-item v-for="(page, pageIndex) in pages" :key="pageIndex" :page="page" :multipleSitesSelected="multipleSitesSelected" :isPopoverOpen="isPopoverOpen"></page-list-item>
+      <page-list-item
+        v-for="(page, pageIndex) in pages"
+        :key="pageIndex"
+        :page="page"
+        :multipleSitesSelected="multipleSitesSelected"
+        :isPopoverOpen="isPopoverOpen"
+        @setSite="selectSite"
+        @setQuery="setQuery"
+        @setStatus="selectStatus"></page-list-item>
       <div class="page-list-load-more" v-if="showLoadMore">
         <ui-button type="secondary" class="page-list-load-more-button" @click="fetchPages">Load More</ui-button>
       </div>
@@ -387,6 +395,11 @@
         this.selectedStatus = status;
 
         this.$store.commit('FILTER_PAGELIST_STATUS', this.selectedStatus);
+        this.offset = 0;
+        this.fetchPages();
+      },
+      setQuery(query) {
+        this.query = query;
         this.offset = 0;
         this.fetchPages();
       },

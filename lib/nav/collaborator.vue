@@ -9,7 +9,7 @@
 </style>
 
 <template>
-  <div class="collaborator">
+  <div class="collaborator" @click.stop="selectCollaborator">
     <avatar class="collaborator-image" :url="user.imageUrl" size="small" ref="avatar"></avatar>
     <ui-tooltip trigger="avatar" position="bottom left">{{ user.name || user.username }}</ui-tooltip>
   </div>
@@ -21,6 +21,11 @@
 
   export default {
     props: ['user'],
+    methods: {
+      selectCollaborator() {
+        this.$emit('select', this.user.username);
+      }
+    },
     components: {
       UiTooltip,
       avatar
