@@ -193,14 +193,15 @@
   /**
    * build the query to send to elastic
    * @param  {array} siteFilter
-   * @param  {string} searchFilter
+   * @param  {string} queryText
+   * @param  {string} queryUser
    * @param {number} offset
    * @param {object} statusFilter
    * @param {boolean} isMyPages
    * @param {string} username
    * @return {object}
    */
-  function buildQuery({ siteFilter, searchFilter, offset, statusFilter, isMyPages, username }) { // eslint-disable-line
+  function buildQuery({ siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username }) { // eslint-disable-line
     let query = {
       index: 'pages',
       type: 'general',
@@ -218,14 +219,36 @@
 
     _.set(query, 'body.query.bool.must', []);
 
-    // filter for only "My Pages"
-    if (isMyPages) {
+    // filter for only "My Pages", and filter users
+    if (isMyPages && queryUser) {
+      query.body.query.bool.must.push({
+        nested: {
+          path: 'users',
+          query: {
+            terms: {
+              'users.username': [username, queryUser]
+            }
+          }
+        }
+      });
+    } else if (isMyPages) {
       query.body.query.bool.must.push({
         nested: {
           path: 'users',
           query: {
             term: {
               'users.username': username
+            }
+          }
+        }
+      });
+    } else if (queryUser) {
+      query.body.query.bool.must.push({
+        nested: {
+          path: 'users',
+          query: {
+            term: {
+              'users.username': queryUser
             }
           }
         }
@@ -248,10 +271,10 @@
     }
 
     // filter by search string
-    if (searchFilter) {
+    if (queryText) {
       query.body.query.bool.must.push({
         multi_match: {
-          query: searchFilter,
+          query: queryText,
           fields: ['authors^2', 'title'], // favor authors, then title
           type: 'phrase_prefix'
         }
@@ -321,6 +344,14 @@
       },
       showLoadMore() {
         return this.total === null || this.offset < this.total;
+      },
+      queryText() {
+        return this.query.replace(/user:\S+/i, '').trim();
+      },
+      queryUser() {
+        const user = this.query.match(/user:(\S+)/i);
+
+        return user ? user[1] : '';
       }
     },
     methods: {
@@ -358,13 +389,14 @@
       },
       fetchPages() {
         const siteFilter = _.map(this.selectedSites, (site) => site.slug),
-          searchFilter = this.query,
+          queryText = this.queryText,
+          queryUser = this.queryUser,
           offset = this.offset,
           prefix = _.get(this.$store, 'state.site.prefix'),
           isMyPages = this.isMyPages,
           username = _.get(this.$store, 'state.user.username'),
           statusFilter = this.selectedStatus,
-          query = buildQuery({ siteFilter, searchFilter, offset, statusFilter, isMyPages, username });
+          query = buildQuery({ siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username });
 
         return postJSON(prefix + searchRoute, query).then((res) => {
           const hits = _.get(res, 'hits.hits') || [],
