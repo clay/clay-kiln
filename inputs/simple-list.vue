@@ -114,7 +114,8 @@
             @add="addItem"
             @select="selectItem"
             @focus="onFocus"
-            @blur="onBlur"></simple-list-input>
+            @blur="onBlur"
+            @resize="onResize"></simple-list-input>
         </div>
       </label>
 
@@ -251,6 +252,9 @@
         if (!this.isTouched) {
           this.isTouched = true;
         }
+      },
+      onResize(additionalPixels) {
+        this.$emit('resize', additionalPixels);
       },
       selectItem(index) {
         if (_.isNull(index) || index < 0 || index >= this.data.length) {

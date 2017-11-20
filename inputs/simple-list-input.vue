@@ -42,7 +42,8 @@
       :focusIndex="autocompleteIndex"
       :updateFocusIndex="updateFocusIndex"
       :updateMatches="updateAutocompleteMatches"
-      :select="onAutocompleteSelect">
+      :select="onAutocompleteSelect"
+      @resize="onResize">
     </autocomplete>
   </div>
 </template>
@@ -123,6 +124,9 @@
           // otherwise, close the form (which we never do on tab or comma)
           this.$store.dispatch('unfocus');
         }
+      },
+      onResize(additionalPixels) {
+        this.$emit('resize', additionalPixels);
       },
       // Focus on the first item in the list
       focusFirstItem() {

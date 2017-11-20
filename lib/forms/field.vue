@@ -87,8 +87,8 @@
       }
     },
     methods: {
-      onResize() {
-        this.$emit('resize'); // pass this to the form component
+      onResize(additionalPixels) {
+        this.$emit('resize', additionalPixels); // pass this to the form component
       }
     },
     components: window.kiln.inputs

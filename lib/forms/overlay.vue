@@ -86,6 +86,7 @@
 
     .input-container {
       height: auto;
+      min-height: 100%;
       padding: 16px 24px 24px;
       position: relative;
       width: 100%;
@@ -301,7 +302,7 @@
         velocity(innerEl, { opacity: 0 }, { duration: 50 });
         velocity(el, { opacity: 0 }, { delay: 120, duration: 100, complete: done });
       },
-      onResize() {
+      onResize(additionalPixels) {
         this.$nextTick(() => {
           const innerEl = find(this.$el, '.input-container'),
             // note: we can't grab the scrollHeight of the innerEl, since it's always 100% height,
@@ -309,7 +310,7 @@
             innerHeight = innerEl.clientHeight,
             currentTop = parseInt(this.formTop),
             docHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
-            newHeight = innerHeight + 56, // header is 56px
+            newHeight = innerHeight + 56 + additionalPixels, // header is 56px
             isInsideViewport = currentTop + newHeight < docHeight;
 
           if (isInsideViewport) {

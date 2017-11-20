@@ -37,7 +37,8 @@
       return {
         localIndex: null,
         prevFocusIndex: null,
-        listItems: []
+        listItems: [],
+        additionalPixels: 0
       };
     },
     computed: {
@@ -75,6 +76,18 @@
         this.prevFocusIndex = this.focusIndex;
         // Return the active index
         return activeIndex;
+      }
+    },
+    watch: {
+      matches(val) {
+        let pixelLength = val ? val.length * 40 : 0;
+
+        // only rachet up the size, never make the size smaller
+        if (val && this.showMatches && pixelLength > this.additionalPixels) {
+          this.additionalPixels = pixelLength;
+          // when matches change, potentially resize the form
+          this.$emit('resize', pixelLength);
+        }
       }
     },
     mounted() {
