@@ -10,11 +10,12 @@
     "test-local": "BABEL_ENV=test npm run lint && BABEL_ENV=test npm run karma -- karma.local.conf.js",
     "build": "BABEL_ENV=build webpack",
     "watch": "BABEL_ENV=build webpack -w",
-    "prepublishOnly": "BABEL_ENV=build webpack -p",
+    "prepublishOnly": "BABEL_ENV=build webpack -p && npm run generate-actions",
     "docs:clean": "rimraf ./_book && rimraf ./docs/vuex-actions.md",
     "docs:prepare": "gitbook install",
     "docs:watch": "npm run docs:prepare && gitbook serve",
-    "docs:build": "gitbook build ./ && jsdoc2md --files lib/**/actions.js > docs/vuex-actions.md",
+    "docs:build": "gitbook build ./",
+    "generate-actions": "jsdoc2md --files lib/**/actions.js > docs/vuex-actions.md",
     "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'update book' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'update book' && git push git@github.com:clay/clay-kiln gh-pages --force"
   },
   "repository": {
