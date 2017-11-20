@@ -118,6 +118,11 @@
     color: $pure-white;
   }
 
+  .ql-bubble .ql-tooltip {
+    // appear above field descriptions, other stuff after the input
+    z-index: 1;
+  }
+
   // toolbar phrase button
   .kiln-phrase-button {
     // todo: make buttons more material-design-y
