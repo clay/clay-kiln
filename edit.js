@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   store.dispatch('preload')
     .then(() => require('./lib/decorators').decorateAll())
-    .then(() => store.dispatch('openHashedForm'))
+    .then(() => store.dispatch('parseURLHash'))
     .then(() => store.dispatch('getList', 'new-pages'))
     .then(() => {
       const pageTemplates = _.get(store, 'state.lists[new-pages].items'),

@@ -180,12 +180,15 @@
    * @return {array}
    */
   function getInitialSites() {
+    const configSites = _.get(this.$store, 'state.ui.currentNavConfig.sites'),
+      selectedSites = configSites ? configSites.split(',') : [];
+
     // make an array of all sites, sorted by slug
     return _.sortBy(_.map(_.get(this.$store, 'state.allSites'), (site) => {
       return {
         slug: site.slug,
         name: site.name,
-        selected: site.slug === _.get(this.$store, 'state.site.slug')
+        selected: selectedSites.length ? _.includes(selectedSites, site.slug) : site.slug === _.get(this.$store, 'state.site.slug')
       };
     }), 'name');
   }
@@ -317,12 +320,12 @@
     props: ['isMyPages'],
     data() {
       return {
-        query: '',
+        query: _.get(this.$store, 'state.ui.currentNavConfig.query', ''),
         offset: 0,
         total: null,
         sites: getInitialSites.call(this),
         pages: [],
-        selectedStatus: 'all',
+        selectedStatus: _.get(this.$store, 'state.ui.currentNavConfig.status', 'all'),
         isPopoverOpen: false
       };
     },
@@ -412,6 +415,14 @@
           this.offset = offset + pages.length;
           this.total = total; // update the total for this particular query
           // (it's used to hide the "load more" button)
+
+          // set the url hash
+          this.$store.dispatch('setHash', { menu: {
+            tab: isMyPages ? 'my-pages' : 'all-pages',
+            sites: siteFilter.join(','),
+            status: statusFilter,
+            query: this.query
+          }});
         });
       }
     },
