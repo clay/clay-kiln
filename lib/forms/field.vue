@@ -34,7 +34,7 @@
 </style>
 
 <template>
-  <transition name="reveal" mode="out-in">
+  <transition name="reveal" mode="out-in" @after-enter="onRevealResize">
     <fieldset class="kiln-field" v-if="inputName && isShown">
       <component :is="inputName" :name="name" :data="data" :schema="schema" :args="expandedInput" @resize="onResize"></component>
     </fieldset>
@@ -60,6 +60,9 @@
       },
       inputName() {
         return this.expandedInput[inputProp];
+      },
+      hasReveal() {
+        return _.has(this.schema, revealProp);
       },
       isShown() {
         const revealConfig = _.get(this.schema, revealProp, {}),
@@ -89,6 +92,11 @@
     methods: {
       onResize(additionalPixels) {
         this.$emit('resize', additionalPixels); // pass this to the form component
+      },
+      onRevealResize() {
+        if (this.hasReveal) {
+          this.$emit('resize');
+        }
       }
     },
     components: window.kiln.inputs

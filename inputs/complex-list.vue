@@ -62,9 +62,9 @@
 </style>
 
 <template>
-  <transition mode="out-in" name="hide-show" @after-enter="onResize" @after-leave="onResize">
+  <transition mode="out-in" name="hide-show" @after-enter="onResize">
     <div class="complex-list" v-if="items.length">
-      <transition-group mode="out-in" name="hide-show" tag="div" class="complex-list-items" @after-enter="onResize" @after-leave="onResize">
+      <transition-group mode="out-in" name="hide-show" tag="div" class="complex-list-items" @after-enter="onListResize">
         <item v-if="items.length" v-for="(item, index) in items"
           :index="index"
           :total="items.length"
@@ -105,8 +105,13 @@
       updateFormData(items) {
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: items });
       },
-      onResize() {
+      onListResize() {
         this.$emit('resize'); // potentially resize the form (after transitioning elements)
+      },
+      onResize(el) {
+        if (el && el.classList.contains('complex-list')) {
+          this.$emit('resize'); // resize the form because we've displayed the list
+        }
       },
       addItem(index) {
         const props = _.map(_.get(this.args, 'props', []), (item) => item.prop),

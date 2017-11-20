@@ -303,6 +303,8 @@
         velocity(el, { opacity: 0 }, { delay: 120, duration: 100, complete: done });
       },
       onResize(additionalPixels) {
+        additionalPixels = additionalPixels || 0;
+
         this.$nextTick(() => {
           const innerEl = find(this.$el, '.input-container'),
             // note: we can't grab the scrollHeight of the innerEl, since it's always 100% height,
