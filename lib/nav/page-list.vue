@@ -160,7 +160,7 @@
         :page="page"
         :multipleSitesSelected="multipleSitesSelected"
         :isPopoverOpen="isPopoverOpen"
-        @setSite="selectSite"
+        @setSite="setSingleSite"
         @setQuery="setQuery"
         @setStatus="selectStatus"></page-list-item>
       <div class="page-list-load-more" v-if="showLoadMore">
@@ -385,6 +385,20 @@
           site.selected = allSites;
           return site;
         });
+      },
+      setSingleSite(slug) {
+        // loop through all sites, making sure that only one is selected
+        _.each(this.sites, (site) => {
+          if (site.slug === slug) {
+            site.selected = true;
+          } else {
+            site.selected = false;
+          }
+        });
+
+        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, (site) => site.slug).join(', '));
+        this.offset = 0;
+        this.fetchPages();
       },
       filterList: _.debounce(function () {
         this.$store.commit('FILTER_PAGELIST_SEARCH', this.query);
