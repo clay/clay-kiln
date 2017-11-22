@@ -31,6 +31,7 @@ Attached to every component is a component selector, which displays when the com
 * **Settings** - opens the [component settings form](editing-components.md#settings-group), if it exists
 * **Remove** - removes the component, if it exists in a component list
 * **Add Component** - adds a component, if the current component exists in a component list
-* **Duplicate Component** - holding <kbd>Ctrl</kbd> or <kbd>⌘</kbd> will change the _Add Component_ button into a _Duplicate Component_ button, allowing efficient adding of the same component multiple times
+* **Add Another** - adds another instance of the current component
+* **Duplicate Component** - holding <kbd>Ctrl</kbd> or <kbd>⌘</kbd> will change the _Add Another button into a _Duplicate Component_ button, creating a new instance of the current component with a copy of the current component's data
 
 ![](images/component_selector.png)
