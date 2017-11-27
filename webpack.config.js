@@ -138,8 +138,7 @@ module.exports = {
     // so they get imported correctly when testing
     extensions: ['.js', '.json', '.vue'],
     alias: {
-      keen: path.resolve(__dirname, 'node_modules/keen-ui/src'),
-      vue$: 'vue/dist/vue.runtime.min.js'
+      keen: path.resolve(__dirname, 'node_modules/keen-ui/src')
     }
   },
   plugins: plugins
