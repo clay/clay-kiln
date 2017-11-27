@@ -129,8 +129,9 @@
 <script>
   import _ from 'lodash';
   import { find } from '@nymag/dom';
-  import listItem from './filterable-list-item.vue';
   import dragula from 'dragula';
+  import { requestTimeout } from './request-timeout';
+  import listItem from './filterable-list-item.vue';
   import UiTextbox from 'keen/UiTextbox';
   import UiButton from 'keen/UiButton';
 
@@ -263,7 +264,7 @@
         } else {
           this.activeIndex = null;
           input.classList.add('kiln-shake');
-          setTimeout(() => input.classList.remove('kiln-shake'), 301); // length of the animation + 1
+          requestTimeout(() => input.classList.remove('kiln-shake'), 301); // length of the animation + 1
         }
       }
     },

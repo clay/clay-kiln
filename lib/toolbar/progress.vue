@@ -39,6 +39,7 @@
 
 <script>
   import { mapState } from 'vuex';
+  import { requestTimeout, clearRequestTimeout } from '../utils/request-timeout';
   import NprogressContainer from 'vue-nprogress/src/NprogressContainer.vue';
 
   const PAUSE_TIMEOUT = 500, // number of milliseconds to pause when new things are added to the progress
@@ -86,7 +87,7 @@
     if (np.isStarted()) {
       this.paused = true;
       // if it's already started, just pause it for a second
-      this.timer = setTimeout(() => {
+      this.timer = requestTimeout(() => {
         self.paused = false;
         self.trickle = requestAnimationFrame(trickle.bind(self, self.pausedStep));
       }, PAUSE_TIMEOUT);
@@ -101,7 +102,7 @@
     const np = this.$nprogress;
 
     if (np.isStarted()) {
-      clearTimeout(this.timer); // stop the pause (if it was started)
+      clearRequestTimeout(this.timer); // stop the pause (if it was started)
       np.done(); // finish the progress bar
     }
   }
