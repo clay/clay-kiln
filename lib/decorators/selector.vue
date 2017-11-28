@@ -239,10 +239,6 @@
     }
   }
 
-  function setupResizeListener() {
-    this.onResize = _.debounce(this.setSelectorPosition, 100);
-  }
-
   export default {
     data() {
       return {
@@ -294,12 +290,6 @@
         if (val) {
           // fires when selecting a component
           this.setSelectorPosition();
-
-          // recalculate selector position on resize (only listen when component is selected)
-          window.addEventListener('resize', this.onResize);
-        } else {
-          // fires when unselecting a component
-          window.removeEventListener('resize', this.onResize);
         }
       }
     },
@@ -360,10 +350,6 @@
       setSelectorPosition() {
         this.selectorPosition = calculateSelectorPosition(this.$options.componentEl);
       },
-    },
-    mounted() {
-      // setup event listener, so it can be removed later
-      setupResizeListener.call(this);
     },
     components: _.assign({}, _.get(window, 'kiln.selectorButtons', {}), { UiIconButton })
   };
