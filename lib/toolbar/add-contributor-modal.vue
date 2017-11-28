@@ -20,22 +20,25 @@
 </style>
 
 <template>
-  <div class="add-contributor" keep-alive>
+  <div class="add-contributor">
     <ui-textbox class="invite-filter" v-model.trim="query" type="search" label="Search for Someone" :autofocus="true" :floatingLabel="true" ref="searchInput" @keydown="filterList"></ui-textbox>
-    <div class="invite-list">
-      <person
-        v-for="user in users"
-        :key="user.username"
-        :id="user.username"
-        :image="user.imageUrl"
-        :name="user.name"
-        :subtitle="user.username"
-        :hasPrimaryAction="true"
-        :hasSecondaryAction="true"
-        secondaryActionIcon="person_add"
-        @primary-click="addPerson(user)"
-        @secondary-click="addPerson(user)"></person>
-    </div>
+    <keep-alive>
+      <div class="invite-list">
+        <person
+          v-for="user in users"
+          v-once
+          :key="user.username"
+          :id="user.username"
+          :image="user.imageUrl"
+          :name="user.name"
+          :subtitle="user.username"
+          :hasPrimaryAction="true"
+          :hasSecondaryAction="true"
+          secondaryActionIcon="person_add"
+          @primary-click="addPerson(user)"
+          @secondary-click="addPerson(user)"></person>
+      </div>
+    </keep-alive>
   </div>
 </template>
 
