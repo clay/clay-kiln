@@ -456,6 +456,10 @@
     mounted() {
       this.fetchPages();
     },
+    activated() {
+      this.offset = 0;
+      this.fetchPages();
+    },
     components: {
       UiButton,
       UiTextbox,
