@@ -130,7 +130,7 @@
   import _ from 'lodash';
   import { find } from '@nymag/dom';
   import dragula from 'dragula';
-  import { requestTimeout } from './request-timeout';
+  import { requestTimeout } from './events';
   import listItem from './filterable-list-item.vue';
   import UiTextbox from 'keen/UiTextbox';
   import UiButton from 'keen/UiButton';

@@ -39,7 +39,7 @@
 
 <script>
   import { mapState } from 'vuex';
-  import { requestTimeout, clearRequestTimeout } from '../utils/request-timeout';
+  import { requestTimeout, clearRequestTimeout } from '../utils/events';
   import NprogressContainer from 'vue-nprogress/src/NprogressContainer.vue';
 
   const PAUSE_TIMEOUT = 500, // number of milliseconds to pause when new things are added to the progress
