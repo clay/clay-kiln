@@ -115,7 +115,7 @@
 </style>
 
 <template>
-  <div :class="{ 'kiln-permanent-placeholder': isPermanent, 'kiln-placeholder': !isPermanent, 'kiln-error-placeholder': isError }" :style="{ minHeight: placeholderHeight }" :ref="uid">
+  <div v-once :class="{ 'kiln-permanent-placeholder': isPermanent, 'kiln-placeholder': !isPermanent, 'kiln-error-placeholder': isError }" :style="{ minHeight: placeholderHeight }" :ref="uid">
     <ui-button v-if="isComponent" class="placeholder-add-component" icon="add" color="primary" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
     <div v-else class="placeholder-label">
       <ui-icon v-if="!isPermanent" class="placeholder-icon" icon="add"></ui-icon>

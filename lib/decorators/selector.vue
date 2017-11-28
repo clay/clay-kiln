@@ -189,16 +189,16 @@
 
 <template>
   <transition name="selector-fade">
-    <aside data-ignore v-show="isCurrentSelection" class="mini-selector" :class="selectorPosition" @click.stop>
+    <aside data-ignore v-show="isCurrentSelection" class="mini-selector" :class="selectorPosition">
       <div class="quick-bar" :class="selectorPosition">
-        <ui-icon-button v-if="componentLabel" type="secondary" color="primary" class="quick-bar-button quick-bar-info" icon="info_outline" :tooltip="`${componentLabel} Info`" @click.stop="openInfo"></ui-icon-button>
-        <ui-icon-button v-if="hasSettings" type="secondary" color="primary" class="quick-bar-button quick-bar-settings" icon="settings" :tooltip="`${componentLabel} Settings`" @click.stop="openSettings"></ui-icon-button>
-        <component v-for="(button, index) in customButtons" :is="button" :key="index"></component>
-        <ui-icon-button v-if="hasRemove" type="secondary" color="primary" class="quick-bar-button quick-bar-remove" icon="delete" :tooltip="`Remove ${componentLabel}`" @click.stop="removeComponent"></ui-icon-button>
+        <ui-icon-button v-once type="secondary" color="primary" class="quick-bar-button quick-bar-info" icon="info_outline" :tooltip="`${componentLabel} Info`" @click.stop="openInfo"></ui-icon-button>
+        <ui-icon-button v-once v-if="hasSettings" type="secondary" color="primary" class="quick-bar-button quick-bar-settings" icon="settings" :tooltip="`${componentLabel} Settings`" @click.stop="openSettings"></ui-icon-button>
+        <component v-once v-for="(button, index) in customButtons" :is="button" :key="index"></component>
+        <ui-icon-button v-once v-if="hasRemove" type="secondary" color="primary" class="quick-bar-button quick-bar-remove" icon="delete" :tooltip="`Remove ${componentLabel}`" @click.stop="removeComponent"></ui-icon-button>
         <ui-icon-button v-if="hasDuplicateComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-dupe" icon="add_circle_outline" :tooltip="`Add ${componentLabel}`" @click.stop="duplicateComponent"></ui-icon-button>
-        <ui-icon-button v-if="hasDuplicateComponentWithData" type="secondary" color="primary" class="quick-bar-button quick-bar-dupe" icon="add_circle" :tooltip="`Duplicate ${componentLabel}`" @click.stop="duplicateComponentWithData"></ui-icon-button>
-        <ui-icon-button v-if="hasAddComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-add" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
-        <ui-icon-button v-if="hasReplaceComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-replace" icon="swap_vert" :tooltip="`Replace ${componentLabel}`"></ui-icon-button>
+        <ui-icon-button v-else-if="hasDuplicateComponentWithData" type="secondary" color="primary" class="quick-bar-button quick-bar-dupe" icon="add_circle" :tooltip="`Duplicate ${componentLabel}`" @click.stop="duplicateComponentWithData"></ui-icon-button>
+        <ui-icon-button v-once v-if="hasAddComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-add" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
+        <ui-icon-button v-once v-else-if="hasReplaceComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-replace" icon="swap_vert" :tooltip="`Replace ${componentLabel}`"></ui-icon-button>
       </div>
     </aside>
   </transition>
@@ -207,7 +207,7 @@
 <script>
   import _ from 'lodash';
   import getRect from 'element-client-rect';
-  import { getSchema } from '../core-data/components';
+  import { getSchema, getData } from '../core-data/components';
   import { getComponentName, componentListProp } from '../utils/references';
   import label from '../utils/label';
   import logger from '../utils/log';
@@ -217,11 +217,11 @@
 
   /**
   * calculate the selector position, based on how much space is around the component
-  * @param  {Element} componentEl
+  * @param  {Element} el
   * @return {string}
   */
-  function calculateSelectorPosition(componentEl) {
-    const rect = getRect(componentEl),
+  function calculateSelectorPosition(el) {
+    const rect = getRect(el),
       selectorDimension = 50;
 
     if (rect.left > selectorDimension) {
@@ -244,54 +244,43 @@
   export default {
     data() {
       return {
-        selectorPosition: 'left'
+        selectorPosition: 'left',
+        uri: this.$options.uri,
+        componentName: getComponentName(this.$options.uri),
+        componentLabel: label(getComponentName(this.$options.uri)),
+        parentField: this.$options.parentField,
+        parentURI: this.$options.parentURI,
+        // note: only for components in LISTS! components in properties can be replaced but not removed (for now)
+        hasRemove: this.$options.parentField && this.$options.parentField.type === 'list' && this.$options.parentField.isEditable,
+        hasAddComponent: this.$options.parentField && this.$options.parentField.type === 'list' && this.$options.parentField.isEditable,
+        hasReplaceComponent: this.$options.parentField && this.$options.parentField.type === 'prop' && this.$options.parentField.isEditable
       };
     },
     computed: {
-      currentComponent() {
-        return _.get(this.$store, 'state.ui.currentSelection') || {};
+      currentSelectedComponent() {
+        return _.get(this.$store, 'state.ui.currentSelection.el');
       },
-      uri() {
-        return this.currentComponent.uri;
+      isCurrentSelection() {
+        return this.currentSelectedComponent && this.$options.componentEl === this.currentSelectedComponent;
       },
       customButtons() {
         return Object.keys(_.get(window, 'kiln.selectorButtons', {}));
       },
-      parentField() {
-        return this.isCurrentSelection && this.currentComponent.parentField;
-      },
       hasSettings() {
-        return this.isCurrentSelection && _.has(getSchema(this.uri), '_groups.settings');
-      },
-      // note: only for components in LISTS! components in properties can be replaced but not removed (for now)
-      hasRemove() {
-        return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable;
-      },
-      hasAddComponent() {
-        return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable;
+        return _.has(getSchema(this.uri), '_groups.settings');
       },
       hasDuplicateComponent() {
-        return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable && !_.get(this.$store, 'state.ui.metaKey');
+        return this.hasAddComponent && !_.get(this.$store, 'state.ui.metaKey');
       },
       hasDuplicateComponentWithData() {
-        return this.parentField && this.parentField.type === 'list' && this.parentField.isEditable && _.get(this.$store, 'state.ui.metaKey');
+        return this.hasAddComponent && _.get(this.$store, 'state.ui.metaKey');
       },
-      hasReplaceComponent() {
-        return this.parentField && this.parentField.type === 'prop' && this.parentField.isEditable;
-      },
-      componentName() {
-        return this.uri && getComponentName(this.uri);
-      },
-      componentLabel() {
-        return this.componentName && label(this.componentName);
-      },
-      isCurrentSelection() {
-        return this.$options.componentEl === this.currentComponent.el;
+      parentSchema() {
+        return this.parentField ? getSchema(this.parentURI, this.parentField.path) : {};
       },
       addComponentText() {
         if (this.hasAddComponent) {
-          const schema = getSchema(_.get(this.$store, 'state.ui.currentSelection.parentURI'), this.parentField.path),
-            componentsToAdd = _.get(schema, `${componentListProp}.include`),
+          const componentsToAdd = _.get(this.schema, `${componentListProp}.include`),
             hasOneComponent = componentsToAdd && componentsToAdd.length === 1;
 
           return hasOneComponent ? `Add ${label(componentsToAdd[0])}` : 'Add Components';
@@ -332,36 +321,36 @@
       openAddComponentPane(e) {
         return this.$store.dispatch('openAddComponent', {
           currentURI: this.uri,
-          parentURI: this.currentComponent.parentURI,
+          parentURI: this.parentURI,
           path: this.parentField.path,
           pos: { x: e.clientX, y: e.clientY }
         });
       },
       duplicateComponent() {
-        const name = getComponentName(this.uri);
+        const name = this.componentName;
 
         this.$store.commit('DUPLICATE_COMPONENT', name);
         return this.$store.dispatch('addComponents', {
           currentURI: this.uri,
-          parentURI: this.currentComponent.parentURI,
+          parentURI: this.parentURI,
           path: this.parentField.path,
           components: [{ name }]
         }).then((newEl) => this.$store.dispatch('select', newEl));
       },
       duplicateComponentWithData() {
-        const name = getComponentName(this.uri),
-          data = _.get(this.$store, `state.components["${this.uri}"]`);
+        const name = this.componentName,
+          data = getData(this.uri);
 
         this.$store.commit('DUPLICATE_COMPONENT_WITH_DATA', name);
         return this.$store.dispatch('addComponents', {
           currentURI: this.uri,
-          parentURI: this.currentComponent.parentURI,
+          parentURI: this.parentURI,
           path: this.parentField.path,
           components: [{ name, data }]
         }).then((newEl) => this.$store.dispatch('select', newEl));
       },
       removeComponent() {
-        const el = this.currentComponent.el;
+        const el = this.$options.componentEl;
 
         this.$store.dispatch('unselect');
         return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', el));
@@ -374,6 +363,6 @@
       // setup event listener, so it can be removed later
       setupResizeListener.call(this);
     },
-    components: _.merge({}, _.get(window, 'kiln.selectorButtons', {}), { UiIconButton })
+    components: _.assign({}, _.get(window, 'kiln.selectorButtons', {}), { UiIconButton })
   };
 </script>
