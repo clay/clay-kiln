@@ -62,7 +62,7 @@
 
 <template>
   <div class="person-item" :class="{ 'has-primary-action': hasPrimaryAction }">
-    <avatar class="person-image" :url="image" @click.stop="onClick"></avatar>
+    <avatar class="person-image" :url="image" :name="name || subtitle" @click.stop="onClick"></avatar>
     <div class="person-text" @click.stop="onClick">
       <span v-if="name" class="person-name">{{ name }}</span>
       <span v-if="subtitle" class="person-subtitle">{{ subtitle }}</span>
