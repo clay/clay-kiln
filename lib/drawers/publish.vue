@@ -124,7 +124,7 @@
       <span class="action-message">{{ actionMessage }} <ui-icon-button v-if="showSchedule" icon="close" buttonType="button" type="secondary" color="default" size="small" tooltip="Clear Date/Time" tooltipPosition="left middle" @click.stop="clearScheduleForm"></ui-icon-button></span>
       <form class="schedule-form" @submit.prevent="schedulePage">
         <ui-datepicker class="schedule-date" color="accent" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date"></ui-datepicker>
-        <ui-textbox class="schedule-time" v-model="timeValue" type="time" label="Time" placeholder="12:00 AM"></ui-textbox>
+        <timepicker class="schedule-time" :value="timeValue" label="Time" @update="updateTime"></timepicker>
       </form>
       <ui-button v-if="showSchedule" :disabled="disableSchedule" class="action-button" buttonType="button" color="accent" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
       <ui-button v-else class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
@@ -142,7 +142,6 @@
 
 <script>
   import _ from 'lodash';
-  import { parseDate as parseNaturalDate } from 'chrono-node';
   import dateFormat from 'date-fns/format';
   import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
   import parseDate from 'date-fns/parse';
@@ -164,6 +163,7 @@
   import UiTextbox from 'keen/UiTextbox';
   import UiCollapsible from 'keen/UiCollapsible';
   import UiIconButton from 'keen/UiIconButton';
+  import timepicker from '../utils/timepicker.vue';
   import logger from '../utils/log';
 
   const log = logger(__filename);
@@ -305,7 +305,7 @@
         // firefox uses a nonstandard AM/PM format, rather than the accepted W3C standard that other browsers use
         // therefore, check for AM/PM
         const date = dateFormat(this.dateValue, 'YYYY-MM-DD'),
-          time = dateFormat(parseNaturalDate(this.timeValue), 'HH:mm'),
+          time = this.timeValue,
           datetime = parseDate(date + ' ' + time),
           timestamp = getTime(datetime),
           store = this.$store;
@@ -410,6 +410,9 @@
         } else {
           this.isInvalid = true;
         }
+      },
+      updateTime(val) {
+        this.timeValue = val;
       }
     },
     mounted() {
@@ -430,7 +433,8 @@
       UiDatepicker,
       UiTextbox,
       UiCollapsible,
-      UiIconButton
+      UiIconButton,
+      timepicker
     }
   };
 </script>

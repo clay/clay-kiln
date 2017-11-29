@@ -16,20 +16,15 @@
 </docs>
 
 <template>
-  <ui-textbox
-    type="time"
-    placeholder="12:00 AM"
-    v-model="timeValue"
-    :invalid="isInvalid"
-    :required="isRequired"
+  <timepicker
+    :value="data"
     :label="label"
     :help="timeHelp"
-    :error="errorMessage"
-    :disabled="isDisabled"
-    iconPosition="right"
-    @input="update">
-    <component v-if="hasButton" slot="icon" :is="args.attachedButton.name" :name="name" :data="data" :schema="schema" :args="args.attachedButton" @disable="disableInput" @enable="enableInput"></component>
-  </ui-textbox>
+    :name="name"
+    :schema="schema"
+    :args="args"
+    @update="update">
+  </timepicker>
 </template>
 
 <script>
@@ -37,20 +32,14 @@
   import dateFormat from 'date-fns/format';
   import { parseDate as parseNaturalDate } from 'chrono-node';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
-  import { shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
+  import { shouldBeRequired } from '../lib/forms/field-helpers';
   import label from '../lib/utils/label';
-  import logger from '../lib/utils/log';
-  import UiTextbox from 'keen/UiTextbox';
-
-  const log = logger(__filename);
+  import timepicker from '../lib/utils/timepicker.vue';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
     data() {
-      return {
-        isDisabled: false,
-        timeValue: ''
-      };
+      return {};
     },
     computed: {
       timeHelp() {
@@ -67,52 +56,14 @@
       },
       label() {
         return `${label(this.name, this.schema)}${this.isRequired ? '*' : ''}`;
-      },
-      hasButton() {
-        const button = _.get(this, 'args.attachedButton');
-
-        if (button && !_.get(window, `kiln.inputs['${button.name}']`)) {
-          log.warn(`Attached button (${button.name}) for '${this.name}' not found!`, { action: 'hasButton', input: this.args });
-          return false;
-        } else if (button) {
-          return true;
-        } else {
-          return false;
-        }
-      },
-      errorMessage() {
-        const validationError = getValidationError(this.timeValue, this.args.validate, this.$store, this.name),
-          parsed = parseNaturalDate(this.timeValue);
-
-        if (validationError) {
-          return validationError;
-        } else if (!parsed) {
-          return `${this.args.help} (Please enter a valid time)`;
-        }
-      },
-      isInvalid() {
-        return !!this.errorMessage;
       }
-    },
-    mounted() {
-      this.timeValue = _.isString(this.data) ? dateFormat(this.data, 'h:mm A') : '';
     },
     methods: {
       // every time the value of the input changes, update the store
       update(val) {
-        const parsed = parseNaturalDate(val);
-
-        if (parsed) {
-          this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: dateFormat(parsed, 'HH:mm') });
-        }
-      },
-      disableInput() {
-        this.isDisabled = true;
-      },
-      enableInput() {
-        this.isDisabled = false;
+        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: val });
       }
     },
-    components: _.merge(window.kiln.inputs, { UiTextbox }) // attached button
+    components: { timepicker }
   };
 </script>
