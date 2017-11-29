@@ -1,6 +1,7 @@
 <style lang="sass">
   @import '../../styleguide/colors';
   @import '../../styleguide/layers';
+  @import '../../styleguide/animations';
 
   // size of the thick component border
   $border-size: 3px;
@@ -189,20 +190,18 @@
 
 <template>
   <transition name="selector-fade">
-    <keep-alive>
-      <aside data-ignore v-if="isCurrentSelection" class="mini-selector" :class="selectorPosition">
-        <div class="quick-bar" :class="selectorPosition">
-          <ui-icon-button v-once type="secondary" color="primary" class="quick-bar-button quick-bar-info" icon="info_outline" :tooltip="`${componentLabel} Info`" @click.stop="openInfo"></ui-icon-button>
-          <ui-icon-button v-once v-show="hasSettings" type="secondary" color="primary" class="quick-bar-button quick-bar-settings" icon="settings" :tooltip="`${componentLabel} Settings`" @click.stop="openSettings"></ui-icon-button>
-          <component v-once v-for="(button, index) in customButtons" :is="button" :key="index"></component>
-          <ui-icon-button v-once v-show="hasRemove" type="secondary" color="primary" class="quick-bar-button quick-bar-remove" icon="delete" :tooltip="`Remove ${componentLabel}`" @click.stop="removeComponent"></ui-icon-button>
-          <ui-icon-button v-show="hasDuplicateComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-dupe" icon="add_circle_outline" :tooltip="`Add ${componentLabel}`" @click.stop="duplicateComponent"></ui-icon-button>
-          <ui-icon-button v-show="hasDuplicateComponentWithData" type="secondary" color="primary" class="quick-bar-button quick-bar-dupe" icon="add_circle" :tooltip="`Duplicate ${componentLabel}`" @click.stop="duplicateComponentWithData"></ui-icon-button>
-          <ui-icon-button v-once v-show="hasAddComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-add" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
-          <ui-icon-button v-once v-show="hasReplaceComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-replace" icon="swap_vert" :tooltip="`Replace ${componentLabel}`"></ui-icon-button>
-        </div>
-      </aside>
-    </keep-alive>
+    <aside data-ignore v-if="isCurrentSelection" class="mini-selector" :class="selectorPosition">
+      <div class="quick-bar" :class="selectorPosition">
+        <ui-icon-button v-once type="secondary" color="primary" class="quick-bar-button quick-bar-info" icon="info_outline" :tooltip="`${componentLabel} Info`" @click.stop="openInfo"></ui-icon-button>
+        <ui-icon-button v-once v-show="hasSettings" type="secondary" color="primary" class="quick-bar-button quick-bar-settings" icon="settings" :tooltip="`${componentLabel} Settings`" @click.stop="openSettings"></ui-icon-button>
+        <component v-once v-for="(button, index) in customButtons" :is="button" :key="index"></component>
+        <ui-icon-button v-once v-show="hasRemove" type="secondary" color="primary" class="quick-bar-button quick-bar-remove" icon="delete" :tooltip="`Remove ${componentLabel}`" @click.stop="removeComponent"></ui-icon-button>
+        <ui-icon-button v-show="hasDuplicateComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-dupe" icon="add_circle_outline" :tooltip="`Add ${componentLabel}`" @click.stop="duplicateComponent"></ui-icon-button>
+        <ui-icon-button v-show="hasDuplicateComponentWithData" type="secondary" color="primary" class="quick-bar-button quick-bar-dupe" icon="add_circle" :tooltip="`Duplicate ${componentLabel}`" @click.stop="duplicateComponentWithData"></ui-icon-button>
+        <ui-icon-button v-once v-show="hasAddComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-add" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
+        <ui-icon-button v-once v-show="hasReplaceComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-replace" icon="swap_vert" :tooltip="`Replace ${componentLabel}`"></ui-icon-button>
+      </div>
+    </aside>
   </transition>
 </template>
 
