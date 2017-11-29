@@ -188,6 +188,7 @@
 <script>
   import Quill from 'quill/dist/quill.min.js';
   import _ from 'lodash';
+  import striptags from 'striptags';
   import { find, closest } from '@nymag/dom';
   import { getComponentName, refAttr, editAttr } from '../lib/utils/references';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
@@ -333,7 +334,7 @@
         return (this.data || '').length === 0 && !this.isActive;
       },
       valueLength() {
-        return (this.data || '').length;
+        return striptags(this.data || '').length;
       },
       hasFeedback() {
         return this.args.help || this.error;
