@@ -7,7 +7,8 @@ import { addToolbarButton } from './lib/utils/custom-buttons'; // eslint-disable
 import store from './lib/core-data/store';
 import toolbar from './lib/toolbar/view-toolbar.vue';
 import getSites from './lib/preloader/sites';
-import { PRELOAD_PENDING, LOADING_SUCCESS, PRELOAD_SITE, PRELOAD_ALL_SITES, PRELOAD_USER } from './lib/preloader/mutationTypes';
+import parseUrl from './lib/preloader/parse-url';
+import { PRELOAD_PENDING, LOADING_SUCCESS, PRELOAD_SITE, PRELOAD_ALL_SITES, PRELOAD_USER, PRELOAD_URL } from './lib/preloader/mutationTypes';
 import { UPDATE_PAGE_STATE, UPDATE_PAGEURI } from './lib/page-state/mutationTypes';
 import { META_PRESS, META_UNPRESS } from './lib/preloader/mutationTypes';
 import { props } from './lib/utils/promises';
@@ -69,8 +70,9 @@ document.addEventListener('DOMContentLoaded', function () {
     store.commit(UPDATE_PAGEURI, pageUri());
     store.commit(PRELOAD_ALL_SITES, allSites);
     store.commit(PRELOAD_USER, window.kiln.preloadUser);
+    store.commit(PRELOAD_URL, parseUrl());
     store.commit(LOADING_SUCCESS);
-  });
+  }).then(() => store.dispatch('parseURLHash')); // check for deep-linked clay menu
 
   // when ESC bubbles up to the document, close the current form or pane / unselect components
   document.body.addEventListener('keydown', (e) => {
