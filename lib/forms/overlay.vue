@@ -347,7 +347,8 @@
         return this.$store.dispatch('focus', { uri: _.get(this.$store, 'state.ui.currentForm.uri'), path: 'settings' });
       },
       removeComponent() {
-        const el = _.get(this.$store, 'state.ui.currentSelection.el');
+        const currentURI = _.get(this.$store, 'state.ui.currentSelection.uri'),
+          el = currentURI && getComponentEl(currentURI);
 
         this.$store.dispatch('unselect');
         return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', el));

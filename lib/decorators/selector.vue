@@ -210,6 +210,7 @@
   import getRect from 'element-client-rect';
   import { getSchema, getData } from '../core-data/components';
   import { getComponentName, componentListProp } from '../utils/references';
+  import { getComponentEl } from '../utils/component-elements';
   import label from '../utils/label';
   import logger from '../utils/log';
   import UiIconButton from 'keen/UiIconButton';
@@ -255,7 +256,9 @@
     },
     computed: {
       currentSelectedComponent() {
-        return _.get(this.$store, 'state.ui.currentSelection.el');
+        const currentURI = _.get(this.$store, 'state.ui.currentSelection.uri');
+
+        return currentURI && getComponentEl(currentURI);
       },
       isCurrentSelection() {
         return this.currentSelectedComponent && this.$options.componentEl === this.currentSelectedComponent;

@@ -192,7 +192,7 @@
   import { find, closest } from '@nymag/dom';
   import { getComponentName, refAttr, editAttr } from '../lib/utils/references';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
-  import { getPrevComponent, getNextComponent, getParentComponent, getComponentEl } from '../lib/utils/component-elements';
+  import { getPrevComponent, getNextComponent, getParentComponent, getComponentEl, getFieldEl } from '../lib/utils/component-elements';
   import { isFirstField, shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
   import label from '../lib/utils/label';
   import { sanitizeInlineHTML, sanitizeMultiComponentHTML, sanitizeBlockHTML } from './wysiwyg-sanitize';
@@ -372,20 +372,23 @@
         isMultiLine = this.isMultiLine,
         isMultiComponent = this.isMultiComponent,
         pseudoBullet = this.args.pseudoBullet,
-        rules = generatePasteRules(this.args.paste, getComponentName(_.get(this.$store, 'state.ui.currentForm.uri')), this.name),
+        currentURI = _.get(this.$store, 'state.ui.currentForm.uri'),
+        currentPath = _.get(this.$store, 'state.ui.currentForm.path'),
+        currentFieldEl = getFieldEl(currentURI, currentPath),
+        rules = generatePasteRules(this.args.paste, getComponentName(currentURI), this.name),
         buttons = _.map(this.args.buttons, (button) => parsePhraseButton(button)).concat(['clean']),
         store = this.$store,
         name = this.name,
         el = find(this.$el, '.wysiwyg-content'),
         appendText = _.get(store, 'state.ui.currentForm.appendText'),
-        parent = _.get(store, 'state.ui.currentForm.el') && getParentComponent(getComponentEl(_.get(store, 'state.ui.currentForm.el'))),
+        parent = currentFieldEl && getParentComponent(getComponentEl(currentFieldEl)),
         // some useful details about the current component, range, etc
         // to pass into handleMultiParagraphPaste()
         current = {
-          component: getComponentName(_.get(store, 'state.ui.currentForm.uri')),
-          uri: _.get(store, 'state.ui.currentForm.uri'),
+          component: getComponentName(currentURI),
+          uri: currentURI,
           parentURI: parent && parent.getAttribute(refAttr),
-          parentPath:  _.get(store, 'state.ui.currentForm.el') && getComponentEl(_.get(store, 'state.ui.currentForm.el')).parentNode.getAttribute(editAttr)
+          parentPath:  currentFieldEl && getComponentEl(currentFieldEl).parentNode.getAttribute(editAttr)
         },
         phrases = createPhraseBlots(this.args.buttons);
 

@@ -87,7 +87,7 @@
     "keen-ui": "^1.0.1",
     "keycode": "^2.1.8",
     "localforage": "^1.5.3",
-    "lodash": "^4.14.2",
+    "lodash": "^4.17.4",
     "lodash-webpack-plugin": "^0.11.0",
     "mocha": "^4.0.1",
     "node-sass": "^4.3.0",
