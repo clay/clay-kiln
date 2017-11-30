@@ -10,7 +10,7 @@
 
 <template>
   <div class="collaborator" @click.stop="selectCollaborator">
-    <avatar class="collaborator-image" :url="user.imageUrl" size="small" ref="avatar"></avatar>
+    <avatar class="collaborator-image" :url="user.imageUrl" size="small" :name="user.name || user.username" ref="avatar"></avatar>
     <ui-tooltip trigger="avatar" position="bottom left">{{ user.name || user.username }}</ui-tooltip>
   </div>
 </template>
