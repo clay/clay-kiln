@@ -359,7 +359,7 @@
       },
       saveLocation(undoUrl) {
         const prefix = _.get(this.$store, 'state.site.prefix'),
-          val = undoUrl || this.location,
+          val = _.isString(undoUrl) ? undoUrl : this.location,
           store = this.$store,
           oldUrl = _.get(store, 'state.page.data.customUrl');
 
