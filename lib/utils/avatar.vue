@@ -1,42 +1,51 @@
 <style lang="sass">
-  @import '../../styleguide/colors';
-
-  .avatar {
-    border-radius: 50%;
-    flex: 0 0 40px;
-    height: 40px;
-    width: 40px;
-
-    &.avatar-small {
-      flex: 0 0 24px;
-      height: 24px;
-      width: 24px;
-    }
-
-    &.avatar-default {
-      align-items: center;
-      background-color: $md-grey-500;
-      color: $pure-white;
-      display: flex;
-      justify-content: center;
-    }
+  .kiln-avatar {
+    flex: 0 0 auto;
   }
 </style>
 
 <template>
-  <img v-if="url" class="avatar" :class="'avatar-' + size" :src="url" />
-  <div v-else class="avatar avatar-default" :class="'avatar-' + size">
-    <ui-icon icon="person"></ui-icon>
-  </div>
+  <avatar class="kiln-avatar" :username="username" :src="imageURL" :size="pixelSize" :rounded="true"></avatar>
 </template>
 
 <script>
-  import UiIcon from 'keen/UiIcon';
+  import _ from 'lodash';
+  import Avatar from 'vue-avatar';
 
   export default {
-    props: ['url', 'size'],
+    props: ['url', 'size', 'name'],
+    computed: {
+      username() {
+        if (_.includes(this.name, ' ')) {
+          // if a name has spaces, it'll generate a nice avatar
+          return this.name;
+        } else if (_.includes(this.name, '@')) {
+          // probably an email
+          const beforeAt = this.name.match(/(.*?)@/)[1];
+
+          return beforeAt.split(/\W/).join(' '); // split everything before the @ by anything that's not a letter/digit/underscore
+        } else if (!_.isEmpty(this.name)) {
+          // some other kind of username, just use the first letter
+          return this.name[0];
+        } else {
+          return 'Walter Plinge'; // https://www.wikiwand.com/en/Walter_Plinge
+        }
+      },
+      imageURL() {
+        // only display the image if it's not the default google avatar
+        if (this.url && this.url.length && this.url !== 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50') {
+          return this.url;
+        }
+      },
+      pixelSize() {
+        switch (this.size) {
+          case 'small': return 24;
+          default: return 40;
+        }
+      }
+    },
     components: {
-      UiIcon
+      Avatar
     }
   };
 </script>
