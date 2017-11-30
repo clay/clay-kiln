@@ -44,7 +44,7 @@
       <progress-bar></progress-bar>
     </div>
     <ui-fab size="normal" color="primary" icon="menu" tooltip="Clay Menu" tooltipPosition="right middle" class="view-menu-button" @click="openNav"></ui-fab>
-    <ui-fab size="small" color="default" icon="mode_edit" tooltip="Edit Page" tooltipPosition="right middle" class="view-edit-button" @click="startEditing"></ui-fab>
+    <ui-fab size="small" color="default" icon="mode_edit" :tooltip="'Edit Page' + status" tooltipPosition="right middle" class="view-edit-button" @click="startEditing"></ui-fab>
     <ui-fab size="small" color="default" icon="add" tooltip="New Page" tooltipPosition="right middle" class="view-new-button" @click="openNewPage"></ui-fab>
     <nav-background></nav-background>
     <nav-menu></nav-menu>
@@ -57,6 +57,8 @@
 
 <script>
   import _ from 'lodash';
+  import isAfter from 'date-fns/is_after';
+  import addSeconds from 'date-fns/add_seconds';
   import toggleEdit from '../utils/toggle-edit';
   import { getItem } from '../utils/local';
   import navBackground from '../nav/nav-background.vue';
@@ -76,6 +78,35 @@
     computed: {
       snackbar() {
         return _.get(this.$store, 'state.ui.snackbar') && _.toPlainObject(_.get(this.$store, 'state.ui.snackbar'));
+      },
+      isLoading() {
+        return _.get(this.$store, 'state.isLoading');
+      },
+      pageState() {
+        return _.get(this.$store, 'state.page.state');
+      },
+      hasChanges() {
+        const pubTime = _.get(this.pageState, 'publishTime'), // latest published timestamp
+          upTime = _.get(this.pageState, 'updateTime'); // latest updated timestamp
+
+        if (pubTime && upTime) {
+          return isAfter(upTime, addSeconds(pubTime, 30)); // give it 30 seconds of leeway, in case there are slow updates to the server
+        } else {
+          return false;
+        }
+      },
+      status() {
+        if (this.isLoading) {
+          return ''; // still loading the page, don't display any status
+        } else if (this.pageState.scheduled) {
+          return ' (Scheduled)';
+        } else if (this.pageState.published && this.hasChanges) {
+          return ' (Unpublished Changes)';
+        } else if (this.pageState.published) {
+          return ' (Published)';
+        } else {
+          return ' (Draft)';
+        }
       }
     },
     watch: {
