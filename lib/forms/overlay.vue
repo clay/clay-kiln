@@ -151,6 +151,7 @@
   import label from '../utils/label';
   import logger from '../utils/log';
   import { fieldProp, groupsProp, getComponentName, componentListProp } from '../utils/references';
+  import { getComponentEl } from '../utils/component-elements';
   import field from './field.vue';
   import UiIconButton from 'keen/UiIconButton';
   import UiTabs from 'keen/UiTabs';
