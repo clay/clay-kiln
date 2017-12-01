@@ -263,8 +263,10 @@
           this.activeIndex = 0;
         } else {
           this.activeIndex = null;
-          input.classList.add('kiln-shake');
-          requestTimeout(() => input.classList.remove('kiln-shake'), 301); // length of the animation + 1
+          if (input) {
+            input.classList.add('kiln-shake');
+            requestTimeout(() => input.classList.remove('kiln-shake'), 301); // length of the animation + 1
+          }
         }
       }
     },
