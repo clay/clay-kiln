@@ -92,6 +92,7 @@
       component: 'head-components',
       selected: false,
       args: {
+        isPage: _.get(schema, `${list.path}.${componentListProp}.page`),
         path: list.path,
         schema: schema[list.path]
       }

@@ -240,7 +240,11 @@
               path,
               components: [{ name: id }]
             })
-              .then((newEl) => self.$store.dispatch('select', newEl))
+              .then((newEl) => {
+                if (newEl) {
+                  self.$store.dispatch('select', newEl);
+                }
+              })
               .then(() => self.$nextTick(() => self.close()));
           });
       }
