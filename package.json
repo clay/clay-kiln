@@ -4,7 +4,7 @@
   "description": "Editor tools for Clay",
   "template": "template.handlebars",
   "scripts": {
-    "lint": "npm run docs:clean && eslint edit.js view.js view-public.js directives inputs lib test",
+    "lint": "eslint edit.js view.js view-public.js directives inputs lib test",
     "karma": "karma start",
     "test": "npm run lint && npm run karma",
     "test-local": "BABEL_ENV=test npm run lint && BABEL_ENV=test npm run karma -- karma.local.conf.js",
