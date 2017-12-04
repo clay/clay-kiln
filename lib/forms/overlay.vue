@@ -114,7 +114,6 @@
           <ui-icon-button v-if="hasDuplicateComponent" type="secondary" color="black" icon="add_circle_outline" :tooltip="`Add ${componentLabel}`" @click.stop="duplicateComponent"></ui-icon-button>
           <ui-icon-button v-if="hasDuplicateComponentWithData" type="secondary" color="black" icon="add_circle" :tooltip="`Duplicate ${componentLabel}`" @click.stop="duplicateComponentWithData"></ui-icon-button>
           <ui-icon-button v-if="hasAddComponent" type="secondary" color="black" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
-          <ui-icon-button v-if="hasReplaceComponent" type="secondary" color="black" icon="swap_vert" :tooltip="`Replace ${componentLabel}`"></ui-icon-button>
           <div class="form-close-divider"></div>
           <ui-icon-button color="black" type="secondary" icon="check" ariaLabel="Save Form" tooltip="Save (ESC)" @click.stop="save"></ui-icon-button>
         </div>
@@ -229,8 +228,7 @@
       },
       isCurrentlySelected: (state) => _.get(state, 'ui.currentForm.uri') === _.get(state, 'ui.currentSelection.uri'),
       hasRemove(state) {
-        // note: this only shows up if the component that contains this form is selected
-        return this.isCurrentlySelected && _.get(state, 'ui.currentSelection.parentField.type') === 'list' && _.get(state, 'ui.currentSelection.parentField.isEditable');
+        return this.isCurrentlySelected && _.get(state, 'ui.currentSelection.parentField.isEditable');
       },
       hasDuplicateComponent(state) {
         return this.isCurrentlySelected && _.get(state, 'ui.currentSelection.parentField.type') === 'list' && _.get(state, 'ui.currentSelection.parentField.isEditable') && !_.get(state, 'ui.metaKey');
@@ -239,12 +237,7 @@
         return this.isCurrentlySelected && _.get(state, 'ui.currentSelection.parentField.type') === 'list' && _.get(state, 'ui.currentSelection.parentField.isEditable') && _.get(state, 'ui.metaKey');
       },
       hasAddComponent(state) {
-        // note: this only shows up if the component that contains this form is selected
         return this.isCurrentlySelected && _.get(state, 'ui.currentSelection.parentField.type') === 'list' && _.get(state, 'ui.currentSelection.parentField.isEditable');
-      },
-      hasReplaceComponent(state) {
-        // note: this only shows up if the component that contains this form is selected
-        return this.isCurrentlySelected && _.get(state, 'ui.currentSelection.parentField.type') === 'prop' && _.get(state, 'ui.currentSelection.parentField.isEditable');
       },
       addComponentText(state) {
         if (this.hasAddComponent) {

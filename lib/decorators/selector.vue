@@ -199,7 +199,6 @@
         <ui-icon-button v-show="hasDuplicateComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-dupe" icon="add_circle_outline" :tooltip="`Add ${componentLabel}`" @click.stop="duplicateComponent"></ui-icon-button>
         <ui-icon-button v-show="hasDuplicateComponentWithData" type="secondary" color="primary" class="quick-bar-button quick-bar-dupe" icon="add_circle" :tooltip="`Duplicate ${componentLabel}`" @click.stop="duplicateComponentWithData"></ui-icon-button>
         <ui-icon-button v-once v-show="hasAddComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-add" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
-        <ui-icon-button v-once v-show="hasReplaceComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-replace" icon="swap_vert" :tooltip="`Replace ${componentLabel}`"></ui-icon-button>
       </div>
     </aside>
   </transition>
@@ -248,10 +247,8 @@
         componentLabel: label(getComponentName(this.$options.uri)),
         parentField: this.$options.parentField,
         parentURI: this.$options.parentURI,
-        // note: only for components in LISTS! components in properties can be replaced but not removed (for now)
-        hasRemove: this.$options.parentField && this.$options.parentField.type === 'list' && this.$options.parentField.isEditable,
-        hasAddComponent: this.$options.parentField && this.$options.parentField.type === 'list' && this.$options.parentField.isEditable,
-        hasReplaceComponent: this.$options.parentField && this.$options.parentField.type === 'prop' && this.$options.parentField.isEditable
+        hasRemove: this.$options.parentField && this.$options.parentField.isEditable,
+        hasAddComponent: this.$options.parentField && this.$options.parentField.type === 'list' && this.$options.parentField.isEditable
       };
     },
     computed: {
