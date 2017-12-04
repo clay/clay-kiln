@@ -150,3 +150,21 @@ Additionally, all types of component lists may be set to _fuzzy_. The default `i
 You may make any component list _fuzzy_ by adding that property in the config. This will add a _View All Components_ button into the header of the Add Components modal, which will list _all components available in your Clay installation_.
 
 ![](images/fuzzy_list.png)
+
+## Component Properties
+
+In addition to component lists, you can use _component properties_ if you want a single child component instead of an array of children.
+
+```yaml
+tags:
+  _component:
+    include:
+      - normal-tags
+      - fancy-tags
+```
+
+This allows you to swap out different components in a specific place, for example if you have two different tagging components with different styles and functionality. As with component lists, you may include a `_placeholder`. If your component property is editable, the child component's selector will allow you to remove it (and the placeholder that displays will allow you to add it).
+
+> #### info::Note
+>
+> Component properties are not allowed in the layout or page data, only in normal components. Because of this, they are also not allowed in the `<head>` of the page.
