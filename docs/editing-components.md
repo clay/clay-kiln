@@ -326,6 +326,17 @@ caption:
 
 For more information about `magic-button`, [please see its specific documentation](inputs.md#magic-button).
 
+> #### info::Multiple Attached Buttons
+>
+> Inputs may include multiple attached buttons, but be warned that this does take up horizontal space from the main input. For this reason, more than two attached buttons on a single input is not recommended.
+>
+> ```
+> attachedButton:
+>   - lock
+>   - name: magic-button
+>     field: title
+> ```
+
 ## Cross Component Communication
 
 Components can affect other components on the page by publishing and subscribing to properties (such as `title`, `description`, `ledeImage`, etc). This allows many-to-many communication in Kiln, as multiple components can publish or subscribe to the same property, and components can publish or subscribe to multiple different properties. There are no restrictions on pubsub property names, so be sure to avoid unintended collisions!
