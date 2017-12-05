@@ -66,9 +66,7 @@
 
 <template>
   <div class="codemirror-wrapper ui-textbox has-label is-multi-line" :class="classes">
-    <div class="ui-textbox__icon-wrapper" v-if="hasButton">
-      <component :is="args.attachedButton.name" :name="name" :data="data" :schema="schema" :args="args.attachedButton" @disable="disableInput" @enable="enableInput"></component>
-    </div>
+    <attached-button class="ui-textbox__icon-wrapper" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
 
     <div class="ui-textbox__content">
       <label class="ui-textbox__label">
@@ -90,8 +88,8 @@
   import { find } from '@nymag/dom';
   import { shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
   import label from '../lib/utils/label';
-  import logger from '../lib/utils/log';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
+  import attachedButton from './attached-button.vue';
 
   // scss mode
   require('codemirror/mode/css/css');
@@ -99,8 +97,6 @@
   require('codemirror/mode/yaml/yaml');
   // show selections
   require('codemirror/addon/selection/active-line.js');
-
-  const log = logger(__filename);
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
@@ -117,18 +113,6 @@
       },
       label() {
         return `${label(this.name, this.schema)}${this.isRequired ? '*' : ''}`;
-      },
-      hasButton() {
-        const button = _.get(this, 'args.attachedButton');
-
-        if (button && !_.get(window, `kiln.inputs['${button.name}']`)) {
-          log.warn(`Attached button (${button.name}) for '${this.name}' not found!`, { action: 'hasButton' });
-          return false;
-        } else if (button) {
-          return true;
-        } else {
-          return false;
-        }
       },
       error() {
         return this.isTouched && getValidationError(this.data || '', this.args.validate, this.$store, this.name);
@@ -198,6 +182,9 @@
 
       editor.on('focus', this.onFocus);
       editor.on('blur', this.onBlur);
+    },
+    components: {
+      attachedButton
     }
   };
 </script>

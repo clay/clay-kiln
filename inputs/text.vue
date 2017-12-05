@@ -40,7 +40,7 @@
     iconPosition="right"
     @input="update"
     @keydown-enter="closeFormOnEnter">
-    <component v-if="hasButton" slot="icon" :is="args.attachedButton.name" :name="name" :data="data" :schema="schema" :args="args.attachedButton" @disable="disableInput" @enable="enableInput"></component>
+    <attached-button slot="icon" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
   </ui-textbox>
 </template>
 
@@ -49,10 +49,8 @@
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { setCaret, isFirstField, shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
   import label from '../lib/utils/label';
-  import logger from '../lib/utils/log';
   import UiTextbox from 'keen/UiTextbox';
-
-  const log = logger(__filename);
+  import attachedButton from './attached-button.vue';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
@@ -89,18 +87,6 @@
       },
       label() {
         return `${label(this.name, this.schema)}${this.isRequired ? '*' : ''}`;
-      },
-      hasButton() {
-        const button = _.get(this, 'args.attachedButton');
-
-        if (button && !_.get(window, `kiln.inputs['${button.name}']`)) {
-          log.warn(`Attached button (${button.name}) for '${this.name}' not found!`, { action: 'hasButton', input: this.args });
-          return false;
-        } else if (button) {
-          return true;
-        } else {
-          return false;
-        }
       },
       errorMessage() {
         return getValidationError(this.data, this.args.validate, this.$store, this.name);
@@ -145,6 +131,9 @@
         });
       }
     },
-    components: _.merge(window.kiln.inputs, { UiTextbox }) // attached button
+    components: {
+      UiTextbox,
+      attachedButton
+    }
   };
 </script>
