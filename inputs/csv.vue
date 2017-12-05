@@ -36,6 +36,7 @@
   import { toObject } from 'csvjson';
   import label from '../lib/utils/label';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
+  import UiFileupload from 'keen/UiFileupload';
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
@@ -68,6 +69,9 @@
           store.dispatch('showSnackbar', `Unable to read ${file.fileName}`);
         };
       }
+    },
+    components: {
+      UiFileupload
     }
   };
 </script>
