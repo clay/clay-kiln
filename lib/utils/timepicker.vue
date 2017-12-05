@@ -11,7 +11,7 @@
     :disabled="isDisabled"
     iconPosition="right"
     @input="update">
-    <component v-if="hasButton" slot="icon" :is="args.attachedButton.name" :name="name" :data="value" :schema="schema" :args="args.attachedButton" @disable="disableInput" @enable="enableInput"></component>
+    <attached-button slot="icon" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
   </ui-textbox>
 </template>
 
@@ -20,10 +20,8 @@
   import dateFormat from 'date-fns/format';
   import { parseDate as parseNaturalDate } from 'chrono-node';
   import { shouldBeRequired, getValidationError } from '../forms/field-helpers';
-  import logger from './log';
   import UiTextbox from 'keen/UiTextbox';
-
-  const log = logger(__filename);
+  import attachedButton from '../../inputs/attached-button.vue';
 
   export default {
     props: ['value', 'label', 'help', 'name', 'schema', 'args'],
@@ -36,18 +34,6 @@
     computed: {
       isRequired() {
         return _.get(this, 'args.validate') ? _.get(this, 'args.validate.required') === true || shouldBeRequired(this.args.validate, this.$store, this.name) : false;
-      },
-      hasButton() {
-        const button = _.get(this, 'args.attachedButton');
-
-        if (this.name && button && !_.get(window, `kiln.inputs['${button.name}']`)) {
-          log.warn(`Attached button (${button.name}) for '${this.name}' not found!`, { action: 'hasButton', input: this.args });
-          return false;
-        } else if (button) {
-          return true;
-        } else {
-          return false;
-        }
       },
       errorMessage() {
         if (_.get(this, 'args.validate')) {
@@ -84,6 +70,9 @@
         this.isDisabled = false;
       }
     },
-    components: _.assign({}, window.kiln.inputs, { UiTextbox }) // attached button
+    components: {
+      UiTextbox,
+      attachedButton
+    }
   };
 </script>

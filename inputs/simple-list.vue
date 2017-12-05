@@ -84,9 +84,7 @@
 
 <template>
   <div class="simple-list ui-textbox has-label has-floating-label" :class="classes">
-    <div class="ui-textbox__icon-wrapper" v-if="hasButton">
-      <component :is="args.attachedButton.name" :name="name" :data="data" :schema="schema" :args="args.attachedButton" @disable="disableInput" @enable="enableInput"></component>
-    </div>
+    <attached-button class="ui-textbox__icon-wrapper" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
 
     <div class="ui-textbox__content">
       <label class="ui-textbox__label" @click.prevent>
@@ -138,6 +136,7 @@
   import logger from '../lib/utils/log';
   import simpleListItem from './simple-list-item.vue';
   import simpleListInput from './simple-list-input.vue';
+  import attachedButton from './attached-button.vue';
 
   const log = logger(__filename);
 
@@ -183,18 +182,6 @@
       label() {
         return `${label(this.name, this.schema)}${this.isRequired ? '*' : ''}`;
       },
-      hasButton() {
-        const button = _.get(this, 'args.attachedButton');
-
-        if (button && !_.get(window, `kiln.inputs['${button.name}']`)) {
-          log.warn(`Attached button (${button.name}) for '${this.name}' not found!`, { action: 'hasButton', input: this.args });
-          return false;
-        } else if (button) {
-          return true;
-        } else {
-          return false;
-        }
-      },
       errorMessage() {
         return this.isTouched && getValidationError(this.items, this.args.validate, this.$store, this.name);
       },
@@ -218,7 +205,7 @@
       },
       classes() {
         return [
-          { 'ui-textbox--icon-position-right': this.hasButton },
+          { 'ui-textbox--icon-position-right': this.args.attachedButton },
           { 'is-active': this.isActive },
           { 'is-invalid': this.isInvalid },
           { 'is-touched': this.isTouched },
@@ -296,6 +283,10 @@
         }
       }
     },
-    components: _.merge(window.kiln.inputs, { simpleListItem, simpleListInput }) // attached button
+    components: {
+      simpleListItem,
+      simpleListInput,
+      attachedButton
+    }
   };
 </script>

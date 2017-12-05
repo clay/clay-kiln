@@ -163,9 +163,7 @@
 
 <template>
   <div class="wysiwyg-input" :class="classes">
-    <div class="ui-textbox__icon-wrapper" v-if="isStyled && hasButton">
-      <component :is="args.attachedButton.name" :name="name" :data="data" :schema="schema" :args="args.attachedButton" @disable="disableInput" @enable="enableInput"></component>
-    </div>
+    <attached-button class="ui-textbox__icon-wrapper" v-if="isStyled" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
 
     <div v-if="isStyled" class="ui-textbox__content">
       <label class="ui-textbox__label">
@@ -200,13 +198,12 @@
   import { renderDeltas, generateDeltas, deltaEndsWith, matchLineBreak, matchParagraphs } from './wysiwyg-deltas';
   import { getNewlinesBeforeCaret, getLastOffsetWithNewlines } from './wysiwyg-caret';
   import { parsePhraseButton, parseFormats, createPhraseBlots } from './wysiwyg-phrase';
-  import logger from '../lib/utils/log';
+  import attachedButton from './attached-button.vue';
 
   const Delta = Quill.import('delta'),
     Clipboard = Quill.import('modules/clipboard'),
     Link = Quill.import('formats/link'),
-    originalLinkSanitize = Link.sanitize,
-    log = logger(__filename);
+    originalLinkSanitize = Link.sanitize;
 
   // store references for multi-paragraph paste here.
   // this way, the paste function can set these, and they can be checked
@@ -292,18 +289,6 @@
       maxLength() {
         return _.get(this.args, 'validate.max') || 0;
       },
-      hasButton() {
-        const button = _.get(this, 'args.attachedButton');
-
-        if (button && !_.get(window, `kiln.inputs['${button.name}']`)) {
-          log.warn(`Attached button (${button.name}) for '${this.name}' not found!`, { action: 'hasButton' });
-          return false;
-        } else if (button) {
-          return true;
-        } else {
-          return false;
-        }
-      },
       error() {
         return getValidationError(this.data || '', this.args.validate, this.$store, this.name);
       },
@@ -313,7 +298,7 @@
       classes() {
         return [
           { 'ui-textbox': this.isStyled },
-          { 'ui-textbox--icon-position-right': this.isStyled && this.hasButton },
+          { 'ui-textbox--icon-position-right': this.isStyled && this.args.attachedButton },
           { 'is-active': this.isStyled && this.isActive },
           { 'is-invalid': this.isStyled && this.isInvalid },
           { 'is-touched': this.isStyled && this.isTouched },
@@ -818,6 +803,8 @@
         this.isDisabled = false;
       }
     },
-    components: window.kiln.inputs // for attached button
+    components: {
+      attachedButton
+    }
   };
 </script>
