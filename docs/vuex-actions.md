@@ -42,7 +42,7 @@
         * [.openAddComponent(store, [currentURI], parentURI, path)](#module_component-data.openAddComponent) ⇒ <code>Promise</code>
     * _inner_
         * [~logSaveError(uri, e, data, [eventID], [snapshot], store)](#module_component-data..logSaveError)
-        * [~revertReject(uri, data, html, [snapshot], paths)](#module_component-data..revertReject) ⇒ <code>Promise</code>
+        * [~revertReject(uri, data, [snapshot], paths, store)](#module_component-data..revertReject) ⇒ <code>Promise</code>
         * [~clientSave(uri, data, oldData, store, [eventID], [snapshot], paths)](#module_component-data..clientSave) ⇒ <code>Promise</code>
         * [~findIndex(data, [uri])](#module_component-data..findIndex) ⇒ <code>number</code>
         * [~addComponentsToComponentList(store, data, [currentURI], parentURI, path, [replace], [clone], components)](#module_component-data..addComponentsToComponentList) ⇒ <code>Promise</code>
@@ -144,7 +144,7 @@ log errors when components save and display them to the user
 
 <a name="module_component-data..revertReject"></a>
 
-### component-data~revertReject(uri, data, html, [snapshot], paths) ⇒ <code>Promise</code>
+### component-data~revertReject(uri, data, [snapshot], paths, store) ⇒ <code>Promise</code>
 re-render (reverting) a component and stop the saving promise chain
 
 **Kind**: inner method of [<code>component-data</code>](#module_component-data)  
@@ -153,9 +153,9 @@ re-render (reverting) a component and stop the saving promise chain
 | --- | --- |
 | uri | <code>string</code> | 
 | data | <code>object</code> | 
-| html | <code>string</code> | 
 | [snapshot] | <code>boolean</code> | 
 | paths | <code>array</code> | 
+| store | <code>object</code> | 
 
 <a name="module_component-data..clientSave"></a>
 
