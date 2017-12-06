@@ -24,7 +24,7 @@
 
 <template>
   <div class="kiln-csv-upload">
-    <ui-fileupload color="accent" :name="name" :label="label" accept=".csv" @change="update"></ui-fileupload>
+    <ui-fileupload color="accent" :name="name" :label="buttonLabel" accept=".csv" @change="update"></ui-fileupload>
     <div class="ui-textbox__feedback" v-if="args.help">
       <div class="ui-textbox__feedback-text">{{ args.help }}</div>
     </div>
@@ -41,16 +41,13 @@
   export default {
     props: ['name', 'data', 'schema', 'args'],
     data() {
-      return {};
-    },
-    computed: {
-      label() {
-        return label(this.name, this.schema);
-      }
+      return {
+        buttonLabel: label(this.name, this.schema)
+      };
     },
     methods: {
-      update(e) {
-        const file = _.get(e, 'target.files[0]'),
+      update(files) {
+        const file = _.head(files),
           reader = new FileReader(),
           store = this.$store;
 
@@ -63,7 +60,7 @@
             });
 
           this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: parsed });
-          this.label = 'CSV File Uploaded';
+          this.buttonLabel = 'CSV File Uploaded';
         };
         reader.onerror = () => {
           store.dispatch('showSnackbar', `Unable to read ${file.fileName}`);
