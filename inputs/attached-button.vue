@@ -1,5 +1,5 @@
 <template>
-  <div class="kiln-attached-buttons ui-button-group" v-if="args.attachedButton">
+  <div class="kiln-attached-buttons ui-button-group" v-if="attachedButton">
     <component v-for="button in buttons" :key="button.name" slot="icon" :is="button.name" :name="name" :data="data" :schema="schema" :args="button" @disable="onDisable" @enable="onEnable"></component>
   </div>
 </template>
@@ -17,8 +17,11 @@
       return {};
     },
     computed: {
+      attachedButton() {
+        return this.args && this.args.attachedButton;
+      },
       buttons() {
-        const attachedButton = _.get(this, 'args.attachedButton');
+        const attachedButton = this.attachedButton;
 
         let buttons;
 

@@ -11,7 +11,7 @@
     :disabled="isDisabled"
     iconPosition="right"
     @input="update">
-    <attached-button slot="icon" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
+    <attached-button slot="icon" :name="name" :data="value" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
   </ui-textbox>
 </template>
 
