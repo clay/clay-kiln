@@ -20,6 +20,10 @@
     }
   }
 
+  .complex-list-item-hidden {
+    height: 100px;
+  }
+
   .complex-list-item-inner {
     @include form();
   }
@@ -73,7 +77,7 @@
         </div>
       </transition>
     </div>
-    <div v-else class="complex-list-item-hidden" :style="{ height: initialHeight }"></div>
+    <div v-else class="complex-list-item-hidden"></div>
   </div>
 </template>
 
@@ -97,9 +101,7 @@
     ],
     data() {
       return {
-        isVisible: false,
-        initialHeight: '100px',
-        isInitialHeightChanged: false
+        isVisible: false
       };
     },
     computed: {
@@ -151,12 +153,6 @@
           this.isVisible = true;
         } else {
           this.isVisible = false;
-        }
-
-        if (isInViewport && !this.isInitialHeightChanged) {
-          // if the height was never set based on the item height, do it the first time it's visible
-          // this.initialHeight = `${this.$el.clientHeight}px`;
-          this.isInitialHeightChanged = true;
         }
       }
     },
