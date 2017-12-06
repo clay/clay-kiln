@@ -115,6 +115,7 @@
     "vue-avatar": "^2.1.1",
     "vue-loader": "^13.5.0",
     "vue-nprogress": "^0.1.5",
+    "vue-observe-visibility": "^0.3.1",
     "vue-style-loader": "^3.0.3",
     "vue-template-compiler": "^2.5.9",
     "vue-unit": "github:tom-kitchin/vue-unit",

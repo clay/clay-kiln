@@ -22,6 +22,7 @@
 
 <template>
   <ui-textbox
+    :autosize="false"
     :value="data"
     :type="type"
     :multiLine="isMultiline"

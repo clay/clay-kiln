@@ -5,8 +5,6 @@
   @import '../styleguide/typography';
 
   .complex-list-item {
-    @include form();
-
     border: 1px solid $divider-color;
     border-radius: 2px;
     box-shadow: $shadow-2dp;
@@ -20,6 +18,10 @@
     &.is-expanded {
       box-shadow: $shadow-8dp;
     }
+  }
+
+  .complex-list-item-inner {
+    @include form();
   }
 
   .complex-list-item + .complex-list-item {
@@ -55,20 +57,23 @@
 </style>
 
 <template>
-  <div class="complex-list-item" :class="{ 'is-expanded': isCurrentItem }" :ref="name" @click.stop="onClick">
-    <field v-for="(field, fieldIndex) in fieldNames" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="name + '.' + field" :data="fields[field]" :schema="fieldSchemas[field]"></field>
-    <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
-    <transition name="complex-list-item-actions" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
-      <div v-if="isCurrentItem" class="complex-list-item-actions">
-        <div class="complex-list-item-actions-inner ui-button-group">
-          <span class="complex-list-item-actions-left">Item {{ index + 1 }}/{{ total }}</span>
-          <div class="complex-list-item-actions-right ui-button-group">
-            <ui-button buttonType="button" type="secondary" color="red" icon="delete" @click.stop.prevent="removeItem(index)">Remove</ui-button>
-            <ui-button buttonType="button" type="secondary" color="accent" icon="add" @click.stop.prevent="addItemAndUnselect(index)">Add Another</ui-button>
+  <div class="complex-list-item" :class="{ 'is-expanded': isCurrentItem }" :ref="name" v-observe-visibility="visibilityChanged" @click.stop="onClick">
+    <div v-if="isVisible" class="complex-list-item-inner">
+      <field v-for="(field, fieldIndex) in fieldNames" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="name + '.' + field" :data="fields[field]" :schema="fieldSchemas[field]"></field>
+      <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
+      <transition name="complex-list-item-actions" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
+        <div v-if="isCurrentItem" class="complex-list-item-actions">
+          <div class="complex-list-item-actions-inner ui-button-group">
+            <span class="complex-list-item-actions-left">Item {{ index + 1 }}/{{ total }}</span>
+            <div class="complex-list-item-actions-right ui-button-group">
+              <ui-button buttonType="button" type="secondary" color="red" icon="delete" @click.stop.prevent="removeItem(index)">Remove</ui-button>
+              <ui-button buttonType="button" type="secondary" color="accent" icon="add" @click.stop.prevent="addItemAndUnselect(index)">Add Another</ui-button>
+            </div>
           </div>
         </div>
-      </div>
-    </transition>
+      </transition>
+    </div>
+    <div v-else class="complex-list-item-hidden" :style="{ height: initialHeight }"></div>
   </div>
 </template>
 
@@ -91,7 +96,11 @@
       'currentItem'
     ],
     data() {
-      return {};
+      return {
+        isVisible: false,
+        initialHeight: '100px',
+        isInitialHeightChanged: false
+      };
     },
     computed: {
       isCurrentItem() {
@@ -134,6 +143,21 @@
       },
       onClick() {
         this.$emit('current', this.index);
+      },
+      visibilityChanged(isInViewport, entry) {
+        const BUFFER = 500;
+
+        if (isInViewport || entry.boundingClientRect.top < entry.rootBounds.bottom + BUFFER || entry.boundingClientRect.bottom < entry.rootBounds.top + BUFFER) {
+          this.isVisible = true;
+        } else {
+          this.isVisible = false;
+        }
+
+        if (isInViewport && !this.isInitialHeightChanged) {
+          // if the height was never set based on the item height, do it the first time it's visible
+          // this.initialHeight = `${this.$el.clientHeight}px`;
+          this.isInitialHeightChanged = true;
+        }
       }
     },
     components: {

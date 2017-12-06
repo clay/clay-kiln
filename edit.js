@@ -18,6 +18,7 @@ import { getEventPath } from './lib/utils/events';
 import { standardCurve } from './lib/utils/references';
 import 'keen-ui/src/bootstrap'; // import this once, for KeenUI components
 import 'velocity-animate/velocity.ui.min.js'; // import this once, for velocity ui stuff
+import VueObserveVisibility from 'vue-observe-visibility';
 
 // set animation defaults
 velocity.defaults.easing = standardCurve;
@@ -53,6 +54,9 @@ Vue.use(NProgress, {
   router: false,
   http: false
 });
+
+// add visibility observer directive
+Vue.use(VueObserveVisibility);
 
 // Register keys to make key events easy to call
 Vue.config.keyCodes.comma = 188;
