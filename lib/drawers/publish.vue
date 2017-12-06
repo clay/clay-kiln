@@ -137,6 +137,7 @@
       </a>
       <ui-button v-if="isScheduled" class="status-undo-button" buttonType="button" color="accent" @click.stop="unschedulePage">Unschedule</ui-button>
       <ui-button v-else-if="isPublished" class="status-undo-button" buttonType="button" color="accent" @click.stop="unpublishPage">Unpublish</ui-button>
+      <ui-button v-else-if="isArchived" class="status-undo-button" buttonType="button" color="accent" @click.stop="archivePage(false)">Unarchive</ui-button>
     </div>
     <div class="publish-actions">
       <span class="action-message">{{ actionMessage }} <ui-icon-button v-if="showSchedule" icon="close" buttonType="button" type="secondary" color="default" size="small" tooltip="Clear Date/Time" tooltipPosition="left middle" @click.stop="clearScheduleForm"></ui-icon-button></span>
@@ -144,8 +145,8 @@
         <ui-datepicker class="schedule-date" color="accent" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date"></ui-datepicker>
         <timepicker class="schedule-time" :value="timeValue" label="Time" @update="updateTime"></timepicker>
       </form>
-      <ui-button v-if="showSchedule" :disabled="disableSchedule" class="action-button" buttonType="button" color="accent" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
-      <ui-button v-else class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
+      <ui-button v-if="showSchedule" :disabled="disableSchedule || isArchived" class="action-button" buttonType="button" color="accent" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
+      <ui-button v-else :disabled="isArchived" class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
     </div>
     <ui-collapsible :open="hasCustomLocation" class="publish-section publish-location" title="Custom URL">
       <form class="publish-location-form" @submit.prevent="saveLocation">
@@ -247,7 +248,7 @@
         } if (this.isPublished) {
           return `Published ${distanceInWordsToNow(this.publishedDate, { addSuffix: true })}`;
         } else if (this.isArchived) {
-          return `Archived`;
+          return 'Archived';
         } else {
           return `Draft Created ${distanceInWordsToNow(this.createdDate, { addSuffix: true })}`;
         }
@@ -448,14 +449,14 @@
           .then(() => {
             this.$store.dispatch('finishProgress');
             this.$store.dispatch('showSnackbar', {
-              message: 'Archived page',
+              message: `${archived ? 'Archived' : 'Unarchived'} page`,
               action: 'Undo',
-              onActionClick: () => this.archivePage(false)
+              onActionClick: () => this.archivePage(!archived)
             });
             return this.$store.dispatch('closeModal');
           })
           .catch((e) => {
-            log.error(`Error archiving page: ${e.message}`, { action: 'archivePage', archived });
+            log.error(`Error ${archived ? 'archiving' : 'unarchiving'} page: ${e.message}`, { action: 'archivePage', archived });
             store.dispatch('finishProgress');
             store.dispatch('showSnackbar', 'Error archiving page');
           });

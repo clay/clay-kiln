@@ -104,6 +104,8 @@
           return ' (Unpublished Changes)';
         } else if (this.pageState.published) {
           return ' (Published)';
+        } else if (this.pageState.archived) {
+          return ' (Archived)';
         } else {
           return ' (Draft)';
         }

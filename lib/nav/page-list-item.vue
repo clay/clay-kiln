@@ -135,6 +135,10 @@
         &.published {
           color: $published;
         }
+
+        &.archived {
+          color: $md-red;
+        }
       }
 
       .status-time {
@@ -253,7 +257,13 @@
         return this.page.authors.length ? _.head(this.page.authors) : 'No Byline';
       },
       pageStatus() {
-        if (this.page.scheduled) {
+        if (this.page.archived) {
+          return {
+            status: 'archived',
+            statusMessage: 'Archived',
+            statusTime: formatStatusTime(this.page.updateTime)
+          };
+        } else if (this.page.scheduled) {
           return {
             status: 'scheduled',
             statusMessage: 'Scheduled',
