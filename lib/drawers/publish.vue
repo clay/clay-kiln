@@ -77,8 +77,9 @@
     }
   }
 
-  .publish-location {
+  .publish-section {
     border-bottom: 1px solid $divider-color;
+    margin-bottom: 0;
     padding: 0;
 
     .ui-collapsible__header {
@@ -88,7 +89,9 @@
     .ui-collapsible__body {
       border: none;
     }
+  }
 
+  .publish-location {
     .publish-location-form {
       display: flex;
       flex-direction: column;
@@ -103,6 +106,21 @@
     }
 
     .location-submit {
+      margin-top: 16px;
+    }
+  }
+
+  .publish-archive {
+    .ui-collapsible__body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .archive-help {
+      @include type-body();
+    }
+
+    .archive-submit {
       margin-top: 16px;
     }
   }
@@ -129,12 +147,16 @@
       <ui-button v-if="showSchedule" :disabled="disableSchedule" class="action-button" buttonType="button" color="accent" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
       <ui-button v-else class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
     </div>
-    <ui-collapsible :open="hasCustomLocation" class="publish-location" title="Custom URL">
+    <ui-collapsible :open="hasCustomLocation" class="publish-section publish-location" title="Custom URL">
       <form class="publish-location-form" @submit.prevent="saveLocation">
         <span class="location-description">Designate a custom URL for this page. This should only be used for special cases, such as index pages and static pages.</span>
         <ui-textbox class="location-input" v-model="location" placeholder="/special-page.html" label="Enter Custom Location" :error="error" :invalid="isInvalid" @input="onLocationInput"></ui-textbox>
         <ui-button class="location-submit" buttonType="submit" type="primary" color="default">Save</ui-button>
       </form>
+    </ui-collapsible>
+    <ui-collapsible class="publish-section publish-archive" title="Archive Page">
+      <span class="archive-help">You may archive any page that isn't published (or scheduled to be published). Archived pages will not show up in the Clay Menu unless you explicitly filter for them.</span>
+      <ui-button class="archive-submit" buttonType="button" type="primary" color="red" :disabled="isScheduled || isPublished || isArchived" @click.stop="archivePage(true)">Archive</ui-button>
     </ui-collapsible>
   </div>
 </template>
@@ -212,16 +234,20 @@
     computed: mapState({
       isPublished: (state) => state.page.state.published,
       isScheduled: (state) => state.page.state.scheduled,
+      isArchived: (state) => state.page.state.archived,
       uri: (state) => state.page.uri,
       url: (state) => state.page.state.url,
       publishedDate: (state) => state.page.state.publishTime,
       createdDate: (state) => state.page.state.createdAt,
       scheduledDate: (state) => state.page.state.scheduledTime,
+      lastUpdated: (state) => state.page.state.updateTime,
       statusMessage() {
         if (this.isScheduled) {
           return `Scheduled ${distanceInWordsToNow(this.scheduledDate, { addSuffix: true })}`;
         } if (this.isPublished) {
           return `Published ${distanceInWordsToNow(this.publishedDate, { addSuffix: true })}`;
+        } else if (this.isArchived) {
+          return `Archived`;
         } else {
           return `Draft Created ${distanceInWordsToNow(this.createdDate, { addSuffix: true })}`;
         }
@@ -229,8 +255,10 @@
       time() {
         if (this.isScheduled) {
           return dateFormat(this.scheduledDate, 'MMMM Do [at] h:mm A');
-        } if (this.isPublished) {
+        } else if (this.isPublished) {
           return dateFormat(this.publishedDate, 'MMMM Do [at] h:mm A');
+        } else if (this.isArchived) {
+          return dateFormat(this.lastUpdated, 'MMMM Do [at] h:mm A');
         } else {
           return dateFormat(this.createdDate, 'MMMM Do [at] h:mm A');
         }
@@ -413,6 +441,24 @@
       },
       updateTime(val) {
         this.timeValue = val;
+      },
+      archivePage(archived) {
+        this.$store.dispatch('startProgress');
+        return this.$store.dispatch('updatePageList', { archived })
+          .then(() => {
+            this.$store.dispatch('finishProgress');
+            this.$store.dispatch('showSnackbar', {
+              message: 'Archived page',
+              action: 'Undo',
+              onActionClick: () => this.archivePage(false)
+            });
+            return this.$store.dispatch('closeModal');
+          })
+          .catch((e) => {
+            log.error(`Error archiving page: ${e.message}`, { action: 'archivePage', archived });
+            store.dispatch('finishProgress');
+            store.dispatch('showSnackbar', 'Error archiving page');
+          });
       }
     },
     mounted() {
