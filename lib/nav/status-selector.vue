@@ -29,6 +29,7 @@
     <ui-radio class="status-selector-radio" color="accent" label="Draft" :value="selectedStatus" trueValue="draft" @input="input"></ui-radio>
     <ui-radio class="status-selector-radio" color="accent" label="Scheduled" :value="selectedStatus" trueValue="scheduled" @input="input"></ui-radio>
     <ui-radio class="status-selector-radio" color="accent" label="Published" :value="selectedStatus" trueValue="published" @input="input"></ui-radio>
+    <ui-radio class="status-selector-radio" color="accent" label="Archived" :value="selectedStatus" trueValue="archived" @input="input"></ui-radio>
   </div>
 </template>
 
