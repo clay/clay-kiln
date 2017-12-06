@@ -199,13 +199,11 @@
           schema = this.schema;
 
         if (!_.isEmpty(sections)) {
-          return _.map(sections, (section) => {
-            return {
-              title: section.title,
-              fields: section.fields,
-              hasRequiredFields: _.some(schema, (val, key) => _.includes(Object.keys(section.fields), key) && _.has(val, `${fieldProp}.validate.required`))
-            };
-          });
+          return _.map(sections, (section) => ({
+            title: section.title,
+            fields: section.fields,
+            hasRequiredFields: _.some(schema, (val, key) => _.includes(section.fields, key) && _.has(val, `${fieldProp}.validate.required`))
+          }));
         } else {
           // no sections, so return a single "section" with all the fields
           return [{
