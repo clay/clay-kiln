@@ -125,5 +125,8 @@
   },
   "dependencies": {
     "gitbook-plugin-github": "^2.0.0"
+  },
+  "peerDependencies": {
+    "amphora-search": "^4.1.0"
   }
 }

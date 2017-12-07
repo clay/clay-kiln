@@ -58,7 +58,11 @@
   .status-selector.page-list-status-large {
     display: none;
     flex: 0 0 auto;
-    margin-left: 16px;
+    margin-left: 8px;
+
+    .status-selector-radio:first-child {
+      margin-left: 0;
+    }
 
     @media screen and (min-width: $all-columns-sidebar) {
       display: flex;
@@ -293,32 +297,42 @@
     }
 
     // filter by selected status
-    if (statusFilter !== 'all') {
-      // when the 'all' status is selected, it doesn't need to include a status filter in the query
-      // when a single status is selected, it does include the filter
-      if (statusFilter === 'draft') {
-        query.body.query.bool.must.push({
-          term: {
-            published: false
-          }
-        }, {
-          term: {
-            scheduled: false
-          }
-        });
-      } else if (statusFilter === 'published') {
-        query.body.query.bool.must.push({
-          term: {
-            published: true
-          }
-        });
-      } else if (statusFilter === 'scheduled') {
-        query.body.query.bool.must.push({
-          term: {
-            scheduled: true
-          }
-        });
-      }
+    // when the 'all' status is selected, it allows draft, published, and scheduled pages
+    // (but NOT archived)
+    if (statusFilter === 'all') {
+      query.body.query.bool.must.push({
+        term: {
+          archived: false
+        }
+      });
+    } else if (statusFilter === 'draft') {
+      query.body.query.bool.must.push({
+        term: {
+          published: false
+        }
+      }, {
+        term: {
+          scheduled: false
+        }
+      });
+    } else if (statusFilter === 'published') {
+      query.body.query.bool.must.push({
+        term: {
+          published: true
+        }
+      });
+    } else if (statusFilter === 'scheduled') {
+      query.body.query.bool.must.push({
+        term: {
+          scheduled: true
+        }
+      });
+    } else if (statusFilter === 'archived') {
+      query.body.query.bool.must.push({
+        term: {
+          archived: true
+        }
+      });
     }
 
     return query;

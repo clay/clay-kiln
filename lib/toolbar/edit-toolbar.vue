@@ -158,12 +158,20 @@
           return 'Unpublished Changes';
         } else if (this.pageState.published) {
           return 'Published';
+        } else if (this.pageState.archived) {
+          return 'Archived';
         } else {
           return 'Draft';
         }
       },
       publishAction() {
-        return this.pageState.published ? 'Republish' : 'Publish';
+        if (this.pageState.published) {
+          return 'Republish';
+        } else if (this.pageState.archived) {
+          return 'Unarchive';
+        } else {
+          return 'Publish';
+        }
       },
       toggleOptions() {
         return [
