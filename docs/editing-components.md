@@ -364,6 +364,21 @@ ogTitle:
   _has: text
 ```
 
+### Many-To-Many Communication
+
+Both `_publish` and `_subscribe` can receive a single property (as a string) _or an array of properties_. This extremely powerful tool allows you to create complicated many-to-many communication workflows in a safe and standardized way.
+
+```yaml
+title:
+  _has: text
+  _publish:
+    - ogTitle
+    - twitterTitle
+  _subscribe:
+    - pageTitle
+    - overrideTitle
+```
+
 ### PubSub Tips
 
 Kiln intelligently prevents a component from publishing more than once during pubsub, so you may safely create circular pubsub logic. For example, a `tags` component may update an `article`'s `primaryTag` field, and the `article` may also allow editing of that field (and propagating those changes back to `tags`).
