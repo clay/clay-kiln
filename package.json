@@ -123,9 +123,6 @@
     "webpack": "^3.8.1",
     "whatwg-fetch": "^2.0.3"
   },
-  "dependencies": {
-    "gitbook-plugin-github": "^2.0.0"
-  },
   "peerDependencies": {
     "amphora-search": "^4.1.0"
   }
