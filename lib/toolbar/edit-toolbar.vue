@@ -16,6 +16,14 @@
       bottom: 0;
       position: fixed;
     }
+
+    .alert-container {
+      pointer-events: none;
+
+      & > * {
+        pointer-events: all;
+      }
+    }
   }
 
   .kiln-progress {
