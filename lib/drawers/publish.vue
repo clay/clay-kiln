@@ -128,6 +128,7 @@
 
 <template>
   <div class="publish-drawer">
+    <!-- publish status -->
     <div class="publish-status">
       <span class="status-message">{{ statusMessage }}</span>
       <span class="status-time">{{ time }}</span>
@@ -139,6 +140,8 @@
       <ui-button v-else-if="isPublished" class="status-undo-button" buttonType="button" color="accent" @click.stop="unpublishPage">Unpublish</ui-button>
       <ui-button v-else-if="isArchived" class="status-undo-button" buttonType="button" color="accent" @click.stop="archivePage(false)">Unarchive</ui-button>
     </div>
+
+    <!-- publish actions -->
     <div class="publish-actions">
       <span class="action-message">{{ actionMessage }} <ui-icon-button v-if="showSchedule" icon="close" buttonType="button" type="secondary" color="default" size="small" tooltip="Clear Date/Time" tooltipPosition="left middle" @click.stop="clearScheduleForm"></ui-icon-button></span>
       <form class="schedule-form" @submit.prevent="schedulePage">
@@ -148,6 +151,8 @@
       <ui-button v-if="showSchedule" :disabled="disableSchedule || isArchived" class="action-button" buttonType="button" color="accent" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
       <ui-button v-else :disabled="isArchived" class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
     </div>
+
+    <!-- custom location -->
     <ui-collapsible :open="hasCustomLocation" class="publish-section publish-location" title="Custom URL">
       <form class="publish-location-form" @submit.prevent="saveLocation">
         <span class="location-description">Designate a custom URL for this page. This should only be used for special cases, such as index pages and static pages.</span>
@@ -155,6 +160,8 @@
         <ui-button class="location-submit" buttonType="submit" type="primary" color="default">Save</ui-button>
       </form>
     </ui-collapsible>
+
+    <!-- archiving -->
     <ui-collapsible class="publish-section publish-archive" title="Archive Page">
       <span class="archive-help">You may archive any page that isn't published (or scheduled to be published). Archived pages will not show up in the Clay Menu unless you explicitly filter for them.</span>
       <ui-button class="archive-submit" buttonType="button" type="primary" color="red" :disabled="isScheduled || isPublished || isArchived" @click.stop="archivePage(true)">Archive</ui-button>
