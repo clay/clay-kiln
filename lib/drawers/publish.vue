@@ -256,8 +256,10 @@
           return `Published ${distanceInWordsToNow(this.publishedDate, { addSuffix: true })}`;
         } else if (this.isArchived) {
           return 'Archived';
-        } else {
+        } else if (this.createdDate) {
           return `Draft Created ${distanceInWordsToNow(this.createdDate, { addSuffix: true })}`;
+        } else {
+          return 'Draft Created some time ago';
         }
       },
       time() {
@@ -267,8 +269,10 @@
           return dateFormat(this.publishedDate, 'MMMM Do [at] h:mm A');
         } else if (this.isArchived) {
           return dateFormat(this.lastUpdated, 'MMMM Do [at] h:mm A');
-        } else {
+        } else if (this.createdDate) {
           return dateFormat(this.createdDate, 'MMMM Do [at] h:mm A');
+        } else {
+          return 'Some time ago';
         }
       },
       showSchedule() {
