@@ -143,7 +143,7 @@
 
 <script>
   import _ from 'lodash';
-  import { find } from '@nymag/dom';
+  import { find, findAll } from '@nymag/dom';
   import { mapState } from 'vuex';
   import velocity from 'velocity-animate/velocity.min.js';
   import { getSchema } from '../core-data/components';
@@ -306,7 +306,8 @@
         additionalPixels = additionalPixels || 0;
 
         this.$nextTick(() => {
-          const innerEl = find(this.$el, '.input-container'),
+          // note: for tabbed forms, this uses the tab that's visible
+          const innerEl = _.find(findAll(this.$el, '.input-container'), (el) => el.offsetParent !== null),
             // note: we can't grab the scrollHeight of the innerEl, since it's always 100% height,
             // but we can calculate the height of all the child fields
             innerHeight = innerEl.clientHeight,
