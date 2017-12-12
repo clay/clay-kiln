@@ -136,7 +136,7 @@
     @include normal-text();
 
     color: #ccc;
-    font-size: 13px;
+    font-size: 22px;
     font-weight: bold;
   }
 
