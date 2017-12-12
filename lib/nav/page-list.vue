@@ -301,37 +301,27 @@
     // (but NOT archived)
     if (statusFilter === 'all') {
       query.body.query.bool.must.push({
-        term: {
-          archived: false
-        }
+        term: { archived: false }
       });
     } else if (statusFilter === 'draft') {
       query.body.query.bool.must.push({
-        term: {
-          published: false
-        }
+        term: { published: false }
       }, {
-        term: {
-          scheduled: false
-        }
+        term: { scheduled: false }
+      }, {
+        term: { archived: false } // only drafts can be archived, but we need to explicitly NOT include archived pages when looking at drafts in the list
       });
     } else if (statusFilter === 'published') {
       query.body.query.bool.must.push({
-        term: {
-          published: true
-        }
+        term: { published: true }
       });
     } else if (statusFilter === 'scheduled') {
       query.body.query.bool.must.push({
-        term: {
-          scheduled: true
-        }
+        term: { scheduled: true }
       });
     } else if (statusFilter === 'archived') {
       query.body.query.bool.must.push({
-        term: {
-          archived: true
-        }
+        term: { archived: true }
       });
     }
 
