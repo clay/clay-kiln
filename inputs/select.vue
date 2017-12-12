@@ -94,7 +94,7 @@
       safeData() {
         if (_.isString(this.data)) {
           return _.find(this.options, (option) => option.value === this.data);
-        } else if (_.isObject(this.data)) {
+        } else if (_.isObject(this.data) && !_.isEmpty(this.data)) {
           return _.reduce(this.options, (safeArray, option) => {
             if (this.data[option.value] === true) {
               return safeArray.concat([option]);
