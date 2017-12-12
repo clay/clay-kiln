@@ -382,8 +382,8 @@
           })
           .then(() => this.$store.dispatch('showSnackbar', {
             message: 'Published Page',
-            action: 'Undo',
-            onActionClick: () => this.unpublishPage()
+            action: 'View',
+            onActionClick: () => window.open(this.url)
           }));
       },
       formatDate(date) {
