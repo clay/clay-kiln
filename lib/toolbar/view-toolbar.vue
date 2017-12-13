@@ -1,136 +1,149 @@
 <style lang="sass">
   @import '../../styleguide/toolbar';
+  @import '../../styleguide/layers';
 
-  body {
-    @include toolbar-padding();
-  }
-
-  .kiln-toolbar-wrapper {
+  .kiln-wrapper.view-mode {
     @include toolbar-wrapper();
-  }
 
-  .kiln-toolbar {
-    @include toolbar();
+    pointer-events: none;
 
-    // don't span full width
-    width: auto;
-
-    &.small {
-      width: 350px;
+    & > * {
+      pointer-events: all;
     }
 
-    &.medium {
-      width: 500px;
+    .view-menu-button {
+      margin: 10px;
     }
 
-    &.large {
-      width: 600px;
+    .kiln-progress {
+      height: 3px;
+      left: 0;
+      position: fixed;
+      top: 0;
+      width: 100%;
     }
 
-    &.xlarge {
-      width: 800px;
+    .view-edit-button,
+    .view-new-button {
+      margin: 10px 18px;
     }
 
-    .publish {
-      margin: 0 0 0 -3px;
-      padding: 7px 16px 6px 22px;
-      position: relative;
+    .ui-snackbar-container {
+      @include confirm-layer();
 
-      &:before {
-        background-color: $toolbar-view;
-        content: '';
-        height: 100%;
-        position: absolute;
-        right: 100%;
-        top: 0;
-        transform: skewX(-14deg) translateX(6px);
-        width: 12px;
-      }
+      bottom: 0;
+      position: fixed;
     }
   }
 </style>
 
 <template>
-  <div class="kiln-wrapper">
-    <background></background>
-    <div class="kiln-toolbar-wrapper">
-      <pane></pane>
-      <section class="kiln-toolbar view-mode" :class="paneSize">
-        <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" @click="toggleMenu"></toolbar-button>
-
-        <toolbar-button v-if="isLoading" class="publish loading" icon-name="draft" text="Edit" @click="startEditing"></toolbar-button>
-        <toolbar-button v-else-if="pageState.scheduled" class="publish scheduled" icon-name="scheduled" text="Edit" @click="startEditing"></toolbar-button>
-        <toolbar-button v-else-if="pageState.published" class="publish published" icon-name="published" text="Edit" @click="startEditing"></toolbar-button>
-        <toolbar-button v-else class="publish draft" icon-name="draft" text="Edit" @click="startEditing"></toolbar-button>
-      </section>
+  <div class="kiln-wrapper view-mode">
+    <alert-container></alert-container>
+    <div class="kiln-progress">
+      <progress-bar></progress-bar>
     </div>
+    <ui-fab size="normal" color="primary" icon="menu" tooltip="Clay Menu" tooltipPosition="right middle" class="view-menu-button" @click="openNav"></ui-fab>
+    <ui-fab size="small" color="default" icon="mode_edit" :tooltip="'Edit Page' + status" tooltipPosition="right middle" class="view-edit-button" @click="startEditing"></ui-fab>
+    <ui-fab size="small" color="default" icon="add" tooltip="New Page" tooltipPosition="right middle" class="view-new-button" @click="openNewPage"></ui-fab>
+    <nav-background></nav-background>
+    <nav-menu></nav-menu>
+    <nav-content></nav-content>
+    <simple-modal></simple-modal>
+    <confirm></confirm>
+    <ui-snackbar-container ref="snacks"></ui-snackbar-container>
   </div>
 </template>
 
 <script>
   import _ from 'lodash';
-  import { mapState } from 'vuex';
+  import isAfter from 'date-fns/is_after';
+  import addSeconds from 'date-fns/add_seconds';
   import toggleEdit from '../utils/toggle-edit';
   import { getItem } from '../utils/local';
-  import button from './toolbar-button.vue';
-  import background from './background.vue';
-  import pane from '../panes/pane.vue';
+  import navBackground from '../nav/nav-background.vue';
+  import navMenu from '../nav/nav-menu.vue';
+  import navContent from '../nav/nav-content.vue';
+  import UiFab from 'keen/UiFab';
+  import simpleModal from './simple-modal.vue';
+  import confirm from './confirm.vue';
+  import progressBar from './progress.vue';
+  import UiSnackbarContainer from 'keen/UiSnackbarContainer';
+  import alertContainer from './alert-container.vue';
 
   export default {
-    computed: mapState({
-      pageState: (state) => state.page.state,
-      isLoading: 'isLoading',
-      paneSize: (state) => state.ui.currentPane ? state.ui.currentPane.size || 'small' : null,
-      customButtons() {
-        return Object.keys(window.kiln.toolbarButtons);
+    data() {
+      return {};
+    },
+    computed: {
+      snackbar() {
+        return _.get(this.$store, 'state.ui.snackbar') && _.toPlainObject(_.get(this.$store, 'state.ui.snackbar'));
+      },
+      isLoading() {
+        return _.get(this.$store, 'state.isLoading');
+      },
+      pageState() {
+        return _.get(this.$store, 'state.page.state');
+      },
+      hasChanges() {
+        const pubTime = _.get(this.pageState, 'publishTime'), // latest published timestamp
+          upTime = _.get(this.pageState, 'updateTime'); // latest updated timestamp
+
+        if (pubTime && upTime) {
+          return isAfter(upTime, addSeconds(pubTime, 30)); // give it 30 seconds of leeway, in case there are slow updates to the server
+        } else {
+          return false;
+        }
+      },
+      status() {
+        if (this.isLoading) {
+          return ''; // still loading the page, don't display any status
+        } else if (this.pageState.scheduled) {
+          return ' (Scheduled)';
+        } else if (this.pageState.published && this.hasChanges) {
+          return ' (Unpublished Changes)';
+        } else if (this.pageState.published) {
+          return ' (Published)';
+        } else if (this.pageState.archived) {
+          return ' (Archived)';
+        } else {
+          return ' (Draft)';
+        }
       }
-    }),
+    },
+    watch: {
+      snackbar(val) {
+        if (val) {
+          this.$refs.snacks.createSnackbar(val);
+          this.$store.dispatch('hideSnackbar'); // clear the store
+        }
+      }
+    },
     methods: {
       startEditing() {
         toggleEdit();
       },
-      toggleMenu(name, button) {
+      openNav() {
         return getItem('claymenu:activetab').then((savedTab) => {
-          const activeTab = savedTab || 'All Pages',
-            options = {
-              name,
-              title: 'Clay Menu',
-              saveTab: 'claymenu',
-              size: 'xlarge',
-              height: 'tall',
-              clayHeader: true,
-              content: [{
-                header: 'My Pages',
-                active: activeTab === 'My Pages',
-                content: {
-                  component: 'page-list',
-                  args: {
-                    isMyPages: true
-                  }
-                }
-              },{
-                header: 'All Pages',
-                active: activeTab === 'All Pages', // note: this is the default
-                content: {
-                  component: 'page-list'
-                }
-              }, {
-                header: 'New Page',
-                active: activeTab === 'New Page',
-                content: {
-                  component: 'new-page'
-                }
-              }]
-            };
+          const activeNav = savedTab || 'all-pages';
 
-          return this.$store.dispatch('togglePane', { options, button });
+          return this.$store.dispatch('openNav', activeNav);
         });
+      },
+      openNewPage() {
+        return this.$store.dispatch('openNav', 'new-page');
       }
     },
-    components: _.merge({
-      'toolbar-button': button,
-      background,
-      pane
-    }, window.kiln.toolbarButtons)
+    components: {
+      'nav-background': navBackground,
+      'nav-menu': navMenu,
+      'nav-content': navContent,
+      UiFab,
+      'simple-modal': simpleModal,
+      confirm,
+      UiSnackbarContainer,
+      'progress-bar': progressBar,
+      'alert-container': alertContainer
+    }
   };
 </script>

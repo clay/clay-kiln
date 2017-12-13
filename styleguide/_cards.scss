@@ -1,0 +1,9 @@
+@import 'colors';
+
+@mixin card {
+  background-color: $card-bg-color;
+  border-radius: 2px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  min-height: 50px;
+  min-width: 100px;
+}

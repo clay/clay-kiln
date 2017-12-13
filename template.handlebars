@@ -1,6 +1,13 @@
 {{#if @root.locals.user}}
   {{! if a user is logged in, we display either the view-mode or edit-mode toolbar, and associated scripts, styles, and templates }}
   <div data-uri="{{ default _ref _self }}" class="clay-kiln">
+    {{! load kiln font if user is logged in }}
+    <style>
+      /* Noto font - regular, regular italic, bold (no bold italic) */
+      @import url('https://fonts.googleapis.com/css?family=Noto+Sans:400,400i,700');
+      /* Material Design Icon Font */
+      @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+    </style>
     <script>
       // start scaffolding kiln stuff
       window.kiln = window.kiln || {};
@@ -46,9 +53,9 @@
 
     {{! show different scripts in view/edit mode }}
     {{#if @root.locals.edit}}
-      <script src="{{ @root.locals.site.assetPath }}/js/clay-kiln-edit.js"></script>
+      <script src="{{ @root.locals.site.assetPath }}/js/clay-kiln-edit.js?version={{ kilnVersion }}"></script>
     {{else}}
-      <script src="{{ @root.locals.site.assetPath }}/js/clay-kiln-view.js"></script>
+      <script src="{{ @root.locals.site.assetPath }}/js/clay-kiln-view.js?version={{ kilnVersion }}"></script>
 
       {{! logo to display when going into edit mode }}
       <div class="clay-kiln-logo">{{{ read 'node_modules/clay-kiln/media/clay-logo.svg' }}}</div>

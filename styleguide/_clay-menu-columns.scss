@@ -1,0 +1,18 @@
+$nav-menu-width: 200px;
+
+// individual columns
+$site-column: 120px;
+$title-column: 400px;
+$byline-column: 144px;
+$status-column: 144px;
+$collaborators-column: 120px;
+
+// combinations (used for media breakpoints)
+$site-title-status-columns: $site-column + $title-column + $status-column;
+$site-title-status-columns-sidebar: $site-title-status-columns + $nav-menu-width;
+
+$site-title-byline-status-columns: $site-column + $title-column + $byline-column + $status-column;
+$site-title-byline-status-columns-sidebar: $site-title-byline-status-columns + $nav-menu-width;
+
+$all-columns: $site-column + $title-column + $byline-column + $status-column + $collaborators-column;
+$all-columns-sidebar: $all-columns + $nav-menu-width;

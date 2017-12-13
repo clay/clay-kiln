@@ -4,27 +4,39 @@
 // https://www.iab.com/wp-content/uploads/2015/11/IAB_Display_Mobile_Creative_Guidelines_HTML5_2015.pdf
 // the editor will use the levels above 1 billion
 
+$z-index-level-1: 1000000000;
+$z-index-level-2: 1000000010;
+$z-index-level-3: 1000000020;
+$z-index-level-4: 1000000030;
+$z-index-level-5: 1000000040;
+$z-index-level-6: 1000000050;
+$z-index-level-7: 1000000060;
+
 @mixin quick-bar-layer {
-  z-index: 1000000000;
+  z-index: $z-index-level-1;
 }
 
 @mixin mini-selector-layer {
-  z-index: 1000000005;
+  z-index: $z-index-level-2;
 }
 
 @mixin inline-form-layer {
   // must be above mini selector
-  z-index: 1000000010;
-}
-
-@mixin overlay-layer {
-  z-index: 1000000020;
+  z-index: $z-index-level-3;
 }
 
 @mixin toolbar-layer {
-  z-index: 1000000025;
+  z-index: $z-index-level-4;
 }
 
-@mixin datepicker-layer {
-  z-index: 1000000030; // must be above toolbar AND overlays
+@mixin overlay-layer {
+  z-index: $z-index-level-5;
+}
+
+@mixin nav-layer {
+  z-index: $z-index-level-6;
+}
+
+@mixin confirm-layer {
+  z-index: $z-index-level-7;
 }

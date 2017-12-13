@@ -1,160 +1,143 @@
 <style lang="sass">
   @import '../../styleguide/toolbar';
+  @import '../../styleguide/colors';
+  @import '../../styleguide/layers';
 
   body {
     @include toolbar-padding();
   }
 
-  .kiln-toolbar-wrapper {
+  .kiln-wrapper {
     @include toolbar-wrapper();
-  }
 
-  .kiln-toolbar {
-    @include toolbar();
+    .ui-snackbar-container {
+      @include confirm-layer();
 
-    .kiln-toolbar-inner {
-      // full width inner toolbar in edit mode
-      flex: 1 1 auto;
-      left: 0;
-      width: auto;
+      bottom: 0;
+      position: fixed;
     }
 
-    .clay-menu-button {
-      border-right: 1px solid $toolbar-view-border;
-    }
+    .alert-container {
+      pointer-events: none;
 
-    .publish {
-      @media screen and (min-width: 1024px) {
-        width: 130px; // largest width (scheduled)
+      & > * {
+        pointer-events: all;
       }
     }
+  }
+
+  .kiln-progress {
+    height: 3px;
+    left: 0;
+    position: relative;
+    top: 0;
+    width: 100%;
+  }
+
+  .toolbar-action-menu.ui-icon-button {
+    display: inline-flex;
+
+    @media screen and (min-width: 600px) {
+      display: none;
+    }
+  }
+
+  .toolbar-action-button.ui-icon-button {
+    display: none;
+
+    &.is-open-drawer {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+
+    @media screen and (min-width: 600px) {
+      display: inline-flex;
+    }
+  }
+
+  .toolbar-publish-button.is-open-drawer {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+
+  .toolbar-button-text {
+    font-weight: bold;
   }
 </style>
 
 <template>
   <div class="kiln-wrapper">
-    <background></background>
-    <div class="kiln-toolbar-wrapper">
-      <pane></pane>
-      <overlay></overlay>
+    <alert-container></alert-container>
+    <drawer></drawer>
+    <ui-toolbar type="colored" text-color="white" @nav-icon-click="openNav">
+      <ui-button type="primary" color="primary" size="large" icon="mode_edit" has-dropdown>
+        <span class="toolbar-button-text">{{ status }}</span>
+        <ui-menu slot="dropdown" :options="toggleOptions" has-icons @select="stopEditing"></ui-menu>
+      </ui-button>
+
+      <div class="kiln-toolbar-actions" slot="actions">
+        <!-- always display custom buttons -->
+        <component v-for="(button, index) in customButtons" :is="button" :key="index"></component>
+        <!-- display a dropdown menu of actions on smaller screens (viewport < 600px) -->
+        <ui-icon-button class="toolbar-action-menu" color="white" size="large" type="secondary" icon="more_vert" tooltip="Actions" has-dropdown ref="dropdownButton" @click="closeDrawer">
+          <ui-menu contain-focus has-icons slot="dropdown" :options="toolbarOptions" @close="$refs.dropdownButton.closeDropdown()" @select="toggleDrawerFromMenu"></ui-menu>
+        </ui-icon-button>
+        <!-- display individual buttons on larger screens (viewport >= 600px) -->
+        <ui-icon-button class="toolbar-action-button" :disabled="!undoEnabled" color="white" size="large" type="secondary" icon="undo" tooltip="Undo" @click="undo"></ui-icon-button>
+        <ui-icon-button class="toolbar-action-button" :disabled="!redoEnabled" color="white" size="large" type="secondary" icon="redo" tooltip="Redo" @click="redo"></ui-icon-button>
+        <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'contributors' }" color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click.stop="toggleDrawer('contributors')"></ui-icon-button>
+        <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'components' }" color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page" @click.stop="toggleDrawer('components')"></ui-icon-button>
+        <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'preview' }" color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click.stop="toggleDrawer('preview')"></ui-icon-button>
+        <ui-button class="toolbar-publish-button" :class="{ 'is-open-drawer': currentDrawer === 'publish' }" type="primary" color="primary" size="large" @click.stop="toggleDrawer('publish')"><span class="toolbar-button-text">{{ publishAction }}</span></ui-button>
+      </div>
+    </ui-toolbar>
+    <div class="kiln-progress">
       <progress-bar></progress-bar>
-      <status></status>
-      <section class="kiln-toolbar edit-mode">
-        <toolbar-button class="clay-menu-button" icon-name="clay-menu" text="Clay" @click="toggleMenu"></toolbar-button>
-        <toolbar-button class="view-button" name="close" icon-name="close-edit" text="Stop Editing" @click="stopEditing"></toolbar-button>
-        <div class="kiln-toolbar-inner">
-          <toolbar-button class="undo" :disabled="!undoEnabled" icon-name="undo" text="Undo" @click="undo"></toolbar-button>
-          <toolbar-button class="redo" :disabled="!redoEnabled" icon-name="redo" text="Redo" @click="redo"></toolbar-button>
-          <component v-for="button in customButtons" :is="button"></component>
-          <div class="flex-span flex-span-inner"></div>
-          <toolbar-button class="people" name="people" icon-name="people" text="People" @click="togglePeople"></toolbar-button>
-          <toolbar-button class="components" name="components" icon-name="search-page" text="Find on Page" @click="toggleComponents"></toolbar-button>
-          <toolbar-button class="preview" name="preview" icon-name="new-tab" text="Preview" @click="togglePreview"></toolbar-button>
-        </div>
-        <toolbar-button v-if="isLoading" class="publish loading" name="publish" icon-name="draft" text="Loading&hellip;"></toolbar-button>
-        <toolbar-button v-else-if="pageState.scheduled" class="publish scheduled" name="publish" icon-name="scheduled" text="Scheduled" @click="togglePublish"></toolbar-button>
-        <toolbar-button v-else-if="hasChanges" class="publish changes" name="publish" icon-name="unpubbed-changes" text="Unpublished Changes" @click="togglePublish"></toolbar-button>
-        <toolbar-button v-else-if="pageState.published" class="publish published" name="publish" icon-name="published" text="Published" @click="togglePublish"></toolbar-button>
-        <toolbar-button v-else class="publish draft" name="publish" icon-name="draft" text="Draft" @click="togglePublish"></toolbar-button>
-      </section>
     </div>
+    <background></background>
+    <overlay></overlay>
+    <add-component></add-component>
+    <nav-background></nav-background>
+    <nav-menu></nav-menu>
+    <nav-content></nav-content>
+    <simple-modal></simple-modal>
+    <confirm></confirm>
+    <ui-snackbar-container ref="snacks"></ui-snackbar-container>
   </div>
 </template>
 
 <script>
   import _ from 'lodash';
   import { mapState } from 'vuex';
-  import { find } from '@nymag/dom';
   import isAfter from 'date-fns/is_after';
   import addSeconds from 'date-fns/add_seconds';
   import toggleEdit from '../utils/toggle-edit';
-  import { getSchema } from '../core-data/components';
-  import { layoutAttr, editAttr, componentListProp } from '../utils/references';
-  import label from '../utils/label';
-  import { getListsInHead } from '../utils/head-components';
   import { getItem } from '../utils/local';
   import progressBar from './progress.vue';
-  import button from './toolbar-button.vue';
   import background from './background.vue';
   import overlay from '../forms/overlay.vue';
-  import pane from '../panes/pane.vue';
-  import status from './status.vue';
+  import addComponent from '../component-data/add-component.vue';
+  import simpleModal from './simple-modal.vue';
+  import UiToolbar from 'keen/UiToolbar';
+  import UiButton from 'keen/UiButton';
+  import UiIconButton from 'keen/UiIconButton';
+  import UiMenu from 'keen/UiMenu';
+  import UiSnackbarContainer from 'keen/UiSnackbarContainer';
+  import drawer from '../drawers/drawer.vue';
+  import navBackground from '../nav/nav-background.vue';
+  import navMenu from '../nav/nav-menu.vue';
+  import navContent from '../nav/nav-content.vue';
+  import confirm from './confirm.vue';
+  import alertContainer from './alert-container.vue';
+  import logger from '../utils/log';
 
-  /**
-   * get tabs for head component lists in the page and layout
-   * @param  {object} state
-   * @return {array}
-   */
-  function getHeadTabs(state) {
-    const layoutURI = _.get(state, 'page.data.layout'),
-      schema = getSchema(layoutURI),
-      lists = getListsInHead();
-
-    return _.reduce(lists, (result, list) => result.concat({
-      header: label(list.path, schema[list.path]),
-      content: {
-        component: 'head-components',
-        args: {
-          uri: layoutURI,
-          path: list.path,
-          isPage: _.get(schema, `${list.path}.${componentListProp}.page`) || false
-        }
-      }
-    }), []);
-  }
-
-  /**
-   * determine if a field in the schema has an invisible list
-   * @param  {object}  field
-   * @return {Boolean}
-   */
-  function isInvisibleList(field) {
-    return _.has(field, `${componentListProp}.invisible`);
-  }
-
-  /**
-   * find an element that matches a specific component's data-editable path
-   * @param  {string}  uri
-   * @param  {string}  path
-   * @return {Element|null}
-   */
-  function getListElement(uri, path) {
-    return find(`[${layoutAttr}="${uri}"] [${editAttr}="${path}"]`);
-  }
-
-  /**
-   * get tabs for invisible lists in the layout
-   * @param  {object} state
-   * @return {array}
-   */
-  function getInvisibleTabs(state) {
-    const layoutURI = _.get(state, 'page.data.layout'),
-      schema = getSchema(layoutURI);
-
-    return _.reduce(schema, (result, field, fieldName) => {
-      const listEl = getListElement(layoutURI, fieldName);
-
-      if (isInvisibleList(field) && !!listEl) {
-        result.push({
-          header: label(fieldName, field),
-          content: {
-            component: 'invisible-components',
-            args: {
-              uri: layoutURI,
-              path: fieldName,
-              listEl
-            }
-          }
-        });
-      }
-      return result;
-    }, []);
-  }
+  const log = logger(__filename);
 
   export default {
+    data() {
+      return {};
+    },
     computed: mapState({
       pageState: (state) => state.page.state,
-      isLoading: 'isLoading',
+      isLoading: (state) => state.isLoading,
       undoEnabled: (state) => {
         return !state.undo.atStart && !state.ui.currentFocus && !state.ui.currentPane;
       },
@@ -173,157 +156,126 @@
         } else {
           return false;
         }
+      },
+      status() {
+        if (this.isLoading) {
+          return ''; // still loading the page, don't display any status
+        } else if (this.pageState.scheduled) {
+          return 'Scheduled';
+        } else if (this.pageState.published && this.hasChanges) {
+          return 'Unpublished Changes';
+        } else if (this.pageState.published) {
+          return 'Published';
+        } else if (this.pageState.archived) {
+          return 'Archived';
+        } else {
+          return 'Draft';
+        }
+      },
+      publishAction() {
+        if (this.pageState.published) {
+          return 'Republish';
+        } else if (this.pageState.archived) {
+          return 'Unarchive';
+        } else {
+          return 'Publish';
+        }
+      },
+      toggleOptions() {
+        return [
+          { label: 'Edit Mode', icon: 'mode_edit', disabled: true },
+          { label: 'View Mode', icon: 'remove_red_eye' }
+        ];
+      },
+      toolbarOptions() {
+        return [{
+          label: 'Undo',
+          icon: 'undo',
+          disabled: !this.undoEnabled
+        }, {
+          label: 'Redo',
+          icon: 'redo',
+          disabled: !this.redoEnabled
+        }, {
+          type: 'divider'
+        }, {
+          label: 'Contributors',
+          icon: 'people'
+        }, {
+          label: 'Find on Page',
+          icon: 'find_in_page'
+        }, {
+          label: 'Preview',
+          icon: 'open_in_new'
+        }];
+      },
+      snackbar() {
+        return _.get(this.$store, 'state.ui.snackbar') && _.toPlainObject(_.get(this.$store, 'state.ui.snackbar'));
+      },
+      currentDrawer() {
+        return _.get(this.$store, 'state.ui.currentDrawer');
       }
     }),
+    watch: {
+      snackbar(val) {
+        if (val) {
+          this.$refs.snacks.createSnackbar(val);
+          this.$store.dispatch('hideSnackbar'); // clear the store
+        }
+      }
+    },
     methods: {
       stopEditing() {
         this.$store.commit('STOP_EDITING');
         toggleEdit();
       },
-      // note: these are separate methods because there might be additional
-      // logic that is specific to each button,
-      // e.g. running validation before opening the publish pane
-      toggleMenu(name, button) {
-        return getItem('claymenu:activetab').then((savedTab) => {
-          const activeTab = savedTab || 'All Pages',
-            options = {
-              name,
-              title: 'Clay Menu',
-              saveTab: 'claymenu',
-              size: 'xlarge',
-              height: 'tall',
-              clayHeader: true,
-              content: [{
-                header: 'My Pages',
-                active: activeTab === 'My Pages',
-                content: {
-                  component: 'page-list',
-                  args: {
-                    isMyPages: true
-                  }
-                }
-              },{
-                header: 'All Pages',
-                active: activeTab === 'All Pages', // note: this is the default
-                content: {
-                  component: 'page-list'
-                }
-              }, {
-                header: 'New Page',
-                active: activeTab === 'New Page',
-                content: {
-                  component: 'new-page'
-                }
-              }]
-            };
-
-          return this.$store.dispatch('togglePane', { options, button });
-        });
-      },
       undo() {
-        this.$store.dispatch('undo');
+        return this.$store.dispatch('undo');
       },
       redo() {
-        this.$store.dispatch('redo');
+        return this.$store.dispatch('redo');
       },
-      togglePeople(name, button) {
-        let options = {
-          name,
-          title: 'People',
-          content: {
-            component: 'people'
-          }
-        };
-
-        return this.$store.dispatch('togglePane', { options, button });
+      toggleDrawer(name) {
+        return this.$store.dispatch('toggleDrawer', name);
       },
-      toggleComponents(name, button) {
-        return getItem('findonpage:activetab').then((savedTab) => {
-          const activeTab = savedTab || 'Visible';
-
-          let options = {
-              name,
-              title: 'Find on Page',
-              saveTab: 'findonpage',
-              height: 'medium-height',
-              content: [{
-                header: 'Visible',
-                active: activeTab === 'Visible',
-                content: {
-                  component: 'visible-components'
-                }
-              }]
-            },
-            headTabs = _.map(getHeadTabs(this.$store.state), (tab) => {
-              tab.active = activeTab === tab.header;
-              return tab;
-            }),
-            invisibleTabs = _.map(getInvisibleTabs(this.$store.state), (tab) => {
-              tab.active = activeTab === tab.header;
-              return tab;
-            });
-
-          // add head components (from page and layout)
-          options.content = options.content.concat(headTabs);
-          // add invisible components (from layout)
-          options.content = options.content.concat(invisibleTabs);
-
-          return this.$store.dispatch('togglePane', { options, button });
-        });
+      toggleDrawerFromMenu(option) {
+        switch (option.label) {
+          case 'Undo': return this.undo();
+          case 'Redo': return this.redo();
+          case 'Contributors': return this.toggleDrawer('contributors');
+          case 'Find on Page': return this.toggleDrawer('components');
+          case 'Preview': return this.toggleDrawer('preview');
+          default: log.warn(`Unknown drawer: ${option.label}`);
+        }
       },
-      togglePreview(name, button) {
-        const options = {
-          name,
-          title: 'Preview',
-          height: 'preview-height',
-          content: {
-            component: 'preview-share'
-          }
-        };
-
-        return this.$store.dispatch('togglePane', { options, button });
+      closeDrawer() {
+        return this.$store.dispatch('closeDrawer');
       },
-      togglePublish(name, button) {
-        const store = this.$store;
+      openNav() {
+        return getItem('claymenu:activetab').then((savedTab) => {
+          const activeNav = savedTab || 'all-pages';
 
-        return this.$store.dispatch('validate').then((results) => {
-          const options = {
-            name,
-            title: 'Page Status',
-            height: results.errors.length > 0 ? 'medium-height' : 'publish-height',
-            content: [{
-              header: 'Publish',
-              disabled: results.errors.length > 0, // disable the publish tab if validation fails
-              content: {
-                component: 'edit-publish'
-              }
-            }, {
-              header: {
-                component: 'health-icon'
-              },
-              active: results.errors.length > 0,
-              content: {
-                component: 'page-health'
-              }
-            }, {
-              header: 'Location',
-              content: {
-                component: 'page-location'
-              }
-            }]
-          };
-
-          store.dispatch('togglePane', { options, button });
+          return this.$store.dispatch('openNav', activeNav);
         });
       }
     },
     components: _.merge({
-      'toolbar-button': button,
       background,
       overlay,
-      pane,
-      status,
-      'progress-bar': progressBar
+      'add-component': addComponent,
+      'simple-modal': simpleModal,
+      UiToolbar,
+      UiIconButton,
+      UiButton,
+      UiMenu,
+      UiSnackbarContainer,
+      'progress-bar': progressBar,
+      drawer,
+      'nav-background': navBackground,
+      'nav-menu': navMenu,
+      'nav-content': navContent,
+      confirm,
+      'alert-container': alertContainer
     }, window.kiln.toolbarButtons)
   };
 </script>

@@ -3,27 +3,28 @@ import _ from 'lodash';
 import Vue from 'vue';
 import NProgress from 'vue-nprogress';
 import keycode from 'keycode';
+import velocity from 'velocity-animate/velocity.min.js';
 import differenceInMinutes from 'date-fns/difference_in_minutes';
 import store from './lib/core-data/store';
-import { decorateAll } from './lib/decorators';
 import { addSelectorButton } from './lib/utils/custom-buttons'; // eslint-disable-line
-import { add as addBehavior } from './lib/forms/behaviors';
-import { add as addPane } from './lib/forms/panes';
-import toolbar from './lib/toolbar/edit-toolbar.vue';
-import { HIDE_STATUS } from './lib/toolbar/mutationTypes';
+import { add as addInput } from './lib/forms/inputs';
 import { init as initValidators } from './lib/validators';
 import conditionalFocus from './directives/conditional-focus';
-import hScrollDirective from './directives/horizontal-scroll';
 import utilsAPI from './lib/utils/api';
 import { hasClickedFocusableEl } from './lib/decorators/focus';
 import { hasClickedSelectableEl } from './lib/decorators/select';
 import { META_PRESS, META_UNPRESS } from './lib/preloader/mutationTypes';
+import { getEventPath } from './lib/utils/events';
+import { standardCurve } from './lib/utils/references';
+import 'keen-ui/src/bootstrap'; // import this once, for KeenUI components
+import 'velocity-animate/velocity.ui.min.js'; // import this once, for velocity ui stuff
+import VueObserveVisibility from 'vue-observe-visibility';
 
-// TODO: Figure out saving/closing and reverting in panes
-import { CLOSE_PANE } from './lib/panes/mutationTypes';
+// set animation defaults
+velocity.defaults.easing = standardCurve;
+velocity.defaults.queue = false;
 
-const behaviorReq = require.context('./behaviors', false, /\.vue$/),
-  paneReq = require.context('./panes', false, /\.vue$/),
+const inputReq = require.context('./inputs', false, /\.vue$/),
   // todo: in the future, we should queue up the saves
   connectionLostMessage = 'Connection Lost. Changes will <strong>NOT</strong> be saved.',
   progressOptions = {
@@ -40,14 +41,9 @@ const behaviorReq = require.context('./behaviors', false, /\.vue$/),
 // Require all scss/css files needed
 require.context('./styleguide', true, /^.*\.(scss|css)$/);
 
-// Add behaviors
-behaviorReq.keys().forEach(function (key) {
-  addBehavior(basename(key, extname(key)), behaviorReq(key));
-});
-
-// Add panes
-paneReq.keys().forEach(function (key) {
-  addPane(basename(key, extname(key)), paneReq(key));
+// Add inputs
+inputReq.keys().forEach(function (key) {
+  addInput(basename(key, extname(key)), inputReq(key));
 });
 
 // init validators
@@ -59,16 +55,18 @@ Vue.use(NProgress, {
   http: false
 });
 
+// add visibility observer directive
+Vue.use(VueObserveVisibility);
+
 // Register keys to make key events easy to call
 Vue.config.keyCodes.comma = 188;
 
 // register directives
 Vue.directive('conditional-focus', conditionalFocus());
-Vue.directive('h-scroll', hScrollDirective());
 
-// export api for plugins, validators, behaviors, buttons, etc
+// export api for plugins, validators, inputs, buttons, etc
 window.kiln = window.kiln || {};
-// .plugins, .behaviors, .validators, and .panes objects should already exist
+// .plugins, .inputs, .validators, and .panes objects should already exist
 window.kiln.utils = utilsAPI;
 
 /**
@@ -89,20 +87,24 @@ function getLastEditUser(store) {
 }
 
 // kick off loading when DOM is ready
-// note: preloaded data, external behaviors, decorators, and validation rules should already be added
+// note: preloaded data, external inputs, decorators, and validation rules should already be added
 // when this event fires
 document.addEventListener('DOMContentLoaded', function () {
+  const toolbar = require('./lib/toolbar/edit-toolbar.vue');
+  // instantiate toolbar on DOMContentLoaded, so custom buttons and modals can be
+  // added as child components to the toolbar and simple-modal
+
+  Vue.component('edit-toolbar', toolbar);
+
   new Vue({
+    debug: process.env.NODE_ENV !== 'production',
     strict: true,
     el: '#kiln-app',
     render(h) {
       return h('edit-toolbar');
     },
     store,
-    nprogress,
-    components: {
-      'edit-toolbar': toolbar
-    }
+    nprogress
   });
 
   // page load indicator. will be finished by the preloader
@@ -111,9 +113,14 @@ document.addEventListener('DOMContentLoaded', function () {
   // add external plugins
   _.forOwn(window.kiln.plugins || {}, (plugin) => plugin(store));
 
+  // add `kiln-edit-mode` class to body. this allows certain components
+  // (e.g. embeds that rely on client-side js, which doesn't run in edit mode)
+  // to add special edit-mode-only styling
+  document.body.classList.add('kiln-edit-mode');
+
   store.dispatch('preload')
-    .then(() => decorateAll())
-    .then(() => store.dispatch('openHashedForm'))
+    .then(() => require('./lib/decorators').decorateAll())
+    .then(() => store.dispatch('parseURLHash'))
     .then(() => store.dispatch('getList', 'new-pages'))
     .then(() => {
       const pageTemplates = _.get(store, 'state.lists[new-pages].items'),
@@ -123,25 +130,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (!navigator.onLine) {
         // test connection loss on page load
-        store.dispatch('showStatus', { type: 'offline', message: connectionLostMessage, isPermanent: true});
+        store.dispatch('addAlert', { type: 'error', text: connectionLostMessage, permanent: true });
       } else if (getLastEditUser(store)) {
         // show message if another user has edited this page in the last 5 minutes
-        store.dispatch('showStatus', { type: 'save', message: `Edited less than 5 minutes ago by ${getLastEditUser(store)}` });
+        store.dispatch('addAlert', { type: 'info', text: `Edited less than 5 minutes ago by ${getLastEditUser(store)}` });
       }
 
       // display a status message if you're editing a page template
       if (currentPageTemplate) {
-        store.dispatch('showStatus', { type: 'warning', message: `You are currently editing the "${currentPageTemplate.title}" template. Changes you make will be reflected on new pages that use this template.`, isPermanent: true, dismissable: true });
+        store.dispatch('addAlert', { type: 'warning', text: `You are currently editing the "${currentPageTemplate.title}" template. Changes you make will be reflected on new pages that use this template.` });
       }
     });
 
   // when clicks bubble up to the document, close the current form or pane / unselect components
   document.body.addEventListener('click', (e) => {
+    if (_.find(getEventPath(e), (el) => el.classList && el.classList.contains('ui-calendar'))) {
+      return;
+    }
+
     if (_.get(store, 'state.ui.currentFocus') && !hasClickedFocusableEl(e) && !window.kiln.isInvalidDrag) {
       // always unfocus if clicking out of the current focus (and not directly clicking into another focusable el)
       // note: isInvalidDrag is set when dragging to select text in a text/wysiwyg field,u
       // since if you drag outside the form it'll trigger a click. ♥ browsers ♥
       store.dispatch('unfocus').catch(_.noop);
+    } else if (_.get(store, 'state.ui.currentAddComponentModal')) {
+      store.dispatch('closeAddComponent');
     } else if (_.get(store, 'state.ui.currentSelection') && !hasClickedSelectableEl(e) && !window.kiln.isInvalidDrag) {
       // unselect if clicking out of the current selection (if user isn't trying to select text)
       // note: stopSelection is set in the 'select' action. see the comments there for details
@@ -150,11 +163,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // unset isInvalidDrag after checking for unfocus / unselect
     window.kiln.isInvalidDrag = false;
-
-    // Close a pane
-    if (_.get(store, 'state.ui.currentPane')) {
-      store.commit(CLOSE_PANE, null);
-    }
   });
 
   // when ESC bubbles up to the document, close the current form or pane / unselect components
@@ -166,12 +174,10 @@ document.addEventListener('DOMContentLoaded', function () {
       // press esc again to unselect a component
       if (_.get(store, 'state.ui.currentFocus')) {
         store.dispatch('unfocus').catch(_.noop);
+      } else if (_.get(store, 'state.ui.currentAddComponentModal')) {
+        store.dispatch('closeAddComponent');
       } else if (_.get(store, 'state.ui.currentSelection')) {
         store.dispatch('unselect');
-      }
-
-      if (_.get(store, 'state.ui.currentPane')) {
-        store.commit(CLOSE_PANE, null);
       }
     } else if (key === 'ctrl' || key === 'left command') {
       // pressing and holding meta key will unlock additional functionality,
@@ -179,6 +185,12 @@ document.addEventListener('DOMContentLoaded', function () {
       store.commit(META_PRESS);
     }
   });
+
+  document.body.addEventListener('mousemove', _.debounce((e) => {
+    if (_.get(store, 'state.ui.metaKey') && !e.ctrlKey && !e.metaKey) {
+      store.commit(META_UNPRESS);
+    }
+  }), 100);
 
   // when user stops pressing a key, toggle this off
   document.body.addEventListener('keyup', (e) => {
@@ -197,12 +209,11 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   window.addEventListener('online', function () {
-    store.commit(HIDE_STATUS); // in case there are any status messages open, close them
+    store.dispatch('removeAlert', { type: 'error', text: connectionLostMessage, permanent: true });
   });
 
   window.addEventListener('offline', function () {
-    // todo: turn any progress indicators to grey and end them
-    store.dispatch('showStatus', { type: 'offline', message: connectionLostMessage, isPermanent: true});
+    store.dispatch('addAlert', { type: 'error', text: connectionLostMessage, permanent: true });
   });
 
   // navigate components when hitting ↑ / ↓ arrows (if there's a component selected)
@@ -214,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function () {
       SHORTKEY = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 
     // don't navigate if they have a form or pane open
-    if (_.get(store, 'state.ui.currentFocus') || _.get(store, 'state.ui.currentPane')) {
+    if (_.get(store, 'state.ui.currentFocus') || _.get(store, 'state.ui.currentPane') || _.get(store, 'state.ui.currentAddComponentModal')) {
       return;
     }
 
@@ -230,14 +241,9 @@ document.addEventListener('DOMContentLoaded', function () {
       store.dispatch('undo');
     } else if (key === '/' && e.shiftKey === true) {
       // cheat sheet
-      store.dispatch('openPane', {
+      store.dispatch('openModal', {
         title: 'Keyboard Shortcuts',
-        position: 'center',
-        size: 'large',
-        height: 'medium-height',
-        content: {
-          component: 'keyboard-shortcuts'
-        }
+        type: 'keyboard'
       });
     }
   });

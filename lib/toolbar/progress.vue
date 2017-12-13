@@ -6,11 +6,11 @@
 
   // progress bars
   .nprogress-container {
-    bottom: 100%;
     left: 0;
     overflow: visible;
     pointer-events: none;
     position: absolute;
+    top: 0;
     width: 100%;
 
     &.nprogress-custom-parent {
@@ -22,54 +22,24 @@
     #nprogress .bar {
       @include toolbar-layer();
 
-      background-color: transparent;
-      bottom: 0;
-      box-shadow: none;
+      background-color: $brand-accent-color;
+      box-shadow: $box-shadow $brand-accent-color;
       height: 3px;
       left: 0;
       position: absolute;
-      top: auto;
+      top: 0;
       width: 100%;
-    }
-
-    &.draft #nprogress .bar {
-      background-color: $draft;
-      box-shadow: $box-shadow $draft;
-    }
-
-    &.scheduled #nprogress .bar {
-      background-color: $scheduled;
-      box-shadow: $box-shadow $scheduled;
-    }
-
-    &.published #nprogress .bar {
-      background-color: $published;
-      box-shadow: $box-shadow $published;
-    }
-
-    &.offline #nprogress .bar {
-      background-color: $offline;
-      box-shadow: $box-shadow $offline;
-    }
-
-    &.error #nprogress .bar {
-      background-color: $error;
-      box-shadow: $box-shadow $error;
-    }
-
-    &.save #nprogress .bar {
-      background-color: $save;
-      box-shadow: $box-shadow $save;
     }
   }
 </style>
 
 <template>
-  <nprogress-container :class="progressColor"></nprogress-container>
+  <nprogress-container></nprogress-container>
 </template>
 
 <script>
   import { mapState } from 'vuex';
+  import { requestTimeout, clearRequestTimeout } from '../utils/events';
   import NprogressContainer from 'vue-nprogress/src/NprogressContainer.vue';
 
   const PAUSE_TIMEOUT = 500, // number of milliseconds to pause when new things are added to the progress
@@ -117,7 +87,7 @@
     if (np.isStarted()) {
       this.paused = true;
       // if it's already started, just pause it for a second
-      this.timer = setTimeout(() => {
+      this.timer = requestTimeout(() => {
         self.paused = false;
         self.trickle = requestAnimationFrame(trickle.bind(self, self.pausedStep));
       }, PAUSE_TIMEOUT);
@@ -132,14 +102,13 @@
     const np = this.$nprogress;
 
     if (np.isStarted()) {
-      clearTimeout(this.timer); // stop the pause (if it was started)
+      clearRequestTimeout(this.timer); // stop the pause (if it was started)
       np.done(); // finish the progress bar
     }
   }
 
   export default {
     computed: mapState({
-      progressColor: (state) => state.ui.progressColor,
       currentProgress: (state) => state.ui.currentProgress
     }),
     watch: {

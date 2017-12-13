@@ -1,0 +1,20 @@
+{
+  "gitbook": "3.2.3",
+  "title": "Kiln",
+  "structure": {
+    "readme": "intro.md",
+    "summary": "SUMMARY.md",
+    "glossary": "GLOSSARY.md"
+  },
+  "root": "./docs",
+  "plugins": [
+    "github",
+    "anchorjs",
+    "bootstrap-callout"
+  ],
+  "pluginsConfig": {
+    "github": {
+      "url": "https://github.com/clay/clay-kiln/"
+    }
+  }
+}

@@ -1,0 +1,49 @@
+// variables that override things in KeenUI components
+// https://github.com/JosephusPaye/Keen-UI/blob/master/Customization.md#customization
+@import 'colors';
+@import 'typography';
+@import 'layers';
+
+// unified font stack - switch from roboto to noto
+$font-stack: $font-stack;
+
+// primary and accent colors for KeenUI components
+$brand-primary-color: $brand-primary-color;
+$brand-accent-color: $brand-accent-color;
+
+// text colors
+$primary-text-color: $text-color;
+$secondary-text-color: $text-alt-color;
+$hint-text-color: $text-hint-color;
+$disabled-text-color: $text-disabled-color;
+
+// layers
+$z-index-level-1: $z-index-level-1;
+$z-index-level-2: $z-index-level-2;
+$z-index-level-3: $z-index-level-3;
+$z-index-level-4: $z-index-level-4;
+$z-index-level-5: $z-index-level-5;
+$z-index-level-6: $z-index-level-6;
+
+// layout / component variables
+$divider-color: $divider-color;
+$ui-modal-mask-background: rgba($pure-black, $modal-opacity);
+
+.ui-tooltip {
+  font-family: $font-stack;
+}
+
+.ui-textbox__feedback {
+  font-family: $font-stack;
+}
+
+.ui-textbox {
+  // override margins, since fields will set them
+  margin: 0;
+}
+
+// html element in edit mode gets a smaller base font size
+// this sets the base sizing for KeenUI components, as they all use rem
+html.component-selector-wrapper {
+  font-size: 16px;
+}

@@ -1,0 +1,181 @@
+# Kiln API
+
+## CSS Classes
+
+Kiln exports a number of CSS classes that may be used by plugins.
+
+Class | Description
+----- | -----------
+`kiln-hide` | generic class to hide elements
+`kiln-clearfix` | clearfix, so we don't keep reinventing the wheel
+`kiln-normal-text` | inherit text styles from component
+`kiln-display1` | large display text
+`kiln-headline` | smaller display text
+`kiln-title` | same size as form headers
+`kiln-subheading` | same size as drawer section headers
+`kiln-body` | standard kiln size
+`kiln-caption` | smaller text
+`kiln-button` | all caps button text
+`kiln-list-header` | very small all caps text with background
+`kiln-link` | link styling
+`kiln-keyboard` | keyboard shortcut styling
+`kiln-code` | code styling
+`kiln-primary-color` | kiln primary color (blue-grey)
+`kiln-accent-color` | kiln accent color (ingigo)
+
+## JavaScript Utilities
+
+Kiln exports a number of JavaScript utils to the browser in the `window.kiln.utils` object.
+
+Property | Description
+-------- | -----------
+`componentElements` | methods for finding component elements
+`caret` | methods for getting/setting caret in text fields
+`create()` | function to create new component instances
+`headComponents` | methods for finding head components
+`interpolate()` | function to interpolate data the same way placeholders do
+`label()` | function to generate labels the same way selectors and forms do
+`promises` | native Promise versions of bluebird methods
+`references` | constants used by kiln, as well as common methods
+`urls` | methods for dealing with urls and uris
+`getAvailableComponents()` | function to determine which components are allowed in a list
+`local` | methods to get/set localstorage
+`validationHelpers` | methods to help with pre-publish validation
+`logger()` | function to create a new logger for a file (pass in the `__filename` when calling this)
+`version` | current Kiln version
+`components` | Vue.js components, exported by Kiln
+
+### Vue Components
+
+Component | Description
+--------- | -----------
+`avatar` | circular avatar image
+`filterableList` | filterable list, useful for many types of UI
+`person` | name, avatar, and subheader for a person, with actions
+`UiAutocomplete` | [KeenUI autocomplete](https://josephuspaye.github.io/Keen-UI/#/ui-autocomplete)
+`UiButton` | [KeenUI button](https://josephuspaye.github.io/Keen-UI/#/ui-button)
+`UiCheckbox` | [single KeenUI checkbox](https://josephuspaye.github.io/Keen-UI/#/ui-checkbox)
+`UiCheckboxGroup` | [group of KeenUI checkboxes](https://josephuspaye.github.io/Keen-UI/#/ui-checkbox-group)
+`UiCollapsible` | [KeenUI collapsible content](https://josephuspaye.github.io/Keen-UI/#/ui-collapsible)
+`UiDatepicker` | [KeenUI datepicker](https://josephuspaye.github.io/Keen-UI/#/ui-datepicker)
+`UiFileupload` | [KeenUI file upload button](https://josephuspaye.github.io/Keen-UI/#/ui-fileupload)
+`UiIcon` | [KeenUI icon](https://josephuspaye.github.io/Keen-UI/#/ui-icon) that uses [material design icons](https://material.io/icons/)
+`UiIconButton` | [KeenUI icon button](https://josephuspaye.github.io/Keen-UI/#/ui-icon-button)
+`UiMenu` | [KeenUI menu](https://josephuspaye.github.io/Keen-UI/#/ui-menu)
+`UiProgressCircular` | [KeenUI circular progress indicator](https://josephuspaye.github.io/Keen-UI/#/ui-progress-circular)
+`UiRadioGroup` | [group of KeenUI radio inputs](https://josephuspaye.github.io/Keen-UI/#/ui-radio-group)
+`UiRippleInk` | [KeenUI ripple ink effect](https://josephuspaye.github.io/Keen-UI/#/ui-ripple-ink)
+`UiSelect` | [KeenUI enhanced select dropdown](https://josephuspaye.github.io/Keen-UI/#/ui-select)
+`UiSlider` | [KeenUI slider](https://josephuspaye.github.io/Keen-UI/#/ui-slider)
+`UiSwitch` | [KeenUI switch](https://josephuspaye.github.io/Keen-UI/#/ui-switch)
+`UiTabs` | [KeenUI tabs](https://josephuspaye.github.io/Keen-UI/#/ui-tabs)
+`UiTab` | [individual KeenUI tab](https://josephuspaye.github.io/Keen-UI/#/ui-tabs)
+`UiTextbox` | [KeenUI textbox](https://josephuspaye.github.io/Keen-UI/#/ui-textbox)
+`UiTooltip` | [KeenUI tooltip](https://josephuspaye.github.io/Keen-UI/#/ui-tooltip)
+
+## Vuex State
+
+```js
+{
+  components: {
+    // component instance data, keyed by uri
+    // components that have been removed from the page will be empty objects
+    'domain.com/_components/some-component/instances/some-instance': { /* some data */ }
+  },
+  componentDefaults: {
+    // default component data, used when creating new components
+    'some-component': { /* some data */ }
+  },
+  page: {
+    uri: 'domain.com/_pages/current-page',
+    data: { /* page areas, layout, and customURL */ },
+    state: {
+      // this page's representation in the list (data that's sent to the page list)
+      published: false,
+      scheduled: false,
+      createdAt: 0,
+      publishTime: null,
+      scheduledTime: null,
+      siteSlug: 'some-site',
+      title: '',
+      updateTime: null,
+      uri: 'domain.com/_pages/current-page',
+      url: ''
+    }
+  },
+  user: {
+    // currently logged-in user
+    auth: 'write',
+    imageUrl: 'avatar url',
+    name: 'Name of User',
+    provider: 'some-provider',
+    username: 'some username or email'
+  },
+  // ui state management
+  ui: {
+    currentForm: { uri, path, data }, // currently opened form
+    currentAddComponentModal: { currentURI, parentURI, path, available }, // current "add component" modal
+    currentModal: { title, type, size, data }, // current "simple" modal
+    currentConfirm: { title, text, button, onConfirm }, // current "confirmation" modal
+    currentDrawer: null, // current right-hand drawer
+    currentNav: null, // current left-hand nav
+    currentSelection: null, // currently selected component, gets uri
+    currentFocus: { uri, path }, // currently focused field/group
+    currentProgress: 0, // progress bar, gets random number (to prevent flashes)
+    currentlySaving: false, // don't focus components while forms are saving, gets boolean
+    metaKey: false, // set to true when meta key is pressed, enables additional functionality in kiln
+    alerts: [], // array of alerts to display to the user
+    snackbar: null // current (or previous) snackbar.
+    // note: snackbars are created imperatively (settings this simply informs the toolbar to create a new snackbar),
+    // so this won't always be the snackbar displayed (it will be either the one displayed or the previous one displayed)
+  },
+  // publishing validation
+  validation: {
+    // errors and warnings are arrays of { label, description, items },
+    // with each item being { field, location, path, uri, preview }
+    errors: [],
+    warnings: []
+  },
+  // read-only
+  schemas: {
+    'some-component': { /* some schema, converted to kiln 5.x syntax */ }
+  },
+  locals: {
+    components: ['list', 'of', 'all', 'components'],
+    edit: 'true',
+    params: { /* url params */ },
+    query: { /* url query params */ },
+    routes: ['/available', '/routes', '/in', '/current', '/site'],
+    site: { /* config for current site */ },
+    url: 'http://current-url',
+    user: { /* current user data */ }
+  },
+  models: {
+    'some-component': { /* object with save() and/or render() methods */ }
+  },
+  templates: {
+    'some-component': () => {} // render function, precompiled handlebars template
+  },
+  site: { /* config for current site */ },
+  allSites: {
+    // configs for all sites in the current clay instance
+    'slug': { /* config */ }
+  },
+  url: null,
+  lists: {
+    // data from `/_lists`, populated as needed
+    isLoading: false,
+    'new-pages': {
+      error: null,
+      isLoading: false,
+      items: [ /* array of list items */ ]
+    }
+  },
+  isLoading: true, // preloading has started
+  undo: {
+    atStart: true, // boolean if we're at the start of the history (no undo)
+    atEnd: true, // boolean if we're at the end of the history (no redo)
+    cursor: 0 // current snapshot the user is on. used to undo/redo non-destructively
+  }
+}
+```
