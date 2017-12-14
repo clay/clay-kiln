@@ -179,7 +179,7 @@
           componentsToAdd = _.get(subSchema, `${componentListProp}.include`) || _.get(subSchema, `${componentProp}.include`),
           hasOneComponent = componentsToAdd && componentsToAdd.length === 1;
 
-        return hasOneComponent ? `Add ${label(componentsToAdd[0])}` : 'Add Components';
+        return hasOneComponent ? `Add ${label(componentsToAdd[0])} Here` : 'Add Component Here';
       },
       placeholderHeight() {
         const placeholderHeight = parseInt(getSchema(this.$options)[placeholderProp].height, 10) || 100, // default to 100px

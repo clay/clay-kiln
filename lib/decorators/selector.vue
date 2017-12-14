@@ -280,7 +280,7 @@
           const componentsToAdd = _.get(this.schema, `${componentListProp}.include`),
             hasOneComponent = componentsToAdd && componentsToAdd.length === 1;
 
-          return hasOneComponent ? `Add ${label(componentsToAdd[0])}` : 'Add Components';
+          return hasOneComponent ? `Add ${label(componentsToAdd[0])} Below` : 'Add Component Below';
         }
       }
     },

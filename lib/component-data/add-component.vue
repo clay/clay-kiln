@@ -69,7 +69,7 @@
   <transition name="overlay-fade-resize" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
     <div class="add-component-modal" v-if="hasAddComponentModal" :style="{ top: modalTop, left: modalLeft }" @click.stop>
       <div class="add-component-header">
-        <h2 class="add-component-header-title">Add Component</h2>
+        <h2 class="add-component-header-title">{{ headerTitle }}</h2>
         <div class="add-component-header-actions">
           <ui-icon-button buttonType="button" v-if="isFuzzy" type="secondary" color="black" icon="list" :tooltip="fuzzyTitle" @click.stop="fuzzyAdd"></ui-icon-button>
           <div class="add-component-close-divider"></div>
@@ -136,6 +136,9 @@
       },
       fuzzyAdd() {
         return this.config.isFuzzy ? openAllComponents.bind(this) : null;
+      },
+      headerTitle() {
+        return this.isFuzzy ? 'Add Any Component' : 'Add Component';
       },
       // get the list of all components, so we can calculate height of the pane synchronously
       // (before the actual components() loads from the store)
