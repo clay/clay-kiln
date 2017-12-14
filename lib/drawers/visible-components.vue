@@ -1,5 +1,5 @@
 <template>
-  <filterable-list :content="components" :onClick="itemClick" label="Search visible components" headerTitle="Component"></filterable-list>
+  <filterable-list :content="components" :onClick="itemClick" label="Search visible components" headerTitle="Component" :onSettings="openSettings"></filterable-list>
 </template>
 
 <script>
@@ -50,6 +50,13 @@
 
         this.$store.dispatch('select', el);
         this.$store.dispatch('scrollToComponent', el);
+      },
+      openSettings(id) {
+        const el = find(`[${refAttr}="${id}"]`);
+
+        this.$store.dispatch('select', el);
+        this.$store.dispatch('scrollToComponent', el);
+        this.$store.dispatch('focus', { uri: id, path: 'settings' });
       }
     },
     components: {
