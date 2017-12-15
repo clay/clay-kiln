@@ -224,6 +224,11 @@
       update(val) {
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: val });
       },
+      addToList() {
+        // TODO: put this in a service???
+        //check if the list has the value
+        //if not, put the val to the list
+      },
       disableInput() {
         this.isDisabled = true;
       },
@@ -265,6 +270,7 @@
         }
       },
       addItem(newItem) {
+        //TODO: do a store.dispatch to update the list
         this.items.push(newItem);
         this.update(this.items);
       },
