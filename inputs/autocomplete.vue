@@ -22,7 +22,10 @@
         :index="index"
         :focusIndex="activeIndex"
         :value="match"
-        :select="select"></item>
+        :select="select"
+        :data="args"
+        :destroy="removeFromList"
+        ></item>
     </li>
   </ol>
 </template>
@@ -90,11 +93,31 @@
         }
       }
     },
+    methods: {
+      removeFromList(item) {
+        const listName  = this.args.list;
+
+        console.log("removing:" + item + "from" + this.args.list);
+        console.log("item index:" + index);
+
+        return this.$store.dispatch('updateList', { listName: listName, fn: (items) => {
+          const index = _.findIndex(items, (item) => item.id === id);
+
+          items.splice(index, 1);
+          return items;
+        }});
+
+      }
+    },
     mounted() {
+      console.log('data passed down to autocomplete.vue');
+      console.group();
+      console.log(this.args);
       const listName = this.args.list,
         lists = this.$store.state.lists,
         items = _.get(lists, `${listName}.items`);
-
+      console.log("list items:");
+      console.log(items);
       let promise;
 
       if (items) {

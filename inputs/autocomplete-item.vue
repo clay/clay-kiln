@@ -8,7 +8,7 @@
     appearance: none;
     background: transparent;
     cursor: pointer;
-    display: block;
+    display: flex;
     padding: 8px 12px;
     text-align: left;
     top: 100%;
@@ -20,6 +20,16 @@
     &.selected {
       background-color: rgba($pure-black, 0.1);
     }
+
+    .item-value {
+      align-items: flex-start;
+      flex: 1;
+      line-height: 32px;
+    }
+
+    .item-actions {
+      align-items: flex-end;
+    }
   }
 </style>
 
@@ -29,18 +39,29 @@
     v-bind:class="{ 'selected': isActive }"
     type="button"
     @click.stop.prevent="select(value)">
-    {{ value }}
+    <span class="item-value">{{value}}</span>
+    <span class="item-actions">
+      <ui-icon-button v-show="canDestroy" icon="delete" :tooltip="`Remove ${value} from list`" @click.stop="destroy(value)" color="default" size="small" type="secondary"></ui-icon-button>
+    </span>
   </button>
 </template>
 
 <script>
+  import UiIconButton from 'keen/UiIconButton';
+
   export default {
-    props: ['value', 'index', 'select', 'focusIndex'],
+    props: ['value', 'index', 'select', 'focusIndex', 'create', 'destroy', 'data', 'destroy'],
     data() {},
     computed: {
       isActive() {
         return this.index === this.focusIndex;
+      },
+      canDestroy() {
+        return this.data.allowDestroy;
       }
+    },
+    components: {
+      UiIconButton
     }
   };
 </script>
