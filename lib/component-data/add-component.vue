@@ -102,7 +102,8 @@
       currentURI: this.config.currentURI,
       parentURI: this.config.parentURI,
       path: this.config.path,
-      available: this.config.allComponents
+      available: this.config.allComponents,
+      isAllComponents: true
     });
   }
 
@@ -138,7 +139,7 @@
         return this.config.isFuzzy ? openAllComponents.bind(this) : null;
       },
       headerTitle() {
-        return this.isFuzzy ? 'Add Any Component' : 'Add Component';
+        return this.config.isAllComponents ? 'Add Any Component' : 'Add Component';
       },
       // get the list of all components, so we can calculate height of the pane synchronously
       // (before the actual components() loads from the store)
