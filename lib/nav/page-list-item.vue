@@ -244,6 +244,7 @@
       protocol: 'http:', // note: assumes http (until we have protocol in site configs)
       port: site.port.toString(),
       hostname: site.host,
+      host: site.host
     }) + htmlExt;
   }
 
