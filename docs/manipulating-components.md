@@ -34,15 +34,30 @@ Basic lists also allow placeholders, which will display (and prompt users to add
 
 ```yaml
 myList:
+  _placeholder:
+    height: 600px
   _componentList:
-    _placeholder:
-      height: 600px
     include:
       - some-component
       - some-other-component
 ```
 
 ![](images/list_placeholder.png)
+
+#### Validation
+
+Similarly to [editable fields](https://claycms.gitbooks.io/kiln/editing-components.html#standard-input-arguments), component lists may contain validation for `min` and `max` lengths.
+
+```yaml
+myList:
+  _componentList:
+    include:
+      - some-component
+      - some-other-component
+    validate:
+      min: 1
+      max: 10
+```
 
 ### Head Lists
 

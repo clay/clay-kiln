@@ -97,14 +97,17 @@
       {{ item.title }}
     </button>
     <ui-ripple-ink v-if="onClick" ref="ripple" :trigger="item.id"></ui-ripple-ink>
-    <ui-icon-button v-if="onSettings" type="button" class="filterable-list-item-settings" :tooltip="settingsTooltip" icon="settings" @click.stop="onSettings(item.id)"></ui-icon-button>
+    <ui-icon-button v-if="onSettings && hasSettings" type="button" class="filterable-list-item-settings" :tooltip="settingsTooltip" icon="settings" @click.stop="onSettings(item.id)"></ui-icon-button>
     <ui-icon-button v-if="onDelete" type="button" class="filterable-list-item-delete" :tooltip="removeTooltip" icon="delete" @click.stop="onDelete(item.id)"></ui-icon-button>
   </li>
 </template>
 
 <script>
+  import _ from 'lodash';
   import UiIconButton from 'keen/UiIconButton';
   import UiRippleInk from 'keen/UiRippleInk';
+  import { isComponent, getComponentName } from './references';
+  import { getSchema } from '../core-data/components';
 
   export default {
     props: ['item', 'index', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'focused', 'active', 'selected', 'focusOnIndex', 'setActive', 'settingsTitle'],
@@ -112,6 +115,15 @@
       return {};
     },
     computed: {
+      hasSettings() {
+        if (isComponent(this.item.id)) {
+          const schema = getSchema(getComponentName(this.item.id));
+
+          return _.has(schema, '_groups.settings');
+        } else {
+          return true; // settings icon checks for onSettings() before displaying
+        }
+      },
       settingsTooltip() {
         return this.settingsTitle || `${this.item.title} Settings`;
       },

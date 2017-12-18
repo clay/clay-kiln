@@ -24,5 +24,10 @@ module.exports = function (karma) {
       /dist\//ig
     ])
   ]);
+  _.set(localSettings, 'webpack.watchOptions', {
+    aggregateTimeout: 300,
+    ignored: /(node_modules|coverage|dist|docs|media|styleguide|.git|.github)/,
+    poll: 1000
+  });
   karma.set(localSettings);
 };
