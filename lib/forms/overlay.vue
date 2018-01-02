@@ -119,7 +119,7 @@
         </div>
       </div>
       <div class="form-contents">
-        <ui-tabs v-if="hasSections" fullwidth ref="tabs">
+        <ui-tabs v-if="hasSections" fullwidth ref="tabs" @tab-change="onTabChange">
           <ui-tab v-for="(section, index) in sections" :key="index" :title="section.title">
             <div class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 104px)`}">
               <div class="input-container">
@@ -322,6 +322,11 @@
             velocity(this.$el, { height: docHeight - currentTop }, { duration: 220 });
           }
         });
+      },
+      onTabChange() {
+        // call the resizer when changing tabs, in case something should have triggered a resize in the background
+        // (e.g. a _reveal in a background tab being triggered)
+        return this.onResize();
       },
       openInfo() {
         const description = _.get(this.schema, '_description');
