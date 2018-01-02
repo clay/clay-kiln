@@ -26,6 +26,9 @@
 
     .ui-tab {
       height: 100%;
+      // allow scrolling if the height of the viewport is too small
+      max-height: 100%;
+      overflow-y: scroll;
     }
   }
 
