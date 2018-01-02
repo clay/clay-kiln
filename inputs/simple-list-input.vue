@@ -104,7 +104,7 @@
         hasItem = !!_.find(this.items, (item) => item.text === this.val);
 
         if (this.val && (!hasItem || hasItem && this.allowRepeatedItems)) {
-          this.$emit('add', { text: this.val });
+          this.$emit('add', { text: this.val.replace(',', '') }); // remove extra comma if using that to add item
 
           // Zero out values
           this.val = '';
