@@ -198,7 +198,7 @@
         <ui-icon-button v-once v-show="hasRemove" type="secondary" color="primary" class="quick-bar-button quick-bar-remove" icon="delete" :tooltip="`Remove ${componentLabel}`" @click.stop="removeComponent"></ui-icon-button>
         <ui-icon-button v-show="hasDuplicateComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-dupe" icon="add_circle_outline" :tooltip="`Add ${componentLabel}`" @click.stop="duplicateComponent"></ui-icon-button>
         <ui-icon-button v-show="hasDuplicateComponentWithData" type="secondary" color="primary" class="quick-bar-button quick-bar-dupe" icon="add_circle" :tooltip="`Duplicate ${componentLabel}`" @click.stop="duplicateComponentWithData"></ui-icon-button>
-        <ui-icon-button v-once v-show="hasAddComponent" type="secondary" color="primary" class="quick-bar-button quick-bar-add" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
+        <ui-icon-button v-once v-show="hasAddMultipleComponents" type="secondary" color="primary" class="quick-bar-button quick-bar-add" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
       </div>
     </aside>
   </transition>
@@ -274,6 +274,9 @@
       },
       parentSchema() {
         return this.parentField ? getSchema(this.parentURI, this.parentField.path) : {};
+      },
+      hasAddMultipleComponents() {
+        return this.hasAddComponent && _.get(this.schema, `${componentListProp}.include`, []).length > 1;
       },
       addComponentText() {
         if (this.hasAddComponent) {
