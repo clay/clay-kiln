@@ -8,7 +8,7 @@
     :label="label"
     :help="help"
     :error="errorMessage"
-    :disabled="isDisabled"
+    :disabled="isDisabled || disabled"
     iconPosition="right"
     @input="update">
     <attached-button slot="icon" :name="name" :data="value" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
@@ -24,7 +24,7 @@
   import attachedButton from '../../inputs/attached-button.vue';
 
   export default {
-    props: ['value', 'label', 'help', 'name', 'schema', 'args'],
+    props: ['value', 'label', 'help', 'name', 'schema', 'args', 'disabled'],
     data() {
       return {
         isDisabled: false,
