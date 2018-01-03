@@ -10,7 +10,7 @@
 
 <template>
   <ui-modal class="simple-modal" ref="modal" :title="title" :size="size" @open="onOpen" @close="onClose">
-    <component :is="type" :data="data"></component>
+    <component :is="type" :data="data" @close="onChildClose"></component>
   </ui-modal>
 </template>
 
@@ -22,6 +22,7 @@
   import addContributorModal from './add-contributor-modal.vue';
   import addPageModal from './add-page-modal.vue';
   import addUserModal from './add-user-modal.vue';
+  import typeConfirmModal from './type-confirm-modal.vue';
 
   const noscrollClass = 'noscroll',
     htmlElement = document.documentElement;
@@ -69,6 +70,9 @@
       }
     },
     methods: {
+      onChildClose() {
+        this.$store.dispatch('closeModal');
+      },
       onOpen() {
         toggleNoScroll(true);
       },
@@ -82,7 +86,8 @@
       keyboard: keyboardModal,
       'add-contributor': addContributorModal,
       'add-page': addPageModal,
-      'add-user': addUserModal
+      'add-user': addUserModal,
+      'type-confirm': typeConfirmModal
     })
   };
 </script>

@@ -54,6 +54,6 @@ Models must be compiled and added to `window.kiln.componentModels` for Kiln to c
 
 ## Schema
 
-Schemas \(or _schemata_, for pedants like myself\) are the main connective tissue between components and Kiln. They define what kinds of fields components have, as well as how those fields are grouped. They also provide `_description` text for the components' Info Modals.
+Schemas \(or _schemata_, for pedants like myself\) are the main connective tissue between components and Kiln. They define what kinds of fields components have, as well as how those fields are grouped. They also provide `_description` text for the components' Info Modals, `_version` for upgrading data programmatically, and `_confirmRemoval` for extra peace-of-mind on components like ads.
 
 Schemas for components that are currently on the page are automatically parsed by Amphora and added to the page when Kiln loads. Schemas for other components are added when those components are added.

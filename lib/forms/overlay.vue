@@ -113,7 +113,7 @@
           <ui-icon-button v-if="hasRemove" type="secondary" color="black" icon="delete" :tooltip="`Remove ${componentLabel}`" @click.stop="removeComponent"></ui-icon-button>
           <ui-icon-button v-if="hasDuplicateComponent" type="secondary" color="black" icon="add_circle_outline" :tooltip="`Add ${componentLabel}`" @click.stop="duplicateComponent"></ui-icon-button>
           <ui-icon-button v-if="hasDuplicateComponentWithData" type="secondary" color="black" icon="add_circle" :tooltip="`Duplicate ${componentLabel}`" @click.stop="duplicateComponentWithData"></ui-icon-button>
-          <ui-icon-button v-if="hasAddComponent" type="secondary" color="black" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
+          <ui-icon-button v-if="hasAddComponent && !hasAddSingleComponent" type="secondary" color="black" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
           <div class="form-close-divider"></div>
           <ui-icon-button color="black" type="secondary" icon="check" ariaLabel="Save Form" tooltip="Save (ESC)" @click.stop="save"></ui-icon-button>
         </div>
@@ -237,13 +237,20 @@
       hasAddComponent(state) {
         return this.isCurrentlySelected && _.get(state, 'ui.currentSelection.parentField.type') === 'list' && _.get(state, 'ui.currentSelection.parentField.isEditable');
       },
+      hasAddSingleComponent(state) {
+        if (this.hasAddComponent) {
+          const schema = getSchema(_.get(state, 'ui.currentSelection.parentURI'), _.get(state, 'ui.currentSelection.parentField.path')),
+            componentsToAdd = _.get(schema, `${componentListProp}.include`);
+
+          return componentsToAdd && componentsToAdd.length === 1;
+        }
+      },
       addComponentText(state) {
         if (this.hasAddComponent) {
           const schema = getSchema(_.get(state, 'ui.currentSelection.parentURI'), _.get(state, 'ui.currentSelection.parentField.path')),
-            componentsToAdd = _.get(schema, `${componentListProp}.include`),
-            hasOneComponent = componentsToAdd && componentsToAdd.length === 1;
+            componentsToAdd = _.get(schema, `${componentListProp}.include`);
 
-          return hasOneComponent ? `Add ${label(componentsToAdd[0])} Below` : 'Add Component Below';
+          return this.hasAddSingleComponent ? `Add ${label(componentsToAdd[0])} Below` : 'Add Component Below';
         }
       }
     }),

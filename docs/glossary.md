@@ -12,6 +12,10 @@ If the component has information that's useful for developers (but not end users
 
 The version of the component's data, [used to upgrade components](http://clay.github.io/amphora/docs/upgrade.html). Kiln doesn't care about this property.
 
+## `_confirmRemoval`
+
+Set this to `true` to add more friction when removing certain components.
+
 ## `_label`
 
 Field label, used when generating component READMEs as well as in forms. Inline WYSIWYG fields won't display the label when editing them.
