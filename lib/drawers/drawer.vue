@@ -26,6 +26,9 @@
 
     .ui-tab {
       height: 100%;
+      // allow scrolling if the height of the viewport is too small
+      max-height: 100%;
+      overflow-y: scroll;
     }
   }
 
@@ -53,7 +56,7 @@
     <ui-tabs ref="tabs" v-if="isDrawerOpen" class="right-drawer" backgroundColor="clear" :fullwidth="true">
       <ui-tab v-for="(tab, tabIndex) in tabs" :key="tabIndex" :title="tab.title" :selected="tab.selected" :disabled="tab.disabled" @select="onTabChange(tab.title)">
         <keep-alive>
-          <component :is="tab.component" :args="tab.args"></component>
+          <component :is="tab.component" :args="tab.args" @selectTab="onSelectTab"></component>
         </keep-alive>
       </ui-tab>
     </ui-tabs>
@@ -172,8 +175,7 @@
             }, {
               title: 'Publish',
               component: 'publish',
-              selected: errors.length === 0,
-              disabled: errors.length > 0
+              selected: errors.length === 0
             }];
           });
         }
@@ -191,6 +193,11 @@
       },
       onTabChange(title) {
         this.$store.commit('SWITCH_TAB', title);
+      },
+      onSelectTab(title) {
+        const tab = _.find(_.get(this, '$refs.tabs.tabs', []), (tab) => tab.title === title);
+
+        this.$refs.tabs.setActiveTab(tab.id);
       }
     },
     components: {

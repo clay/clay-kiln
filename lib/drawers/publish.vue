@@ -75,6 +75,22 @@
     .action-button {
       margin-top: 16px;
     }
+
+    .action-error-message,
+    .action-warning-message {
+      @include type-caption();
+
+      cursor: pointer;
+      margin-top: 16px;
+    }
+
+    .action-error-message {
+      color: $md-red;
+    }
+
+    .action-warning-message {
+      color: $md-orange;
+    }
   }
 
   .publish-section {
@@ -145,11 +161,13 @@
     <div class="publish-actions">
       <span class="action-message">{{ actionMessage }} <ui-icon-button v-if="showSchedule" icon="close" buttonType="button" type="secondary" color="default" size="small" tooltip="Clear Date/Time" tooltipPosition="left middle" @click.stop="clearScheduleForm"></ui-icon-button></span>
       <form class="schedule-form" @submit.prevent="schedulePage">
-        <ui-datepicker class="schedule-date" color="accent" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date"></ui-datepicker>
-        <timepicker class="schedule-time" :value="timeValue" label="Time" @update="updateTime"></timepicker>
+        <ui-datepicker class="schedule-date" color="accent" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date" :disabled="hasErrors"></ui-datepicker>
+        <timepicker class="schedule-time" :value="timeValue" label="Time" :disabled="hasErrors" @update="updateTime"></timepicker>
       </form>
-      <ui-button v-if="showSchedule" :disabled="disableSchedule || isArchived" class="action-button" buttonType="button" color="accent" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
-      <ui-button v-else :disabled="isArchived" class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
+      <ui-button v-if="showSchedule" :disabled="disableSchedule || isArchived || hasErrors" class="action-button" buttonType="button" color="accent" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
+      <ui-button v-else :disabled="isArchived || hasErrors" class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
+      <span v-if="hasErrors" class="action-error-message" @click="goToHealth">Please fix errors before publishing</span>
+      <span v-else-if="hasWarnings" class="action-warning-message" @click="goToHealth">Please review warnings before publishing</span>
     </div>
 
     <!-- custom location -->
@@ -240,6 +258,8 @@
       };
     },
     computed: mapState({
+      hasErrors: (state) => state.validation.errors && state.validation.errors.length > 0,
+      hasWarnings: (state) => state.validation.warnings && state.validation.warnings.length > 0,
       isPublished: (state) => state.page.state.published,
       isScheduled: (state) => state.page.state.scheduled,
       isArchived: (state) => state.page.state.archived,
@@ -294,6 +314,9 @@
       }
     }),
     methods: {
+      goToHealth() {
+        this.$emit('selectTab', 'Health');
+      },
       unschedulePage() {
         const store = this.$store;
 

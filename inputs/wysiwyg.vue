@@ -136,8 +136,13 @@
     @include normal-text();
 
     color: #ccc;
-    font-size: 22px;
+    // note: windows displays this about a pixel larger than macos
+    font-size: 21px;
     font-weight: bold;
+
+    &:hover {
+      color: #fff;
+    }
   }
 
   // all phrases should have some sort of highlight, so users can
