@@ -50,7 +50,7 @@
   import UiIconButton from 'keen/UiIconButton';
 
   export default {
-    props: ['value', 'index', 'select', 'focusIndex', 'create', 'destroy', 'data', 'destroy'],
+    props: ['value', 'index', 'select', 'focusIndex', 'destroy', 'data'],
     data() {},
     computed: {
       isActive() {
