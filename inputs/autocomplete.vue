@@ -33,6 +33,7 @@
 <script>
   import _ from 'lodash';
   import item from './autocomplete-item.vue';
+  import {removeListItem} from '../lib/lists/list-utils';
 
   export default {
     props: ['args', 'select', 'query', 'focusIndex', 'updateFocusIndex', 'updateMatches'],
@@ -97,27 +98,16 @@
       removeFromList(item) {
         const listName  = this.args.list;
 
-        console.log("removing:" + item + "from" + this.args.list);
-        console.log("item index:" + index);
-
         return this.$store.dispatch('updateList', { listName: listName, fn: (items) => {
-          const index = _.findIndex(items, (item) => item.id === id);
-
-          items.splice(index, 1);
-          return items;
+          return removeListItem(items, item);
         }});
 
       }
     },
     mounted() {
-      console.log('data passed down to autocomplete.vue');
-      console.group();
-      console.log(this.args);
       const listName = this.args.list,
         lists = this.$store.state.lists,
         items = _.get(lists, `${listName}.items`);
-      console.log("list items:");
-      console.log(items);
       let promise;
 
       if (items) {
