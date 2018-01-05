@@ -152,6 +152,7 @@
         }
       },
       unselect() {
+        this.val = '';
         this.$emit('select', null);
       },
       updateFocusIndex(val) {
