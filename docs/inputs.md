@@ -1,4 +1,13 @@
 
+# `autocomplete`
+UI that reveals potential matches to an entered value, ie a value entered via `simple-list`.
+
+### Autocomplete Arguments
+* **list** - name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`.
+* **allowDestroy** - boolean that determines whether the user can delete items from the list (so it doesn't appear as a match in the autocomplete). THIS IS SET VIA THE PARENT OF AUTOCOMPLETE.
+
+
+
 # `checkbox-group`
 
 A group of checkboxes, allowing the user to toggle on or off related items. You can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components). [Uses Keen's UICheckboxGroup](https://josephuspaye.github.io/Keen-UI/#/ui-checkbox-group).

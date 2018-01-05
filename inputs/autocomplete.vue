@@ -1,3 +1,14 @@
+<docs>
+  # `autocomplete`
+  UI that reveals potential matches to an entered value, ie a value entered via `simple-list`.
+
+  ### Autocomplete Arguments
+  * **list** - name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`.
+  * **allowDestroy** - boolean that determines whether the user can delete items from the list (so it doesn't appear as a match in the autocomplete). THIS IS SET VIA THE PARENT OF AUTOCOMPLETE.
+
+
+</docs>
+
 <style lang="sass">
   @import '../styleguide/colors';
 
