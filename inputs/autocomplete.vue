@@ -123,10 +123,9 @@
         });
       },
       removeFromList(item) {
-        const listName  = this.args.list,
-          unselect = this.unselect;
+        const listName  = this.args.list;
 
-        unselect();
+        this.unselect();
 
         return this.$store.dispatch('updateList', { listName: listName, fn: (items) => {
           return removeListItem(items, item);
