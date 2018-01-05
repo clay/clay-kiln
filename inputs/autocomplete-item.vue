@@ -57,6 +57,7 @@
         return this.index === this.focusIndex;
       },
       canDestroy() {
+        // only show the remove button if the schema allows it
         return this.data.allowDestroy;
       }
     },
