@@ -95,31 +95,36 @@
       }
     },
     methods: {
+      fetchListItems() {
+        const listName = this.args.list,
+          lists = this.$store.state.lists,
+          items = _.get(lists, `${listName}.items`);
+        let promise;
+
+        if (items) {
+          promise = Promise.resolve(items);
+        } else {
+          promise = this.$store.dispatch('getList', listName).then(() => _.get(lists, `${listName}.items`));
+        }
+
+        return promise.then((listItems) => {
+          this.listItems = _.map(listItems, (item) => _.isObject(item) ? item.text : item);
+        });
+      },
       removeFromList(item) {
         const listName  = this.args.list,
           unselect = this.unselect;
 
         unselect();
+
         return this.$store.dispatch('updateList', { listName: listName, fn: (items) => {
           return removeListItem(items, item);
-        }});
+        }})
+          .then(this.fetchListItems);
       }
     },
     mounted() {
-      const listName = this.args.list,
-        lists = this.$store.state.lists,
-        items = _.get(lists, `${listName}.items`);
-      let promise;
-
-      if (items) {
-        promise = Promise.resolve(items);
-      } else {
-        promise = this.$store.dispatch('getList', listName).then(() => _.get(lists, `${listName}.items`));
-      }
-
-      return promise.then((listItems) => {
-        this.listItems = _.map(listItems, (item) => _.isObject(item) ? item.text : item);
-      });
+      this.fetchListItems();
     },
     components: {
       item
