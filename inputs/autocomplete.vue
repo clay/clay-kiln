@@ -36,7 +36,7 @@
   import {removeListItem} from '../lib/lists/list-utils';
 
   export default {
-    props: ['args', 'select', 'query', 'focusIndex', 'updateFocusIndex', 'updateMatches'],
+    props: ['args', 'select', 'query', 'focusIndex', 'updateFocusIndex', 'updateMatches', 'unselect'],
     data() {
       return {
         localIndex: null,
@@ -96,12 +96,13 @@
     },
     methods: {
       removeFromList(item) {
-        const listName  = this.args.list;
+        const listName  = this.args.list,
+          unselect = this.unselect;
 
+        unselect();
         return this.$store.dispatch('updateList', { listName: listName, fn: (items) => {
           return removeListItem(items, item);
         }});
-
       }
     },
     mounted() {

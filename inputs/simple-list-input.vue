@@ -43,6 +43,7 @@
       :updateFocusIndex="updateFocusIndex"
       :updateMatches="updateAutocompleteMatches"
       :select="onAutocompleteSelect"
+      :unselect="unselect"
       @resize="onResize">
     </autocomplete>
   </div>
@@ -149,6 +150,9 @@
         } else {
           this.autocompleteIndex = dir ? -1 : 0;
         }
+      },
+      unselect() {
+        this.$emit('select', null);
       },
       updateFocusIndex(val) {
         this.autocompleteIndex = val;
