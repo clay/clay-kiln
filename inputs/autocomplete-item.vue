@@ -41,7 +41,7 @@
     @click.stop.prevent="select(value)">
     <span class="item-value">{{value}}</span>
     <span class="item-actions">
-      <ui-icon-button v-show="canDestroy" icon="clear" :tooltip="`Remove ${value} from list`" @click.stop="destroy(value)" color="default" size="small" type="secondary"></ui-icon-button>
+      <ui-icon-button v-show="canDestroy" icon="clear" :tooltip="`Remove ${value} from list`" color="default" size="small" type="secondary" @click.stop="destroy(value)"></ui-icon-button>
     </span>
   </button>
 </template>

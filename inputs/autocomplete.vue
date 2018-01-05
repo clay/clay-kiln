@@ -44,7 +44,7 @@
 <script>
   import _ from 'lodash';
   import item from './autocomplete-item.vue';
-  import {removeListItem} from '../lib/lists/helpers';
+  import { removeListItem } from '../lib/lists/helpers';
 
   export default {
     props: ['args', 'select', 'query', 'focusIndex', 'updateFocusIndex', 'updateMatches', 'unselect'],
