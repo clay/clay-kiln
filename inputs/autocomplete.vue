@@ -34,7 +34,7 @@
         :focusIndex="activeIndex"
         :value="match"
         :select="select"
-        :data="args"
+        :allowDestroy="args.allowDestroy"
         :destroy="removeFromList"
         ></item>
     </li>

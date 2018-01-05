@@ -50,7 +50,7 @@
   import UiIconButton from 'keen/UiIconButton';
 
   export default {
-    props: ['value', 'index', 'select', 'focusIndex', 'destroy', 'data'],
+    props: ['value', 'index', 'select', 'focusIndex', 'destroy', 'allowDestroy'],
     data() {},
     computed: {
       isActive() {
@@ -58,7 +58,7 @@
       },
       canDestroy() {
         // only show the remove button if the schema allows it
-        return this.data.allowDestroy;
+        return this.allowDestroy;
       }
     },
     components: {
