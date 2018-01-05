@@ -9,6 +9,7 @@
   * **badge** - name of the icon (or a two-character string) that should be displayed in the simple list item when editing. Icon names can be anything from the [Material Design Icon Set](https://material.io/icons/), or you can use two initials
   * **allowRepeatedItems** - allow the same item more than once. defaults to false
   * **autocomplete** - object with autocomplete options. Currently this is just the key `list` where the value is the name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`. Example:
+  * **modifyList** - allow the user modify the list that is passed into autocomplete. This will send a PUT to Amphora. set `allowDestory` to true, to let the user remove items from the list via the autocomplete UI
   * **help** - description / helper text for the field
   * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
   * **validate.required** - either `true` or an object that described the conditions that should make this field required
@@ -106,7 +107,7 @@
           <simple-list-input
             :items="items"
             :allowRepeatedItems="args.allowRepeatedItems"
-            :autocomplete="args.autocomplete"
+            :autocomplete="autocompleteOpts"
             :currentItem="currentItem"
             :disabled="isDisabled"
             @add="addItem"
@@ -152,6 +153,15 @@
       };
     },
     computed: {
+      autocompleteOpts() {
+        let opts = this.args.autocomplete;
+
+        if (_.has(this.args, 'modifyList') && _.has(this.args.modifyList, 'allowDestroy')) {
+          _.set(opts, 'allowDestroy', this.args.modifyList.allowDestroy);
+        }
+
+        return opts;
+      },
       items() {
         if (!_.isEmpty(this.data) && _.isString(_.head(this.data))) {
           // array of strings! convert to array of objects internally, but save it back to the store as strings
