@@ -123,12 +123,21 @@
         });
       },
       removeFromList(item) {
+        let tester, stringProperty;
+
         const listName  = this.args.list;
 
         this.unselect();
 
         return this.$store.dispatch('updateList', { listName: listName, fn: (items) => {
-          return removeListItem(items, item);
+          tester = _.head(items);
+          stringProperty = _.has(tester, 'text') ? 'text' : null;
+
+          if (stringProperty) {
+            return removeListItem(items, item, stringProperty);
+          } else {
+            return removeListItem(items, item);
+          }
         }})
           .then(this.fetchListItems);
       }
