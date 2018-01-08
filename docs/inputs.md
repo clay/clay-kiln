@@ -4,8 +4,6 @@ UI that reveals potential matches to an entered value, ie a value entered via `s
 
 ### Autocomplete Arguments
 * **list** - name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`.
-* **allowDestroy** - boolean that determines whether the user can delete items from the list (so it doesn't appear as a match in the autocomplete). THIS IS SET VIA THE PARENT OF AUTOCOMPLETE.
-
 
 
 # `checkbox-group`
@@ -450,7 +448,7 @@ An array of strings (or objects with a `text` property, if you add the `property
 * **badge** - name of the icon (or a two-character string) that should be displayed in the simple list item when editing. Icon names can be anything from the [Material Design Icon Set](https://material.io/icons/), or you can use two initials
 * **allowRepeatedItems** - allow the same item more than once. defaults to false
 * **autocomplete** - object with autocomplete options. Currently this is just the key `list` where the value is the name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`. Example:
-* **modifyList** - allow the user modify the list that is passed into autocomplete. This will send a PUT to Amphora. set `allowDestory` to true, to let the user remove items from the list via the autocomplete UI
+* **modifyList** - options that allow the user to modify lists via Kiln. Setting `allowDestroy` to true, enables an X in the `autocomplete` that allows the user to remove that item from the autocomplete list.
 * **help** - description / helper text for the field
 * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
 * **validate.required** - either `true` or an object that described the conditions that should make this field required
