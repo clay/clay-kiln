@@ -1,12 +1,3 @@
-<docs>
-  # `autocomplete`
-  UI that reveals potential matches to an entered value, ie a value entered via `simple-list`.
-
-  ### Autocomplete Arguments
-  * **list** - name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`.
-
-</docs>
-
 <style lang="sass">
   @import '../styleguide/colors';
 
