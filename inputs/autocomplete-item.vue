@@ -41,7 +41,7 @@
     @click.stop.prevent="select(value)">
     <span class="item-value">{{value}}</span>
     <span class="item-actions">
-      <ui-icon-button v-show="canDestroy" icon="clear" :tooltip="`Remove ${value} from list`" color="default" size="small" type="secondary" @click.stop="destroy(value)"></ui-icon-button>
+      <ui-icon-button v-show="canRemove" icon="clear" :tooltip="`Remove ${value} from list`" color="default" size="small" type="secondary" @click.stop="remove(value)"></ui-icon-button>
     </span>
   </button>
 </template>
@@ -50,13 +50,13 @@
   import UiIconButton from 'keen/UiIconButton';
 
   export default {
-    props: ['value', 'index', 'select', 'focusIndex', 'destroy', 'allowRemove'],
+    props: ['value', 'index', 'select', 'focusIndex', 'remove', 'allowRemove'],
     data() {},
     computed: {
       isActive() {
         return this.index === this.focusIndex;
       },
-      canDestroy() {
+      canRemove() {
         // only show the remove button if the schema allows it
         return this.allowRemove;
       }

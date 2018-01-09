@@ -33,7 +33,7 @@
         :value="match"
         :select="select"
         :allowRemove="args.allowRemove"
-        :destroy="removeFromList"
+        :remove="removeFromList"
         ></item>
     </li>
   </ol>
