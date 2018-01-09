@@ -32,7 +32,7 @@
         :focusIndex="activeIndex"
         :value="match"
         :select="select"
-        :allowDestroy="args.allowDestroy"
+        :allowRemove="args.allowRemove"
         :destroy="removeFromList"
         ></item>
     </li>
