@@ -137,6 +137,7 @@
   import simpleListItem from './simple-list-item.vue';
   import simpleListInput from './simple-list-input.vue';
   import attachedButton from './attached-button.vue';
+  import { addListItem, getProp} from '../lib/lists/helpers';
 
   const log = logger(__filename);
 
@@ -265,8 +266,28 @@
         }
       },
       addItem(newItem) {
+        let listName, newListItem, stringProperty, countProperty;
+
         this.items.push(newItem);
         this.update(this.items);
+
+        if (this.args.autocomplete && this.args.autocomplete.allowCreate) {
+          listName = this.args.autocomplete.list;
+
+          return this.$store.dispatch('updateList', { listName: listName, fn: (items) => {
+            stringProperty = getProp(items, 'text');
+            countProperty = getProp(items, 'count');
+
+            if (stringProperty && countProperty) {
+              newListItem = {};
+              newListItem[stringProperty] =  newItem;
+              newListItem[countProperty] = 1;
+            } else {
+              newListItem = newItem;
+            }
+            return addListItem(items, newListItem);
+          }});
+        }
       },
       setPrimary(index) {
         const property = this.args.propertyName;
