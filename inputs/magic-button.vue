@@ -254,9 +254,7 @@
       if (_.isString(property) && !_.isEmpty(property)) {
         return _.get(data, property);
       } else if (_.isArray(property) && !_.isEmpty(property)) {
-        const foundProp = _.find(property, (prop) => !_.isEmpty(data[prop]));
-
-        return _.get(data, foundProp);
+        return _.get(data, _.find(property, (prop) => !_.isEmpty(data[prop])));
       } else {
         return data;
       }
