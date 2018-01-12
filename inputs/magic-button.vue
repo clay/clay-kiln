@@ -25,7 +25,7 @@
   2. specify a `transform`. Transforms are useful when doing api calls with that data
   2. specify a `transformArg` if you need to send more information to the transform.
   3. specify a `store` path or `url` if you need to grab data from somewhere. The request will be prefixed with the `store`/`url` string you pass in.
-  4. specify a `property` to grab from the result of that api call. You can use `_.get()` syntax, e.g. `foo.bar[0].baz`
+  4. specify a `property` to grab from the result of that api call. You can use `_.get()` syntax, e.g. `foo.bar[0].baz`. If you specify as an array, it will grab the first property in the array that's not empty in the component above.
   5. add `moreMagic` if you need to do anything else to the returned data
 
   **All of these arguments are optional!**
@@ -90,6 +90,14 @@
   transform: formatUrl
   transformArg: [base image url]/recaps-$DATAFIELD.png ($DATAFIELD is the placeholder in our formatUrl transform)
   tooltip: Fetch TV Show Image
+  ```
+  ##### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab an image url from either a mediaplay-image (url) or lede-gallery (ledeImageUrl) (whichever is higher on the page)"
+
+  ```yaml
+  component: [ mediaplay-image, lede-gallery ]
+  store: components
+  property: [ url, ledeImageUrl ]
+  tooltip: Fetch First Image
   ```
 
   ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
@@ -245,6 +253,10 @@
     return (data) => {
       if (_.isString(property) && !_.isEmpty(property)) {
         return _.get(data, property);
+      } else if (_.isArray(property) && !_.isEmpty(property)) {
+        const foundProp = _.find(property, (prop) => !_.isEmpty(data[prop]));
+
+        return _.get(data, foundProp);
       } else {
         return data;
       }
