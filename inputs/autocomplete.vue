@@ -22,7 +22,10 @@
         :index="index"
         :focusIndex="activeIndex"
         :value="match"
-        :select="select"></item>
+        :select="select"
+        :allowRemove="args.allowRemove"
+        :remove="removeFromList"
+        ></item>
     </li>
   </ol>
 </template>
@@ -30,9 +33,10 @@
 <script>
   import _ from 'lodash';
   import item from './autocomplete-item.vue';
+  import { removeListItem } from '../lib/lists/helpers';
 
   export default {
-    props: ['args', 'select', 'query', 'focusIndex', 'updateFocusIndex', 'updateMatches'],
+    props: ['args', 'select', 'query', 'focusIndex', 'updateFocusIndex', 'updateMatches', 'unselect'],
     data() {
       return {
         localIndex: null,
@@ -90,22 +94,45 @@
         }
       }
     },
-    mounted() {
-      const listName = this.args.list,
-        lists = this.$store.state.lists,
-        items = _.get(lists, `${listName}.items`);
+    methods: {
+      fetchListItems() {
+        const listName = this.args.list,
+          lists = this.$store.state.lists,
+          items = _.get(lists, `${listName}.items`);
+        let promise;
 
-      let promise;
+        if (items) {
+          promise = Promise.resolve(items);
+        } else {
+          promise = this.$store.dispatch('getList', listName).then(() => _.get(lists, `${listName}.items`));
+        }
 
-      if (items) {
-        promise = Promise.resolve(items);
-      } else {
-        promise = this.$store.dispatch('getList', listName).then(() => _.get(lists, `${listName}.items`));
+        return promise.then((listItems) => {
+          this.listItems = _.map(listItems, (item) => _.isObject(item) ? item.text : item);
+        });
+      },
+      removeFromList(item) {
+        let tester, stringProperty;
+
+        const listName  = this.args.list;
+
+        this.unselect();
+
+        return this.$store.dispatch('updateList', { listName: listName, fn: (items) => {
+          tester = _.head(items);
+          stringProperty = _.has(tester, 'text') ? 'text' : null;
+
+          if (stringProperty) {
+            return removeListItem(items, item, stringProperty);
+          } else {
+            return removeListItem(items, item);
+          }
+        }})
+          .then(this.fetchListItems);
       }
-
-      return promise.then((listItems) => {
-        this.listItems = _.map(listItems, (item) => _.isObject(item) ? item.text : item);
-      });
+    },
+    mounted() {
+      this.fetchListItems();
     },
     components: {
       item

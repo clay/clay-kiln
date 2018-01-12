@@ -43,6 +43,7 @@
       :updateFocusIndex="updateFocusIndex"
       :updateMatches="updateAutocompleteMatches"
       :select="onAutocompleteSelect"
+      :unselect="unselect"
       @resize="onResize">
     </autocomplete>
   </div>
@@ -106,9 +107,7 @@
         if (this.val && (!hasItem || hasItem && this.allowRepeatedItems)) {
           this.$emit('add', { text: this.val.replace(',', '') }); // remove extra comma if using that to add item
 
-          // Zero out values
-          this.val = '';
-          this.$emit('select', null);
+          this.unselect();
         }
         this.autocompleteIndex = null;
       },
@@ -149,6 +148,11 @@
         } else {
           this.autocompleteIndex = dir ? -1 : 0;
         }
+      },
+      unselect() {
+        // Zero out values
+        this.val = '';
+        this.$emit('select', null);
       },
       updateFocusIndex(val) {
         this.autocompleteIndex = val;

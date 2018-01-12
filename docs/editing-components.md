@@ -353,6 +353,21 @@ plaintextTitle:
     help: Plaintext page title, set by seoHeadline, shortHeadline, or primaryHeadline.
 ```
 
+#### Scoped Publishing
+
+There are some situations where a component wants to limit the data they're sending to a certain subset of components on the page, rather than all components that listen to a property. For example, a slideshow that sets the width of its children shouldn't _also_ set the width of any other slideshow's children on the same page. To limit which components are affected by a property, you may use scoped publishing.
+
+There are currently three scopes you may publish to: `global` (default), `children`, and `parents`.
+
+```yaml
+slideshowWidth:
+  _publish:
+    name: width
+    scope: children
+  _has:
+    help: Width should propagate only to children
+```
+
 ### Subscribing
 
 Components that want to subscribe to properties should have `_subscribe` on the field(s) they want to update, with the name of the property it should subscribe to. Subscribed properties will trigger a component to save, thus allowing the subscribed component's `model.save()` method to do logic on the incoming data before it's sent to the server.
@@ -377,6 +392,22 @@ title:
   _subscribe:
     - pageTitle
     - overrideTitle
+```
+
+#### Scoped Many-To-Many Communication
+
+Scoped publishing may be used in many-to-many communication, and you may intersperse scoped and unscoped properties as needed.
+
+```yaml
+title:
+  _has: text
+  _publish:
+    - ogTitle
+    - twitterTitle
+    - name: socialTitle
+      scope: children
+    - name: articleTitle
+      scope: parents
 ```
 
 ### PubSub Tips
