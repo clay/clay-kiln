@@ -94,9 +94,13 @@
   ##### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab an image url from either a mediaplay-image (url) or lede-gallery (ledeImageUrl) (whichever is higher on the page)"
 
   ```yaml
-  component: [ mediaplay-image, lede-gallery ]
+  component: 
+    - mediaplay-image
+    - lede-gallery
   store: components
-  property: [ url, ledeImageUrl ]
+  property: 
+    - url
+    - ledeImageUrl
   tooltip: Fetch First Image
   ```
 
