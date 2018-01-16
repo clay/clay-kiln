@@ -137,7 +137,7 @@
   import simpleListItem from './simple-list-item.vue';
   import simpleListInput from './simple-list-input.vue';
   import attachedButton from './attached-button.vue';
-  import { addListItem, getProp} from '../lib/lists/helpers';
+  import { addListItem, getItemIndex, getProp} from '../lib/lists/helpers';
 
   const log = logger(__filename);
 
@@ -266,7 +266,7 @@
         }
       },
       addItem(newItem) {
-        let listName, newListItem, stringProperty, countProperty;
+        let listName, newListItem, stringProperty, countProperty, itemIndex;
 
         this.items.push(newItem);
         this.update(this.items);
@@ -279,13 +279,22 @@
             countProperty = getProp(items, 'count');
 
             if (stringProperty && countProperty) {
-              newListItem = {};
-              newListItem[stringProperty] =  newItem;
-              newListItem[countProperty] = 1;
+              itemIndex = getItemIndex(items, newItem.text, 'text');
+
+              if (itemIndex !== -1) {
+                // increase count if the item already exists in the list
+                items[itemIndex][countProperty] ++;
+                return items;
+              } else {
+                // add item to the list
+                _.set(newItem, countProperty, 1);
+                return addListItem(items, newItem);
+              }
             } else {
+              // if the list is an array of strings, just add the item's stringProperty
               newListItem = newItem;
+              return addListItem(items, newListItem[stringProperty]);
             }
-            return addListItem(items, newListItem);
           }});
         }
       },
