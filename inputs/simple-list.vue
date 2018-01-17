@@ -266,15 +266,17 @@
         }
       },
       addItem(newItem) {
-        let listName, newListItem, stringProperty, countProperty, itemIndex;
+        let countProperty, itemIndex, listName, stringProperty;
 
         this.items.push(newItem);
         this.update(this.items);
 
+        // only add items to the list if the schema allows it
         if (this.args.autocomplete && this.args.autocomplete.allowCreate) {
           listName = this.args.autocomplete.list;
 
           return this.$store.dispatch('updateList', { listName: listName, fn: (items) => {
+            // validate that the list has items with these properties
             stringProperty = getProp(items, 'text');
             countProperty = getProp(items, 'count');
 
@@ -290,10 +292,13 @@
                 _.set(newItem, countProperty, 1);
                 return addListItem(items, newItem);
               }
-            } else {
-              // if the list is an array of strings, just add the item's stringProperty
-              newListItem = newItem;
-              return addListItem(items, newListItem[stringProperty]);
+            } else if (_.isString(_.head(items))) {
+              // if the list is just an array of strings, just add the string
+              // property
+              return addListItem(items, newItem['text']);
+            } else if (items.length === 0) {
+              log.error('The list is empty, unable to determine data structure. ', { action: 'adding item to a list' });
+              return items;
             }
           }});
         }
