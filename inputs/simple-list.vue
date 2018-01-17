@@ -285,7 +285,7 @@
 
               if (itemIndex !== -1) {
                 // increase count if the item already exists in the list
-                items[itemIndex][countProperty] ++;
+                items[itemIndex][countProperty]++;
                 return items;
               } else {
                 // add item to the list
@@ -295,9 +295,9 @@
             } else if (_.isString(_.head(items))) {
               // if the list is just an array of strings, just add the string
               // property
-              return addListItem(items, newItem['text']);
+              return addListItem(items, newItem.text);
             } else if (items.length === 0) {
-              log.error('The list is empty, unable to determine data structure. ', { action: 'adding item to a list' });
+              log.error('The list is empty, unable to determine data structure.', { action: 'adding item to a list' });
               return items;
             }
           }});
