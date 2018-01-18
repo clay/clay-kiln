@@ -33,7 +33,7 @@
 <script>
   import _ from 'lodash';
   import item from './autocomplete-item.vue';
-  import { removeListItem } from '../lib/lists/helpers';
+  import { getProp , removeListItem } from '../lib/lists/helpers';
 
   export default {
     props: ['args', 'select', 'query', 'focusIndex', 'updateFocusIndex', 'updateMatches', 'unselect'],
@@ -112,15 +112,14 @@
         });
       },
       removeFromList(item) {
-        let tester, stringProperty;
+        let stringProperty;
 
         const listName  = this.args.list;
 
         this.unselect();
 
         return this.$store.dispatch('updateList', { listName: listName, fn: (items) => {
-          tester = _.head(items);
-          stringProperty = _.has(tester, 'text') ? 'text' : null;
+          stringProperty = getProp(items, 'text');
 
           if (stringProperty) {
             return removeListItem(items, item, stringProperty);

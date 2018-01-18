@@ -452,7 +452,7 @@ An array of strings (or objects with a `text` property, if you add the `property
 * **propertyName** - appends double-click functionality to items in the list. The data will be an array of objects with `text` properties, as well as the value of this argument. e.g. `propertyName: bar` will make the data look like `[{ text: 'foo', bar: 'baz' }]`
 * **badge** - name of the icon (or a two-character string) that should be displayed in the simple list item when editing. Icon names can be anything from the [Material Design Icon Set](https://material.io/icons/), or you can use two initials
 * **allowRepeatedItems** - allow the same item more than once. defaults to false
-* **autocomplete** - object with autocomplete options. The key `list`  is where the value is the name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`. The key `allowRemove` enables an X in the `autocomplete` that allows the user to remove that item from the autocomplete list.
+* **autocomplete** - object with autocomplete options. The key `list`  is where the value is the name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`. The key `allowRemove` enables an X in the `autocomplete` that allows the user to remove that item from the autocomplete list. If the key `allowCreate` is set to true, Kiln will add the item to the list via the store.
 * **help** - description / helper text for the field
 * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
 * **validate.required** - either `true` or an object that described the conditions that should make this field required

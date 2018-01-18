@@ -8,7 +8,7 @@
   * **propertyName** - appends double-click functionality to items in the list. The data will be an array of objects with `text` properties, as well as the value of this argument. e.g. `propertyName: bar` will make the data look like `[{ text: 'foo', bar: 'baz' }]`
   * **badge** - name of the icon (or a two-character string) that should be displayed in the simple list item when editing. Icon names can be anything from the [Material Design Icon Set](https://material.io/icons/), or you can use two initials
   * **allowRepeatedItems** - allow the same item more than once. defaults to false
-  * **autocomplete** - object with autocomplete options. The key `list`  is where the value is the name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`. The key `allowRemove` enables an X in the `autocomplete` that allows the user to remove that item from the autocomplete list.
+  * **autocomplete** - object with autocomplete options. The key `list`  is where the value is the name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`. The key `allowRemove` enables an X in the `autocomplete` that allows the user to remove that item from the autocomplete list. If the key `allowCreate` is set to true, Kiln will add the item to the list via the store.
   * **help** - description / helper text for the field
   * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
   * **validate.required** - either `true` or an object that described the conditions that should make this field required
@@ -137,6 +137,7 @@
   import simpleListItem from './simple-list-item.vue';
   import simpleListInput from './simple-list-input.vue';
   import attachedButton from './attached-button.vue';
+  import { addListItem, getItemIndex, getProp} from '../lib/lists/helpers';
 
   const log = logger(__filename);
 
@@ -265,8 +266,42 @@
         }
       },
       addItem(newItem) {
+        let countProperty, itemIndex, listName, stringProperty;
+
         this.items.push(newItem);
         this.update(this.items);
+
+        // only add items to the list if the schema allows it
+        if (this.args.autocomplete && this.args.autocomplete.allowCreate) {
+          listName = this.args.autocomplete.list;
+
+          return this.$store.dispatch('updateList', { listName: listName, fn: (items) => {
+            // validate that the list has items with these properties
+            stringProperty = getProp(items, 'text');
+            countProperty = getProp(items, 'count');
+
+            if (stringProperty && countProperty) {
+              itemIndex = getItemIndex(items, newItem.text, 'text');
+
+              if (itemIndex !== -1) {
+                // increase count if the item already exists in the list
+                items[itemIndex][countProperty]++;
+                return items;
+              } else {
+                // add item to the list
+                _.set(newItem, countProperty, 1);
+                return addListItem(items, newItem);
+              }
+            } else if (_.isString(_.head(items))) {
+              // if the list is just an array of strings, just add the string
+              // property
+              return addListItem(items, newItem.text);
+            } else if (items.length === 0) {
+              log.error('The list is empty, unable to determine data structure.', { action: 'adding item to a list' });
+              return items;
+            }
+          }});
+        }
       },
       setPrimary(index) {
         const property = this.args.propertyName;
