@@ -145,14 +145,10 @@
     methods: {
       update(option) {
         if (_.isArray(option)) {
-          // new array of checked options
-          const newData = _.reduce(_.cloneDeep(this.data), (obj, val, key) => {
-            if (_.find(option, (item) => item.value === key)) {
-              return _.assign(obj, { [key]: true });
-            } else {
-              return _.assign(obj, { [key]: false });
-            }
-          }, {});
+          // set all existing options in data to false
+          const newData = _.mapValues(_.cloneDeep(this.data), () => false);
+          // for each of the selected options, set the related key in the data to true
+          _.forEach(option, (o) => newData[o.value] = true);
 
           this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: newData });
         } else if (_.isObject(option)) {
