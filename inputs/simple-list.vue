@@ -297,8 +297,9 @@
               // property
               return addListItem(items, newItem.text);
             } else if (items.length === 0) {
-              log.error('The list is empty, unable to determine data structure.', { action: 'adding item to a list' });
-              return items;
+              log.warn('The list is empty, unable to determine data structure. Adding item with default data structure.', { action: 'adding item to a list' });
+              _.set(newItem, 'count', 1);
+              return addListItem(items, newItem);
             }
           }});
         }
