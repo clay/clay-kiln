@@ -6,6 +6,7 @@
   ### Text Arguments
 
   * **type** - input type, which can match any native `<input type="">` or can be set to `multi-line` for a multi-line text area
+  * **rows** - number of lines the textarea should have. to be used with `multi-line`
   * **step** - define step increments (for numberical inputs only)
   * **enforceMaxlength** - prevent user from typing more characters than the maximum allowed (`from validate.max`)
   * **help** - description / helper text for the field
@@ -26,6 +27,7 @@
     :value="data"
     :type="type"
     :multiLine="isMultiline"
+    :rows="numOfRows"
     :invalid="isInvalid"
     :required="isRequired"
     :min="min"
@@ -94,6 +96,9 @@
       },
       isInvalid() {
         return !!this.errorMessage;
+      },
+      numOfRows() {
+        return _.has(this.args,'rows') ? this.args.rows : 2;
       }
     },
     methods: {
