@@ -98,7 +98,7 @@
         return !!this.errorMessage;
       },
       numOfRows() {
-        return _.has(this.args,'rows') ? this.args.rows : 2;
+        return _.get(this, 'args.rows', 2);
       }
     },
     methods: {
