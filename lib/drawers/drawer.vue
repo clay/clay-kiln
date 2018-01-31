@@ -144,9 +144,12 @@
       tabs() {
         if (this.name === 'contributors') {
           return [{
-            title: 'Contributors',
+            title: 'Latest Editors',
             component: 'contributors',
             selected: true
+          },{
+            title: 'Page History',
+            component: 'page-history'
           }];
         } else if (this.name === 'components') {
           const state = _.get(this.$store, 'state'),
