@@ -88,7 +88,9 @@
   import isThisYear from 'date-fns/is_this_year';
   import person from '../utils/person.vue';
   import UiButton from 'keen/UiButton';
-
+  import store from '../core-data/store';
+  import { pageUri } from '@nymag/dom';
+      
   /**
    * format time for pages
    * @param  {Date} date
@@ -139,6 +141,9 @@
           return event;
         }).reverse();
       }
+    },
+    mounted: function (){
+      store.dispatch('getListData', { uri: pageUri() });
     },
     methods: {
     },
