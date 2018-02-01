@@ -33,7 +33,8 @@
 
         &-archived,
         &-unarchived,
-        &-unpublished {
+        &-unpublished,
+        &-unscheduled {
           color: $archived;
         }
       }
