@@ -124,6 +124,6 @@
     "whatwg-fetch": "^2.0.3"
   },
   "peerDependencies": {
-    "amphora-search": "^4.1.0"
+    "amphora-search": "^4.5.0"
   }
 }
