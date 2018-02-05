@@ -1,6 +1,7 @@
 @import '~keen-ui/src/styles/md-colors'; // material design color palette
 
 // states (used by progress bar, status message, publish button)
+$archived: $md-red;
 $scheduled: $md-orange;
 $published: $md-green;
 

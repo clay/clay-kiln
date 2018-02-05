@@ -73,6 +73,7 @@
   import UiTab from 'keen/UiTab';
   // components used in tabs
   import contributors from './contributors.vue';
+  import pageHistory from './page-history.vue';
   import visibleComponents from './visible-components.vue';
   import headComponents from './head-components.vue';
   import invisibleComponents from './invisible-components.vue';
@@ -147,6 +148,9 @@
             title: 'Contributors',
             component: 'contributors',
             selected: true
+          },{
+            title: 'Page History',
+            component: 'page-history'
           }];
         } else if (this.name === 'components') {
           const state = _.get(this.$store, 'state'),
@@ -204,6 +208,7 @@
       UiTabs,
       UiTab,
       contributors,
+      'page-history': pageHistory,
       'visible-components': visibleComponents,
       'head-components': headComponents,
       'invisible-components': invisibleComponents,
