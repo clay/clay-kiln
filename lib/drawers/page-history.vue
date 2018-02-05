@@ -26,7 +26,7 @@
       &-action,
       &-time {
         font-size: 12px;
-        
+
       }
 
       &-action {
@@ -64,7 +64,7 @@
     .page-history-event-time {
       color: $text-alt-color;
     }
-    
+
     .page-history-event-users {
       color: $text-color;
 
@@ -82,7 +82,7 @@
       v-for="event of history"
       :key="event.timestamp"
     >
-      <avatar 
+      <avatar
         class="person-image"
         :class="{'stacked': event.avatar.stacked}"
         :url="event.avatar.imageUrl"
@@ -90,7 +90,7 @@
         @click.stop="onClick">
       </avatar>
       <div class = "page-history-event-info">
-        <div 
+        <div
           class="page-history-event-action"
           :class="['page-history-event-action-'+event.formattedAction]"
         >{{event.formattedAction}}</div>
@@ -118,7 +118,7 @@
   import UiButton from 'keen/UiButton';
   import store from '../core-data/store';
   import { pageUri } from '@nymag/dom';
-      
+
   /**
    * format time for pages
    * @param  {Date} date
@@ -145,14 +145,12 @@
   }
 
   function addEd(word) {
-    if (!word.length){
+    if (!word.length) {
       return word;
-    }
-    else if (word[word.length-1] == "e"){
-      return word+"d"
-    }
-    else {
-      return word+"ed";
+    } else if (word[word.length - 1] === 'e') {
+      return `${word}d`;
+    } else {
+      return `${word}ed`;
     }
   }
 
@@ -166,22 +164,21 @@
           event.formattedTime = formatStatusTime(event.timestamp);
           event.formattedAction = addEd(event.action);
           // event.formattedUsers = 'By ' + event.users.map((user) => user.name || user.username).join(', ');
-          if (event.users.length > 0){
-            event.avatar = { 
-              'name': event.users.slice(-1)[0].name || event.users.slice(-1)[0].username,
-              'imageUrl':  event.users.slice(-1)[0].imageUrl,
-              'stacked': event.users.length > 1,
+          if (event.users.length > 0) {
+            event.avatar = {
+              name: event.users.slice(-1)[0].name || event.users.slice(-1)[0].username,
+              imageUrl:  event.users.slice(-1)[0].imageUrl,
+              stacked: event.users.length > 1,
             };
           } else {
             event.avatar = {};
           }
-            
-          console.error("USERS!~", event.users);
+
           return event;
         }).reverse();
       },
     },
-    mounted: function (){
+    mounted: function () {
       store.dispatch('getListData', { uri: pageUri() });
     },
     methods: {

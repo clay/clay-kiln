@@ -505,12 +505,27 @@ if something is scheduled, remove it
 ## page-state
 
 * [page-state](#module_page-state)
-    * [.updatePageList(store, [data])](#module_page-state.updatePageList)
+    * [.updateHistoryWithEditAction(state, currentUser)](#module_page-state.updateHistoryWithEditAction) ⇒ <code>object</code>
+    * [.updatePageList(store, [data])](#module_page-state.updatePageList) ⇒ <code>Promise</code>
     * [.getListData(store, uri, [prefix])](#module_page-state.getListData) ⇒ <code>Promise</code>
+
+<a name="module_page-state.updateHistoryWithEditAction"></a>
+
+### page-state.updateHistoryWithEditAction(state, currentUser) ⇒ <code>object</code>
+updates the state's history array to make sure the latest item is an
+'edit' event that includes the current user
+note: this function is only exported for testing purposes, and should not be used by other modules
+
+**Kind**: static method of [<code>page-state</code>](#module_page-state)  
+
+| Param | Type |
+| --- | --- |
+| state | <code>object</code> | 
+| currentUser | <code>object</code> | 
 
 <a name="module_page-state.updatePageList"></a>
 
-### page-state.updatePageList(store, [data])
+### page-state.updatePageList(store, [data]) ⇒ <code>Promise</code>
 update page list with data provided from pubsub
 note: if called without data, this just updates the updateTime and user
 (e.g. when saving components in the page)

@@ -715,7 +715,8 @@
                     this.quill.format('link', false);
                   } else if (!context.collapsed && !context.format.link) {
                     // we have regular text highlighted, make it a link!
-                    let value = prompt('Enter link URL:'); // todo: how does quill init its fancy prompt?
+                    // // todo: how does quill init its fancy prompt?
+                    let value = prompt('Enter link URL:'); // eslint-disable-line
 
                     this.quill.format('link', value);
                   }

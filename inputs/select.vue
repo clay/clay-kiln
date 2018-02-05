@@ -147,6 +147,7 @@
         if (_.isArray(option)) {
           // set all existing options in data to false
           const newData = _.mapValues(_.cloneDeep(this.data), () => false);
+
           // for each of the selected options, set the related key in the data to true
           _.forEach(option, (o) => newData[o.value] = true);
 
