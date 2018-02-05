@@ -145,7 +145,7 @@
       tabs() {
         if (this.name === 'contributors') {
           return [{
-            title: 'Latest Editors',
+            title: 'Contributors',
             component: 'contributors',
             selected: true
           },{

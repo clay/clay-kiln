@@ -4,24 +4,35 @@
   .page-history-list {
     padding: 0;
 
-    .person-item {
-      padding: 12px 16px;
-    }
-
     .page-history-event {
+      align-items: flex-start;
+      display: flex;
+      flex-direction: row;
       font-family: $font-stack;
-      margin: 8px 13px 16px;
+      margin: 12px 16px;
+
+      .person-image {
+        &.stacked {
+          box-shadow: $shadow-2dp, 0 10px $text-alt-color;
+        }
+      }
+      &-info {
+        align-items: flex-start;
+        display: flex;
+        flex-direction: column;
+      }
+
 
       &-action,
       &-time {
-        float: left;
         font-size: 12px;
-        text-transform: uppercase;
+        
       }
 
       &-action {
-        color: $text-alt-color;
+        color: $text-color;
         font-weight: bold;
+        text-transform: uppercase;
 
         &-published {
           color: $published;
@@ -37,14 +48,15 @@
         &-unscheduled {
           color: $archived;
         }
-      }
 
-      &-time {
-        margin-left: 5px;
+        &-edited {
+          +.page-history-event-time {
+            display: none;
+          }
+        }
       }
 
       &-users {
-        clear:both;
         font-size: 11px;
       }
     }
@@ -55,6 +67,10 @@
     
     .page-history-event-users {
       color: $text-color;
+
+      p {
+        margin: 0;
+      }
     }
   }
 </style>
@@ -66,13 +82,25 @@
       v-for="event of history"
       :key="event.timestamp"
     >
-      <div 
-        class="page-history-event-action"
-        :class="['page-history-event-action-'+event.formattedAction]"
-      >{{event.formattedAction}}</div>
-      <div class="page-history-event-time">{{event.formattedTime}}</div>
-      <div class="page-history-event-users">{{event.formattedUsers}}</div>
-
+      <avatar 
+        class="person-image"
+        :class="{'stacked': event.avatar.stacked}"
+        :url="event.avatar.imageUrl"
+        :name="event.avatar.name"
+        @click.stop="onClick">
+      </avatar>
+      <div class = "page-history-event-info">
+        <div 
+          class="page-history-event-action"
+          :class="['page-history-event-action-'+event.formattedAction]"
+        >{{event.formattedAction}}</div>
+        <div class="page-history-event-time">{{event.formattedTime}}</div>
+        <div class="page-history-event-users">
+          <p v-for="(user, index) in event.users.reverse()">
+            <span v-if="index === 0">By </span>{{user.name || user.username}}<span v-if="index+1 < event.users.length">, <br/></span>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -86,7 +114,7 @@
   import isTomorrow from 'date-fns/is_tomorrow';
   import isYesterday from 'date-fns/is_yesterday';
   import isThisYear from 'date-fns/is_this_year';
-  import person from '../utils/person.vue';
+  import avatar from '../utils/avatar.vue';
   import UiButton from 'keen/UiButton';
   import store from '../core-data/store';
   import { pageUri } from '@nymag/dom';
@@ -137,10 +165,21 @@
         return _.map(_.cloneDeep(_.get(this.$store, 'state.page.state.history', [])), (event) => {
           event.formattedTime = formatStatusTime(event.timestamp);
           event.formattedAction = addEd(event.action);
-          event.formattedUsers = 'By ' + event.users.map((user) => user.name || user.username).join(', ');
+          // event.formattedUsers = 'By ' + event.users.map((user) => user.name || user.username).join(', ');
+          if (event.users.length > 0){
+            event.avatar = { 
+              'name': event.users.slice(-1)[0].name || event.users.slice(-1)[0].username,
+              'imageUrl':  event.users.slice(-1)[0].imageUrl,
+              'stacked': event.users.length > 1,
+            };
+          } else {
+            event.avatar = {};
+          }
+            
+          console.error("USERS!~", event.users);
           return event;
         }).reverse();
-      }
+      },
     },
     mounted: function (){
       store.dispatch('getListData', { uri: pageUri() });
@@ -148,8 +187,8 @@
     methods: {
     },
     components: {
-      person,
-      UiButton
+      UiButton,
+      avatar,
     }
   };
 </script>
