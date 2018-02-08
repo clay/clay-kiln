@@ -160,7 +160,7 @@
     },
     computed: {
       history() {
-        return _.map(_.cloneDeep(_.get(this.$store, 'state.page.state.history', [])), (event) => {
+        let history = _.map(_.cloneDeep(_.get(this.$store, 'state.page.state.history', [])), (event) => {
           event.formattedTime = formatStatusTime(event.timestamp);
           event.formattedAction = addEd(event.action);
           // event.formattedUsers = 'By ' + event.users.map((user) => user.name || user.username).join(', ');
@@ -176,6 +176,11 @@
 
           return event;
         }).reverse();
+
+        // remove unschedule events created by the clay robot
+        history = history.filter((event) => !(event.action === "unschedule" && _.find(event.users, (user) => user.username === 'robot' && user.provider === 'clay')));
+
+        return history;
       },
     },
     mounted: function () {
