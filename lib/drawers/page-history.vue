@@ -178,7 +178,7 @@
         }).reverse();
 
         // remove unschedule events created by the clay robot
-        history = history.filter((event) => !(event.action === "unschedule" && _.find(event.users, (user) => user.username === 'robot' && user.provider === 'clay')));
+        history = history.filter((event) => !(event.action === 'unschedule' && _.find(event.users, (user) => user.username === 'robot' && user.provider === 'clay')));
 
         return history;
       },
