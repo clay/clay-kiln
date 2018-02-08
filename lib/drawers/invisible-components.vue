@@ -55,9 +55,25 @@
         this.$store.dispatch('focus', { uri: id, path });
       },
       removeComponent(id) {
-        const componentEl = find(`[${refAttr}="${id}"]`);
+        const componentEl = find(`[${refAttr}="${id}"]`),
+          shouldConfirm = _.get(this.schema, removeProp),
+          name = getComponentName(id);
 
-        this.$store.dispatch('removeComponent', componentEl);
+        if (shouldConfirm) {
+          this.$store.dispatch('openModal', {
+            title: 'Remove Component',
+            type: 'type-confirm',
+            data: {
+              text: `Are you sure you want to remove this <strong>${name}</strong>?`,
+              name: name,
+              onConfirm: () => {
+                this.$store.dispatch('removeComponent', componentEl);
+              }
+            }
+          });
+        } else {
+          this.$store.dispatch('removeComponent', componentEl);
+        }
       },
       reorderComponents(id, index, oldIndex) {
         let componentList = _.reduce(_.get(this.$store, `state.components['${this.uri}'].${this.path}`), (list, val) => list.concat({ [refProp]: val[refProp] }), []);

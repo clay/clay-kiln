@@ -5,7 +5,7 @@
 <script>
   import _ from 'lodash';
   import { getComponentNode } from '../utils/head-components';
-  import { getComponentName, refProp, componentListProp } from '../utils/references';
+  import { getComponentName, refProp, componentListProp, removeProp } from '../utils/references';
   import label from '../utils/label';
   import filterableList from '../utils/filterable-list.vue';
 
@@ -59,9 +59,25 @@
         this.$store.dispatch('focus', { uri: id, path });
       },
       removeComponent(id) {
-        const componentNode = getComponentNode(id);
+        const componentNode = getComponentNode(id),
+          shouldConfirm = _.get(this.schema, removeProp),
+          name = getComponentName(id);
 
-        this.$store.dispatch('removeHeadComponent', componentNode);
+        if (shouldConfirm) {
+          this.$store.dispatch('openModal', {
+            title: 'Remove Component',
+            type: 'type-confirm',
+            data: {
+              text: `Are you sure you want to remove this <strong>${name}</strong>?`,
+              name: name,
+              onConfirm: () => {
+                this.$store.dispatch('removeHeadComponent', componentNode);
+              }
+            }
+          });
+        } else {
+          this.$store.dispatch('removeHeadComponent', componentNode);
+        }
       },
       reorderComponents(id, index, oldIndex) {
         let componentList;
