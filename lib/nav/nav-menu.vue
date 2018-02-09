@@ -127,6 +127,7 @@
 <script>
   import _ from 'lodash';
   import { setItem } from '../utils/local';
+  import { logoutRoute } from '../utils/references';
   import navMenuButton from './nav-menu-button.vue';
   import UiIconButton from 'keen/UiIconButton';
   import UiMenu from 'keen/UiMenu';
@@ -174,7 +175,7 @@
         this.$store.dispatch('openNav', id);
       },
       signout() {
-        window.location.href = _.get(this.$store, 'state.site.path') + '/auth/logout';
+        window.location.href = _.get(this.$store, 'state.site.path') + logoutRoute;
       },
       closeNav() {
         this.$store.dispatch('closeNav');
