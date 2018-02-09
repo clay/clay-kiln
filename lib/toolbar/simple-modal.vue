@@ -5,6 +5,12 @@
     @include confirm-layer();
 
     position: fixed;
+
+    .ui-modal__container,
+    .ui-modal__body {
+      // allow dropdowns and such to overflow modals
+      overflow: visible;
+    }
   }
 </style>
 
