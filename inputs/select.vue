@@ -7,6 +7,8 @@
 
   * **multiple** - allow multiple options to be selected. data will be an object with options as keys, similar to checkbox-group
   * **search** - allow users to type stuff in to filter options. Extremely useful for longer options lists
+  * **excludeDefaultOption** - allow users to exclude the default option `None`, defaults to `false`.
+  * **defaultOptionLabel** - allow users to rename the default option's label.
   * **options** - an array of strings or objects (with `name`, `value`, and optionally `sites`)
   * **help** - description / helper text for the field
   * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
@@ -92,42 +94,45 @@
     },
     computed: {
       safeData() {
+        const defaultValue = this.args.multiple ? [] : this.defaultOption;
+
         if (_.isString(this.data)) {
-          return _.find(this.options, (option) => option.value === this.data);
+          return _.find(this.options, (option) => option.value === this.data) || defaultValue;
         } else if (_.isObject(this.data) && !_.isEmpty(this.data)) {
           return _.reduce(this.options, (safeArray, option) => {
-            if (this.data[option.value] === true) {
-              return safeArray.concat([option]);
-            } else {
-              return safeArray;
-            }
+            return this.data[option.value] === true ? [...safeArray, option] : safeArray;
           }, []);
         } else {
-          return this.args.multiple ? [] : { value: null, label: 'None' };
+          return defaultValue;
         }
       },
-      options() {
-        const currentSlug = _.get(this.$store, 'state.site.slug');
-
-        return [{
+      defaultOption() {
+        return {
           value: null,
-          label: 'None'
-        }].concat(_.map(filterBySite(this.args.options, currentSlug), (option) => {
-          if (_.isString(option)) {
-            return {
-              value: option,
-              label: _.startCase(option)
-            };
-          } else {
-            return {
-              value: option.value,
-              label: option.name
-            };
-          }
-        }));
+          label: this.args.defaultOptionLabel || 'None'
+        };
+      },
+      options() {
+        const {options: schemaOptions = [], excludeDefaultOption} = this.args,
+          currentSlug = _.get(this.$store, 'state.site.slug'),
+          options = _.map(filterBySite(schemaOptions, currentSlug), (option) => {
+            if (_.isString(option)) {
+              return {
+                value: option,
+                label: _.startCase(option)
+              };
+            } else {
+              return {
+                value: option.value,
+                label: option.name
+              };
+            }
+          });
+
+        return excludeDefaultOption && !_.isEmpty(options) ? options : [this.defaultOption, ...options];
       },
       hasOptions() {
-        return this.options.length > 1; // the first (blank) option is automatically added
+        return this.options.length > 0;
       },
       isRequired() {
         return _.get(this.args, 'validate.required') === true || shouldBeRequired(this.args.validate, this.$store, this.name);
