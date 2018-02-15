@@ -68,6 +68,9 @@
       },
       enableInput() {
         this.isDisabled = false;
+      },
+      clear() {
+        this.timeValue = '';
       }
     },
     components: {
