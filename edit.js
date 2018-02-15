@@ -144,7 +144,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // when clicks bubble up to the document, close the current form or pane / unselect components
   document.body.addEventListener('click', (e) => {
-    if (_.find(getEventPath(e), (el) => el.classList && el.classList.contains('ui-calendar'))) {
+    const ePath = getEventPath(e);
+
+    if (_.find(ePath, (el) => el.classList && (el.classList.contains('ui-calendar') || el.classList.contains('kiln-overlay-form')))) {
       return;
     }
 
