@@ -103,7 +103,7 @@
 
 <template>
   <transition name="overlay-fade-resize" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
-    <form class="kiln-overlay-form" v-if="hasCurrentOverlayForm" :key="formKey" :style="{ top: formTop, left: formLeft }" @click.stop @submit.stop.prevent="save">
+    <form class="kiln-overlay-form" v-if="hasCurrentOverlayForm" :key="formKey" :style="{ top: formTop, left: formLeft }" @submit.stop.prevent="save">
       <div class="form-header">
         <h2 class="form-header-title">{{ formHeader }}</h2>
         <div class="form-header-actions">

@@ -152,9 +152,9 @@
         <ui-icon icon="open_in_new"></ui-icon>
         <span class="status-link-text">View public page</span>
       </a>
-      <ui-button v-if="isScheduled" class="status-undo-button" buttonType="button" color="accent" @click.stop="unschedulePage">Unschedule</ui-button>
-      <ui-button v-else-if="isPublished" class="status-undo-button" buttonType="button" color="accent" @click.stop="unpublishPage">Unpublish</ui-button>
-      <ui-button v-else-if="isArchived" class="status-undo-button" buttonType="button" color="accent" @click.stop="archivePage(false)">Unarchive</ui-button>
+      <ui-button v-if="isScheduled" class="status-undo-button" buttonType="button" color="red" @click.stop="unschedulePage">Unschedule</ui-button>
+      <ui-button v-else-if="isPublished" class="status-undo-button" buttonType="button" color="red" @click.stop="unpublishPage">Unpublish</ui-button>
+      <ui-button v-else-if="isArchived" class="status-undo-button" buttonType="button" color="red" @click.stop="archivePage(false)">Unarchive</ui-button>
     </div>
 
     <!-- publish actions -->
@@ -162,9 +162,9 @@
       <span class="action-message">{{ actionMessage }} <ui-icon-button v-if="showSchedule" icon="close" buttonType="button" type="secondary" color="default" size="small" tooltip="Clear Date/Time" tooltipPosition="left middle" @click.stop="clearScheduleForm"></ui-icon-button></span>
       <form class="schedule-form" @submit.prevent="schedulePage">
         <ui-datepicker class="schedule-date" color="accent" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date" :disabled="hasErrors"></ui-datepicker>
-        <timepicker class="schedule-time" :value="timeValue" label="Time" :disabled="hasErrors" @update="updateTime"></timepicker>
+        <timepicker ref="timepicker" class="schedule-time" :value="timeValue" label="Time" :disabled="hasErrors" @update="updateTime"></timepicker>
       </form>
-      <ui-button v-if="showSchedule" :disabled="disableSchedule || isArchived || hasErrors" class="action-button" buttonType="button" color="accent" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
+      <ui-button v-if="showSchedule" :disabled="disableSchedule || isArchived || hasErrors" class="action-button" buttonType="button" color="orange" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
       <ui-button v-else :disabled="isArchived || hasErrors" class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
       <span v-if="hasErrors" class="action-error-message" @click="goToHealth">Please fix errors before publishing</span>
       <span v-else-if="hasWarnings" class="action-warning-message" @click="goToHealth">Please review warnings before publishing</span>
@@ -387,8 +387,7 @@
           .then(() => {
             store.commit(FINISH_PROGRESS);
             // reset date and time values
-            this.dateValue = null;
-            this.timeValue = '';
+            this.clearScheduleForm();
             store.dispatch('showSnackbar', {
               message: `Scheduled to publish ${calendar(datetime)}`,
               action: 'Undo',
@@ -418,7 +417,7 @@
       },
       clearScheduleForm() {
         this.dateValue = null;
-        this.timeValue = '';
+        this.$refs.timepicker.clear();
       },
       saveLocation(undoUrl) {
         const prefix = _.get(this.$store, 'state.site.prefix'),

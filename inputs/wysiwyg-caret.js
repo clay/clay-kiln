@@ -35,7 +35,7 @@ export function getLastOffsetWithNewlines(data) {
     plainText = striptags(text);
 
   let i = 0,
-    realOffset = plainText.length - 1;
+    realOffset = plainText.length;
 
   // go through each character (up to the end of the text),
   // increasing the real offset every time we hit a paragraph

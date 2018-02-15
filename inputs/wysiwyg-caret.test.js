@@ -20,16 +20,16 @@ describe('wysiwyg caret', () => {
   describe('getLastOffsetWithNewlines', () => {
     const fn = lib.getLastOffsetWithNewlines;
 
-    it('gets offset for empty field', () => expect(fn(null)).to.equal(-1));
-    it('gets offset for plain text', () => expect(fn('hi')).to.equal(1));
-    it('gets offset for single line of html', () => expect(fn('<strong>hi</strong>')).to.equal(1));
-    it('gets offset for single paragraph of html', () => expect(fn('<p>hi</p>')).to.equal(1));
+    it('gets offset for empty field', () => expect(fn(null)).to.equal(0));
+    it('gets offset for plain text', () => expect(fn('hi')).to.equal(2));
+    it('gets offset for single line of html', () => expect(fn('<strong>hi</strong>')).to.equal(2));
+    it('gets offset for single paragraph of html', () => expect(fn('<p>hi</p>')).to.equal(2));
 
-    it('gets offset for the first of two paragraphs', () => expect(fn('<p>hello</p><p>world</p>')).to.equal(11));
+    it('gets offset for the first of two paragraphs', () => expect(fn('<p>hello</p><p>world</p>')).to.equal(12));
 
     // note: the caret will be at the beginning of the SECOND LINE, not the end of the first
-    it('gets offset for the second of two paragraphs', () => expect(fn('<p>hello</p><p>world</p>')).to.equal(11));
+    it('gets offset for the second of two paragraphs', () => expect(fn('<p>hello</p><p>world</p>')).to.equal(12));
 
-    it('gets offset for more than two paragraphs', () => expect(fn('<p>hello</p><p>world</p><p>bye</p>')).to.equal(16));
+    it('gets offset for more than two paragraphs', () => expect(fn('<p>hello</p><p>world</p><p>bye</p>')).to.equal(17));
   });
 });
