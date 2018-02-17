@@ -7,6 +7,7 @@
 
   * **multiple** - allow multiple options to be selected. data will be an object with options as keys, similar to checkbox-group
   * **search** - allow users to type stuff in to filter options. Extremely useful for longer options lists
+  * **list** - The key `list`  is where the value is the name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`.
   * **options** - an array of strings or objects (with `name`, `value`, and optionally `sites`)
   * **help** - description / helper text for the field
   * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
@@ -62,6 +63,7 @@
     :options="options"
     :multiple="args.multiple"
     :hasSearch="args.search"
+    :list="args.list"
     :label="label"
     :floatingLabel="true"
     :help="args.help"
@@ -87,8 +89,18 @@
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {
+        options: [],
         isDisabled: false
       };
+    },
+    mounted() {
+      if(this.args.list){
+        this.fetchListItems().then( listItems => {
+          this.setOptions(listItems);
+        });
+      } else {
+        this.setOptions();
+      }
     },
     computed: {
       safeData() {
@@ -106,28 +118,8 @@
           return this.args.multiple ? [] : { value: null, label: 'None' };
         }
       },
-      options() {
-        const currentSlug = _.get(this.$store, 'state.site.slug');
-
-        return [{
-          value: null,
-          label: 'None'
-        }].concat(_.map(filterBySite(this.args.options, currentSlug), (option) => {
-          if (_.isString(option)) {
-            return {
-              value: option,
-              label: _.startCase(option)
-            };
-          } else {
-            return {
-              value: option.value,
-              label: option.name
-            };
-          }
-        }));
-      },
       hasOptions() {
-        return this.options.length > 1; // the first (blank) option is automatically added
+        return this.options.length > 1 || this.args.list; // the first (blank) option is automatically added
       },
       isRequired() {
         return _.get(this.args, 'validate.required') === true || shouldBeRequired(this.args.validate, this.$store, this.name);
@@ -156,6 +148,43 @@
           // single new checked option
           this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: option.value });
         }
+      },
+      fetchListItems() {
+        const listName = this.args.list,
+          lists = this.$store.state.lists,
+          items = _.get(lists, `${listName}.items`);
+        let promise;
+
+        if (items) {
+          promise = Promise.resolve(items);
+        } else {
+          promise = this.$store.dispatch('getList', listName).then(() => _.get(lists, `${listName}.items`));
+        }
+
+        return promise;
+      },
+      setOptions(listItems = []) {
+        const currentSlug = _.get(this.$store, 'state.site.slug');
+
+        let allOptions = (this.args.options || []).concat(listItems || []);
+
+        allOptions = [{
+          value: null,
+          label: 'None'
+          }].concat(_.map(filterBySite(allOptions, currentSlug), (option) => {
+          if (_.isString(option)) {
+            return {
+              value: option,
+              label: _.startCase(option)
+            };
+          } else {
+            return {
+              value: option.value,
+              label: option.name
+            };
+          }
+        }));
+        this.options = allOptions;
       },
       disableInput() {
         this.isDisabled = true;

@@ -407,6 +407,7 @@ An enhanced browser `<select>` element, allowing the user to select one (or more
 
 * **multiple** - allow multiple options to be selected. data will be an object with options as keys, similar to checkbox-group
 * **search** - allow users to type stuff in to filter options. Extremely useful for longer options lists
+* **list** - The key `list`  is where the value is the name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`.
 * **options** - an array of strings or objects (with `name`, `value`, and optionally `sites`)
 * **help** - description / helper text for the field
 * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
