@@ -83,7 +83,7 @@ An array of objects with arbitrary properties. Each property may have any inputs
 
 ### Complex List Arguments
 
-* **props** an array of objects, represending the fields in each item. Each item should have a name, defined by `prop: 'name'`, as well as `_label` and the input that item uses.
+* **props** an array of objects, representing the fields in each item. Each item should have a name, defined by `prop: 'name'`, as well as `_label` and the input that item uses.
 
 ### Complex List Usage
 
@@ -91,7 +91,7 @@ An array of objects with arbitrary properties. Each property may have any inputs
 * Items can be added by clicking the `add` button
 * When a complex-list is _not_ empty, the focused item will have actions it, with `add` and `remove` buttons
 * Items can be removed by clicking the `remove` button
-* Items in a complex-list cannot be reordered, but can be added and removed from anywhere in the list.
+* Items in a complex-list cannot be reordered, but can be added and removed from anywhere in the list, except before the first item.
 
 ```yaml
 links:
@@ -407,8 +407,10 @@ An enhanced browser `<select>` element, allowing the user to select one (or more
 
 * **multiple** - allow multiple options to be selected. data will be an object with options as keys, similar to checkbox-group
 * **search** - allow users to type stuff in to filter options. Extremely useful for longer options lists
-* **list** - The key `list`  is where the value is the name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`.
+* **list** - The key `list` is where the value is the name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`.
 * **options** - an array of strings or objects (with `name`, `value`, and optionally `sites`)
+* **keys** passthrough option for Keen to specify keys for input objects, especially for use when you don't control the input shape, e.g. lists
+* **storeRawData** normally only the `value` of each option is stored, but with this option you can store the entire input object
 * **help** - description / helper text for the field
 * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
 * **validate.required** - either `true` or an object that described the conditions that should make this field required
