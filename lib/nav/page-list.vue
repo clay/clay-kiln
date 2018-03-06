@@ -219,7 +219,6 @@
   function buildQuery({ siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username }) { // eslint-disable-line
     let query = {
       index: 'pages',
-      type: '_doc',
       body: {
         size: DEFAULT_QUERY_SIZE,
         from: offset,

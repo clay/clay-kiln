@@ -150,7 +150,6 @@
 
         return postJSON(prefix + searchRoute, {
           index: 'users',
-          type: '_doc',
           body: {
             query: buildUserQuery(query),
             size: 500, // todo: paginate this once we redesign the clay menu (use the same pagination UI)
