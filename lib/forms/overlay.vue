@@ -353,10 +353,27 @@
       },
       removeComponent() {
         const currentURI = _.get(this.$store, 'state.ui.currentSelection.uri'),
-          el = currentURI && getComponentEl(currentURI);
+          el = currentURI && getComponentEl(currentURI),
+          componentName = getComponentName(currentURI),
+          shouldConfirm = _.get(this.$store, `state.schemas['${componentName}']._confirmRemoval`);
 
-        this.$store.dispatch('unselect');
-        return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', el));
+        if (shouldConfirm) {
+          this.$store.dispatch('openModal', {
+            title: 'Remove Component',
+            type: 'type-confirm',
+            data: {
+              text: `Are you sure you want to remove this <strong>${componentName}</strong>?`,
+              name: componentName,
+              onConfirm: () => {
+                this.$store.dispatch('unselect');
+                return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', el));
+              }
+            }
+          });
+        } else {
+          this.$store.dispatch('unselect');
+          return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', el));
+        }
       },
       openAddComponentPane() {
         return this.$store.dispatch('openAddComponent', {
