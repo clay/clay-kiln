@@ -5,7 +5,7 @@
 
   ### Complex List Arguments
 
-  * **props** an array of objects, representing the fields in each item. Each item should have a name, defined by `prop: 'name'`, as well as `_label` and the input that item uses.
+  * **props** an array of objects, represending the fields in each item. Each item should have a name, defined by `prop: 'name'`, as well as `_label` and the input that item uses.
 
   ### Complex List Usage
 
@@ -13,7 +13,7 @@
   * Items can be added by clicking the `add` button
   * When a complex-list is _not_ empty, the focused item will have actions it, with `add` and `remove` buttons
   * Items can be removed by clicking the `remove` button
-  * Items in a complex-list cannot be reordered, but can be added and removed from anywhere in the list, except before the first item.
+  * Items in a complex-list cannot be reordered, but can be added and removed from anywhere in the list.
 
   ```yaml
   links:
