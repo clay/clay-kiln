@@ -29,15 +29,15 @@ describe('magic-button transformers', () => {
     const fn = lib.getComponentInstance;
 
     it('gets default component ref', () => {
-      expect(fn('nymag.com/scienceofus/components/article')).to.equal('/components/article');
+      expect(fn('nymag.com/scienceofus/_components/article')).to.equal('/_components/article');
     });
 
     it('gets instance component ref', () => {
-      expect(fn('nymag.com/scienceofus/components/article/instances/ciovznh8t004jyjy76b897d7k')).to.equal('/components/article/instances/ciovznh8t004jyjy76b897d7k');
+      expect(fn('nymag.com/scienceofus/_components/article/instances/ciovznh8t004jyjy76b897d7k')).to.equal('/_components/article/instances/ciovznh8t004jyjy76b897d7k');
     });
 
     it('gets instance with version', () => {
-      expect(fn('nymag.com/scienceofus/components/article/instances/ciovznh8t004jyjy76b897d7k@published')).to.equal('/components/article/instances/ciovznh8t004jyjy76b897d7k@published');
+      expect(fn('nymag.com/scienceofus/_components/article/instances/ciovznh8t004jyjy76b897d7k@published')).to.equal('/_components/article/instances/ciovznh8t004jyjy76b897d7k@published');
     });
   });
 
