@@ -107,7 +107,7 @@
       },
       options() {
         const data = this.data,
-          assetPath = _.get(this.$store, 'state.site.assetPath');
+          assetLocation = _.get(this.$store, 'state.site.assetHost') || _.get(this.$store, 'state.site.assetPath');
 
         return _.map(this.args.options, (option) => {
           const hasImgIcon = option.icon && _.head(option.icon) === '/',
@@ -118,7 +118,7 @@
             value: option.value,
             hasMaterialIcon,
             hasImgIcon,
-            icon: hasImgIcon ? `${assetPath}${option.icon}` : option.icon,
+            icon: hasImgIcon ? `${assetLocation}${option.icon}` : option.icon,
             text: option.text || option.value.split('-').map(_.startCase).join(' '),
             checked: this.multiple ? data[option.value] === true : data === option.value
           };
