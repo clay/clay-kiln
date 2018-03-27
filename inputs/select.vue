@@ -84,7 +84,6 @@
 <script>
   import _ from 'lodash';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
-  import { filterBySite } from '../lib/utils/site-filter';
   import label from '../lib/utils/label';
   import { shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
   import UiSelect from 'keen/UiSelect';
@@ -99,53 +98,56 @@
       };
     },
     mounted() {
-      if(this.args.list){
+      if (this.args.list) {
         this.fetchListItems().then( listItems => {
           this.listOptions = listItems;
-        }); // todo: ".catch"?
+        }).catch( () => {
+          log.error(`Error getting list for ${this.args.list}`);
+        });
       }
     },
     computed: {
-      keys () {
-        return {
+      keys() {
+        return _.assign({
           label: 'name',
           value: 'value',
-          ...this.args.keys
-        }
+        }, this.args.keys);
       },
-      NULL_OPTION () {
+      NULL_OPTION() {
         return {
           [this.keys.label]: 'None',
           [this.keys.value]: null,
-        }
+        };
       },
       // combine arg/prop options, fetched list options, and a null option for non-multiple selects
-      options () {
-        const propOptions = (this.args.options || [])
-        let opts = propOptions.concat(this.listOptions)
+      options() {
+        const propOptions = this.args.options || [];
+
+        let opts = propOptions.concat(this.listOptions);
+
         if (opts.length > 0) {
           if (!this.args.multiple) {
-            opts = [ this.NULL_OPTION, ...opts ]
+            opts = [ this.NULL_OPTION ].concat(opts);
           }
-          opts = opts.map(this.formatOptionForInput)
+          opts = opts.map(this.formatOptionForInput);
         }
-        return opts
+        return opts;
       },
       // convert store data into a format suitable for Keen UiSelect.value prop
-      value () {
+      value() {
         if (!this.data) {
           // defaults to pass Keen's type check
-          return this.args.multiple ? [] : {}
+          return this.args.multiple ? [] : {};
         } else if (this.args.storeRawData) {
-          return this.data
+          return this.data;
         } else {
-          return (this.args.multiple)
+          return this.args.multiple
             ? this.options.filter(o => this.data.includes(o.value))
-            : this.options.find(o => this.data === o.value)
+            : this.options.find(o => this.data === o.value);
         }
       },
       hasOptions() {
-        return (this.options.length > 0);
+        return this.options.length > 0;
       },
       isRequired() {
         return _.get(this.args, 'validate.required') === true || shouldBeRequired(this.args.validate, this.$store, this.name);
@@ -162,15 +164,15 @@
     },
     methods: {
       // input may be stored as simply a value (scalar) or the entire input object
-      formatOptionForStore (o) {
+      formatOptionForStore(o) {
         if (_.isObject(o) && !this.args.storeRawData) {
-          return o[this.keys.value]
+          return o[this.keys.value];
         } else {
-          return o
+          return o;
         }
       },
       // basically, all input takes the object form
-      formatOptionForInput (o) {
+      formatOptionForInput(o) {
         // start-case labels for scalar options
         if (_.isString(o) || _.isNumber(o)) {
           return {
@@ -178,13 +180,14 @@
             [this.keys.label]: _.startCase(o)
           };
         } else {
-          return o
+          return o;
         }
       },
-      handleInput (value) {
-        const data = (this.args.multiple)
+      handleInput(value) {
+        const data = this.args.multiple
           ? value.map(this.formatOptionForStore)
-          : this.formatOptionForStore(value)
+          : this.formatOptionForStore(value);
+
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data });
       },
       fetchListItems() {
@@ -192,6 +195,7 @@
         const listName = this.args.list,
           lists = this.$store.state.lists,
           list = _.get(lists, listName, {});
+
         let promise;
 
         // todo: hmm i feel like we could use a light wrapper for this list retrieval business
