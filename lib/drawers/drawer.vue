@@ -139,9 +139,7 @@
       },
       tabType() {
         return this.name === 'publish' ? 'icon-and-text' : 'text';
-      }
-    },
-    asyncComputed: {
+      },
       tabs() {
         if (this.name === 'contributors') {
           return [{
@@ -169,19 +167,17 @@
             selected: true
           }];
         } else if (this.name === 'publish') {
-          return this.$store.dispatch('validate').then(() => {
-            const errors = _.get(this.$store, 'state.validation.errors');
+          const errors = _.get(this.$store, 'state.validation.errors');
 
-            return [{
-              title: 'Health',
-              component: 'health',
-              selected: errors.length > 0
-            }, {
-              title: 'Publish',
-              component: 'publish',
-              selected: errors.length === 0
-            }];
-          });
+          return [{
+            title: 'Health',
+            component: 'health',
+            selected: errors.length > 0
+          }, {
+            title: 'Publish',
+            component: 'publish',
+            selected: errors.length === 0
+          }];
         }
       }
     },
