@@ -79,7 +79,7 @@
     .input-container-wrapper {
       height: 100%;
       margin: 0;
-      overflow: scroll;
+      overflow: auto;
       padding: 0;
       width: 100%;
     }
