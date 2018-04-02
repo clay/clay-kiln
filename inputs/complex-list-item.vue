@@ -70,8 +70,9 @@
           <div class="complex-list-item-actions-inner ui-button-group">
             <span class="complex-list-item-actions-left">Item {{ index + 1 }}/{{ total }}</span>
             <div class="complex-list-item-actions-right ui-button-group">
+              <ui-button v-if="isFirstItem" buttonType="button" type="secondary" color="accent" icon="arrow_upward" @click.stop.prevent="addItemAndUnselect(-1)">Add Above</ui-button>
               <ui-button buttonType="button" type="secondary" color="red" icon="delete" @click.stop.prevent="removeItem(index)">Remove</ui-button>
-              <ui-button buttonType="button" type="secondary" color="accent" icon="add" @click.stop.prevent="addItemAndUnselect(index)">Add Another</ui-button>
+              <ui-button buttonType="button" type="secondary" color="accent" icon="add" @click.stop.prevent="addItemAndUnselect(index)">Add Below</ui-button>
             </div>
           </div>
         </div>
@@ -108,6 +109,9 @@
     computed: {
       isCurrentItem() {
         return this.currentItem === this.index;
+      },
+      isFirstItem() {
+        return this.index === 0;
       },
       fieldNames() {
         return _.map(this.schema, (field) => field.prop); // names for all the fields in this item
