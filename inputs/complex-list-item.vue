@@ -83,6 +83,7 @@
 
 <script>
   import _ from 'lodash';
+  import 'intersection-observer'; // polyfill for safari
   import { fieldProp } from '../lib/utils/references';
   import velocity from 'velocity-animate/velocity.min.js';
   import field from '../lib/forms/field.vue';
