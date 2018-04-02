@@ -447,7 +447,7 @@
         }
 
         store.dispatch('savePage', { customUrl: url }).then(() => {
-          if (url && !_.isString(undoUrl)) {
+          if (url && !_.isString(undoUrl)) { // by default this method will be passed the Event that triggered it. check to see if it's passed an explicit undoUrl instead
             store.dispatch('showSnackbar', 'Saved custom page url');
           } else {
             store.dispatch('showSnackbar', {
