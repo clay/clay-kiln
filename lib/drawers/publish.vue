@@ -447,7 +447,7 @@
         }
 
         store.dispatch('savePage', { customUrl: url }).then(() => {
-          if (url && !undoUrl) {
+          if (url && !_.isString(undoUrl)) {
             store.dispatch('showSnackbar', 'Saved custom page url');
           } else {
             store.dispatch('showSnackbar', {
