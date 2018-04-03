@@ -140,6 +140,8 @@ _groups:
 >
 > Please note that when comparing _more than two fields_, you cannot use `XOR` (as it's logically impossible to XOR more than two boolean values). For `AND`, `OR`, and `XOR` you must also use the same comparator between each field rather than mixing and matching them.
 
+Placeholders in groups may use deep field comparison to calculate emptiness of complex-lists. For example, `ifEmpty: 'byline.names'` will look for emptiness in the prop `names` in all items in the `byline` complex-list. Note that deep field comparison is only supported up to two levels deep, so using `isEmpty: byline.names.text` will throw an error.
+
 ### Settings Group
 
 The _Component Settings Form_ is a special type of overlay form that's created when you add a group called `settings` to your schema. Components with `settings` groups get a button in their component selector to open the settings form, so don't add `data-editable="settings"` to any elements in the template. Settings groups must not have `_label` (their form will be titled "[Component Name] Settings"), though they may have `_placeholder` (this is useful for permanent placeholders).
