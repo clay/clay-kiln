@@ -10,7 +10,7 @@
   * **list** - The key `list` is where the value is the name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`.
   * **options** - an array of strings or objects (with `name`, `value`, and optionally `sites`)
   * **keys** passthrough option for Keen to specify keys for input objects, especially for use when you don't control the input shape, e.g. lists. Defaults to `{label: 'name', value: 'value'}`
-  * **storeRawData** normally only the `value` of each option is stored, but with this option you can store the entire input object
+  * **storeRawData** normally only the `value` of each option is stored, but with this option you can store the entire input object. note that this only works when `multiple` is false
   * **help** - description / helper text for the field
   * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
   * **validate.required** - either `true` or an object that described the conditions that should make this field required
@@ -86,6 +86,7 @@
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import label from '../lib/utils/label';
   import { shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
+  import { filterBySite } from '../lib/utils/site-filter';
   import UiSelect from 'keen/UiSelect';
   import attachedButton from './attached-button.vue';
 
@@ -111,7 +112,7 @@
         return _.assign({
           label: 'name',
           value: 'value',
-        }, this.args.keys);
+        }, this.args.keys || {});
       },
       NULL_OPTION() {
         return {
@@ -121,29 +122,42 @@
       },
       // combine arg/prop options, fetched list options, and a null option for non-multiple selects
       options() {
-        const propOptions = this.args.options || [];
+        const propOptions = this.args.options || [],
+          currentSlug = _.get(this.$store, 'state.site.slug');
 
-        let opts = propOptions.concat(this.listOptions);
+        let fullOptions = propOptions.concat(this.listOptions);
 
-        if (opts.length > 0) {
-          if (!this.args.multiple) {
-            opts = [ this.NULL_OPTION ].concat(opts);
-          }
-          opts = opts.map(this.formatOptionForInput);
+        // single-select must have null option
+        if (fullOptions.length && !this.args.multiple) {
+          fullOptions = [this.NULL_OPTION].concat(fullOptions);
         }
-        return opts;
+
+        // filter by site specificity
+        fullOptions = filterBySite(fullOptions, currentSlug);
+
+        // format the options for the UI
+        return _.map(fullOptions, (option) => {
+          if (_.isString(option) || _.isNumber(option)) {
+            return {
+              [this.keys.value]: option,
+              [this.keys.label]: _.startCase(option)
+            };
+          } else {
+            return option;
+          }
+        });
       },
       // convert store data into a format suitable for Keen UiSelect.value prop
       value() {
         if (!this.data) {
           // defaults to pass Keen's type check
-          return this.args.multiple ? [] : {};
+          return this.args.multiple ? [] : this.NULL_OPTION;
+        } else if (this.args.multiple) {
+          return _.filter(this.options, (option) => !!this.data[option.value]);
         } else if (this.args.storeRawData) {
           return this.data;
         } else {
-          return this.args.multiple
-            ? this.options.filter(o => this.data.includes(o.value))
-            : this.options.find(o => this.data === o.value);
+          return _.find(this.options, (option) => this.data === option.value);
         }
       },
       hasOptions() {
@@ -163,46 +177,33 @@
       }
     },
     methods: {
-      // input may be stored as simply a value (scalar) or the entire input object
-      formatOptionForStore(o) {
-        if (_.isObject(o) && !this.args.storeRawData) {
-          return o[this.keys.value];
-        } else {
-          return o;
-        }
-      },
-      // basically, all input takes the object form
-      formatOptionForInput(o) {
-        // start-case labels for scalar options
-        if (_.isString(o) || _.isNumber(o)) {
-          return {
-            [this.keys.value]: o,
-            [this.keys.label]: _.startCase(o)
-          };
-        } else {
-          return o;
-        }
-      },
       handleInput(value) {
-        const data = this.args.multiple
-          ? value.map(this.formatOptionForStore)
-          : this.formatOptionForStore(value);
+        let data;
+
+        if (this.args.multiple) {
+          // set all existing options in data to false
+          data = _.mapValues(_.cloneDeep(this.data), () => false);
+          // for each of the selected options, set the related key in the data to true
+          _.forEach(value, (option) => data[option.value] = true);
+        } else if (this.args.storeRawData) {
+          data = _.cloneDeep(value);
+        } else {
+          data = value.value;
+        }
 
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data });
       },
       fetchListItems() {
         // todo: look into "loading" prop for UiSelect
         const listName = this.args.list,
-          lists = this.$store.state.lists,
-          list = _.get(lists, listName, {});
+          list = _.get(this, `$store.state.lists['${listName}']`, {});
 
         let promise;
 
-        // todo: hmm i feel like we could use a light wrapper for this list retrieval business
         if (list.items && !list.isLoading && !list.error) {
           promise = Promise.resolve(list.items);
         } else {
-          promise = this.$store.dispatch('getList', listName).then(() => lists[listName].items);
+          promise = this.$store.dispatch('getList', listName).then(() => list.items);
         }
 
         return promise;
