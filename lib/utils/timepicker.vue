@@ -52,7 +52,7 @@
       }
     },
     mounted() {
-      this.timeValue = !!this.value && _.isString(this.value) ? this.value : '';
+      this.timeValue = _.isString(this.value) ? this.value : '';
     },
     methods: {
       // every time the value of the input changes, update the store
