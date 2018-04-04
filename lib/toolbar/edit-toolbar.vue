@@ -152,7 +152,7 @@
           upTime = _.get(state, 'page.state.updateTime'); // latest updated timestamp
 
         if (pubTime && upTime) {
-          return isAfter(upTime, addSeconds(pubTime, 30)); // give it 30 seconds of leeway, in case there are slow updates to the server
+          return isAfter(upTime, pubTime);
         } else {
           return false;
         }
