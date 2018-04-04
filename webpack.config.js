@@ -93,7 +93,7 @@ module.exports = {
   module: {
     rules: [{
       // todo: remove vue-unit (and update vue-unit dep) once vue-unit hits 0.3.0
-      test: /node_modules\/(vue-unit|keen-ui|striptags)\//,
+      test: /node_modules\/(vue-unit|keen-ui|striptags|clayutils)\//,
       loader: 'babel-loader'
     }, {
       test: /\.js$/,
