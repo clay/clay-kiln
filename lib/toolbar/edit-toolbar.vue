@@ -108,7 +108,6 @@
   import _ from 'lodash';
   import { mapState } from 'vuex';
   import isAfter from 'date-fns/is_after';
-  import addSeconds from 'date-fns/add_seconds';
   import toggleEdit from '../utils/toggle-edit';
   import { getItem } from '../utils/local';
   import progressBar from './progress.vue';
