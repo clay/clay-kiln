@@ -52,7 +52,7 @@
       }
     },
     mounted() {
-      this.timeValue = !!this.value && _.isString(this.value) ? dateFormat(this.value, 'h:mm A') : '';
+      this.timeValue = !!this.value && _.isString(this.value) ? dateFormat(parseNaturalDate(this.value), 'HH:mm') : '';
     },
     methods: {
       // every time the value of the input changes, update the store
