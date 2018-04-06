@@ -125,7 +125,7 @@
       options() {
         const propOptions = this.args.options || [],
           currentSlug = _.get(this.$store, 'state.site.slug'),
-          hasNoneOption = propOptions.find((val)=>{
+          noneOption = propOptions.find((val)=>{
             return val.name === 'None';
           });
 
@@ -133,7 +133,7 @@
 
         // if there is no 'None' option defined then add a null option because
         // single-select must have null option, if there is no null option
-        if (fullOptions.length && !this.args.multiple && !hasNoneOption) {
+        if (fullOptions.length && !this.args.multiple && !noneOption) {
           fullOptions = [this.NULL_OPTION].concat(fullOptions);
         }
 
