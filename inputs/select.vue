@@ -123,12 +123,16 @@
       // combine arg/prop options, fetched list options, and a null option for non-multiple selects
       options() {
         const propOptions = this.args.options || [],
-          currentSlug = _.get(this.$store, 'state.site.slug');
+          currentSlug = _.get(this.$store, 'state.site.slug'),
+          noneOption = propOptions.filter((val)=>{
+            return val.name === 'None';
+          });
 
         let fullOptions = propOptions.concat(this.listOptions);
 
-        // single-select must have null option
-        if (fullOptions.length && !this.args.multiple) {
+        // if there is no 'None' option defined then add a null option because
+        // single-select must have null option, if there is no null option
+        if (fullOptions.length && !this.args.multiple && !noneOption.length) {
           fullOptions = [this.NULL_OPTION].concat(fullOptions);
         }
 
