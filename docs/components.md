@@ -60,4 +60,4 @@ Schemas for components that are currently on the page are automatically parsed b
 
 ## Variations
 
-Components can have variations, which is defined by corresponding stylesheets in the site's styleguide folder. There is the default variation (`componet-name.css`) and variations are defined as `component-name_variation.css`. Kiln will automatically generate a select input with the variations and a 'Component Variation' tab in the Settings form. If the component doesn't have Settings, Kiln will generate this too.
+Components can have variations, which is defined by corresponding stylesheets in the site's styleguide folder. There is the default variation (`component-name.css`) and variations are defined as `component-name_variation.css`. Kiln will automatically generate a select input with the variations. This input will be in a 'Component Variation' tab in the Settings group. If the component doesn't have a Settings group set, Kiln will generate this too.
