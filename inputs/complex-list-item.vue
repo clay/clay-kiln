@@ -70,7 +70,7 @@
 </style>
 
 <template>
-  <div class="complex-list-item" :class="{ 'is-expanded': isCurrentItem }" :ref="name" v-observe-visibility="visibilityChanged" @click.stop="onClick">
+  <div class="complex-list-item" :class="{ 'is-expanded': isCurrentItem }" :ref="name" v-observe-visibility="visibilityChanged" @click.stop="onClick" @focusin.stop="onFocus">
     <div v-if="isVisible" class="complex-list-item-inner">
       <field v-for="(field, fieldIndex) in fieldNames" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="name + '.' + field" :data="fields[field]" :schema="fieldSchemas[field]"></field>
       <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
@@ -167,6 +167,9 @@
         this.$emit('current', this.index + 1);
       },
       onClick() {
+        this.$emit('current', this.index);
+      },
+      onFocus() {
         this.$emit('current', this.index);
       },
       visibilityChanged(isInViewport, entry) {
