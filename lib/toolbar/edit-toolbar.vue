@@ -108,7 +108,6 @@
   import _ from 'lodash';
   import { mapState } from 'vuex';
   import isAfter from 'date-fns/is_after';
-  import addSeconds from 'date-fns/add_seconds';
   import toggleEdit from '../utils/toggle-edit';
   import { getItem } from '../utils/local';
   import progressBar from './progress.vue';
@@ -152,7 +151,7 @@
           upTime = _.get(state, 'page.state.updateTime'); // latest updated timestamp
 
         if (pubTime && upTime) {
-          return isAfter(upTime, addSeconds(pubTime, 30)); // give it 30 seconds of leeway, in case there are slow updates to the server
+          return isAfter(upTime, pubTime);
         } else {
           return false;
         }
