@@ -8,7 +8,7 @@
     border: 1px solid $divider-color;
     border-radius: 2px;
     box-shadow: $shadow-2dp;
-    padding: 16px;
+    padding: 16px 16px 0;
     transition: all 200ms $standard-curve;
 
     &:hover {
@@ -33,13 +33,17 @@
   }
 
   .complex-list-item-actions {
-    margin-top: 10px;
-    width: 100%;
+    border-top: 1px solid $card-border-color;
+    margin: 16px -16px 0;
+    // account for outer padding
+    padding: 8px 16px;
+    width: calc(100% + 32px);
   }
 
   .complex-list-item-actions-inner {
     align-items: center;
     display: flex;
+    justify-content: space-between;
     width: 100%;
   }
 
@@ -53,9 +57,14 @@
     height: 36px;
   }
 
+  .complex-list-item-position {
+    color: $text-alt-color;
+    margin: 0 4px;
+  }
+
   .complex-list-item-actions-right {
     display: flex;
-    flex: 1 0 auto;
+    flex: 0 0 auto;
     justify-content: flex-end;
   }
 </style>
@@ -65,18 +74,22 @@
     <div v-if="isVisible" class="complex-list-item-inner">
       <field v-for="(field, fieldIndex) in fieldNames" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="name + '.' + field" :data="fields[field]" :schema="fieldSchemas[field]"></field>
       <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
-      <transition name="complex-list-item-actions" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
-        <div v-if="isCurrentItem" class="complex-list-item-actions">
+        <div class="complex-list-item-actions">
           <div class="complex-list-item-actions-inner ui-button-group">
-            <span class="complex-list-item-actions-left">Item {{ index + 1 }}/{{ total }}</span>
-            <div class="complex-list-item-actions-right ui-button-group">
-              <ui-button v-if="isFirstItem" buttonType="button" type="secondary" color="accent" icon="arrow_upward" @click.stop.prevent="addItemAndUnselect(-1)">Add Above</ui-button>
-              <ui-button buttonType="button" type="secondary" color="red" icon="delete" @click.stop.prevent="removeItem(index)">Remove</ui-button>
-              <ui-button buttonType="button" type="secondary" color="accent" icon="add" @click.stop.prevent="addItemAndUnselect(index)">Add Below</ui-button>
+            <div class="complex-list-item-actions-left ui-button-group">
+              <ui-icon-button v-if="!isFirstItem" buttonType="button" type="secondary" color="black" icon="keyboard_arrow_up" @click.stop.prevent="moveItem(index, 'up')"></ui-icon-button>
+              <span class="complex-list-item-position">{{ index + 1 }}/{{ total }}</span>
+              <ui-icon-button v-if="!isLastItem" buttonType="button" type="secondary" color="black" icon="keyboard_arrow_down" @click.stop.prevent="moveItem(index, 'down')"></ui-icon-button>
             </div>
+            <transition name="complex-list-item-actions" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
+              <div v-if="isCurrentItem" class="complex-list-item-actions-right ui-button-group">
+                <ui-button v-if="isFirstItem" buttonType="button" type="secondary" color="accent" icon="arrow_upward" @click.stop.prevent="addItemAndUnselect(-1)">Add Above</ui-button>
+                <ui-button buttonType="button" type="secondary" color="red" icon="delete" @click.stop.prevent="removeItem(index)">Remove</ui-button>
+                <ui-button buttonType="button" type="secondary" color="accent" icon="add" @click.stop.prevent="addItemAndUnselect(index)">Add Below</ui-button>
+              </div>
+            </transition>
           </div>
         </div>
-      </transition>
     </div>
     <div v-else class="complex-list-item-hidden"></div>
   </div>
@@ -89,6 +102,7 @@
   import velocity from 'velocity-animate/velocity.min.js';
   import field from '../lib/forms/field.vue';
   import UiButton from 'keen/UiButton';
+  import UiIconButton from 'keen/UiIconButton';
 
   export default {
     props: [
@@ -99,7 +113,8 @@
       'schema',
       'addItem',
       'removeItem',
-      'currentItem'
+      'currentItem',
+      'moveItem'
     ],
     data() {
       return {
@@ -112,6 +127,9 @@
       },
       isFirstItem() {
         return this.index === 0;
+      },
+      isLastItem() {
+        return this.index + 1 === this.total;
       },
       fieldNames() {
         return _.map(this.schema, (field) => field.prop); // names for all the fields in this item
@@ -136,12 +154,12 @@
     methods: {
       enter(el, done) {
         this.$nextTick(() => {
-          velocity(el, 'slideDown', { duration: 375, complete: done });
+          velocity(el, 'fadeIn', { duration: 375, complete: done });
         });
       },
       leave(el, done) {
         this.$nextTick(() => {
-          velocity(el, 'slideUp', { delay: 50, duration: 375, complete: done });
+          velocity(el, 'fadeOut', { delay: 50, duration: 375, complete: done });
         });
       },
       addItemAndUnselect(id) {
@@ -163,7 +181,8 @@
     },
     components: {
       field,
-      UiButton
+      UiButton,
+      UiIconButton
     }
   };
 </script>
