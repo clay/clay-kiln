@@ -75,6 +75,7 @@
           :currentItem="currentItem"
           :addItem="addItem"
           :removeItem="removeItem"
+          :moveItem="moveItem"
           @current="onCurrentChange">
         </item>
       </transition-group>
@@ -130,6 +131,19 @@
 
         items.splice(index, 1); // remove item at the specified index
         this.updateFormData(items);
+      },
+      moveItem(index, direction) {
+        let items = _.cloneDeep(this.items),
+          item = _.head(items.splice(index, 1));
+
+        if (direction === 'up') {
+          // up one
+          items.splice(index - 1, 0, item);
+        } else {
+          // down one
+          items.splice(index + 1, 0, item);
+        }
+        this.updateFormData(items); // save the data
       },
       onCurrentChange(index) {
         this.currentItem = index;

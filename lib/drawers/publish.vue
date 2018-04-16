@@ -171,7 +171,7 @@
     </div>
 
     <!-- custom location -->
-    <ui-collapsible :open="hasCustomLocation" class="publish-section publish-location" title="Custom URL">
+    <ui-collapsible :open="hasCustomLocation" class="publish-section publish-location" title="Custom URL" ref="uiCollapsiblePublish">
       <form class="publish-location-form" @submit.prevent="saveLocation">
         <span class="location-description">Designate a custom URL for this page. This should only be used for special cases, such as index pages and static pages.</span>
         <ui-textbox class="location-input" v-model="location" placeholder="/special-page.html" label="Enter Custom Location" :error="error" :invalid="isInvalid" @input="onLocationInput"></ui-textbox>
@@ -465,12 +465,18 @@
         // note: if it's empty string, catch it early (removing custom urls is totally valid)
         // note: if it's a full url, assume the user knows what they're doing and say it's valid
         const val = this.location,
-          routes = _.get(this.$store, 'state.locals.routes');
+          routes = _.get(this.$store, 'state.locals.routes'),
+          current = this.isInvalid;
 
         if (val === '' || val.match(/^http/i) || isValidUrl(val, routes)) {
           this.isInvalid = false;
         } else {
           this.isInvalid = true;
+        }
+        // if validity state has changed, refresh collapsible height to account
+        // for addition or removal of error message
+        if (current !== this.isInvalid) {
+          this.$refs.uiCollapsiblePublish.refreshHeight();
         }
       },
       updateTime(val) {
