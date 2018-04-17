@@ -32,11 +32,14 @@
   "bugs": {
     "url": "https://github.com/clay/clay-kiln/issues"
   },
+  "main": "model.js",
   "files": [
     "dist",
     "media",
     "template.handlebars",
-    "schema.yml"
+    "schema.yml",
+    "bootstrap.yml",
+    "model.js"
   ],
   "precommit": [
     "npm run lint"

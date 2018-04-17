@@ -1,0 +1,6 @@
+_components:
+  clay-kiln:
+    allow: true
+    instances:
+      general:
+        allow: true
