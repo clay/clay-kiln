@@ -45,6 +45,19 @@
   >       - foo (site1)
   >       - bar (not: site1)
   >       - baz (site1, site2)
+  >     ...
+  >
+  >    specialFeature:
+  >     fn: select
+  >     options:
+  >       -
+  >          name: None
+  >          value: General
+  >        - name: Interview
+  >          value: interview
+  >        - name: Slideshow
+  >          value: slideshow
+
   > ```
 </docs>
 
