@@ -35,7 +35,8 @@
 
   > #### info::Usage Notes
   >
-  > * no/empty option is pre-selected by default (you don't need to specify an empty option in the schema)
+  > * you can have a value for a 'None' option, this is useful for components that have defaults that you want to be able to revert to after selecting an option
+  > * if a 'None' option is not specified, it is generated and you don't need to specify an empty option in the schema
   > * you can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components)
   >
   > ```yaml
@@ -44,6 +45,21 @@
   >       - foo (site1)
   >       - bar (not: site1)
   >       - baz (site1, site2)
+  >     ...
+  >
+  >    specialFeature:
+  >     fn: select
+  >     options:
+  >       -
+  >          name: None
+  >          value: General
+  >        - name: Interview
+  >          value: interview
+  >        - name: Slideshow
+  >          value: slideshow
+  >        - name: Live Blog
+  >          value: live-blog
+
   > ```
 </docs>
 
@@ -123,12 +139,16 @@
       // combine arg/prop options, fetched list options, and a null option for non-multiple selects
       options() {
         const propOptions = this.args.options || [],
-          currentSlug = _.get(this.$store, 'state.site.slug');
+          currentSlug = _.get(this.$store, 'state.site.slug'),
+          noneOption = propOptions.find((val)=>{
+            return val.name === 'None';
+          });
 
         let fullOptions = propOptions.concat(this.listOptions);
 
-        // single-select must have null option
-        if (fullOptions.length && !this.args.multiple) {
+        // if there is no 'None' option defined then add a null option because
+        // single-select must have null option, if there is no null option
+        if (fullOptions.length && !this.args.multiple && !noneOption) {
           fullOptions = [this.NULL_OPTION].concat(fullOptions);
         }
 
