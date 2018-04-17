@@ -57,6 +57,8 @@
   >          value: interview
   >        - name: Slideshow
   >          value: slideshow
+  >        - name: Live Blog
+  >          value: live-blog
 
   > ```
 </docs>
