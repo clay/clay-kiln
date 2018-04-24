@@ -15,7 +15,7 @@ describe('wysiwyg sanitize', () => {
 
     it('unescapes html tags', () => expect(fn('&lt;strong&gt;hi&lt;/strong&gt;')).to.equal('<strong>hi</strong>'));
 
-    it('allows strong, em, a (with href), br, s, sup, sub', () => {
+    it('allows strong, em, a (with href), br, s, sup, sub, u', () => {
       expectTag(fn, 'strong');
       expectTag(fn, 'em');
       expect(fn('<a href="http://google.com">hi</a>')).to.equal('<a href="http://google.com">hi</a>');
@@ -27,6 +27,7 @@ describe('wysiwyg sanitize', () => {
       expect(fn('<span class="kiln-phrase clay-designed">hi</span>')).to.equal('<span class="kiln-phrase clay-designed">hi</span>');
       expectTag(fn, 'sup');
       expectTag(fn, 'sub');
+      expectTag(fn, 'u');
     });
 
     it('transforms div to p (and converts to br)', () => {
