@@ -9,19 +9,50 @@
     border-radius: 2px;
     box-shadow: $shadow-2dp;
     padding: 16px 16px 0;
-    transition: all 200ms $standard-curve;
+    transition: box-shadow 200ms $standard-curve;
 
     &:hover {
       box-shadow: $shadow-4dp;
     }
 
-    &.is-expanded {
+    &.is-current {
       box-shadow: $shadow-8dp;
     }
   }
 
   .complex-list-item-hidden {
     height: 100px;
+  }
+
+  .complex-list-item-collapsed {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    padding-bottom: 16px;
+  }
+
+  .complex-list-item-collapsed-index {
+    @include type-subheading();
+
+    color: $text-alt-color;
+    flex: 0 0 auto;
+  }
+
+  .complex-list-item-collapsed-title {
+    @include type-subheading();
+
+    color: $text-color;
+    flex: 1 0 auto;
+    oveflow: hidden;
+    padding: 0 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .complex-list-item-collapsed-caret {
+    flex: 0 0 auto;
   }
 
   .complex-list-item-inner {
@@ -70,28 +101,37 @@
 </style>
 
 <template>
-  <div class="complex-list-item" :class="{ 'is-expanded': isCurrentItem }" :ref="name" v-observe-visibility="visibilityChanged" @click.stop="onClick" @focusin.stop="onFocus">
-    <div v-if="isVisible" class="complex-list-item-inner">
-      <field v-for="(field, fieldIndex) in fieldNames" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="name + '.' + field" :data="fields[field]" :schema="fieldSchemas[field]"></field>
-      <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
-        <div class="complex-list-item-actions">
-          <div class="complex-list-item-actions-inner ui-button-group">
-            <div class="complex-list-item-actions-left ui-button-group">
-              <ui-icon-button v-if="!isFirstItem" buttonType="button" type="secondary" color="black" icon="keyboard_arrow_up" @click.stop.prevent="moveItem(index, 'up')"></ui-icon-button>
-              <span class="complex-list-item-position">{{ index + 1 }}/{{ total }}</span>
-              <ui-icon-button v-if="!isLastItem" buttonType="button" type="secondary" color="black" icon="keyboard_arrow_down" @click.stop.prevent="moveItem(index, 'down')"></ui-icon-button>
-            </div>
-            <transition name="complex-list-item-actions" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
-              <div v-if="isCurrentItem" class="complex-list-item-actions-right ui-button-group">
-                <ui-button v-if="isFirstItem" buttonType="button" type="secondary" color="accent" icon="arrow_upward" @click.stop.prevent="addItemAndUnselect(-1)">Add Above</ui-button>
-                <ui-button buttonType="button" type="secondary" color="red" icon="delete" @click.stop.prevent="removeItem(index)">Remove</ui-button>
-                <ui-button buttonType="button" type="secondary" color="accent" icon="add" @click.stop.prevent="addItemAndUnselect(index)">Add Below</ui-button>
+  <div class="complex-list-item" :class="{ 'is-current': isCurrentItem, 'is-expanded': isExpanded }" :ref="name" v-observe-visibility="visibilityChanged" @click.stop="onClick" @focusin.stop="onFocus">
+    <transition name="complex-list-item-collapse" appear mode="out-in">
+      <div key="expanded-visible" v-if="isVisible && isExpanded" class="complex-list-item-inner">
+        <field v-for="(field, fieldIndex) in fieldNames" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="name + '.' + field" :data="fields[field]" :schema="fieldSchemas[field]"></field>
+        <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
+          <div class="complex-list-item-actions">
+            <div class="complex-list-item-actions-inner ui-button-group">
+              <div class="complex-list-item-actions-left ui-button-group">
+                <ui-icon-button v-if="!isFirstItem" buttonType="button" type="secondary" color="black" icon="keyboard_arrow_up" @click.stop.prevent="moveItem(index, 'up')"></ui-icon-button>
+                <span class="complex-list-item-position">{{ index + 1 }}/{{ total }}</span>
+                <ui-icon-button v-if="!isLastItem" buttonType="button" type="secondary" color="black" icon="keyboard_arrow_down" @click.stop.prevent="moveItem(index, 'down')"></ui-icon-button>
               </div>
-            </transition>
+              <transition name="complex-list-item-actions" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
+                <div v-if="isCurrentItem" class="complex-list-item-actions-right ui-button-group">
+                  <ui-button v-if="isFirstItem" buttonType="button" type="secondary" color="accent" icon="arrow_upward" @click.stop.prevent="addItemAndUnselect(-1)">Add Above</ui-button>
+                  <ui-button buttonType="button" type="secondary" color="red" icon="delete" @click.stop.prevent="removeItem(index)">Remove</ui-button>
+                  <ui-button buttonType="button" type="secondary" color="accent" icon="add" @click.stop.prevent="addItemAndUnselect(index)">Add Below</ui-button>
+                </div>
+              </transition>
+            </div>
           </div>
+      </div>
+      <div key="collapsed-visible" v-else-if="isVisible" class="complex-list-item-collapsed">
+        <div class="complex-list-item-collapsed-index">{{ index + 1 }}/{{ total }}</div>
+        <div class="complex-list-item-collapsed-title">{{ collapsedTitle }}</div>
+        <div class="complex-list-item-collapsed-caret">
+          <ui-icon-button buttonType="button" type="secondary" color="black" icon="keyboard_arrow_down"></ui-icon-button>
         </div>
-    </div>
-    <div v-else class="complex-list-item-hidden"></div>
+      </div>
+      <div key="invisisble" v-else class="complex-list-item-hidden"></div>
+    </transition>
   </div>
 </template>
 
@@ -122,8 +162,20 @@
       };
     },
     computed: {
+      isCollapsible() {
+        return _.has(this.schema, 'collapse');
+      },
+      collapsedTitle() {
+        return _.get(this.data, _.get(this.schema, 'collapse')) || 'New Item';
+      },
+      props() {
+        return _.get(this, 'schema.props');
+      },
       isCurrentItem() {
         return this.currentItem === this.index;
+      },
+      isExpanded() {
+        return this.isCurrentItem || !this.isCollapsible;
       },
       isFirstItem() {
         return this.index === 0;
@@ -132,13 +184,13 @@
         return this.index + 1 === this.total;
       },
       fieldNames() {
-        return _.map(this.schema, (field) => field.prop); // names for all the fields in this item
+        return _.map(this.props, (field) => field.prop); // names for all the fields in this item
       },
       fields() {
         return this.data; // data for all the fields in this item
       },
       fieldSchemas() {
-        return _.reduce(this.schema, (obj, field) => {
+        return _.reduce(this.props, (obj, field) => {
           const fieldName = field.prop,
             fieldSchema = _.omit(field, ['prop']);
 
@@ -148,18 +200,18 @@
       },
       hasRequiredFields() {
         // true if any of the fields in the current item have required validation
-        return _.some(this.schema, (obj) => _.has(obj, `${fieldProp}.validate.required`));
+        return _.some(this.props, (obj) => _.has(obj, `${fieldProp}.validate.required`));
       }
     },
     methods: {
       enter(el, done) {
         this.$nextTick(() => {
-          velocity(el, 'fadeIn', { duration: 375, complete: done });
+          velocity(el, 'fadeIn', { duration: 250, complete: done });
         });
       },
       leave(el, done) {
         this.$nextTick(() => {
-          velocity(el, 'fadeOut', { delay: 50, duration: 375, complete: done });
+          velocity(el, 'fadeOut', { delay: 50, duration: 250, complete: done });
         });
       },
       addItemAndUnselect(id) {

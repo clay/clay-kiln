@@ -5,7 +5,8 @@
 
   ### Complex List Arguments
 
-  * **props** an array of objects, represending the fields in each item. Each item should have a name, defined by `prop: 'name'`, as well as `_label` and the input that item uses.
+  * **props** an array of objects, representing the fields in each item. Each item should have a name, defined by `prop: 'name'`, as well as `_label` and the input that item uses.
+  * **collapse** a property that should be used as the title for items. If `collapse` is set, all but the current item will be collapsed, only displaying its title. This is useful for lists with lots of complicated items.
 
   ### Complex List Usage
 
@@ -19,6 +20,7 @@
   links:
     _has:
       input: complex-list
+      collapse: title
       props:
         -
           prop: url
@@ -63,14 +65,14 @@
 
 <template>
   <transition mode="out-in" name="hide-show" @after-enter="onResize">
-    <div class="complex-list" v-if="items.length">
+    <div class="complex-list" v-if="items.length" v-click-outside="unselect">
       <transition-group mode="out-in" name="hide-show" tag="div" class="complex-list-items" @after-enter="onListResize">
         <item v-for="(item, index) in items"
           :index="index"
           :total="items.length"
           :name="name + '.' + index"
           :data="item"
-          :schema="args.props"
+          :schema="args"
           :key="index"
           :currentItem="currentItem"
           :addItem="addItem"
@@ -124,6 +126,7 @@
         let items = _.cloneDeep(this.items);
 
         items.splice(index + 1, 0, newObj); // add new item after the specified index
+        this.currentItem = index + 1; // select new item
         this.updateFormData(items); // save the data
       },
       removeItem(index) {
@@ -139,11 +142,16 @@
         if (direction === 'up') {
           // up one
           items.splice(index - 1, 0, item);
+          this.currentItem = index - 1;
         } else {
           // down one
           items.splice(index + 1, 0, item);
+          this.currentItem = index + 1;
         }
         this.updateFormData(items); // save the data
+      },
+      unselect() {
+        this.currentItem = null;
       },
       onCurrentChange(index) {
         this.currentItem = index;
