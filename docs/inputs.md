@@ -83,7 +83,8 @@ An array of objects with arbitrary properties. Each property may have any inputs
 
 ### Complex List Arguments
 
-* **props** an array of objects, represending the fields in each item. Each item should have a name, defined by `prop: 'name'`, as well as `_label` and the input that item uses.
+* **props** an array of objects, representing the fields in each item. Each item should have a name, defined by `prop: 'name'`, as well as `_label` and the input that item uses.
+* **collapse** a property that should be used as the title for items. If `collapse` is set, all but the current item will be collapsed, only displaying its title. This is useful for lists with lots of complicated items.
 
 ### Complex List Usage
 
@@ -97,6 +98,7 @@ An array of objects with arbitrary properties. Each property may have any inputs
 links:
   _has:
     input: complex-list
+    collapse: title
     props:
       -
         prop: url
