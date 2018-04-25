@@ -63,7 +63,7 @@
 
 <template>
   <transition mode="out-in" name="hide-show" @after-enter="onResize">
-    <div class="complex-list" v-if="items.length">
+    <div class="complex-list" v-if="items.length" v-click-outside="unselect">
       <transition-group mode="out-in" name="hide-show" tag="div" class="complex-list-items" @after-enter="onListResize">
         <item v-for="(item, index) in items"
           :index="index"
@@ -124,6 +124,7 @@
         let items = _.cloneDeep(this.items);
 
         items.splice(index + 1, 0, newObj); // add new item after the specified index
+        this.currentItem = index + 1; // select new item
         this.updateFormData(items); // save the data
       },
       removeItem(index) {
@@ -146,6 +147,9 @@
           this.currentItem = index + 1;
         }
         this.updateFormData(items); // save the data
+      },
+      unselect() {
+        this.currentItem = null;
       },
       onCurrentChange(index) {
         this.currentItem = index;

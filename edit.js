@@ -19,6 +19,7 @@ import { standardCurve } from './lib/utils/references';
 import 'keen-ui/src/bootstrap'; // import this once, for KeenUI components
 import 'velocity-animate/velocity.ui.min.js'; // import this once, for velocity ui stuff
 import VueObserveVisibility from 'vue-observe-visibility';
+import VueClickOutside from 'vue-click-outside';
 
 // set animation defaults
 velocity.defaults.easing = standardCurve;
@@ -63,6 +64,7 @@ Vue.config.keyCodes.comma = 188;
 
 // register directives
 Vue.directive('conditional-focus', conditionalFocus());
+Vue.directive('click-outside', VueClickOutside);
 
 // export api for plugins, validators, inputs, buttons, etc
 window.kiln = window.kiln || {};

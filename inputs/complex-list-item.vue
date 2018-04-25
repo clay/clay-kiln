@@ -166,7 +166,7 @@
         return _.has(this.schema, 'collapse');
       },
       collapsedTitle() {
-        return _.get(this.data, _.get(this.schema, 'collapse'), 'New Item');
+        return _.get(this.data, _.get(this.schema, 'collapse')) || 'New Item';
       },
       props() {
         return _.get(this, 'schema.props');
