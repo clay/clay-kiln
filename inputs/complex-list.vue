@@ -70,7 +70,7 @@
           :total="items.length"
           :name="name + '.' + index"
           :data="item"
-          :schema="args.props"
+          :schema="args"
           :key="index"
           :currentItem="currentItem"
           :addItem="addItem"
@@ -139,9 +139,11 @@
         if (direction === 'up') {
           // up one
           items.splice(index - 1, 0, item);
+          this.currentItem = index - 1;
         } else {
           // down one
           items.splice(index + 1, 0, item);
+          this.currentItem = index + 1;
         }
         this.updateFormData(items); // save the data
       },
