@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { beforeEachHooks, afterEachHooks, mount } from 'vue-unit/src';
+import { beforeEachHooks, afterEachHooks, mount } from '@tom-kitchin/vue-unit';
 import * as logger from '../lib/utils/log'; // allow us to stub the default
 
 const testsContext = require.context('../', true, /^\.\/(lib|inputs)\/.*?\.test\.js$/);
