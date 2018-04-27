@@ -124,7 +124,7 @@
           </div>
       </div>
       <div key="collapsed-visible" v-else-if="isVisible" class="complex-list-item-collapsed">
-        <div class="complex-list-item-collapsed-index">{{ index + 1 }}/{{ total }}</div>
+        <div class="complex-list-item-collapsed-index">{{ originalIndex + 1 }}/{{ total }}</div>
         <div class="complex-list-item-collapsed-title">{{ collapsedTitle }}</div>
         <div class="complex-list-item-collapsed-caret">
           <ui-icon-button buttonType="button" type="secondary" color="black" icon="keyboard_arrow_down"></ui-icon-button>
