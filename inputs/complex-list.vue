@@ -144,6 +144,7 @@
    */
   function filterContent(items, query, keys) {
     const options = {
+        shouldSort: false,
         tokenize: true,
         findAllMatches: true,
         threshold: 0.3,
