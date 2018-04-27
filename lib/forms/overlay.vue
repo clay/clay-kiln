@@ -362,7 +362,7 @@
             title: 'Remove Component',
             type: 'type-confirm',
             data: {
-              text: `Are you sure you want to remove <strong>${componentName}</strong>?`,
+              text: `Are you sure you want to remove this <strong>${componentName}</strong>?`,
               name: componentName,
               onConfirm: (input) => {
                 this.$store.dispatch('unselect');
