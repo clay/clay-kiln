@@ -71,7 +71,6 @@
               text: `Are you sure you want to remove this <strong>${name}</strong>?`,
               name: name,
               onConfirm: (input) => {
-              console.log('head-components')
                 this.$store.dispatch('removeHeadComponent', {el: componentNode, msg: input});
               }
             }
