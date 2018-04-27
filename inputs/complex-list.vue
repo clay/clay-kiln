@@ -7,6 +7,7 @@
 
   * **props** an array of objects, representing the fields in each item. Each item should have a name, defined by `prop: 'name'`, as well as `_label` and the input that item uses.
   * **collapse** a property that should be used as the title for items. If `collapse` is set, all but the current item will be collapsed, only displaying its title. This is useful for lists with lots of complicated items.
+  * **filder** boolean determining if the items may be filtered. If `true`, will add a search box at the top of the list.
 
   ### Complex List Usage
 
@@ -14,13 +15,15 @@
   * Items can be added by clicking the `add` button
   * When a complex-list is _not_ empty, the focused item will have actions it, with `add` and `remove` buttons
   * Items can be removed by clicking the `remove` button
-  * Items in a complex-list cannot be reordered, but can be added and removed from anywhere in the list.
+  * Items can be reordered by clicking the up and down carets next to their location
+  * If complex-list is filterable, typing in the search box will match all text inputs in the list items
 
   ```yaml
   links:
     _has:
       input: complex-list
       collapse: title
+      filter: true
       props:
         -
           prop: url
@@ -45,6 +48,10 @@
   .complex-list {
     margin: 0;
     width: 100%;
+
+    > .ui-textbox {
+      margin-bottom: 10px;
+    }
   }
 
   .hide-show-enter,
@@ -66,14 +73,20 @@
 <template>
   <transition mode="out-in" name="hide-show" @after-enter="onResize">
     <div class="complex-list" v-if="items.length" v-click-outside="unselect">
+      <ui-textbox v-if="isFilterable" type="text" label="Filter List"
+        v-model.trim="query"
+        :autofocus="true"
+        :floatingLabel="true"></ui-textbox>
       <transition-group mode="out-in" name="hide-show" tag="div" class="complex-list-items" @after-enter="onListResize">
-        <item v-for="(item, index) in items"
+        <item v-for="(item, index) in matches"
           :index="index"
           :total="items.length"
+          :originalItems="items"
           :name="name + '.' + index"
           :data="item"
           :schema="args"
           :key="index"
+          :isFiltered="isFiltered"
           :currentItem="currentItem"
           :addItem="addItem"
           :removeItem="removeItem"
@@ -88,20 +101,86 @@
 
 <script>
   import _ from 'lodash';
+  import Fuse from 'fuse.js';
   import item from './complex-list-item.vue';
   import UiButton from 'keen/UiButton';
+  import UiTextbox from 'keen/UiTextbox';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
+
+  /**
+   * recursively build keys to filter by
+   * @param  {object} schema
+   * @param  {string} [path] used when recursing
+   * @return {array}
+   */
+
+  function buildKeys(schema, path = '') {
+    let keys = [];
+
+    _.each(_.get(schema, '_has.props', []), (prop) => {
+      const input = _.isString(prop._has) ? prop._has : _.get(prop, '_has.input'),
+        key = path ? `${path}.${prop.prop}` : prop.prop;
+
+      if (_.includes(['text', 'wysiwyg'], input)) {
+        // text prop, add it to the keys
+        keys.push(key);
+      } else if (input === 'select' && !_.get(prop, '_has.multiple')) {
+        // single select
+        keys.push(key);
+      } else if (input === 'complex-list') {
+        keys.concat(buildKeys(prop, prop.prop));
+      }
+    });
+
+    return keys;
+  }
+
+  /**
+   * filter content by query
+   * @param  {array} items
+   * @param  {string} query
+   * @param  {array} keys
+   * @return {array}
+   */
+  function filterContent(items, query, keys) {
+    const options = {
+        tokenize: true,
+        findAllMatches: true,
+        threshold: 0.3,
+        location: 0,
+        distance: 100,
+        maxPatternLength: 32,
+        minMatchCharLength: 1,
+        keys: keys
+      },
+      fuse = new Fuse(items, options);
+
+    return fuse.search(query);
+  }
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {
-        currentItem: _.isArray(this.data) ? this.data.length - 1 : 0
+        currentItem: _.isArray(this.data) ? this.data.length - 1 : 0,
+        query: ''
       };
     },
     computed: {
       items() {
-        return _.isArray(this.data) ? this.data : [];
+        return _.isArray(this.data) ? this.data : []; // _index is the original index, used when filtered
+      },
+      keys() {
+        return this.isFilterable ? buildKeys(this.schema) : [];
+      },
+      matches() {
+        return this.query.length && this.isFilterable ? filterContent(this.items, this.query, this.keys) : this.items;
+      },
+      isFilterable() {
+        return _.get(this.schema, '_has.filter');
+      },
+      isFiltered() {
+        return this.query.length > 0;
       }
     },
     methods: {
@@ -159,7 +238,8 @@
     },
     components: {
       item,
-      UiButton
+      UiButton,
+      UiTextbox
     }
   };
 </script>
