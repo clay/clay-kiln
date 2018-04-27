@@ -511,6 +511,37 @@ tags:
       list: tags
 ```
 
+# `static`
+
+A static, non-editable bit of text. Useful for displaying data in a list when only overrides are editable
+
+```yaml
+title:
+  _label: Title from Service
+  _has: static
+titleOverride:
+  _label: Title Override
+  _has: text
+```
+
+### Static Arguments
+
+* **help** - description / helper text for the field
+* **text** - optional interpolated string to use rather than simply printing the value of the property
+
+```yaml
+title:
+  _label: Title from Service
+  _has:
+    input: static
+    text: ${title} (generated)
+    help: Non-editable title
+```
+
+> #### info::Note
+>
+> Static inputs don't have validation.
+
 # `text`
 
 A basic text input. Can be single line or multi-line. Uses the float label pattern. [Uses Keen's UITextbox](https://josephuspaye.github.io/Keen-UI/#/ui-textbox).
