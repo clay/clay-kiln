@@ -357,13 +357,13 @@
         if (shouldConfirm) {
           this.$store.dispatch('openModal', {
             title: 'Remove Component',
-            type: 'type-confirm',
+            type: 'type-reason',
             data: {
               text: `Are you sure you want to remove this <strong>${this.componentName}</strong>?`,
               name: this.componentName,
-              onConfirm: () => {
+              onConfirm: (input) => {
                 this.$store.dispatch('unselect');
-                return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', el));
+                return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', {el: el, msg: input}));
               }
             }
           });

@@ -362,11 +362,12 @@
             title: 'Remove Component',
             type: 'type-confirm',
             data: {
-              text: `Are you sure you want to remove this <strong>${componentName}</strong>?`,
+              text: `Are you sure you want to remove <strong>${componentName}</strong>?`,
               name: componentName,
-              onConfirm: () => {
+              onConfirm: (input) => {
+                console.log('overlay');
                 this.$store.dispatch('unselect');
-                return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', el));
+                return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', {el: el, msg: input}));
               }
             }
           });

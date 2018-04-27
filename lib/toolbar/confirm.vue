@@ -47,6 +47,8 @@
       onConfirm() {
         const fn = _.get(this.$store, 'state.ui.currentConfirm.onConfirm');
 
+        console.log('hitting this tho?')
+
         if (fn) {
           return fn();
         }

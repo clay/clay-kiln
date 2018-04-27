@@ -66,8 +66,9 @@
             data: {
               text: `Are you sure you want to remove this <strong>${name}</strong>?`,
               name: name,
-              onConfirm: () => {
-                this.$store.dispatch('removeComponent', componentEl);
+              onConfirm: (input) => {
+                console.log('invisible compoents')
+                this.$store.dispatch('removeComponent', {el: componentEl, msg: input});
               }
             }
           });
