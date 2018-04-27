@@ -104,20 +104,20 @@
   <div class="complex-list-item" :class="{ 'is-current': isCurrentItem, 'is-expanded': isExpanded }" :ref="name" v-observe-visibility="visibilityChanged" @click.stop="onClick" @focusin.stop="onFocus">
     <transition name="complex-list-item-collapse" appear mode="out-in">
       <div key="expanded-visible" v-if="isVisible && isExpanded" class="complex-list-item-inner">
-        <field v-for="(field, fieldIndex) in fieldNames" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="name + '.' + field" :data="fields[field]" :schema="fieldSchemas[field]"></field>
+        <field v-for="(field, fieldIndex) in fieldNames" :key="fieldIndex" :name="name + '.' + field" :data="fields[field]" :schema="fieldSchemas[field]"></field>
         <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
           <div class="complex-list-item-actions">
             <div class="complex-list-item-actions-inner ui-button-group">
               <div class="complex-list-item-actions-left ui-button-group">
-                <ui-icon-button v-if="!isFirstItem" buttonType="button" type="secondary" color="black" icon="keyboard_arrow_up" @click.stop.prevent="moveItem(index, 'up')"></ui-icon-button>
-                <span class="complex-list-item-position">{{ index + 1 }}/{{ total }}</span>
-                <ui-icon-button v-if="!isLastItem" buttonType="button" type="secondary" color="black" icon="keyboard_arrow_down" @click.stop.prevent="moveItem(index, 'down')"></ui-icon-button>
+                <ui-icon-button v-if="!isFirstItem && !isFiltered" buttonType="button" type="secondary" color="black" icon="keyboard_arrow_up" @click.stop.prevent="moveItem(originalIndex, 'up')"></ui-icon-button>
+                <span class="complex-list-item-position">{{ originalIndex + 1 }}/{{ total }}</span>
+                <ui-icon-button v-if="!isLastItem && !isFiltered" buttonType="button" type="secondary" color="black" icon="keyboard_arrow_down" @click.stop.prevent="moveItem(originalIndex, 'down')"></ui-icon-button>
               </div>
               <transition name="complex-list-item-actions" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
                 <div v-if="isCurrentItem" class="complex-list-item-actions-right ui-button-group">
-                  <ui-button v-if="isFirstItem" buttonType="button" type="secondary" color="accent" icon="arrow_upward" @click.stop.prevent="addItemAndUnselect(-1)">Add Above</ui-button>
-                  <ui-button buttonType="button" type="secondary" color="red" icon="delete" @click.stop.prevent="removeItem(index)">Remove</ui-button>
-                  <ui-button buttonType="button" type="secondary" color="accent" icon="add" @click.stop.prevent="addItemAndUnselect(index)">Add Below</ui-button>
+                  <ui-button v-if="isFirstItem && !isFiltered" buttonType="button" type="secondary" color="accent" icon="arrow_upward" @click.stop.prevent="addItemAndUnselect(-1)">Add Above</ui-button>
+                  <ui-button buttonType="button" type="secondary" color="red" icon="delete" @click.stop.prevent="removeItem(originalIndex)">Remove</ui-button>
+                  <ui-button v-if="!isFiltered" buttonType="button" type="secondary" color="accent" icon="add" @click.stop.prevent="addItemAndUnselect(originalIndex)">Add Below</ui-button>
                 </div>
               </transition>
             </div>
@@ -151,6 +151,8 @@
       'name',
       'data',
       'schema',
+      'isFiltered',
+      'originalItems',
       'addItem',
       'removeItem',
       'currentItem',
@@ -201,6 +203,9 @@
       hasRequiredFields() {
         // true if any of the fields in the current item have required validation
         return _.some(this.props, (obj) => _.has(obj, `${fieldProp}.validate.required`));
+      },
+      originalIndex() {
+        return this.originalItems.indexOf(this.data);
       }
     },
     methods: {

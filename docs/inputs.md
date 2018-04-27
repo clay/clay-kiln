@@ -85,6 +85,7 @@ An array of objects with arbitrary properties. Each property may have any inputs
 
 * **props** an array of objects, representing the fields in each item. Each item should have a name, defined by `prop: 'name'`, as well as `_label` and the input that item uses.
 * **collapse** a property that should be used as the title for items. If `collapse` is set, all but the current item will be collapsed, only displaying its title. This is useful for lists with lots of complicated items.
+* **filder** boolean determining if the items may be filtered. If `true`, will add a search box at the top of the list.
 
 ### Complex List Usage
 
@@ -92,13 +93,15 @@ An array of objects with arbitrary properties. Each property may have any inputs
 * Items can be added by clicking the `add` button
 * When a complex-list is _not_ empty, the focused item will have actions it, with `add` and `remove` buttons
 * Items can be removed by clicking the `remove` button
-* Items in a complex-list cannot be reordered, but can be added and removed from anywhere in the list.
+* Items can be reordered by clicking the up and down carets next to their location
+* If complex-list is filterable, typing in the search box will match all text inputs in the list items
 
 ```yaml
 links:
   _has:
     input: complex-list
     collapse: title
+    filter: true
     props:
       -
         prop: url
