@@ -17,7 +17,7 @@
 <template>
   <div class="ui-reason type-reason">
     <div class="ui-reason__message" v-html="data.text"></div>
-    <div class="ui-reason__message">Please provide a reason for performing this action</div>
+    <div class="ui-reason__message">This component was marked as critical and is not frequently deleted. Please specify a reason for removal.</div>
     <ui-textbox class="type-reason-input" v-model="input" @keydown-enter="onEnter"></ui-textbox>
     <div class="ui-reason__footer">
       <ui-button ref="confirmButton" color="primary" :disabled="incorrectInput" @click="confirm">Submit</ui-button>
