@@ -364,9 +364,9 @@
             data: {
               text: `Are you sure you want to remove this <strong>${componentName}</strong>?`,
               name: componentName,
-              onConfirm: (input) => {
+              onConfirm: () => {
                 this.$store.dispatch('unselect');
-                return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', {el: el, msg: input}));
+                return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', el));
               }
             }
           });
