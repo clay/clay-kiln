@@ -238,6 +238,12 @@
     }
   }
 
+  /**
+   * determine if date and time values from the schedule form are in the past
+   * @param  {Date}  dateValue
+   * @param  {sttring}  timeValue
+   * @return {boolean}
+   */
   function isInThePast(dateValue, timeValue) {
     const date = dateFormat(dateValue, 'YYYY-MM-DD'),
       time = timeValue,
@@ -246,6 +252,12 @@
     return isPast(datetime);
   }
 
+  /**
+   * determine if a url is navigable in our site's express router
+   * @param  {string}  val of custom url input
+   * @param  {array}  routes passed through from the server
+   * @return {boolean}
+   */
   function isValidUrl(val, routes) {
     return !!_.find(routes, function (route) {
       const r = new Routable(route);
