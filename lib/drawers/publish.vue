@@ -200,6 +200,7 @@
   import addWeeks from 'date-fns/add_weeks';
   import subWeeks from 'date-fns/sub_weeks';
   import isThisWeek from 'date-fns/is_this_week';
+  import isPast from 'date-fns/is_past';
   import { mapState } from 'vuex';
   import Routable from 'routable';
   import { uriToUrl } from '../utils/urls';
@@ -237,6 +238,26 @@
     }
   }
 
+  /**
+   * determine if date and time values from the schedule form are in the past
+   * @param  {Date}  dateValue
+   * @param  {sttring}  timeValue
+   * @return {boolean}
+   */
+  function isInThePast(dateValue, timeValue) {
+    const date = dateFormat(dateValue, 'YYYY-MM-DD'),
+      time = timeValue,
+      datetime = parseDate(date + ' ' + time);
+
+    return isPast(datetime);
+  }
+
+  /**
+   * determine if a url is navigable in our site's express router
+   * @param  {string}  val of custom url input
+   * @param  {array}  routes passed through from the server
+   * @return {boolean}
+   */
   function isValidUrl(val, routes) {
     return !!_.find(routes, function (route) {
       const r = new Routable(route);
@@ -299,7 +320,17 @@
         return this.dateValue || this.timeValue;
       },
       disableSchedule() {
-        return this.dateValue && !this.timeValue || this.timeValue && !this.dateValue;
+        if (this.dateValue && !this.timeValue || this.timeValue && !this.dateValue) {
+          // only one field is filled out (note: button is entirely hidden if neither field is filled out)
+          return true;
+        } else if (isInThePast(this.dateValue, this.timeValue)) {
+          // scheduling things for the past makes them publish immediately
+          // note: the date input has no UI to schedule things in the past, but the time input allows it
+          return true;
+        } else {
+          // nothing preventing you from scheduling!
+          return false;
+        }
       },
       actionMessage() {
         if (this.isScheduled && this.showSchedule) {
