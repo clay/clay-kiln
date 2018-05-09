@@ -59,6 +59,19 @@ myList:
       max: 10
 ```
 
+Similarly to text inputs, component lists may also prevent users from adding components over the maximum with `enforceMaxlength`.
+
+```yaml
+myList:
+  _componentList:
+    include:
+      - some-component
+      - some-other-component
+    validate:
+      max: 10
+    enforceMaxlength: true
+```
+
 ### Head Lists
 
 Components in the `<head>` of the page require a different syntax. Much like how you denote the start of `<head>` components with a `<!-- data-editable -->` comment, you use html comments for the beginning _and the end_ of these component lists.

@@ -115,9 +115,9 @@
               </div>
               <transition name="complex-list-item-actions" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
                 <div v-if="isCurrentItem" class="complex-list-item-actions-right ui-button-group">
-                  <ui-button v-if="isFirstItem && !isFiltered" buttonType="button" type="secondary" color="accent" icon="arrow_upward" @click.stop.prevent="addItemAndUnselect(-1)">Add Above</ui-button>
+                  <ui-button v-if="isFirstItem && !isFiltered && isBelowMaxLength" buttonType="button" type="secondary" color="accent" icon="arrow_upward" @click.stop.prevent="addItemAndUnselect(-1)">Add Above</ui-button>
                   <ui-button buttonType="button" type="secondary" color="red" icon="delete" @click.stop.prevent="removeItem(originalIndex)">Remove</ui-button>
-                  <ui-button v-if="!isFiltered" buttonType="button" type="secondary" color="accent" icon="add" @click.stop.prevent="addItemAndUnselect(originalIndex)">Add Below</ui-button>
+                  <ui-button v-if="!isFiltered && isBelowMaxLength" buttonType="button" type="secondary" color="accent" icon="add" @click.stop.prevent="addItemAndUnselect(originalIndex)">Add Below</ui-button>
                 </div>
               </transition>
             </div>
@@ -151,6 +151,7 @@
       'name',
       'data',
       'schema',
+      'isBelowMaxLength',
       'isFiltered',
       'originalItems',
       'addItem',

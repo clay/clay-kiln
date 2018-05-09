@@ -111,9 +111,9 @@
           <ui-icon-button v-if="hasSettings" type="secondary" color="black" icon="settings" :tooltip="`${componentLabel} Settings`" @click.stop="openSettings"></ui-icon-button>
           <component v-for="(button, index) in customButtons" :is="button" :key="index"></component>
           <ui-icon-button v-if="hasRemove" type="secondary" color="black" icon="delete" :tooltip="`Remove ${componentLabel}`" @click.stop="removeComponent"></ui-icon-button>
-          <ui-icon-button v-if="hasDuplicateComponent" type="secondary" color="black" icon="add_circle_outline" :tooltip="`Add ${componentLabel}`" @click.stop="duplicateComponent"></ui-icon-button>
-          <ui-icon-button v-if="hasDuplicateComponentWithData" type="secondary" color="black" icon="add_circle" :tooltip="`Duplicate ${componentLabel}`" @click.stop="duplicateComponentWithData"></ui-icon-button>
-          <ui-icon-button v-if="hasAddComponent && !hasAddSingleComponent" type="secondary" color="black" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
+          <ui-icon-button v-if="hasDuplicateComponent && isBelowMaxLength" type="secondary" color="black" icon="add_circle_outline" :tooltip="`Add ${componentLabel}`" @click.stop="duplicateComponent"></ui-icon-button>
+          <ui-icon-button v-if="hasDuplicateComponentWithData && isBelowMaxLength" type="secondary" color="black" icon="add_circle" :tooltip="`Duplicate ${componentLabel}`" @click.stop="duplicateComponentWithData"></ui-icon-button>
+          <ui-icon-button v-if="hasAddComponent && !hasAddSingleComponent && isBelowMaxLength" type="secondary" color="black" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
           <div class="form-close-divider"></div>
           <ui-icon-button color="black" type="secondary" icon="check" ariaLabel="Save Form" tooltip="Save (ESC)" @click.stop="save"></ui-icon-button>
         </div>
@@ -146,7 +146,7 @@
   import { find, findAll } from '@nymag/dom';
   import { mapState } from 'vuex';
   import velocity from 'velocity-animate/velocity.min.js';
-  import { getSchema } from '../core-data/components';
+  import { getSchema, getData } from '../core-data/components';
   import label from '../utils/label';
   import logger from '../utils/log';
   import { fieldProp, groupsProp, getComponentName, componentListProp } from '../utils/references';
@@ -237,20 +237,43 @@
       hasAddComponent(state) {
         return this.isCurrentlySelected && _.get(state, 'ui.currentSelection.parentField.type') === 'list' && _.get(state, 'ui.currentSelection.parentField.isEditable');
       },
-      hasAddSingleComponent(state) {
+      parentSchema(state) {
+        return getSchema(_.get(state, 'ui.currentSelection.parentURI'), _.get(state, 'ui.currentSelection.parentField.path'));
+      },
+      hasAddSingleComponent() {
         if (this.hasAddComponent) {
-          const schema = getSchema(_.get(state, 'ui.currentSelection.parentURI'), _.get(state, 'ui.currentSelection.parentField.path')),
-            componentsToAdd = _.get(schema, `${componentListProp}.include`);
+          const componentsToAdd = _.get(this.parentSchema, `${componentListProp}.include`);
 
           return componentsToAdd && componentsToAdd.length === 1;
         }
       },
-      addComponentText(state) {
+      addComponentText() {
         if (this.hasAddComponent) {
-          const schema = getSchema(_.get(state, 'ui.currentSelection.parentURI'), _.get(state, 'ui.currentSelection.parentField.path')),
-            componentsToAdd = _.get(schema, `${componentListProp}.include`);
+          const componentsToAdd = _.get(this.parentSchema, `${componentListProp}.include`);
 
           return this.hasAddSingleComponent ? `Add ${label(componentsToAdd[0])} Below` : 'Add Component Below';
+        }
+      },
+      parentLength(state) {
+        if (this.hasAddComponent) {
+          const parentData = getData(_.get(state, 'ui.currentSelection.parentURI'), _.get(state, 'ui.currentSelection.parentField.path'));
+
+          return parentData ? parentData.length : 0;
+        } else {
+          return 0;
+        }
+      },
+      parentMaxlength() {
+        return _.get(this.parentSchema, `${componentListProp}.validate.max`, 0); // note: we're assuming zero means no max length here, and below
+      },
+      hasEnforcedMaxlength() {
+        return _.get(this.parentSchema, `${componentListProp}.enforceMaxlength`, false);
+      },
+      isBelowMaxLength() {
+        if (this.hasAddComponent && this.parentMaxlength && this.hasEnforcedMaxlength) {
+          return this.parentLength < this.parentMaxlength;
+        } else {
+          return true; // if there's no max length, or it's not enforced, don't worry about it!
         }
       }
     }),
