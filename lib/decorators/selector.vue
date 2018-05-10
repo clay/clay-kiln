@@ -208,6 +208,7 @@
   import _ from 'lodash';
   import getRect from 'element-client-rect';
   import { getSchema, getData } from '../core-data/components';
+  import { has as hasGroup } from '../core-data/groups';
   import { getComponentName, componentListProp } from '../utils/references';
   import { getComponentEl } from '../utils/component-elements';
   import label from '../utils/label';
@@ -267,7 +268,7 @@
         return Object.keys(_.get(window, 'kiln.selectorButtons', {}));
       },
       hasSettings() {
-        return _.has(this.schema, '_groups.settings');
+        return hasGroup(this.uri, 'settings');
       },
       hasDuplicateComponent() {
         return this.hasAddComponent && !_.get(this.$store, 'state.ui.metaKey');

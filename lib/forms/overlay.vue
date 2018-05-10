@@ -147,9 +147,10 @@
   import { mapState } from 'vuex';
   import velocity from 'velocity-animate/velocity.min.js';
   import { getSchema, getData } from '../core-data/components';
+  import { has as hasGroup } from '../core-data/groups';
   import label from '../utils/label';
   import logger from '../utils/log';
-  import { fieldProp, groupsProp, getComponentName, componentListProp } from '../utils/references';
+  import { fieldProp, getComponentName, componentListProp } from '../utils/references';
   import { getComponentEl } from '../utils/component-elements';
   import field from './field.vue';
   import UiIconButton from 'keen/UiIconButton';
@@ -219,7 +220,7 @@
       },
       componentLabel: (state) => label(getComponentName(state.ui.currentForm.uri)),
       hasSettings(state) {
-        return state.ui.currentForm.path !== 'settings' && _.has(this.schema, `${groupsProp}.settings`);
+        return state.ui.currentForm.path !== 'settings' && hasGroup(state.ui.currentForm.uri, 'settings');
       },
       customButtons() {
         return Object.keys(_.get(window, 'kiln.selectorButtons', {}));
