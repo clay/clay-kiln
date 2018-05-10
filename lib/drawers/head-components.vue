@@ -70,8 +70,8 @@
             data: {
               text: `Are you sure you want to remove this <strong>${name}</strong>?`,
               name: name,
-              onConfirm: () => {
-                this.$store.dispatch('removeHeadComponent', componentNode);
+              onConfirm: (input) => {
+                this.$store.dispatch('removeHeadComponent', {el: componentNode, msg: input});
               }
             }
           });
