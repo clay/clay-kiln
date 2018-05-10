@@ -103,11 +103,10 @@
 </template>
 
 <script>
-  import _ from 'lodash';
   import UiIconButton from 'keen/UiIconButton';
   import UiRippleInk from 'keen/UiRippleInk';
-  import { isComponent, getComponentName } from './references';
-  import { getSchema } from '../core-data/components';
+  import { isComponent } from './references';
+  import { has as hasGroup } from '../core-data/groups';
 
   export default {
     props: ['item', 'index', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'focused', 'active', 'selected', 'focusOnIndex', 'setActive', 'settingsTitle'],
@@ -117,9 +116,7 @@
     computed: {
       hasSettings() {
         if (isComponent(this.item.id)) {
-          const schema = getSchema(getComponentName(this.item.id));
-
-          return _.has(schema, '_groups.settings');
+          return hasGroup(this.item.id, 'settings');
         } else {
           return true; // settings icon checks for onSettings() before displaying
         }
