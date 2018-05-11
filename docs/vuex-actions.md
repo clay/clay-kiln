@@ -36,7 +36,7 @@
 * [component-data](#module_component-data)
     * _static_
         * [.saveComponent(store, uri, data, [eventID], [snapshot], [prevData])](#module_component-data.saveComponent) ⇒ <code>Promise</code>
-        * [.removeComponent(store, el)](#module_component-data.removeComponent) ⇒ <code>Promise</code>
+        * [.removeComponent(store, data)](#module_component-data.removeComponent) ⇒ <code>Promise</code>
         * [.removeHeadComponent(store, startNode)](#module_component-data.removeHeadComponent) ⇒ <code>Promise</code>
         * [.addComponents(store, [currentURI], parentURI, path, [replace], [clone], components)](#module_component-data.addComponents) ⇒ <code>Promise</code>
         * [.openAddComponent(store, [currentURI], parentURI, path)](#module_component-data.openAddComponent) ⇒ <code>Promise</code>
@@ -67,7 +67,7 @@ save a component's data and re-render
 
 <a name="module_component-data.removeComponent"></a>
 
-### component-data.removeComponent(store, el) ⇒ <code>Promise</code>
+### component-data.removeComponent(store, data) ⇒ <code>Promise</code>
 remove a component from its parent
 note: removes from parent component OR page
 
@@ -76,7 +76,7 @@ note: removes from parent component OR page
 | Param | Type | Description |
 | --- | --- | --- |
 | store | <code>object</code> |  |
-| el | <code>Element</code> | inside the component to delete |
+| data | <code>Element</code> | el || {el, msg} where el is the component to delete |
 
 <a name="module_component-data.removeHeadComponent"></a>
 
