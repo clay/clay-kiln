@@ -44,8 +44,8 @@
     @include type-subheading();
 
     color: $text-color;
-    flex: 1 0 auto;
-    oveflow: hidden;
+    flex: 0 1 100%;
+    overflow: hidden;
     padding: 0 16px;
     text-overflow: ellipsis;
     white-space: nowrap;
