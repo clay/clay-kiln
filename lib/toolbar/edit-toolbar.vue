@@ -290,6 +290,7 @@
           case 'Redo': return this.redo();
           case 'Contributors': return this.toggleDrawer('contributors');
           case 'Find on Page': return this.toggleDrawer('components');
+          case 'Find on Layout': return this.toggleDrawer('components');
           case 'Preview': return this.toggleDrawer('preview');
           default: log.warn(`Unknown drawer: ${option.label}`);
         }
