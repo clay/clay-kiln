@@ -89,18 +89,26 @@
   function getHeadComponentLists(state) {
     const layoutURI = _.get(state, 'page.data.layout'),
       schema = getSchema(layoutURI),
-      lists = getListsInHead();
+      lists = getListsInHead(),
+      isPageEditMode = state.editMode === 'page';
 
-    return _.reduce(lists, (result, list) => result.concat({
-      title: label(list.path, schema[list.path]),
-      component: 'head-components',
-      selected: false,
-      args: {
-        isPage: _.get(schema, `${list.path}.${componentListProp}.page`),
-        path: list.path,
-        schema: schema[list.path]
+    return _.reduce(lists, (result, list) => {
+      const isPageList = _.get(schema, `${list.path}.${componentListProp}.page`);
+
+      if (isPageEditMode && isPageList || !isPageEditMode && !isPageList) {
+        result.push({
+          title: label(list.path, schema[list.path]),
+          component: 'head-components',
+          selected: false,
+          args: {
+            isPage: isPageList,
+            path: list.path,
+            schema: schema[list.path]
+          }
+        });
       }
-    }), []);
+      return result;
+    }, []);
   }
 
   /**
@@ -110,11 +118,15 @@
    */
   function getInvisibleComponentLists(state) {
     const layoutURI = _.get(state, 'page.data.layout'),
-      schema = getSchema(layoutURI);
+      schema = getSchema(layoutURI),
+      isPageEditMode = state.editMode === 'page';
 
     return _.reduce(schema, (result, field, fieldName) => {
-      if (_.has(field, `${componentListProp}.invisible`)) {
-        return result.concat({
+      const isPageList = _.get(field, `${componentListProp}.page`),
+        isInvisibleList = _.has(field, `${componentListProp}.invisible`);
+
+      if (isInvisibleList && (isPageEditMode && isPageList || !isPageEditMode && !isPageList)) {
+        result.push({
           title: label(fieldName, field),
           component: 'invisible-components',
           selected: false,
@@ -123,9 +135,8 @@
             schema: field
           }
         });
-      } else {
-        return result;
       }
+      return result;
     }, []);
   }
 
