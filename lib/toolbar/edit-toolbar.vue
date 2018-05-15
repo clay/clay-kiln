@@ -68,9 +68,9 @@
     <alert-container></alert-container>
     <drawer></drawer>
     <ui-toolbar type="colored" text-color="white" @nav-icon-click="openNav">
-      <ui-button type="primary" color="primary" size="large" icon="mode_edit" has-dropdown>
+      <ui-button type="primary" color="primary" size="large" :icon="statusIcon" has-dropdown ref="modeToggle">
         <span class="toolbar-button-text">{{ status }}</span>
-        <ui-menu slot="dropdown" :options="toggleOptions" has-icons @select="stopEditing"></ui-menu>
+        <ui-menu slot="dropdown" :options="toggleOptions" has-icons @select="toggleEditMode"></ui-menu>
       </ui-button>
 
       <div class="kiln-toolbar-actions" slot="actions">
@@ -83,10 +83,10 @@
         <!-- display individual buttons on larger screens (viewport >= 600px) -->
         <ui-icon-button class="toolbar-action-button" :disabled="!undoEnabled" color="white" size="large" type="secondary" icon="undo" tooltip="Undo" @click="undo"></ui-icon-button>
         <ui-icon-button class="toolbar-action-button" :disabled="!redoEnabled" color="white" size="large" type="secondary" icon="redo" tooltip="Redo" @click="redo"></ui-icon-button>
-        <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'contributors' }" color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click.stop="toggleDrawer('contributors')"></ui-icon-button>
-        <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'components' }" color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page" @click.stop="toggleDrawer('components')"></ui-icon-button>
-        <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'preview' }" color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click.stop="toggleDrawer('preview')"></ui-icon-button>
-        <ui-button class="toolbar-publish-button" :class="{ 'is-open-drawer': currentDrawer === 'publish' }" type="primary" color="primary" size="large" @click.stop="toggleDrawer('publish')"><span class="toolbar-button-text">{{ publishAction }}</span></ui-button>
+        <ui-icon-button v-if="isPageEditMode" class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'contributors' }" color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click.stop="toggleDrawer('contributors')"></ui-icon-button>
+        <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'components' }" color="white" size="large" type="secondary" icon="find_in_page" :tooltip="componentsTooltip" @click.stop="toggleDrawer('components')"></ui-icon-button>
+        <ui-icon-button v-if="isPageEditMode" class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'preview' }" color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click.stop="toggleDrawer('preview')"></ui-icon-button>
+        <ui-button class="toolbar-publish-button" :class="{ 'is-open-drawer': currentDrawer === 'publish' }" type="primary" color="primary" size="large" @click.stop="toggleDrawer('publish')"><span class="toolbar-button-text">Publishing</span></ui-button>
       </div>
     </ui-toolbar>
     <div class="kiln-progress">
@@ -137,6 +137,7 @@
     computed: mapState({
       pageState: (state) => state.page.state,
       isLoading: (state) => state.isLoading,
+      isPageEditMode: (state) => state.editMode === 'page',
       undoEnabled: (state) => {
         return !state.undo.atStart && !state.ui.currentFocus && !state.ui.currentPane;
       },
@@ -156,57 +157,97 @@
           return false;
         }
       },
-      status() {
+      statusIcon() {
+        return this.isPageEditMode ? 'mode_edit' : 'layers';
+      },
+      pageStatus() {
         if (this.isLoading) {
           return ''; // still loading the page, don't display any status
         } else if (this.pageState.scheduled) {
-          return 'Scheduled';
+          return 'Page: Scheduled';
         } else if (this.pageState.published && this.hasChanges) {
-          return 'Unpublished Changes';
+          return 'Page: Unpublished Changes';
         } else if (this.pageState.published) {
-          return 'Published';
+          return 'Page: Published';
         } else if (this.pageState.archived) {
-          return 'Archived';
+          return 'Page: Archived';
         } else {
-          return 'Draft';
+          return 'Page: Draft';
         }
       },
-      publishAction() {
-        if (this.pageState.published) {
-          return 'Republish';
-        } else if (this.pageState.archived) {
-          return 'Unarchive';
+      layoutStatus() {
+        if (this.isLoading) {
+          return ''; // still loading the layout
         } else {
-          return 'Publish';
+          return 'Layout'; // todo: add layout statuses when we have a 'layouts' index
         }
       },
-      toggleOptions() {
-        return [
-          { label: 'Edit Mode', icon: 'mode_edit', disabled: true },
-          { label: 'View Mode', icon: 'remove_red_eye' }
-        ];
+      status() {
+        if (this.isPageEditMode) {
+          return this.pageStatus;
+        } else {
+          return this.layoutStatus;
+        }
+      },
+      isAdmin(state) {
+        return _.get(state, 'user.auth') === 'admin';
+      },
+      toggleOptions(state) {
+        if (this.isAdmin) {
+          return [
+            { label: 'Edit Page', value: 'page', icon: 'mode_edit', disabled: state.editMode === 'page' },
+            { label: 'Edit Layout', value: 'layout', icon: 'layers', disabled: state.editMode === 'layout' },
+            { label: 'View Page', value: 'view', icon: 'remove_red_eye' }
+          ];
+        } else {
+          return [
+            { label: 'Edit Page', value: 'page', icon: 'mode_edit', disabled: true },
+            { label: 'View Page', value: 'view', icon: 'remove_red_eye' }
+          ];
+        }
+      },
+      componentsTooltip() {
+        return this.isPageEditMode ? 'Find on Page' : 'Find on Layout';
       },
       toolbarOptions() {
-        return [{
-          label: 'Undo',
-          icon: 'undo',
-          disabled: !this.undoEnabled
-        }, {
-          label: 'Redo',
-          icon: 'redo',
-          disabled: !this.redoEnabled
-        }, {
-          type: 'divider'
-        }, {
-          label: 'Contributors',
-          icon: 'people'
-        }, {
-          label: 'Find on Page',
-          icon: 'find_in_page'
-        }, {
-          label: 'Preview',
-          icon: 'open_in_new'
-        }];
+        if (this.isPageEditMode) {
+          return [{
+            label: 'Undo',
+            icon: 'undo',
+            disabled: !this.undoEnabled
+          }, {
+            label: 'Redo',
+            icon: 'redo',
+            disabled: !this.redoEnabled
+          }, {
+            type: 'divider'
+          }, {
+            label: 'Contributors',
+            icon: 'people'
+          }, {
+            label: 'Find on Page',
+            icon: 'find_in_page'
+          }, {
+            label: 'Preview',
+            icon: 'open_in_new'
+          }];
+        } else {
+          // display fewer options in layout edit mode, until we have a 'layouts' index
+          return [{
+            label: 'Undo',
+            icon: 'undo',
+            disabled: !this.undoEnabled
+          }, {
+            label: 'Redo',
+            icon: 'redo',
+            disabled: !this.redoEnabled
+          }, {
+            type: 'divider'
+          }, {
+            label: 'Find on Layout',
+            icon: 'find_in_page'
+          }];
+        }
       },
       snackbar() {
         return _.get(this.$store, 'state.ui.snackbar') && _.toPlainObject(_.get(this.$store, 'state.ui.snackbar'));
@@ -224,9 +265,15 @@
       }
     },
     methods: {
-      stopEditing() {
-        this.$store.commit('STOP_EDITING');
-        toggleEdit();
+      toggleEditMode(option) {
+        if (option.value === 'view') {
+          this.$store.commit('STOP_EDITING');
+          toggleEdit();
+        } else {
+          // value is 'page' or 'layout', persist that to the store
+          this.$store.commit('TOGGLE_EDIT_MODE', option.value);
+          this.$refs.modeToggle.closeDropdown();
+        }
       },
       undo() {
         return this.$store.dispatch('undo');
