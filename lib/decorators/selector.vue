@@ -2,6 +2,7 @@
   @import '../../styleguide/colors';
   @import '../../styleguide/layers';
   @import '../../styleguide/animations';
+  @import '../../styleguide/typography';
 
   // size of the thick component border
   $border-size: 3px;
@@ -186,11 +187,30 @@
       }
     }
   }
+
+  .mini-selector-inactive {
+    @include mini-selector-layer();
+    @include kiln-copy();
+
+    background: $md-grey-900;
+    border-radius: 2px;
+    color: $md-white;
+    font-size: 13px;
+    left: 50%;
+    line-height: 1.2;
+    max-width: 150%;
+    opacity: .8;
+    padding: 4px 8px;
+    pointer-events: none;
+    position: absolute;
+    top: 20px;
+    transform: translateX(-50%);
+  }
 </style>
 
 <template>
   <transition name="selector-fade">
-    <aside data-ignore v-if="isCurrentSelection" class="mini-selector" :class="selectorPosition">
+    <aside data-ignore v-if="isCurrentSelection && isActive" class="mini-selector" :class="selectorPosition">
       <div class="quick-bar" :class="selectorPosition">
         <ui-icon-button v-once type="secondary" color="primary" class="quick-bar-button quick-bar-info" icon="info_outline" :tooltip="`${componentLabel} Info`" @click.stop="openInfo"></ui-icon-button>
         <ui-icon-button v-once v-show="hasSettings" type="secondary" color="primary" class="quick-bar-button quick-bar-settings" icon="settings" :tooltip="`${componentLabel} Settings`" @click.stop="openSettings"></ui-icon-button>
@@ -201,6 +221,7 @@
         <ui-icon-button v-show="hasAddComponent && !hasAddSingleComponent && isBelowMaxLength" type="secondary" color="primary" class="quick-bar-button quick-bar-add" icon="add" :tooltip="addComponentText" @click.stop="openAddComponentPane"></ui-icon-button>
       </div>
     </aside>
+    <aside v-else-if="isCurrentSelection && !isActive" class="mini-selector-inactive">Please Use {{ activeModeLabel }} Mode to Edit</aside>
   </transition>
 </template>
 
@@ -210,7 +231,7 @@
   import { getSchema, getData } from '../core-data/components';
   import { has as hasGroup } from '../core-data/groups';
   import { getComponentName, componentListProp } from '../utils/references';
-  import { getComponentEl } from '../utils/component-elements';
+  import { getComponentEl, isComponentInPage } from '../utils/component-elements';
   import label from '../utils/label';
   import logger from '../utils/log';
   import UiIconButton from 'keen/UiIconButton';
@@ -260,6 +281,15 @@
       },
       isCurrentSelection() {
         return this.currentSelectedComponent && this.$options.componentEl === this.currentSelectedComponent;
+      },
+      activeModeLabel() {
+        return isComponentInPage(this.uri) ? 'Page' : 'Layout';
+      },
+      isActive() {
+        const isPageEditMode = _.get(this.$store, 'state.editMode') === 'page',
+          isPageComponent = this.activeModeLabel === 'Page'; // already determined above
+
+        return isPageEditMode && isPageComponent || !isPageEditMode && !isPageComponent;
       },
       schema() {
         return getSchema(this.uri);
