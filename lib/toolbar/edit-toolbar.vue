@@ -270,21 +270,23 @@
     },
     methods: {
       toggleEditMode(option) {
-        if (option.value === 'view') {
+        const val = option.value,
+          { message } = getLayoutNameAndInstance(this.$store),
+          layoutAlert = { type: 'warning', text: message };
+
+        if (val === 'view') {
           this.$store.commit('STOP_EDITING');
           toggleEdit();
-        } else {
-          // value is 'page' or 'layout', persist that to the store
-          this.$store.commit('TOGGLE_EDIT_MODE', option.value);
+        } else if (val === 'page') {
+          // page editing
+          this.$store.commit('TOGGLE_EDIT_MODE', 'page');
           this.$refs.modeToggle.closeDropdown();
-
-          if (option.value === 'layout') {
-            const { message } = getLayoutNameAndInstance(this.$store);
-
-            // add an alert warning the user they're editing the layout
-            // (similar to the warning when editing new page templates)
-            this.$store.dispatch('addAlert', { type: 'warning', text: message });
-          }
+          this.$store.dispatch('removeAlert', layoutAlert);
+        } else {
+          // layout editing
+          this.$store.commit('TOGGLE_EDIT_MODE', 'layout');
+          this.$refs.modeToggle.closeDropdown();
+          this.$store.dispatch('addAlert', layoutAlert);
         }
       },
       undo() {
