@@ -127,6 +127,7 @@
   import confirm from './confirm.vue';
   import alertContainer from './alert-container.vue';
   import logger from '../utils/log';
+  import { getLayoutNameAndInstance } from '../utils/references';
 
   const log = logger(__filename);
 
@@ -273,6 +274,14 @@
           // value is 'page' or 'layout', persist that to the store
           this.$store.commit('TOGGLE_EDIT_MODE', option.value);
           this.$refs.modeToggle.closeDropdown();
+
+          if (option.value === 'layout') {
+            const { message } = getLayoutNameAndInstance(this.$store);
+
+            // add an alert warning the user they're editing the layout
+            // (similar to the warning when editing new page templates)
+            this.$store.dispatch('addAlert', { type: 'warning', text: message });
+          }
         }
       },
       undo() {
