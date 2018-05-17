@@ -120,10 +120,10 @@
 <template>
   <div :class="placeholderClass" :style="{ minHeight: placeholderHeight }" :ref="uid">
     <ui-button v-if="isComponent" :disabled="!isActive" class="placeholder-add-component" icon="add" color="primary" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
-    <div v-else v-once class="placeholder-label">
+    <div v-else class="placeholder-label">
       <ui-icon v-if="!isPermanent" class="placeholder-icon" icon="add"></ui-icon>
       <span class="placeholder-text">{{ text }}</span>
-      <ui-ripple-ink v-if="!isPermanent" :trigger="uid"></ui-ripple-ink>
+      <ui-ripple-ink v-if="!isPermanent && isActive" :trigger="uid"></ui-ripple-ink>
     </div>
   </div>
 </template>
