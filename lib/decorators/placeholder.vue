@@ -66,8 +66,7 @@
     }
   }
 
-  .kiln-permanent-placeholder,
-  .kiln-inactive-placeholder {
+  .kiln-permanent-placeholder {
     background-color: $permanent-placeholder-bg-color;
     cursor: pointer;
 
@@ -81,6 +80,23 @@
 
     .placeholder-text {
       color: $permanent-placeholder-color;
+    }
+  }
+
+  .kiln-inactive-placeholder {
+    background-color: $inactive-placeholder-bg-color;
+    cursor: not-allowed;
+
+    .placeholder-label {
+      color: $inactive-placeholder-color;
+    }
+
+    .placeholder-icon {
+      color: $inactive-placeholder-color;
+    }
+
+    .placeholder-text {
+      color: $inactive-placeholder-color;
     }
   }
 
@@ -119,7 +135,7 @@
 
 <template>
   <div :class="placeholderClass" :style="{ minHeight: placeholderHeight }" :ref="uid">
-    <ui-button v-if="isComponent" :disabled="!isActive" class="placeholder-add-component" icon="add" color="primary" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
+    <ui-button v-if="isComponent" :disabled="!isActive" class="placeholder-add-component" icon="add" :color="placeholderButtonColor" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
     <div v-else class="placeholder-label">
       <ui-icon v-if="!isPermanent" class="placeholder-icon" icon="add"></ui-icon>
       <span class="placeholder-text">{{ text }}</span>
@@ -173,6 +189,15 @@
           'kiln-error-placeholder': this.isError,
           'kiln-inactive-placeholder': !this.isActive
         };
+      },
+      placeholderButtonColor() {
+        if (!this.isPermanent && this.isActive) {
+          return 'accent';
+        } else if (this.isPermanent && this.isActive) {
+          return 'primary';
+        } else {
+          return 'default';
+        }
       },
       text() {
         const subSchema = getSchema(this.$options),
