@@ -93,7 +93,9 @@ export default {
    * @returns {string}
    */
   formatUrl(data, format) {
-    var datafield = toPlainText(data).toLowerCase().replace(/[^\w]/g, '-').replace(/--+/g, '-');
+    var data = data.trim(),
+      datafield = toPlainText(data).toLowerCase().replace(/[^\w]/g, '-').replace(/--+/g, '-');
+
 
     if (_.isString(format) && !_.isEmpty(format)) {
       return format.replace(/\$DATAFIELD/g, datafield);
