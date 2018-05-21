@@ -78,6 +78,10 @@ describe('magic-button transformers', () => {
       expect(fn('TV Show', format)).to.equal('http://pixel.nymag.com/imgs/custom/tvrecaps/recaps-tv-show-160x160.png');
     });
 
+    it('trims leading and trailing spaces', () => {
+      expect(fn(' TV Show ', format)).to.equal('http://pixel.nymag.com/imgs/custom/tvrecaps/recaps-tv-show-160x160.png');
+    });
+
     it('removes html tags', () => {
       expect(fn('Foo<br /> <h1>Bar</h1>', format)).to.equal('http://pixel.nymag.com/imgs/custom/tvrecaps/recaps-foo-bar-160x160.png');
     });
