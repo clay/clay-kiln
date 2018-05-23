@@ -1,4 +1,4 @@
-import lib from './magic-button-transformers';
+import * as lib from './magic-button-transformers';
 
 describe('magic-button transformers', () => {
   describe('mediaplayUrl', () => {
@@ -76,6 +76,10 @@ describe('magic-button transformers', () => {
 
     it('replaces placeholder with data field', () => {
       expect(fn('TV Show', format)).to.equal('http://pixel.nymag.com/imgs/custom/tvrecaps/recaps-tv-show-160x160.png');
+    });
+
+    it('trims leading and trailing spaces', () => {
+      expect(fn(' TV Show ', format)).to.equal('http://pixel.nymag.com/imgs/custom/tvrecaps/recaps-tv-show-160x160.png');
     });
 
     it('removes html tags', () => {

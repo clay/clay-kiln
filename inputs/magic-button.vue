@@ -22,7 +22,7 @@
   Magic buttons are extremely powerful, but can be a little confusing to configure. This is what they generally look like:
 
   1. specify a `field` or `component`. The button will grab the value or ref, respectively. If you specify either as an array, it will look for the first field/component, then fall back to the next ones specified in the array if necessary (if the field is empty, or the component isn't on the page)
-  2. specify a `transform`. Transforms are useful when doing api calls with that data
+  2. specify a `transform`. Transforms are useful when doing api calls with that data. You may add custom transformers (or overwrite built-in ones) via `window.kiln.transformers`
   2. specify a `transformArg` if you need to send more information to the transform.
   3. specify a `store` path or `url` if you need to grab data from somewhere. The request will be prefixed with the `store`/`url` string you pass in.
   4. specify a `property` to grab from the result of that api call. You can use `_.get()` syntax, e.g. `foo.bar[0].baz`. If you specify as an array, it will grab the first property in the array that's not empty in the component above.
@@ -94,11 +94,11 @@
   ##### (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧ "grab an image url from either a mediaplay-image (url) or lede-gallery (ledeImageUrl) (whichever is higher on the page)"
 
   ```yaml
-  component: 
+  component:
     - mediaplay-image
     - lede-gallery
   store: components
-  property: 
+  property:
     - url
     - ledeImageUrl
   tooltip: Fetch First Image
@@ -153,7 +153,6 @@
   import { uriToUrl } from '../lib/utils/urls';
   import { isEmpty } from '../lib/utils/comparators';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
-  import transformers from './magic-button-transformers';
   import icon from '../lib/utils/icon.vue';
   import UiIconButton from 'keen/UiIconButton';
 
@@ -274,7 +273,8 @@
   function doMoreMagic(data, options) {
     const transform = options.transform,
       property = options.property,
-      store = options.store;
+      store = options.store,
+      transformers = _.get(window, 'kiln.transformers', {});
 
     let url = options.url, // may have $SITE_PREFIX
       transformed, promise;

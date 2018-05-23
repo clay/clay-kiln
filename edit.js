@@ -11,6 +11,7 @@ import { add as addInput } from './lib/forms/inputs';
 import { init as initValidators } from './lib/validators';
 import conditionalFocus from './directives/conditional-focus';
 import utilsAPI from './lib/utils/api';
+import { init as initTransformers } from './inputs/magic-button-transformers';
 import { hasClickedFocusableEl } from './lib/decorators/focus';
 import { hasClickedSelectableEl } from './lib/decorators/select';
 import { META_PRESS, META_UNPRESS } from './lib/preloader/mutationTypes';
@@ -49,6 +50,8 @@ inputReq.keys().forEach(function (key) {
 
 // init validators
 initValidators();
+// init transformers
+initTransformers();
 
 // add progress bar
 Vue.use(NProgress, {
