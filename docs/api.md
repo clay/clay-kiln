@@ -23,7 +23,29 @@ Class | Description
 `kiln-primary-color` | kiln primary color (blue-grey)
 `kiln-accent-color` | kiln accent color (ingigo)
 
-## JavaScript Utilities
+## JavaScript API
+
+Kiln attaches a `window.kiln` object when it has loaded, which contains utilities, vue components, and places to put custom helpers, inputs, validators, etc. Note that you may always override built-in inputs, helpers, validators, etc with your own code if you need to.
+
+Property | Description
+-------- | -----------
+`componentModels` | compiled model.js files, used by kiln to save / render components
+`componentTemplates` | compiled handlebars templates, used by kiln to re-render components
+`helpers` | handlebars helper functions. attach custom helpers here
+`inputs` | form inputs, defined by vue components. attach custom inputs and `attachedButton` components here
+`isInvalidDrag` | boolean that prevents dragging components when selecting text
+`locals` | object with url and query params as well as site and user data
+`modals` | vue components that may be displayed by calling `store.dispatch('openModal')`
+`plugins` | vuex plugins that are called when kiln loads. may subscribe to state changes
+`preloadData` | read-only composed page data, used to bootstrap kiln on load
+`preloadSchemas` | read-only object that contains schemas for all loaded components. used to bootstrap kiln
+`selectorButtons` | custom vue components that will be applied to all component selectors
+`toolbarButtons` | custom vue components that will be applied to the edit toolbar
+`transformers` | object containing all magic-button transform functions. attach custom transformers here
+`utils` | various utilities, useful for plugins
+`validators` | object containing all validators. attach custom validators here
+
+### Utilities
 
 Kiln exports a number of JavaScript utils to the browser in the `window.kiln.utils` object.
 
@@ -46,6 +68,8 @@ Property | Description
 `components` | Vue.js components, exported by Kiln
 
 ### Vue Components
+
+Kiln exports a number of [KeenUI](https://josephuspaye.github.io/Keen-UI/) and custom Vue.js components that may be used in plugins.
 
 Component | Description
 --------- | -----------
@@ -74,6 +98,8 @@ Component | Description
 `UiTooltip` | [KeenUI tooltip](https://josephuspaye.github.io/Keen-UI/#/ui-tooltip)
 
 ## Vuex State
+
+The Vuex state looks similar to this:
 
 ```js
 {
@@ -119,6 +145,7 @@ Component | Description
     currentConfirm: { title, text, button, onConfirm }, // current "confirmation" modal
     currentDrawer: null, // current right-hand drawer
     currentNav: null, // current left-hand nav
+    currentNavConfig: null, // used to deep-link into the nav
     currentSelection: null, // currently selected component, gets uri
     currentFocus: { uri, path }, // currently focused field/group
     currentProgress: 0, // progress bar, gets random number (to prevent flashes)

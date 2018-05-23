@@ -1,4 +1,4 @@
-import lib from './magic-button-transformers';
+import * as lib from './magic-button-transformers';
 
 describe('magic-button transformers', () => {
   describe('mediaplayUrl', () => {
