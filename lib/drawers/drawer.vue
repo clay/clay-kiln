@@ -79,7 +79,7 @@
   import invisibleComponents from './invisible-components.vue';
   import preview from './preview.vue';
   import health from './health.vue';
-  import publish from './publish.vue';
+  import publishPage from './publish-page.vue';
 
   /**
    * get component lists in the <head> of the page
@@ -149,7 +149,7 @@
         return !!this.name;
       },
       tabType() {
-        return this.name === 'publish' ? 'icon-and-text' : 'text';
+        return this.name === 'publishPage' || 'publishLayout' ? 'icon-and-text' : 'text';
       },
       tabs() {
         if (this.name === 'contributors') {
@@ -177,7 +177,7 @@
             component: 'preview',
             selected: true
           }];
-        } else if (this.name === 'publish') {
+        } else if (this.name === 'publishPage') {
           const errors = _.get(this.$store, 'state.validation.errors');
 
           return [{
@@ -186,7 +186,7 @@
             selected: errors.length > 0
           }, {
             title: 'Publish',
-            component: 'publish',
+            component: 'publish-page',
             selected: errors.length === 0
           }];
         }
@@ -221,7 +221,7 @@
       'invisible-components': invisibleComponents,
       preview,
       health,
-      publish
+      'publish-page': publishPage
     }
   };
 </script>

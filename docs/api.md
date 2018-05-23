@@ -129,6 +129,19 @@ The Vuex state looks similar to this:
       url: ''
     }
   },
+  layout: {
+    // this layout's representation in the layouts list
+    published: false,
+    scheduled: false,
+    createTime: 'Wed May 23 2018 16:20:05 GMT-0400 (EDT)',
+    publishTime: null,
+    scheduleTime: null,
+    siteSlug: 'some-site',
+    title: '',
+    updateTime: null,
+    updateUser: null,
+    uri: 'domain.com/_components/some-layout/instances/some-id'
+  }
   user: {
     // currently logged-in user
     auth: 'write',
