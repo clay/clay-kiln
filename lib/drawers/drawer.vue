@@ -80,6 +80,8 @@
   import preview from './preview.vue';
   import health from './health.vue';
   import publishPage from './publish-page.vue';
+  import publishLayout from './publish-layout.vue';
+  import layoutHistory from './layout-history.vue';
 
   /**
    * get component lists in the <head> of the page
@@ -161,6 +163,12 @@
             title: 'Page History',
             component: 'page-history'
           }];
+        } else if (this.name === 'layout-history') {
+          return [{
+            title: 'Layout History',
+            component: 'layout-history',
+            selected: true
+          }];
         } else if (this.name === 'components') {
           const state = _.get(this.$store, 'state'),
             headLists = getHeadComponentLists(state),
@@ -233,7 +241,9 @@
       'invisible-components': invisibleComponents,
       preview,
       health,
-      'publish-page': publishPage
+      'publish-page': publishPage,
+      'publish-layout': publishLayout,
+      'layout-history': layoutHistory
     }
   };
 </script>

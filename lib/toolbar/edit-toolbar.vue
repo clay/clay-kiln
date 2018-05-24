@@ -84,6 +84,7 @@
         <ui-icon-button class="toolbar-action-button" :disabled="!undoEnabled" color="white" size="large" type="secondary" icon="undo" tooltip="Undo" @click="undo"></ui-icon-button>
         <ui-icon-button class="toolbar-action-button" :disabled="!redoEnabled" color="white" size="large" type="secondary" icon="redo" tooltip="Redo" @click="redo"></ui-icon-button>
         <ui-icon-button v-if="isPageEditMode" class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'contributors' }" color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click.stop="toggleDrawer('contributors')"></ui-icon-button>
+        <ui-icon-button v-if="!isPageEditMode" class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'layout-history' }" color="white" size="large" type="secondary" icon="people" tooltip="Layout History" @click.stop="toggleDrawer('layout-history')"></ui-icon-button>
         <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'components' }" color="white" size="large" type="secondary" icon="find_in_page" :tooltip="componentsTooltip" @click.stop="toggleDrawer('components')"></ui-icon-button>
         <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'preview' }" color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click.stop="toggleDrawer('preview')"></ui-icon-button>
         <ui-button v-if="isPageEditMode" class="toolbar-publish-button" :class="{ 'is-open-drawer': currentDrawer === 'publish-page' }" type="primary" color="primary" size="large" @click.stop="toggleDrawer('publish-page')"><span class="toolbar-button-text">Publishing</span></ui-button>
@@ -299,11 +300,13 @@
           // page editing
           this.$store.commit('TOGGLE_EDIT_MODE', 'page');
           this.$refs.modeToggle.closeDropdown();
+          this.closeDrawer();
           this.$store.dispatch('removeAlert', layoutAlert);
         } else {
           // layout editing
           this.$store.commit('TOGGLE_EDIT_MODE', 'layout');
           this.$refs.modeToggle.closeDropdown();
+          this.closeDrawer();
           this.$store.dispatch('addAlert', layoutAlert);
         }
       },

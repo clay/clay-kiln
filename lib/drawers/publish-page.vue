@@ -198,7 +198,7 @@
       </form>
     </ui-collapsible>
 
-    <!-- custom location -->
+    <!-- manual title updating -->
     <ui-collapsible class="publish-section publish-title" title="Page Title">
       <form class="publish-title-form" @submit.prevent="saveTitle">
         <span class="title-description">Manually update the page title that appears in the Clay Menu. Will be overwritten when saving components that set the title.</span>
