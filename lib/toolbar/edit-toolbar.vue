@@ -138,6 +138,7 @@
     },
     computed: mapState({
       pageState: (state) => state.page.state,
+      layoutState: (state) => state.layout,
       isLoading: (state) => state.isLoading,
       isPageEditMode: (state) => state.editMode === 'page',
       undoEnabled: (state) => {
@@ -149,9 +150,19 @@
       customButtons() {
         return Object.keys(window.kiln.toolbarButtons);
       },
-      hasChanges: (state) => {
+      hasPageChanges: (state) => {
         const pubTime = _.get(state, 'page.state.publishTime'), // latest published timestamp
           upTime = _.get(state, 'page.state.updateTime'); // latest updated timestamp
+
+        if (pubTime && upTime) {
+          return isAfter(upTime, pubTime);
+        } else {
+          return false;
+        }
+      },
+      hasLayoutChanges: (state) => {
+        const pubTime = _.get(state, 'layout.publishTime'), // latest published timestamp
+          upTime = _.get(state, 'layout.updateTime'); // latest updated timestamp
 
         if (pubTime && upTime) {
           return isAfter(upTime, pubTime);
@@ -167,7 +178,7 @@
           return ''; // still loading the page, don't display any status
         } else if (this.pageState.scheduled) {
           return 'Page: Scheduled';
-        } else if (this.pageState.published && this.hasChanges) {
+        } else if (this.pageState.published && this.hasPageChanges) {
           return 'Page: Unpublished Changes';
         } else if (this.pageState.published) {
           return 'Page: Published';
@@ -179,9 +190,15 @@
       },
       layoutStatus() {
         if (this.isLoading) {
-          return ''; // still loading the layout
+          return ''; // still loading the layout, don't display any status
+        } else if (this.layoutState.scheduled) {
+          return 'Layout: Scheduled';
+        } else if (this.layoutState.published && this.hasLayoutChanges) {
+          return 'Layout: Unpublished Changes';
+        } else if (this.layoutState.published) {
+          return 'Layout: Published';
         } else {
-          return 'Layout'; // todo: add layout statuses when we have a 'layouts' index
+          return 'Layout: Draft';
         }
       },
       status() {
