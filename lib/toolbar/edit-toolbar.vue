@@ -110,6 +110,7 @@
   import _ from 'lodash';
   import { mapState } from 'vuex';
   import isAfter from 'date-fns/is_after';
+  import differenceInMinutes from 'date-fns/difference_in_minutes';
   import toggleEdit from '../utils/toggle-edit';
   import { getItem } from '../utils/local';
   import progressBar from './progress.vue';
@@ -132,6 +133,21 @@
   import { getLayoutNameAndInstance } from '../utils/references';
 
   const log = logger(__filename);
+
+  /**
+   * get the last user who edited a layout, who ISN'T the current user
+   * @param  {object} store
+   * @return {null|string}
+   */
+  function getLastLayoutEditUser(store) {
+    const currentUser = _.get(store, 'state.user'),
+      lastUser = _.get(store, 'state.layout.updateUser'),
+      timestamp = _.get(store, 'state.layout.updateTime'),
+      isDifferentUser = currentUser.username !== lastUser.username,
+      isWithinFiveMinutes = Math.abs(differenceInMinutes(timestamp, new Date())) < 5;
+
+    return isDifferentUser && isWithinFiveMinutes ? lastUser.name : null;
+  }
 
   export default {
     data() {
@@ -291,7 +307,9 @@
       toggleEditMode(option) {
         const val = option.value,
           { message } = getLayoutNameAndInstance(this.$store),
-          layoutAlert = { type: 'warning', text: message };
+          layoutAlert = { type: 'warning', text: message },
+          lastUserName = getLastLayoutEditUser(this.$store),
+          layoutUserAlert = lastUserName && { type: 'info', message: `Edited less than 5 minutes ago by ${lastUserName}` };
 
         if (val === 'view') {
           this.$store.commit('STOP_EDITING');
@@ -308,6 +326,9 @@
           this.$refs.modeToggle.closeDropdown();
           this.closeDrawer();
           this.$store.dispatch('addAlert', layoutAlert);
+          if (layoutUserAlert) {
+            this.$store.dispatch('addAlert', layoutUserAlert);
+          }
         }
       },
       undo() {
