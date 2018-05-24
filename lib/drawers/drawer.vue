@@ -149,7 +149,7 @@
         return !!this.name;
       },
       tabType() {
-        return this.name === 'publishPage' || 'publishLayout' ? 'icon-and-text' : 'text';
+        return this.name === 'publish-page' || 'publish-layout' ? 'icon-and-text' : 'text';
       },
       tabs() {
         if (this.name === 'contributors') {
@@ -177,7 +177,7 @@
             component: 'preview',
             selected: true
           }];
-        } else if (this.name === 'publishPage') {
+        } else if (this.name === 'publish-page') {
           const errors = _.get(this.$store, 'state.validation.errors');
 
           return [{
@@ -187,6 +187,18 @@
           }, {
             title: 'Publish',
             component: 'publish-page',
+            selected: errors.length === 0
+          }];
+        } else if (this.name === 'publish-layout') {
+          const errors = _.get(this.$store, 'state.validation.errors');
+
+          return [{
+            title: 'Health',
+            component: 'health',
+            selected: errors.length > 0
+          }, {
+            title: 'Publish',
+            component: 'publish-layout',
             selected: errors.length === 0
           }];
         }

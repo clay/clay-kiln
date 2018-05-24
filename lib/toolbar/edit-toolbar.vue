@@ -86,7 +86,8 @@
         <ui-icon-button v-if="isPageEditMode" class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'contributors' }" color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click.stop="toggleDrawer('contributors')"></ui-icon-button>
         <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'components' }" color="white" size="large" type="secondary" icon="find_in_page" :tooltip="componentsTooltip" @click.stop="toggleDrawer('components')"></ui-icon-button>
         <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'preview' }" color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click.stop="toggleDrawer('preview')"></ui-icon-button>
-        <ui-button class="toolbar-publish-button" :class="{ 'is-open-drawer': currentDrawer === 'publish' }" type="primary" color="primary" size="large" @click.stop="toggleDrawer('publish')"><span class="toolbar-button-text">Publishing</span></ui-button>
+        <ui-button v-if="isPageEditMode" class="toolbar-publish-button" :class="{ 'is-open-drawer': currentDrawer === 'publish-page' }" type="primary" color="primary" size="large" @click.stop="toggleDrawer('publish-page')"><span class="toolbar-button-text">Publishing</span></ui-button>
+        <ui-button v-if="!isPageEditMode" class="toolbar-publish-button" :class="{ 'is-open-drawer': currentDrawer === 'publish-layout' }" type="primary" color="primary" size="large" @click.stop="toggleDrawer('publish-layout')"><span class="toolbar-button-text">Publishing</span></ui-button>
       </div>
     </ui-toolbar>
     <div class="kiln-progress">
