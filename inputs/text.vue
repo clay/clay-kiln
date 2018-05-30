@@ -73,26 +73,31 @@
       isMultiline() {
         return this.args.type === 'multi-line';
       },
+      isNumerical() {
+        return _.includes(['number', 'range'], this.args.type);
+      },
       isRequired() {
         return _.get(this.args, 'validate.required') === true || shouldBeRequired(this.args.validate, this.$store, this.name);
       },
       min() {
-        return _.includes(['number', 'range'], this.args.type) ? _.get(this.args, 'validate.min') : 0;
+        return this.isNumerical ? _.get(this.args, 'validate.min') : 0;
       },
       max() {
-        return _.includes(['number', 'range'], this.args.type) ? _.get(this.args, 'validate.max') : 0;
+        return this.isNumerical ? _.get(this.args, 'validate.max') : 0;
       },
       step() {
         return this.args.step ? this.args.step.toString() : 'any';
       },
       maxLength() {
-        return !_.includes(['number', 'range'], this.args.type) ? _.get(this.args, 'validate.max') : 0;
+        return !this.isNumerical ? _.get(this.args, 'validate.max') : 0;
       },
       label() {
         return `${label(this.name, this.schema)}${this.isRequired ? '*' : ''}`;
       },
       errorMessage() {
-        return getValidationError(this.data, this.args.validate, this.$store, this.name);
+        const validationData = this.isNumerical ? parseFloat(this.data) : this.data;
+
+        return getValidationError(validationData, this.args.validate, this.$store, this.name);
       },
       isInvalid() {
         return !!this.errorMessage;
