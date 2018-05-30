@@ -203,7 +203,7 @@
       <form class="publish-title-form" @submit.prevent="saveTitle">
         <span class="title-description">Manually update the page title that appears in the Clay Menu. Will be overwritten when saving components that set the title.</span>
         <ui-textbox class="title-input" v-model="title" label="Page Title"></ui-textbox>
-        <ui-button class="title-submit" buttonType="submit" type="primary" color="default">Save</ui-button>
+        <ui-button class="title-submit" buttonType="submit" type="primary" color="default" :disabled="!title">Save</ui-button>
       </form>
     </ui-collapsible>
 
@@ -319,6 +319,7 @@
       createdDate: (state) => state.page.state.createdAt,
       scheduledDate: (state) => state.page.state.scheduledTime,
       lastUpdated: (state) => state.page.state.updateTime,
+      currentTitle: (state) => state.page.state.title,
       statusMessage() {
         if (this.isScheduled) {
           return `Scheduled ${distanceInWordsToNow(this.scheduledDate, { addSuffix: true })}`;
@@ -373,6 +374,14 @@
         }
       }
     }),
+    watch: {
+      currentTitle(val) {
+        if (val) {
+          // if the page already has a title set, default the form to use it
+          this.title = val;
+        }
+      }
+    },
     methods: {
       goToHealth() {
         this.$emit('selectTab', 'Health');
@@ -571,8 +580,7 @@
     },
     mounted() {
       const prefix = _.get(this.$store, 'state.site.prefix'),
-        customUrl = _.get(this.$store, 'state.page.data.customUrl') || '',
-        currentTitle = _.get(this.$store, 'state.page.state.title');
+        customUrl = _.get(this.$store, 'state.page.data.customUrl') || '';
 
       // get location when form opens
       // remove prefix when displaying the url in the form. it'll be added when saving
@@ -582,9 +590,8 @@
         this.hasCustomLocation = true;
       }
 
-      // if the page already has a title set, default the form to use it
-      if (currentTitle) {
-        this.title = currentTitle;
+      if (this.currentTitle) {
+        this.title = this.currentTitle;
       }
     },
     components: {
