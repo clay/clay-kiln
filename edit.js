@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // undo and redo with shortkey+z / shift+shortkey+z (e.g. Ctrl+z, Shift+Ctrl+z)
   // display cheat sheet of all keyboard shortcuts with shift+?
   // toggle the meta key with ctrl / left command
-  /* eslint-disable */
+  /* eslint-disable complexity */
   document.body.addEventListener('keydown', (e) => {
     const key = keycode(e),
       isShortKeyPressed = _.get(e, SHORTKEY, false);
@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function () {
       store.commit(META_PRESS);
     }
   });
-  /* eslint-enable */
+  /* eslint-enable complexity */
 
   document.body.addEventListener('mousemove', _.debounce((e) => {
     if (_.get(store, 'state.ui.metaKey') && !e.ctrlKey && !e.metaKey) {
