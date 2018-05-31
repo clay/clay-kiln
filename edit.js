@@ -38,7 +38,9 @@ const inputReq = require.context('./inputs', false, /\.vue$/),
     trickle: false,
     minimum: 0.001
   },
-  nprogress = new NProgress(progressOptions);
+  nprogress = new NProgress(progressOptions),
+  // shortKey is a Quill convention to test for cmd on mac and ctrl on windows
+  SHORTKEY = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 
 // Require all scss/css files needed
 require.context('./styleguide', true, /^.*\.(scss|css)$/);
@@ -89,6 +91,19 @@ function getLastEditUser(store) {
     });
 
   return lastUser ? lastUser.name : null;
+}
+
+/**
+ * determine if forms, or modals are open
+ * @param  {object}  store
+ * @return {Boolean}
+ */
+function isStuffOpen(store) {
+  return _.get(store, 'state.ui.currentFocus') ||
+    _.get(store, 'state.ui.currentModal') ||
+    _.get(store, 'state.ui.currentAddComponentModal') ||
+    _.get(store, 'state.ui.currentConfirm') ||
+    _.get(store, 'state.ui.currentNav');
 }
 
 // kick off loading when DOM is ready
@@ -173,10 +188,34 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // when ESC bubbles up to the document, close the current form or pane / unselect components
+  // navigate components when hitting ↑ / ↓ arrows (if there's a component selected)
+  // undo and redo with shortkey+z / shift+shortkey+z (e.g. Ctrl+z, Shift+Ctrl+z)
+  // display cheat sheet of all keyboard shortcuts with shift+?
+  // toggle the meta key with ctrl / left command
+  /* eslint-disable complexity */
   document.body.addEventListener('keydown', (e) => {
-    const key = keycode(e);
+    const key = keycode(e),
+      isShortKeyPressed = _.get(e, SHORTKEY, false);
 
-    if (key === 'esc') {
+    if (key === 'up' && !isStuffOpen(store)) {
+      // select the previous component
+      store.dispatch('navigateComponents', 'prev');
+    } else if (key === 'down' && !isStuffOpen(store)) {
+      // select the next component
+      store.dispatch('navigateComponents', 'next');
+    } else if (key === 'z' && isShortKeyPressed && e.shiftKey) {
+      // redo
+      store.dispatch('redo');
+    } else if (key === 'z' && isShortKeyPressed) {
+      // undo
+      store.dispatch('undo');
+    } else if (key === '/' && e.shiftKey === true) {
+      // cheat sheet
+      store.dispatch('openModal', {
+        title: 'Keyboard Shortcuts',
+        type: 'keyboard'
+      });
+    } else if (key === 'esc') {
       // pressing esc when forms are focused unfocuses them but does NOT unselect the component.
       // press esc again to unselect a component
       if (_.get(store, 'state.ui.currentFocus')) {
@@ -186,12 +225,13 @@ document.addEventListener('DOMContentLoaded', function () {
       } else if (_.get(store, 'state.ui.currentSelection')) {
         store.dispatch('unselect');
       }
-    } else if (key === 'ctrl' || key === 'left command') {
+    } else if (isShortKeyPressed) {
       // pressing and holding meta key will unlock additional functionality,
       // such as the ability to duplicate the selected component
       store.commit(META_PRESS);
     }
   });
+  /* eslint-enable complexity */
 
   document.body.addEventListener('mousemove', _.debounce((e) => {
     if (_.get(store, 'state.ui.metaKey') && !e.ctrlKey && !e.metaKey) {
@@ -201,9 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // when user stops pressing a key, toggle this off
   document.body.addEventListener('keyup', (e) => {
-    const key = keycode(e);
-
-    if (key === 'ctrl' || key === 'left command') {
+    if (_.get(e, SHORTKEY, false)) {
       store.commit(META_UNPRESS);
     }
   });
@@ -221,37 +259,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
   window.addEventListener('offline', function () {
     store.dispatch('addAlert', { type: 'error', text: connectionLostMessage, permanent: true });
-  });
-
-  // navigate components when hitting ↑ / ↓ arrows (if there's a component selected)
-  // undo and redo with shortkey+z / shift+shortkey+z
-  // display cheat sheet of all keyboard shortcuts with shift+?
-  document.addEventListener('keydown', function (e) { // eslint-disable-line
-    const key = keycode(e),
-      // shortKey is a Quill convention to test for cmd on mac and ctrl on windows
-      SHORTKEY = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
-
-    // don't navigate if they have a form or pane open
-    if (_.get(store, 'state.ui.currentFocus') || _.get(store, 'state.ui.currentPane') || _.get(store, 'state.ui.currentAddComponentModal')) {
-      return;
-    }
-
-    if (key === 'up') {
-      store.dispatch('navigateComponents', 'prev');
-    } else if (key === 'down') {
-      store.dispatch('navigateComponents', 'next');
-    } else if (key === 'z' && e[SHORTKEY] && e.shiftKey) {
-      // redo
-      store.dispatch('redo');
-    } else if (key === 'z' && e[SHORTKEY]) {
-      // undo
-      store.dispatch('undo');
-    } else if (key === '/' && e.shiftKey === true) {
-      // cheat sheet
-      store.dispatch('openModal', {
-        title: 'Keyboard Shortcuts',
-        type: 'keyboard'
-      });
-    }
   });
 });
