@@ -11,6 +11,8 @@
 <dd></dd>
 <dt><a href="#module_forms">forms</a></dt>
 <dd></dd>
+<dt><a href="#module_layout-state">layout-state</a></dt>
+<dd></dd>
 <dt><a href="#module_lists">lists</a></dt>
 <dd></dd>
 <dt><a href="#module_nav">nav</a></dt>
@@ -407,6 +409,100 @@ note: convert data to plain objects, since they're reactive
 | newData | <code>object</code> | from form |
 | oldData | <code>object</code> | from store |
 
+<a name="module_layout-state"></a>
+
+## layout-state
+
+* [layout-state](#module_layout-state)
+    * [.fetchLayoutState(store, [preloadOptions])](#module_layout-state.fetchLayoutState) ⇒ <code>Promise</code>
+    * [.updateHistoryWithEditAction(state, currentUser)](#module_layout-state.updateHistoryWithEditAction) ⇒ <code>object</code>
+    * [.updateLayout(store, [data], [preloadOptions])](#module_layout-state.updateLayout) ⇒ <code>Promise</code>
+    * [.scheduleLayout(store, timestamp)](#module_layout-state.scheduleLayout) ⇒ <code>Promise</code>
+    * [.unscheduleLayout(store)](#module_layout-state.unscheduleLayout) ⇒ <code>Promise</code>
+    * [.publishLayout(store)](#module_layout-state.publishLayout) ⇒ <code>Promise</code>
+
+<a name="module_layout-state.fetchLayoutState"></a>
+
+### layout-state.fetchLayoutState(store, [preloadOptions]) ⇒ <code>Promise</code>
+get the list data for a specific layout
+note: if prefix / uri is specified, this does NOT commit the data (only returns it),
+allowing the preloader to use it when doing the initial preload of data
+
+**Kind**: static method of [<code>layout-state</code>](#module_layout-state)  
+
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
+| [preloadOptions] | <code>object</code> | 
+| [preloadOptions.uri] | <code>string</code> | 
+| [preloadOptions.prefix] | <code>string</code> | 
+| [preloadOptions.user] | <code>object</code> | 
+
+<a name="module_layout-state.updateHistoryWithEditAction"></a>
+
+### layout-state.updateHistoryWithEditAction(state, currentUser) ⇒ <code>object</code>
+updates the state's history array to make sure the latest item is an
+'edit' event that includes the current user
+note: this function is only exported for testing purposes, and should not be used by other modules
+
+**Kind**: static method of [<code>layout-state</code>](#module_layout-state)  
+
+| Param | Type |
+| --- | --- |
+| state | <code>object</code> | 
+| currentUser | <code>object</code> | 
+
+<a name="module_layout-state.updateLayout"></a>
+
+### layout-state.updateLayout(store, [data], [preloadOptions]) ⇒ <code>Promise</code>
+update a layout's title, or just the latest timestamp + user
+
+**Kind**: static method of [<code>layout-state</code>](#module_layout-state)  
+
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
+| [data] | <code>object</code> | 
+| [data.title] | <code>string</code> | 
+| [preloadOptions] | <code>object</code> | 
+
+<a name="module_layout-state.scheduleLayout"></a>
+
+### layout-state.scheduleLayout(store, timestamp) ⇒ <code>Promise</code>
+schedule the layout and update its index
+
+**Kind**: static method of [<code>layout-state</code>](#module_layout-state)  
+
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
+| timestamp | <code>Date</code> | 
+
+<a name="module_layout-state.unscheduleLayout"></a>
+
+### layout-state.unscheduleLayout(store) ⇒ <code>Promise</code>
+unschedule the layout and update its index
+
+**Kind**: static method of [<code>layout-state</code>](#module_layout-state)  
+
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
+
+<a name="module_layout-state.publishLayout"></a>
+
+### layout-state.publishLayout(store) ⇒ <code>Promise</code>
+publish layout
+note: layouts index is updated server-side, including unscheduling the layout
+if it's currently scheduled
+also note: this will trigger a fetch of the updated (published) layout state
+
+**Kind**: static method of [<code>layout-state</code>](#module_layout-state)  
+
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
+
 <a name="module_lists"></a>
 
 ## lists
@@ -432,11 +528,14 @@ open nav tab
 * [page-data](#module_page-data)
     * _static_
         * [.savePage(store, data, [snapshot])](#module_page-data.savePage) ⇒ <code>Promise</code>
+        * [.createPage(store, id)](#module_page-data.createPage) ⇒ <code>Promise</code>
+        * [.publishPage(store, uri)](#module_page-data.publishPage) ⇒ <code>Promise</code>
         * [.unpublishPage(store, uri)](#module_page-data.unpublishPage) ⇒ <code>Promise</code>
+        * [.schedulePage(store, uri, timestamp)](#module_page-data.schedulePage) ⇒ <code>Promise</code>
+        * [.unschedulePage(store)](#module_page-data.unschedulePage) ⇒ <code>Promise</code>
     * _inner_
         * [~shouldRender(paths)](#module_page-data..shouldRender) ⇒ <code>boolean</code>
         * [~removeURI(uri, store)](#module_page-data..removeURI) ⇒ <code>Promise</code>
-        * [~unschedule(uri)](#module_page-data..unschedule) ⇒ <code>string</code>
 
 <a name="module_page-data.savePage"></a>
 
@@ -452,6 +551,30 @@ because, uh, that would just be reloading the page
 | data | <code>\*</code> | to save |
 | [snapshot] | <code>boolean</code> | false if we're undoing/redoing |
 
+<a name="module_page-data.createPage"></a>
+
+### page-data.createPage(store, id) ⇒ <code>Promise</code>
+create a new page, then return its editable link
+
+**Kind**: static method of [<code>page-data</code>](#module_page-data)  
+
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
+| id | <code>string</code> | 
+
+<a name="module_page-data.publishPage"></a>
+
+### page-data.publishPage(store, uri) ⇒ <code>Promise</code>
+manually publish the page
+
+**Kind**: static method of [<code>page-data</code>](#module_page-data)  
+
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
+| uri | <code>string</code> | 
+
 <a name="module_page-data.unpublishPage"></a>
 
 ### page-data.unpublishPage(store, uri) ⇒ <code>Promise</code>
@@ -463,6 +586,30 @@ remove uri from /uris/
 | --- | --- |
 | store | <code>object</code> | 
 | uri | <code>string</code> | 
+
+<a name="module_page-data.schedulePage"></a>
+
+### page-data.schedulePage(store, uri, timestamp) ⇒ <code>Promise</code>
+schedule the page to publish
+
+**Kind**: static method of [<code>page-data</code>](#module_page-data)  
+
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
+| uri | <code>string</code> | 
+| timestamp | <code>Date</code> | 
+
+<a name="module_page-data.unschedulePage"></a>
+
+### page-data.unschedulePage(store) ⇒ <code>Promise</code>
+unschedule the page
+
+**Kind**: static method of [<code>page-data</code>](#module_page-data)  
+
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
 
 <a name="module_page-data..shouldRender"></a>
 
@@ -487,18 +634,6 @@ remove uri from /uris/
 | --- | --- |
 | uri | <code>String</code> | 
 | store | <code>Object</code> | 
-
-<a name="module_page-data..unschedule"></a>
-
-### page-data~unschedule(uri) ⇒ <code>string</code>
-if something is scheduled, remove it
-
-**Kind**: inner method of [<code>page-data</code>](#module_page-data)  
-**Returns**: <code>string</code> - schedule entry removed  
-
-| Param | Type |
-| --- | --- |
-| uri | <code>string</code> | 
 
 <a name="module_page-state"></a>
 
@@ -790,8 +925,10 @@ render multiple components at once
     * _static_
         * [.validate(store)](#module_validators.validate) ⇒ <code>Promise</code>
     * _inner_
+        * [~isComponentInPageHeadList(uri, state)](#module_validators..isComponentInPageHeadList) ⇒ <code>Boolean</code>
         * [~runValidator(state)](#module_validators..runValidator) ⇒ <code>function</code>
         * [~runValidators(validators, state)](#module_validators..runValidators) ⇒ <code>Promise</code>
+        * [~hasItems(error)](#module_validators..hasItems) ⇒ <code>Boolean</code>
 
 <a name="module_validators.validate"></a>
 
@@ -803,6 +940,18 @@ trigger validation
 | Param | Type |
 | --- | --- |
 | store | <code>object</code> | 
+
+<a name="module_validators..isComponentInPageHeadList"></a>
+
+### validators~isComponentInPageHeadList(uri, state) ⇒ <code>Boolean</code>
+determine if a component is in a page-specific head list
+
+**Kind**: inner method of [<code>validators</code>](#module_validators)  
+
+| Param | Type |
+| --- | --- |
+| uri | <code>string</code> | 
+| state | <code>object</code> | 
 
 <a name="module_validators..runValidator"></a>
 
@@ -826,4 +975,16 @@ run a list of validators
 | --- | --- |
 | validators | <code>array</code> | 
 | state | <code>object</code> | 
+
+<a name="module_validators..hasItems"></a>
+
+### validators~hasItems(error) ⇒ <code>Boolean</code>
+make sure that all errors have items that can display.
+some may have been parsed out by the isActive check in runValidator, above
+
+**Kind**: inner method of [<code>validators</code>](#module_validators)  
+
+| Param | Type |
+| --- | --- |
+| error | <code>object</code> | 
 
