@@ -6,7 +6,7 @@
   import _ from 'lodash';
   import { find } from '@nymag/dom';
   import { refAttr, getComponentName } from '../utils/references';
-  import { getVisibleList } from '../utils/component-elements';
+  import { getVisibleList, isComponentInPage } from '../utils/component-elements';
   import label from '../utils/label';
   import filterableList from '../utils/filterable-list.vue';
 
@@ -39,9 +39,17 @@
     },
     computed: {
       components() {
-        const selected = _.get(this.$store, 'state.ui.currentSelection');
+        const selected = _.get(this.$store, 'state.ui.currentSelection'),
+          isPageEditMode = _.get(this.$store, 'state.editMode') === 'page';
 
-        return _.map(getVisibleList(), (el) => getName(el, selected));
+        return _.map(_.filter(getVisibleList(), (el) => {
+          // only show page / layout components, depending on edit mode
+          if (isPageEditMode) {
+            return isComponentInPage(el.getAttribute(refAttr));
+          } else {
+            return !isComponentInPage(el.getAttribute(refAttr));
+          }
+        }), (el) => getName(el, selected));
       }
     },
     methods: {

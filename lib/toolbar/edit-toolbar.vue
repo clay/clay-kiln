@@ -68,9 +68,9 @@
     <alert-container></alert-container>
     <drawer></drawer>
     <ui-toolbar type="colored" text-color="white" @nav-icon-click="openNav">
-      <ui-button type="primary" color="primary" size="large" icon="mode_edit" has-dropdown>
+      <ui-button type="primary" color="primary" size="large" :icon="statusIcon" has-dropdown ref="modeToggle">
         <span class="toolbar-button-text">{{ status }}</span>
-        <ui-menu slot="dropdown" :options="toggleOptions" has-icons @select="stopEditing"></ui-menu>
+        <ui-menu slot="dropdown" :options="toggleOptions" has-icons @select="toggleEditMode"></ui-menu>
       </ui-button>
 
       <div class="kiln-toolbar-actions" slot="actions">
@@ -83,10 +83,12 @@
         <!-- display individual buttons on larger screens (viewport >= 600px) -->
         <ui-icon-button class="toolbar-action-button" :disabled="!undoEnabled" color="white" size="large" type="secondary" icon="undo" tooltip="Undo" @click="undo"></ui-icon-button>
         <ui-icon-button class="toolbar-action-button" :disabled="!redoEnabled" color="white" size="large" type="secondary" icon="redo" tooltip="Redo" @click="redo"></ui-icon-button>
-        <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'contributors' }" color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click.stop="toggleDrawer('contributors')"></ui-icon-button>
-        <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'components' }" color="white" size="large" type="secondary" icon="find_in_page" tooltip="Find on Page" @click.stop="toggleDrawer('components')"></ui-icon-button>
+        <ui-icon-button v-if="isPageEditMode" class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'contributors' }" color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click.stop="toggleDrawer('contributors')"></ui-icon-button>
+        <ui-icon-button v-if="!isPageEditMode" class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'layout-history' }" color="white" size="large" type="secondary" icon="people" tooltip="Layout History" @click.stop="toggleDrawer('layout-history')"></ui-icon-button>
+        <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'components' }" color="white" size="large" type="secondary" icon="find_in_page" :tooltip="componentsTooltip" @click.stop="toggleDrawer('components')"></ui-icon-button>
         <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'preview' }" color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click.stop="toggleDrawer('preview')"></ui-icon-button>
-        <ui-button class="toolbar-publish-button" :class="{ 'is-open-drawer': currentDrawer === 'publish' }" type="primary" color="primary" size="large" @click.stop="toggleDrawer('publish')"><span class="toolbar-button-text">{{ publishAction }}</span></ui-button>
+        <ui-button v-if="isPageEditMode" class="toolbar-publish-button" :class="{ 'is-open-drawer': currentDrawer === 'publish-page' }" type="primary" color="primary" size="large" @click.stop="toggleDrawer('publish-page')"><span class="toolbar-button-text">Publishing</span></ui-button>
+        <ui-button v-if="!isPageEditMode" class="toolbar-publish-button" :class="{ 'is-open-drawer': currentDrawer === 'publish-layout' }" type="primary" color="primary" size="large" @click.stop="toggleDrawer('publish-layout')"><span class="toolbar-button-text">Publishing</span></ui-button>
       </div>
     </ui-toolbar>
     <div class="kiln-progress">
@@ -108,6 +110,7 @@
   import _ from 'lodash';
   import { mapState } from 'vuex';
   import isAfter from 'date-fns/is_after';
+  import differenceInMinutes from 'date-fns/difference_in_minutes';
   import toggleEdit from '../utils/toggle-edit';
   import { getItem } from '../utils/local';
   import progressBar from './progress.vue';
@@ -127,8 +130,24 @@
   import confirm from './confirm.vue';
   import alertContainer from './alert-container.vue';
   import logger from '../utils/log';
+  import { getLayoutNameAndInstance } from '../utils/references';
 
   const log = logger(__filename);
+
+  /**
+   * get the last user who edited a layout, who ISN'T the current user
+   * @param  {object} store
+   * @return {null|string}
+   */
+  function getLastLayoutEditUser(store) {
+    const currentUser = _.get(store, 'state.user'),
+      lastUser = _.get(store, 'state.layout.updateUser'),
+      timestamp = _.get(store, 'state.layout.updateTime'),
+      isDifferentUser = currentUser.username !== lastUser.username,
+      isWithinFiveMinutes = Math.abs(differenceInMinutes(timestamp, new Date())) < 5;
+
+    return isDifferentUser && isWithinFiveMinutes ? lastUser.name : null;
+  }
 
   export default {
     data() {
@@ -136,7 +155,9 @@
     },
     computed: mapState({
       pageState: (state) => state.page.state,
+      layoutState: (state) => state.layout,
       isLoading: (state) => state.isLoading,
+      isPageEditMode: (state) => state.editMode === 'page',
       undoEnabled: (state) => {
         return !state.undo.atStart && !state.ui.currentFocus && !state.ui.currentPane;
       },
@@ -146,7 +167,7 @@
       customButtons() {
         return Object.keys(window.kiln.toolbarButtons);
       },
-      hasChanges: (state) => {
+      hasPageChanges: (state) => {
         const pubTime = _.get(state, 'page.state.publishTime'), // latest published timestamp
           upTime = _.get(state, 'page.state.updateTime'); // latest updated timestamp
 
@@ -156,57 +177,116 @@
           return false;
         }
       },
-      status() {
+      hasLayoutChanges: (state) => {
+        const pubTime = _.get(state, 'layout.publishTime'), // latest published timestamp
+          upTime = _.get(state, 'layout.updateTime'); // latest updated timestamp
+
+        if (pubTime && upTime) {
+          return isAfter(upTime, pubTime);
+        } else {
+          return false;
+        }
+      },
+      statusIcon() {
+        return this.isPageEditMode ? 'mode_edit' : 'layers';
+      },
+      pageStatus() {
         if (this.isLoading) {
           return ''; // still loading the page, don't display any status
         } else if (this.pageState.scheduled) {
-          return 'Scheduled';
-        } else if (this.pageState.published && this.hasChanges) {
-          return 'Unpublished Changes';
+          return 'Page: Scheduled';
+        } else if (this.pageState.published && this.hasPageChanges) {
+          return 'Page: Unpublished Changes';
         } else if (this.pageState.published) {
-          return 'Published';
+          return 'Page: Published';
         } else if (this.pageState.archived) {
-          return 'Archived';
+          return 'Page: Archived';
         } else {
-          return 'Draft';
+          return 'Page: Draft';
         }
       },
-      publishAction() {
-        if (this.pageState.published) {
-          return 'Republish';
-        } else if (this.pageState.archived) {
-          return 'Unarchive';
+      layoutStatus() {
+        if (this.isLoading) {
+          return ''; // still loading the layout, don't display any status
+        } else if (this.layoutState.scheduled) {
+          return 'Layout: Scheduled';
+        } else if (this.layoutState.published && this.hasLayoutChanges) {
+          return 'Layout: Unpublished Changes';
+        } else if (this.layoutState.published) {
+          return 'Layout: Published';
         } else {
-          return 'Publish';
+          return 'Layout: Draft';
         }
       },
-      toggleOptions() {
-        return [
-          { label: 'Edit Mode', icon: 'mode_edit', disabled: true },
-          { label: 'View Mode', icon: 'remove_red_eye' }
-        ];
+      status() {
+        if (this.isPageEditMode) {
+          return this.pageStatus;
+        } else {
+          return this.layoutStatus;
+        }
+      },
+      isAdmin(state) {
+        return _.get(state, 'user.auth') === 'admin';
+      },
+      toggleOptions(state) {
+        if (this.isAdmin) {
+          return [
+            { label: 'Edit Page', value: 'page', icon: 'mode_edit', disabled: state.editMode === 'page' },
+            { label: 'Edit Layout', value: 'layout', icon: 'layers', disabled: state.editMode === 'layout' },
+            { label: 'View Page', value: 'view', icon: 'remove_red_eye' }
+          ];
+        } else {
+          return [
+            { label: 'Edit Page', value: 'page', icon: 'mode_edit', disabled: true },
+            { label: 'View Page', value: 'view', icon: 'remove_red_eye' }
+          ];
+        }
+      },
+      componentsTooltip() {
+        return this.isPageEditMode ? 'Find on Page' : 'Find on Layout';
       },
       toolbarOptions() {
-        return [{
-          label: 'Undo',
-          icon: 'undo',
-          disabled: !this.undoEnabled
-        }, {
-          label: 'Redo',
-          icon: 'redo',
-          disabled: !this.redoEnabled
-        }, {
-          type: 'divider'
-        }, {
-          label: 'Contributors',
-          icon: 'people'
-        }, {
-          label: 'Find on Page',
-          icon: 'find_in_page'
-        }, {
-          label: 'Preview',
-          icon: 'open_in_new'
-        }];
+        if (this.isPageEditMode) {
+          return [{
+            label: 'Undo',
+            icon: 'undo',
+            disabled: !this.undoEnabled
+          }, {
+            label: 'Redo',
+            icon: 'redo',
+            disabled: !this.redoEnabled
+          }, {
+            type: 'divider'
+          }, {
+            label: 'Contributors',
+            icon: 'people'
+          }, {
+            label: 'Find on Page',
+            icon: 'find_in_page'
+          }, {
+            label: 'Preview',
+            icon: 'open_in_new'
+          }];
+        } else {
+          // display fewer options in layout edit mode, until we have a 'layouts' index
+          return [{
+            label: 'Undo',
+            icon: 'undo',
+            disabled: !this.undoEnabled
+          }, {
+            label: 'Redo',
+            icon: 'redo',
+            disabled: !this.redoEnabled
+          }, {
+            type: 'divider'
+          }, {
+            label: 'Find on Layout',
+            icon: 'find_in_page'
+          }, {
+            label: 'Preview',
+            icon: 'open_in_new'
+          }];
+        }
       },
       snackbar() {
         return _.get(this.$store, 'state.ui.snackbar') && _.toPlainObject(_.get(this.$store, 'state.ui.snackbar'));
@@ -224,9 +304,32 @@
       }
     },
     methods: {
-      stopEditing() {
-        this.$store.commit('STOP_EDITING');
-        toggleEdit();
+      toggleEditMode(option) {
+        const val = option.value,
+          { message } = getLayoutNameAndInstance(this.$store),
+          layoutAlert = { type: 'warning', text: message },
+          lastUserName = getLastLayoutEditUser(this.$store),
+          layoutUserAlert = lastUserName && { type: 'info', message: `Edited less than 5 minutes ago by ${lastUserName}` };
+
+        if (val === 'view') {
+          this.$store.commit('STOP_EDITING');
+          toggleEdit();
+        } else if (val === 'page') {
+          // page editing
+          this.$store.commit('TOGGLE_EDIT_MODE', 'page');
+          this.$refs.modeToggle.closeDropdown();
+          this.closeDrawer();
+          this.$store.dispatch('removeAlert', layoutAlert);
+        } else {
+          // layout editing
+          this.$store.commit('TOGGLE_EDIT_MODE', 'layout');
+          this.$refs.modeToggle.closeDropdown();
+          this.closeDrawer();
+          this.$store.dispatch('addAlert', layoutAlert);
+          if (layoutUserAlert) {
+            this.$store.dispatch('addAlert', layoutUserAlert);
+          }
+        }
       },
       undo() {
         return this.$store.dispatch('undo');
@@ -243,6 +346,7 @@
           case 'Redo': return this.redo();
           case 'Contributors': return this.toggleDrawer('contributors');
           case 'Find on Page': return this.toggleDrawer('components');
+          case 'Find on Layout': return this.toggleDrawer('components');
           case 'Preview': return this.toggleDrawer('preview');
           default: log.warn(`Unknown drawer: ${option.label}`);
         }

@@ -29,7 +29,8 @@
   }
 
   .kiln-permanent-placeholder,
-  .kiln-placeholder {
+  .kiln-placeholder,
+  .kiln-inactive-placeholder {
     align-items: center;
     border-radius: 2px;
     cursor: pointer;
@@ -67,6 +68,7 @@
 
   .kiln-permanent-placeholder {
     background-color: $permanent-placeholder-bg-color;
+    cursor: pointer;
 
     .placeholder-label {
       color: $permanent-placeholder-color;
@@ -78,6 +80,23 @@
 
     .placeholder-text {
       color: $permanent-placeholder-color;
+    }
+  }
+
+  .kiln-inactive-placeholder {
+    background-color: $inactive-placeholder-bg-color;
+    cursor: not-allowed;
+
+    .placeholder-label {
+      color: $inactive-placeholder-color;
+    }
+
+    .placeholder-icon {
+      color: $inactive-placeholder-color;
+    }
+
+    .placeholder-text {
+      color: $inactive-placeholder-color;
     }
   }
 
@@ -115,12 +134,12 @@
 </style>
 
 <template>
-  <div v-once :class="{ 'kiln-permanent-placeholder': isPermanent, 'kiln-placeholder': !isPermanent, 'kiln-error-placeholder': isError }" :style="{ minHeight: placeholderHeight }" :ref="uid">
-    <ui-button v-if="isComponent" class="placeholder-add-component" icon="add" color="primary" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
+  <div :class="placeholderClass" :style="{ minHeight: placeholderHeight }" :ref="uid">
+    <ui-button v-if="isComponent" :disabled="!isActive" class="placeholder-add-component" icon="add" :color="placeholderButtonColor" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
     <div v-else class="placeholder-label">
       <ui-icon v-if="!isPermanent" class="placeholder-icon" icon="add"></ui-icon>
       <span class="placeholder-text">{{ text }}</span>
-      <ui-ripple-ink v-if="!isPermanent" :trigger="uid"></ui-ripple-ink>
+      <ui-ripple-ink v-if="!isPermanent && isActive" :trigger="uid"></ui-ripple-ink>
     </div>
   </div>
 </template>
@@ -130,6 +149,7 @@
   import cuid from 'cuid';
   import store from '../core-data/store';
   import { placeholderProp, componentListProp, componentProp } from '../utils/references';
+  import { isComponentInPage } from '../utils/component-elements';
   import { getData } from '../core-data/components';
   import { get } from '../core-data/groups';
   import label from '../utils/label';
@@ -155,6 +175,29 @@
       },
       isError() {
         return _.find(_.get(store, 'state.validation.errors', []), (error) => _.find(error.items, (item) => item.uri === this.$options.uri && item.path === this.$options.path));
+      },
+      isActive() {
+        const isPageEditMode = _.get(store, 'state.editMode') === 'page',
+          isPageComponent = isComponentInPage(this.$options.uri);
+
+        return isPageEditMode && isPageComponent || !isPageEditMode && !isPageComponent;
+      },
+      placeholderClass() {
+        return {
+          'kiln-placeholder': !this.isPermanent && this.isActive,
+          'kiln-permanent-placeholder': this.isPermanent && this.isActive,
+          'kiln-error-placeholder': this.isError,
+          'kiln-inactive-placeholder': !this.isActive
+        };
+      },
+      placeholderButtonColor() {
+        if (!this.isPermanent && this.isActive) {
+          return 'accent';
+        } else if (this.isPermanent && this.isActive) {
+          return 'primary';
+        } else {
+          return 'default';
+        }
       },
       text() {
         const subSchema = getSchema(this.$options),

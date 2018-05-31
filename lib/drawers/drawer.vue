@@ -79,7 +79,9 @@
   import invisibleComponents from './invisible-components.vue';
   import preview from './preview.vue';
   import health from './health.vue';
-  import publish from './publish.vue';
+  import publishPage from './publish-page.vue';
+  import publishLayout from './publish-layout.vue';
+  import layoutHistory from './layout-history.vue';
 
   /**
    * get component lists in the <head> of the page
@@ -89,18 +91,26 @@
   function getHeadComponentLists(state) {
     const layoutURI = _.get(state, 'page.data.layout'),
       schema = getSchema(layoutURI),
-      lists = getListsInHead();
+      lists = getListsInHead(),
+      isPageEditMode = state.editMode === 'page';
 
-    return _.reduce(lists, (result, list) => result.concat({
-      title: label(list.path, schema[list.path]),
-      component: 'head-components',
-      selected: false,
-      args: {
-        isPage: _.get(schema, `${list.path}.${componentListProp}.page`),
-        path: list.path,
-        schema: schema[list.path]
+    return _.reduce(lists, (result, list) => {
+      const isPageList = _.get(schema, `${list.path}.${componentListProp}.page`);
+
+      if (isPageEditMode && isPageList || !isPageEditMode && !isPageList) {
+        result.push({
+          title: label(list.path, schema[list.path]),
+          component: 'head-components',
+          selected: false,
+          args: {
+            isPage: isPageList,
+            path: list.path,
+            schema: schema[list.path]
+          }
+        });
       }
-    }), []);
+      return result;
+    }, []);
   }
 
   /**
@@ -110,11 +120,15 @@
    */
   function getInvisibleComponentLists(state) {
     const layoutURI = _.get(state, 'page.data.layout'),
-      schema = getSchema(layoutURI);
+      schema = getSchema(layoutURI),
+      isPageEditMode = state.editMode === 'page';
 
     return _.reduce(schema, (result, field, fieldName) => {
-      if (_.has(field, `${componentListProp}.invisible`)) {
-        return result.concat({
+      const isPageList = _.get(field, `${componentListProp}.page`),
+        isInvisibleList = _.has(field, `${componentListProp}.invisible`);
+
+      if (isInvisibleList && (isPageEditMode && isPageList || !isPageEditMode && !isPageList)) {
+        result.push({
           title: label(fieldName, field),
           component: 'invisible-components',
           selected: false,
@@ -123,9 +137,8 @@
             schema: field
           }
         });
-      } else {
-        return result;
       }
+      return result;
     }, []);
   }
 
@@ -138,7 +151,7 @@
         return !!this.name;
       },
       tabType() {
-        return this.name === 'publish' ? 'icon-and-text' : 'text';
+        return this.name === 'publish-page' || 'publish-layout' ? 'icon-and-text' : 'text';
       },
       tabs() {
         if (this.name === 'contributors') {
@@ -149,6 +162,12 @@
           },{
             title: 'Page History',
             component: 'page-history'
+          }];
+        } else if (this.name === 'layout-history') {
+          return [{
+            title: 'Layout History',
+            component: 'layout-history',
+            selected: true
           }];
         } else if (this.name === 'components') {
           const state = _.get(this.$store, 'state'),
@@ -166,7 +185,7 @@
             component: 'preview',
             selected: true
           }];
-        } else if (this.name === 'publish') {
+        } else if (this.name === 'publish-page') {
           const errors = _.get(this.$store, 'state.validation.errors');
 
           return [{
@@ -175,7 +194,19 @@
             selected: errors.length > 0
           }, {
             title: 'Publish',
-            component: 'publish',
+            component: 'publish-page',
+            selected: errors.length === 0
+          }];
+        } else if (this.name === 'publish-layout') {
+          const errors = _.get(this.$store, 'state.validation.errors');
+
+          return [{
+            title: 'Health',
+            component: 'health',
+            selected: errors.length > 0
+          }, {
+            title: 'Publish',
+            component: 'publish-layout',
             selected: errors.length === 0
           }];
         }
@@ -210,7 +241,9 @@
       'invisible-components': invisibleComponents,
       preview,
       health,
-      publish
+      'publish-page': publishPage,
+      'publish-layout': publishLayout,
+      'layout-history': layoutHistory
     }
   };
 </script>

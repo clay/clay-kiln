@@ -126,6 +126,25 @@
     }
   }
 
+  .publish-title {
+    .publish-title-form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .title-description {
+      @include type-body();
+    }
+
+    .title-input {
+      margin-top: 8px;
+    }
+
+    .title-submit {
+      margin-top: 16px;
+    }
+  }
+
   .publish-archive {
     .ui-collapsible__body {
       display: flex;
@@ -176,6 +195,15 @@
         <span class="location-description">Designate a custom URL for this page. This should only be used for special cases, such as index pages and static pages.</span>
         <ui-textbox class="location-input" v-model="location" placeholder="/special-page.html" label="Enter Custom Location" :error="error" :invalid="isInvalid" @input="onLocationInput"></ui-textbox>
         <ui-button class="location-submit" buttonType="submit" type="primary" color="default">Save</ui-button>
+      </form>
+    </ui-collapsible>
+
+    <!-- manual title updating -->
+    <ui-collapsible class="publish-section publish-title" title="Page Title">
+      <form class="publish-title-form" @submit.prevent="saveTitle">
+        <span class="title-description">Manually update the page title that appears in the Clay Menu. Will be overwritten when saving components that set the title.</span>
+        <ui-textbox class="title-input" v-model="title" label="Page Title"></ui-textbox>
+        <ui-button class="title-submit" buttonType="submit" type="primary" color="default" :disabled="!title">Save</ui-button>
       </form>
     </ui-collapsible>
 
@@ -273,6 +301,7 @@
         timeValue: '',
         today: new Date(),
         location: '',
+        title: '',
         error: 'Custom URL must match an available route!',
         isInvalid: false,
         hasCustomLocation: false
@@ -290,6 +319,7 @@
       createdDate: (state) => state.page.state.createdAt,
       scheduledDate: (state) => state.page.state.scheduledTime,
       lastUpdated: (state) => state.page.state.updateTime,
+      currentTitle: (state) => state.page.state.title,
       statusMessage() {
         if (this.isScheduled) {
           return `Scheduled ${distanceInWordsToNow(this.scheduledDate, { addSuffix: true })}`;
@@ -344,6 +374,14 @@
         }
       }
     }),
+    watch: {
+      currentTitle(val) {
+        if (val) {
+          // if the page already has a title set, default the form to use it
+          this.title = val;
+        }
+      }
+    },
     methods: {
       goToHealth() {
         this.$emit('selectTab', 'Health');
@@ -510,6 +548,14 @@
           this.$refs.uiCollapsiblePublish.refreshHeight();
         }
       },
+      saveTitle() {
+        const store = this.$store,
+          val = this.title.trim();
+
+        return store.dispatch('updatePageList', { title: val }).then(() => {
+          store.dispatch('showSnackbar', 'Updated page title');
+        });
+      },
       updateTime(val) {
         this.timeValue = val;
       },
@@ -542,6 +588,10 @@
       if (this.location) {
         // if there's a custom location on mount, show the custom location section
         this.hasCustomLocation = true;
+      }
+
+      if (this.currentTitle) {
+        this.title = this.currentTitle;
       }
     },
     components: {
