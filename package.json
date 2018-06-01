@@ -4,13 +4,13 @@
   "description": "Editor tools for Clay",
   "template": "template.handlebars",
   "scripts": {
-    "lint": "eslint --ext .js,.vue edit.js view.js view-public.js directives inputs lib test --cache",
+    "lint": "eslint --ext .js,.vue edit.js view.js view-public.js directives inputs lib test",
     "jest": "jest",
-    "test": "npm run lint && BABEL_ENV=test npm run jest",
+    "test": "npm run lint && BABEL_ENV=test npm run jest -- --coverage --no-cache",
     "test-local": "BABEL_ENV=test npm run jest -- --watch",
-    "build": "BABEL_ENV=build webpack --config ./webpack/webpack.dev.conf.js",
-    "watch": "BABEL_ENV=build webpack -w --config ./webpack/webpack.dev.conf.js",
-    "prepublishOnly": "BABEL_ENV=build webpack -p --config ./webpack/webpack.prod.conf.js && npm run generate-actions",
+    "build": "BABEL_ENV=build webpack",
+    "watch": "BABEL_ENV=build webpack -w",
+    "prepublishOnly": "BABEL_ENV=build webpack -p && npm run generate-actions",
     "docs:clean": "rimraf ./_book && rimraf ./docs/vuex-actions.md",
     "docs:prepare": "gitbook install",
     "docs:watch": "npm run docs:prepare && gitbook serve",
@@ -46,6 +46,13 @@
   ],
   "jest": {
     "browser": true,
+    "collectCoverageFrom": [
+      "<rootDir>/lib/**/*.{js,vue}",
+      "<rootDir>/inputs/**/*.{js,vue}"
+    ],
+    "coverageReporters": [
+      "lcov", "text-summary"
+    ],
     "moduleFileExtensions": [
       "js",
       "json",
@@ -65,6 +72,7 @@
     "testEnvironmentOptions": {
       "pretendToBeVisual": true
     },
+    "testURL": "http://domain.com/_pages/test-page.html?edit=true",
     "transform": {
       "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
       ".*\\.(vue)$": "<rootDir>/node_modules/vue-jest"
@@ -121,6 +129,7 @@
     "localforage": "^1.5.3",
     "lodash": "^4.17.4",
     "lodash-webpack-plugin": "^0.11.0",
+    "node-quill-converter": "^0.3.1",
     "node-sass": "^4.3.0",
     "nprogress": "^0.2.0",
     "optimize-css-assets-webpack-plugin": "^3.2.0",

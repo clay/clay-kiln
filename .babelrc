@@ -10,7 +10,7 @@
   ],
   "env": {
     "test": {
-      "plugins": ["transform-es2015-modules-commonjs", "transform-object-rest-spread", "istanbul"]
+      "plugins": ["transform-es2015-modules-commonjs", "transform-object-rest-spread"]
     },
     "build": {
       "plugins": ["transform-object-rest-spread", "lodash"]
