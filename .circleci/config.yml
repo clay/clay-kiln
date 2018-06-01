@@ -7,6 +7,7 @@ jobs:
     docker:
       - image: node:8.10.0
     working_directory: ~/repo
+    parallelism: 4
     steps:
       - checkout
       # Download and cache dependencies
