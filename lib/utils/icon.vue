@@ -1,5 +1,5 @@
 <template>
-  <span v-html="icon"></span>
+  <span class="kiln-custom-icon" v-html="icon"></span>
 </template>
 
 <script>
