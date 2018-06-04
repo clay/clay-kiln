@@ -51,7 +51,8 @@
       "<rootDir>/inputs/**/*.{js,vue}"
     ],
     "coverageReporters": [
-      "lcov", "text-summary"
+      "lcov",
+      "text-summary"
     ],
     "moduleFileExtensions": [
       "js",
