@@ -183,9 +183,11 @@
         <ui-datepicker class="schedule-date" color="accent" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date" :disabled="hasErrors"></ui-datepicker>
         <timepicker ref="timepicker" class="schedule-time" :value="timeValue" label="Time" :disabled="hasErrors" @update="updateTime"></timepicker>
       </form>
-      <ui-button v-if="showSchedule" :disabled="disableSchedule || isArchived || hasErrors" class="action-button" buttonType="button" color="orange" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
-      <ui-button v-else :disabled="isArchived || hasErrors" class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
+      <ui-button v-if="showSchedule" :disabled="disableSchedule || isArchived || hasErrors || !layoutPublished" class="action-button" buttonType="button" color="orange" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
+      <ui-button v-else :disabled="isArchived || hasErrors || !layoutPublished" class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
       <span v-if="hasErrors" class="action-error-message" @click="goToHealth">Please fix errors before publishing</span>
+      <span v-else-if="!layoutPublished && isAdmin" class="action-error-message" @click="goToLayout">Layout must be published first</span>
+      <span v-else-if="!layoutPublished" class="action-error-message">Layout must be published first (by an admin)</span>
       <span v-else-if="hasWarnings" class="action-warning-message" @click="goToHealth">Please review warnings before publishing</span>
     </div>
 
@@ -220,6 +222,7 @@
   import _ from 'lodash';
   import dateFormat from 'date-fns/format';
   import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
+  import differenceInMinutes from 'date-fns/difference_in_minutes';
   import parseDate from 'date-fns/parse';
   import getTime from 'date-fns/get_time';
   import isToday from 'date-fns/is_today';
@@ -232,7 +235,7 @@
   import { mapState } from 'vuex';
   import Routable from 'routable';
   import { uriToUrl } from '../utils/urls';
-  import { htmlExt, editExt } from '../utils/references';
+  import { htmlExt, editExt, getLayoutNameAndInstance } from '../utils/references';
   import { START_PROGRESS, FINISH_PROGRESS } from '../toolbar/mutationTypes';
   import UiIcon from 'keen/UiIcon';
   import UiButton from 'keen/UiButton';
@@ -264,6 +267,21 @@
     } else {
       return dateFormat(date, 'M/D/YYYY [at] h:mm A');
     }
+  }
+
+  /**
+   * get the last user who edited a layout, who ISN'T the current user
+   * @param  {object} store
+   * @return {null|string}
+   */
+  function getLastLayoutEditUser(store) {
+    const currentUser = _.get(store, 'state.user'),
+      lastUser = _.get(store, 'state.layout.updateUser'),
+      timestamp = _.get(store, 'state.layout.updateTime'),
+      isDifferentUser = currentUser.username !== lastUser.username,
+      isWithinFiveMinutes = Math.abs(differenceInMinutes(timestamp, new Date())) < 5;
+
+    return isDifferentUser && isWithinFiveMinutes ? lastUser.name : null;
   }
 
   /**
@@ -320,6 +338,8 @@
       scheduledDate: (state) => state.page.state.scheduledTime,
       lastUpdated: (state) => state.page.state.updateTime,
       currentTitle: (state) => state.page.state.title,
+      isAdmin: (state) => state.user.auth === 'admin',
+      layoutPublished: (state) => state.layout.published,
       statusMessage() {
         if (this.isScheduled) {
           return `Scheduled ${distanceInWordsToNow(this.scheduledDate, { addSuffix: true })}`;
@@ -385,6 +405,19 @@
     methods: {
       goToHealth() {
         this.$emit('selectTab', 'Health');
+      },
+      goToLayout() {
+        const { message } = getLayoutNameAndInstance(this.$store),
+          layoutAlert = { type: 'warning', text: message },
+          lastUserName = getLastLayoutEditUser(this.$store),
+          layoutUserAlert = lastUserName && { type: 'info', message: `Edited less than 5 minutes ago by ${lastUserName}` };
+
+        this.$store.commit('TOGGLE_EDIT_MODE', 'layout');
+        this.$store.dispatch('closeDrawer');
+        this.$store.dispatch('addAlert', layoutAlert);
+        if (layoutUserAlert) {
+          this.$store.dispatch('addAlert', layoutUserAlert);
+        }
       },
       unschedulePage() {
         const store = this.$store;
