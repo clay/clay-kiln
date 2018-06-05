@@ -15,7 +15,7 @@
     "docs:prepare": "gitbook install",
     "docs:watch": "npm run docs:prepare && gitbook serve",
     "docs:build": "gitbook build ./",
-    "generate-actions": "jsdoc2md --files lib/**/actions.js > docs/vuex-actions.md && git add -A && git commit -m 'generate docs'",
+    "generate-actions": "jsdoc2md --files lib/**/actions.js > docs/vuex-actions.md",
     "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'update book' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'update book' && git push git@github.com:clay/clay-kiln gh-pages --force"
   },
   "repository": {
