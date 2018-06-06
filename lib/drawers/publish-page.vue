@@ -183,11 +183,11 @@
         <ui-datepicker class="schedule-date" color="accent" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date" :disabled="hasErrors"></ui-datepicker>
         <timepicker ref="timepicker" class="schedule-time" :value="timeValue" label="Time" :disabled="hasErrors" @update="updateTime"></timepicker>
       </form>
-      <ui-button v-if="showSchedule" :disabled="disableSchedule || isArchived || hasErrors || !layoutPublished" class="action-button" buttonType="button" color="orange" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
-      <ui-button v-else :disabled="isArchived || hasErrors || !layoutPublished" class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
-      <span v-if="hasErrors" class="action-error-message" @click="goToHealth">Please fix errors before publishing</span>
-      <span v-else-if="!layoutPublished && isAdmin" class="action-error-message" @click="goToLayout">Layout must be published first</span>
-      <span v-else-if="!layoutPublished" class="action-error-message">Layout must be published first (by an admin)</span>
+      <ui-button v-if="showSchedule" :disabled="disableSchedule || isArchived || hasErrors || !isLayoutPublished" class="action-button" buttonType="button" color="orange" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
+      <ui-button v-else :disabled="isArchived || hasErrors || !isLayoutPublished" class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
+      <span v-if="!isLayoutPublished && isAdmin" class="action-error-message" @click="goToLayout">Layout must be published first</span>
+      <span v-else-if="!isLayoutPublished" class="action-error-message">Layout must be published first (by an admin)</span>
+      <span v-else-if="hasErrors" class="action-error-message" @click="goToHealth">Please fix errors before publishing</span>
       <span v-else-if="hasWarnings" class="action-warning-message" @click="goToHealth">Please review warnings before publishing</span>
     </div>
 
@@ -245,6 +245,7 @@
   import UiIconButton from 'keen/UiIconButton';
   import timepicker from '../utils/timepicker.vue';
   import logger from '../utils/log';
+  import { getHead } from '../core-data/api';
 
   const log = logger(__filename);
 
@@ -322,7 +323,8 @@
         title: '',
         error: 'Custom URL must match an available route!',
         isInvalid: false,
-        hasCustomLocation: false
+        hasCustomLocation: false,
+        isLayoutPublished: false // checked on mount
       };
     },
     computed: mapState({
@@ -339,7 +341,6 @@
       lastUpdated: (state) => state.page.state.updateTime,
       currentTitle: (state) => state.page.state.title,
       isAdmin: (state) => state.user.auth === 'admin',
-      layoutPublished: (state) => state.layout.published,
       statusMessage() {
         if (this.isScheduled) {
           return `Scheduled ${distanceInWordsToNow(this.scheduledDate, { addSuffix: true })}`;
@@ -626,6 +627,15 @@
       if (this.currentTitle) {
         this.title = this.currentTitle;
       }
+
+      // check to see if layout has @published, which (if it didn't exist) would prevent published page
+      // from being displayed. note: this checks @published directly, rather than the layouts index
+      // (because we don't care about the layout state, only that it exists on a very low level)
+      getHead(`${_.get(this.$store, 'state.page.data.layout')}@published`).then((res) => {
+        this.isLayoutPublished = res;
+      }).catch(() => {
+        this.isLayoutPublished = false;
+      });
     },
     components: {
       UiIcon,
