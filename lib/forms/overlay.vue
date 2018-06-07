@@ -143,7 +143,7 @@
 
 <script>
   import _ from 'lodash';
-  import { find, findAll } from '@nymag/dom';
+  import { find } from '@nymag/dom';
   import { mapState } from 'vuex';
   import velocity from 'velocity-animate/velocity.min.js';
   import { getSchema, getData } from '../core-data/components';
@@ -333,26 +333,10 @@
         velocity(innerEl, { opacity: 0 }, { duration: 50 });
         velocity(el, { opacity: 0 }, { delay: 120, duration: 100, complete: done });
       },
-      onResize(additionalPixels) {
-        additionalPixels = _.isNumber(additionalPixels) ? additionalPixels : 0;
-
-        this.$nextTick(() => {
-          // note: for tabbed forms, this uses the tab that's visible
-          const innerEl = _.find(findAll(this.$el, '.input-container'), (el) => el.offsetParent !== null),
-            // note: we can't grab the scrollHeight of the innerEl, since it's always 100% height,
-            // but we can calculate the height of all the child fields
-            innerHeight = innerEl.clientHeight,
-            currentTop = parseInt(this.formTop),
-            docHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
-            newHeight = innerHeight + 56 + additionalPixels, // header is 56px
-            isInsideViewport = currentTop + newHeight < docHeight;
-
-          if (isInsideViewport) {
-            velocity(this.$el, { height: newHeight }, { duration: 220 });
-          } else {
-            velocity(this.$el, { height: docHeight - currentTop }, { duration: 220 });
-          }
-        });
+      onResize() {
+        // when resizing, we can let css do its work. we don't have to worry about animation or anything,
+        // since we've already animated the form opening
+        this.$el.style.height = 'auto';
       },
       onTabChange() {
         // call the resizer when changing tabs, in case something should have triggered a resize in the background
