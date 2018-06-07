@@ -136,35 +136,9 @@
 <script>
   import _ from 'lodash';
   import { labelProp, revealProp } from '../lib/utils/references';
-  import { shouldBeRequired, getValidationError, getFieldData } from '../lib/forms/field-helpers';
+  import { shouldBeRequired, getValidationError, shouldBeRevealed } from '../lib/forms/field-helpers';
   import label from '../lib/utils/label';
   import segmentedButton from './segmented-button.vue';
-  import { filterBySite } from '../lib/utils/site-filter';
-  import { compare } from '../lib/utils/comparators';
-
-  function isOptionShown(store, revealConfig, name) {
-    const currentSlug = _.get(store, 'state.site.slug'),
-      uri = _.get(store, 'state.ui.currentForm.uri'),
-      field = revealConfig.field,
-      operator = revealConfig.operator,
-      value = revealConfig.value,
-      sites = revealConfig.sites,
-      data = getFieldData(store, field, name, uri);
-
-    if (sites && field) {
-      // if there is site logic, run it before field logic
-      // and return a boolean based on both checks
-      return filterBySite([{ sites }], currentSlug).length && compare({ data, operator, value });
-    } else if (sites) {
-      // only check the site logic
-      return filterBySite([{ sites }], currentSlug).length;
-    } else if (field) {
-      // only check field logic
-      return compare({ data, operator, value });
-    } else {
-      return true; // show the field if no _reveal config
-    }
-  }
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
@@ -183,7 +157,7 @@
         return _.map(this.args.options, (option) => ({
           schema: _.assign({}, this.schema, { [labelProp]: option.title }),
           args: _.assign({}, { options: option.values, multiple: this.multiple }),
-          isShown: isOptionShown(this.$store, _.get(option, revealProp, {}), this.name)
+          isShown: shouldBeRevealed(this.$store, _.get(option, revealProp, {}), this.name)
         }));
       },
       isRequired() {
