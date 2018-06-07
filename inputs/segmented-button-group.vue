@@ -13,6 +13,34 @@
 
   Each option should be an object with `title` and `values` properties. The `values` should be an array of objects with `icon`, `text`, and `value` properties, which will be passed into each `segmented-button`.
 
+  Options may also contain a `_reveal` property containing rules for when they should display. The config is the same as the field-level `_reveal` property:
+
+  * **field** - to compare against, and/or...
+  * **sites** - to compare against (will be true if the current site is one of them)
+  * **operator** - optional operator to use for the comparison (defaults to `===`)
+  * **value** - optional value to compare against
+
+  If neither `operator` nor `value` are specified, the field will be shown when the compared field has any data (the same as the `not-empty` operator). The syntax for comparing against sites is the same as [site-specific components in lists](manipulating-components.md#site-specific-components).
+
+  **Operators:**
+
+  * `===`
+  * `!==`
+  * `<`
+  * `>`
+  * `<=`
+  * `>=`
+  * `typeof`
+  * `regex`
+  * `empty` (only checks field data, no value needed)
+  * `not-empty` (only checks field data, no value needed)
+  * `truthy` (only checks field data, no value needed)
+  * `falsy` (only checks field data, no value needed)
+
+  > #### info::Deep Field Comparisons
+  >
+  > You can compare against deep fields (like `checkbox-group` or `complex-list`) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story`. Don't worry about the spaces, as Kiln will parse it correctly to pull the relevant data.
+
   > #### info::Data Format
   >
   > By default, the data for this field will be the selected option's `value`. If multiple selection is turned on, it'll be an object with boolean values keyed to each option's `value`, similar to `checkbox-group`.
@@ -22,6 +50,7 @@
   @import '../styleguide/mixins';
   @import '../styleguide/typography';
   @import '../styleguide/colors';
+  @import '../styleguide/animations';
 
   .segmented-button-group {
     align-items: flex-start;
@@ -29,6 +58,21 @@
     flex-flow: row wrap;
     font-family: $font-stack;
     margin-bottom: 16px;
+
+    .reveal-enter,
+    .reveal-leave-to {
+      opacity: 0;
+    }
+
+    .reveal-enter-to,
+    .reveal-leave {
+      opacity: 1;
+    }
+
+    .reveal-enter-active,
+    .reveal-leave-active {
+      transition: opacity $standard-time $standard-curve;
+    }
 
     .ui-textbox__label {
       @include clearfix();
@@ -76,7 +120,9 @@
     <span class="ui-textbox__label">
       <div class="ui-textbox__label-text is-floating">{{ label }}</div>
       <div v-for="(option, index) in options" :key="index" class="segmented-button-group-input">
-        <segmented-button :name="name" :data="data" :schema="option.schema" :args="option.args"></segmented-button>
+        <transition name="reveal" mode="out-in" @after-enter="onRevealResize">
+          <segmented-button v-if="option.isShown" :name="name" :data="data" :schema="option.schema" :args="option.args"></segmented-button>
+        </transition>
       </div>
     </span>
 
@@ -89,10 +135,36 @@
 
 <script>
   import _ from 'lodash';
-  import { labelProp } from '../lib/utils/references';
-  import { shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
+  import { labelProp, revealProp } from '../lib/utils/references';
+  import { shouldBeRequired, getValidationError, getFieldData } from '../lib/forms/field-helpers';
   import label from '../lib/utils/label';
   import segmentedButton from './segmented-button.vue';
+  import { filterBySite } from '../lib/utils/site-filter';
+  import { compare } from '../lib/utils/comparators';
+
+  function isOptionShown(store, revealConfig, name) {
+    const currentSlug = _.get(store, 'state.site.slug'),
+      uri = _.get(store, 'state.ui.currentForm.uri'),
+      field = revealConfig.field,
+      operator = revealConfig.operator,
+      value = revealConfig.value,
+      sites = revealConfig.sites,
+      data = getFieldData(store, field, name, uri);
+
+    if (sites && field) {
+      // if there is site logic, run it before field logic
+      // and return a boolean based on both checks
+      return filterBySite([{ sites }], currentSlug).length && compare({ data, operator, value });
+    } else if (sites) {
+      // only check the site logic
+      return filterBySite([{ sites }], currentSlug).length;
+    } else if (field) {
+      // only check field logic
+      return compare({ data, operator, value });
+    } else {
+      return true; // show the field if no _reveal config
+    }
+  }
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
@@ -110,7 +182,8 @@
       options() {
         return _.map(this.args.options, (option) => ({
           schema: _.assign({}, this.schema, { [labelProp]: option.title }),
-          args: _.assign({}, { options: option.values, multiple: this.multiple })
+          args: _.assign({}, { options: option.values, multiple: this.multiple }),
+          isShown: isOptionShown(this.$store, _.get(option, revealProp, {}), this.name)
         }));
       },
       isRequired() {
@@ -136,6 +209,17 @@
       },
       showHelp() {
         return !this.showError && this.args.help;
+      },
+      hasReveal() {
+        console.log('has reveal?', _.some(this.args.options, (option) => _.has(option, revealProp)));
+        return _.some(this.args.options, (option) => _.has(option, revealProp));
+      }
+    },
+    methods: {
+      onRevealResize() {
+        if (this.hasReveal) {
+          this.$root.$emit('resize-form');
+        }
       }
     },
     components: {
