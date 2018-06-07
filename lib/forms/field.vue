@@ -36,7 +36,7 @@
 
 <template>
   <transition name="reveal" mode="out-in" @after-enter="onRevealResize">
-    <fieldset class="kiln-field" v-if="inputName && isShown">
+    <fieldset class="kiln-field" v-if="inputName && isShown" :key="name">
       <component :is="inputName" :name="name" :data="data" :schema="schema" :args="expandedInput" @resize="onResize"></component>
     </fieldset>
   </transition>
@@ -92,11 +92,11 @@
     },
     methods: {
       onResize(additionalPixels) {
-        this.$emit('resize', additionalPixels); // pass this to the form component
+        this.$root.$emit('resize-form', additionalPixels); // pass this to the form component
       },
       onRevealResize() {
         if (this.hasReveal) {
-          this.$emit('resize');
+          this.$root.$emit('resize-form');
         }
       }
     },

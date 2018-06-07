@@ -123,7 +123,7 @@
           <ui-tab v-for="(section, index) in sections" :key="index" :title="section.title">
             <div class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 104px)`}">
               <div class="input-container">
-                <field v-for="(field, fieldIndex) in section.fields" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]" @resize="onResize"></field>
+                <field v-for="(field, fieldIndex) in section.fields" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]"></field>
                 <div v-if="section.hasRequiredFields" class="required-footer">* Required fields</div>
               </div>
             </div>
@@ -131,7 +131,7 @@
         </ui-tabs>
         <div v-else class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 56px)`}">
           <div class="input-container">
-            <field v-for="(field, fieldIndex) in sections[0].fields" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]" @resize="onResize"></field>
+            <field v-for="(field, fieldIndex) in sections[0].fields" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]"></field>
             <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
           </div>
         </div>
@@ -334,7 +334,7 @@
         velocity(el, { opacity: 0 }, { delay: 120, duration: 100, complete: done });
       },
       onResize(additionalPixels) {
-        additionalPixels = additionalPixels || 0;
+        additionalPixels = _.isNumber(additionalPixels) ? additionalPixels : 0;
 
         this.$nextTick(() => {
           // note: for tabbed forms, this uses the tab that's visible
@@ -435,6 +435,10 @@
       save() {
         this.$store.dispatch('unfocus');
       }
+    },
+    mounted() {
+      // manually add the listener, so reveal's resize events are caught
+      this.$root.$on('resize-form', this.onResize);
     },
     components: _.merge({}, _.get(window, 'kiln.selectorButtons', {}), {
       field,

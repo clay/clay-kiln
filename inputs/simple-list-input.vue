@@ -125,7 +125,7 @@
         }
       },
       onResize(additionalPixels) {
-        this.$emit('resize', additionalPixels);
+        this.$root.$emit('resize-form', additionalPixels);
       },
       // Focus on the first item in the list
       focusFirstItem() {
