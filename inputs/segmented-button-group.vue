@@ -13,6 +13,8 @@
 
   Each option should be an object with `title` and `values` properties. The `values` should be an array of objects with `icon`, `text`, and `value` properties, which will be passed into each `segmented-button`.
 
+  Options may also contain a `_reveal` property containing rules for when they should display. [The config is the same as the field-level `_reveal` property.](https://claycms.gitbooks.io/kiln/editing-components.html#reveal)
+
   > #### info::Data Format
   >
   > By default, the data for this field will be the selected option's `value`. If multiple selection is turned on, it'll be an object with boolean values keyed to each option's `value`, similar to `checkbox-group`.
@@ -22,6 +24,7 @@
   @import '../styleguide/mixins';
   @import '../styleguide/typography';
   @import '../styleguide/colors';
+  @import '../styleguide/animations';
 
   .segmented-button-group {
     align-items: flex-start;
@@ -29,6 +32,21 @@
     flex-flow: row wrap;
     font-family: $font-stack;
     margin-bottom: 16px;
+
+    .reveal-enter,
+    .reveal-leave-to {
+      opacity: 0;
+    }
+
+    .reveal-enter-to,
+    .reveal-leave {
+      opacity: 1;
+    }
+
+    .reveal-enter-active,
+    .reveal-leave-active {
+      transition: opacity $standard-time $standard-curve;
+    }
 
     .ui-textbox__label {
       @include clearfix();
@@ -76,7 +94,9 @@
     <span class="ui-textbox__label">
       <div class="ui-textbox__label-text is-floating">{{ label }}</div>
       <div v-for="(option, index) in options" :key="index" class="segmented-button-group-input">
-        <segmented-button :name="name" :data="data" :schema="option.schema" :args="option.args"></segmented-button>
+        <transition name="reveal" mode="out-in" @after-enter="onRevealResize">
+          <segmented-button v-if="option.isShown" :name="name" :data="data" :schema="option.schema" :args="option.args"></segmented-button>
+        </transition>
       </div>
     </span>
 
@@ -89,8 +109,8 @@
 
 <script>
   import _ from 'lodash';
-  import { labelProp } from '../lib/utils/references';
-  import { shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
+  import { labelProp, revealProp } from '../lib/utils/references';
+  import { shouldBeRequired, getValidationError, shouldBeRevealed } from '../lib/forms/field-helpers';
   import label from '../lib/utils/label';
   import segmentedButton from './segmented-button.vue';
 
@@ -110,7 +130,8 @@
       options() {
         return _.map(this.args.options, (option) => ({
           schema: _.assign({}, this.schema, { [labelProp]: option.title }),
-          args: _.assign({}, { options: option.values, multiple: this.multiple })
+          args: _.assign({}, { options: option.values, multiple: this.multiple }),
+          isShown: shouldBeRevealed(this.$store, _.get(option, revealProp, {}), this.name)
         }));
       },
       isRequired() {
@@ -136,6 +157,17 @@
       },
       showHelp() {
         return !this.showError && this.args.help;
+      },
+      hasReveal() {
+        console.log('has reveal?', _.some(this.args.options, (option) => _.has(option, revealProp)));
+        return _.some(this.args.options, (option) => _.has(option, revealProp));
+      }
+    },
+    methods: {
+      onRevealResize() {
+        if (this.hasReveal) {
+          this.$root.$emit('resize-form');
+        }
       }
     },
     components: {

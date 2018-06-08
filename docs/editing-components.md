@@ -200,7 +200,7 @@ url:
 
 ### Reveal
 
-Fields may also have a special `_reveal` property, which allows you to hide or show the field based on some data.
+Fields (and certain input options) may also have a special `_reveal` property, which allows you to hide or show the field based on some data.
 
 ```yaml
 syndication:
@@ -227,9 +227,12 @@ In this example, the _Original Article URL_ field would only be displayed if the
 * **field** - to compare against, and/or...
 * **sites** - to compare against (will be true if the current site is one of them)
 * **operator** - optional operator to use for the comparison (defaults to `===`)
-* **value** - optional value to compare against
+* **value** - optional value to compare against, when you want to compare against a single value
+* **values** - array of optional values to compare against, when you want to compare against multiple values
 
-If neither `operator` nor `value` are specified, the field will be shown when the compared field has any data (the same as the `not-empty` operator). The syntax for comparing against sites is the same as [site-specific components in lists](manipulating-components.md#site-specific-components).
+If neither `operator`, `value`, nor `values` are specified, the field will be shown when the compared field has any data (the same as the `not-empty` operator). The syntax for comparing against sites is the same as [site-specific components in lists](manipulating-components.md#site-specific-components).
+
+When comparing against multiple `values`, the comparison will be true if at least one of the values matches.
 
 **Operators:**
 

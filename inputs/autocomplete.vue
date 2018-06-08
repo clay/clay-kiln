@@ -90,7 +90,7 @@
         if (val && this.showMatches && pixelLength > this.additionalPixels) {
           this.additionalPixels = pixelLength;
           // when matches change, potentially resize the form
-          this.$emit('resize', pixelLength);
+          this.$root.$emit('resize-form', pixelLength);
         }
       }
     },

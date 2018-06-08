@@ -36,7 +36,7 @@
 
 <template>
   <transition name="reveal" mode="out-in" @after-enter="onRevealResize">
-    <fieldset class="kiln-field" v-if="inputName && isShown">
+    <fieldset class="kiln-field" v-if="inputName && isShown" :key="name">
       <component :is="inputName" :name="name" :data="data" :schema="schema" :args="expandedInput" @resize="onResize"></component>
     </fieldset>
   </transition>
@@ -45,9 +45,7 @@
 <script>
   import _ from 'lodash';
   import { fieldProp, inputProp, revealProp } from '../utils/references';
-  import { getFieldData } from './field-helpers';
-  import { filterBySite } from '../utils/site-filter';
-  import { compare } from '../utils/comparators';
+  import { shouldBeRevealed } from './field-helpers';
   import { expand } from './inputs';
 
   export default {
@@ -66,37 +64,18 @@
         return _.has(this.schema, revealProp);
       },
       isShown() {
-        const revealConfig = _.get(this.schema, revealProp, {}),
-          currentSlug = _.get(this.$store, 'state.site.slug'),
-          uri = _.get(this.$store, 'state.ui.currentForm.uri'),
-          field = revealConfig.field,
-          operator = revealConfig.operator,
-          value = revealConfig.value,
-          sites = revealConfig.sites,
-          data = getFieldData(this.$store, field, this.name, uri);
+        const revealConfig = _.get(this.schema, revealProp, {});
 
-        if (sites && field) {
-          // if there is site logic, run it before field logic
-          // and return a boolean based on both checks
-          return filterBySite([{ sites }], currentSlug).length && compare({ data, operator, value });
-        } else if (sites) {
-          // only check the site logic
-          return filterBySite([{ sites }], currentSlug).length;
-        } else if (field) {
-          // only check field logic
-          return compare({ data, operator, value });
-        } else {
-          return true; // show the field if no _reveal config
-        }
+        return shouldBeRevealed(this.$store, revealConfig, this.name);
       }
     },
     methods: {
       onResize(additionalPixels) {
-        this.$emit('resize', additionalPixels); // pass this to the form component
+        this.$root.$emit('resize-form', additionalPixels); // pass this to the form component
       },
       onRevealResize() {
         if (this.hasReveal) {
-          this.$emit('resize');
+          this.$root.$emit('resize-form');
         }
       }
     },

@@ -204,11 +204,11 @@
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: items });
       },
       onListResize() {
-        this.$emit('resize'); // potentially resize the form (after transitioning elements)
+        this.$root.$emit('resize-form'); // potentially resize the form (after transitioning elements)
       },
       onResize(el) {
         if (el && el.classList.contains('complex-list')) {
-          this.$emit('resize'); // resize the form because we've displayed the list
+          this.$root.$emit('resize-form'); // resize the form because we've displayed the list
         }
       },
       addItem(index) {

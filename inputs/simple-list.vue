@@ -242,7 +242,7 @@
         }
       },
       onResize(additionalPixels) {
-        this.$emit('resize', additionalPixels);
+        this.$root.$emit('resize-form', additionalPixels);
       },
       selectItem(index) {
         if (_.isNull(index) || index < 0 || index >= this.data.length) {
