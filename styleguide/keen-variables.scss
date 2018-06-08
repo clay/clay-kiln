@@ -42,6 +42,11 @@ $ui-modal-mask-background: rgba($pure-black, $modal-opacity);
   margin: 0;
 }
 
+.ui-button__content {
+  // 14px buttons with white on blue (A400) neet to be bold for accesibility
+  font-weight: 600;
+}
+
 // html element in edit mode gets a smaller base font size
 // this sets the base sizing for KeenUI components, as they all use rem
 html.component-selector-wrapper {

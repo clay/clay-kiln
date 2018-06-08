@@ -203,13 +203,13 @@ document.addEventListener('DOMContentLoaded', function () {
     } else if (key === 'down' && !isStuffOpen(store)) {
       // select the next component
       store.dispatch('navigateComponents', 'next');
-    } else if (key === 'z' && isShortKeyPressed && e.shiftKey) {
+    } else if (key === 'z' && isShortKeyPressed && e.shiftKey && !isStuffOpen(store)) {
       // redo
       store.dispatch('redo');
-    } else if (key === 'z' && isShortKeyPressed) {
+    } else if (key === 'z' && isShortKeyPressed && !isStuffOpen(store)) {
       // undo
       store.dispatch('undo');
-    } else if (key === '/' && e.shiftKey === true) {
+    } else if (key === '/' && e.shiftKey === true && !isStuffOpen(store)) {
       // cheat sheet
       store.dispatch('openModal', {
         title: 'Keyboard Shortcuts',
