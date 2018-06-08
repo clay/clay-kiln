@@ -13,33 +13,7 @@
 
   Each option should be an object with `title` and `values` properties. The `values` should be an array of objects with `icon`, `text`, and `value` properties, which will be passed into each `segmented-button`.
 
-  Options may also contain a `_reveal` property containing rules for when they should display. The config is the same as the field-level `_reveal` property:
-
-  * **field** - to compare against, and/or...
-  * **sites** - to compare against (will be true if the current site is one of them)
-  * **operator** - optional operator to use for the comparison (defaults to `===`)
-  * **value** - optional value to compare against
-
-  If neither `operator` nor `value` are specified, the field will be shown when the compared field has any data (the same as the `not-empty` operator). The syntax for comparing against sites is the same as [site-specific components in lists](manipulating-components.md#site-specific-components).
-
-  **Operators:**
-
-  * `===`
-  * `!==`
-  * `<`
-  * `>`
-  * `<=`
-  * `>=`
-  * `typeof`
-  * `regex`
-  * `empty` (only checks field data, no value needed)
-  * `not-empty` (only checks field data, no value needed)
-  * `truthy` (only checks field data, no value needed)
-  * `falsy` (only checks field data, no value needed)
-
-  > #### info::Deep Field Comparisons
-  >
-  > You can compare against deep fields (like `checkbox-group` or `complex-list`) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story`. Don't worry about the spaces, as Kiln will parse it correctly to pull the relevant data.
+  Options may also contain a `_reveal` property containing rules for when they should display. [The config is the same as the field-level `_reveal` property.](https://claycms.gitbooks.io/kiln/editing-components.html#reveal)
 
   > #### info::Data Format
   >
