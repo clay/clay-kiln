@@ -401,8 +401,6 @@ A group of segmented buttons allowing the user to select one (or more!) of a few
 
 Each option should be an object with `title` and `values` properties. The `values` should be an array of objects with `icon`, `text`, and `value` properties, which will be passed into each `segmented-button`.
 
-Options may also contain a `_reveal` property containing rules for when they should display. [The config is the same as the field-level `_reveal` property.](https://claycms.gitbooks.io/kiln/editing-components.html#reveal)
-
 > #### info::Data Format
 >
 > By default, the data for this field will be the selected option's `value`. If multiple selection is turned on, it'll be an object with boolean values keyed to each option's `value`, similar to `checkbox-group`.
