@@ -640,9 +640,12 @@ remove uri from /uris/
 ## page-state
 
 * [page-state](#module_page-state)
-    * [.updateHistoryWithEditAction(state, currentUser)](#module_page-state.updateHistoryWithEditAction) ⇒ <code>object</code>
-    * [.updatePageList(store, [data])](#module_page-state.updatePageList) ⇒ <code>Promise</code>
-    * [.getListData(store, uri, [prefix])](#module_page-state.getListData) ⇒ <code>Promise</code>
+    * _static_
+        * [.updateHistoryWithEditAction(state, currentUser)](#module_page-state.updateHistoryWithEditAction) ⇒ <code>object</code>
+        * [.updatePageList(store, [data])](#module_page-state.updatePageList) ⇒ <code>Promise</code>
+        * [.getListData(store, uri, [prefix])](#module_page-state.getListData) ⇒ <code>Promise</code>
+    * _inner_
+        * [~sequentialUpdate(prefix, uri, data)](#module_page-state..sequentialUpdate) ⇒ <code>Promise</code>
 
 <a name="module_page-state.updateHistoryWithEditAction"></a>
 
@@ -687,6 +690,19 @@ allowing the preloader to use it when doing the initial preload of data
 | store | <code>object</code> |  |
 | uri | <code>string</code> |  |
 | [prefix] | <code>string</code> | passed in when preloading (e.g. if site isn't in store yet) |
+
+<a name="module_page-state..sequentialUpdate"></a>
+
+### page-state~sequentialUpdate(prefix, uri, data) ⇒ <code>Promise</code>
+run page list updates sequentially, grabbing from the store after each to prevent race conditions
+
+**Kind**: inner method of [<code>page-state</code>](#module_page-state)  
+
+| Param | Type |
+| --- | --- |
+| prefix | <code>string</code> | 
+| uri | <code>string</code> | 
+| data | <code>object</code> | 
 
 <a name="module_preloader"></a>
 
