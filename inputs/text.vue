@@ -12,7 +12,7 @@
   * **help** - description / helper text for the field
   * **attachedButton** - an icon button that should be attached to the field, to allow additional functionality
   * **validate.required** - either `true` or an object that described the conditions that should make this field required
-  * **validate.min** - minimum number (for `type=numer`) or length (for other types) that the field must meet
+  * **validate.min** - minimum number (for `type=number`) or length (for other types) that the field must meet
   * **validate.max** - maximum number (for `type=number`) or length (for other types) that the field must not exceed
   * **validate.pattern** - regex pattern
   * **validate.requiredMessage** - will appear when required validation fails
