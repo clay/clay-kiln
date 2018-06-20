@@ -44,8 +44,7 @@
       color: $text-hint-color;
     }
 
-    &-settings,
-    &-delete {
+    &-secondary-action {
       color: $text-alt-color;
     }
 
@@ -76,69 +75,75 @@
       // e.g. spaces, component finder
       font-weight: bold;
     }
-
-    &-delete {
-      border-left: 1px solid $divider-color;
-    }
   }
 </style>
 
 <template>
-  <li class="filterable-list-item" :data-item-id="item.id" :ref="item.id" :class="{ focused: focused, active: active, selected: selected, 'clickable': onClick }" @click.stop="handleClick(item.id, item.title)">
-    <ui-icon-button v-if="onReorder" type="button" class="filterable-list-item-drag" tooltip="Drag to Reorder" icon="drag_handle"></ui-icon-button>
+  <li class="filterable-list-item" :data-item-id="item.id" :ref="item.id" :class="{ focused: focused, active: active, selected: selected, 'clickable': hasRootAction }" @click.stop="handleClick(item.id, item.title)">
+    <ui-icon-button v-if="hasReorder" type="button" class="filterable-list-item-drag" tooltip="Drag to Reorder" icon="drag_handle"></ui-icon-button>
     <button
       type="button"
       class="filterable-list-item-btn"
       v-conditional-focus="focused"
-      @keydown.down.stop.prevent="focusOnIndex(index + 1)"
-      @keydown.up.stop.prevent="focusOnIndex(index - 1)"
+      @keydown.down.stop.prevent="$emit('focus-index', index + 1)"
+      @keydown.up.stop.prevent="$emit('focus-index', index - 1)"
       @keydown.enter.stop.prevent="onEnterDown"
       @keyup.enter.stop="onEnterUp">
       {{ item.title }}
     </button>
-    <ui-ripple-ink v-if="onClick" ref="ripple" :trigger="item.id"></ui-ripple-ink>
-    <ui-icon-button v-if="onSettings && hasSettings" type="button" class="filterable-list-item-settings" :tooltip="settingsTooltip" icon="settings" @click.stop="onSettings(item.id)"></ui-icon-button>
-    <ui-icon-button v-if="onDelete" type="button" class="filterable-list-item-delete" :tooltip="removeTooltip" icon="delete" @click.stop="onDelete(item.id)"></ui-icon-button>
+    <ui-ripple-ink v-if="hasRootAction" ref="ripple" :trigger="item.id"></ui-ripple-ink>
+    <ui-icon-button v-for="action in displayedActions" :key="action.tooltip" type="button" class="filterable-list-item-secondary-action" :tooltip="action.tooltip" :icon="action.icon" @click.stop="action.action(item.id)"></ui-icon-button>
   </li>
 </template>
 
 <script>
   import UiIconButton from 'keen/UiIconButton';
   import UiRippleInk from 'keen/UiRippleInk';
-  import { isComponent } from './references';
-  import { has as hasGroup } from '../core-data/groups';
 
   export default {
-    props: ['item', 'index', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'focused', 'active', 'selected', 'focusOnIndex', 'setActive', 'settingsTitle'],
+    props: ['item', 'index', 'focused', 'active', 'selected', 'hasReorder', 'hasRootAction', 'hasChildAction', 'secondaryActions'],
     data() {
       return {};
     },
     computed: {
-      hasSettings() {
-        if (isComponent(this.item.id)) {
-          return hasGroup(this.item.id, 'settings');
-        } else {
-          return true; // settings icon checks for onSettings() before displaying
-        }
-      },
-      settingsTooltip() {
-        return this.settingsTitle || `${this.item.title} Settings`;
-      },
-      removeTooltip() {
-        return `Remove ${this.item.title}`;
+      displayedActions() {
+        const id = this.item.id;
+
+        return _.reduce(this.secondaryActions, (enabledActions, action) => {
+          let generated = {};
+
+          // check to see if action is enabled
+          if (action.enable && _.isFunction(action.enable) && !action.enable(id)) {
+            // if there's an `enable` function and it returns falsy, don't include the action
+            return enabledActions;
+          }
+
+          // generate a per-item tooltip if it's a function
+          if (_.isFunction(action.tooltip)) {
+            generated.tooltip = action.tooltip(id);
+          }
+
+          // generate a per-item icon if it's a function
+          if (_.isFunction(action.icon)) {
+            generated.icon = action.icon(id);
+          }
+
+          enabledActions.push(_.assign({}, action, generated));
+          return enabledActions;
+        }, []);
       }
     },
     methods: {
       onEnterDown() {
-        this.setActive(this.index);
+        this.$emit('set-active', this.index);
       },
       onEnterUp() {
-        this.setActive(this.index);
-        this.onClick(this.item.id);
+        this.$emit('set-active', this.index);
+        this.handleClick(this.item.id, this.item.title);
       },
       handleClick(id, title) {
-        if (this.onClick) {
-          return this.onClick(id, title);
+        if (this.hasRootAction) {
+          return this.$emit('root-action', id, title);
         }
       }
     },

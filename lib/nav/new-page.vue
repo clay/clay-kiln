@@ -5,8 +5,8 @@
 </style>
 
 <template>
-  <filterable-list v-if="isAdmin" class="new-page-nav" :content="pages" :onClick="itemClick" label="Search Page Templates" :onSettings="editTemplate" settingsTitle="Edit Template" :onDelete="removeTemplate" :onAdd="addTemplate" :addTitle="addTitle" headerTitle="Page Template"></filterable-list>
-  <filterable-list v-else  class="new-page-nav":content="pages" :onClick="itemClick" label="Search Page Templates" headerTitle="Page Template"></filterable-list>
+  <filterable-list v-if="isAdmin" class="new-page-nav" :content="pages" :secondaryActions="secondaryActions" filterLabel="Search Page Templates" :addTitle="addTitle" :addIcon="addIcon" header="Page Template" @root-action="itemClick" @add="addTemplate"></filterable-list>
+  <filterable-list v-else  class="new-page-nav":content="pages" filterLabel="Search Page Templates" header="Page Template" @root-action="itemClick"></filterable-list>
 </template>
 
 <script>
@@ -19,7 +19,17 @@
   export default {
     props: ['content'],
     data() {
-      return {};
+      return {
+        secondaryActions: [{
+          icon: 'settings',
+          tooltip: 'Edit Template',
+          action: this.editTemplate
+        }, {
+          icon: 'delete',
+          tooltip: 'Remove Template',
+          action: this.removeTemplate
+        }]
+      };
     },
     computed: {
       isAdmin() {
@@ -27,6 +37,9 @@
       },
       addTitle() {
         return _.get(this.$store, 'state.ui.metaKey') ? 'Duplicate Current Page' : 'Add Current Page To List';
+      },
+      addIcon() {
+        return _.get(this.$store, 'state.ui.metaKey') ? 'plus_one' : 'add';
       }
     },
     asyncComputed: {

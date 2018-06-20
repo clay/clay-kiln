@@ -31,14 +31,6 @@
         &-title {
           flex: 0 1 100%;
         }
-
-        &-actions {
-          flex: 0 0 36px;
-
-          &-2 {
-            flex: 0 0 72px;
-          }
-        }
       }
     }
 
@@ -81,13 +73,13 @@
 </style>
 
 <template>
-  <div class="filterable-list" :class="{ 'has-reorder': onReorder }">
-    <div class="filterable-list-input" v-if="!onReorder">
+  <div class="filterable-list">
+    <div class="filterable-list-input" v-if="hasFilter">
       <ui-textbox
         v-model.trim="query"
-        :label="inputLabel"
+        :label="filterLabel || 'Filter List'"
         :floatingLabel="true"
-        :help="help"
+        :help="filterHelp"
         :autofocus="true"
         @keyup.prevent
         @keydown.up.stop
@@ -95,10 +87,10 @@
         @keydown.enter.stop.prevent="onEnterDown"
         v-conditional-focus="focusIsNull"></ui-textbox>
     </div>
-    <div v-if="headerTitle" class="filterable-list-headers">
-      <span v-if="onReorder" class="filterable-list-header filterable-list-header-drag"><!-- no header --></span>
-      <span class="filterable-list-header filterable-list-header-title">{{ headerTitle }}</span>
-      <span v-if="onSettings || onDelete" class="filterable-list-header filterable-list-header-actions" :class="{ 'filterable-list-header-actions-2': onSettings && onDelete }">Actions</span>
+    <div v-if="hasHeaders" class="filterable-list-headers">
+      <span v-if="hasReorder" class="filterable-list-header filterable-list-header-drag"><!-- no header --></span>
+      <span class="filterable-list-header filterable-list-header-title">{{ header }}</span>
+      <span v-if="hasSecondaryActions" class="filterable-list-header filterable-list-header-actions" :style="{ flex: secondaryActionWidth }">Actions</span>
     </div>
     <div class="filterable-list-readout">
       <ul class="filterable-list-readout-list" ref="list">
@@ -110,16 +102,16 @@
           :active="activeIndex === index"
           :selected="selectedIndex === index"
           :key="item.id"
-          :settingsTitle="settingsTitle"
-          :onClick="onClick"
-          :onSettings="onSettings"
-          :onDelete="onDelete"
-          :onReorder="onReorder"
-          :focusOnIndex="focusOnIndex"
-          :setActive="setActive"></list-item>
+          :hasReorder="hasReorder"
+          :hasRootAction="hasRootAction"
+          :hasChildAction="hasChildAction"
+          :secondaryActions="secondaryActions"
+          @focus-index="focusOnIndex"
+          @set-active="setActive"
+          @root-action="onRootAction"></list-item>
       </ul>
-      <div v-if="onAdd" class="filterable-list-add">
-        <ui-button class="filterable-list-add-button" type="primary" color="default" @click.stop="onAdd" :icon="addIcon">{{ addTitle || 'Add To List' }}</ui-button>
+      <div v-if="hasAddItem" class="filterable-list-add">
+        <ui-button class="filterable-list-add-button" type="primary" color="default" @click.stop="$emit('add')" :icon="addIcon || 'add'">{{ addTitle || 'Add To List' }}</ui-button>
       </div>
     </div>
   </div>
@@ -193,7 +185,7 @@
   }
 
   export default {
-    props: ['content', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'onAdd', 'addTitle', 'label', 'help', 'settingsTitle', 'headerTitle'],
+    props: ['content', 'secondaryActions', 'header', 'addTitle', 'addIcon', 'filterLabel', 'filterHelp'],
     data() {
       return {
         query: '',
@@ -208,21 +200,39 @@
       focusIsNull() {
         return _.isNull(this.focusIndex);
       },
-      inputLabel() {
-        return this.label || 'Filter List';
-      },
       selectedIndex() {
         return _.findIndex(this.matches, (item) => item.selected);
       },
-      addIcon() {
-        return _.get(this.$store, 'state.ui.metaKey') ? 'plus_one' : 'add';
+      hasFilter() {
+        return !_.has(this.$listeners, 'reorder');
+      },
+      hasReorder() {
+        return _.has(this.$listeners, 'reorder');
+      },
+      hasHeaders() {
+        return !!this.header;
+      },
+      hasRootAction() {
+        return _.has(this.$listeners, 'root-action');
+      },
+      hasChildAction() {
+        return _.has(this.$listeners, 'child-action');
+      },
+      hasSecondaryActions() {
+        return this.secondaryActions && !!this.secondaryActions.length;
+      },
+      secondaryActionWidth() {
+        return this.hasSecondaryActions ? `0 0 ${this.secondaryActions.length * 36}px` : '0 0 0px';
+      },
+      hasAddItem() {
+        return _.has(this.$listeners, 'add');
       }
     },
     mounted() {
       const self = this;
 
       // Add dragula
-      if (this.onReorder) {
+      if (this.hasReorder) {
         addDragula(this.$refs.list, this.onReorder);
       }
 
@@ -255,7 +265,7 @@
         }
       },
       onEnterDown() {
-        const input = find(this.$el, '.filterable-list-input-field');
+        const input = find(this.$el, '.filterable-list-input input');
 
         // simulate active states when pressing enter
         if (this.matches.length === 1) {
@@ -268,6 +278,12 @@
             requestTimeout(() => input.classList.remove('kiln-shake'), 301); // length of the animation + 1
           }
         }
+      },
+      onReorder(id, index, oldIndex, selectedItem) {
+        this.$emit('reorder', id, index, oldIndex, selectedItem);
+      },
+      onRootAction(id, title) {
+        this.$emit('root-action', id, title);
       }
     },
     components: {

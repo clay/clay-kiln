@@ -77,7 +77,7 @@
         </div>
       </div>
       <div class="add-component-list">
-        <filterable-list :content="loaded ? components : preloadComponents" label="Find Component" help="Or pick from your most used components" :onClick="itemClick"></filterable-list>
+        <filterable-list :content="loaded ? components : preloadComponents" filterLabel="Find Component" filterHelp="Or pick from your most used components" @root-action="itemClick"></filterable-list>
       </div>
     </div>
   </transition>
@@ -141,10 +141,14 @@
       headerTitle() {
         return this.config.isAllComponents ? 'Add Any Component' : 'Add Component';
       },
+      availableComponents() {
+        // in case someone adds the same component twice to a component list, this will make sure they're not duplicated
+        return _.uniq(this.config.available);
+      },
       // get the list of all components, so we can calculate height of the pane synchronously
       // (before the actual components() loads from the store)
       preloadComponents() {
-        return _.map(this.config.available, (component) => {
+        return _.map(this.availableComponents, (component) => {
           return {
             id: component,
             title: label(component)
@@ -156,7 +160,7 @@
       components() {
         const parentName = getComponentName(this.config.parentURI),
           path = this.config.path,
-          available = _.map(this.config.available, (component) => {
+          available = _.map(this.availableComponents, (component) => {
             return {
               id: component,
               title: label(component)
