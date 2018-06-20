@@ -108,7 +108,8 @@
           :secondaryActions="secondaryActions"
           @focus-index="focusOnIndex"
           @set-active="setActive"
-          @root-action="onRootAction"></list-item>
+          @root-action="onRootAction"
+          @child-action="onChildAction"></list-item>
       </ul>
       <div v-if="hasAddItem" class="filterable-list-add">
         <ui-button class="filterable-list-add-button" type="primary" color="default" @click.stop="$emit('add')" :icon="addIcon || 'add'">{{ addTitle || 'Add To List' }}</ui-button>
@@ -284,6 +285,9 @@
       },
       onRootAction(id, title) {
         this.$emit('root-action', id, title);
+      },
+      onChildAction(id, title) {
+        this.$emit('child-action', id, title);
       }
     },
     components: {

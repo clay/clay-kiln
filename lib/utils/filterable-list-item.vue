@@ -3,41 +3,50 @@
   @import '../../styleguide/typography';
 
   .filterable-list-item {
-    align-items: center;
-    background-color: $list-bg;
-    color: $list-bg-active;
-    display: flex;
-    padding: 0 16px;
-    position: relative;
-    transition: 200ms background-color ease-out;
+    border: 0;
 
-    &:after {
-      background-color: currentColor;
-      content: '';
-      height: 100%;
-      left: 0;
-      opacity: 0;
-      pointer-events: none;
-      position: absolute;
-      top: 0;
-      transition: opacity 600ms ease-out;
-      user-select: none;
-      width: 0%;
+    &.expanded {
+      border-bottom: 1px solid $divider-color;
+      border-top: 1px solid $divider-color;
     }
 
-    &.clickable {
-      cursor: pointer;
-    }
+    &-inner {
+      align-items: center;
+      background-color: $list-bg;
+      color: $list-bg-active;
+      display: flex;
+      padding: 0 16px;
+      position: relative;
+      transition: 200ms background-color ease-out;
 
-    &.clickable:hover,
-    &.clickable.focused {
-      background-color: $list-bg-hover;
-    }
+      &:after {
+        background-color: currentColor;
+        content: '';
+        height: 100%;
+        left: 0;
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+        top: 0;
+        transition: opacity 600ms ease-out;
+        user-select: none;
+        width: 0%;
+      }
 
-    &.active:after {
-      opacity: 0.4;
-      transition: opacity 600ms ease-out;
-      width: 100%;
+      &.clickable {
+        cursor: pointer;
+      }
+
+      &.clickable:hover,
+      &.clickable.focused {
+        background-color: $list-bg-hover;
+      }
+
+      &.active:after {
+        opacity: 0.4;
+        transition: opacity 600ms ease-out;
+        width: 100%;
+      }
     }
 
     &-drag {
@@ -75,35 +84,54 @@
       // e.g. spaces, component finder
       font-weight: bold;
     }
+
+    &-children {
+      padding: 0;
+    }
   }
 </style>
 
 <template>
-  <li class="filterable-list-item" :data-item-id="item.id" :ref="item.id" :class="{ focused: focused, active: active, selected: selected, 'clickable': hasRootAction }" @click.stop="handleClick(item.id, item.title)">
-    <ui-icon-button v-if="hasReorder" type="button" class="filterable-list-item-drag" tooltip="Drag to Reorder" icon="drag_handle"></ui-icon-button>
-    <button
-      type="button"
-      class="filterable-list-item-btn"
-      v-conditional-focus="focused"
-      @keydown.down.stop.prevent="$emit('focus-index', index + 1)"
-      @keydown.up.stop.prevent="$emit('focus-index', index - 1)"
-      @keydown.enter.stop.prevent="onEnterDown"
-      @keyup.enter.stop="onEnterUp">
-      {{ item.title }}
-    </button>
-    <ui-ripple-ink v-if="hasRootAction" ref="ripple" :trigger="item.id"></ui-ripple-ink>
-    <ui-icon-button v-for="action in displayedActions" :key="action.tooltip" type="button" class="filterable-list-item-secondary-action" :tooltip="action.tooltip" :icon="action.icon" @click.stop="action.action(item.id)"></ui-icon-button>
+  <li class="filterable-list-item" :data-item-id="item.id" :ref="item.id" :class="{ expanded: expanded }">
+    <div class="filterable-list-item-inner" :class="{ focused: focused, active: active, selected: selected, 'clickable': hasRootAction }" @click.stop="handleClick(item.id, item.title)">
+      <ui-icon-button v-if="hasReorder" type="button" class="filterable-list-item-drag" tooltip="Drag to Reorder" icon="drag_handle"></ui-icon-button>
+      <button
+        type="button"
+        class="filterable-list-item-btn"
+        v-conditional-focus="focused"
+        @keydown.down.stop.prevent="$emit('focus-index', index + 1)"
+        @keydown.up.stop.prevent="$emit('focus-index', index - 1)"
+        @keydown.enter.stop.prevent="onEnterDown"
+        @keyup.enter.stop="onEnterUp">
+        {{ item.title }}
+      </button>
+      <ui-ripple-ink v-if="hasRootAction" ref="ripple" :trigger="item.id"></ui-ripple-ink>
+      <ui-icon-button v-if="hasChildAction" type="button" class="filterable-list-item-secondary-action" :icon="expandIcon" @click.stop="toggleExpand"></ui-icon-button>
+      <ui-icon-button v-else v-for="action in displayedActions" :key="action.tooltip" type="button" class="filterable-list-item-secondary-action" :tooltip="action.tooltip" :icon="action.icon" @click.stop="action.action(item.id)"></ui-icon-button>
+    </div>
+    <ul v-if="expanded" class="filterable-list-item-children">
+      <list-item-child
+        v-for="child in item.children"
+        :child="child"
+        :key="child.id"
+        :secondaryActions="secondaryActions"
+        :hasChildAction="hasChildAction"
+        @child-action="onChildAction"></list-item-child>
+    </ul>
   </li>
 </template>
 
 <script>
   import UiIconButton from 'keen/UiIconButton';
   import UiRippleInk from 'keen/UiRippleInk';
+  import listItemChild from './filterable-list-item-child.vue';
 
   export default {
     props: ['item', 'index', 'focused', 'active', 'selected', 'hasReorder', 'hasRootAction', 'hasChildAction', 'secondaryActions'],
     data() {
-      return {};
+      return {
+        expanded: false
+      };
     },
     computed: {
       displayedActions() {
@@ -131,6 +159,9 @@
           enabledActions.push(_.assign({}, action, generated));
           return enabledActions;
         }, []);
+      },
+      expandIcon() {
+        return this.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
       }
     },
     methods: {
@@ -144,12 +175,21 @@
       handleClick(id, title) {
         if (this.hasRootAction) {
           return this.$emit('root-action', id, title);
+        } else if (this.hasChildAction) {
+          this.toggleExpand();
         }
+      },
+      onChildAction(id, title) {
+        this.$emit('child-action', id, title);
+      },
+      toggleExpand() {
+        this.expanded = !this.expanded;
       }
     },
     components: {
       UiIconButton,
-      UiRippleInk
+      UiRippleInk,
+      'list-item-child': listItemChild
     }
   };
 </script>

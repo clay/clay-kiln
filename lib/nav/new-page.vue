@@ -5,13 +5,12 @@
 </style>
 
 <template>
-  <filterable-list v-if="isAdmin" class="new-page-nav" :content="pages" :secondaryActions="secondaryActions" filterLabel="Search Page Templates" :addTitle="addTitle" :addIcon="addIcon" header="Page Template" @root-action="itemClick" @add="addTemplate"></filterable-list>
-  <filterable-list v-else  class="new-page-nav":content="pages" filterLabel="Search Page Templates" header="Page Template" @root-action="itemClick"></filterable-list>
+  <filterable-list v-if="isAdmin" class="new-page-nav" :content="pages" :secondaryActions="secondaryActions" filterLabel="Search Page Templates" :addTitle="addTitle" :addIcon="addIcon" header="Page Template" @child-action="itemClick" @add="addTemplate"></filterable-list>
+  <filterable-list v-else  class="new-page-nav":content="pages" filterLabel="Search Page Templates" header="Page Template" @child-action="itemClick"></filterable-list>
 </template>
 
 <script>
   import _ from 'lodash';
-  import { getItem, updateArray } from '../utils/local';
   import { uriToUrl } from '../utils/urls';
   import { pagesRoute, htmlExt, editExt } from '../utils/references';
   import filterableList from '../utils/filterable-list.vue';
@@ -40,36 +39,24 @@
       },
       addIcon() {
         return _.get(this.$store, 'state.ui.metaKey') ? 'plus_one' : 'add';
-      }
-    },
-    asyncComputed: {
+      },
       pages() {
         const pages = _.get(this.$store, 'state.lists[new-pages].items');
 
-        return getItem(`newpages:${this.$store.state.site.slug}`).then((sortList) => {
-          sortList = sortList || [];
-          const sorted = _.intersectionBy(sortList, pages, 'id'),
-            unsorted = _.differenceBy(pages, sortList, 'id');
-
-          return sorted.concat(unsorted);
-        });
+        return _.sortBy(pages, ['title', 'id']);
       }
     },
     methods: {
       itemClick(id, title) {
-        return updateArray(`newpages:${this.$store.state.site.slug}`, { id, title }, 'id')
-          .then(() => this.$store.commit('CREATE_PAGE', title))
-          .then(() => this.$store.dispatch('createPage', id))
-          .then((url) => window.location.href = url);
+        this.$store.commit('CREATE_PAGE', title);
+        return this.$store.dispatch('createPage', id).then((url) => window.location.href = url);
       },
       editTemplate(id) {
         const prefix = _.get(this.$store, 'state.site.prefix');
 
         window.location.href = uriToUrl(`${prefix}${pagesRoute}${id}${htmlExt}${editExt}`);
       },
-      removeTemplate(id) {
-        const title = _.find(this.pages, (page) => page.id === id).title;
-
+      removeTemplate(id, title) {
         this.$store.dispatch('openConfirm', {
           title: 'Confirm Template Removal',
           text: `Remove the "${title}" template from this list? This cannot be undone.`,
@@ -79,9 +66,10 @@
       },
       onDeleteConfirm(id) {
         return this.$store.dispatch('updateList', { listName: 'new-pages', fn: (items) => {
-          const index = _.findIndex(items, (item) => item.id === id);
+          const category = _.find(items, (item) => _.find(item.children, (child) => child.id === id)),
+            index = _.findIndex(category.children, (child) => child.id === id);
 
-          items.splice(index, 1);
+          category.splice(index, 1);
           return items;
         }});
       },
