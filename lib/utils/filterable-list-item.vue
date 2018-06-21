@@ -8,6 +8,12 @@
     &.expanded {
       border-bottom: 1px solid $divider-color;
       border-top: 1px solid $divider-color;
+
+      .filterable-list-item-btn {
+        // when expanding items, the item title should be differentiated from its children
+        color: $brand-primary-color;
+        font-weight: bold;
+      }
     }
 
     &-inner {
@@ -127,7 +133,7 @@
   import listItemChild from './filterable-list-item-child.vue';
 
   export default {
-    props: ['item', 'index', 'focused', 'active', 'selected', 'hasReorder', 'hasRootAction', 'hasChildAction', 'secondaryActions'],
+    props: ['item', 'index', 'focused', 'active', 'selected', 'hasReorder', 'hasRootAction', 'hasChildAction', 'secondaryActions', 'isFiltered'],
     data() {
       return {
         expanded: false
@@ -162,6 +168,14 @@
       },
       expandIcon() {
         return this.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
+      }
+    },
+    watch: {
+      isFiltered(val) {
+        // when filtering a list of expandable items, expand them
+        if (this.hasChildAction) {
+          this.expanded = val;
+        }
       }
     },
     methods: {

@@ -106,6 +106,7 @@
           :hasRootAction="hasRootAction"
           :hasChildAction="hasChildAction"
           :secondaryActions="secondaryActions"
+          :isFiltered="isFiltered"
           @focus-index="focusOnIndex"
           @set-active="setActive"
           @root-action="onRootAction"
@@ -168,6 +169,25 @@
   }
 
   /**
+   * determine if a root-level item has children that match the query
+   * @param  {object}  item
+   * @param  {string}  queryLower
+   * @return {Boolean}
+   */
+  function hasChildMatches(item, queryLower) {
+    if (!item.children) {
+      return false;
+    } else {
+      return _.filter(item.children, (child) => {
+        let titleLower = child.title.toLowerCase(),
+          idLower = child.id.toLowerCase();
+
+        return _.includes(titleLower, queryLower) || _.includes(idLower, queryLower);
+      }).length > 0;
+    }
+  }
+
+  /**
    * "Search" the items in the list. Filters by both
    * `id` value and `title`
    *
@@ -176,12 +196,12 @@
    * @return {Array}
    */
   function filterContent(content, query) {
-    return _.filter(content, item => {
+    return _.filter(content, (item) => {
       var queryLower = query.toLowerCase(),
         titleLower = item.title.toLowerCase(),
         idLower = item.id.toLowerCase();
 
-      return _.includes(titleLower, queryLower) || _.includes(idLower, queryLower);
+      return _.includes(titleLower, queryLower) || _.includes(idLower, queryLower) || hasChildMatches(item, queryLower);
     });
   }
 
@@ -197,6 +217,10 @@
     computed: {
       matches() {
         return this.query.length ? filterContent(this.content, this.query) : this.content;
+      },
+      isFiltered() {
+        // when expandable items are filtered, they should expand automatically
+        return this.query.length > 0;
       },
       focusIsNull() {
         return _.isNull(this.focusIndex);
