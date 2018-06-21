@@ -69,7 +69,7 @@
       {{ child.title }}
     </button>
     <ui-ripple-ink v-if="hasChildAction" ref="ripple" :trigger="child.id"></ui-ripple-ink>
-    <ui-icon-button v-for="action in displayedActions" :key="action.tooltip" type="button" class="filterable-list-item-child-secondary-action" :tooltip="action.tooltip" :icon="action.icon" @click.stop="action.action(child.id)"></ui-icon-button>
+    <ui-icon-button v-for="action in displayedActions" :key="action.tooltip" type="button" class="filterable-list-item-child-secondary-action" :tooltip="action.tooltip" :icon="action.icon" @click.stop="action.action(child.id, child.title)"></ui-icon-button>
   </li>
 </template>
 

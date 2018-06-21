@@ -5,8 +5,8 @@
 </style>
 
 <template>
-  <filterable-list v-if="isAdmin" class="new-page-nav" :content="pages" :secondaryActions="secondaryActions" filterLabel="Search Page Templates" :addTitle="addTitle" :addIcon="addIcon" header="Page Template" @child-action="itemClick" @add="addTemplate"></filterable-list>
-  <filterable-list v-else  class="new-page-nav":content="pages" filterLabel="Search Page Templates" header="Page Template" @child-action="itemClick"></filterable-list>
+  <filterable-list v-if="isAdmin" class="new-page-nav" :content="pages" :secondaryActions="secondaryActions" :initialExpanded="initialExpanded" filterLabel="Search Page Templates" :addTitle="addTitle" :addIcon="addIcon" header="Page Template" @child-action="itemClick" @add="addTemplate"></filterable-list>
+  <filterable-list v-else  class="new-page-nav":content="pages" :initialExpanded="initialExpanded" filterLabel="Search Page Templates" header="Page Template" @child-action="itemClick"></filterable-list>
 </template>
 
 <script>
@@ -40,10 +40,36 @@
       addIcon() {
         return _.get(this.$store, 'state.ui.metaKey') ? 'plus_one' : 'add';
       },
+      initialExpanded() {
+        // the page list will open to the last used category. this is:
+        // 1. the category that the last page was created from
+        // 2. the category that the last page was added to
+        // 3. the category that the last page was removed from
+        // this provides a more seamless edit experience with less clicking around
+        // for common actions, and allows users to immediately view the results
+        // of their (adding / removing) actions
+        return _.get(this.$store, 'state.ui.favoritePageCategory');
+      },
       pages() {
-        const pages = _.get(this.$store, 'state.lists[new-pages].items');
+        let items = _.cloneDeep(_.get(this.$store, 'state.lists[new-pages].items', []));
 
-        return _.sortBy(pages, ['title', 'id']);
+        if (!items || !_.isObject(_.head(items)) || !_.head(items).children) {
+          // no categories, so put all pages in a General category before rendering them
+          items = [{
+            id: 'general',
+            title: 'General',
+            children: _.sortBy(items, ['title', 'id'])
+          }];
+        } else {
+          // categories are already set up, so sort them and their children
+          // note: we're doing this every time to take into account bootstraps and manual changes to the new-pages list
+          items = _.sortBy(items, ['title', 'id']);
+          _.each(items, (item) => {
+            item.children = _.sortBy(item.children, ['title', 'id']);
+          });
+        }
+
+        return items;
       }
     },
     methods: {
@@ -65,13 +91,27 @@
         });
       },
       onDeleteConfirm(id) {
-        return this.$store.dispatch('updateList', { listName: 'new-pages', fn: (items) => {
-          const category = _.find(items, (item) => _.find(item.children, (child) => child.id === id)),
-            index = _.findIndex(category.children, (child) => child.id === id);
+        let currentCategoryID;
 
-          category.splice(index, 1);
+        return this.$store.dispatch('updateList', { listName: 'new-pages', fn: (items) => {
+          let currentCategoryIndex = _.findIndex(items, (item) => _.find(item.children, (child) => child.id === id)),
+            currentCategory = items[currentCategoryIndex],
+            currentIndex = _.findIndex(currentCategory.children, (child) => child.id === id);
+
+          // remove page from the category it's inside
+          currentCategory.children.splice(currentIndex, 1);
+
+          // set the category that should be expanded after we save this
+          // note: the category may be removed (below) if the last child is removed
+          currentCategoryID = currentCategory.id;
+
+          // if the category doesn't contain any children anymore, remove it
+          if (_.isEmpty(currentCategory.children)) {
+            items.splice(currentCategoryIndex, 1);
+          }
+
           return items;
-        }});
+        }}).then(() => this.$store.commit('CHANGE_FAVORITE_PAGE_CATEGORY', currentCategoryID));
       },
       addTemplate() {
         const isMetaKeyPressed = _.get(this.$store, 'state.ui.metaKey'),

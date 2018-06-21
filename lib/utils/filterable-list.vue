@@ -107,6 +107,7 @@
           :hasChildAction="hasChildAction"
           :secondaryActions="secondaryActions"
           :isFiltered="isFiltered"
+          :initialExpanded="initialExpanded"
           @focus-index="focusOnIndex"
           @set-active="setActive"
           @root-action="onRootAction"
@@ -206,7 +207,7 @@
   }
 
   export default {
-    props: ['content', 'secondaryActions', 'header', 'addTitle', 'addIcon', 'filterLabel', 'filterHelp'],
+    props: ['content', 'secondaryActions', 'header', 'addTitle', 'addIcon', 'filterLabel', 'filterHelp', 'initialExpanded'],
     data() {
       return {
         query: '',

@@ -113,7 +113,7 @@
       </button>
       <ui-ripple-ink v-if="hasRootAction" ref="ripple" :trigger="item.id"></ui-ripple-ink>
       <ui-icon-button v-if="hasChildAction" type="button" class="filterable-list-item-secondary-action" :icon="expandIcon" @click.stop="toggleExpand"></ui-icon-button>
-      <ui-icon-button v-else v-for="action in displayedActions" :key="action.tooltip" type="button" class="filterable-list-item-secondary-action" :tooltip="action.tooltip" :icon="action.icon" @click.stop="action.action(item.id)"></ui-icon-button>
+      <ui-icon-button v-else v-for="action in displayedActions" :key="action.tooltip" type="button" class="filterable-list-item-secondary-action" :tooltip="action.tooltip" :icon="action.icon" @click.stop="action.action(item.id, item.title)"></ui-icon-button>
     </div>
     <ul v-if="expanded" class="filterable-list-item-children">
       <list-item-child
@@ -133,7 +133,7 @@
   import listItemChild from './filterable-list-item-child.vue';
 
   export default {
-    props: ['item', 'index', 'focused', 'active', 'selected', 'hasReorder', 'hasRootAction', 'hasChildAction', 'secondaryActions', 'isFiltered'],
+    props: ['item', 'index', 'focused', 'active', 'selected', 'hasReorder', 'hasRootAction', 'hasChildAction', 'secondaryActions', 'isFiltered', 'initialExpanded'],
     data() {
       return {
         expanded: false
@@ -175,6 +175,13 @@
         // when filtering a list of expandable items, expand them
         if (this.hasChildAction) {
           this.expanded = val;
+        }
+      },
+      initialExpanded(val) {
+        if (this.hasChildAction && val === this.item.id) {
+          // if items can be expanded, the `initialExpanded` prop will be checked to see if it should be mounted
+          // in the expanded state
+          this.expanded = true;
         }
       }
     },
