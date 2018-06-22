@@ -22,6 +22,7 @@
   import UiButton from 'keen/UiButton';
   import UiAutocomplete from 'keen/UiAutocomplete';
   import logger from '../utils/log';
+  import { sortPages } from '../lists/helpers';
 
   const log = logger(__filename);
 
@@ -53,7 +54,10 @@
           id = uri.match(/pages\/([A-Za-z0-9\-]+)/)[1];
 
         return this.$store.dispatch('updateList', { listName: 'new-pages', fn: (items) => {
-          let currentCategory = _.find(items, (item) => item.id === categoryID);
+          let currentCategory;
+
+          items = sortPages(items);
+          currentCategory = _.find(items, (item) => item.id === categoryID);
 
           if (currentCategory) {
             // add to existing category
@@ -66,7 +70,7 @@
               children: [{ id, title }]
             });
           }
-          return items;
+          return sortPages(items); // sort them again after adding the item (todo: in the future, just put them in the right place)
         }})
           .then(() => this.$store.dispatch('closeModal'))
           .then(() => {

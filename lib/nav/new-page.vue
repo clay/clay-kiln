@@ -14,6 +14,7 @@
   import { uriToUrl } from '../utils/urls';
   import { pagesRoute, htmlExt, editExt } from '../utils/references';
   import filterableList from '../utils/filterable-list.vue';
+  import { sortPages } from '../lists/helpers';
 
   export default {
     props: ['content'],
@@ -53,23 +54,7 @@
       pages() {
         let items = _.cloneDeep(_.get(this.$store, 'state.lists[new-pages].items', []));
 
-        if (!items || !_.isObject(_.head(items)) || !_.head(items).children) {
-          // no categories, so put all pages in a General category before rendering them
-          items = [{
-            id: 'general',
-            title: 'General',
-            children: _.sortBy(items, ['title', 'id'])
-          }];
-        } else {
-          // categories are already set up, so sort them and their children
-          // note: we're doing this every time to take into account bootstraps and manual changes to the new-pages list
-          items = _.sortBy(items, ['title', 'id']);
-          _.each(items, (item) => {
-            item.children = _.sortBy(item.children, ['title', 'id']);
-          });
-        }
-
-        return items;
+        return sortPages(items);
       }
     },
     methods: {
@@ -94,9 +79,12 @@
         let currentCategoryID;
 
         return this.$store.dispatch('updateList', { listName: 'new-pages', fn: (items) => {
-          let currentCategoryIndex = _.findIndex(items, (item) => _.find(item.children, (child) => child.id === id)),
-            currentCategory = items[currentCategoryIndex],
-            currentIndex = _.findIndex(currentCategory.children, (child) => child.id === id);
+          let currentCategoryIndex, currentCategory, currentIndex;
+
+          items = sortPages(items);
+          currentCategoryIndex = _.findIndex(items, (item) => _.find(item.children, (child) => child.id === id));
+          currentCategory = items[currentCategoryIndex];
+          currentIndex = _.findIndex(currentCategory.children, (child) => child.id === id);
 
           // remove page from the category it's inside
           currentCategory.children.splice(currentIndex, 1);
