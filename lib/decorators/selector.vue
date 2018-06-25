@@ -215,6 +215,7 @@
         <ui-icon-button v-once type="secondary" color="primary" class="quick-bar-button quick-bar-info" icon="info_outline" :tooltip="`${componentLabel} Info`" @click.stop="openInfo"></ui-icon-button>
         <ui-icon-button v-once v-show="hasSettings" type="secondary" color="primary" class="quick-bar-button quick-bar-settings" icon="settings" :tooltip="`${componentLabel} Settings`" @click.stop="openSettings"></ui-icon-button>
         <component v-once v-for="(button, index) in customButtons" :is="button" :key="index"></component>
+        <ui-icon-button v-once v-show="hasBookmark" type="secondary" color="primary" class="quick-bar-button quick-bar-bookmark" icon="bookmark" tooltip="Bookmark" @click.stop="bookmarkInstance"></ui-icon-button>
         <ui-icon-button v-once v-show="hasRemove" type="secondary" color="primary" class="quick-bar-button quick-bar-remove" icon="delete" :tooltip="`Remove ${componentLabel}`" @click.stop="removeComponent"></ui-icon-button>
         <ui-icon-button v-show="hasDuplicateComponent && isBelowMaxLength" type="secondary" color="primary" class="quick-bar-button quick-bar-dupe" icon="add_circle_outline" :tooltip="`Add ${componentLabel}`" @click.stop="duplicateComponent"></ui-icon-button>
         <ui-icon-button v-show="hasDuplicateComponentWithData && isBelowMaxLength" type="secondary" color="primary" class="quick-bar-button quick-bar-dupe" icon="add_circle" :tooltip="`Duplicate ${componentLabel}`" @click.stop="duplicateComponentWithData"></ui-icon-button>
@@ -230,7 +231,7 @@
   import getRect from 'element-client-rect';
   import { getSchema, getData } from '../core-data/components';
   import { has as hasGroup } from '../core-data/groups';
-  import { getComponentName, componentListProp } from '../utils/references';
+  import { getComponentName, componentListProp, bookmarkProp } from '../utils/references';
   import { getComponentEl, isComponentInPage } from '../utils/component-elements';
   import label from '../utils/label';
   import logger from '../utils/log';
@@ -299,6 +300,9 @@
       },
       hasSettings() {
         return hasGroup(this.uri, 'settings');
+      },
+      hasBookmark() {
+        return _.get(this.$store, 'state.user.auth') === 'admin' && _.get(this.schema, bookmarkProp);
       },
       hasDuplicateComponent() {
         return this.hasAddComponent && !_.get(this.$store, 'state.ui.metaKey');
@@ -370,6 +374,13 @@
       },
       openSettings() {
         return this.$store.dispatch('focus', { uri: this.uri, path: 'settings' });
+      },
+      bookmarkInstance() {
+        return this.$store.dispatch('openModal', {
+          title: `Bookmark ${this.componentLabel}`,
+          data: this.uri,
+          type: 'add-bookmark'
+        });
       },
       openAddComponentPane(e) {
         return this.$store.dispatch('openAddComponent', {
