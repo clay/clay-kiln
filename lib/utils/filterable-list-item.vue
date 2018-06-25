@@ -44,7 +44,7 @@
       }
 
       &.clickable:hover,
-      &.clickable.focused {
+      &.focused {
         background-color: $list-bg-hover;
       }
 
@@ -105,23 +105,31 @@
         type="button"
         class="filterable-list-item-btn"
         v-conditional-focus="focused"
-        @keydown.down.stop.prevent="$emit('focus-index', index + 1)"
-        @keydown.up.stop.prevent="$emit('focus-index', index - 1)"
+        @keydown.down.stop.prevent="$emit('focus-down')"
+        @keydown.up.stop.prevent="$emit('focus-up')"
         @keydown.enter.stop.prevent="onEnterDown"
+        @keydown.right.stop.prevent="toggleExpand"
         @keyup.enter.stop="onEnterUp">
         {{ item.title }}
       </button>
       <ui-ripple-ink v-if="hasRootAction" ref="ripple" :trigger="item.id"></ui-ripple-ink>
-      <ui-icon-button v-if="hasChildAction" type="button" class="filterable-list-item-secondary-action" :icon="expandIcon" @click.stop="toggleExpand"></ui-icon-button>
+      <ui-icon-button v-if="shouldExpand" type="button" class="filterable-list-item-secondary-action" :icon="expandIcon" @click.stop="toggleExpand"></ui-icon-button>
       <ui-icon-button v-else v-for="action in displayedActions" :key="action.tooltip" type="button" class="filterable-list-item-secondary-action" :tooltip="action.tooltip" :icon="action.icon" @click.stop="action.action(item.id, item.title)"></ui-icon-button>
     </div>
     <ul v-if="expanded" class="filterable-list-item-children">
       <list-item-child
-        v-for="child in item.children"
+        v-for="(child, childIndex) in item.children"
         :child="child"
         :key="child.id"
         :secondaryActions="secondaryActions"
         :hasChildAction="hasChildAction"
+        :parentIndex="index"
+        :index="childIndex"
+        :focusIndex="focusIndex"
+        :activeIndex="activeIndex"
+        @focus-up="onFocusUp"
+        @focus-down="onFocusDown"
+        @set-active="onSetActive"
         @child-action="onChildAction"></list-item-child>
     </ul>
   </li>
@@ -133,13 +141,23 @@
   import listItemChild from './filterable-list-item-child.vue';
 
   export default {
-    props: ['item', 'index', 'focused', 'active', 'selected', 'hasReorder', 'hasRootAction', 'hasChildAction', 'secondaryActions', 'isFiltered', 'initialExpanded'],
+    props: ['item', 'index', 'selected', 'hasReorder', 'hasRootAction', 'hasChildAction', 'secondaryActions', 'isFiltered', 'focusIndex', 'activeIndex'],
     data() {
-      return {
-        expanded: false
-      };
+      return {};
     },
     computed: {
+      focused() {
+        return this.focusIndex[0] === this.index && _.isNull(this.focusIndex[1]);
+      },
+      active() {
+        return this.activeIndex[0] === this.index && _.isNull(this.activeIndex[1]);
+      },
+      shouldExpand() {
+        return this.hasChildAction && !!_.get(this.item, 'children.length', 0);
+      },
+      expanded() {
+        return this.item.expanded || this.isFiltered;
+      },
       displayedActions() {
         const id = this.item.id;
 
@@ -170,33 +188,18 @@
         return this.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
       }
     },
-    watch: {
-      isFiltered(val) {
-        // when filtering a list of expandable items, expand them
-        if (this.hasChildAction) {
-          this.expanded = val;
-        }
-      },
-      initialExpanded(val) {
-        if (this.hasChildAction && val === this.item.id) {
-          // if items can be expanded, the `initialExpanded` prop will be checked to see if it should be mounted
-          // in the expanded state
-          this.expanded = true;
-        }
-      }
-    },
     methods: {
       onEnterDown() {
-        this.$emit('set-active', this.index);
+        this.$emit('set-active', this.index, null);
       },
       onEnterUp() {
-        this.$emit('set-active', this.index);
+        this.$emit('set-active', this.index, null);
         this.handleClick(this.item.id, this.item.title);
       },
       handleClick(id, title) {
         if (this.hasRootAction) {
           return this.$emit('root-action', id, title);
-        } else if (this.hasChildAction) {
+        } else {
           this.toggleExpand();
         }
       },
@@ -204,7 +207,18 @@
         this.$emit('child-action', id, title);
       },
       toggleExpand() {
-        this.expanded = !this.expanded;
+        if (this.shouldExpand) {
+          this.$emit('toggle-expand', this.index, !this.item.expanded);
+        }
+      },
+      onFocusUp() {
+        this.$emit('focus-up');
+      },
+      onFocusDown() {
+        this.$emit('focus-down');
+      },
+      onSetActive(index, childIndex) {
+        this.$emit('set-active', index, childIndex);
       }
     },
     components: {

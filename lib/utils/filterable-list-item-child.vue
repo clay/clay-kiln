@@ -29,8 +29,15 @@
       cursor: pointer;
     }
 
-    &.clickable:hover {
+    &.clickable:hover,
+    &.focused {
       background-color: $list-bg-hover;
+    }
+
+    &.active:after {
+      opacity: 0.4;
+      transition: opacity 600ms ease-out;
+      width: 100%;
     }
 
     &-secondary-action {
@@ -62,10 +69,12 @@
 </style>
 
 <template>
-  <li class="filterable-list-item-child" :data-item-id="child.id" :ref="child.id" :class="{ 'clickable': hasChildAction }" @click.stop="handleChildClick(child.id, child.title)">
+  <li class="filterable-list-item-child" :data-item-id="child.id" :ref="child.id" :class="{ focused: focused, active: active, 'clickable': hasChildAction }" @click.stop="handleChildClick(child.id, child.title)">
     <button
       type="button"
-      class="filterable-list-item-child-btn">
+      class="filterable-list-item-child-btn"
+      @keydown.down.stop.prevent="$emit('focus-down')"
+      @keydown.up.stop.prevent="$emit('focus-up')">
       {{ child.title }}
     </button>
     <ui-ripple-ink v-if="hasChildAction" ref="ripple" :trigger="child.id"></ui-ripple-ink>
@@ -78,11 +87,17 @@
   import UiRippleInk from 'keen/UiRippleInk';
 
   export default {
-    props: ['child', 'hasChildAction', 'secondaryActions'],
+    props: ['child', 'parentIndex', 'index', 'hasChildAction', 'secondaryActions', 'focusIndex', 'activeIndex'],
     data() {
       return {};
     },
     computed: {
+      focused() {
+        return this.focusIndex[0] === this.parentIndex && this.focusIndex[1] === this.index;
+      },
+      active() {
+        return this.activeIndex[0] === this.parentIndex && this.activeIndex[1] === this.index;
+      },
       displayedActions() {
         const id = this.child.id;
 
@@ -111,6 +126,13 @@
       }
     },
     methods: {
+      onEnterDown() {
+        this.$emit('set-active', this.parentIndex, this.index);
+      },
+      onEnterUp() {
+        this.$emit('set-active', this.parentIndex, this.index);
+        this.handleClick(this.child.id, this.child.title);
+      },
       handleChildClick(id, title) {
         if (this.hasChildAction) {
           return this.$emit('child-action', id, title);
