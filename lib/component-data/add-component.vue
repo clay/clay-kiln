@@ -77,7 +77,7 @@
         </div>
       </div>
       <div class="add-component-list">
-        <filterable-list :content="loaded ? components : preloadComponents" filterLabel="Find Component" filterHelp="Or pick from your most used components" @root-action="itemClick" @child-action="itemClick"></filterable-list>
+        <filterable-list :content="loaded ? components : preloadComponents" :secondaryActions="secondaryActions" filterLabel="Find Component" filterHelp="Or pick from your most used components" @root-action="itemClick" @child-action="itemClick"></filterable-list>
       </div>
     </div>
   </transition>
@@ -146,6 +146,16 @@
         // in case someone adds the same component twice to a component list, this will make sure they're not duplicated
         return _.uniq(this.config.available);
       },
+      secondaryActions() {
+        if (_.get(this.$store, 'state.user.auth') === 'admin') {
+          return [{
+            icon: 'delete',
+            tooltip: 'Remove Bookmark',
+            enable: (id) => _.includes(id, '/_components/'), // only enable these on bookmarks
+            action: this.removeBookmark
+          }];
+        }
+      },
       // get the list of all components, so we can calculate height of the pane synchronously
       // (before the actual components() loads from the store)
       preloadComponents() {
@@ -186,7 +196,8 @@
             const bookmarks = _.find(allBookmarks, (b) => b.name === item.id);
 
             if (bookmarks) {
-              item.children = bookmarks.children;
+              // bookmarks should always be sorted alphabetically
+              item.children = _.sortBy(bookmarks.children, ['title', 'id']);
             }
 
             return item;
@@ -242,6 +253,33 @@
       },
       close() {
         this.$store.dispatch('closeAddComponent');
+      },
+      removeBookmark(id, title) {
+        this.$store.dispatch('openConfirm', {
+          title: 'Confirm Bookmark Removal',
+          text: `Remove the "${title}" bookmark from this list? This cannot be undone.`,
+          button: 'Yes, Remove Bookmark',
+          onConfirm: this.onDeleteConfirm.bind(this, id)
+        });
+      },
+      onDeleteConfirm(id) {
+        return this.$store.dispatch('updateList', { listName: 'bookmarks', fn: (items) => {
+          let componentIndex, component, bookmarkIndex;
+
+          componentIndex = _.findIndex(items, (item) => _.find(item.children, (child) => child.id === id));
+          component = items[componentIndex];
+          bookmarkIndex = _.findIndex(component.children, (child) => child.id === id);
+
+          // remove bookmark from the component it's inside
+          component.children.splice(bookmarkIndex, 1);
+
+          // if the component doesn't contain any bookmarks anymore, remove it from the list
+          if (_.isEmpty(component.children)) {
+            items.splice(componentIndex, 1);
+          }
+
+          return items;
+        }});
       },
       itemClick(id) {
         const self = this,
