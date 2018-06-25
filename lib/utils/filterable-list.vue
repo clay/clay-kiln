@@ -171,40 +171,50 @@
   }
 
   /**
-   * determine if a root-level item has children that match the query
+   * determine if a root-level item has children that match the query,
+   * and if so return them
    * @param  {object}  item
    * @param  {string}  queryLower
-   * @return {Boolean}
+   * @return {array}
    */
-  function hasChildMatches(item, queryLower) {
+  function findChildMatches(item, queryLower) {
     if (!item.children) {
-      return false;
+      return [];
     } else {
       return _.filter(item.children, (child) => {
         let titleLower = child.title.toLowerCase(),
           idLower = child.id.toLowerCase();
 
         return _.includes(titleLower, queryLower) || _.includes(idLower, queryLower);
-      }).length > 0;
+      });
     }
   }
 
   /**
    * "Search" the items in the list. Filters by both
-   * `id` value and `title`
+   * `id` value and `title`. if items have children, will filter them too
    *
    * @param  {Array} content
    * @param  {String} query
    * @return {Array}
    */
   function filterContent(content, query) {
-    return _.filter(content, (item) => {
-      var queryLower = query.toLowerCase(),
+    return _.reduce(content, (items, item) => {
+      let queryLower = query.toLowerCase(),
         titleLower = item.title.toLowerCase(),
-        idLower = item.id.toLowerCase();
+        idLower = item.id.toLowerCase(),
+        isRootMatch = _.includes(titleLower, queryLower) || _.includes(idLower, queryLower),
+        childMatches = findChildMatches(item, queryLower);
 
-      return _.includes(titleLower, queryLower) || _.includes(idLower, queryLower) || hasChildMatches(item, queryLower);
-    });
+      if (isRootMatch) {
+        // pass along the item, include all its children (if it has them)
+        items.push(item);
+      } else if (childMatches.length) {
+        // pass along the item, but only pass along children that match
+        items.push(_.assign({}, item, { children: childMatches }));
+      }
+      return items;
+    }, []);
   }
 
   export default {
@@ -335,7 +345,7 @@
         const input = find(this.$el, '.filterable-list-input input');
 
         // simulate active states when pressing enter
-        if (this.matches.length === 1) {
+        if (this.matches.length === 1 && !this.matches[0].children) {
           this.focusOnIndex(0, 0);
           this.setActive(0, 0);
         } else {
