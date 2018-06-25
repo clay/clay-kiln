@@ -98,18 +98,18 @@
 </style>
 
 <template>
-  <li class="filterable-list-item" :data-item-id="item.id" :ref="item.id" :class="{ expanded: expanded }">
+  <li class="filterable-list-item" :data-item-id="item.id" :ref="item.id" :class="{ expanded: shouldExpand && expanded }">
     <div class="filterable-list-item-inner" :class="{ focused: focused, active: active, selected: selected, 'clickable': hasRootAction }" @click.stop="handleClick(item.id, item.title)">
       <ui-icon-button v-if="hasReorder" type="button" class="filterable-list-item-drag" tooltip="Drag to Reorder" icon="drag_handle"></ui-icon-button>
       <button
         type="button"
         class="filterable-list-item-btn"
-        v-conditional-focus="focused"
         @keydown.down.stop.prevent="$emit('focus-down')"
         @keydown.up.stop.prevent="$emit('focus-up')"
         @keydown.enter.stop.prevent="onEnterDown"
         @keydown.right.stop.prevent="toggleExpand"
-        @keyup.enter.stop="onEnterUp">
+        @keyup.enter.stop.prevent="onEnterUp"
+        v-conditional-focus="focused">
         {{ item.title }}
       </button>
       <ui-ripple-ink v-if="hasRootAction" ref="ripple" :trigger="item.id"></ui-ripple-ink>
@@ -193,7 +193,6 @@
         this.$emit('set-active', this.index, null);
       },
       onEnterUp() {
-        this.$emit('set-active', this.index, null);
         this.handleClick(this.item.id, this.item.title);
       },
       handleClick(id, title) {

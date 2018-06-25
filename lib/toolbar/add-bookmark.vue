@@ -44,12 +44,12 @@
 
           if (currentComponentBookmarks) {
             // add to existing component bookmarks
-            currentComponentBookmarks.bookmarks.push({ id: uri, title });
+            currentComponentBookmarks.children.push({ id: uri, title });
           } else {
             // add to new component bookmarks
             items.push({
               name,
-              bookmarks: [{ id: uri, title }]
+              children: [{ id: uri, title }]
             });
           }
           return items;

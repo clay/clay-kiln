@@ -74,7 +74,10 @@
       type="button"
       class="filterable-list-item-child-btn"
       @keydown.down.stop.prevent="$emit('focus-down')"
-      @keydown.up.stop.prevent="$emit('focus-up')">
+      @keydown.up.stop.prevent="$emit('focus-up')"
+      @keydown.enter.stop.prevent="onEnterDown"
+      @keyup.enter.stop.prevent="onEnterUp"
+      v-conditional-focus="focused">
       {{ child.title }}
     </button>
     <ui-ripple-ink v-if="hasChildAction" ref="ripple" :trigger="child.id"></ui-ripple-ink>
@@ -130,8 +133,7 @@
         this.$emit('set-active', this.parentIndex, this.index);
       },
       onEnterUp() {
-        this.$emit('set-active', this.parentIndex, this.index);
-        this.handleClick(this.child.id, this.child.title);
+        this.handleChildClick(this.child.id, this.child.title);
       },
       handleChildClick(id, title) {
         if (this.hasChildAction) {

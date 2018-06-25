@@ -83,7 +83,7 @@
         :autofocus="true"
         @keyup.prevent
         @keydown.up.stop
-        @keydown.down.stop="focusDown"
+        @keydown.down.stop.prevent="focusDown"
         @keydown.enter.stop.prevent="onEnterDown"
         v-conditional-focus="focusIsNull"></ui-textbox>
     </div>
@@ -345,9 +345,9 @@
         const input = find(this.$el, '.filterable-list-input input');
 
         // simulate active states when pressing enter
-        if (this.matches.length === 1 && !this.matches[0].children) {
-          this.focusOnIndex(0, 0);
-          this.setActive(0, 0);
+        if (this.matches.length === 1 && !_.get(this.matches, '[0].children.length')) {
+          this.focusOnIndex(0, null);
+          this.setActive(0, null);
         } else {
           this.setActive(null, null);
           if (input) {

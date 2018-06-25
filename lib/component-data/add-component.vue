@@ -77,7 +77,7 @@
         </div>
       </div>
       <div class="add-component-list">
-        <filterable-list :content="loaded ? components : preloadComponents" filterLabel="Find Component" filterHelp="Or pick from your most used components" @root-action="itemClick"></filterable-list>
+        <filterable-list :content="loaded ? components : preloadComponents" filterLabel="Find Component" filterHelp="Or pick from your most used components" @root-action="itemClick" @child-action="itemClick"></filterable-list>
       </div>
     </div>
   </transition>
@@ -92,6 +92,7 @@
   import label from '../utils/label';
   import { getComponentName } from '../utils/references';
   import { OPEN_ADD_COMPONENT } from './mutationTypes';
+  import { getObject } from '../core-data/api';
   import UiIconButton from 'keen/UiIconButton';
   import filterableList from '../utils/filterable-list.vue';
 
@@ -165,7 +166,8 @@
               id: component,
               title: label(component)
             };
-          });
+          }),
+          allBookmarks = _.cloneDeep(_.get(this.$store, 'state.lists[bookmarks].items', []));
 
         return getItem(`addcomponents:${parentName}.${path}`).then((sortList) => {
           sortList = sortList || []; // initialize if it doesn't exist
@@ -177,12 +179,18 @@
             });
 
           this.loaded = true; // switch to the sorted list
-          return _.map(sortedComponents, (component) => {
-            return {
-              id: component.name,
-              title: label(component.name)
-            };
-          }).concat(unsortedComponents);
+          return _.map(_.map(sortedComponents, (component) => ({
+            id: component.name,
+            title: label(component.name)
+          })).concat(unsortedComponents), (item) => {
+            const bookmarks = _.find(allBookmarks, (b) => b.name === item.id);
+
+            if (bookmarks) {
+              item.children = bookmarks.children;
+            }
+
+            return item;
+          });
         });
       }
     },
@@ -238,15 +246,22 @@
       itemClick(id) {
         const self = this,
           parentName = getComponentName(self.config.parentURI),
-          path = self.config.path;
+          path = self.config.path,
+          isBookmark = _.includes(id, '/_components/'),
+          componentName = isBookmark ? getComponentName(id) : id;
 
-        return updateArray(`addcomponents:${parentName}.${path}`, { name: id })
+        return updateArray(`addcomponents:${parentName}.${path}`, { name: componentName })
           .then(() => {
+            if (isBookmark) {
+              return getObject(id);
+            }
+          })
+          .then((data) => {
             return self.$store.dispatch('addComponents', {
               currentURI: self.config.currentURI,
               parentURI: self.config.parentURI,
               path,
-              components: [{ name: id }]
+              components: [{ name: componentName, data }]
             })
               .then((newEl) => {
                 if (newEl) {

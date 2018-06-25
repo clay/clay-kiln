@@ -110,6 +110,7 @@
           <ui-icon-button v-if="componentLabel" type="secondary" color="black" icon="info_outline" :tooltip="`${componentLabel} Info`" @click.stop="openInfo"></ui-icon-button>
           <ui-icon-button v-if="hasSettings" type="secondary" color="black" icon="settings" :tooltip="`${componentLabel} Settings`" @click.stop="openSettings"></ui-icon-button>
           <component v-for="(button, index) in customButtons" :is="button" :key="index"></component>
+          <ui-icon-button v-show="hasBookmark" type="secondary" color="black" icon="bookmark" tooltip="Bookmark" @click.stop="bookmarkInstance"></ui-icon-button>
           <ui-icon-button v-if="hasRemove" type="secondary" color="black" icon="delete" :tooltip="`Remove ${componentLabel}`" @click.stop="removeComponent"></ui-icon-button>
           <ui-icon-button v-if="hasDuplicateComponent && isBelowMaxLength" type="secondary" color="black" icon="add_circle_outline" :tooltip="`Add ${componentLabel}`" @click.stop="duplicateComponent"></ui-icon-button>
           <ui-icon-button v-if="hasDuplicateComponentWithData && isBelowMaxLength" type="secondary" color="black" icon="add_circle" :tooltip="`Duplicate ${componentLabel}`" @click.stop="duplicateComponentWithData"></ui-icon-button>
@@ -150,7 +151,7 @@
   import { has as hasGroup } from '../core-data/groups';
   import label from '../utils/label';
   import logger from '../utils/log';
-  import { fieldProp, getComponentName, componentListProp } from '../utils/references';
+  import { fieldProp, getComponentName, componentListProp, bookmarkProp } from '../utils/references';
   import { getComponentEl } from '../utils/component-elements';
   import field from './field.vue';
   import UiIconButton from 'keen/UiIconButton';
@@ -214,6 +215,9 @@
       },
       fields: (state) => state.ui.currentForm.fields,
       schema: (state) => getSchema(state.ui.currentForm.uri),
+      hasBookmark() {
+        return _.get(this.$store, 'state.user.auth') === 'admin' && _.get(this.schema, bookmarkProp);
+      },
       hasRequiredFields() {
         // true if any of the fields in the current form have required validation
         return _.some(this.schema, (val, key) => _.includes(Object.keys(this.fields), key) && _.has(val, `${fieldProp}.validate.required`));
@@ -358,6 +362,13 @@
       },
       openSettings() {
         return this.$store.dispatch('focus', { uri: _.get(this.$store, 'state.ui.currentForm.uri'), path: 'settings' });
+      },
+      bookmarkInstance() {
+        return this.$store.dispatch('openModal', {
+          title: `Bookmark ${this.componentLabel}`,
+          data: _.get(this.$store, 'state.ui.currentSelection.uri'),
+          type: 'add-bookmark'
+        });
       },
       removeComponent() {
         const currentURI = _.get(this.$store, 'state.ui.currentSelection.uri'),
