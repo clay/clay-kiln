@@ -77,7 +77,7 @@
         </div>
       </div>
       <div class="add-component-list">
-        <filterable-list :content="loaded ? components : preloadComponents" label="Find Component" help="Or pick from your most used components" :onClick="itemClick"></filterable-list>
+        <filterable-list :content="loaded ? components : preloadComponents" :secondaryActions="secondaryActions" filterLabel="Find Component" filterHelp="Or pick from your most used components" @root-action="itemClick" @child-action="itemClick"></filterable-list>
       </div>
     </div>
   </transition>
@@ -92,6 +92,7 @@
   import label from '../utils/label';
   import { getComponentName } from '../utils/references';
   import { OPEN_ADD_COMPONENT } from './mutationTypes';
+  import { getObject } from '../core-data/api';
   import UiIconButton from 'keen/UiIconButton';
   import filterableList from '../utils/filterable-list.vue';
 
@@ -141,10 +142,24 @@
       headerTitle() {
         return this.config.isAllComponents ? 'Add Any Component' : 'Add Component';
       },
+      availableComponents() {
+        // in case someone adds the same component twice to a component list, this will make sure they're not duplicated
+        return _.uniq(this.config.available);
+      },
+      secondaryActions() {
+        if (_.get(this.$store, 'state.user.auth') === 'admin') {
+          return [{
+            icon: 'delete',
+            tooltip: 'Remove Bookmark',
+            enable: (id) => _.includes(id, '/_components/'), // only enable these on bookmarks
+            action: this.removeBookmark
+          }];
+        }
+      },
       // get the list of all components, so we can calculate height of the pane synchronously
       // (before the actual components() loads from the store)
       preloadComponents() {
-        return _.map(this.config.available, (component) => {
+        return _.map(this.availableComponents, (component) => {
           return {
             id: component,
             title: label(component)
@@ -156,12 +171,13 @@
       components() {
         const parentName = getComponentName(this.config.parentURI),
           path = this.config.path,
-          available = _.map(this.config.available, (component) => {
+          available = _.map(this.availableComponents, (component) => {
             return {
               id: component,
               title: label(component)
             };
-          });
+          }),
+          allBookmarks = _.cloneDeep(_.get(this.$store, 'state.lists[bookmarks].items', []));
 
         return getItem(`addcomponents:${parentName}.${path}`).then((sortList) => {
           sortList = sortList || []; // initialize if it doesn't exist
@@ -173,12 +189,19 @@
             });
 
           this.loaded = true; // switch to the sorted list
-          return _.map(sortedComponents, (component) => {
-            return {
-              id: component.name,
-              title: label(component.name)
-            };
-          }).concat(unsortedComponents);
+          return _.map(_.map(sortedComponents, (component) => ({
+            id: component.name,
+            title: label(component.name)
+          })).concat(unsortedComponents), (item) => {
+            const bookmarks = _.find(allBookmarks, (b) => b.name === item.id);
+
+            if (bookmarks) {
+              // bookmarks should always be sorted alphabetically
+              item.children = _.sortBy(bookmarks.children, ['title', 'id']);
+            }
+
+            return item;
+          });
         });
       }
     },
@@ -231,18 +254,52 @@
       close() {
         this.$store.dispatch('closeAddComponent');
       },
+      removeBookmark(id, title) {
+        this.$store.dispatch('openConfirm', {
+          title: 'Confirm Bookmark Removal',
+          text: `Remove the "${title}" bookmark from this list? This cannot be undone.`,
+          button: 'Yes, Remove Bookmark',
+          onConfirm: this.onDeleteConfirm.bind(this, id)
+        });
+      },
+      onDeleteConfirm(id) {
+        return this.$store.dispatch('updateList', { listName: 'bookmarks', fn: (items) => {
+          let componentIndex, component, bookmarkIndex;
+
+          componentIndex = _.findIndex(items, (item) => _.find(item.children, (child) => child.id === id));
+          component = items[componentIndex];
+          bookmarkIndex = _.findIndex(component.children, (child) => child.id === id);
+
+          // remove bookmark from the component it's inside
+          component.children.splice(bookmarkIndex, 1);
+
+          // if the component doesn't contain any bookmarks anymore, remove it from the list
+          if (_.isEmpty(component.children)) {
+            items.splice(componentIndex, 1);
+          }
+
+          return items;
+        }});
+      },
       itemClick(id) {
         const self = this,
           parentName = getComponentName(self.config.parentURI),
-          path = self.config.path;
+          path = self.config.path,
+          isBookmark = _.includes(id, '/_components/'),
+          componentName = isBookmark ? getComponentName(id) : id;
 
-        return updateArray(`addcomponents:${parentName}.${path}`, { name: id })
+        return updateArray(`addcomponents:${parentName}.${path}`, { name: componentName })
           .then(() => {
+            if (isBookmark) {
+              return getObject(id);
+            }
+          })
+          .then((data) => {
             return self.$store.dispatch('addComponents', {
               currentURI: self.config.currentURI,
               parentURI: self.config.parentURI,
               path,
-              components: [{ name: id }]
+              components: [{ name: componentName, data }]
             })
               .then((newEl) => {
                 if (newEl) {

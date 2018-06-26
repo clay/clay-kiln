@@ -1,5 +1,5 @@
 <template>
-  <filterable-list :content="list" :onSettings="openSettings" :onDelete="removeComponent" :onReorder="reorderComponents" :addTitle="addTitle" :onAdd="openAddComponent" headerTitle="Component"></filterable-list>
+  <filterable-list :content="list" :secondaryActions="secondaryActions" filterLabel="Search Components" header="Component" :addTitle="addTitle" @reorder="reorderComponents" @add="openAddComponent"></filterable-list>
 </template>
 
 <script>
@@ -27,7 +27,18 @@
   export default {
     props: ['args'],
     data() {
-      return {};
+      return {
+        secondaryActions: [{
+          icon: 'settings',
+          tooltip: (id) => `${label(getComponentName(id))} Settings`,
+          action: this.openSettings
+          // note: all invisible components must have settings, because there's no other way to edit them
+        }, {
+          icon: 'delete',
+          tooltip: (id) => `Remove ${label(getComponentName(id))}`,
+          action: this.removeComponent
+        }]
+      };
     },
     computed: {
       uri() {

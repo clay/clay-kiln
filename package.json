@@ -168,5 +168,6 @@
   },
   "peerDependencies": {
     "amphora-search": "^6.2.0"
-  }
+  },
+  "dependencies": {}
 }

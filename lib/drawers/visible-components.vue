@@ -1,5 +1,5 @@
 <template>
-  <filterable-list :content="components" :onClick="itemClick" label="Search visible components" headerTitle="Component" :onSettings="openSettings"></filterable-list>
+  <filterable-list :content="components" :secondaryActions="secondaryActions" filterLabel="Search Visible Components" header="Component" @root-action="itemClick"></filterable-list>
 </template>
 
 <script>
@@ -9,33 +9,34 @@
   import { getVisibleList, isComponentInPage } from '../utils/component-elements';
   import label from '../utils/label';
   import filterableList from '../utils/filterable-list.vue';
+  import { has as hasGroup } from '../core-data/groups';
 
   /**
    * Get the name of the component
    *
-   * @param  {Element} el
-   * @param {Element} selected
+   * @param  {string} uri
+   * @param {object} selected
    * @return {object}
    */
-  function getName(el, selected) {
-    const uri = el.getAttribute(refAttr);
-
-    let obj = {
+  function getName(uri, selected) {
+    return {
       id: uri,
-      title: label(getComponentName(uri))
+      title: label(getComponentName(uri)),
+      selected: selected && uri === selected.uri
     };
-
-    if (el === selected) {
-      obj.selected = true;
-    }
-
-    return obj;
   }
 
   export default {
     props: [],
     data() {
-      return {};
+      return {
+        secondaryActions: [{
+          icon: 'settings',
+          tooltip: (id) => `${label(getComponentName(id))} Settings`,
+          action: this.openSettings,
+          enable: (id) => hasGroup(id, 'settings')
+        }]
+      };
     },
     computed: {
       components() {
@@ -43,13 +44,15 @@
           isPageEditMode = _.get(this.$store, 'state.editMode') === 'page';
 
         return _.map(_.filter(getVisibleList(), (el) => {
+          const uri = el.getAttribute(refAttr);
+
           // only show page / layout components, depending on edit mode
           if (isPageEditMode) {
-            return isComponentInPage(el.getAttribute(refAttr));
+            return isComponentInPage(uri);
           } else {
-            return !isComponentInPage(el.getAttribute(refAttr));
+            return !isComponentInPage(uri);
           }
-        }), (el) => getName(el, selected));
+        }), (el) => getName(el.getAttribute(refAttr), selected));
       }
     },
     methods: {

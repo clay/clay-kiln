@@ -29,6 +29,7 @@ Attached to every component is a component selector, which displays when the com
 
 * **Info** - provides component information taken from the `_description` in the component's schema
 * **Settings** - opens the [component settings form](editing-components.md#settings-group), if it exists
+* **Bookmark** - allows saving a specifically-named instance that can be duplicated on other pages (if `_allowBookmarks: true` is set in the component's schema)
 * **Remove** - removes the component, if it exists in a component list
 * **Add Component** - adds a component, if the current component exists in a component list
 * **Add Another** - adds another instance of the current component

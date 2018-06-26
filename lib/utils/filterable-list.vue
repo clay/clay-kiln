@@ -31,14 +31,6 @@
         &-title {
           flex: 0 1 100%;
         }
-
-        &-actions {
-          flex: 0 0 36px;
-
-          &-2 {
-            flex: 0 0 72px;
-          }
-        }
       }
     }
 
@@ -81,24 +73,24 @@
 </style>
 
 <template>
-  <div class="filterable-list" :class="{ 'has-reorder': onReorder }">
-    <div class="filterable-list-input" v-if="!onReorder">
+  <div class="filterable-list">
+    <div class="filterable-list-input" v-if="hasFilter">
       <ui-textbox
         v-model.trim="query"
-        :label="inputLabel"
+        :label="filterLabel || 'Filter List'"
         :floatingLabel="true"
-        :help="help"
+        :help="filterHelp"
         :autofocus="true"
         @keyup.prevent
         @keydown.up.stop
-        @keydown.down.stop="focusOnIndex(0)"
+        @keydown.down.stop.prevent="focusDown"
         @keydown.enter.stop.prevent="onEnterDown"
         v-conditional-focus="focusIsNull"></ui-textbox>
     </div>
-    <div v-if="headerTitle" class="filterable-list-headers">
-      <span v-if="onReorder" class="filterable-list-header filterable-list-header-drag"><!-- no header --></span>
-      <span class="filterable-list-header filterable-list-header-title">{{ headerTitle }}</span>
-      <span v-if="onSettings || onDelete" class="filterable-list-header filterable-list-header-actions" :class="{ 'filterable-list-header-actions-2': onSettings && onDelete }">Actions</span>
+    <div v-if="hasHeaders" class="filterable-list-headers">
+      <span v-if="hasReorder" class="filterable-list-header filterable-list-header-drag"><!-- no header --></span>
+      <span class="filterable-list-header filterable-list-header-title">{{ header }}</span>
+      <span v-if="hasSecondaryActions" class="filterable-list-header filterable-list-header-actions" :style="{ flex: secondaryActionWidth }">Actions</span>
     </div>
     <div class="filterable-list-readout">
       <ul class="filterable-list-readout-list" ref="list">
@@ -106,20 +98,24 @@
           v-for="(item, index) in matches"
           :item="item"
           :index="index"
-          :focused="focusIndex === index"
-          :active="activeIndex === index"
           :selected="selectedIndex === index"
           :key="item.id"
-          :settingsTitle="settingsTitle"
-          :onClick="onClick"
-          :onSettings="onSettings"
-          :onDelete="onDelete"
-          :onReorder="onReorder"
-          :focusOnIndex="focusOnIndex"
-          :setActive="setActive"></list-item>
+          :hasReorder="hasReorder"
+          :hasRootAction="hasRootAction"
+          :hasChildAction="hasChildAction"
+          :secondaryActions="secondaryActions"
+          :isFiltered="isFiltered"
+          :focusIndex="focusIndex"
+          :activeIndex="activeIndex"
+          @toggle-expand="toggleExpand"
+          @focus-up="focusUp"
+          @focus-down="focusDown"
+          @set-active="setActive"
+          @root-action="onRootAction"
+          @child-action="onChildAction"></list-item>
       </ul>
-      <div v-if="onAdd" class="filterable-list-add">
-        <ui-button class="filterable-list-add-button" type="primary" color="default" @click.stop="onAdd" :icon="addIcon">{{ addTitle || 'Add To List' }}</ui-button>
+      <div v-if="hasAddItem" class="filterable-list-add">
+        <ui-button class="filterable-list-add-button" type="primary" color="default" @click.stop="$emit('add')" :icon="addIcon || 'add'">{{ addTitle || 'Add To List' }}</ui-button>
       </div>
     </div>
   </div>
@@ -175,54 +171,121 @@
   }
 
   /**
+   * determine if a root-level item has children that match the query,
+   * and if so return them
+   * @param  {object}  item
+   * @param  {string}  queryLower
+   * @return {array}
+   */
+  function findChildMatches(item, queryLower) {
+    if (!item.children) {
+      return [];
+    } else {
+      return _.filter(item.children, (child) => {
+        let titleLower = child.title.toLowerCase(),
+          idLower = child.id.toLowerCase();
+
+        return _.includes(titleLower, queryLower) || _.includes(idLower, queryLower);
+      });
+    }
+  }
+
+  /**
    * "Search" the items in the list. Filters by both
-   * `id` value and `title`
+   * `id` value and `title`. if items have children, will filter them too
    *
    * @param  {Array} content
    * @param  {String} query
    * @return {Array}
    */
   function filterContent(content, query) {
-    return _.filter(content, item => {
-      var queryLower = query.toLowerCase(),
+    return _.reduce(content, (items, item) => {
+      let queryLower = query.toLowerCase(),
         titleLower = item.title.toLowerCase(),
-        idLower = item.id.toLowerCase();
+        idLower = item.id.toLowerCase(),
+        isRootMatch = _.includes(titleLower, queryLower) || _.includes(idLower, queryLower),
+        childMatches = findChildMatches(item, queryLower);
 
-      return _.includes(titleLower, queryLower) || _.includes(idLower, queryLower);
-    });
+      if (isRootMatch) {
+        // pass along the item, include all its children (if it has them)
+        items.push(item);
+      } else if (childMatches.length) {
+        // pass along the item, but only pass along children that match
+        items.push(_.assign({}, item, { children: childMatches }));
+      }
+      return items;
+    }, []);
   }
 
   export default {
-    props: ['content', 'onClick', 'onSettings', 'onDelete', 'onReorder', 'onAdd', 'addTitle', 'label', 'help', 'settingsTitle', 'headerTitle'],
+    props: ['content', 'secondaryActions', 'header', 'addTitle', 'addIcon', 'filterLabel', 'filterHelp', 'initialExpanded'],
     data() {
       return {
         query: '',
-        focusIndex: null,
-        activeIndex: null
+        focusIndex: [null, null],
+        activeIndex: [null, null],
+        matches: []
       };
     },
     computed: {
-      matches() {
-        return this.query.length ? filterContent(this.content, this.query) : this.content;
+      fullContent() {
+        return _.map(_.cloneDeep(this.content), (item) => {
+          item.expanded = this.hasChildAction && item.id === this.initialExpanded;
+          return item;
+        });
+      },
+      isFiltered() {
+        // when expandable items are filtered, they should expand automatically
+        return this.query.length > 0;
       },
       focusIsNull() {
-        return _.isNull(this.focusIndex);
-      },
-      inputLabel() {
-        return this.label || 'Filter List';
+        return _.isEqual(this.focusIndex, [null, null]);
       },
       selectedIndex() {
         return _.findIndex(this.matches, (item) => item.selected);
       },
-      addIcon() {
-        return _.get(this.$store, 'state.ui.metaKey') ? 'plus_one' : 'add';
+      hasFilter() {
+        return !_.has(this.$listeners, 'reorder');
+      },
+      hasReorder() {
+        return _.has(this.$listeners, 'reorder');
+      },
+      hasHeaders() {
+        return !!this.header;
+      },
+      hasRootAction() {
+        return _.has(this.$listeners, 'root-action');
+      },
+      hasChildAction() {
+        return _.has(this.$listeners, 'child-action');
+      },
+      hasSecondaryActions() {
+        return this.secondaryActions && !!this.secondaryActions.length;
+      },
+      secondaryActionWidth() {
+        return this.hasSecondaryActions ? `0 0 ${this.secondaryActions.length * 36}px` : '0 0 0px';
+      },
+      hasAddItem() {
+        return _.has(this.$listeners, 'add');
+      }
+    },
+    watch: {
+      query(val) {
+        this.matches = val.length ? filterContent(this.fullContent, this.query) : this.fullContent;
+      },
+      fullContent(val) {
+        // when the full list updates, update the matches
+        this.matches = this.query.length ? filterContent(val, this.query) : val;
       }
     },
     mounted() {
       const self = this;
 
+      // set initial list data
+      this.matches = this.fullContent;
+
       // Add dragula
-      if (this.onReorder) {
+      if (this.hasReorder) {
         addDragula(this.$refs.list, this.onReorder);
       }
 
@@ -240,34 +303,70 @@
       }
     },
     methods: {
-      focusOnIndex(index) {
-        if (index < 0) {
-          this.focusIndex = null;
-        } else if (index !== this.matches.length) {
-          this.focusIndex = index;
+      focusOnIndex(index, childIndex) {
+        this.focusIndex = [index, childIndex];
+      },
+      focusDown() {
+        const parentIndex = !_.isNull(this.focusIndex[0]) ? this.focusIndex[0] : -1, // set to -1 if it's null
+          childIndex = !_.isNull(this.focusIndex[1]) ? this.focusIndex[1] : -1, // set to -1 if it's null
+          parentsLength = _.get(this, 'matches.length', 0),
+          childrenLength = _.get(this, `matches[${parentIndex}].children.length`, 0),
+          expanded = _.get(this, `matches[${parentIndex}].expanded`, false);
+
+        if (expanded && childIndex < childrenLength - 1) {
+          this.focusIndex = [parentIndex, childIndex + 1]; // next child
+        } else if (parentIndex < parentsLength - 1) {
+          this.focusIndex = [parentIndex + 1, null]; // next parent
+        } // otherwise we're at the end of the list
+      },
+      focusUp() {
+        const parentIndex = !_.isNull(this.focusIndex[0]) ? this.focusIndex[0] : -1, // set to -1 if it's null
+          childIndex = !_.isNull(this.focusIndex[1]) ? this.focusIndex[1] : -1, // set to -1 if it's null
+          expanded = _.get(this, `matches[${parentIndex}].expanded`, false),
+          prevExpanded = _.get(this, `matches[${parentIndex - 1}].expanded`, false),
+          prevChildrenLength = _.get(this, `matches[${parentIndex - 1}].children.length`, 0);
+
+        if (expanded && childIndex > 0) {
+          this.focusIndex = [parentIndex, childIndex - 1]; // prev child
+        } else if (expanded && childIndex === 0) {
+          this.focusIndex = [parentIndex, null]; // back to parent
+        } else if (parentIndex > 0 && prevExpanded) {
+          this.focusIndex = [parentIndex - 1, prevChildrenLength - 1]; // last child of prev parent
+        } else if (parentIndex > 0) {
+          this.focusIndex = [parentIndex - 1, null]; // prev parent
+        } else {
+          this.focusIndex = [null, null]; // beginning of list, back to the input we go!
         }
       },
-      setActive(index) {
-        if (index < 0) {
-          this.activeIndex = null;
-        } else if (index !== this.matches.length) {
-          this.activeIndex = index;
-        }
+      setActive(index, childIndex) {
+        this.activeIndex = [index, childIndex];
       },
       onEnterDown() {
-        const input = find(this.$el, '.filterable-list-input-field');
+        const input = find(this.$el, '.filterable-list-input input');
 
         // simulate active states when pressing enter
-        if (this.matches.length === 1) {
-          this.focusIndex = 0;
-          this.activeIndex = 0;
+        if (this.matches.length === 1 && !_.get(this.matches, '[0].children.length')) {
+          this.focusOnIndex(0, null);
+          this.setActive(0, null);
         } else {
-          this.activeIndex = null;
+          this.setActive(null, null);
           if (input) {
             input.classList.add('kiln-shake');
             requestTimeout(() => input.classList.remove('kiln-shake'), 301); // length of the animation + 1
           }
         }
+      },
+      onReorder(id, index, oldIndex, selectedItem) {
+        this.$emit('reorder', id, index, oldIndex, selectedItem);
+      },
+      onRootAction(id, title) {
+        this.$emit('root-action', id, title);
+      },
+      onChildAction(id, title) {
+        this.$emit('child-action', id, title);
+      },
+      toggleExpand(index, shouldExpand) {
+        _.set(this.matches, `[${index}].expanded`, shouldExpand);
       }
     },
     components: {

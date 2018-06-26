@@ -30,6 +30,7 @@
   import addUserModal from './add-user-modal.vue';
   import typeConfirmModal from './type-confirm-modal.vue';
   import typeReasonModal from './type-reason-modal.vue';
+  import addBookmarkModal from './add-bookmark.vue';
 
   const noscrollClass = 'noscroll',
     htmlElement = document.documentElement;
@@ -95,7 +96,8 @@
       'add-page': addPageModal,
       'add-user': addUserModal,
       'type-confirm': typeConfirmModal,
-      'type-reason': typeReasonModal
+      'type-reason': typeReasonModal,
+      'add-bookmark': addBookmarkModal
     })
   };
 </script>

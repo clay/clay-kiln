@@ -142,6 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(() => require('./lib/decorators').decorateAll())
     .then(() => store.dispatch('parseURLHash'))
     .then(() => store.dispatch('getList', 'new-pages'))
+    .then(() => store.dispatch('getList', 'bookmarks'))
     .then(() => {
       const pageTemplates = _.get(store, 'state.lists[new-pages].items'),
         currentPageURI = _.get(store, 'state.page.uri'),

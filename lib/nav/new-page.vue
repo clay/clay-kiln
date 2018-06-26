@@ -5,21 +5,31 @@
 </style>
 
 <template>
-  <filterable-list v-if="isAdmin" class="new-page-nav" :content="pages" :onClick="itemClick" label="Search Page Templates" :onSettings="editTemplate" settingsTitle="Edit Template" :onDelete="removeTemplate" :onAdd="addTemplate" :addTitle="addTitle" headerTitle="Page Template"></filterable-list>
-  <filterable-list v-else  class="new-page-nav":content="pages" :onClick="itemClick" label="Search Page Templates" headerTitle="Page Template"></filterable-list>
+  <filterable-list v-if="isAdmin" class="new-page-nav" :content="pages" :secondaryActions="secondaryActions" :initialExpanded="initialExpanded" filterLabel="Search Page Templates" :addTitle="addTitle" :addIcon="addIcon" header="Page Template" @child-action="itemClick" @add="addTemplate"></filterable-list>
+  <filterable-list v-else  class="new-page-nav":content="pages" :initialExpanded="initialExpanded" filterLabel="Search Page Templates" header="Page Template" @child-action="itemClick"></filterable-list>
 </template>
 
 <script>
   import _ from 'lodash';
-  import { getItem, updateArray } from '../utils/local';
   import { uriToUrl } from '../utils/urls';
   import { pagesRoute, htmlExt, editExt } from '../utils/references';
   import filterableList from '../utils/filterable-list.vue';
+  import { sortPages } from '../lists/helpers';
 
   export default {
     props: ['content'],
     data() {
-      return {};
+      return {
+        secondaryActions: [{
+          icon: 'settings',
+          tooltip: 'Edit Template',
+          action: this.editTemplate
+        }, {
+          icon: 'delete',
+          tooltip: 'Remove Template',
+          action: this.removeTemplate
+        }]
+      };
     },
     computed: {
       isAdmin() {
@@ -27,36 +37,37 @@
       },
       addTitle() {
         return _.get(this.$store, 'state.ui.metaKey') ? 'Duplicate Current Page' : 'Add Current Page To List';
-      }
-    },
-    asyncComputed: {
+      },
+      addIcon() {
+        return _.get(this.$store, 'state.ui.metaKey') ? 'plus_one' : 'add';
+      },
+      initialExpanded() {
+        // the page list will open to the last used category. this is:
+        // 1. the category that the last page was created from
+        // 2. the category that the last page was added to
+        // 3. the category that the last page was removed from
+        // this provides a more seamless edit experience with less clicking around
+        // for common actions, and allows users to immediately view the results
+        // of their (adding / removing) actions
+        return _.get(this.$store, 'state.ui.favoritePageCategory');
+      },
       pages() {
-        const pages = _.get(this.$store, 'state.lists[new-pages].items');
+        let items = _.cloneDeep(_.get(this.$store, 'state.lists[new-pages].items', []));
 
-        return getItem(`newpages:${this.$store.state.site.slug}`).then((sortList) => {
-          sortList = sortList || [];
-          const sorted = _.intersectionBy(sortList, pages, 'id'),
-            unsorted = _.differenceBy(pages, sortList, 'id');
-
-          return sorted.concat(unsorted);
-        });
+        return sortPages(items);
       }
     },
     methods: {
       itemClick(id, title) {
-        return updateArray(`newpages:${this.$store.state.site.slug}`, { id, title }, 'id')
-          .then(() => this.$store.commit('CREATE_PAGE', title))
-          .then(() => this.$store.dispatch('createPage', id))
-          .then((url) => window.location.href = url);
+        this.$store.commit('CREATE_PAGE', title);
+        return this.$store.dispatch('createPage', id).then((url) => window.location.href = url);
       },
       editTemplate(id) {
         const prefix = _.get(this.$store, 'state.site.prefix');
 
         window.location.href = uriToUrl(`${prefix}${pagesRoute}${id}${htmlExt}${editExt}`);
       },
-      removeTemplate(id) {
-        const title = _.find(this.pages, (page) => page.id === id).title;
-
+      removeTemplate(id, title) {
         this.$store.dispatch('openConfirm', {
           title: 'Confirm Template Removal',
           text: `Remove the "${title}" template from this list? This cannot be undone.`,
@@ -65,12 +76,30 @@
         });
       },
       onDeleteConfirm(id) {
-        return this.$store.dispatch('updateList', { listName: 'new-pages', fn: (items) => {
-          const index = _.findIndex(items, (item) => item.id === id);
+        let currentCategoryID;
 
-          items.splice(index, 1);
+        return this.$store.dispatch('updateList', { listName: 'new-pages', fn: (items) => {
+          let currentCategoryIndex, currentCategory, currentIndex;
+
+          items = sortPages(items);
+          currentCategoryIndex = _.findIndex(items, (item) => _.find(item.children, (child) => child.id === id));
+          currentCategory = items[currentCategoryIndex];
+          currentIndex = _.findIndex(currentCategory.children, (child) => child.id === id);
+
+          // remove page from the category it's inside
+          currentCategory.children.splice(currentIndex, 1);
+
+          // set the category that should be expanded after we save this
+          // note: the category may be removed (below) if the last child is removed
+          currentCategoryID = currentCategory.id;
+
+          // if the category doesn't contain any children anymore, remove it
+          if (_.isEmpty(currentCategory.children)) {
+            items.splice(currentCategoryIndex, 1);
+          }
+
           return items;
-        }});
+        }}).then(() => this.$store.commit('CHANGE_FAVORITE_PAGE_CATEGORY', currentCategoryID));
       },
       addTemplate() {
         const isMetaKeyPressed = _.get(this.$store, 'state.ui.metaKey'),

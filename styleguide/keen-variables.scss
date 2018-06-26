@@ -47,6 +47,12 @@ $ui-modal-mask-background: rgba($pure-black, $modal-opacity);
   font-weight: 600;
 }
 
+.ui-button--type-primary.ui-button--color-default .ui-button__icon,
+.ui-button--type-primary.ui-button--color-default .ui-button__dropdown-icon {
+  // icons for default color buttons should be the same color as the text
+  color: $text-color;
+}
+
 // html element in edit mode gets a smaller base font size
 // this sets the base sizing for KeenUI components, as they all use rem
 html.component-selector-wrapper {
