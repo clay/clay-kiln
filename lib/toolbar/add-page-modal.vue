@@ -80,6 +80,7 @@
             this.$store.dispatch('closeModal');
             this.$store.dispatch('showSnackbar', `Added ${title} to Page Templates`);
             this.$store.commit('CHANGE_FAVORITE_PAGE_CATEGORY', categoryID);
+            this.$store.commit('ADD_PAGE_TEMPLATE', `${categoryTitle} - ${title}`);
           }).catch((e) => {
             log.error(`Error adding ${title} to Page Templates: ${e.message}`, { action: 'addPage', uri });
             this.$store.dispatch('closeModal');

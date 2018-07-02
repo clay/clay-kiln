@@ -217,6 +217,23 @@
     }, []);
   }
 
+  /**
+   * when the store is updated (e.g. if you hit the meta key), we don't want to
+   * automatically close any expanded categories. this makes sure that categories
+   * which are currently expanded remain expanded when `this.content` updates
+   * @param  {array} list
+   * @param  {array} matches
+   * @return {array}
+   */
+  function expandCurrentlyExpanded(list, matches) {
+    return _.map(list, (item) => {
+      if (!item.expanded && _.find(matches, (match) => item.id === match.id && match.expanded)) {
+        item.expanded = true;
+      }
+      return item;
+    });
+  }
+
   export default {
     props: ['content', 'secondaryActions', 'header', 'addTitle', 'addIcon', 'filterLabel', 'filterHelp', 'initialExpanded'],
     data() {
@@ -274,6 +291,7 @@
         this.matches = val.length ? filterContent(this.fullContent, this.query) : this.fullContent;
       },
       fullContent(val) {
+        val = expandCurrentlyExpanded(val, this.matches);
         // when the full list updates, update the matches
         this.matches = this.query.length ? filterContent(val, this.query) : val;
       }

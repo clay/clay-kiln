@@ -11,7 +11,7 @@
 
       .filterable-list-item-btn {
         // when expanding items, the item title should be differentiated from its children
-        color: $brand-primary-color;
+        color: $brand-accent-color;
         font-weight: bold;
       }
     }
