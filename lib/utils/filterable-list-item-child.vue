@@ -86,6 +86,7 @@
 </template>
 
 <script>
+  import _ from 'lodash';
   import UiIconButton from 'keen/UiIconButton';
   import UiRippleInk from 'keen/UiRippleInk';
 

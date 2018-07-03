@@ -136,6 +136,7 @@
 </template>
 
 <script>
+  import _ from 'lodash';
   import UiIconButton from 'keen/UiIconButton';
   import UiRippleInk from 'keen/UiRippleInk';
   import listItemChild from './filterable-list-item-child.vue';
