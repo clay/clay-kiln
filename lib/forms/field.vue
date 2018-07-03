@@ -52,7 +52,7 @@
     props: ['name', 'data', 'schema'],
     data() {
       return {
-        minHeight: '0'
+        minHeight: '0px'
       };
     },
     computed: {
@@ -73,8 +73,10 @@
     },
     methods: {
       onResize(additionalPixels) {
-        if (_.isNumber(additionalPixels)) {
+        if (_.isNumber(additionalPixels) && additionalPixels > 0) {
           this.minHeight = `${additionalPixels + 52}px`;
+        } else if (_.isNumber(additionalPixels)) {
+          this.minHeight = '0px';
         }
 
         // note: emit `resize` if you need the field itself to resize (e.g. for select dropdowns, which are absolutely positioned),

@@ -201,7 +201,9 @@
     },
     methods: {
       onDropdown() {
-        this.$emit('resize', this.options.length * 32); // potentially resize the form (if dropdown options overflow)
+        const length = this.options.length < 7 ? this.options.length : 7; // 7 items is the max number that will be displayed at once
+
+        this.$emit('resize', length * 32); // potentially resize the form (if dropdown options overflow)
       },
       onDropdownClose() {
         this.$emit('resize', 0);
