@@ -90,6 +90,8 @@
     :invalid="isInvalid"
     iconPosition="right"
     @input="handleInput"
+    @dropdown-open="onDropdown"
+    @dropdown-close="onDropdownClose"
   >
     <attached-button slot="icon" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
   </ui-select>
@@ -197,6 +199,12 @@
       }
     },
     methods: {
+      onDropdown() {
+        this.$emit('resize', this.options.length * 32); // potentially resize the form (if dropdown options overflow)
+      },
+      onDropdownClose() {
+        this.$emit('resize', 0);
+      },
       handleInput(value) {
         let data;
 
