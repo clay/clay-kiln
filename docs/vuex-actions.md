@@ -40,16 +40,16 @@
         * [.saveComponent(store, uri, data, [eventID], [snapshot], [prevData])](#module_component-data.saveComponent) ⇒ <code>Promise</code>
         * [.removeComponent(store, data)](#module_component-data.removeComponent) ⇒ <code>Promise</code>
         * [.removeHeadComponent(store, startNode)](#module_component-data.removeHeadComponent) ⇒ <code>Promise</code>
-        * [.addComponents(store, [currentURI], parentURI, path, [replace], [clone], components)](#module_component-data.addComponents) ⇒ <code>Promise</code>
+        * [.addComponents(store, [currentURI], parentURI, path, [replace], components)](#module_component-data.addComponents) ⇒ <code>Promise</code>
         * [.openAddComponent(store, [currentURI], parentURI, path)](#module_component-data.openAddComponent) ⇒ <code>Promise</code>
     * _inner_
         * [~logSaveError(uri, e, data, [eventID], [snapshot], store)](#module_component-data..logSaveError)
         * [~revertReject(uri, data, [snapshot], paths, store)](#module_component-data..revertReject) ⇒ <code>Promise</code>
         * [~clientSave(uri, data, oldData, store, [eventID], [snapshot], paths)](#module_component-data..clientSave) ⇒ <code>Promise</code>
         * [~findIndex(data, [uri])](#module_component-data..findIndex) ⇒ <code>number</code>
-        * [~addComponentsToComponentList(store, data, [currentURI], parentURI, path, [replace], [clone], components)](#module_component-data..addComponentsToComponentList) ⇒ <code>Promise</code>
-        * [~addComponentsToComponentProp(store, data, parentURI, path, components, [clone])](#module_component-data..addComponentsToComponentProp) ⇒ <code>Promise</code>
-        * [~addComponentsToPageArea(store, currentURI, path, replace, components, [clone])](#module_component-data..addComponentsToPageArea) ⇒ <code>Promise</code>
+        * [~addComponentsToComponentList(store, data, [currentURI], parentURI, path, [replace], components)](#module_component-data..addComponentsToComponentList) ⇒ <code>Promise</code>
+        * [~addComponentsToComponentProp(store, data, parentURI, path, components)](#module_component-data..addComponentsToComponentProp) ⇒ <code>Promise</code>
+        * [~addComponentsToPageArea(store, currentURI, path, replace, components)](#module_component-data..addComponentsToPageArea) ⇒ <code>Promise</code>
 
 <a name="module_component-data.saveComponent"></a>
 
@@ -94,7 +94,7 @@ remove head components (from page or layout)
 
 <a name="module_component-data.addComponents"></a>
 
-### component-data.addComponents(store, [currentURI], parentURI, path, [replace], [clone], components) ⇒ <code>Promise</code>
+### component-data.addComponents(store, [currentURI], parentURI, path, [replace], components) ⇒ <code>Promise</code>
 add components to a parent component (or page)
 note: allows multiple components to be added at once
 note: always creates new instances of the components you're adding
@@ -111,7 +111,6 @@ note: if no currentURI passed in, it will add new components to the end (and won
 | parentURI | <code>string</code> |  |
 | path | <code>string</code> |  |
 | [replace] | <code>boolean</code> | to replace the current URI |
-| [clone] | <code>boolean</code> | to clone ALL child component references, not just default instances |
 | components | <code>array</code> | to add (object with name and [data]) |
 
 <a name="module_component-data.openAddComponent"></a>
@@ -193,7 +192,7 @@ this is broken out into a separate function so we don't assume an index of 0 is 
 
 <a name="module_component-data..addComponentsToComponentList"></a>
 
-### component-data~addComponentsToComponentList(store, data, [currentURI], parentURI, path, [replace], [clone], components) ⇒ <code>Promise</code>
+### component-data~addComponentsToComponentList(store, data, [currentURI], parentURI, path, [replace], components) ⇒ <code>Promise</code>
 add one or more components to a component list
 
 **Kind**: inner method of [<code>component-data</code>](#module_component-data)  
@@ -206,12 +205,11 @@ add one or more components to a component list
 | parentURI | <code>string</code> |  |
 | path | <code>string</code> | of the list |
 | [replace] | <code>boolean</code> | to replace currentURI |
-| [clone] | <code>boolean</code> | to clone ALL child component references, not just default instances |
 | components | <code>array</code> | with { name, [data] } |
 
 <a name="module_component-data..addComponentsToComponentProp"></a>
 
-### component-data~addComponentsToComponentProp(store, data, parentURI, path, components, [clone]) ⇒ <code>Promise</code>
+### component-data~addComponentsToComponentProp(store, data, parentURI, path, components) ⇒ <code>Promise</code>
 replace a single component in another component's property
 
 **Kind**: inner method of [<code>component-data</code>](#module_component-data)  
@@ -223,23 +221,21 @@ replace a single component in another component's property
 | parentURI | <code>string</code> |  |
 | path | <code>string</code> |  |
 | components | <code>array</code> | note: it'll only replace using the first thing in this array |
-| [clone] | <code>boolean</code> | to clone ALL child component references, not just default instances |
 
 <a name="module_component-data..addComponentsToPageArea"></a>
 
-### component-data~addComponentsToPageArea(store, currentURI, path, replace, components, [clone]) ⇒ <code>Promise</code>
+### component-data~addComponentsToPageArea(store, currentURI, path, replace, components) ⇒ <code>Promise</code>
 add one or more components to a page area
 
 **Kind**: inner method of [<code>component-data</code>](#module_component-data)  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| store | <code>object</code> |  |
-| currentURI | <code>string</code> |  |
-| path | <code>string</code> |  |
-| replace | <code>boolean</code> |  |
-| components | <code>array</code> |  |
-| [clone] | <code>boolean</code> | to clone ALL child component references, not just default instances |
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
+| currentURI | <code>string</code> | 
+| path | <code>string</code> | 
+| replace | <code>boolean</code> | 
+| components | <code>array</code> | 
 
 <a name="module_decorators"></a>
 
