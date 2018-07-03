@@ -35,7 +35,8 @@
 
   > #### info::Usage Notes
   >
-  > * you can have a value for a 'None' option, this is useful for components that have defaults that you want to be able to revert to after selecting an option
+  > * you may have a value for a 'None' option. this is useful for components that have defaults that you want to be able to revert to after selecting an option
+  > * your "default" value may use the label 'None' _or_ 'Default'
   > * if a 'None' option is not specified, it is generated and you don't need to specify an empty option in the schema
   > * you can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components)
   >
@@ -143,7 +144,7 @@
         const propOptions = this.args.options || [],
           currentSlug = _.get(this.$store, 'state.site.slug'),
           noneOption = propOptions.find((val)=>{
-            return val.name === 'None';
+            return val.name === 'None' || val.name === 'Default';
           });
 
         let fullOptions = propOptions.concat(this.listOptions);
