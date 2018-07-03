@@ -266,6 +266,10 @@ Kiln's inputs are highly customized to the type of data they handle, but there a
 * **validate.max** - maximum number (for numerical inputs) or length (for text and array inputs) that the field must not exceed
 * **validate.pattern** - regex pattern, for text inputs
 
+> #### info::Min and Max Validation
+>
+> `min` and `max` validation only runs if the field is filled out. This differentiates it from the `required` validation, which specifies that a field _must_ be filled out to be valid. Thus, it is possible to have an optional field that, _if_ it is filled out, must have more/less than _x items_ or a value greater/less than _y_.
+
 Validation rules may also have custom error messages, that will appear in the same place as the help text. If you do not specify a message, default error messages will appear.
 
 * **validate.requiredMessage** - will appear when required validation fails
