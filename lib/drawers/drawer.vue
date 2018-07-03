@@ -154,6 +154,10 @@
         return this.name === 'publish-page' || 'publish-layout' ? 'icon-and-text' : 'text';
       },
       tabs() {
+        const errors = _.get(this.$store, 'state.validation.errors', []),
+          warnings = _.get(this.$store, 'state.validation.warnings', []),
+          openHealth = errors.length > 0 || warnings.length > 0;
+
         if (this.name === 'contributors') {
           return [{
             title: 'Contributors',
@@ -186,28 +190,24 @@
             selected: true
           }];
         } else if (this.name === 'publish-page') {
-          const errors = _.get(this.$store, 'state.validation.errors');
-
           return [{
             title: 'Health',
             component: 'health',
-            selected: errors.length > 0
+            selected: openHealth
           }, {
             title: 'Publish',
             component: 'publish-page',
-            selected: errors.length === 0
+            selected: !openHealth
           }];
         } else if (this.name === 'publish-layout') {
-          const errors = _.get(this.$store, 'state.validation.errors');
-
           return [{
             title: 'Health',
             component: 'health',
-            selected: errors.length > 0
+            selected: openHealth
           }, {
             title: 'Publish',
             component: 'publish-layout',
-            selected: errors.length === 0
+            selected: !openHealth
           }];
         }
       }

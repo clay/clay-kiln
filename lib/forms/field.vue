@@ -36,7 +36,7 @@
 
 <template>
   <transition name="reveal" mode="out-in" @after-enter="onRevealResize">
-    <fieldset class="kiln-field" v-if="inputName && isShown" :key="name">
+    <fieldset class="kiln-field" :style="{ minHeight: minHeight }" v-if="inputName && isShown" :key="name">
       <component :is="inputName" :name="name" :data="data" :schema="schema" :args="expandedInput" @resize="onResize"></component>
     </fieldset>
   </transition>
@@ -51,7 +51,9 @@
   export default {
     props: ['name', 'data', 'schema'],
     data() {
-      return {};
+      return {
+        minHeight: '0px'
+      };
     },
     computed: {
       expandedInput() {
@@ -71,7 +73,15 @@
     },
     methods: {
       onResize(additionalPixels) {
-        this.$root.$emit('resize-form', additionalPixels); // pass this to the form component
+        if (_.isNumber(additionalPixels) && additionalPixels > 0) {
+          this.minHeight = `${additionalPixels + 52}px`;
+        } else if (_.isNumber(additionalPixels)) {
+          this.minHeight = '0px';
+        }
+
+        // note: emit `resize` if you need the field itself to resize (e.g. for select dropdowns, which are absolutely positioned),
+        // use `resize-form` if you just need to make the form auto-resize
+        this.$root.$emit('resize-form'); // pass this to the form component
       },
       onRevealResize() {
         if (this.hasReveal) {

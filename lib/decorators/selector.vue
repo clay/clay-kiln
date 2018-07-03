@@ -410,8 +410,7 @@
           currentURI: this.uri,
           parentURI: this.parentURI,
           path: this.parentField.path,
-          components: [{ name, data }],
-          clone: true
+          components: [{ name, data }]
         }).then((newEl) => this.$store.dispatch('select', newEl));
       },
       removeComponent() {

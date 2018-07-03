@@ -314,10 +314,18 @@
       query.body.query.bool.must.push({
         term: { published: true }
       });
+      // also sort by last published timestamp
+      query.body.sort = {
+        publishTime: { order: 'desc' }
+      };
     } else if (statusFilter === 'scheduled') {
       query.body.query.bool.must.push({
         term: { scheduled: true }
       });
+      // also sort by last scheduled time
+      query.body.sort = {
+        scheduledTime: { order: 'desc' }
+      };
     } else if (statusFilter === 'archived') {
       query.body.query.bool.must.push({
         term: { archived: true }

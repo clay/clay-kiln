@@ -35,7 +35,8 @@
 
   > #### info::Usage Notes
   >
-  > * you can have a value for a 'None' option, this is useful for components that have defaults that you want to be able to revert to after selecting an option
+  > * you may have a value for a 'None' option. this is useful for components that have defaults that you want to be able to revert to after selecting an option
+  > * your "default" value may use the label 'None' _or_ 'Default'
   > * if a 'None' option is not specified, it is generated and you don't need to specify an empty option in the schema
   > * you can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components)
   >
@@ -90,6 +91,8 @@
     :invalid="isInvalid"
     iconPosition="right"
     @input="handleInput"
+    @dropdown-open="onDropdown"
+    @dropdown-close="onDropdownClose"
   >
     <attached-button slot="icon" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
   </ui-select>
@@ -141,7 +144,7 @@
         const propOptions = this.args.options || [],
           currentSlug = _.get(this.$store, 'state.site.slug'),
           noneOption = propOptions.find((val)=>{
-            return val.name === 'None';
+            return val.name === 'None' || val.name === 'Default';
           });
 
         let fullOptions = propOptions.concat(this.listOptions);
@@ -197,6 +200,14 @@
       }
     },
     methods: {
+      onDropdown() {
+        const length = this.options.length < 7 ? this.options.length : 7; // 7 items is the max number that will be displayed at once
+
+        this.$emit('resize', length * 32); // potentially resize the form (if dropdown options overflow)
+      },
+      onDropdownClose() {
+        this.$emit('resize', 0);
+      },
       handleInput(value) {
         let data;
 

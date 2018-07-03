@@ -423,8 +423,7 @@
           currentURI: uri,
           parentURI: _.get(this.$store, 'state.ui.currentSelection.parentURI'),
           path: _.get(this.$store, 'state.ui.currentSelection.parentField.path'),
-          components: [{ name, data }],
-          clone: true
+          components: [{ name, data }]
         }).then((newEl) => this.$store.dispatch('select', newEl));
       },
       save() {
