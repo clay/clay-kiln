@@ -95,7 +95,7 @@
         return `${label(this.name, this.schema)}${this.isRequired ? '*' : ''}`;
       },
       errorMessage() {
-        const validationData = this.isNumerical ? parseFloat(this.data) : this.data;
+        const validationData = this.isNumerical && _.isNumber(this.data) ? parseFloat(this.data) : this.data;
 
         return getValidationError(validationData, this.args.validate, this.$store, this.name);
       },
