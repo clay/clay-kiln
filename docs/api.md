@@ -45,6 +45,18 @@ Property | Description
 `utils` | various utilities, useful for plugins
 `validators` | object containing all validators. attach custom validators here
 
+### Custom Validators
+
+You may add custom validation to `window.kiln.validators`. A validator should export `label`, `description`, `type` (either `error` or `warning`), and a `validate` method. The `validate` method receives the whole page `state`, so validators can be extremely flexible.
+
+Most validators concern themselves with components and/or fields, and should make use of the helper functions in `kiln.utils.validationHelpers` such as `forEachComponent` and `forEachField`. The built-in validators such as [`required`](https://github.com/clay/clay-kiln/blob/master/lib/validators/built-in/required.js) are good examples to work off of.
+
+Validators must return an array of errors (or warnings), where each issue includes `uri`, and `field` properties. Optionally, an issue may include `location` (which creates a link to the relevant form) and `preview` (which displays context for an issue).
+
+> #### info::Validating The DOM
+>
+> While validators may do DOM lookups to determine validity, remember that DOM lookups are slow compared to reducing on the `state` object directly. Please keep this in mind when writing validators that only concern themselves with page/component/etc data.
+
 ### Utilities
 
 Kiln exports a number of JavaScript utils to the browser in the `window.kiln.utils` object.

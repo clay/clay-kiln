@@ -251,7 +251,7 @@ When comparing against multiple `values`, the comparison will be true if at leas
 
 > #### info::Deep Field Comparisons
 >
-> You can compare against deep fields (like `checkbox-group` or `complex-list`) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story`. Don't worry about the spaces, as Kiln will parse it correctly to pull the relevant data.
+> You can compare against deep fields (like `checkbox-group` or `complex-list`) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story`. Don't worry about the spaces, as Kiln will parse it correctly to pull the relevant data. Note that this only works against proper _fields_, not any arbitrary non-kiln property.
 
 ### Standard Input Arguments
 
