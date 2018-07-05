@@ -99,7 +99,7 @@
           :item="item"
           :index="index"
           :selected="selectedIndex === index"
-          :key="item.id"
+          :key="`${item.id}-${index}`"
           :hasReorder="hasReorder"
           :hasRootAction="hasRootAction"
           :hasChildAction="hasChildAction"

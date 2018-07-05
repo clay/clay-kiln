@@ -120,7 +120,7 @@
       <list-item-child
         v-for="(child, childIndex) in item.children"
         :child="child"
-        :key="child.id"
+        :key="`${child.id}-${childIndex}`"
         :secondaryActions="secondaryActions"
         :hasChildAction="hasChildAction"
         :parentIndex="index"
