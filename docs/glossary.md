@@ -16,6 +16,10 @@ The version of the component's data, [used to upgrade components](http://clay.gi
 
 Set this to `true` to add more friction when removing certain components.
 
+## `_allowBookmerks`
+
+Set this to `true` to allow saving of specific component instances for use (via cloning) later.
+
 ## `_label`
 
 Field label, used when generating component READMEs as well as in forms. Inline WYSIWYG fields won't display the label when editing them.
