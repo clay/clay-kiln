@@ -15,6 +15,7 @@
   import { pagesRoute, htmlExt, editExt } from '../utils/references';
   import filterableList from '../utils/filterable-list.vue';
   import { sortPages } from '../lists/helpers';
+  import { setItem } from '../utils/local';
 
   export default {
     props: ['content'],
@@ -59,8 +60,11 @@
     },
     methods: {
       itemClick(id, title) {
+        const category = _.find(this.pages, (category) => _.find(category.children, (child) => child.id === id));
+
         this.$store.commit('CREATE_PAGE', title);
-        return this.$store.dispatch('createPage', id).then((url) => window.location.href = url);
+        return setItem('kiln-page-category', category.id) // save category so it'll be open next time
+          .then(() => this.$store.dispatch('createPage', id).then((url) => window.location.href = url));
       },
       editTemplate(id) {
         const prefix = _.get(this.$store, 'state.site.prefix');
