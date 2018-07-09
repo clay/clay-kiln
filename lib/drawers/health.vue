@@ -139,7 +139,7 @@
       <span class="validation-info">Go To Components</span>
       <ul class="validation-items">
         <li v-for="item in error.items" class="validation-item">
-          <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click.stop="openLocation(item.uri, item.path, item.location)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
+          <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click.stop="openLocation(item.uri, item.field, item.path, item.location)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
         </li>
       </ul>
     </div>
@@ -150,7 +150,7 @@
       <span class="validation-info">Go To Components</span>
       <ul class="validation-items">
         <li v-for="item in warning.items" class="validation-item">
-          <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click.stop="openLocation(item.uri, item.path, item.location)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
+          <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click.stop="openLocation(item.uri, item.field, item.path, item.location)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
         </li>
       </ul>
     </div>
@@ -181,7 +181,7 @@
       }
     }),
     methods: {
-      openLocation(uri, path, location) {
+      openLocation(uri, field, path, location) {
         const el = getFieldEl(uri, path),
           componentEl = el && getComponentEl(el);
 
@@ -190,7 +190,7 @@
           // component exists and is in the body (not a head component)
           this.$store.dispatch('select', componentEl);
         }
-        this.$store.dispatch('focus', { uri, path, el });
+        this.$store.dispatch('focus', { uri, path, initialFocus: field, el });
       }
     },
     components: {
