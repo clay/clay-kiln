@@ -244,6 +244,7 @@ When comparing against multiple `values`, the comparison will be true if at leas
 * `>=`
 * `typeof`
 * `regex`
+* `size-of`
 * `empty` (only checks field data, no value needed)
 * `not-empty` (only checks field data, no value needed)
 * `truthy` (only checks field data, no value needed)
