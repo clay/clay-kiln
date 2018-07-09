@@ -50,13 +50,13 @@
 <script>
   import _ from 'lodash';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
-  import { setCaret, isFirstField, shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
+  import { setCaret, shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
   import label from '../lib/utils/label';
   import UiTextbox from 'keen/UiTextbox';
   import attachedButton from './attached-button.vue';
 
   export default {
-    props: ['name', 'data', 'schema', 'args'],
+    props: ['name', 'data', 'schema', 'args', 'initialFocus'],
     data() {
       return {
         isDisabled: false
@@ -133,11 +133,11 @@
       }
     },
     mounted() {
-      if (isFirstField(this.$el)) {
+      if (this.initialFocus === this.name) {
         const offset = _.get(this, '$store.state.ui.currentForm.initialOffset');
 
         this.$nextTick(() => {
-          if (_.includes(['text', 'search', 'url', 'tel', 'password', 'multi-line'], this.args.type)) {
+          if (_.includes(['text', 'search', 'url', 'tel', 'password', 'multi-line'], this.type)) {
             // selection range is only permitted on text-like input types
             setCaret(this.$el, offset, this.data);
           }

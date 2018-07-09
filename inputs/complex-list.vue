@@ -93,6 +93,7 @@
           :addItem="addItem"
           :removeItem="removeItem"
           :moveItem="moveItem"
+          :initialFocus="initialFocus"
           @current="onCurrentChange">
         </item>
       </transition-group>
@@ -162,7 +163,7 @@
   }
 
   export default {
-    props: ['name', 'data', 'schema', 'args'],
+    props: ['name', 'data', 'schema', 'args', 'initialFocus'],
     data() {
       return {
         currentItem: _.isArray(this.data) ? this.data.length - 1 : 0,

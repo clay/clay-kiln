@@ -109,6 +109,7 @@
             :autocomplete="args.autocomplete"
             :currentItem="currentItem"
             :disabled="isDisabled"
+            :isInitialFocus="initialFocus === name"
             @add="addItem"
             @select="selectItem"
             @focus="onFocus"
@@ -142,7 +143,7 @@
   const log = logger(__filename);
 
   export default {
-    props: ['name', 'data', 'schema', 'args'],
+    props: ['name', 'data', 'schema', 'args', 'initialFocus'],
     data() {
       return {
         isActive: false,

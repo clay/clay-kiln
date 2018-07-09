@@ -99,7 +99,7 @@
   require('codemirror/addon/selection/active-line.js');
 
   export default {
-    props: ['name', 'data', 'schema', 'args'],
+    props: ['name', 'data', 'schema', 'args', 'initialFocus'],
     data() {
       return {
         isActive: false,
@@ -172,11 +172,17 @@
           }
         }),
         store = this.$store,
-        name = this.name;
+        name = this.name,
+        initialFocus = this.initialFocus;
 
       // refresh the codemirror instance after it instantiates
       // wait until it gets redrawn in the dom first
-      this.$nextTick(() => editor.refresh());
+      this.$nextTick(() => {
+        editor.refresh();
+        if (initialFocus === name) {
+          editor.focus();
+        }
+      });
 
       editor.on('change', (instance) => store.commit(UPDATE_FORMDATA, { path: name, data: instance.getValue() }));
 

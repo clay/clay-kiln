@@ -51,11 +51,10 @@
 
 <script>
   import _ from 'lodash';
-  import { isFirstField } from '../lib/forms/field-helpers';
   import autocomplete from './autocomplete.vue';
 
   export default {
-    props: ['items', 'allowRepeatedItems', 'autocomplete', 'currentItem', 'disabled'],
+    props: ['items', 'allowRepeatedItems', 'autocomplete', 'currentItem', 'disabled', 'isInitialFocus'],
     data() {
       return {
         val: '',
@@ -159,7 +158,7 @@
       }
     },
     mounted() {
-      if (isFirstField(this.$el)) {
+      if (this.isInitialFocus) {
         this.$refs.input.focus();
       }
     },

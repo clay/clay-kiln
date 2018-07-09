@@ -104,7 +104,7 @@
   <div class="complex-list-item" :class="{ 'is-current': isCurrentItem, 'is-expanded': isExpanded }" :ref="name" v-observe-visibility="visibilityChanged" @click.stop="onClick" @focusin.stop="onFocus">
     <transition name="complex-list-item-collapse" appear mode="out-in">
       <div key="expanded-visible" v-if="isVisible && isExpanded" class="complex-list-item-inner">
-        <field v-for="(field, fieldIndex) in fieldNames" :key="fieldIndex" :name="name + '.' + field" :data="fields[field]" :schema="fieldSchemas[field]"></field>
+        <field v-for="(field, fieldIndex) in fieldNames" :key="fieldIndex" :name="name + '.' + field" :data="fields[field]" :schema="fieldSchemas[field]" :initialFocus="initialFocus"></field>
         <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
           <div class="complex-list-item-actions">
             <div class="complex-list-item-actions-inner ui-button-group">
@@ -157,7 +157,8 @@
       'addItem',
       'removeItem',
       'currentItem',
-      'moveItem'
+      'moveItem',
+      'initialFocus'
     ],
     data() {
       return {

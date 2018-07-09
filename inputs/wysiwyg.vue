@@ -196,7 +196,7 @@
   import { getComponentName, refAttr, editAttr } from '../lib/utils/references';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { getPrevComponent, getNextComponent, getParentComponent, getComponentEl, getFieldEl } from '../lib/utils/component-elements';
-  import { isFirstField, shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
+  import { shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
   import label from '../lib/utils/label';
   import { sanitizeInlineHTML, sanitizeMultiComponentHTML, sanitizeBlockHTML } from './wysiwyg-sanitize';
   import { splitParagraphs, matchComponents, generatePasteRules } from './wysiwyg-paste';
@@ -263,7 +263,7 @@
   };
 
   export default {
-    props: ['name', 'data', 'schema', 'args'],
+    props: ['name', 'data', 'schema', 'args', 'initialFocus'],
     data() {
       return {
         editorData: this.data || '',
@@ -738,7 +738,7 @@
 
       this.editor = editor; // save reference to the editor
 
-      if (isFirstField(this.$el)) {
+      if (this.initialFocus === this.name) {
         const offset = _.get(this, '$store.state.ui.currentForm.initialOffset');
 
         this.$nextTick(() => {
