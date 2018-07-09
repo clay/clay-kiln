@@ -159,7 +159,6 @@
         return !this.showError && this.args.help;
       },
       hasReveal() {
-        console.log('has reveal?', _.some(this.args.options, (option) => _.has(option, revealProp)));
         return _.some(this.args.options, (option) => _.has(option, revealProp));
       }
     },
