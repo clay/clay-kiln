@@ -12,6 +12,7 @@ import { PRELOAD_PENDING, LOADING_SUCCESS, PRELOAD_SITE, PRELOAD_ALL_SITES, PREL
 import { UPDATE_PAGE_STATE, UPDATE_PAGEURI } from './lib/page-state/mutationTypes';
 import { META_PRESS, META_UNPRESS } from './lib/preloader/mutationTypes';
 import { props } from './lib/utils/promises';
+import { getItem } from './lib/utils/local';
 import conditionalFocus from './directives/conditional-focus';
 import 'keen-ui/src/bootstrap'; // import this once, for KeenUI components
 
@@ -64,14 +65,20 @@ document.addEventListener('DOMContentLoaded', function () {
   props({
     pageState: store.dispatch('getListData', { uri: pageUri(), prefix: window.kiln.preloadSite.prefix }),
     allSites: getSites(window.kiln.preloadSite),
-    lists: store.dispatch('getList', 'new-pages')
-  }).then(({ pageState, allSites }) => {
+    lists: store.dispatch('getList', 'new-pages'),
+    favoritePageCategory: getItem('kiln-page-category')
+  }).then(({ pageState, allSites, favoritePageCategory }) => {
     store.commit(UPDATE_PAGE_STATE, pageState);
     store.commit(UPDATE_PAGEURI, pageUri());
     store.commit(PRELOAD_ALL_SITES, allSites);
     store.commit(PRELOAD_USER, window.kiln.preloadUser);
     store.commit(PRELOAD_URL, parseUrl());
     store.commit(LOADING_SUCCESS);
+    // if the user has a favorite new page category set,
+    // make sure it'll be in the state when they open that list
+    if (favoritePageCategory) {
+      store.commit('CHANGE_FAVORITE_PAGE_CATEGORY', favoritePageCategory);
+    }
   }).then(() => store.dispatch('parseURLHash')); // check for deep-linked clay menu
 
   // when ESC bubbles up to the document, close the current form or pane / unselect components
