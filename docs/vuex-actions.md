@@ -312,7 +312,7 @@ unfocus currently-focused field/group
 
 * [deep-linking](#module_deep-linking)
     * [.parseURLHash(store)](#module_deep-linking.parseURLHash) ⇒ <code>Promise</code>
-    * [.setHash(commit, [uri], [path], [menu])](#module_deep-linking.setHash)
+    * [.setHash(commit, [uri], [path], [initialFocus], [menu])](#module_deep-linking.setHash)
     * [.clearHash(commit)](#module_deep-linking.clearHash)
 
 <a name="module_deep-linking.parseURLHash"></a>
@@ -328,7 +328,7 @@ parse url hash, opening form or clay menu as necessary
 
 <a name="module_deep-linking.setHash"></a>
 
-### deep-linking.setHash(commit, [uri], [path], [menu])
+### deep-linking.setHash(commit, [uri], [path], [initialFocus], [menu])
 set hash in window and store
 
 **Kind**: static method of [<code>deep-linking</code>](#module_deep-linking)  
@@ -338,6 +338,7 @@ set hash in window and store
 | commit | <code>function</code> | 
 | [uri] | <code>string</code> | 
 | [path] | <code>string</code> | 
+| [initialFocus] | <code>string</code> | 
 | [menu] | <code>object</code> | 
 
 <a name="module_deep-linking.clearHash"></a>
@@ -371,13 +372,13 @@ close drawer without toggling a new drawer
 
 * [forms](#module_forms)
     * _static_
-        * [.openForm(store, uri, path, el, offset, appendText, pos)](#module_forms.openForm)
+        * [.openForm(store, uri, path, [el], [offset], [appendText], [initialFocus], pos)](#module_forms.openForm)
     * _inner_
         * [~hasDataChanged(newData, oldData)](#module_forms..hasDataChanged) ⇒ <code>Boolean</code>
 
 <a name="module_forms.openForm"></a>
 
-### forms.openForm(store, uri, path, el, offset, appendText, pos)
+### forms.openForm(store, uri, path, [el], [offset], [appendText], [initialFocus], pos)
 open form
 
 **Kind**: static method of [<code>forms</code>](#module_forms)  
@@ -387,9 +388,10 @@ open form
 | store | <code>object</code> |  |
 | uri | <code>string</code> | component uri |
 | path | <code>string</code> | field/form path |
-| el | <code>Element</code> | parent element (for inline forms) |
-| offset | <code>number</code> | caret offset (for text inputs) |
-| appendText | <code>string</code> | text to append (for text inputs, used when splitting/merging components with text fields) |
+| [el] | <code>Element</code> | parent element (for inline forms) |
+| [offset] | <code>number</code> | caret offset (for text inputs) |
+| [appendText] | <code>string</code> | text to append (for text inputs, used when splitting/merging components with text fields) |
+| [initialFocus] | <code>string</code> | if focusing on a specific field when opening the form |
 | pos | <code>object</code> | x/y coordinates used to position overlay forms |
 
 <a name="module_forms..hasDataChanged"></a>
