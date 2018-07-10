@@ -52,7 +52,8 @@
       addPage() {
         const title = this.title,
           categoryID = _.kebabCase(this.category),
-          categoryTitle = _.startCase(this.category), // keeping these consistent, no matter what the user enters
+          categoryTitle = this.category.split(' ').map(_.capitalize).join(' '), // keeping these consistent, no matter what the user enters
+          // note: not using _.startCase here, as it removes punctuation
           uri = _.get(this.$store, 'state.page.uri'),
           id = uri.match(/pages\/([A-Za-z0-9\-]+)/)[1];
 
