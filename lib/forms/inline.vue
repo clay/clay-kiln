@@ -25,7 +25,7 @@
   <section class="editor-inline" @click.stop="unsetInvalidDrag">
     <form @submit.prevent="save">
       <div class="input-container">
-        <field class="first-field" :name="path" :data="data" :schema="schema"></field>
+        <field class="first-field" :name="path" :data="data" :schema="schema" :initialFocus="initialFocus"></field>
       </div>
       <button type="submit" class="hidden-submit" @click.stop></button>
     </form>
@@ -45,6 +45,9 @@
     computed: {
       path() {
         return _.get(store, 'state.ui.currentForm.path');
+      },
+      initialFocus() {
+        return this.path; // inline forms always have a single field, and it should be focused
       },
       data() {
         return _.get(store, `state.ui.currentForm.fields['${this.path}']`);

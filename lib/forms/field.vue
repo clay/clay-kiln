@@ -37,7 +37,7 @@
 <template>
   <transition name="reveal" mode="out-in" @after-enter="onRevealResize">
     <fieldset class="kiln-field" :style="{ minHeight: minHeight }" v-if="inputName && isShown" :key="name">
-      <component :is="inputName" :name="name" :data="data" :schema="schema" :args="expandedInput" @resize="onResize"></component>
+      <component :is="inputName" :name="name" :data="data" :schema="schema" :args="expandedInput" :initialFocus="initialFocus" @resize="onResize"></component>
     </fieldset>
   </transition>
 </template>
@@ -49,7 +49,7 @@
   import { expand } from './inputs';
 
   export default {
-    props: ['name', 'data', 'schema'],
+    props: ['name', 'data', 'schema', 'initialFocus'],
     data() {
       return {
         minHeight: '0px'

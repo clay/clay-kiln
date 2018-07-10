@@ -121,10 +121,10 @@
       </div>
       <div class="form-contents">
         <ui-tabs v-if="hasSections" fullwidth ref="tabs" @tab-change="onTabChange">
-          <ui-tab v-for="(section, index) in sections" :key="index" :title="section.title">
+          <ui-tab v-for="(section, index) in sections" :key="index" :title="section.title" :selected="initialSection === index">
             <div class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 104px)`}">
               <div class="input-container">
-                <field v-for="(field, fieldIndex) in section.fields" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]"></field>
+                <field v-for="(field, fieldIndex) in section.fields" :key="fieldIndex" :name="field" :data="fields[field]" :schema="schema[field]" :initialFocus="initialFocus"></field>
                 <div v-if="section.hasRequiredFields" class="required-footer">* Required fields</div>
               </div>
             </div>
@@ -132,7 +132,7 @@
         </ui-tabs>
         <div v-else class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 56px)`}">
           <div class="input-container">
-            <field v-for="(field, fieldIndex) in sections[0].fields" :key="fieldIndex" :class="{ 'first-field': fieldIndex === 0 }" :name="field" :data="fields[field]" :schema="schema[field]"></field>
+            <field v-for="(field, fieldIndex) in sections[0].fields" :key="fieldIndex" :name="field" :data="fields[field]" :schema="schema[field]" :initialFocus="initialFocus"></field>
             <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
           </div>
         </div>
@@ -279,6 +279,32 @@
           return this.parentLength < this.parentMaxlength;
         } else {
           return true; // if there's no max length, or it's not enforced, don't worry about it!
+        }
+      },
+      initialFocus() {
+        const initialFocus = _.get(this.$store, 'state.ui.currentForm.initialFocus');
+
+        if (this.hasCurrentOverlayForm && initialFocus) {
+          // if we're opening the form with a specific initial focus, set it
+          return initialFocus;
+        } else if (this.hasCurrentOverlayForm && _.get(this.schema, `${this.sections[0].fields[0]}._has.input`) === 'complex-list') {
+          // first field is a complex list. focus on its first child field
+          // note: this does not currently support multiply-nested complex-lists
+          let field = _.get(this.schema, `${this.sections[0].fields[0]}._has.props[0].prop`);
+
+          return `${this.sections[0].fields[0]}.0.${field}`;
+        } else if (this.hasCurrentOverlayForm) {
+          // focus the first field
+          return this.sections[0].fields[0];
+        }
+      },
+      initialSection() {
+        if (this.hasCurrentOverlayForm) {
+          const field = _.head(this.initialFocus.split('.'));
+
+          return _.findIndex(this.sections, (section) => _.includes(section.fields, field));
+        } else {
+          return 0;
         }
       }
     }),
