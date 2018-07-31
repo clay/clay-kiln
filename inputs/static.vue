@@ -26,9 +26,11 @@
       help: Non-editable title
   ```
 
-  > #### info::Note
-  >
-  > Static inputs don't have validation.
+  {% hint style="info" %}
+
+  Static inputs don't have validation.
+
+  {% endhint %}
 </docs>
 
   <style lang="sass">

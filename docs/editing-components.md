@@ -35,9 +35,13 @@ The placeholder will display inside of the element with the relevant `data-edita
 
 ![](images/placeholder.png)
 
-> #### info::Placeholder Heights
->
-> The placeholder height specified in the config is the minimum height of the displayed placeholder. The placeholder will be taller if its parent element has an explicitly set height. When deciding what height to set in the config, remember that it should reflect the height of the content that goes in the field.
+{% hint style="info" %}
+
+#### Placeholder Heights
+
+The placeholder height specified in the config is the minimum height of the displayed placeholder. The placeholder will be taller if its parent element has an explicitly set height. When deciding what height to set in the config, remember that it should reflect the height of the content that goes in the field.
+
+{% endhint %}
 
 ### Permanent Placeholders
 
@@ -136,9 +140,13 @@ _groups:
       - url
 ```
 
-> #### info::Using XOR
->
-> Please note that when comparing _more than two fields_, you cannot use `XOR` (as it's logically impossible to XOR more than two boolean values). For `AND`, `OR`, and `XOR` you must also use the same comparator between each field rather than mixing and matching them.
+{% hint style="info" %}
+
+#### Using XOR
+
+Please note that when comparing _more than two fields_, you cannot use `XOR` (as it's logically impossible to XOR more than two boolean values). For `AND`, `OR`, and `XOR` you must also use the same comparator between each field rather than mixing and matching them.
+
+{% endhint %}
 
 Placeholders in groups may use deep field comparison to calculate emptiness of complex-lists. For example, `ifEmpty: 'byline.names'` will look for emptiness in the prop `names` in all items in the `byline` complex-list. Note that deep field comparison is only supported up to two levels deep, so using `isEmpty: byline.names.text` will throw an error.
 
@@ -156,9 +164,13 @@ _groups:
 
 ![](images/settings_form.png)
 
-> #### info::Head and Invisible Component Settings
->
-> Components in `<head>` or invisible lists must have _all_ of their fields available in settings forms, as they don't have any visible elements that can be clicked. The settings forms are accesible from the [Find on Page drawer](manipulating-components.md#head-lists)
+{% hint style="info" %}
+
+#### Head and Invisible Component Settings
+
+Components in `<head>` or invisible lists must have _all_ of their fields available in settings forms, as they don't have any visible elements that can be clicked. The settings forms are accesible from the [Find on Page drawer](manipulating-components.md#head-lists)
+
+{% endhint %}
 
 Settings forms are useful for `<head>` and invisible components, as well as _optional_ fields that aren't frequently accessed. They're also useful to provide manual fallbacks for automatic component logic, such as fields that are generated in `model.js` files.
 
@@ -252,9 +264,13 @@ When comparing against multiple `values`, the comparison will be true if at leas
 * `truthy` (only checks field data, no value needed)
 * `falsy` (only checks field data, no value needed)
 
-> #### info::Deep Field Comparisons
->
-> You can compare against deep fields (like `checkbox-group` or `complex-list`) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story`. Don't worry about the spaces, as Kiln will parse it correctly to pull the relevant data. Note that this only works against proper _fields_, not any arbitrary non-kiln property.
+{% hint style="info" %}
+
+#### Deep Field Comparisons
+
+You can compare against deep fields (like `checkbox-group` or `complex-list`) by using dot-separated paths, e.g. `featureTypes.New York Magazine Story`. Don't worry about the spaces, as Kiln will parse it correctly to pull the relevant data. Note that this only works against proper _fields_, not any arbitrary non-kiln property.
+
+{% endhint %}
 
 ### Standard Input Arguments
 
@@ -269,9 +285,13 @@ Kiln's inputs are highly customized to the type of data they handle, but there a
 * **validate.max** - maximum number (for numerical inputs) or length (for text and array inputs) that the field must not exceed
 * **validate.pattern** - regex pattern, for text inputs
 
-> #### info::Min and Max Validation
->
-> `min` and `max` validation only runs if the field is filled out. This differentiates it from the `required` validation, which specifies that a field _must_ be filled out to be valid. Thus, it is possible to have an optional field that, _if_ it is filled out, must have more/less than _x items_ or a value greater/less than _y_.
+{% hint style="info" %}
+
+#### Min and Max Validation
+
+`min` and `max` validation only runs if the field is filled out. This differentiates it from the `required` validation, which specifies that a field _must_ be filled out to be valid. Thus, it is possible to have an optional field that, _if_ it is filled out, must have more/less than _x items_ or a value greater/less than _y_.
+
+{% endhint %}
 
 Validation rules may also have custom error messages, that will appear in the same place as the help text. If you do not specify a message, default error messages will appear.
 
@@ -338,16 +358,20 @@ caption:
 
 For more information about `magic-button`, [please see its specific documentation](inputs.md#magic-button).
 
-> #### info::Multiple Attached Buttons
->
-> Inputs may include multiple attached buttons, but be warned that this does take up horizontal space from the main input. For this reason, more than two attached buttons on a single input is not recommended.
->
-> ```
-> attachedButton:
->   - lock
->   - name: magic-button
->     field: title
-> ```
+{% hint style="info" %}
+
+#### Multiple Attached Buttons
+
+Inputs may include multiple attached buttons, but be warned that this does take up horizontal space from the main input. For this reason, more than two attached buttons on a single input is not recommended.
+
+```
+attachedButton:
+  - lock
+  - name: magic-button
+    field: title
+```
+
+{% endhint %}
 
 ## Cross Component Communication
 

@@ -53,9 +53,13 @@ Most validators concern themselves with components and/or fields, and should mak
 
 Validators must return an array of errors (or warnings), where each issue includes `uri`, and `field` properties. Optionally, an issue may include `location` (which creates a link to the relevant form) and `preview` (which displays context for an issue).
 
-> #### info::Validating The DOM
->
-> While validators may do DOM lookups to determine validity, remember that DOM lookups are slow compared to reducing on the `state` object directly. Please keep this in mind when writing validators that only concern themselves with page/component/etc data.
+{% hint style="info" %}
+
+#### Validating The DOM
+
+While validators may do DOM lookups to determine validity, remember that DOM lookups are slow compared to reducing on the `state` object directly. Please keep this in mind when writing validators that only concern themselves with page/component/etc data.
+
+{% endhint %}
 
 ### Utilities
 

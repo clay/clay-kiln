@@ -17,9 +17,11 @@
   * `text/x-scss` - sass/scss mode (useful for per-instance styles)
   * `text/x-yaml` - yaml mode (useful for writing elasticsearch queries)
 
-  > #### info::Note
-  >
-  > We will add more supported modes as we find use cases for them. See [the full list of modes supported in codemirror.](http://codemirror.net/mode/)
+  {% hint style="info" %}
+
+  We will add more supported modes as we find use cases for them. See [the full list of modes supported in codemirror.](http://codemirror.net/mode/)
+
+  {% endhint %}
 </docs>
 
 <style lang="sass">

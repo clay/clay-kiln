@@ -51,9 +51,11 @@ field1:
 
 * **help** - description / helper text for the field
 
-> #### info::Note
->
-> Single checkboxes don't have validation.
+{% hint style="info" %}
+
+Single checkboxes don't have validation.
+
+{% endhint %}
 
 # `codemirror`
 
@@ -73,9 +75,11 @@ The mode of the editor sets syntax highlighting, linting, and other functionalit
 * `text/x-scss` - sass/scss mode (useful for per-instance styles)
 * `text/x-yaml` - yaml mode (useful for writing elasticsearch queries)
 
-> #### info::Note
->
-> We will add more supported modes as we find use cases for them. See [the full list of modes supported in codemirror.](http://codemirror.net/mode/)
+{% hint style="info" %}
+
+We will add more supported modes as we find use cases for them. See [the full list of modes supported in codemirror.](http://codemirror.net/mode/)
+
+{% endhint %}
 
 # `complex-list`
 
@@ -116,9 +120,11 @@ links:
         _has: text
 ```
 
-> #### info::Note
->
-> Complex lists don't have any of the common shared arguments, and don't display a field label.
+{% hint style="info" %}
+
+Complex lists don't have any of the common shared arguments, and don't display a field label.
+
+{% endhint %}
 
 # `csv`
 
@@ -138,9 +144,11 @@ _has:
   quote: '"""'
 ```
 
-> #### info::Note
->
-> CSV buttons don't have validation or attached buttons.
+{% hint style="info" %}
+
+CSV buttons don't have validation or attached buttons.
+
+{% endhint %}
 
 # `datepicker`
 
@@ -383,9 +391,13 @@ A group of buttons allowing the user to select one (or more!) of a few related o
 
 Each option should be an object with `icon`, `text`, and `value` properties. Icons will be displayed in the buttons, and text will be used for tooltips.
 
-> #### info::Data Format
->
-> By default, the data for this field will be the selected option's `value`. If multiple selection is turned on, it'll be an object with boolean values keyed to each option's `value`, similar to `checkbox-group`.
+{% hint style="info" %}
+
+#### Data Format
+
+By default, the data for this field will be the selected option's `value`. If multiple selection is turned on, it'll be an object with boolean values keyed to each option's `value`, similar to `checkbox-group`.
+
+{% endhint %}
 
 # `segmented-button-group`
 
@@ -403,9 +415,13 @@ Each option should be an object with `title` and `values` properties. The `value
 
 Options may also contain a `_reveal` property containing rules for when they should display. [The config is the same as the field-level `_reveal` property.](https://claycms.gitbooks.io/kiln/editing-components.html#reveal)
 
-> #### info::Data Format
->
-> By default, the data for this field will be the selected option's `value`. If multiple selection is turned on, it'll be an object with boolean values keyed to each option's `value`, similar to `checkbox-group`.
+{% hint style="info" %}
+
+#### Data Format
+
+By default, the data for this field will be the selected option's `value`. If multiple selection is turned on, it'll be an object with boolean values keyed to each option's `value`, similar to `checkbox-group`.
+
+{% endhint %}
 
 # `select`
 
@@ -441,35 +457,37 @@ field1:
         sites: site1, site2
 ```
 
-> #### info::Usage Notes
->
-> * you may have a value for a 'None' option. this is useful for components that have defaults that you want to be able to revert to after selecting an option
-> * your "default" value may use the label 'None' _or_ 'Default'
-> * if a 'None' option is not specified, it is generated and you don't need to specify an empty option in the schema
-> * you can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components)
->
-> ```yaml
->     fn: select
->     options:
->       - foo (site1)
->       - bar (not: site1)
->       - baz (site1, site2)
->     ...
->
->    specialFeature:
->     fn: select
->     options:
->       -
->          name: None
->          value: General
->        - name: Interview
->          value: interview
->        - name: Slideshow
->          value: slideshow
->        - name: Live Blog
->          value: live-blog
+{% hint style="info" %}
 
-> ```
+#### Usage Notes
+
+* you may have a value for a 'None' option. this is useful for components that have defaults that you want to be able to revert to after selecting an option
+* your "default" value may use the label 'None' _or_ 'Default'
+* if a 'None' option is not specified, it is generated and you don't need to specify an empty option in the schema
+* you can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components)
+
+```yaml
+fn: select
+options:
+  - foo (site1)
+  - bar (not: site1)
+  - baz (site1, site2)
+  # ...
+
+specialFeature:
+  fn: select
+  options:
+    - name: None
+      value: General
+    - name: Interview
+      value: interview
+    - name: Slideshow
+      value: slideshow
+    - name: Live Blog
+      value: live-blog
+```
+
+{% endhint %}
 
 # `simple-list`
 
@@ -542,9 +560,11 @@ title:
     help: Non-editable title
 ```
 
-> #### info::Note
->
-> Static inputs don't have validation.
+{% hint style="info" %}
+
+Static inputs don't have validation.
+
+{% endhint %}
 
 # `text`
 
@@ -578,6 +598,10 @@ A basic time picker. Uses native time inputs when available, but falls back to r
 * **validate.required** - either `true` or an object that described the conditions that should make this field required
 * **validate.requiredMessage** - will appear when required validation fails
 
-> #### info::Natural Language Parsing
->
-> On browsers without native time pickers, users may enter in the time without worrying about the format. The simple NLP engine can handle things like "10am", "4:15 PM", "13:00", and even "midnight".
+{% hint style="info" %}
+
+#### Natural Language Parsing
+
+On browsers without native time pickers, users may enter in the time without worrying about the format. The simple NLP engine can handle things like "10am", "4:15 PM", "13:00", and even "midnight".
+
+{% endhint %}

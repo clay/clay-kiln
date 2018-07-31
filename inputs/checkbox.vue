@@ -15,9 +15,11 @@
 
   * **help** - description / helper text for the field
 
-  > #### info::Note
-  >
-  > Single checkboxes don't have validation.
+  {% hint style="info" %}
+
+  Single checkboxes don't have validation.
+
+  {% endhint %}
 </docs>
 
 <template>

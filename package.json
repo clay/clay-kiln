@@ -11,12 +11,7 @@
     "build": "BABEL_ENV=build webpack",
     "watch": "BABEL_ENV=build webpack -w",
     "prepublishOnly": "BABEL_ENV=build webpack -p && npm run generate-actions",
-    "docs:clean": "rimraf ./_book && rimraf ./docs/vuex-actions.md",
-    "docs:prepare": "gitbook install",
-    "docs:watch": "npm run docs:prepare && gitbook serve",
-    "docs:build": "gitbook build ./",
-    "generate-actions": "jsdoc2md --files lib/**/actions.js > docs/vuex-actions.md",
-    "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'update book' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'update book' && git push git@github.com:clay/clay-kiln gh-pages --force"
+    "generate-actions": "jsdoc2md --files lib/**/actions.js > docs/vuex-actions.md"
   },
   "repository": {
     "type": "git",
@@ -114,10 +109,6 @@
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.5",
     "fuse.js": "^3.2.0",
-    "gitbook-cli": "^2.3.2",
-    "gitbook-plugin-anchorjs": "^1.1.1",
-    "gitbook-plugin-bootstrap-callout": "^0.1.2",
-    "gitbook-plugin-github": "^3.0.0",
     "hash-sum": "^1.0.2",
     "he": "^1.1.1",
     "html-tags": "^2.0.0",

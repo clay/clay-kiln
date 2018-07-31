@@ -14,9 +14,11 @@ Components that contain child component lists need to do two things: Render an _
 <div data-editable="myList">{{> component-list myList }}</div>
 ```
 
-> #### info::Note
->
-> You'll notice that `data-editable` is the same attribute used to specify editable fields. The `component-list` handlebars partial comes from [our included library of helpers and partials](https://github.com/clay/handlebars#partials), and renders a list of components with their data. The element with `data-editable` must be the _immediate parent_ of the components in the list.
+{% hint style="info" %}
+
+You'll notice that `data-editable` is the same attribute used to specify editable fields. The `component-list` handlebars partial comes from [our included library of helpers and partials](https://github.com/clay/handlebars#partials), and renders a list of components with their data. The element with `data-editable` must be the _immediate parent_ of the components in the list.
+
+{% endhint %}
 
 ```yaml
 myList:
@@ -193,6 +195,8 @@ tags:
 
 This allows you to swap out different components in a specific place, for example if you have two different tagging components with different styles and functionality. As with component lists, you may include a `_placeholder`. If your component property is editable, the child component's selector will allow you to remove it (and the placeholder that displays will allow you to add it).
 
-> #### info::Note
->
-> Component properties are not allowed in the layout or page data, only in normal components. Because of this, they are also not allowed in the `<head>` of the page.
+{% hint style="info" %}
+
+Component properties are not allowed in the layout or page data, only in normal components. Because of this, they are also not allowed in the `<head>` of the page.
+
+{% endhint %}

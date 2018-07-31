@@ -59,6 +59,8 @@ When users are logged-in, they will see some Kiln buttons in the top left corner
 
 When users are in Edit Mode, they will see a toolbar across the top of the screen which will enable all Kiln functionality on the current page.
 
-> #### info::Note
->
-> Users may also enter edit mode directly on any page by appending `?edit=true` to the URL.
+{% hint style="info" %}
+
+Users may also enter edit mode directly on any page by appending `?edit=true` to the URL.
+
+{% endhint %}

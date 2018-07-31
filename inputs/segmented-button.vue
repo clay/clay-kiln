@@ -13,9 +13,13 @@
 
   Each option should be an object with `icon`, `text`, and `value` properties. Icons will be displayed in the buttons, and text will be used for tooltips.
 
-  > #### info::Data Format
-  >
-  > By default, the data for this field will be the selected option's `value`. If multiple selection is turned on, it'll be an object with boolean values keyed to each option's `value`, similar to `checkbox-group`.
+  {% hint style="info" %}
+
+  #### Data Format
+
+  By default, the data for this field will be the selected option's `value`. If multiple selection is turned on, it'll be an object with boolean values keyed to each option's `value`, similar to `checkbox-group`.
+
+  {% endhint %}
 </docs>
 
 <style lang="sass">

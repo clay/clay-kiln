@@ -38,9 +38,11 @@
           _has: text
   ```
 
-  > #### info::Note
-  >
-  > Complex lists don't have any of the common shared arguments, and don't display a field label.
+  {% hint style="info" %}
+
+  Complex lists don't have any of the common shared arguments, and don't display a field label.
+
+  {% endhint %}
 </docs>
 
 <style lang="sass">

@@ -33,35 +33,37 @@
           sites: site1, site2
   ```
 
-  > #### info::Usage Notes
-  >
-  > * you may have a value for a 'None' option. this is useful for components that have defaults that you want to be able to revert to after selecting an option
-  > * your "default" value may use the label 'None' _or_ 'Default'
-  > * if a 'None' option is not specified, it is generated and you don't need to specify an empty option in the schema
-  > * you can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components)
-  >
-  > ```yaml
-  >     fn: select
-  >     options:
-  >       - foo (site1)
-  >       - bar (not: site1)
-  >       - baz (site1, site2)
-  >     ...
-  >
-  >    specialFeature:
-  >     fn: select
-  >     options:
-  >       -
-  >          name: None
-  >          value: General
-  >        - name: Interview
-  >          value: interview
-  >        - name: Slideshow
-  >          value: slideshow
-  >        - name: Live Blog
-  >          value: live-blog
+  {% hint style="info" %}
 
-  > ```
+  #### Usage Notes
+
+  * you may have a value for a 'None' option. this is useful for components that have defaults that you want to be able to revert to after selecting an option
+  * your "default" value may use the label 'None' _or_ 'Default'
+  * if a 'None' option is not specified, it is generated and you don't need to specify an empty option in the schema
+  * you can specify site-specific options, [similar to components in a component-list](https://github.com/clay/clay-kiln/wiki/Component-Lists#site-specific-components)
+
+  ```yaml
+  fn: select
+  options:
+    - foo (site1)
+    - bar (not: site1)
+    - baz (site1, site2)
+    # ...
+
+  specialFeature:
+    fn: select
+    options:
+      - name: None
+        value: General
+      - name: Interview
+        value: interview
+      - name: Slideshow
+        value: slideshow
+      - name: Live Blog
+        value: live-blog
+  ```
+
+  {% endhint %}
 </docs>
 
 <style lang="sass">

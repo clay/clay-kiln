@@ -52,8 +52,12 @@ Attached to every component is a component selector, which displays when the com
 
 ![](images/component_selector.png)
 
-> #### info::Confirm Removal
->
-> By default, there is no confirmation when users remove components, since they can press undo to revert their actions. For additional peace-of-mind in large editorial teams, you may also add a root-level `_confirmRemoval` property to your component schema, which will force the user to _type the component's name_ when trying to remove it.
->
-> ![](images/confirm.png)
+{% hint style="info" %}
+
+#### Confirm Removal
+
+By default, there is no confirmation when users remove components, since they can press undo to revert their actions. For additional peace-of-mind in large editorial teams, you may also add a root-level `_confirmRemoval` property to your component schema, which will force the user to _type the component's name_ when trying to remove it.
+
+![](images/confirm.png)
+
+{% endhint %}

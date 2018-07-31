@@ -10,9 +10,13 @@
   * **validate.required** - either `true` or an object that described the conditions that should make this field required
   * **validate.requiredMessage** - will appear when required validation fails
 
-  > #### info::Natural Language Parsing
-  >
-  > On browsers without native time pickers, users may enter in the time without worrying about the format. The simple NLP engine can handle things like "10am", "4:15 PM", "13:00", and even "midnight".
+  {% hint style="info" %}
+
+  #### Natural Language Parsing
+
+  On browsers without native time pickers, users may enter in the time without worrying about the format. The simple NLP engine can handle things like "10am", "4:15 PM", "13:00", and even "midnight".
+
+  {% endhint %}
 </docs>
 
 <template>

@@ -17,9 +17,11 @@
     quote: '"""'
   ```
 
-  > #### info::Note
-  >
-  > CSV buttons don't have validation or attached buttons.
+  {% hint style="info" %}
+
+  CSV buttons don't have validation or attached buttons.
+
+  {% endhint %}
 </docs>
 
 <template>
