@@ -1,11 +1,16 @@
 # Summary
 
+## Kiln Fundamentals
+
 * [Introduction](intro.md)
-* [Components](components.md)
-  * [Manipulating Components](manipulating-components.md)
-  * [Editing Components](editing-components.md)
-  * [Inputs](inputs.md)
 * [The Kiln UI](kiln-ui.md)
-* [API](api.md)
+* [Clay Components](components.md)
+  * [Adding, Removing, and Reordering Components](manipulating-components.md)
+  * [Editing Components](editing-components.md)
+  * [Form Inputs](inputs.md)
+
+## API Documentation
+
+* [Kiln API](api.md)
   * [Vuex Actions](vuex-actions.md)
 * [Glossary](GLOSSARY.md)
