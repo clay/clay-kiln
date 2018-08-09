@@ -87,7 +87,7 @@
     previewSizes = {
       small: { w: 375, h: 660 },
       medium: { w: 768, h: 1024 },
-      large: { w: 1024, h: 768 }
+      large: { w: 1180, h: 768 }
     };
 
   export default {
