@@ -121,7 +121,7 @@
     },
     mounted() {
       if (this.args.list) {
-        this.fetchListItems().then( listItems => {
+        this.fetchListItems().then( (listItems) => {
           this.listOptions = listItems;
         }).catch( () => {
           log.error(`Error getting list for ${this.args.list}`);
