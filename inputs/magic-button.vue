@@ -104,6 +104,9 @@
   tooltip: Fetch First Image
   ```
 
+  Options may also contain a `_reveal` property containing rules for when it should display. 
+  [The config is the same as the field-level `_reveal` property.](https://claycms.gitbooks.io/kiln/editing-components.html#reveal)
+
   ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
 </docs>
 
@@ -138,7 +141,15 @@
 </style>
 
 <template>
-  <ui-icon-button buttonType="button" color="default" type="secondary" ariaLabel="Do Magic" :loading="loading" :tooltip="args.tooltip" @click.stop.prevent="doMagic">
+  <ui-icon-button 
+    buttonType="button" 
+    color="default" 
+    type="secondary" 
+    ariaLabel="Do Magic" 
+    :loading="loading" 
+    :tooltip="args.tooltip"
+    @click.stop.prevent="doMagic" 
+    v-if="isShown">
     <icon name="magic-button" class="magic-button-icon"></icon>
   </ui-icon-button>
 </template>
@@ -146,8 +157,8 @@
 <script>
   import _ from 'lodash';
   import { find } from '@nymag/dom';
-  import { getFieldData } from '../lib/forms/field-helpers';
-  import { refAttr, componentRoute } from '../lib/utils/references';
+  import { getFieldData, shouldBeRevealed } from '../lib/forms/field-helpers';
+  import { refAttr, componentRoute, revealProp } from '../lib/utils/references';
   import { send } from '../lib/utils/rest';
   import { reduce as reducePromise } from '../lib/utils/promises';
   import { uriToUrl } from '../lib/utils/urls';
@@ -176,12 +187,24 @@
    */
   function getDataForFields(field) {
     if (_.isString(field) && field !== '') {
-      return getFieldData(this.$store, field, this.name, _.get(this.$store, 'state.ui.currentForm.uri')) || '';
+      return (
+        getFieldData(
+          this.$store,
+          field,
+          this.name,
+          _.get(this.$store, 'state.ui.currentForm.uri')
+        ) || ''
+      );
     } else if (_.isArray(field) && field.length) {
       let found = null;
 
       _.each(field, (fieldName) => {
-        const data = getFieldData(this.$store, fieldName, this.name, _.get(this.$store, 'state.ui.currentForm.uri'));
+        const data = getFieldData(
+          this.$store,
+          fieldName,
+          this.name,
+          _.get(this.$store, 'state.ui.currentForm.uri')
+        );
 
         if (data) {
           found = data;
@@ -277,7 +300,8 @@
       transformers = _.get(window, 'kiln.transformers', {});
 
     let url = options.url, // may have $SITE_PREFIX
-      transformed, promise;
+      transformed,
+      promise;
 
     // if a transform is specified, transform the data!
     if (!_.isEmpty(transform) && _.isFunction(transformers[transform])) {
@@ -293,7 +317,9 @@
     // if a client-side store path is specified, grab the data from there
     // otherwise, if a url is specified, call the url and grab a property from the returned data
     if (!_.isEmpty(store)) {
-      promise = Promise.resolve(_.get(this, `$store.state.${store}["${transformed}"]`)).then(getProperty(property));
+      promise = Promise.resolve(
+        _.get(this, `$store.state.${store}["${transformed}"]`)
+      ).then(getProperty(property));
     } else if (!_.isEmpty(url)) {
       // we allow a single special token in urls, `$SITE_PREFIX`, which tells us
       // to use the prefix of the current site (with proper port and protocol for api calls)
@@ -323,10 +349,11 @@
   }
 
   export default {
-    props: ['name', 'data', 'schema', 'args'],
+    props: ['name', 'data', 'schema', 'args', revealProp],
     data() {
       return {
-        loading: false
+        loading: false,
+        isShown: shouldBeRevealed(this.$store, this.args[revealProp], this.name)
       };
     },
     methods: {
@@ -351,18 +378,26 @@
         // get the initial data
         let data = getData.call(this, field, component),
           // apply an optional transform, call an optional url
-          promise = doMoreMagic.call(this, data, { transform, transformArg, url, property, store: storePath });
+          promise = doMoreMagic.call(this, data, {
+            transform,
+            transformArg,
+            url,
+            property,
+            store: storePath
+          });
 
         // if there's more magic, iterate through each item transforming the returned value
         // note: each item in moreMagic is only allowed to have transform, url, store, and property
         // (not field, component, or moreMagic)
         if (moreMagic.length) {
-          return promise.then(function (res) {
-            return reducePromise(moreMagic, doMoreMagic.bind(this), res);
-          }).then((finalRes) => {
-            setFieldData(store, name, finalRes);
-            this.loading = false;
-          });
+          return promise
+            .then(function (res) {
+              return reducePromise(moreMagic, doMoreMagic.bind(this), res);
+            })
+            .then((finalRes) => {
+              setFieldData(store, name, finalRes);
+              this.loading = false;
+            });
         } else {
           return promise.then((finalRes) => {
             setFieldData(store, name, finalRes);
