@@ -160,7 +160,7 @@
   import { getFieldData, shouldBeRevealed } from '../lib/forms/field-helpers';
   import { refAttr, componentRoute, revealProp } from '../lib/utils/references';
   import { send } from '../lib/utils/rest';
-  import { reduce as reducePromise } from '../lib/utils/promises';
+  import { reduce as reducePromise, attempt as tryPromise} from '../lib/utils/promises';
   import { uriToUrl } from '../lib/utils/urls';
   import { isEmpty } from '../lib/utils/comparators';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
@@ -286,6 +286,7 @@
       }
     };
   }
+  
 
   /**
    * apply transforms, call urls, and grab properties
@@ -300,38 +301,37 @@
       transformers = _.get(window, 'kiln.transformers', {});
 
     let url = options.url, // may have $SITE_PREFIX
-      transformed,
-      promise;
 
-    // if a transform is specified, transform the data!
-    if (!_.isEmpty(transform) && _.isFunction(transformers[transform])) {
-      transformed = transformers[transform](data, options.transformArg);
-    } else if (_.isEmpty(transform)) {
-      // if a transform isn't specified, just pass through the data
-      transformed = data;
-    } else {
-      // they specified a transform, but it's not a function!
+    // if a transform isn't specified, just return the data
+    if (_.isEmpty(transform)) {
+      return Promise.resolve(data);
+    }
+  
+    // they specified a transform, but it's not a function!
+    if (!_.isFunction(transformers[transform])) {
       throw new Error(`Transform '${transform}' is not a function!`);
     }
+  
+    return tryPromise(transformers[transform](data, options.transformArg))
+      .then((transformed) => {
 
-    // if a client-side store path is specified, grab the data from there
-    // otherwise, if a url is specified, call the url and grab a property from the returned data
-    if (!_.isEmpty(store)) {
-      promise = Promise.resolve(
-        _.get(this, `$store.state.${store}["${transformed}"]`)
-      ).then(getProperty(property));
-    } else if (!_.isEmpty(url)) {
-      // we allow a single special token in urls, `$SITE_PREFIX`, which tells us
-      // to use the prefix of the current site (with proper port and protocol for api calls)
-      url = url.replace('$SITE_PREFIX', uriToUrl(this.$store.state.site.prefix));
-      // do an api call!
-      promise = getAPI(url + transformed).then(getProperty(property));
-    } else {
-      // if there is no url, simply pass through the data
-      promise = Promise.resolve(transformed);
-    }
-
-    return promise;
+        // if a client-side store path is specified, grab the data from there
+        // otherwise, if a url is specified, call the url and grab a property from the returned data
+        if (!_.isEmpty(store)) {
+          promise = Promise.resolve(
+            _.get(this, `$store.state.${store}["${transformed}"]`)
+          ).then(getProperty(property));
+        } else if (!_.isEmpty(url)) {
+          // we allow a single special token in urls, `$SITE_PREFIX`, which tells us
+          // to use the prefix of the current site (with proper port and protocol for api calls)
+          url = url.replace('$SITE_PREFIX', uriToUrl(this.$store.state.site.prefix));
+          // do an api call!
+          promise = getAPI(url + transformed).then(getProperty(property));
+        } else {
+          // if there is no url, simply pass through the data
+          promise = Promise.resolve(transformed);
+        }
+      });
   }
 
   /**
