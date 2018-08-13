@@ -114,6 +114,11 @@ document.addEventListener('DOMContentLoaded', function () {
   // instantiate toolbar on DOMContentLoaded, so custom buttons and modals can be
   // added as child components to the toolbar and simple-modal
 
+  // init custom kiln plugins after utils is set (if they exist)
+  if (_.has(window, 'modules["index.kilnplugin"]')) {
+    window.require('index.kilnplugin');
+  }
+
   Vue.component('edit-toolbar', toolbar);
 
   new Vue({
