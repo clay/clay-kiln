@@ -110,7 +110,16 @@ function isStuffOpen(store) {
 // note: preloaded data, external inputs, decorators, and validation rules should already be added
 // when this event fires
 document.addEventListener('DOMContentLoaded', function () {
-  const toolbar = require('./lib/toolbar/edit-toolbar.vue');
+  let toolbar;
+
+  // init custom kiln plugins after utils is set (if they exist)
+  if (_.has(window, 'modules["kiln_index.kilnplugin"]')) {
+    const pluginInitializer = window.require('kiln_index.kilnplugin');
+
+    pluginInitializer();
+  }
+
+  toolbar = require('./lib/toolbar/edit-toolbar.vue');
   // instantiate toolbar on DOMContentLoaded, so custom buttons and modals can be
   // added as child components to the toolbar and simple-modal
 
@@ -129,13 +138,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // page load indicator. will be finished by the preloader
   store.dispatch('startProgress', 'offline');
-
-  // init custom kiln plugins after utils is set (if they exist)
-  console.log('attempt to load plugins 2');
-  if (_.has(window, 'modules["index.kilnplugin"]')) {
-    console.log('init kiln plugins');
-    // window.require('index.kilnplugin');
-  }
 
   // add external plugins
   _.forOwn(window.kiln.plugins || {}, (plugin) => plugin(store));
