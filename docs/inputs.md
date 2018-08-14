@@ -339,6 +339,9 @@ property:
 tooltip: Fetch First Image
 ```
 
+Options may also contain a `_reveal` property containing rules for when it should display.
+[The config is the same as the field-level `_reveal` property.](https://claycms.gitbooks.io/kiln/editing-components.html#reveal)
+
 ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
 
 # `radio`
