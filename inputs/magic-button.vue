@@ -160,7 +160,7 @@
   import { getFieldData, shouldBeRevealed } from '../lib/forms/field-helpers';
   import { refAttr, componentRoute, revealProp } from '../lib/utils/references';
   import { send } from '../lib/utils/rest';
-  import { reduce as reducePromise, attempt as tryPromise} from '../lib/utils/promises';
+  import { reduce as reducePromise } from '../lib/utils/promises';
   import { uriToUrl } from '../lib/utils/urls';
   import { isEmpty } from '../lib/utils/comparators';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
