@@ -1,6 +1,6 @@
 {
   "name": "clay-kiln",
-  "version": "7.2.1",
+  "version": "7.3.0",
   "description": "Editor tools for Clay",
   "template": "template.handlebars",
   "scripts": {
