@@ -110,7 +110,7 @@
       // every time the value of the input changes, update the store
       update(val) {
         if (this.isNumerical) {
-          val = parseFloat(val, 10);
+          val = parseFloat(val === '' ? 0 : val);
         } else if (_.isString(val)) {
           // remove 'line separator' and 'paragraph separator' characters from text inputs
           // (not visible in text editors, but get added when pasting from pdfs and old systems)
