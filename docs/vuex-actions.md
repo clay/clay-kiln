@@ -707,12 +707,20 @@ run page list updates sequentially, grabbing from the store after each to preven
 ## preloader
 
 * [preloader](#module_preloader)
+    * [~getComponentModels()](#module_preloader..getComponentModels) ⇒ <code>object</code>
     * [~getLayoutSchema(schemas, layoutRef)](#module_preloader..getLayoutSchema) ⇒ <code>object</code>
     * [~reduceComponents(result, val)](#module_preloader..reduceComponents) ⇒ <code>obj</code>
     * [~composeLayoutData(layoutSchema, components, original)](#module_preloader..composeLayoutData) ⇒ <code>object</code>
     * [~reduceTemplates(result, val, key)](#module_preloader..reduceTemplates) ⇒ <code>obj</code>
     * [~getPageStatus(state)](#module_preloader..getPageStatus) ⇒ <code>string</code>
 
+<a name="module_preloader..getComponentModels"></a>
+
+### preloader~getComponentModels() ⇒ <code>object</code>
+get component models so we can mount them on window.kiln.componentModels
+if they aren't already mounted (backwards-compatability)
+
+**Kind**: inner method of [<code>preloader</code>](#module_preloader)  
 <a name="module_preloader..getLayoutSchema"></a>
 
 ### preloader~getLayoutSchema(schemas, layoutRef) ⇒ <code>object</code>
