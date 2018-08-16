@@ -306,7 +306,7 @@
       return Promise.reject(new Error(`Transform '${transform}' is not a function!`));
     } else {
       // transformers may return a value or a promise
-      return promise.resolve(transformers[transform](data, transformArg));
+      return Promise.resolve(transformers[transform](data, transformArg));
     }
   }
 
