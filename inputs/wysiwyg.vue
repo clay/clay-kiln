@@ -208,7 +208,8 @@
   const Delta = Quill.import('delta'),
     Clipboard = Quill.import('modules/clipboard'),
     Link = Quill.import('formats/link'),
-    originalLinkSanitize = Link.sanitize;
+    originalLinkSanitize = Link.sanitize,
+    errorColor = '#B00020',
 
   // store references for multi-paragraph paste here.
   // this way, the paste function can set these, and they can be checked
@@ -778,7 +779,7 @@
       });
 
       // add hints
-      tooLong = hint(editor, {color: 'red'});
+      tooLong = hint(editor, {color: errorColor});
 
       this.editor = editor; // save reference to the editor
 
