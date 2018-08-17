@@ -164,6 +164,21 @@
     height: auto;
     min-height: 32px;
   }
+  .ui-textbox__counter--wysiwyg {
+    font-size: 16px;
+    background-color: rgba($placeholder-bg-color, 0.75);
+    color: $placeholder-color;
+    line-height: 1em;
+    padding: .5em 1em;
+    top: auto;
+    mix-blend-mode: multiply;
+    font-family: $font-stack;
+  }
+
+  .ui-textbox__counter--wysiwyg-error {
+    background-color: rgba($placeholder-error-bg-color, 0.75);
+    color: $placeholder-error-color;
+  }
 </style>
 
 <template>
@@ -184,7 +199,15 @@
         </div>
       </div>
     </div>
-    <div v-else class="wysiwyg-content"></div>
+    <div v-else>
+      <div class="wysiwyg-content"></div>
+      <div v-if="isTooLong" :class="[
+        'ui-textbox__counter', 
+        'ui-textbox__counter--wysiwyg',
+        {'ui-textbox__counter--wysiwyg-error': isTooLong} ]">
+        {{ valueLength + '/' + maxLength }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -202,14 +225,14 @@
   import { splitParagraphs, matchComponents, generatePasteRules } from './wysiwyg-paste';
   import { renderDeltas, generateDeltas, deltaEndsWith, matchLineBreak, matchParagraphs } from './wysiwyg-deltas';
   import { getNewlinesBeforeCaret, getLastOffsetWithNewlines } from './wysiwyg-caret';
-  import { parsePhraseButton, parseFormats, createPhraseBlots, HintBlot } from './wysiwyg-phrase';
+  import { parsePhraseButton, parseFormats, createPhraseBlots } from './wysiwyg-phrase';
   import attachedButton from './attached-button.vue';
 
   const Delta = Quill.import('delta'),
     Clipboard = Quill.import('modules/clipboard'),
     Link = Quill.import('formats/link'),
     originalLinkSanitize = Link.sanitize,
-    errorColor = '#B00020',
+    errorColor = '#f44336';
 
   // store references for multi-paragraph paste here.
   // this way, the paste function can set these, and they can be checked
@@ -293,7 +316,7 @@
         return `${label(this.name, this.schema)}${this.isRequired ? '*' : ''}`;
       },
       maxLength() {
-        return _.get(this.args, 'validate.max') || 0;
+        return parseInt(_.get(this.args, 'validate.max', 0), 10);
       },
       error() {
         return getValidationError(this.data || '', this.args.validate, this.$store, this.name);
@@ -335,6 +358,9 @@
       },
       showHelp() {
         return !this.showError && this.args.help;
+      },
+      isTooLong() {
+        return this.maxLength && this.valueLength > this.maxLength;
       }
     },
     watch: {
@@ -488,7 +514,7 @@
           end;
 
         if (!editor.formatText || !editor.removeFormat) {
-          throw new Error('not a Quill instance');
+          console.error('not a Quill instance');
         }
 
         /**
@@ -496,20 +522,20 @@
          * @param {number} s start of int area
          * @param {object} e end
          */
-        function on(s, e) {
+        function add(s, e) {
           editor.formatText(s, e, fmt);
           start = s;
           end = e;
         }
   
         // remove the hint
-        function off() {
+        function remove() {
           editor.removeFormat(start, end);
         }
 
         return {
-          on,
-          off,
+          add,
+          remove,
         };
       }
 
@@ -779,7 +805,7 @@
       });
 
       // add hints
-      tooLong = hint(editor, {color: errorColor});
+      if (maxLength) tooLong = hint(editor, {color: errorColor});
 
       this.editor = editor; // save reference to the editor
 
@@ -804,18 +830,17 @@
 
       editor.on('selection-change', (range) => {
         if (range) {
-          tooLong.on(maxLength, editor.getLength());
+          tooLong && tooLong.add(maxLength, editor.getLength());
           this.onFocus();
         } else {
-          tooLong.off();
+          tooLong && tooLong.remove();
           this.onBlur();
         }
       });
 
       editor.on('text-change', function onTextChange({}, {}, source) {
-        const length = editor.getLength();
         let html;
-  
+
         // convert / sanitize output to save
         if (isSingleLine || isMultiComponent) {
           html = sanitizeInlineHTML(editor.root.innerHTML);
@@ -832,7 +857,7 @@
 
         // check that source is user to prevent infinite loop!
         if (source === 'user') {
-          tooLong.on(maxLength, editor.getLength());
+          tooLong && tooLong.add(maxLength, editor.getLength());
         }
 
         // AFTER updating the data, check to see if there are components to paste
