@@ -146,7 +146,7 @@
   }
 
   // all phrases should have some sort of highlight, so users can
-  // reason about them in edit mode. for now, we're doing different colors
+  // reason about them in edit mode. for now, we are doing different colors
   // for different kiln phrase classes
   .ql-editor .kiln-phrase {
     background-color: #fff2a8;
@@ -202,7 +202,7 @@
   import { splitParagraphs, matchComponents, generatePasteRules } from './wysiwyg-paste';
   import { renderDeltas, generateDeltas, deltaEndsWith, matchLineBreak, matchParagraphs } from './wysiwyg-deltas';
   import { getNewlinesBeforeCaret, getLastOffsetWithNewlines } from './wysiwyg-caret';
-  import { parsePhraseButton, parseFormats, createPhraseBlots } from './wysiwyg-phrase';
+  import { parsePhraseButton, parseFormats, createPhraseBlots, HintBlot } from './wysiwyg-phrase';
   import attachedButton from './attached-button.vue';
 
   const Delta = Quill.import('delta'),
@@ -362,6 +362,7 @@
         isMultiLine = this.isMultiLine,
         isMultiComponent = this.isMultiComponent,
         pseudoBullet = this.args.pseudoBullet,
+        maxLength = this.maxLength,
         currentURI = _.get(this.$store, 'state.ui.currentForm.uri'),
         currentPath = _.get(this.$store, 'state.ui.currentForm.path'),
         currentFieldEl = getFieldEl(currentURI, currentPath),
@@ -380,10 +381,13 @@
           parentURI: parent && parent.getAttribute(refAttr),
           parentPath:  currentFieldEl && getComponentEl(currentFieldEl).parentNode.getAttribute(editAttr)
         },
-        phrases = createPhraseBlots(this.args.buttons);
+        hintFormats = ['color'],
+        phrases = createPhraseBlots(this.args.buttons),
+        formats = parseFormats(this.args.buttons)
+          .concat(phrases);
 
-      let formats = parseFormats(this.args.buttons).concat(phrases),
-        editor;
+      let editor,
+        tooLong;
 
       class ClayClipboard extends Clipboard {
         convert(html) {
@@ -473,6 +477,42 @@
       }
 
       /**
+       * Add hints via formatting to a length of text and more later
+       * @param {object} editor a Quill object
+       * @param {object} fmt a Quill format object
+       * @return {object}
+       */
+      function hint(editor, fmt = {}) {
+        let start,
+          end;
+
+        if (!editor.formatText || !editor.removeFormat) {
+          throw new Error('not a Quill instance');
+        }
+
+        /**
+         * Add hint at range. memoizes for easy removal
+         * @param {number} s start of int area
+         * @param {object} e end
+         */
+        function on(s, e) {
+          editor.formatText(s, e, fmt);
+          start = s;
+          end = e;
+        }
+  
+        // remove the hint
+        function off() {
+          editor.removeFormat(start, end);
+        }
+
+        return {
+          on,
+          off,
+        };
+      }
+
+      /**
        * navigate to the previous component on ↑ or ←
        * @param  {object} range
        * @param {object} context
@@ -554,7 +594,7 @@
         strict: false,
         theme: 'bubble',
         bounds: closest(el, '.input-container'),
-        formats,
+        formats: formats.concat(hintFormats),
         modules: {
           toolbar: buttons,
           clipboard: {
@@ -727,6 +767,7 @@
         }
       });
 
+
       // add handlers for phrase buttons
       _.each(phrases, (phrase) => {
         const toolbar = editor.getModule('toolbar');
@@ -735,6 +776,9 @@
           return this.quill.format(phrase, value); // true or false
         });
       });
+
+      // add hints
+      tooLong = hint(editor, {color: 'red'});
 
       this.editor = editor; // save reference to the editor
 
@@ -759,15 +803,18 @@
 
       editor.on('selection-change', (range) => {
         if (range) {
+          tooLong.on(maxLength, editor.getLength());
           this.onFocus();
         } else {
+          tooLong.off();
           this.onBlur();
         }
       });
 
-      editor.on('text-change', function onTextChange() {
+      editor.on('text-change', function onTextChange({}, {}, source) {
+        const length = editor.getLength();
         let html;
-
+  
         // convert / sanitize output to save
         if (isSingleLine || isMultiComponent) {
           html = sanitizeInlineHTML(editor.root.innerHTML);
@@ -780,6 +827,11 @@
           store.commit(UPDATE_FORMDATA, { path: name, data: '' });
         } else {
           store.commit(UPDATE_FORMDATA, { path: name, data: html });
+        }
+
+        // check that source is user to prevent infinite loop!
+        if (source === 'user') {
+          tooLong.on(maxLength, editor.getLength());
         }
 
         // AFTER updating the data, check to see if there are components to paste
