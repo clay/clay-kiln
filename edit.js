@@ -153,10 +153,15 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(() => store.dispatch('getList', 'new-pages'))
     .then(() => store.dispatch('getList', 'bookmarks'))
     .then(() => {
-      const pageTemplates = _.get(store, 'state.lists[new-pages].items'),
+      // collect new-pages IDs as a flattened array.
+      const pageTemplateIds = _.get(store, 'state.lists[new-pages].items', [])
+          .reduce((acc, { id, children }) => {
+            acc.concat(id);
+            return acc.concat(...children.map(({ id }) => id));
+          }, []),
         currentPageURI = _.get(store, 'state.page.uri'),
         currentPageID = currentPageURI.match(/pages\/([A-Za-z0-9\-]+)/)[1],
-        currentPageTemplate = _.find(pageTemplates, (template) => template.id === currentPageID);
+        currentPageTemplate = pageTemplateIds.find((id) => id === currentPageID);
 
       if (!navigator.onLine) {
         // test connection loss on page load
