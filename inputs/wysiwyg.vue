@@ -146,7 +146,7 @@
   }
 
   // all phrases should have some sort of highlight, so users can
-  // reason about them in edit mode. for now, we're doing different colors
+  // reason about them in edit mode. for now, we are doing different colors
   // for different kiln phrase classes
   .ql-editor .kiln-phrase {
     background-color: #fff2a8;
@@ -163,6 +163,21 @@
   .ui-textbox__input.wysiwyg-content {
     height: auto;
     min-height: 32px;
+  }
+  .ui-textbox__counter--wysiwyg {
+    font-size: 16px;
+    background-color: rgba($placeholder-bg-color, 0.75);
+    color: $placeholder-color;
+    line-height: 1em;
+    padding: .5em 1em;
+    top: auto;
+    mix-blend-mode: multiply;
+    font-family: $font-stack;
+  }
+
+  .ui-textbox__counter--wysiwyg-error {
+    background-color: rgba($placeholder-error-bg-color, 0.75);
+    color: $placeholder-error-color;
   }
 </style>
 
@@ -184,7 +199,15 @@
         </div>
       </div>
     </div>
-    <div v-else class="wysiwyg-content"></div>
+    <div v-else>
+      <div class="wysiwyg-content"></div>
+      <div v-if="isTooLong" :class="[
+        'ui-textbox__counter', 
+        'ui-textbox__counter--wysiwyg',
+        {'ui-textbox__counter--wysiwyg-error': isTooLong} ]">
+        {{ valueLength + '/' + maxLength }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -208,7 +231,8 @@
   const Delta = Quill.import('delta'),
     Clipboard = Quill.import('modules/clipboard'),
     Link = Quill.import('formats/link'),
-    originalLinkSanitize = Link.sanitize;
+    originalLinkSanitize = Link.sanitize,
+    errorColor = '#f44336';
 
   // store references for multi-paragraph paste here.
   // this way, the paste function can set these, and they can be checked
@@ -292,7 +316,7 @@
         return `${label(this.name, this.schema)}${this.isRequired ? '*' : ''}`;
       },
       maxLength() {
-        return _.get(this.args, 'validate.max') || 0;
+        return parseInt(_.get(this.args, 'validate.max', 0), 10);
       },
       error() {
         return getValidationError(this.data || '', this.args.validate, this.$store, this.name);
@@ -334,6 +358,9 @@
       },
       showHelp() {
         return !this.showError && this.args.help;
+      },
+      isTooLong() {
+        return this.maxLength && this.valueLength > this.maxLength;
       }
     },
     watch: {
@@ -362,6 +389,7 @@
         isMultiLine = this.isMultiLine,
         isMultiComponent = this.isMultiComponent,
         pseudoBullet = this.args.pseudoBullet,
+        maxLength = this.maxLength,
         currentURI = _.get(this.$store, 'state.ui.currentForm.uri'),
         currentPath = _.get(this.$store, 'state.ui.currentForm.path'),
         currentFieldEl = getFieldEl(currentURI, currentPath),
@@ -380,10 +408,13 @@
           parentURI: parent && parent.getAttribute(refAttr),
           parentPath:  currentFieldEl && getComponentEl(currentFieldEl).parentNode.getAttribute(editAttr)
         },
-        phrases = createPhraseBlots(this.args.buttons);
+        hintFormats = ['color'],
+        phrases = createPhraseBlots(this.args.buttons),
+        formats = parseFormats(this.args.buttons)
+          .concat(phrases);
 
-      let formats = parseFormats(this.args.buttons).concat(phrases),
-        editor;
+      let editor,
+        tooLong;
 
       class ClayClipboard extends Clipboard {
         convert(html) {
@@ -473,6 +504,42 @@
       }
 
       /**
+       * Add hints via formatting to a length of text and more later
+       * @param {object} editor a Quill object
+       * @param {object} fmt a Quill format object
+       * @return {object}
+       */
+      function hint(editor, fmt = {}) {
+        let start,
+          end;
+
+        if (!editor.formatText || !editor.removeFormat) {
+          console.error('not a Quill instance');
+        }
+
+        /**
+         * Add hint at range. memoizes for easy removal
+         * @param {number} s start of int area
+         * @param {object} e end
+         */
+        function add(s, e) {
+          editor.formatText(s, e, fmt);
+          start = s;
+          end = e;
+        }
+  
+        // remove the hint
+        function remove() {
+          editor.removeFormat(start, end);
+        }
+
+        return {
+          add,
+          remove,
+        };
+      }
+
+      /**
        * navigate to the previous component on ↑ or ←
        * @param  {object} range
        * @param {object} context
@@ -554,7 +621,7 @@
         strict: false,
         theme: 'bubble',
         bounds: closest(el, '.input-container'),
-        formats,
+        formats: formats.concat(hintFormats),
         modules: {
           toolbar: buttons,
           clipboard: {
@@ -727,6 +794,7 @@
         }
       });
 
+
       // add handlers for phrase buttons
       _.each(phrases, (phrase) => {
         const toolbar = editor.getModule('toolbar');
@@ -735,6 +803,9 @@
           return this.quill.format(phrase, value); // true or false
         });
       });
+
+      // add hints
+      if (maxLength) tooLong = hint(editor, {color: errorColor});
 
       this.editor = editor; // save reference to the editor
 
@@ -759,13 +830,15 @@
 
       editor.on('selection-change', (range) => {
         if (range) {
+          tooLong && tooLong.add(maxLength, editor.getLength());
           this.onFocus();
         } else {
+          tooLong && tooLong.remove();
           this.onBlur();
         }
       });
 
-      editor.on('text-change', function onTextChange() {
+      editor.on('text-change', function onTextChange({}, {}, source) {
         let html;
 
         // convert / sanitize output to save
@@ -780,6 +853,11 @@
           store.commit(UPDATE_FORMDATA, { path: name, data: '' });
         } else {
           store.commit(UPDATE_FORMDATA, { path: name, data: html });
+        }
+
+        // check that source is user to prevent infinite loop!
+        if (source === 'user') {
+          tooLong && tooLong.add(maxLength, editor.getLength());
         }
 
         // AFTER updating the data, check to see if there are components to paste
