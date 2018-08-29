@@ -24,7 +24,7 @@
 <template>
   <ui-textbox
     :autosize="false"
-    :value="data"
+    :value="String(data)"
     :type="type"
     :multiLine="isMultiline"
     :rows="numOfRows"
@@ -64,11 +64,8 @@
     },
     computed: {
       type() {
-        if (this.args.type === 'multi-line' || !this.args.type) {
-          return 'text';
-        } else {
-          return this.args.type;
-        }
+        return  this.args.type === 'multi-line' || !this.args.type ?
+          'text' : this.args.type;
       },
       isMultiline() {
         return this.args.type === 'multi-line';
@@ -95,7 +92,8 @@
         return `${label(this.name, this.schema)}${this.isRequired ? '*' : ''}`;
       },
       errorMessage() {
-        const validationData = this.isNumerical && _.isNumber(this.data) ? parseFloat(this.data) : this.data;
+        const validationData = this.isNumerical && _.isNumber(this.data) ?
+          parseFloat(this.data) : this.data;
 
         return getValidationError(validationData, this.args.validate, this.$store, this.name);
       },
@@ -109,8 +107,11 @@
     methods: {
       // every time the value of the input changes, update the store
       update(val) {
+  
         if (this.isNumerical) {
-          val = parseFloat(val === '' ? 0 : val);
+          const n = parseFloat(val);
+
+          val = Number.isNaN(n) ? '' : n;
         } else if (_.isString(val)) {
           // remove 'line separator' and 'paragraph separator' characters from text inputs
           // (not visible in text editors, but get added when pasting from pdfs and old systems)
@@ -130,6 +131,10 @@
       },
       enableInput() {
         this.isDisabled = false;
+      },
+      validateType(t = '') {
+        const valid = ['text', 'search', 'url', 'tel', 'password', 'multi-line'];
+
       }
     },
     mounted() {
