@@ -132,7 +132,7 @@
         </ui-tabs>
         <div v-else class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 56px)`}">
           <div class="input-container">
-            <field v-for="(field, fieldIndex) in sections[0].fields" :key="fieldIndex" :name="field" :data="fields[field]" :schema="schema[field]" :initialFocus="initialFocus"></field>
+            <field v-for="(field, fieldIndex) in sections[0].fields" :key="fieldIndex" :name="field" :data="fields[field]" :schema="schema[field] || getFieldSchema(field)" :initialFocus="initialFocus"></field>
             <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
           </div>
         </div>
@@ -168,6 +168,7 @@
     },
     computed: mapState({
       hasCurrentOverlayForm: (state) => !_.isNull(state.ui.currentForm) && !state.ui.currentForm.inline,
+      uri: (state) => state.ui.currentForm.uri,
       formKey: (state) => state.ui.currentForm.uri + state.ui.currentForm.path,
       formLeft: (state) => {
         const path = state.ui.currentForm.path,
@@ -309,6 +310,9 @@
       }
     }),
     methods: {
+      getFieldSchema(field) {
+        return getSchema(this.uri, field);
+      },
       enter(el, done) {
         const path = _.get(this.$store, 'state.ui.currentForm.path'),
           posY = _.get(this.$store, 'state.ui.currentForm.pos.y'),
