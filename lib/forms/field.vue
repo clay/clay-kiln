@@ -57,7 +57,11 @@
     },
     computed: {
       expandedInput() {
-        return expand(this.schema[fieldProp]);
+        try {
+          return expand(this.schema[fieldProp]);
+        } catch (e) {
+          console.log(this.schema);
+        }
       },
       inputName() {
         return this.expandedInput[inputProp];
