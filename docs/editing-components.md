@@ -15,9 +15,21 @@ title:
 <h1 data-editable="title">{{ title }}</h1>
 ```
 
-When someone clicks the title, it will open an inline WYSIWYG form. The field will inherit styles from your component, for a proper WYSYWIG experience.
+When someone clicks the `data-editable` title, it will open an inline WYSIWYG form. The field will inherit styles from your component, for a proper WYSYWIG experience.
 
 ![](images/inline_form.png)
+
+{% hint style="info" %}
+
+`data-editable` may reference any field or group of fields, even fields inside of complex lists! This is perfectly valid syntax:
+
+```handlebars
+{{#each hotTopics}}
+  <li data-editable="content.{{@index}}.text">{{ text }}</li>
+{{/each}}
+```
+
+{% endhint %}
 
 ## Placeholders
 
