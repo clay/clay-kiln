@@ -325,16 +325,19 @@
             halfFinalHeight = finalHeight / 2;
 
           if (path === 'settings' || !posY) {
+            const formTop = docHeight / 3 - halfFinalHeight;
+
             // set top position of form once we know how tall it should be,
             // to prevent overflowing the top/bottom of the viewport
-            this.formTop = `${docHeight / 2 - halfFinalHeight}px`;
+            this.formTop = `${Math.abs(formTop)}px`;
           } else {
             const heightPlusMargin = finalHeight / 2 + 20,
-              isInsideViewport = posY > heightPlusMargin && posY < docHeight - heightPlusMargin - 500;
+              isInsideViewport = posY > heightPlusMargin && posY < docHeight - heightPlusMargin - 500,
               // give the bottom calculation about 500px more room, so complex-list items
               // don't overflow the bottom of the viewport (if they're opened when they don't have any items yet)
+              formTop = docHeight / 3 - halfFinalHeight;
 
-            this.formTop = isInsideViewport ? `${posY - halfFinalHeight}px` : `${docHeight / 2 - halfFinalHeight}px`;
+            this.formTop = isInsideViewport ? `${posY - halfFinalHeight}px` : `${Math.abs(formTop)}px`;
           }
           el.style.height = '100px'; // animate from 100px to auto height (auto)
           el.style.width = '100px'; // animate from 100px to auto width (600px)
