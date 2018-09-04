@@ -273,13 +273,13 @@
     if (siteFilter.length) {
       query.body.query.bool.must.push({
         terms: {
-          siteSlug: siteFilter
+          slug: siteFilter
         }
       });
     } else {
       query.body.query.bool.must.push({
         terms: {
-          siteSlug: ['no-site-selected']
+          slug: ['no-site-selected']
         }
       });
     }

@@ -155,13 +155,13 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(() => {
       // collect new-pages IDs as a flattened array.
       const pageTemplateIds = _.get(store, 'state.lists[new-pages].items', [])
-          .reduce((acc, { id, children }) => {
-            acc.concat(id);
-            return acc.concat(...children.map(({ id }) => id));
+          .reduce((acc, { id, title, children }) => {
+            acc.concat({ id, title }); // for non-nested lists
+            return acc.concat(...children);
           }, []),
         currentPageURI = _.get(store, 'state.page.uri'),
         currentPageID = currentPageURI.match(/pages\/([A-Za-z0-9\-]+)/)[1],
-        currentPageTemplate = pageTemplateIds.find((id) => id === currentPageID);
+        currentPageTemplate = pageTemplateIds.find(({ id }) => id === currentPageID);
 
       if (!navigator.onLine) {
         // test connection loss on page load

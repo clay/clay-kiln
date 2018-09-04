@@ -141,8 +141,9 @@
    */
   function getLastLayoutEditUser(store) {
     const currentUser = _.get(store, 'state.user'),
-      lastUser = _.get(store, 'state.layout.updateUser'),
-      timestamp = _.get(store, 'state.layout.updateTime'),
+      layoutState = _.get(store, 'state.layout.state'),
+      lastUser = layoutState.updateUser,
+      timestamp = layoutState.updateTime || layoutState.createdAt,
       isDifferentUser = currentUser.username !== lastUser.username,
       isWithinFiveMinutes = Math.abs(differenceInMinutes(timestamp, new Date())) < 5;
 
@@ -155,7 +156,7 @@
     },
     computed: mapState({
       pageState: (state) => state.page.state,
-      layoutState: (state) => state.layout,
+      layoutState: (state) => state.layout.state,
       isLoading: (state) => state.isLoading,
       isPageEditMode: (state) => state.editMode === 'page',
       undoEnabled: (state) => {
@@ -178,8 +179,9 @@
         }
       },
       hasLayoutChanges: (state) => {
-        const pubTime = _.get(state, 'layout.publishTime'), // latest published timestamp
-          upTime = _.get(state, 'layout.updateTime'); // latest updated timestamp
+        const layoutState = _.get(state, 'layout.state'),
+          pubTime = layoutState.publishTime, // latest published timestamp
+          upTime = layoutState.updateTime; // latest updated timestamp
 
         if (pubTime && upTime) {
           return isAfter(upTime, pubTime);

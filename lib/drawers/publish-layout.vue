@@ -220,13 +220,13 @@
     computed: mapState({
       hasErrors: (state) => state.validation.errors && state.validation.errors.length > 0,
       hasWarnings: (state) => state.validation.warnings && state.validation.warnings.length > 0,
-      isPublished: (state) => state.layout.published,
-      isScheduled: (state) => state.layout.scheduled,
-      uri: (state) => state.page.data.layout,
-      publishedDate: (state) => state.layout.publishTime,
-      createdDate: (state) => state.layout.createTime,
-      scheduledDate: (state) => state.layout.scheduleTime,
-      lastUpdated: (state) => state.layout.updateTime,
+      isPublished: (state) => state.layout.state.published,
+      isScheduled: (state) => state.layout.state.scheduled,
+      uri: (state) => state.layout.uri,
+      publishedDate: (state) => state.layout.state.publishTime,
+      createdDate: (state) => state.layout.state.createTime,
+      scheduledDate: (state) => state.layout.state.scheduledTime,
+      lastUpdated: (state) => state.layout.state.updateTime,
       defaultTitle() {
         const { name, instance } = getLayoutNameAndInstance(this.$store);
 
@@ -369,7 +369,7 @@
       }
     },
     mounted() {
-      const currentTitle = _.get(this.$store, 'state.layout.title');
+      const currentTitle = _.get(this.$store, 'state.layout.state.title');
 
       // if the page already has a title set, default the form to use it
       if (currentTitle) {
