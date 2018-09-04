@@ -273,13 +273,13 @@
     if (siteFilter.length) {
       query.body.query.bool.must.push({
         terms: {
-          slug: siteFilter
+          siteSlug: siteFilter
         }
       });
     } else {
       query.body.query.bool.must.push({
         terms: {
-          slug: ['no-site-selected']
+          siteSlug: ['no-site-selected']
         }
       });
     }
@@ -442,7 +442,7 @@
         return postJSON(prefix + searchRoute, query).then((res) => {
           const hits = _.get(res, 'hits.hits') || [],
             total = _.get(res, 'hits.total'),
-            pages = _.map(hits, (hit) => hit._source);
+            pages = _.map(hits, (hit) => Object.assign({}, hit._source, { uri: hit._id }));
 
           if (offset === 0) {
             this.pages = pages;

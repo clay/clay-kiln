@@ -90,7 +90,7 @@
   import velocity from 'velocity-animate/velocity.min.js';
   import { getItem, updateArray } from '../utils/local';
   import label from '../utils/label';
-  import { getComponentName } from 'clayutils';
+  import { getComponentName } from '../utils/references';
   import { OPEN_ADD_COMPONENT } from './mutationTypes';
   import { getObject } from '../core-data/api';
   import UiIconButton from 'keen/UiIconButton';
