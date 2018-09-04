@@ -43,6 +43,7 @@
 
     .static-input-text {
       @include type-body();
+      height: $ui-input-height;
     }
   </style>
 

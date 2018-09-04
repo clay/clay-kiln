@@ -132,7 +132,7 @@
         </ui-tabs>
         <div v-else class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 56px)`}">
           <div class="input-container">
-            <field v-for="(field, fieldIndex) in sections[0].fields" :key="fieldIndex" :name="field" :data="fields[field]" :schema="schema[field]" :initialFocus="initialFocus"></field>
+            <field v-for="(field, fieldIndex) in sections[0].fields" :key="fieldIndex" :name="field" :data="fields[field]" :schema="schema[field] || getFieldSchema(field)" :initialFocus="initialFocus"></field>
             <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
           </div>
         </div>
@@ -168,6 +168,7 @@
     },
     computed: mapState({
       hasCurrentOverlayForm: (state) => !_.isNull(state.ui.currentForm) && !state.ui.currentForm.inline,
+      uri: (state) => state.ui.currentForm.uri,
       formKey: (state) => state.ui.currentForm.uri + state.ui.currentForm.path,
       formLeft: (state) => {
         const path = state.ui.currentForm.path,
@@ -309,6 +310,9 @@
       }
     }),
     methods: {
+      getFieldSchema(field) {
+        return getSchema(this.uri, field);
+      },
       enter(el, done) {
         const path = _.get(this.$store, 'state.ui.currentForm.path'),
           posY = _.get(this.$store, 'state.ui.currentForm.pos.y'),
@@ -318,19 +322,20 @@
           const headerEl = find(el, '.form-header'),
             innerEl = find(el, '.form-contents'),
             finalHeight = el.clientHeight,
-            halfFinalHeight = finalHeight / 2;
+            halfFinalHeight = finalHeight / 2,
+            defaultFormTop = Math.abs(docHeight / 3 - halfFinalHeight);
 
           if (path === 'settings' || !posY) {
             // set top position of form once we know how tall it should be,
             // to prevent overflowing the top/bottom of the viewport
-            this.formTop = `${docHeight / 2 - halfFinalHeight}px`;
+            this.formTop = `${defaultFormTop}px`;
           } else {
             const heightPlusMargin = finalHeight / 2 + 20,
               isInsideViewport = posY > heightPlusMargin && posY < docHeight - heightPlusMargin - 500;
               // give the bottom calculation about 500px more room, so complex-list items
               // don't overflow the bottom of the viewport (if they're opened when they don't have any items yet)
 
-            this.formTop = isInsideViewport ? `${posY - halfFinalHeight}px` : `${docHeight / 2 - halfFinalHeight}px`;
+            this.formTop = isInsideViewport ? `${posY - halfFinalHeight}px` : `${defaultFormTop}px`;
           }
           el.style.height = '100px'; // animate from 100px to auto height (auto)
           el.style.width = '100px'; // animate from 100px to auto width (600px)
