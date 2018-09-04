@@ -2,8 +2,8 @@ import _ from 'lodash';
 import speakingurl from 'speakingurl';
 import striptags from 'striptags';
 import { decode } from 'he';
-import { getComponentName, getComponentInstance as getInstance, getComponentVersion } from 'clayutils';
-import { componentRoute } from '../lib/utils/references';
+import { getComponentInstance as getInstance, getComponentVersion } from 'clayutils';
+import { componentRoute, getComponentName } from '../lib/utils/references';
 
 let builtInTransformers = {};
 

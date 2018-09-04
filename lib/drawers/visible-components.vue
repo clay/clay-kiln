@@ -5,8 +5,7 @@
 <script>
   import _ from 'lodash';
   import { find } from '@nymag/dom';
-  import { getComponentName } from 'clayutils';
-  import { refAttr } from '../utils/references';
+  import { refAttr, getComponentName } from '../utils/references';
   import { getVisibleList, isComponentInPage } from '../utils/component-elements';
   import label from '../utils/label';
   import filterableList from '../utils/filterable-list.vue';

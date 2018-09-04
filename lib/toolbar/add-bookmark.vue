@@ -20,7 +20,7 @@
   import UiTextbox from 'keen/UiTextbox';
   import UiButton from 'keen/UiButton';
   import logger from '../utils/log';
-  import { getComponentName } from 'clayutils';
+  import { getComponentName } from '../utils/references';
   import label from '../utils/label';
 
   const log = logger(__filename);

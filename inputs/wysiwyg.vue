@@ -216,8 +216,7 @@
   import _ from 'lodash';
   import striptags from 'striptags';
   import { find, closest } from '@nymag/dom';
-  import { getComponentName } from 'clayutils';
-  import { refAttr, editAttr } from '../lib/utils/references';
+  import { getComponentName, refAttr, editAttr } from '../lib/utils/references';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import { getPrevComponent, getNextComponent, getParentComponent, getComponentEl, getFieldEl } from '../lib/utils/component-elements';
   import { shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';

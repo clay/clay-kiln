@@ -5,8 +5,7 @@
 <script>
   import _ from 'lodash';
   import { getComponentNode } from '../utils/head-components';
-  import { getComponentName } from 'clayutils';
-  import { refProp, componentListProp, removeProp } from '../utils/references';
+  import { getComponentName, refProp, componentListProp, removeProp } from '../utils/references';
   import label from '../utils/label';
   import filterableList from '../utils/filterable-list.vue';
 

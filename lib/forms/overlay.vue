@@ -151,8 +151,7 @@
   import { has as hasGroup } from '../core-data/groups';
   import label from '../utils/label';
   import logger from '../utils/log';
-  import { getComponentName } from 'clayutils';
-  import { fieldProp, componentListProp, bookmarkProp } from '../utils/references';
+  import { fieldProp, componentListProp, bookmarkProp, getComponentName } from '../utils/references';
   import { getComponentEl } from '../utils/component-elements';
   import field from './field.vue';
   import UiIconButton from 'keen/UiIconButton';

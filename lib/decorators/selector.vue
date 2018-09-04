@@ -231,8 +231,8 @@
   import getRect from 'element-client-rect';
   import { getSchema, getData } from '../core-data/components';
   import { has as hasGroup } from '../core-data/groups';
-  import { getComponentName, getLayoutName } from 'clayutils';
-  import { componentListProp, bookmarkProp } from '../utils/references';
+  import { getLayoutName } from 'clayutils';
+  import { getComponentName, componentListProp, bookmarkProp } from '../utils/references';
   import { getComponentEl, isComponentInPage } from '../utils/component-elements';
   import label from '../utils/label';
   import logger from '../utils/log';
