@@ -142,7 +142,7 @@
   function getLastLayoutEditUser(store) {
     const currentUser = _.get(store, 'state.user'),
       layoutState = _.get(store, 'state.layout.state'),
-      lastUser = layoutState.updateUser,
+      lastUser = _.get(_.last(layoutState.history), 'users[0]'),
       timestamp = layoutState.updateTime || layoutState.createdAt,
       isDifferentUser = currentUser.username !== lastUser.username,
       isWithinFiveMinutes = Math.abs(differenceInMinutes(timestamp, new Date())) < 5;

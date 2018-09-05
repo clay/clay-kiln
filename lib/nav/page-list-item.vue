@@ -171,7 +171,7 @@
     <div v-if="multipleSitesSelected" class="page-list-item-site" @click.stop="filterSite">{{ siteName }}</div>
     <a class="page-list-item-title" :href="url" target="_blank" @click="onUrlClick">
       <span v-if="multipleSitesSelected" class="page-list-item-site-small">{{ siteName }}</span>
-      <span class="page-list-item-title-inner" :class="{ 'no-title': !page.titleTruncated }">{{ title }}</span>
+      <span class="page-list-item-title-inner" :class="{ 'no-title': !page.title }">{{ title }}</span>
       <span class="page-list-item-byline-small" :class="{ 'no-byline': !page.authors.length }">{{ firstAuthor }}</span>
     </a>
     <div class="page-list-item-byline" :class="{ 'no-byline': !page.authors.length }" @click.stop="filterAuthor">{{ firstAuthor }}</div>
@@ -299,7 +299,7 @@
         return this.site && this.site.name;
       },
       title() {
-        return this.page.titleTruncated || 'No Title';
+        return this.page.title ? _.truncate(this.page.title, { length: 75 }) : 'No Title';
       },
       users() {
         return _.take(this.page.users, 4);
