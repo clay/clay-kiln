@@ -46,6 +46,30 @@ myList:
 
 ![](images/list_placeholder.png)
 
+#### Collapsible Lists
+
+Basic lists may also be collapsed. This is useful if your components aren't a 1:1 WYSIWYG match with their public-facing view, for example if you have components that only display in `edit` mode.
+
+```yaml
+myList:
+  _placeholder:
+      text: Article Content
+  _componentList:
+    include:
+      - tweet
+    collapse: true
+```
+
+![](images/list_open.png)
+
+Collapsible lists will _always_ display their placeholder, as well as an expand/collapse toggle.
+
+![](images/list_collapsed.png)
+
+When collapsible lists are empty, they'll display the same "Add Component" button as other component lists.
+
+![](images/list_empty.png)
+
 #### Validation
 
 Similarly to [editable fields](https://claycms.gitbooks.io/kiln/editing-components.html#standard-input-arguments), component lists may contain validation for `min` and `max` lengths.
