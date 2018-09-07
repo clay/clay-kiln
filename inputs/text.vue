@@ -24,7 +24,7 @@
 <template>
   <ui-textbox
     :autosize="false"
-    :value="data"
+    :value="String(data)"
     :type="type"
     :multiLine="isMultiline"
     :rows="numOfRows"
@@ -54,6 +54,10 @@
   import label from '../lib/utils/label';
   import UiTextbox from 'keen/UiTextbox';
   import attachedButton from './attached-button.vue';
+  import logger from '../lib/utils/log';
+
+  const validInputTypes = ['text', 'search', 'url', 'tel', 'password', 'multi-line'],
+    log = logger(__filename);
 
   export default {
     props: ['name', 'data', 'schema', 'args', 'initialFocus'],
@@ -64,11 +68,8 @@
     },
     computed: {
       type() {
-        if (this.args.type === 'multi-line' || !this.args.type) {
-          return 'text';
-        } else {
-          return this.args.type;
-        }
+        return  this.args.type === 'multi-line' || !this.args.type ?
+          'text' : this.args.type;
       },
       isMultiline() {
         return this.args.type === 'multi-line';
@@ -95,7 +96,8 @@
         return `${label(this.name, this.schema)}${this.isRequired ? '*' : ''}`;
       },
       errorMessage() {
-        const validationData = this.isNumerical && _.isNumber(this.data) ? parseFloat(this.data) : this.data;
+        const validationData = this.isNumerical && _.isNumber(this.data) ?
+          parseFloat(this.data) : this.data;
 
         return getValidationError(validationData, this.args.validate, this.$store, this.name);
       },
@@ -109,8 +111,11 @@
     methods: {
       // every time the value of the input changes, update the store
       update(val) {
+  
         if (this.isNumerical) {
-          val = parseFloat(val === '' ? 0 : val);
+          const n = parseFloat(val);
+
+          val = Number.isNaN(n) ? '' : n;
         } else if (_.isString(val)) {
           // remove 'line separator' and 'paragraph separator' characters from text inputs
           // (not visible in text editors, but get added when pasting from pdfs and old systems)
@@ -134,13 +139,16 @@
     },
     mounted() {
       if (this.initialFocus === this.name) {
-        const offset = _.get(this, '$store.state.ui.currentForm.initialOffset');
 
         this.$nextTick(() => {
-          if (_.includes(['text', 'search', 'url', 'tel', 'password', 'multi-line'], this.type)) {
-            // selection range is only permitted on text-like input types
-            setCaret(this.$el, offset, this.data);
+  
+          // validate input type
+          if (!validInputTypes.includes(this.type)) {
+            log.error(`Input must be on of type: ${validInputTypes.toString()}. 
+            Received: ${this.type}`);
+            return;
           }
+          setCaret(this.$el, _.get(this, '$store.state.ui.currentForm.initialOffset'), this.data);
         });
       }
     },
