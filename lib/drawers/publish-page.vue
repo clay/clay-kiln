@@ -222,7 +222,6 @@
   import _ from 'lodash';
   import dateFormat from 'date-fns/format';
   import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
-  import differenceInMinutes from 'date-fns/difference_in_minutes';
   import parseDate from 'date-fns/parse';
   import getTime from 'date-fns/get_time';
   import isToday from 'date-fns/is_today';
@@ -235,6 +234,7 @@
   import { mapState } from 'vuex';
   import Routable from 'routable';
   import { uriToUrl } from '../utils/urls';
+  import { getLastEditUser } from '../utils/history';
   import { htmlExt, editExt, getLayoutNameAndInstance } from '../utils/references';
   import { START_PROGRESS, FINISH_PROGRESS } from '../toolbar/mutationTypes';
   import UiIcon from 'keen/UiIcon';
@@ -245,7 +245,6 @@
   import UiIconButton from 'keen/UiIconButton';
   import timepicker from '../utils/timepicker.vue';
   import logger from '../utils/log';
-  import { getHead } from '../core-data/api';
 
   const log = logger(__filename);
 
@@ -268,22 +267,6 @@
     } else {
       return dateFormat(date, 'M/D/YYYY [at] h:mm A');
     }
-  }
-
-  /**
-   * get the last user who edited a layout, who ISN'T the current user
-   * @param  {object} store
-   * @return {null|string}
-   */
-  function getLastLayoutEditUser(store) {
-    const currentUser = _.get(store, 'state.user'),
-      layoutState = _.get(store, 'state.layout.state'),
-      lastUser = _.get(_.last(layoutState.history), 'users[0]'),
-      timestamp = layoutState.updateTime,
-      isDifferentUser = currentUser.username !== lastUser.username,
-      isWithinFiveMinutes = Math.abs(differenceInMinutes(timestamp, new Date())) < 5;
-
-    return isDifferentUser && isWithinFiveMinutes ? lastUser.name : null;
   }
 
   /**
@@ -324,8 +307,7 @@
         title: '',
         error: 'Custom URL must match an available route!',
         isInvalid: false,
-        hasCustomLocation: false,
-        isLayoutPublished: false // checked on mount
+        hasCustomLocation: false
       };
     },
     computed: mapState({
@@ -342,6 +324,7 @@
       lastUpdated: (state) => state.page.state.updateTime,
       currentTitle: (state) => state.page.state.title,
       isAdmin: (state) => state.user.auth === 'admin',
+      isLayoutPublished: (state) => state.layout.state.published,
       statusMessage() {
         if (this.isScheduled) {
           return `Scheduled ${distanceInWordsToNow(this.scheduledDate, { addSuffix: true })}`;
@@ -411,8 +394,8 @@
       goToLayout() {
         const { message } = getLayoutNameAndInstance(this.$store),
           layoutAlert = { type: 'warning', text: message },
-          lastUserName = getLastLayoutEditUser(this.$store),
-          layoutUserAlert = lastUserName && { type: 'info', message: `Edited less than 5 minutes ago by ${lastUserName}` };
+          lastUser = getLastEditUser(_.get(this.$store, 'state.layout.state'), _.get(this.$store, 'state.user')),
+          layoutUserAlert = lastUser && { type: 'info', message: `Edited less than 5 minutes ago${ lastUser.name ? ` by ${lastUser.name}` : '' }` };
 
         this.$store.commit('TOGGLE_EDIT_MODE', 'layout');
         this.$store.dispatch('closeDrawer');
@@ -527,7 +510,7 @@
         const prefix = _.get(this.$store, 'state.site.prefix'),
           val = _.isString(undoUrl) ? undoUrl : this.location,
           store = this.$store,
-          oldUrl = _.get(store, 'state.page.data.customUrl');
+          oldUrl = _.get(store, 'state.page.data.url');
 
         let url;
 
@@ -550,7 +533,7 @@
           url === '';
         }
 
-        store.dispatch('savePage', { customUrl: url }).then(() => {
+        store.dispatch('savePage', { url }).then(() => {
           if (url && !_.isString(undoUrl)) { // by default this method will be passed the Event that triggered it. check to see if it's passed an explicit undoUrl instead
             store.dispatch('showSnackbar', 'Saved custom page url');
           } else {
@@ -615,7 +598,7 @@
     },
     mounted() {
       const prefix = _.get(this.$store, 'state.site.prefix'),
-        customUrl = _.get(this.$store, 'state.page.data.customUrl') || '';
+        customUrl = _.get(this.$store, 'state.page.data.url') || '';
 
       // get location when form opens
       // remove prefix when displaying the url in the form. it'll be added when saving
@@ -628,15 +611,6 @@
       if (this.currentTitle) {
         this.title = this.currentTitle;
       }
-
-      // check to see if layout has @published, which (if it didn't exist) would prevent published page
-      // from being displayed. note: this checks @published directly, rather than the layouts index
-      // (because we don't care about the layout state, only that it exists on a very low level)
-      getHead(`${_.get(this.$store, 'state.page.data.layout')}@published`).then((res) => {
-        this.isLayoutPublished = res;
-      }).catch(() => {
-        this.isLayoutPublished = false;
-      });
     },
     components: {
       UiIcon,
