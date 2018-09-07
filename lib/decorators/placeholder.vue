@@ -80,6 +80,8 @@
 
   // collapsible placeholders
   .collapsible-component-list > .kiln-placeholder {
+    // using !important here to override the inline placeholder height (min-height) styles,
+    // as collapsible list placeholders should ALWAYS be a set height
     height: 68px !important;
     margin: 0 0 20px;
     min-height: 68px !important;
@@ -154,14 +156,15 @@
 
 <template>
   <div :class="placeholderClass" :style="{ minHeight: placeholderHeight }" :ref="uid">
+    <!-- collapsible component list placeholders (always displayed, even if the list is empty) -->
     <div v-if="isComponent && isCollapsible" class="placeholder-label-collapsible">
       <span class="placeholder-text">{{ text }}</span>
-      <div class="ui-button-group">
-        <ui-button v-if="isEmptyList" :disabled="!isActive" class="placeholder-add-component" icon="add" :color="placeholderButtonColor" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
-        <ui-icon-button v-else class="placeholder-collapse-button" :icon="collapseIcon" :tooltip="collapseTooltip" :color="placeholderButtonColor" @click.stop.prevent="toggleCollapse"></ui-icon-button>
-      </div>
+      <ui-button v-if="isEmptyList" :disabled="!isActive" class="placeholder-add-component" icon="add" :color="placeholderButtonColor" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
+      <ui-icon-button v-else class="placeholder-collapse-button" :icon="collapseIcon" :tooltip="collapseTooltip" :color="placeholderButtonColor" @click.stop.prevent="toggleCollapse"></ui-icon-button>
     </div>
+    <!-- normal component list placeholders (displayed when the list is empty) -->
     <ui-button v-else-if="isComponent" :disabled="!isActive" class="placeholder-add-component" icon="add" :color="placeholderButtonColor" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
+    <!-- field placeholders -->
     <div v-else class="placeholder-label">
       <ui-icon v-if="!isPermanent" class="placeholder-icon" icon="add"></ui-icon>
       <span class="placeholder-text">{{ text }}</span>
@@ -281,13 +284,9 @@
     },
     methods: {
       toggleCollapse() {
-        if (this.isCollapsed) {
-          this.isCollapsed = false;
-          this.$el.parentNode.classList.remove('kiln-collapsed');
-        } else {
-          this.isCollapsed = true;
-          this.$el.parentNode.classList.add('kiln-collapsed');
-        }
+        this.isCollapsed = !this.isCollapsed;
+        // reach up to the (non-vue) parent element, which is the component list itself
+        this.$el && this.$el.parentNode && this.$el.parentNode.classList.toggle('kiln-collapsed');
       },
       openAddComponentPane(e) {
         const parentURI = this.$options.uri,

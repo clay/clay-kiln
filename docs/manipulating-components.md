@@ -48,7 +48,7 @@ myList:
 
 #### Collapsible Lists
 
-Basic lists may also be collapsed. This is useful if your components aren't a 1:1 WYSIWYG match with their public-facing view, for example if you have components that only display in `edit` mode.
+In edit mode, basic component lists may be expanded and collapsed. This feature only affects edit mode, so it's useful for removing visual clutter in component lists that aren't displayed in view mode. Note that this is different than _invisible_ component lists, which are editable through the "Find on Page" / "Find on Layout" drawer.
 
 ```yaml
 myList:
