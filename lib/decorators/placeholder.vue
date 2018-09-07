@@ -196,7 +196,7 @@
   export default {
     data() {
       return {
-        isCollapsed: false
+        isCollapsed: true
       };
     },
     computed: {
@@ -296,6 +296,15 @@
           parentURI,
           path,
           pos: { x: e.clientX, y: e.clientY }
+        });
+      }
+    },
+    mounted() {
+      if (this.isCollapsible && this.isCollapsed) {
+        this.$nextTick(() => {
+          // collapsible component lists will be collapsed when loaded
+          // note: waiting for nextTick so we can see the (non-vue) containing element
+          this.$el && this.$el.parentNode && this.$el.parentNode.classList.toggle('kiln-collapsed');
         });
       }
     },
