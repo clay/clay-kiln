@@ -79,6 +79,7 @@ Property | Description
 `getAvailableComponents()` | function to determine which components are allowed in a list
 `local` | methods to get/set localstorage
 `validationHelpers` | methods to help with pre-publish validation
+`fieldHelpers` | methods to help with custom inputs
 `logger()` | function to create a new logger for a file (pass in the `__filename` when calling this)
 `version` | current Kiln version
 `components` | Vue.js components, exported by Kiln
