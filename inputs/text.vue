@@ -54,6 +54,10 @@
   import label from '../lib/utils/label';
   import UiTextbox from 'keen/UiTextbox';
   import attachedButton from './attached-button.vue';
+  import logger from '../lib/utils/log';
+
+  const validInputTypes = ['text', 'search', 'url', 'tel', 'password', 'multi-line'],
+    log = logger(__filename);
 
   export default {
     props: ['name', 'data', 'schema', 'args', 'initialFocus'],
@@ -131,21 +135,20 @@
       },
       enableInput() {
         this.isDisabled = false;
-      },
-      validateType(t = '') {
-        const valid = ['text', 'search', 'url', 'tel', 'password', 'multi-line'];
-
       }
     },
     mounted() {
       if (this.initialFocus === this.name) {
-        const offset = _.get(this, '$store.state.ui.currentForm.initialOffset');
 
         this.$nextTick(() => {
-          if (_.includes(['text', 'search', 'url', 'tel', 'password', 'multi-line'], this.type)) {
-            // selection range is only permitted on text-like input types
-            setCaret(this.$el, offset, this.data);
+  
+          // validate input type
+          if (!validInputTypes.includes(this.type)) {
+            log.error(`Input must be on of type: ${validInputTypes.toString()}. 
+            Received: ${this.type}`);
+            return;
           }
+          setCaret(this.$el, _.get(this, '$store.state.ui.currentForm.initialOffset'), this.data);
         });
       }
     },
