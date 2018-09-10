@@ -28,9 +28,9 @@
         {{#each @root._componentSchemas}}
           window.kiln.preloadSchemas['{{ this.name }}'] = {{{ stringify (yaml (read this.schema)) }}};
         {{/each}}
-        {{#if @root._layout}}
-          window.kiln.layout = {{{ stringify @root._layout }}};
-          window.kiln.layout.schema = {{{ stringify (yaml (read @root._layout.schema)) }}};
+        {{#if @root._layoutData}}
+          window.kiln.layout = {{{ stringify @root._layoutData }}};
+          window.kiln.layout.schema = {{{ stringify (yaml (read @root._layoutData.schema)) }}};
         {{/if}}
         window.kiln.preloadData = {{{ default (replace (stringify @root) '</script>' '<"+"/script>') '{}' }}};
         window.kiln.locals = {{{ default (stringify @root.locals) '{}' }}};
