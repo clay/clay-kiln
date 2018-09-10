@@ -18,6 +18,10 @@
     cursor: default;
   }
 
+  .kiln-collapsed > *:not(.kiln-placeholder) {
+    display: none;
+  }
+
   .kiln-placeholder {
     transition: background-color $standard-time $standard-curve;
 
@@ -53,6 +57,14 @@
       justify-content: center;
     }
 
+    .placeholder-label-collapsible {
+      align-items: center;
+      display: flex;
+      flex: 1 1 auto;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+    }
+
     .placeholder-icon {
       flex: 0 0 auto;
     }
@@ -64,6 +76,15 @@
       line-height: 18px;
       text-align: center;
     }
+  }
+
+  // collapsible placeholders
+  .collapsible-component-list > .kiln-placeholder {
+    // using !important here to override the inline placeholder height (min-height) styles,
+    // as collapsible list placeholders should ALWAYS be a set height
+    height: 68px !important;
+    margin: 0 0 20px;
+    min-height: 68px !important;
   }
 
   .kiln-permanent-placeholder {
@@ -135,7 +156,15 @@
 
 <template>
   <div :class="placeholderClass" :style="{ minHeight: placeholderHeight }" :ref="uid">
-    <ui-button v-if="isComponent" :disabled="!isActive" class="placeholder-add-component" icon="add" :color="placeholderButtonColor" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
+    <!-- collapsible component list placeholders (always displayed, even if the list is empty) -->
+    <div v-if="isComponent && isCollapsible" class="placeholder-label-collapsible">
+      <span class="placeholder-text">{{ text }}</span>
+      <ui-button v-if="isEmptyList" :disabled="!isActive" class="placeholder-add-component" icon="add" :color="placeholderButtonColor" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
+      <ui-icon-button v-else class="placeholder-collapse-button" :icon="collapseIcon" :tooltip="collapseTooltip" :color="placeholderButtonColor" @click.stop.prevent="toggleCollapse"></ui-icon-button>
+    </div>
+    <!-- normal component list placeholders (displayed when the list is empty) -->
+    <ui-button v-else-if="isComponent" :disabled="!isActive" class="placeholder-add-component" icon="add" :color="placeholderButtonColor" @click.stop.prevent="openAddComponentPane">{{ addComponentText }}</ui-button>
+    <!-- field placeholders -->
     <div v-else class="placeholder-label">
       <ui-icon v-if="!isPermanent" class="placeholder-icon" icon="add"></ui-icon>
       <span class="placeholder-text">{{ text }}</span>
@@ -150,12 +179,14 @@
   import store from '../core-data/store';
   import { placeholderProp, componentListProp, componentProp } from '../utils/references';
   import { isComponentInPage } from '../utils/component-elements';
+  import { isEmpty } from '../utils/comparators';
   import { getData } from '../core-data/components';
   import { get } from '../core-data/groups';
   import label from '../utils/label';
   import interpolate from '../utils/interpolate';
   import UiIcon from 'keen/UiIcon';
   import UiButton from 'keen/UiButton';
+  import UiIconButton from 'keen/UiIconButton';
   import UiRippleInk from 'keen/UiRippleInk';
 
   function getSchema(options) {
@@ -164,7 +195,9 @@
 
   export default {
     data() {
-      return {};
+      return {
+        isCollapsed: true
+      };
     },
     computed: {
       uid() {
@@ -217,6 +250,20 @@
 
         return !!subSchema[componentListProp] || !!subSchema[componentProp];
       },
+      isCollapsible() {
+        const subSchema = getSchema(this.$options);
+
+        return _.get(subSchema, `${componentListProp}.collapse`);
+      },
+      collapseIcon() {
+        return this.isCollapsed ? 'keyboard_arrow_down' : 'keyboard_arrow_up';
+      },
+      collapseTooltip() {
+        return this.isCollapsed ? 'Expand List' : 'Collapse List';
+      },
+      isEmptyList() {
+        return isEmpty(getData(this.$options.uri, this.$options.path));
+      },
       addComponentText() {
         const subSchema = getSchema(this.$options),
           componentsToAdd = _.get(subSchema, `${componentListProp}.include`) || _.get(subSchema, `${componentProp}.include`),
@@ -236,6 +283,11 @@
       }
     },
     methods: {
+      toggleCollapse() {
+        this.isCollapsed = !this.isCollapsed;
+        // reach up to the (non-vue) parent element, which is the component list itself
+        this.$el && this.$el.parentNode && this.$el.parentNode.classList.toggle('kiln-collapsed');
+      },
       openAddComponentPane(e) {
         const parentURI = this.$options.uri,
           path = this.$options.path;
@@ -247,9 +299,19 @@
         });
       }
     },
+    mounted() {
+      if (this.isCollapsible && this.isCollapsed) {
+        this.$nextTick(() => {
+          // collapsible component lists will be collapsed when loaded
+          // note: waiting for nextTick so we can see the (non-vue) containing element
+          this.$el && this.$el.parentNode && this.$el.parentNode.classList.toggle('kiln-collapsed');
+        });
+      }
+    },
     components: {
       UiIcon,
       UiButton,
+      UiIconButton,
       UiRippleInk
     }
   };
