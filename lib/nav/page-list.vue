@@ -306,10 +306,24 @@
       query.body.query.bool.must.push({
         term: { published: false }
       }, {
-        term: { scheduled: false }
-      }, {
         term: { archived: false } // only drafts can be archived, but we need to explicitly NOT include archived pages when looking at drafts in the list
       });
+
+      query.body.query.bool.should = [];
+      // look for either explicitly not scheduled pages or pages where scheduled is not set at all
+      query.body.query.bool.should.push({
+        term: { scheduled: false }
+      });
+      query.body.query.bool.should.push({
+        bool: {
+          must_not: {
+            exists: {
+              field: 'scheduled'
+            }
+          }
+        }
+      });
+      query.body.query.bool.minimum_should_match = 1;
     } else if (statusFilter === 'published') {
       query.body.query.bool.must.push({
         term: { published: true }
