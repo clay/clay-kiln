@@ -413,10 +413,9 @@ note: convert data to plain objects, since they're reactive
 
 * [layout-state](#module_layout-state)
     * [.fetchLayoutState(store, [preloadOptions])](#module_layout-state.fetchLayoutState) ⇒ <code>Promise</code>
-    * [.updateHistoryWithEditAction(state, currentUser)](#module_layout-state.updateHistoryWithEditAction) ⇒ <code>object</code>
     * [.updateLayout(store, [data], [preloadOptions])](#module_layout-state.updateLayout) ⇒ <code>Promise</code>
     * [.scheduleLayout(store, timestamp)](#module_layout-state.scheduleLayout) ⇒ <code>Promise</code>
-    * [.unscheduleLayout(store)](#module_layout-state.unscheduleLayout) ⇒ <code>Promise</code>
+    * [.unscheduleLayout(store, [publishing])](#module_layout-state.unscheduleLayout) ⇒ <code>Promise</code>
     * [.publishLayout(store)](#module_layout-state.publishLayout) ⇒ <code>Promise</code>
 
 <a name="module_layout-state.fetchLayoutState"></a>
@@ -435,20 +434,6 @@ allowing the preloader to use it when doing the initial preload of data
 | [preloadOptions.uri] | <code>string</code> | 
 | [preloadOptions.prefix] | <code>string</code> | 
 | [preloadOptions.user] | <code>object</code> | 
-
-<a name="module_layout-state.updateHistoryWithEditAction"></a>
-
-### layout-state.updateHistoryWithEditAction(state, currentUser) ⇒ <code>object</code>
-updates the state's history array to make sure the latest item is an
-'edit' event that includes the current user
-note: this function is only exported for testing purposes, and should not be used by other modules
-
-**Kind**: static method of [<code>layout-state</code>](#module_layout-state)  
-
-| Param | Type |
-| --- | --- |
-| state | <code>object</code> | 
-| currentUser | <code>object</code> | 
 
 <a name="module_layout-state.updateLayout"></a>
 
@@ -478,14 +463,16 @@ schedule the layout and update its index
 
 <a name="module_layout-state.unscheduleLayout"></a>
 
-### layout-state.unscheduleLayout(store) ⇒ <code>Promise</code>
-unschedule the layout and update its index
+### layout-state.unscheduleLayout(store, [publishing]) ⇒ <code>Promise</code>
+unschedule the layout
+get updated layout state if the call wasn't made during layout publish
 
 **Kind**: static method of [<code>layout-state</code>](#module_layout-state)  
 
 | Param | Type |
 | --- | --- |
 | store | <code>object</code> | 
+| [publishing] | <code>Boolean</code> | 
 
 <a name="module_layout-state.publishLayout"></a>
 
@@ -530,7 +517,7 @@ open nav tab
         * [.publishPage(store, uri)](#module_page-data.publishPage) ⇒ <code>Promise</code>
         * [.unpublishPage(store, uri)](#module_page-data.unpublishPage) ⇒ <code>Promise</code>
         * [.schedulePage(store, uri, timestamp)](#module_page-data.schedulePage) ⇒ <code>Promise</code>
-        * [.unschedulePage(store)](#module_page-data.unschedulePage) ⇒ <code>Promise</code>
+        * [.unschedulePage(store, [publishing])](#module_page-data.unschedulePage) ⇒ <code>Promise</code>
     * _inner_
         * [~shouldRender(paths)](#module_page-data..shouldRender) ⇒ <code>boolean</code>
         * [~removeURI(uri, store)](#module_page-data..removeURI) ⇒ <code>Promise</code>
@@ -600,14 +587,16 @@ schedule the page to publish
 
 <a name="module_page-data.unschedulePage"></a>
 
-### page-data.unschedulePage(store) ⇒ <code>Promise</code>
+### page-data.unschedulePage(store, [publishing]) ⇒ <code>Promise</code>
 unschedule the page
+get updated page state if the call wasn't made during a page publish
 
 **Kind**: static method of [<code>page-data</code>](#module_page-data)  
 
 | Param | Type |
 | --- | --- |
 | store | <code>object</code> | 
+| [publishing] | <code>Boolean</code> | 
 
 <a name="module_page-data..shouldRender"></a>
 
@@ -639,25 +628,10 @@ remove uri from /uris/
 
 * [page-state](#module_page-state)
     * _static_
-        * [.updateHistoryWithEditAction(state, currentUser)](#module_page-state.updateHistoryWithEditAction) ⇒ <code>object</code>
         * [.updatePageList(store, [data])](#module_page-state.updatePageList) ⇒ <code>Promise</code>
         * [.getListData(store, uri, [prefix])](#module_page-state.getListData) ⇒ <code>Promise</code>
     * _inner_
         * [~sequentialUpdate(prefix, uri, data)](#module_page-state..sequentialUpdate) ⇒ <code>Promise</code>
-
-<a name="module_page-state.updateHistoryWithEditAction"></a>
-
-### page-state.updateHistoryWithEditAction(state, currentUser) ⇒ <code>object</code>
-updates the state's history array to make sure the latest item is an
-'edit' event that includes the current user
-note: this function is only exported for testing purposes, and should not be used by other modules
-
-**Kind**: static method of [<code>page-state</code>](#module_page-state)  
-
-| Param | Type |
-| --- | --- |
-| state | <code>object</code> | 
-| currentUser | <code>object</code> | 
 
 <a name="module_page-state.updatePageList"></a>
 
@@ -708,7 +682,6 @@ run page list updates sequentially, grabbing from the store after each to preven
 
 * [preloader](#module_preloader)
     * [~getComponentModels()](#module_preloader..getComponentModels) ⇒ <code>object</code>
-    * [~getLayoutSchema(schemas, layoutRef)](#module_preloader..getLayoutSchema) ⇒ <code>object</code>
     * [~reduceComponents(result, val)](#module_preloader..reduceComponents) ⇒ <code>obj</code>
     * [~composeLayoutData(layoutSchema, components, original)](#module_preloader..composeLayoutData) ⇒ <code>object</code>
     * [~reduceTemplates(result, val, key)](#module_preloader..reduceTemplates) ⇒ <code>obj</code>
@@ -721,18 +694,6 @@ get component models so we can mount them on window.kiln.componentModels
 if they aren't already mounted (backwards-compatability)
 
 **Kind**: inner method of [<code>preloader</code>](#module_preloader)  
-<a name="module_preloader..getLayoutSchema"></a>
-
-### preloader~getLayoutSchema(schemas, layoutRef) ⇒ <code>object</code>
-get schema for a layout
-
-**Kind**: inner method of [<code>preloader</code>](#module_preloader)  
-
-| Param | Type |
-| --- | --- |
-| schemas | <code>object</code> | 
-| layoutRef | <code>string</code> | 
-
 <a name="module_preloader..reduceComponents"></a>
 
 ### preloader~reduceComponents(result, val) ⇒ <code>obj</code>
