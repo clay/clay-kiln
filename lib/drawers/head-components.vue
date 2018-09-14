@@ -6,6 +6,7 @@
   import _ from 'lodash';
   import { getComponentNode } from '../utils/head-components';
   import { getComponentName, refProp, componentListProp, removeProp } from '../utils/references';
+  import { has } from '../core-data/groups';
   import label from '../utils/label';
   import filterableList from '../utils/filterable-list.vue';
 
@@ -31,8 +32,10 @@
         secondaryActions: [{
           icon: 'settings',
           tooltip: (id) => `${label(getComponentName(id))} Settings`,
-          action: this.openSettings
-          // note: all head components must have settings, because there's no other way to edit them
+          action: this.openSettings,
+          // note: all head components _should_ have settings groups, because there's no other way to edit them
+          // but we need to protect against poorly written schemas that don't
+          enable: (id) => has(id, 'settings')
         }, {
           icon: 'delete',
           tooltip: (id) => `Remove ${label(getComponentName(id))}`,

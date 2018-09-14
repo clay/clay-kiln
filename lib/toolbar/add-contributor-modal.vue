@@ -59,7 +59,8 @@
       return {
         multi_match: {
           query: str,
-          fields: ['name^2', 'username']
+          fields: ['name^2', 'username'],
+          type: 'phrase_prefix' // use the prefix query here so we don't need to type in the full name to get matches
         }
       };
     } else {
