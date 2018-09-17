@@ -1,6 +1,7 @@
 <style lang="sass">
   @import '../styleguide/colors';
   @import '../styleguide/animations';
+  @import '../styleguide/typography';
 
   .segmented-button-segment {
     align-items: center;
@@ -63,6 +64,13 @@
       min-height: 22px;
       width: 24px;
     }
+
+    .segmented-button-text {
+      @include type-button();
+
+      height: auto;
+      min-height: 22px;
+    }
   }
 </style>
 
@@ -70,8 +78,9 @@
   <button class="segmented-button-segment" type="button" :class="{ 'is-checked': option.checked }" :id="option.id" :ref="option.id" :name="name" @click.stop.prevent="update(option.value)">
     <ui-icon v-if="option.hasMaterialIcon" :icon="option.icon"></ui-icon>
     <img v-else-if="option.hasImgIcon" class="segmented-button-img" :src="option.icon" :alt="option.text" />
+    <span v-else class="segmented-button-text">{{ option.text }}</span>
     <ui-ripple-ink :trigger="option.id"></ui-ripple-ink>
-    <ui-tooltip :trigger="option.id">{{ option.text }}</ui-tooltip>
+    <ui-tooltip v-if="option.hasMaterialIcon || option.hasImgIcon" :trigger="option.id">{{ option.text }}</ui-tooltip>
   </button>
 </template>
 
