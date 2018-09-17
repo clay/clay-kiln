@@ -24,7 +24,7 @@
 <template>
   <ui-textbox
     :autosize="false"
-    :value="String(data)"
+    :value="(data === null || data === undefined) ? '' : String(data)"
     :type="type"
     :multiLine="isMultiline"
     :rows="numOfRows"
