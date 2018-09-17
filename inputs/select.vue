@@ -122,6 +122,7 @@
     mounted() {
       if (this.args.list) {
         this.fetchListItems().then( (listItems) => {
+          console.log('list items', listItems);
           this.listOptions = listItems;
         }).catch( () => {
           log.error(`Error getting list for ${this.args.list}`);
@@ -149,6 +150,8 @@
             return val.name === 'None' || val.name === 'Default';
           });
 
+        console.log('prop:', propOptions, 'list:', this.listOptions);
+
         let fullOptions = propOptions.concat(this.listOptions);
 
         // if there is no 'None' option defined then add a null option because
@@ -156,6 +159,8 @@
         if (fullOptions.length && !this.args.multiple && !noneOption) {
           fullOptions = [this.NULL_OPTION].concat(fullOptions);
         }
+
+        console.log('full:', fullOptions);
 
         // filter by site specificity
         fullOptions = filterBySite(fullOptions, currentSlug);
@@ -236,7 +241,7 @@
         if (list.items && !list.isLoading && !list.error) {
           promise = Promise.resolve(list.items);
         } else {
-          promise = this.$store.dispatch('getList', listName).then(() => list.items);
+          promise = this.$store.dispatch('getList', listName).then(() => _.get(this, `$store.state.lists['${listName}'].items`, []));
         }
 
         return promise;
