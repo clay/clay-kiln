@@ -24,7 +24,7 @@
 <template>
   <ui-textbox
     :autosize="false"
-    :value="String(data)"
+    :value="value"
     :type="type"
     :multiLine="isMultiline"
     :rows="numOfRows"
@@ -106,12 +106,15 @@
       },
       numOfRows() {
         return _.get(this, 'args.rows', 2);
+      },
+      value() {
+        return this.data === null || typeof this.data === 'undefined' ? '' : String(this.data);
       }
     },
     methods: {
       // every time the value of the input changes, update the store
       update(val) {
-  
+
         if (this.isNumerical) {
           const n = parseFloat(val);
 
@@ -141,10 +144,10 @@
       if (this.initialFocus === this.name) {
 
         this.$nextTick(() => {
-  
+
           // validate input type
           if (!validInputTypes.includes(this.type)) {
-            log.error(`Input must be on of type: ${validInputTypes.toString()}. 
+            log.error(`Input must be on of type: ${validInputTypes.toString()}.
             Received: ${this.type}`);
             return;
           }
