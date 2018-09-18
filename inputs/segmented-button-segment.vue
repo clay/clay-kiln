@@ -69,7 +69,7 @@
       @include type-button();
 
       height: auto;
-      min-height: 22px;
+      min-height: 14px;
     }
   }
 </style>
