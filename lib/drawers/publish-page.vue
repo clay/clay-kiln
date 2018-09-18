@@ -226,18 +226,12 @@
   import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
   import parseDate from 'date-fns/parse';
   import getTime from 'date-fns/get_time';
-  import isToday from 'date-fns/is_today';
-  import isYesterday from 'date-fns/is_yesterday';
-  import isTomorrow from 'date-fns/is_tomorrow';
-  import addWeeks from 'date-fns/add_weeks';
-  import subWeeks from 'date-fns/sub_weeks';
-  import isThisWeek from 'date-fns/is_this_week';
-  import isPast from 'date-fns/is_past';
   import { mapState } from 'vuex';
   import Routable from 'routable';
   import { uriToUrl } from '../utils/urls';
   import { getLastEditUser } from '../utils/history';
   import { htmlExt, editExt, getLayoutNameAndInstance } from '../utils/references';
+  import { getTimezone, calendar, isInThePast } from '../utils/calendar';
   import { START_PROGRESS, FINISH_PROGRESS } from '../toolbar/mutationTypes';
   import UiIcon from 'keen/UiIcon';
   import UiButton from 'keen/UiButton';
@@ -249,53 +243,6 @@
   import logger from '../utils/log';
 
   const log = logger(__filename);
-
-  function getTimezone() {
-    try {
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-      return `(${ _.startCase(_.last(tz.split('/'))) } time)`;
-    } catch (e) {
-      return '(Local time)';
-    }
-  }
-
-  function calendar(date) {
-    const tz = getTimezone();
-
-    if (isToday(date)) {
-      // today
-      return distanceInWordsToNow(date, { includeSeconds: true, addSuffix: true });
-    } else if (isYesterday(date)) {
-      // yesterday
-      return `Yesterday at ${dateFormat(date, 'h:mm A')} ${tz}`;
-    } else if (isTomorrow(date)) {
-      // tomorrow
-      return `Tomorrow at ${dateFormat(date, 'h:mm A')} ${tz}`;
-    } else if (isThisWeek(addWeeks(date, 1))) {
-      // last week
-      return `Last ${dateFormat(date, 'dddd [at] h:mm A')} ${tz}`;
-    } else if (isThisWeek(subWeeks(date, 1))) {
-      // next week
-      return `${dateFormat(date, 'dddd [at] h:mm A')} ${tz}`;
-    } else {
-      return `${dateFormat(date, 'M/D/YYYY [at] h:mm A')} ${tz}`;
-    }
-  }
-
-  /**
-   * determine if date and time values from the schedule form are in the past
-   * @param  {Date}  dateValue
-   * @param  {sttring}  timeValue
-   * @return {boolean}
-   */
-  function isInThePast(dateValue, timeValue) {
-    const date = dateFormat(dateValue, 'YYYY-MM-DD'),
-      time = timeValue,
-      datetime = parseDate(date + ' ' + time);
-
-    return isPast(datetime);
-  }
 
   /**
    * determine if a url is navigable in our site's express router
