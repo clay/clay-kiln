@@ -77,7 +77,8 @@
     }
 
     .action-error-message,
-    .action-warning-message {
+    .action-warning-message,
+    .action-info-message {
       @include type-caption();
 
       cursor: pointer;
@@ -183,6 +184,7 @@
         <ui-datepicker class="schedule-date" color="accent" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date" :disabled="hasErrors"></ui-datepicker>
         <timepicker ref="timepicker" class="schedule-time" :value="timeValue" label="Time" :disabled="hasErrors" @update="updateTime"></timepicker>
       </form>
+      <span class="action-info-message">{{ timezone }}</span>
       <ui-button v-if="showSchedule" :disabled="disableSchedule || isArchived || hasErrors || !isLayoutPublished" class="action-button" buttonType="button" color="orange" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
       <ui-button v-else :disabled="isArchived || hasErrors || !isLayoutPublished" class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
       <span v-if="!isLayoutPublished && isAdmin" class="action-error-message" @click="goToLayout">Layout must be published first</span>
@@ -248,24 +250,36 @@
 
   const log = logger(__filename);
 
+  function getTimezone() {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      return `(${ _.startCase(_.last(tz.split('/'))) } time)`;
+    } catch (e) {
+      return '(Local time)';
+    }
+  }
+
   function calendar(date) {
+    const tz = getTimezone();
+
     if (isToday(date)) {
       // today
       return distanceInWordsToNow(date, { includeSeconds: true, addSuffix: true });
     } else if (isYesterday(date)) {
       // yesterday
-      return `Yesterday at ${dateFormat(date, 'h:mm A')}`;
+      return `Yesterday at ${dateFormat(date, 'h:mm A')} ${tz}`;
     } else if (isTomorrow(date)) {
       // tomorrow
-      return `Tomorrow at ${dateFormat(date, 'h:mm A')}`;
+      return `Tomorrow at ${dateFormat(date, 'h:mm A')} ${tz}`;
     } else if (isThisWeek(addWeeks(date, 1))) {
       // last week
-      return `Last ${dateFormat(date, 'dddd [at] h:mm A')}`;
+      return `Last ${dateFormat(date, 'dddd [at] h:mm A')} ${tz}`;
     } else if (isThisWeek(subWeeks(date, 1))) {
       // next week
-      return dateFormat(date, 'dddd [at] h:mm A');
+      return `${dateFormat(date, 'dddd [at] h:mm A')} ${tz}`;
     } else {
-      return dateFormat(date, 'M/D/YYYY [at] h:mm A');
+      return `${dateFormat(date, 'M/D/YYYY [at] h:mm A')} ${tz}`;
     }
   }
 
@@ -339,14 +353,16 @@
         }
       },
       time() {
+        const tz = getTimezone();
+
         if (this.isScheduled) {
-          return dateFormat(this.scheduledDate, 'MMMM Do [at] h:mm A');
+          return `${dateFormat(this.scheduledDate, 'MMMM Do [at] h:mm A')} ${tz}`;
         } else if (this.isPublished) {
-          return dateFormat(this.publishedDate, 'MMMM Do [at] h:mm A');
+          return `${dateFormat(this.publishedDate, 'MMMM Do [at] h:mm A')} ${tz}`;
         } else if (this.isArchived) {
-          return dateFormat(this.lastUpdated, 'MMMM Do [at] h:mm A');
+          return `${ dateFormat(this.lastUpdated, 'MMMM Do [at] h:mm A') } ${tz}`;
         } else if (this.createdDate) {
-          return dateFormat(this.createdDate, 'MMMM Do [at] h:mm A');
+          return `${ dateFormat(this.createdDate, 'MMMM Do [at] h:mm A') } ${tz}`;
         } else {
           return 'Some time ago';
         }
@@ -377,6 +393,9 @@
         } else {
           return 'Publish Now';
         }
+      },
+      timezone() {
+        return getTimezone();
       }
     }),
     watch: {
