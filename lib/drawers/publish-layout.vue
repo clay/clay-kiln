@@ -70,6 +70,10 @@
       margin-top: 16px;
     }
 
+    .action-info-message {
+      text-align: center;
+    }
+
     .action-error-message {
       color: $md-red;
     }
@@ -129,7 +133,7 @@
         <ui-datepicker class="schedule-date" color="accent" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date" :disabled="hasErrors"></ui-datepicker>
         <timepicker ref="timepicker" class="schedule-time" :value="timeValue" label="Time" :disabled="hasErrors" @update="updateTime"></timepicker>
       </form>
-      <span class="action-info-message">{{ timezone }}</span>
+      <span class="action-info-message">Time Zone: {{ timezone }}</span>
       <ui-button v-if="showSchedule" :disabled="disableSchedule || hasErrors" class="action-button" buttonType="button" color="orange" @click.stop="scheduleLayout">{{ actionMessage }}</ui-button>
       <ui-button v-else :disabled="hasErrors" class="action-button" buttonType="button" color="accent" @click.stop="publishLayout">{{ actionMessage }}</ui-button>
       <span v-if="hasErrors" class="action-error-message" @click="goToHealth">Please fix errors before publishing</span>
@@ -209,11 +213,11 @@
         const tz = getTimezone();
 
         if (this.isScheduled) {
-          return `${dateFormat(this.scheduledDate, 'MMMM Do [at] h:mm A')} ${tz}`;
+          return `${dateFormat(this.scheduledDate, 'MMMM Do [at] h:mm A')} (${tz} time)`;
         } else if (this.isPublished) {
-          return `${dateFormat(this.publishedDate, 'MMMM Do [at] h:mm A')} ${tz}`;
+          return `${dateFormat(this.publishedDate, 'MMMM Do [at] h:mm A')} (${tz} time)`;
         } else if (this.createdDate) {
-          return `${ dateFormat(this.createdDate, 'MMMM Do [at] h:mm A') } ${tz}`;
+          return `${ dateFormat(this.createdDate, 'MMMM Do [at] h:mm A') } (${tz} time)`;
         } else {
           return 'Some time ago';
         }
