@@ -236,7 +236,7 @@
         if (list.items && !list.isLoading && !list.error) {
           promise = Promise.resolve(list.items);
         } else {
-          promise = this.$store.dispatch('getList', listName).then(() => list.items);
+          promise = this.$store.dispatch('getList', listName).then(() => _.get(this, `$store.state.lists['${listName}'].items`, []));
         }
 
         return promise;

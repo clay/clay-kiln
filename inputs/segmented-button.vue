@@ -124,7 +124,7 @@
             hasImgIcon,
             icon: hasImgIcon ? `${assetLocation}${option.icon}` : option.icon,
             text: option.text || option.value.split('-').map(_.startCase).join(' '),
-            checked: this.multiple ? data[option.value] === true : data === option.value
+            checked: this.multiple ? data && data[option.value] === true : data === option.value
           };
         });
       },
@@ -158,7 +158,8 @@
         let newData;
 
         if (this.multiple) {
-          newData[val] = !this.data[val];
+          newData = this.data ? _.cloneDeep(this.data) : {}; // this.data might be null if we're setting it for the first time
+          newData[val] = !newData[val];
         } else if (this.data === val) {
           newData = null; // unselect
         } else {
