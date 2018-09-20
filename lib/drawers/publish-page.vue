@@ -77,11 +77,16 @@
     }
 
     .action-error-message,
-    .action-warning-message {
+    .action-warning-message,
+    .action-info-message {
       @include type-caption();
 
       cursor: pointer;
       margin-top: 16px;
+    }
+
+    .action-info-message {
+      text-align: center;
     }
 
     .action-error-message {
@@ -183,6 +188,7 @@
         <ui-datepicker class="schedule-date" color="accent" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date" :disabled="hasErrors"></ui-datepicker>
         <timepicker ref="timepicker" class="schedule-time" :value="timeValue" label="Time" :disabled="hasErrors" @update="updateTime"></timepicker>
       </form>
+      <span class="action-info-message">Time Zone: {{ timezone }}</span>
       <ui-button v-if="showSchedule" :disabled="disableSchedule || isArchived || hasErrors || !isLayoutPublished" class="action-button" buttonType="button" color="orange" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
       <ui-button v-else :disabled="isArchived || hasErrors || !isLayoutPublished" class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
       <span v-if="!isLayoutPublished && isAdmin" class="action-error-message" @click="goToLayout">Layout must be published first</span>
@@ -222,20 +228,14 @@
   import _ from 'lodash';
   import dateFormat from 'date-fns/format';
   import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
-  import differenceInMinutes from 'date-fns/difference_in_minutes';
   import parseDate from 'date-fns/parse';
   import getTime from 'date-fns/get_time';
-  import isToday from 'date-fns/is_today';
-  import isYesterday from 'date-fns/is_yesterday';
-  import isTomorrow from 'date-fns/is_tomorrow';
-  import addWeeks from 'date-fns/add_weeks';
-  import subWeeks from 'date-fns/sub_weeks';
-  import isThisWeek from 'date-fns/is_this_week';
-  import isPast from 'date-fns/is_past';
   import { mapState } from 'vuex';
   import Routable from 'routable';
   import { uriToUrl } from '../utils/urls';
+  import { getLastEditUser } from '../utils/history';
   import { htmlExt, editExt, getLayoutNameAndInstance } from '../utils/references';
+  import { getTimezone, calendar, isInThePast } from '../utils/calendar';
   import { START_PROGRESS, FINISH_PROGRESS } from '../toolbar/mutationTypes';
   import UiIcon from 'keen/UiIcon';
   import UiButton from 'keen/UiButton';
@@ -245,59 +245,8 @@
   import UiIconButton from 'keen/UiIconButton';
   import timepicker from '../utils/timepicker.vue';
   import logger from '../utils/log';
-  import { getHead } from '../core-data/api';
 
   const log = logger(__filename);
-
-  function calendar(date) {
-    if (isToday(date)) {
-      // today
-      return distanceInWordsToNow(date, { includeSeconds: true, addSuffix: true });
-    } else if (isYesterday(date)) {
-      // yesterday
-      return `Yesterday at ${dateFormat(date, 'h:mm A')}`;
-    } else if (isTomorrow(date)) {
-      // tomorrow
-      return `Tomorrow at ${dateFormat(date, 'h:mm A')}`;
-    } else if (isThisWeek(addWeeks(date, 1))) {
-      // last week
-      return `Last ${dateFormat(date, 'dddd [at] h:mm A')}`;
-    } else if (isThisWeek(subWeeks(date, 1))) {
-      // next week
-      return dateFormat(date, 'dddd [at] h:mm A');
-    } else {
-      return dateFormat(date, 'M/D/YYYY [at] h:mm A');
-    }
-  }
-
-  /**
-   * get the last user who edited a layout, who ISN'T the current user
-   * @param  {object} store
-   * @return {null|string}
-   */
-  function getLastLayoutEditUser(store) {
-    const currentUser = _.get(store, 'state.user'),
-      lastUser = _.get(store, 'state.layout.updateUser'),
-      timestamp = _.get(store, 'state.layout.updateTime'),
-      isDifferentUser = currentUser.username !== lastUser.username,
-      isWithinFiveMinutes = Math.abs(differenceInMinutes(timestamp, new Date())) < 5;
-
-    return isDifferentUser && isWithinFiveMinutes ? lastUser.name : null;
-  }
-
-  /**
-   * determine if date and time values from the schedule form are in the past
-   * @param  {Date}  dateValue
-   * @param  {sttring}  timeValue
-   * @return {boolean}
-   */
-  function isInThePast(dateValue, timeValue) {
-    const date = dateFormat(dateValue, 'YYYY-MM-DD'),
-      time = timeValue,
-      datetime = parseDate(date + ' ' + time);
-
-    return isPast(datetime);
-  }
 
   /**
    * determine if a url is navigable in our site's express router
@@ -323,8 +272,7 @@
         title: '',
         error: 'Custom URL must match an available route!',
         isInvalid: false,
-        hasCustomLocation: false,
-        isLayoutPublished: false // checked on mount
+        hasCustomLocation: false
       };
     },
     computed: mapState({
@@ -341,6 +289,7 @@
       lastUpdated: (state) => state.page.state.updateTime,
       currentTitle: (state) => state.page.state.title,
       isAdmin: (state) => state.user.auth === 'admin',
+      isLayoutPublished: (state) => state.layout.state.published,
       statusMessage() {
         if (this.isScheduled) {
           return `Scheduled ${distanceInWordsToNow(this.scheduledDate, { addSuffix: true })}`;
@@ -355,14 +304,16 @@
         }
       },
       time() {
+        const tz = getTimezone();
+
         if (this.isScheduled) {
-          return dateFormat(this.scheduledDate, 'MMMM Do [at] h:mm A');
+          return `${dateFormat(this.scheduledDate, 'MMMM Do [at] h:mm A')} (${tz} time)`;
         } else if (this.isPublished) {
-          return dateFormat(this.publishedDate, 'MMMM Do [at] h:mm A');
+          return `${dateFormat(this.publishedDate, 'MMMM Do [at] h:mm A')} (${tz} time)`;
         } else if (this.isArchived) {
-          return dateFormat(this.lastUpdated, 'MMMM Do [at] h:mm A');
+          return `${ dateFormat(this.lastUpdated, 'MMMM Do [at] h:mm A') } (${tz} time)`;
         } else if (this.createdDate) {
-          return dateFormat(this.createdDate, 'MMMM Do [at] h:mm A');
+          return `${ dateFormat(this.createdDate, 'MMMM Do [at] h:mm A') } (${tz} time)`;
         } else {
           return 'Some time ago';
         }
@@ -393,6 +344,9 @@
         } else {
           return 'Publish Now';
         }
+      },
+      timezone() {
+        return getTimezone();
       }
     }),
     watch: {
@@ -410,8 +364,8 @@
       goToLayout() {
         const { message } = getLayoutNameAndInstance(this.$store),
           layoutAlert = { type: 'warning', text: message },
-          lastUserName = getLastLayoutEditUser(this.$store),
-          layoutUserAlert = lastUserName && { type: 'info', message: `Edited less than 5 minutes ago by ${lastUserName}` };
+          lastUser = getLastEditUser(_.get(this.$store, 'state.layout.state'), _.get(this.$store, 'state.user')),
+          layoutUserAlert = lastUser && { type: 'info', message: `Edited less than 5 minutes ago${ lastUser.name ? ` by ${lastUser.name}` : '' }` };
 
         this.$store.commit('TOGGLE_EDIT_MODE', 'layout');
         this.$store.dispatch('closeDrawer');
@@ -526,7 +480,7 @@
         const prefix = _.get(this.$store, 'state.site.prefix'),
           val = _.isString(undoUrl) ? undoUrl : this.location,
           store = this.$store,
-          oldUrl = _.get(store, 'state.page.data.customUrl');
+          oldUrl = _.get(store, 'state.page.data.url');
 
         let url;
 
@@ -549,7 +503,7 @@
           url === '';
         }
 
-        store.dispatch('savePage', { customUrl: url }).then(() => {
+        store.dispatch('savePage', { url }).then(() => {
           if (url && !_.isString(undoUrl)) { // by default this method will be passed the Event that triggered it. check to see if it's passed an explicit undoUrl instead
             store.dispatch('showSnackbar', 'Saved custom page url');
           } else {
@@ -614,7 +568,7 @@
     },
     mounted() {
       const prefix = _.get(this.$store, 'state.site.prefix'),
-        customUrl = _.get(this.$store, 'state.page.data.customUrl') || '';
+        customUrl = _.get(this.$store, 'state.page.data.url') || '';
 
       // get location when form opens
       // remove prefix when displaying the url in the form. it'll be added when saving
@@ -627,15 +581,6 @@
       if (this.currentTitle) {
         this.title = this.currentTitle;
       }
-
-      // check to see if layout has @published, which (if it didn't exist) would prevent published page
-      // from being displayed. note: this checks @published directly, rather than the layouts index
-      // (because we don't care about the layout state, only that it exists on a very low level)
-      getHead(`${_.get(this.$store, 'state.page.data.layout')}@published`).then((res) => {
-        this.isLayoutPublished = res;
-      }).catch(() => {
-        this.isLayoutPublished = false;
-      });
     },
     components: {
       UiIcon,

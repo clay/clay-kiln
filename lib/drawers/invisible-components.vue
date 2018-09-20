@@ -5,7 +5,7 @@
 <script>
   import _ from 'lodash';
   import { find } from '@nymag/dom';
-  import { getComponentName, refProp, refAttr, removeProp } from '../utils/references';
+  import { refProp, refAttr, removeProp, getComponentName } from '../utils/references';
   import label from '../utils/label';
   import filterableList from '../utils/filterable-list.vue';
 

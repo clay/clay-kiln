@@ -94,7 +94,7 @@
             <simple-list-item v-for="(item, index) in items"
               :index="index"
               :data="item"
-              key="index"
+              :key="index"
               :currentItem="currentItem"
               :propertyName="args.propertyName"
               :badge="args.badge"

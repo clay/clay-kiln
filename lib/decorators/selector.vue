@@ -231,6 +231,7 @@
   import getRect from 'element-client-rect';
   import { getSchema, getData } from '../core-data/components';
   import { has as hasGroup } from '../core-data/groups';
+  import { getLayoutName } from 'clayutils';
   import { getComponentName, componentListProp, bookmarkProp } from '../utils/references';
   import { getComponentEl, isComponentInPage } from '../utils/component-elements';
   import label from '../utils/label';
@@ -263,11 +264,13 @@
 
   export default {
     data() {
+      const itemName = getLayoutName(this.$options.uri) || getComponentName(this.$options.uri);
+
       return {
         selectorPosition: 'left',
         uri: this.$options.uri,
-        componentName: getComponentName(this.$options.uri),
-        componentLabel: label(getComponentName(this.$options.uri)),
+        componentName: itemName,
+        componentLabel: label(itemName),
         parentField: this.$options.parentField,
         parentURI: this.$options.parentURI,
         hasRemove: this.$options.parentField && this.$options.parentField.isEditable,

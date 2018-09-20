@@ -62,11 +62,16 @@
     }
 
     .action-error-message,
-    .action-warning-message {
+    .action-warning-message,
+    .action-info-message {
       @include type-caption();
 
       cursor: pointer;
       margin-top: 16px;
+    }
+
+    .action-info-message {
+      text-align: center;
     }
 
     .action-error-message {
@@ -128,6 +133,7 @@
         <ui-datepicker class="schedule-date" color="accent" v-model="dateValue" :minDate="today" :customFormatter="formatDate" label="Date" :disabled="hasErrors"></ui-datepicker>
         <timepicker ref="timepicker" class="schedule-time" :value="timeValue" label="Time" :disabled="hasErrors" @update="updateTime"></timepicker>
       </form>
+      <span class="action-info-message">Time Zone: {{ timezone }}</span>
       <ui-button v-if="showSchedule" :disabled="disableSchedule || hasErrors" class="action-button" buttonType="button" color="orange" @click.stop="scheduleLayout">{{ actionMessage }}</ui-button>
       <ui-button v-else :disabled="hasErrors" class="action-button" buttonType="button" color="accent" @click.stop="publishLayout">{{ actionMessage }}</ui-button>
       <span v-if="hasErrors" class="action-error-message" @click="goToHealth">Please fix errors before publishing</span>
@@ -152,16 +158,10 @@
   import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
   import parseDate from 'date-fns/parse';
   import getTime from 'date-fns/get_time';
-  import isToday from 'date-fns/is_today';
-  import isYesterday from 'date-fns/is_yesterday';
-  import isTomorrow from 'date-fns/is_tomorrow';
-  import addWeeks from 'date-fns/add_weeks';
-  import subWeeks from 'date-fns/sub_weeks';
-  import isThisWeek from 'date-fns/is_this_week';
-  import isPast from 'date-fns/is_past';
   import { mapState } from 'vuex';
   import { getLayoutNameAndInstance } from '../utils/references';
   import { START_PROGRESS, FINISH_PROGRESS } from '../toolbar/mutationTypes';
+  import { getTimezone, calendar, isInThePast } from '../utils/calendar';
   import UiIcon from 'keen/UiIcon';
   import UiButton from 'keen/UiButton';
   import UiDatepicker from 'keen/UiDatepicker';
@@ -172,41 +172,6 @@
   import logger from '../utils/log';
 
   const log = logger(__filename);
-
-  function calendar(date) {
-    if (isToday(date)) {
-      // today
-      return distanceInWordsToNow(date, { includeSeconds: true, addSuffix: true });
-    } else if (isYesterday(date)) {
-      // yesterday
-      return `Yesterday at ${dateFormat(date, 'h:mm A')}`;
-    } else if (isTomorrow(date)) {
-      // tomorrow
-      return `Tomorrow at ${dateFormat(date, 'h:mm A')}`;
-    } else if (isThisWeek(addWeeks(date, 1))) {
-      // last week
-      return `Last ${dateFormat(date, 'dddd [at] h:mm A')}`;
-    } else if (isThisWeek(subWeeks(date, 1))) {
-      // next week
-      return dateFormat(date, 'dddd [at] h:mm A');
-    } else {
-      return dateFormat(date, 'M/D/YYYY [at] h:mm A');
-    }
-  }
-
-  /**
-   * determine if date and time values from the schedule form are in the past
-   * @param  {Date}  dateValue
-   * @param  {sttring}  timeValue
-   * @return {boolean}
-   */
-  function isInThePast(dateValue, timeValue) {
-    const date = dateFormat(dateValue, 'YYYY-MM-DD'),
-      time = timeValue,
-      datetime = parseDate(date + ' ' + time);
-
-    return isPast(datetime);
-  }
 
   export default {
     data() {
@@ -220,13 +185,13 @@
     computed: mapState({
       hasErrors: (state) => state.validation.errors && state.validation.errors.length > 0,
       hasWarnings: (state) => state.validation.warnings && state.validation.warnings.length > 0,
-      isPublished: (state) => state.layout.published,
-      isScheduled: (state) => state.layout.scheduled,
-      uri: (state) => state.page.data.layout,
-      publishedDate: (state) => state.layout.publishTime,
-      createdDate: (state) => state.layout.createTime,
-      scheduledDate: (state) => state.layout.scheduleTime,
-      lastUpdated: (state) => state.layout.updateTime,
+      isPublished: (state) => state.layout.state.published,
+      isScheduled: (state) => state.layout.state.scheduled,
+      uri: (state) => state.layout.uri,
+      publishedDate: (state) => state.layout.state.publishTime,
+      createdDate: (state) => state.layout.state.createTime,
+      scheduledDate: (state) => state.layout.state.scheduledTime,
+      lastUpdated: (state) => state.layout.state.updateTime,
       defaultTitle() {
         const { name, instance } = getLayoutNameAndInstance(this.$store);
 
@@ -245,12 +210,14 @@
         }
       },
       time() {
+        const tz = getTimezone();
+
         if (this.isScheduled) {
-          return dateFormat(this.scheduledDate, 'MMMM Do [at] h:mm A');
+          return `${dateFormat(this.scheduledDate, 'MMMM Do [at] h:mm A')} (${tz} time)`;
         } else if (this.isPublished) {
-          return dateFormat(this.publishedDate, 'MMMM Do [at] h:mm A');
+          return `${dateFormat(this.publishedDate, 'MMMM Do [at] h:mm A')} (${tz} time)`;
         } else if (this.createdDate) {
-          return dateFormat(this.createdDate, 'MMMM Do [at] h:mm A');
+          return `${ dateFormat(this.createdDate, 'MMMM Do [at] h:mm A') } (${tz} time)`;
         } else {
           return 'Some time ago';
         }
@@ -281,6 +248,9 @@
         } else {
           return 'Publish Now';
         }
+      },
+      timezone() {
+        return getTimezone();
       }
     }),
     methods: {
@@ -369,7 +339,7 @@
       }
     },
     mounted() {
-      const currentTitle = _.get(this.$store, 'state.layout.title');
+      const currentTitle = _.get(this.$store, 'state.layout.state.title');
 
       // if the page already has a title set, default the form to use it
       if (currentTitle) {

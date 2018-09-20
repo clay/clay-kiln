@@ -33,7 +33,7 @@
       },
       imageURL() {
         // only display the image if it's not the default google avatar (or the built-in clay avatar)
-        if (this.url && this.url === 'kiln-clay-avatar') {
+        if (this.url && this.url === 'clay-avatar') {
           // special kiln avatar
           // note: we're referencing it from amphora-search instead of hardcoding it so we can
           // 1) change it as needed and

@@ -4,7 +4,6 @@ import Vue from 'vue';
 import NProgress from 'vue-nprogress';
 import keycode from 'keycode';
 import velocity from 'velocity-animate/velocity.min.js';
-import differenceInMinutes from 'date-fns/difference_in_minutes';
 import store from './lib/core-data/store';
 import { addSelectorButton } from './lib/utils/custom-buttons'; // eslint-disable-line
 import { add as addInput } from './lib/forms/inputs';
@@ -17,6 +16,7 @@ import { hasClickedSelectableEl } from './lib/decorators/select';
 import { META_PRESS, META_UNPRESS } from './lib/preloader/mutationTypes';
 import { getEventPath } from './lib/utils/events';
 import { standardCurve } from './lib/utils/references';
+import { getLastEditUser } from './lib/utils/history';
 import 'keen-ui/src/bootstrap'; // import this once, for KeenUI components
 import 'velocity-animate/velocity.ui.min.js'; // import this once, for velocity ui stuff
 import VueObserveVisibility from 'vue-observe-visibility';
@@ -75,23 +75,6 @@ Vue.directive('click-outside', VueClickOutside);
 window.kiln = window.kiln || {};
 // .plugins, .inputs, .validators, and .panes objects should already exist
 window.kiln.utils = utilsAPI;
-
-/**
- * get the last user who edited a page, who ISN'T the current user
- * @param  {object} store
- * @return {null|string}
- */
-function getLastEditUser(store) {
-  const currentUser = _.get(store, 'state.user'),
-    lastUser = _.findLast(_.get(store, 'state.page.state.users'), (user) => {
-      const isDifferentUser = user.username !== currentUser.username,
-        isWithinFiveMinutes = Math.abs(differenceInMinutes(user.updateTime, new Date())) < 5;
-
-      return isDifferentUser && isWithinFiveMinutes;
-    });
-
-  return lastUser ? lastUser.name : null;
-}
 
 /**
  * determine if forms, or modals are open
@@ -155,20 +138,21 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(() => {
       // collect new-pages IDs as a flattened array.
       const pageTemplateIds = _.get(store, 'state.lists[new-pages].items', [])
-          .reduce((acc, { id, children }) => {
-            acc.concat(id);
-            return acc.concat(...children.map(({ id }) => id));
+          .reduce((acc, { id, title, children }) => {
+            acc.concat({ id, title }); // for non-nested lists
+            return acc.concat(...children);
           }, []),
         currentPageURI = _.get(store, 'state.page.uri'),
         currentPageID = currentPageURI.match(/pages\/([A-Za-z0-9\-]+)/)[1],
-        currentPageTemplate = pageTemplateIds.find((id) => id === currentPageID);
+        currentPageTemplate = pageTemplateIds.find(({ id }) => id === currentPageID),
+        lastEditUser = getLastEditUser(_.get(store, 'state.page.state'), _.get(store, 'state.user'));
 
       if (!navigator.onLine) {
         // test connection loss on page load
         store.dispatch('addAlert', { type: 'error', text: connectionLostMessage, permanent: true });
-      } else if (getLastEditUser(store)) {
+      } else if (lastEditUser) {
         // show message if another user has edited this page in the last 5 minutes
-        store.dispatch('addAlert', { type: 'info', text: `Edited less than 5 minutes ago by ${getLastEditUser(store)}` });
+        store.dispatch('addAlert', { type: 'info', text: `Edited less than 5 minutes ago${ lastEditUser.name ? ` by ${lastEditUser.name}` : '' }` });
       }
 
       // display a status message if you're editing a page template

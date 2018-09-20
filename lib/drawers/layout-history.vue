@@ -159,7 +159,7 @@
     },
     computed: {
       history() {
-        let history = _.map(_.cloneDeep(_.get(this.$store, 'state.layout.history', [])), (event) => {
+        let history = _.map(_.cloneDeep(_.get(this.$store, 'state.layout.state.history', [])), (event) => {
           event.formattedTime = formatStatusTime(event.timestamp);
           event.formattedAction = addEd(event.action);
           // event.formattedUsers = 'By ' + event.users.map((user) => user.name || user.username).join(', ');
