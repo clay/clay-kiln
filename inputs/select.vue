@@ -160,16 +160,27 @@
         // filter by site specificity
         fullOptions = filterBySite(fullOptions, currentSlug);
 
-        // format the options for the UI
-        return _.map(fullOptions, (option) => {
-          if (_.isString(option) || _.isNumber(option)) {
-            return {
-              [this.keys.value]: option,
-              [this.keys.label]: _.startCase(option)
+        // normalize/validate the options for the UI
+        return fullOptions.map((option) => {
+  
+          // handle non-primitive options
+          if (Object(option) === option) {
+            if (!this.isValidObjectOption(option)) {
+              console.error(`Option for Select expected properties "name" and "value." 
+              Received ${JSON.stringify(option)}`);
+              return {
+                [this.keys.value]: '',
+                [this.keys.label]: ''
+              };
             };
-          } else {
             return option;
           }
+
+          // handle primitive options
+          return {
+            [this.keys.value]: option,
+            [this.keys.label]: _.startCase(option)
+          };
         });
       },
       // convert store data into a format suitable for Keen UiSelect.value prop
@@ -203,9 +214,17 @@
     },
     methods: {
       onDropdown() {
-        const length = this.options.length < 7 ? this.options.length : 7; // 7 items is the max number that will be displayed at once
-
-        this.$emit('resize', length * 32); // potentially resize the form (if dropdown options overflow)
+        // 7 items is the max number that will be displayed at once
+        const length = Math.min(this.options.length, 7);
+  
+        // potentially resize the form (if dropdown options overflow)
+        this.$emit('resize', length * 32);
+      },
+      // check that select option has name and value
+      isValidObjectOption(option = {}) {
+        if (this.args.storeRawData) return true;
+        if (option.hasOwnProperty('value') && option.hasOwnProperty('name')) return true;
+        return false;
       },
       onDropdownClose() {
         this.$emit('resize', 0);
