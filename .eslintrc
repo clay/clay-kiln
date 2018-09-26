@@ -39,6 +39,7 @@
     }],
     // best practices
     "complexity": [2, 8],
+    "curly": [2, "all"],
     "default-case": 2,
     "guard-for-in": 2,
     "no-alert": 1,

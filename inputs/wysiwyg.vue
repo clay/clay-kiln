@@ -202,7 +202,7 @@
     <div v-else>
       <div class="wysiwyg-content"></div>
       <div v-if="isTooLong" :class="[
-        'ui-textbox__counter', 
+        'ui-textbox__counter',
         'ui-textbox__counter--wysiwyg',
         {'ui-textbox__counter--wysiwyg-error': isTooLong} ]">
         {{ valueLength + '/' + maxLength }}
@@ -527,7 +527,7 @@
           start = s;
           end = e;
         }
-  
+
         // remove the hint
         function remove() {
           editor.removeFormat(start, end);
@@ -805,7 +805,9 @@
       });
 
       // add hints
-      if (maxLength) tooLong = hint(editor, {color: errorColor});
+      if (maxLength) {
+        tooLong = hint(editor, {color: errorColor});
+      }
 
       this.editor = editor; // save reference to the editor
 
