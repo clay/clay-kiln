@@ -20,6 +20,7 @@
   import dateFormat from 'date-fns/format';
   import { parseDate as parseNaturalDate } from 'chrono-node';
   import { shouldBeRequired, getValidationError } from '../forms/field-helpers';
+  import { isEmpty } from '../utils/comparators';
   import UiTextbox from 'keen/UiTextbox';
   import attachedButton from '../../inputs/attached-button.vue';
 
@@ -42,7 +43,8 @@
 
           if (validationError) {
             return validationError;
-          } else if (!parsed) {
+          } else if (!parsed && !isEmpty(this.timeValue)) {
+            // only display the time parsing error if the timepicker has data in it
             return `${this.help} (Please enter a valid time)`;
           }
         }
