@@ -136,14 +136,45 @@
       cursor: ew-resize;
     }
 
-    .noUi-active:before {
-        transform: scale(1);
+    &:not(.has-tooltips) .noUi-active:before,
+    &:not(.has-tooltips) .noUi-handle:focus:before {
+      transform: scale(1);
+    }
+
+    .noUi-tooltip {
+      @include kiln-copy();
+
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='36' height='36'%3E%3Cpath fill='%231976d2' d='M11 .5c-1.7.2-3.4.9-4.7 2-1.1.9-2 2-2.5 3.2-1.2 2.4-1.2 5.1-.1 7.7 1.1 2.6 2.8 5 5.3 7.5 1.2 1.2 2.8 2.7 3 2.7 0 0 .3-.2.6-.5 3.2-2.7 5.6-5.6 7.1-8.5.8-1.5 1.1-2.6 1.3-3.8.2-1.4 0-2.9-.5-4.3-1.2-3.2-4.1-5.4-7.5-5.8-.5-.2-1.5-.2-2-.2z'/%3E%3C/svg%3E");
+      background-size: $ui-slider-marker-size $ui-slider-marker-size;
+      color: $md-white;
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      height: $ui-slider-marker-size;
+      line-height: 13px;
+      margin-left: -($ui-slider-marker-size - $ui-track-thumb-size) / 2;
+      margin-top: -($ui-slider-marker-size - $ui-track-thumb-size) / 2;
+      opacity: 0;
+      padding-top: 8px;
+      position: absolute;
+      text-align: center;
+      transform: scale(0) translateY(0) ;
+      transition: all $ui-track-focus-ring-transition-duration ease;
+      user-select: none;
+      white-space: nowrap;
+      width: $ui-slider-marker-size;
+    }
+
+    .noUi-active .noUi-tooltip,
+    .noUi-handle:focus .noUi-tooltip {
+      opacity: 1;
+      transform: scale(1) translateY(-26px);
     }
   }
 </style>
 
 <template>
-  <div class="editor-range ui-textbox has-label has-floating-label">
+  <div class="editor-range ui-textbox has-label has-floating-label" :class="rangeClasses">
     <div class="ui-textbox__content">
       <label class="ui-textbox__label">
         <div class="ui-textbox__label-text is-floating">{{ label }}</div>
@@ -162,6 +193,7 @@
   import _ from 'lodash';
   import { find } from '@nymag/dom';
   import slider from 'nouislider';
+  import keycode from 'keycode';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import label from '../lib/utils/label';
   import { getValidationError } from '../lib/forms/field-helpers';
@@ -209,6 +241,11 @@
       },
       hasFeedback() {
         return this.args.help || this.showError;
+      },
+      rangeClasses() {
+        return {
+          'has-tooltips': this.args.tooltips
+        };
       }
     },
     methods: {
@@ -217,20 +254,45 @@
       }
     },
     mounted() {
-      const el = find(this.$el, '.editor-range-input');
+      const el = find(this.$el, '.editor-range-input'),
+        step = this.step;
+
+      let handle;
 
       slider.create(el, {
         start: this.start,
-        step: this.step,
+        step: step,
         range: {
           min: this.min,
           max: this.max
+        },
+        format: {
+          to(val) {
+            return step >= 1 ? parseInt(val) : val;
+          },
+          from(val) {
+            return step >= 1 ? parseInt(val) : val;
+          }
         },
         connect: this.isDualPoint ? [false, true, false] : [true, false],
         tooltips: this.tooltips
       });
 
-      console.log(el.noUiSlider.get());
+      // add keyboard support
+      handle = find(el, '.noUi-handle');
+      if (handle) {
+        handle.addEventListener('keydown', (e) => {
+          const key = keycode(e),
+            val = new Number(el.noUiSlider.get());
+
+          if (key === 'left' && val > this.min) {
+            el.noUiSlider.set(val - this.step);
+          }
+          if (key === 'right' && val < this.max) {
+            el.noUiSlider.set(val + this.step);
+          }
+        });
+      }
     }
   };
 </script>
