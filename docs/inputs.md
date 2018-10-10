@@ -380,6 +380,33 @@ field1:
         sites: site1, site2
 ```
 
+# `range`
+
+A slider that allows selecting between a range of numerical values. May use two points (known as a _dual-point range_). Uses [noUISlider](https://refreshless.com/nouislider/) under the hood, styled based on [KeenUI's slider](https://josephuspaye.github.io/Keen-UI/#/ui-slider).
+
+```yaml
+    input: range
+    min: 0
+    max: 10
+```
+
+### Range Arguments
+
+* **start** - default value, or an array of _two_ values (for dual-point ranges)
+* **min** - hardcoded minimum value selectable in the range, defaults to `0`
+* **max** - hardcoded maximum value selectable in the range, defaults to `10`
+* **minLabel** - label that will be displayed on the left side of the range, defaults to the `min` value
+* **maxLabel** - label that will be displayed on the right side of the range, defaults to the `max` value
+* **step** - define step increments, defaults to `1`,
+* **tooltips** - boolean that determines whether value tooltips will display above the points
+* **help** - description / helper text for the field
+* **validate.min** - minimum value allowed
+* **validate.max** - maximum value allowed
+* **validate.minMessage** - will appear when minimum validation fails
+* **validate.maxMessage** - will appear when maximum validation fails
+
+Note that you should use `min`/`max` to set the hardcoded limits for the range input and `validate.min`/`validate.max` to set a (more limited) _publishable_ range, if necessary.
+
 # `segmented-button`
 
 A group of buttons allowing the user to select one (or more!) of a few related options.
