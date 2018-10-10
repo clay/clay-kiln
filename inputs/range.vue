@@ -55,7 +55,7 @@
       background: $ui-slider-track-background-color;
       box-sizing: border-box;
       height: $ui-slider-track-height;
-      margin: 20px 0 10px;
+      margin: 20px 0;
       position: relative;
     	touch-action: none;
     	user-select: none;
@@ -106,6 +106,7 @@
       right: $ui-track-thumb-size / -2;
       top: $ui-track-thumb-size / -2 + 1;
       width: $ui-track-thumb-size;
+      z-index: 2;
 
       &:before {
           background-color: $ui-track-focus-ring-color;
@@ -169,6 +170,34 @@
     .noUi-handle:focus .noUi-tooltip {
       opacity: 1;
       transform: scale(1) translateY(-26px);
+    }
+
+    .noUi-pips {
+      box-sizing: border-box;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+
+    .noUi-value {
+      @include kiln-copy();
+
+      color: $text-alt-color;
+      font-size: 11px;
+      position: absolute;
+    	white-space: nowrap;
+    	text-align: center;
+      transform: translate(-50%, 50%);
+    }
+
+    .noUi-marker {
+      background-color: rgba($md-black, .75);
+      height: $ui-slider-track-height;
+      position: absolute;
+      transition: opacity .2s ease;
+      width: 2px;
+      z-index: 1;
     }
   }
 </style>
@@ -249,23 +278,28 @@
       }
     },
     methods: {
-      update(val) {
+      update(values) {
+        // if we're dealing with a single value, grab it directly
+        // otherwise grab the whole array
+        const val = values.length === 1 ? _.head(values) : values;
+
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: val });
       }
     },
     mounted() {
       const el = find(this.$el, '.editor-range-input'),
-        step = this.step;
+        step = this.step,
+        min = this.min,
+        max = this.max,
+        minLabel = this.minLabel,
+        maxLabel = this.maxLabel;
 
       let handle;
 
       slider.create(el, {
         start: this.start,
         step: step,
-        range: {
-          min: this.min,
-          max: this.max
-        },
+        range: { min, max },
         format: {
           to(val) {
             return step >= 1 ? parseInt(val) : val;
@@ -275,7 +309,34 @@
           }
         },
         connect: this.isDualPoint ? [false, true, false] : [true, false],
-        tooltips: this.tooltips
+        tooltips: this.tooltips,
+        pips: {
+          mode: 'steps',
+          filter(val) {
+            if (val === min) {
+              return 2;
+            }
+
+            if (val === max) {
+              return 2;
+            }
+
+            if (val % step === 0) {
+              return 0;
+            }
+          },
+          format: {
+            to(val) {
+              if (val === min) {
+                return minLabel;
+              }
+
+              if (val === max) {
+                return maxLabel;
+              }
+            }
+          }
+        }
       });
 
       // add keyboard support
@@ -293,6 +354,8 @@
           }
         });
       }
+
+      el.noUiSlider.on('update', this.update);
     }
   };
 </script>
