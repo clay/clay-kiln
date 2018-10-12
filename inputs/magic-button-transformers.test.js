@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import * as lib from './magic-button-transformers';
 
 describe('magic-button transformers', () => {
@@ -84,6 +85,26 @@ describe('magic-button transformers', () => {
 
     test('removes html tags', () => {
       expect(fn('Foo<br /> <h1>Bar</h1>', format)).toBe('http://pixel.nymag.com/imgs/custom/tvrecaps/recaps-foo-bar-160x160.png');
+    });
+  });
+
+  describe('init', () => {
+    const fn = lib.init;
+
+    beforeEach(() => {
+      window.kiln = window.kiln || {};
+      window.kiln.transformers = {};
+    });
+
+    test('adds built in transformers', () => {
+      fn();
+      expect(_.isEmpty(window.kiln.transformers)).toBe(false);
+    });
+
+    test('allows defining custom transformers', () => {
+      window.kiln.transformers.fromSlug = () => {};
+      fn();
+      expect(_.size(window.kiln.transformers)).toBeGreaterThan(4);
     });
   });
 });
