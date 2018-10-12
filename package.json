@@ -43,7 +43,8 @@
     "browser": true,
     "collectCoverageFrom": [
       "<rootDir>/lib/**/*.{js,vue}",
-      "<rootDir>/inputs/**/*.{js,vue}"
+      "<rootDir>/inputs/**/*.{js,vue}",
+      "!<rootDir>/lib/utils/api.js"
     ],
     "coverageReporters": [
       "lcov",
