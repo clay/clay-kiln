@@ -66,7 +66,7 @@
       height: 100%;
     	position: relative;
       width: 100%;
-    	z-index: 1;
+    	z-index: 2;
     }
 
     .noUi-connects {
@@ -188,7 +188,17 @@
       position: absolute;
     	white-space: nowrap;
     	text-align: center;
-      transform: translate(-50%, 50%);
+    }
+
+    // the first value comes after the first marker,
+    // so it's the second div
+    .noUi-value:nth-of-type(2) {
+      transform: translate(0, 50%);
+    }
+
+    // the last value is always the last div
+    .noUi-value:last-of-type {
+      transform: translate(-100%, 50%);
     }
 
     .noUi-marker {
@@ -220,12 +230,49 @@
 
 <script>
   import _ from 'lodash';
-  import { find } from '@nymag/dom';
+  import { find, findAll } from '@nymag/dom';
   import slider from 'nouislider';
   import keycode from 'keycode';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import label from '../lib/utils/label';
   import { getValidationError } from '../lib/forms/field-helpers';
+
+  /**
+   * get range value for each handle,
+   * used for keyboard support
+   * @param  {number|array} val
+   * @param  {number} index
+   * @return {number}
+   */
+  function getNumber(val, index) {
+    if (_.isNumber(val)) {
+      return val;
+    } else if (_.isArray(val)) {
+      return val[index];
+    } else {
+      throw new Error('Unable to get value from range input!');
+    }
+  }
+
+  /**
+   * set range value back into input,
+   * used for keyboard support
+   * @param {number} val
+   * @param {number|array} rawVal
+   * @param {number} index
+   * @param {function} setter
+   */
+  function setNumber(val, rawVal, index, setter) {
+    if (_.isNumber(rawVal)) {
+      setter(val);
+    } else if (_.isArray(rawVal) && index === 0) {
+      setter([val, rawVal[1]]);
+    } else if (_.isArray(rawVal) && index === 1) {
+      setter([rawVal[0], val]);
+    } else {
+      throw new Error('Unable to set value into range input!');
+    }
+  }
 
   export default {
     props: ['name', 'data', 'schema', 'args'],
@@ -281,7 +328,7 @@
       update(values) {
         // if we're dealing with a single value, grab it directly
         // otherwise grab the whole array
-        const val = values.length === 1 ? _.head(values) : values;
+        const val = this.isDualPoint ? values : _.head(values);
 
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: val });
       }
@@ -293,8 +340,6 @@
         max = this.max,
         minLabel = this.minLabel,
         maxLabel = this.maxLabel;
-
-      let handle;
 
       slider.create(el, {
         start: this.start,
@@ -312,7 +357,12 @@
         tooltips: this.tooltips,
         pips: {
           mode: 'steps',
-          filter(val) {
+          filter(val, type) {
+            if (!type || val % step !== 0) {
+              return -1; // only show pips for each step
+            }
+
+            // make sure we always show the min and max values
             if (val === min) {
               return 2;
             }
@@ -321,6 +371,7 @@
               return 2;
             }
 
+            // use small pips for each step between the min and max values
             if (val % step === 0) {
               return 0;
             }
@@ -340,20 +391,19 @@
       });
 
       // add keyboard support
-      handle = find(el, '.noUi-handle');
-      if (handle) {
+      _.each(findAll(el, '.noUi-handle'), (handle, index) => {
         handle.addEventListener('keydown', (e) => {
           const key = keycode(e),
-            val = new Number(el.noUiSlider.get());
+            val = getNumber(el.noUiSlider.get(), index);
 
           if (key === 'left' && val > this.min) {
-            el.noUiSlider.set(val - this.step);
+            setNumber(val - this.step, el.noUiSlider.get(), index, el.noUiSlider.set);
           }
           if (key === 'right' && val < this.max) {
-            el.noUiSlider.set(val + this.step);
+            setNumber(val + this.step, el.noUiSlider.get(), index, el.noUiSlider.set);
           }
         });
-      }
+      });
 
       el.noUiSlider.on('update', this.update);
     }
