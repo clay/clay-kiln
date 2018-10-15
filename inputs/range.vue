@@ -17,7 +17,7 @@
   * **minLabel** - label that will be displayed on the left side of the range, defaults to the `min` value
   * **maxLabel** - label that will be displayed on the right side of the range, defaults to the `max` value
   * **step** - define step increments, defaults to `1`,
-  * **tooltips** - boolean that determines whether value tooltips will display above the points
+  * **tooltips** - boolean that determines whether value tooltips will display above the points, defaults to `true`
   * **help** - description / helper text for the field
   * **validate.min** - minimum value allowed
   * **validate.max** - maximum value allowed
@@ -307,7 +307,7 @@
         return this.args.maxLabel || this.max.toString();
       },
       tooltips() {
-        return !!this.args.tooltips;
+        return this.args.tooltips !== false;
       },
       errorMessage() {
         return getValidationError(this.data, this.args.validate, this.$store, this.name);
@@ -320,7 +320,7 @@
       },
       rangeClasses() {
         return {
-          'has-tooltips': this.args.tooltips
+          'has-tooltips': this.tooltips
         };
       }
     },
@@ -346,12 +346,8 @@
         step: step,
         range: { min, max },
         format: {
-          to(val) {
-            return step >= 1 ? parseInt(val) : val;
-          },
-          from(val) {
-            return step >= 1 ? parseInt(val) : val;
-          }
+          to: (val) => new Number(val),
+          from: (val) => new Number(val)
         },
         connect: this.isDualPoint ? [false, true, false] : [true, false],
         tooltips: this.tooltips,

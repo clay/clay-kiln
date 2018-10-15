@@ -398,7 +398,7 @@ A slider that allows selecting between a range of numerical values. May use two 
 * **minLabel** - label that will be displayed on the left side of the range, defaults to the `min` value
 * **maxLabel** - label that will be displayed on the right side of the range, defaults to the `max` value
 * **step** - define step increments, defaults to `1`,
-* **tooltips** - boolean that determines whether value tooltips will display above the points
+* **tooltips** - boolean that determines whether value tooltips will display above the points, defaults to `true`
 * **help** - description / helper text for the field
 * **validate.min** - minimum value allowed
 * **validate.max** - maximum value allowed
