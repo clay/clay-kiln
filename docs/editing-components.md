@@ -31,6 +31,37 @@ When someone clicks the `data-editable` title, it will open an inline WYSIWYG fo
 
 {% endhint %}
 
+## Inline Reordering
+
+Complex-list items can be reordered and deleted inline without opening a settings modal if their template markup allows for it.
+
+```yaml
+articles:
+  _has:
+    input: complex-list
+    props:
+      -
+        prop: articleSlug
+        _label: Article Slug
+        _has: text
+      -
+        prop: headline
+        _label: Headline
+        _has: text
+
+```
+
+```handlebars
+<ul data-reorderable="articles" data-reorderable-prop="articleSlug">
+  {{#each articles}}
+    <li data-reorderable-item="{{ this.articleSlug }}">{{ this.headline }}</li> // data-reorderable-item is set to articles[@index].articleSlug
+  {{/each}}
+</ul>
+```
+
+The parent element that contains the list items must have a `data-reorderable` attribute where the value is the name of the complex-list field (similar to `data-editable` on inline fields) and a `data-reorderable-prop` attribute where the value is a _unique_ property that all complex-list items have.
+Each list item element should be a direct child of the `data-reorderable` element and should have a `data-reorderable-item` attribute where the value is the value of that item's `data-reorderable-prop` property.
+
 ## Placeholders
 
 Placeholders display when fields are empty, and are used to prompt end users to add information. They can be added to any field or group.
