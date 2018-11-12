@@ -54,3 +54,42 @@
   top: 0;
   width: 100%;
 }
+
+.complex-list-trash {
+  align-items: center;
+  background: $permanent-placeholder-bg-color;
+  bottom: 50px;
+  color: $permanent-placeholder-color;
+  display: none;
+  height: 300px;
+  justify-content: center;
+  left: 50px;
+  position: fixed;
+  width: 300px;
+  z-index: 9998;
+}
+
+.complex-list-trash .material-icons {
+  content: 'delete';
+  font-size: 150px;
+}
+
+.complex-list-trash.dragula-drop-area .material-icons:not(:only-child) {
+  background: $placeholder-error-bg-color;
+  color: $placeholder-error-color;
+  font-size: 300px;
+  height: 100%;
+  width: 100%;
+}
+
+.complex-list-trash.dragula-drop-area {
+  display: flex;
+}
+
+.complex-list-trash > .gu-transit {
+  display: block;
+  max-width: 200px;
+  opacity: 0.7;
+  filter: alpha(opacity=70);
+  position: absolute;
+}
