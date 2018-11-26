@@ -17,6 +17,10 @@
   On browsers without native time pickers, users may enter in the time without worrying about the format. The simple NLP engine can handle things like "10am", "4:15 PM", "13:00", and even "midnight".
 
   {% endhint %}
+
+  ### Timepicker Data Format
+
+  Timepicker returns a **string** with the time in `h:mm A` format.
 </docs>
 
 <template>

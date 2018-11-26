@@ -25,6 +25,10 @@
   * **validate.maxMessage** - will appear when maximum validation fails
 
   Note that you should use `min`/`max` to set the hardcoded limits for the range input and `validate.min`/`validate.max` to set a (more limited) _publishable_ range, if necessary.
+
+  ### Range Returned Value
+
+  If you specify the `start` as a single (numerical) value, Range will return a **string** with a single value. If you specify the `start` as an array of two (numerical) values, Range will return an **array of strings** with two values.
 </docs>
 
 <style lang="sass">

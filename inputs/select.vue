@@ -64,6 +64,10 @@
   ```
 
   {% endhint %}
+
+  ### Select Data Formats
+
+  By default (when `multiple` is false or unset), this will return data as a **string** with the value of the selected option. If `multiple` is `true`, this will return an **object** where each option is a key with a `true` / `false` value. Note that the single-select mode is the same format as a `radio` input, and the multi-select mode is the same as a `checkbox-group`.
 </docs>
 
 <style lang="sass">

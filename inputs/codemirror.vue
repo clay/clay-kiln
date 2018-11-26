@@ -22,6 +22,10 @@
   We will add more supported modes as we find use cases for them. See [the full list of modes supported in codemirror.](http://codemirror.net/mode/)
 
   {% endhint %}
+
+  ### Codemirror Data Format
+
+  Codemirror inputs, no matter what mode you select, will return a **string** of plaintext.
 </docs>
 
 <style lang="sass">

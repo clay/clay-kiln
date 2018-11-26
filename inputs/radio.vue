@@ -34,6 +34,10 @@
           value: baz-qux
           sites: site1, site2
   ```
+
+  ### Radio Data Format
+
+  Radio will return a **string** with the `value` of the selected `option`.
 </docs>
 
 <style lang="sass">

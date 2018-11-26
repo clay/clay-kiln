@@ -22,6 +22,10 @@
   CSV buttons don't have validation or attached buttons.
 
   {% endhint %}
+
+  ### CSV Data Format
+
+  CSV inputs will format data as an **array of objects*, where each object corresponds to a row and each object's keys are derived from the CSV's column headers.
 </docs>
 
 <template>

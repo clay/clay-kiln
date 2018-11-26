@@ -59,6 +59,10 @@
       component: clay-paragraph
       field: text
   ```
+
+  ### WISYWIG Data Format
+
+  WYSIWYG returns a **string** of HTML.
 </docs>
 
 <style lang="sass">
