@@ -28,7 +28,7 @@
 
   ### Range Returned Value
 
-  If you specify the `start` as a single (numerical) value, Range will return a **string** with a single value. If you specify the `start` as an array of two (numerical) values, Range will return an **array of strings** with two values.
+  If you specify the `start` as a single (numerical) value, Range will return a single **number**. If you specify the `start` as an array of two (numerical) values, Range will return an **array of numbers** with two values.
 </docs>
 
 <style lang="sass">
