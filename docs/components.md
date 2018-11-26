@@ -64,7 +64,7 @@ Schemas \(or _schemata_, for pedants like myself\) are the main connective tissu
 
 Schemas for components that are currently on the page are automatically parsed by Amphora and added to the page when Kiln loads. Schemas for other components are added when those components are added.
 
-## Variations
+## Styles and Style Variations
 
 By convention (and especially if you use `claycli`), component styles go in a `styleguides/` folder in the root of your Clay installation. This folder may contain folders for each site you're hosting, as well as a `_default` folder. When rendering, components will be loaded with styles from the site-specific styleguide of the site you're serving them on, falling back to the `_default` styles if those do not exist. For example, (when serving the `article` component on `nymag.com`) Clay will check if `styleguides/nymag/components/article.css` exists, and if not it will attempt to load `styleguides/_default/components/article.css`.
 
