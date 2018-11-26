@@ -6,7 +6,7 @@ Components in Clay consist of templates, styles, JavaScript models \(data handli
 
 ## Template
 
-Kiln assumes that every component has a [Handlebars](http://handlebarsjs.com/) template, and that it uses `data-uri` to reference the URI of the component instance. For regular components that live in the `<body>` of a page, you must use a _single root tag_ that contains `data-uri`:
+Kiln assumes that every component has a [Handlebars](http://handlebarsjs.com/) template, and that it uses `data-uri` to reference the URI of the component instance. For regular components that live in the `<body>` of a page, you must use a _single root tag_ (which cannot be `<a>`) that contains `data-uri`:
 
 ```handlebars
 <div data-uri="{{ default _ref _self}}">
