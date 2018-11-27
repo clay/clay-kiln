@@ -19,6 +19,10 @@
   * **validate.minMessage** - will appear when minimum validation fails
   * **validate.maxMessage** - will appear when maximum validation fails
   * **validate.patternMessage** - will appear when pattern validation fails (very handy to set, as the default message is vague)
+
+  ### Text Data Formats
+
+  Most text inputs format data as a **string** of plaintext. If `type` is set to `number`, data will be a **number**.
 </docs>
 
 <template>

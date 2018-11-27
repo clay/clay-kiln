@@ -42,6 +42,10 @@
       autocomplete:
         list: tags
   ```
+
+  ### Simple List Data Format
+
+  Simple List will format data as an **array of objects**, where each object has a `text` property. If the `propertyName` argument is set, each object will also have a property (denoted by the value of the `propertyName` argument) that will be a **boolean**. Only one of the objects (the "primary item") will have this custom property set to `true`.
 </docs>
 
 <style lang="sass">

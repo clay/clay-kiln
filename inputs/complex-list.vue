@@ -43,6 +43,10 @@
   Complex lists don't have any of the common shared arguments, and don't display a field label.
 
   {% endhint %}
+
+  ### Complex List Data Format
+
+  Complex lists will always return an **array of objects**, where each object has the properties defined as `props` in the Schema.
 </docs>
 
 <style lang="sass">

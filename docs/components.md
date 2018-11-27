@@ -6,10 +6,10 @@ Components in Clay consist of templates, styles, JavaScript models \(data handli
 
 ## Template
 
-Kiln assumes that every component has a [Handlebars](http://handlebarsjs.com/) template, and that it uses `data-uri` to reference the URI of the component instance. For regular components that live in the `<body>` of a page, you must use a _single root tag_ that contains `data-uri`:
+Kiln assumes that every component has a [Handlebars](http://handlebarsjs.com/) template, and that it uses `data-uri` to reference the URI of the component instance. For regular components that live in the `<body>` of a page, you must use a _single root tag_ (which cannot be `<a>`) that contains `data-uri`:
 
 ```handlebars
-<div data-uri="{{ default _ref _self}}">
+<div data-uri="{{ default _ref _self}}" class="{{ componentVariation }}">
 <!-- stuff inside the component, including elements and <style> tags -->
 </div>
 ```
@@ -64,6 +64,8 @@ Schemas \(or _schemata_, for pedants like myself\) are the main connective tissu
 
 Schemas for components that are currently on the page are automatically parsed by Amphora and added to the page when Kiln loads. Schemas for other components are added when those components are added.
 
-## Variations
+## Styles and Style Variations
 
-Components can have variations, which is defined by corresponding stylesheets in the site's styleguide folder. Variations are defined as `component-name_variation-name.css`. Kiln will automatically generate a select input with the variations. This input will be in the 'Component Variation' tab in the Settings group. If the component doesn't have a Settings group set, Kiln will generate this too.
+By convention (and especially if you use `claycli`), component styles go in a `styleguides/` folder in the root of your Clay installation. This folder may contain folders for each site you're hosting, as well as a `_default` folder. When rendering, components will be loaded with styles from the site-specific styleguide of the site you're serving them on, falling back to the `_default` styles if those do not exist. For example, (when serving the `article` component on `nymag.com`) Clay will check if `styleguides/nymag/components/article.css` exists, and if not it will attempt to load `styleguides/_default/components/article.css`.
+
+If you want to reuse the same component in different contexts, you may do so by adding additional css files to your site (and/or `_default`) styleguides. These "variations" are defined with the convention `component-name_variation-name.css`, and live alongside the regular `component-name.css` files. Once you've added one or more variations to a component, a "Component Variation" tab will appear in that component's Settings allowing users to pick which variation they'd like to use for that instance of the component. Picking "None" or "Default" will set the component to use the default (`component-name.css`) styles instead of a variation.

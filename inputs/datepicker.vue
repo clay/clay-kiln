@@ -13,6 +13,10 @@
   * **validate.requiredMessage** - will appear when required validation fails
   * **validate.minMessage** - will appear when minimum validation fails
   * **validate.maxMessage** - will appear when maximum validation fails
+
+  ### Datepicker Data Format
+
+  Datepicker returns a **string** with the date in `YYYY-MM-DD` format.
 </docs>
 
 <template>

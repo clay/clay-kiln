@@ -34,6 +34,18 @@
           value: baz-qux
           sites: site1, site2
   ```
+
+  ### Checkbox Group Data Format
+
+  Checkbox group formats its value as an **object**, where each option is a key with a `true` / `false` value. For example, the data for the options above (`foo`, `bar`, `baz-qux`) might look like:
+
+  ```js
+  {
+    foo: true,
+    bar: false,
+    'baz-qux': true
+  }
+  ```
 </docs>
 
 <style lang="sass">

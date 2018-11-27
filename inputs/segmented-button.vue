@@ -13,13 +13,9 @@
 
   Each option should be an object with `icon`, `text`, and `value` properties. Icons will be displayed in the buttons, and text will be used for tooltips.
 
-  {% hint style="info" %}
+  ### Segmented Button Data Formats
 
-  #### Data Format
-
-  By default, the data for this field will be the selected option's `value`. If multiple selection is turned on, it'll be an object with boolean values keyed to each option's `value`, similar to `checkbox-group`.
-
-  {% endhint %}
+  By default (when `multiple` is false or unset), this will return data as a **string** with the value of the selected option. If `multiple` is `true`, this will return an **object** where each option is a key with a `true` / `false` value. Note that the single-select mode is the same format as a `radio` input, and the multi-select mode is the same as a `checkbox-group`.
 </docs>
 
 <style lang="sass">

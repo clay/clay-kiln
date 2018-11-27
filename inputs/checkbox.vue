@@ -20,6 +20,10 @@
   Single checkboxes don't have validation.
 
   {% endhint %}
+
+  ### Checkbox Data Format
+
+  Checkbox data is a **boolean**, `true` or `false`.
 </docs>
 
 <template>
