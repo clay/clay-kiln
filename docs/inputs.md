@@ -35,6 +35,18 @@ field1:
         sites: site1, site2
 ```
 
+### Checkbox Group Data Format
+
+Checkbox group formats its value as an **object**, where each option is a key with a `true` / `false` value. For example, the data for the options above (`foo`, `bar`, `baz-qux`) might look like:
+
+```js
+{
+  foo: true,
+  bar: false,
+  'baz-qux': true
+}
+```
+
 # `checkbox`
 
 A single checkbox, allowing the user to toggle something on or off. [Uses Keen's UICheckbox](https://josephuspaye.github.io/Keen-UI/#/ui-checkbox).
@@ -56,6 +68,10 @@ field1:
 Single checkboxes don't have validation.
 
 {% endhint %}
+
+### Checkbox Data Format
+
+Checkbox data is a **boolean**, `true` or `false`.
 
 # `codemirror`
 
@@ -80,6 +96,10 @@ The mode of the editor sets syntax highlighting, linting, and other functionalit
 We will add more supported modes as we find use cases for them. See [the full list of modes supported in codemirror.](http://codemirror.net/mode/)
 
 {% endhint %}
+
+### Codemirror Data Format
+
+Codemirror inputs, no matter what mode you select, will return a **string** of plaintext.
 
 # `complex-list`
 
@@ -126,6 +146,10 @@ Complex lists don't have any of the common shared arguments, and don't display a
 
 {% endhint %}
 
+### Complex List Data Format
+
+Complex lists will always return an **array of objects**, where each object has the properties defined as `props` in the Schema.
+
 # `csv`
 
 A button that allows uploading CSV data. Note: the data isn't editable once it's uploaded, but should be re-uploaded from a CSV file when it needs to be changed.
@@ -150,6 +174,10 @@ CSV buttons don't have validation or attached buttons.
 
 {% endhint %}
 
+### CSV Data Format
+
+CSV inputs will format data as an **array of objects*, where each object corresponds to a row and each object's keys are derived from the CSV's column headers.
+
 # `datepicker`
 
 A material design calendar picker. Allows specifying minimim and maximum dates. [Uses Keen's UIDatepicker](https://josephuspaye.github.io/Keen-UI/#/ui-datepicker).
@@ -164,6 +192,10 @@ A material design calendar picker. Allows specifying minimim and maximum dates. 
 * **validate.requiredMessage** - will appear when required validation fails
 * **validate.minMessage** - will appear when minimum validation fails
 * **validate.maxMessage** - will appear when maximum validation fails
+
+### Datepicker Data Format
+
+Datepicker returns a **string** with the date in `YYYY-MM-DD` format.
 
 # `wysiwyg`
 
@@ -226,9 +258,13 @@ paste:
     field: text
 ```
 
+### WISYWIG Data Format
+
+WYSIWYG returns a **string** of HTML.
+
 # `inline`
 
-A multi-line text input which allows a rich editing experience, but appears inline rather than in a form. It will inherit styles from the component you're editing, rather than looking like a Kiln text input. [It supports exactly the same arguments as `wysiwyg`.](inputs.md#wysiwyg)
+A multi-line text input which allows a rich editing experience, but appears inline rather than in a form. It will inherit styles from the component you're editing, rather than looking like a Kiln text input. [It supports exactly the same arguments and returns the same format as `wysiwyg`.](inputs.md#wysiwyg)
 
 # `lock`
 
@@ -380,6 +416,10 @@ field1:
         sites: site1, site2
 ```
 
+### Radio Data Format
+
+Radio will return a **string** with the `value` of the selected `option`.
+
 # `range`
 
 A slider that allows selecting between a range of numerical values. May use two points (known as a _dual-point range_). Uses [noUISlider](https://refreshless.com/nouislider/) under the hood, styled based on [KeenUI's slider](https://josephuspaye.github.io/Keen-UI/#/ui-slider).
@@ -407,6 +447,11 @@ A slider that allows selecting between a range of numerical values. May use two 
 
 Note that you should use `min`/`max` to set the hardcoded limits for the range input and `validate.min`/`validate.max` to set a (more limited) _publishable_ range, if necessary.
 
+### Range Returned Value
+
+If you specify the `start` as a single (numerical) value, Range will return a single **number**. If you specify the `start` as an array of two (numerical) values, Range will return an **array of numbers** with two values.
+Note that the `start` value and the data of this input's value **must** be of the same type. This input will error if `start` is an array and the value passed from the component data is a number, or vice versa.
+
 # `segmented-button`
 
 A group of buttons allowing the user to select one (or more!) of a few related options.
@@ -421,13 +466,9 @@ A group of buttons allowing the user to select one (or more!) of a few related o
 
 Each option should be an object with `icon`, `text`, and `value` properties. Icons will be displayed in the buttons, and text will be used for tooltips.
 
-{% hint style="info" %}
+### Segmented Button Data Formats
 
-#### Data Format
-
-By default, the data for this field will be the selected option's `value`. If multiple selection is turned on, it'll be an object with boolean values keyed to each option's `value`, similar to `checkbox-group`.
-
-{% endhint %}
+By default (when `multiple` is false or unset), this will return data as a **string** with the value of the selected option. If `multiple` is `true`, this will return an **object** where each option is a key with a `true` / `false` value. Note that the single-select mode is the same format as a `radio` input, and the multi-select mode is the same as a `checkbox-group`.
 
 # `segmented-button-group`
 
@@ -445,13 +486,9 @@ Each option should be an object with `title` and `values` properties. The `value
 
 Options may also contain a `_reveal` property containing rules for when they should display. [The config is the same as the field-level `_reveal` property.](https://claycms.gitbooks.io/kiln/editing-components.html#reveal)
 
-{% hint style="info" %}
+### Segmented Button Group Data Formats
 
-#### Data Format
-
-By default, the data for this field will be the selected option's `value`. If multiple selection is turned on, it'll be an object with boolean values keyed to each option's `value`, similar to `checkbox-group`.
-
-{% endhint %}
+By default (when `multiple` is false or unset), this will return data as a **string** with the value of the selected option. If `multiple` is `true`, this will return an **object** where each option is a key with a `true` / `false` value. Note that the single-select mode is the same format as a `radio` input, and the multi-select mode is the same as a `checkbox-group`.
 
 # `select`
 
@@ -519,6 +556,10 @@ specialFeature:
 
 {% endhint %}
 
+### Select Data Formats
+
+By default (when `multiple` is false or unset), this will return data as a **string** with the value of the selected option. If `multiple` is `true`, this will return an **object** where each option is a key with a `true` / `false` value. Note that the single-select mode is the same format as a `radio` input, and the multi-select mode is the same as a `checkbox-group`.
+
 # `simple-list`
 
 An array of strings (or objects with a `text` property, if you add the `propertyName` argument). Useful for lists of items such as tags, keywords, or author names.
@@ -562,6 +603,10 @@ tags:
     autocomplete:
       list: tags
 ```
+
+### Simple List Data Format
+
+Simple List will format data as an **array of objects**, where each object has a `text` property. If the `propertyName` argument is set, each object will also have a property (denoted by the value of the `propertyName` argument) that will be a **boolean**. Only one of the objects (the "primary item") will have this custom property set to `true`.
 
 # `static`
 
@@ -617,6 +662,10 @@ A basic text input. Can be single line or multi-line. Uses the float label patte
 * **validate.maxMessage** - will appear when maximum validation fails
 * **validate.patternMessage** - will appear when pattern validation fails (very handy to set, as the default message is vague)
 
+### Text Data Formats
+
+Most text inputs format data as a **string** of plaintext. If `type` is set to `number`, data will be a **number**.
+
 # `timepicker`
 
 A basic time picker. Uses native time inputs when available, but falls back to relatively-simple natural language parsing.
@@ -635,3 +684,7 @@ A basic time picker. Uses native time inputs when available, but falls back to r
 On browsers without native time pickers, users may enter in the time without worrying about the format. The simple NLP engine can handle things like "10am", "4:15 PM", "13:00", and even "midnight".
 
 {% endhint %}
+
+### Timepicker Data Format
+
+Timepicker returns a **string** with the time in `h:mm A` format.

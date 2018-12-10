@@ -29,6 +29,7 @@
   ### Range Returned Value
 
   If you specify the `start` as a single (numerical) value, Range will return a single **number**. If you specify the `start` as an array of two (numerical) values, Range will return an **array of numbers** with two values.
+  Note that the `start` value and the data of this input's value **must** be of the same type. This input will error if `start` is an array and the value passed from the component data is a number, or vice versa.
 </docs>
 
 <style lang="sass">
@@ -240,6 +241,9 @@
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import label from '../lib/utils/label';
   import { getValidationError } from '../lib/forms/field-helpers';
+  import logger from '../lib/utils/log';
+
+  const log = logger(__filename);
 
   /**
    * get range value for each handle,
@@ -345,8 +349,13 @@
         minLabel = this.minLabel,
         maxLabel = this.maxLabel;
 
+      if (this.data && typeof this.data !== typeof this.start) {
+        log.error(`Unable to initialize range input, type of range data (${this.data} [${typeof this.data}]) must match type of start value defined in schema (${this.start} [${typeof this.start}]).`, { action: 'range input mount', data: this.data, start: this.start });
+        throw new Error('Unable to initialize range input');
+      }
+
       slider.create(el, {
-        start: this.start,
+        start: this.data ? this.data : this.start,
         step: step,
         range: { min, max },
         format: {
