@@ -40,10 +40,22 @@ Property | Description
 `preloadData` | read-only composed page data, used to bootstrap kiln on load
 `preloadSchemas` | read-only object that contains schemas for all loaded components. used to bootstrap kiln
 `selectorButtons` | custom vue components that will be applied to all component selectors
-`toolbarButtons` | custom vue components that will be applied to the edit toolbar
+`toolbarButtons` | custom vue components that will be added to the edit toolbar
+`navButtons` | custom vue components that will be added to the clay nav
+`navContent` | custom vue components that should be rendered inside the clay nav when their corresponding navButton is clicked. Make sure to use the same object key for corresponding navButton + navContent.
 `transformers` | object containing all magic-button transform functions. attach custom transformers here
 `utils` | various utilities, useful for plugins
 `validators` | object containing all validators. attach custom validators here
+
+### Custom Nav Menu Items
+
+You may add options to the Clay menu to be displayed between `New Page` and `Sign Out` options. The trigger buttons should extend the `navMenuButton` component included in `window.kiln.components` and should be added to `window.kiln.navButtons.`
+
+Custom nav buttons should dispatch the `openNav` action with the same id used to name the nav button and nav content in the global `kiln` object.
+
+The body of the nav option should be added to `window.kiln.navContent` using the same object key that was used to add the corresponding nav button.
+
+Note that due to the vast difference in functionality and state data between view mode and edit mode, external nav menu options will not be loaded into the nav outside of edit mode.
 
 ### Custom Validators
 
@@ -93,6 +105,8 @@ Component | Description
 `avatar` | circular avatar image
 `filterableList` | filterable list, useful for many types of UI
 `person` | name, avatar, and subheader for a person, with actions
+`timepicker` | text input that wraps `UiTextbox` for time-formatted inputs
+`navMenuButton` | button component that should be used for custom navButtons
 `UiAutocomplete` | [KeenUI autocomplete](https://josephuspaye.github.io/Keen-UI/#/ui-autocomplete)
 `UiButton` | [KeenUI button](https://josephuspaye.github.io/Keen-UI/#/ui-button)
 `UiCheckbox` | [single KeenUI checkbox](https://josephuspaye.github.io/Keen-UI/#/ui-checkbox)

@@ -99,27 +99,29 @@
 
 <template>
   <transition name="nav-menu" v-if="displayNavMenu">
-      <nav class="nav-menu">
-        <!-- nav menu buttons on small viewport (< 600px) -->
-        <ui-icon-button class="nav-menu-button-small" buttonType="button" type="secondary" color="white" icon="arrow_back" @click="closeNav"></ui-icon-button>
-        <ui-button buttonType="button" class="nav-menu-button-small nav-menu-button-small-white" type="primary" color="none" has-dropdown>
-          <span class="nav-button-small-text">{{ currentNav }}</span>
-          <ui-menu slot="dropdown" :options="navOptions" @select="selectNavOption"></ui-menu>
-        </ui-button>
-        <div class="nav-menu-divider-small"></div>
-        <ui-icon-button class="nav-menu-button-small" buttonType="button" color="white" type="secondary" icon="add" tooltip="New Page" @click="openNav('new-page')"></ui-icon-button>
-        <ui-icon-button class="nav-menu-button-small" buttonType="button" color="white" type="secondary" icon="more_vert" has-dropdown ref="dropdownButton">
-          <ui-menu slot="dropdown" :options="settingsOptions" @close="$refs.dropdownButton.closeDropdown()" @select="selectSettingsOption"></ui-menu>
-        </ui-icon-button>
-        <!-- nav menu buttons on large viewport (600px+) -->
-        <nav-menu-button id="close" icon="arrow_back" size="large" @nav-click="closeNav">Clay</nav-menu-button>
-        <nav-menu-button id="my-pages" @nav-click="openNav">My Pages</nav-menu-button>
-        <nav-menu-button id="all-pages" @nav-click="openNav">All Pages</nav-menu-button>
-        <nav-menu-button id="new-page" icon="add" @nav-click="openNav">New Page</nav-menu-button>
-        <div class="nav-menu-divider"></div>
-        <nav-menu-button v-if="isAdmin" id="users" @nav-click="openNav">Users</nav-menu-button>
-        <nav-menu-button id="signout" @nav-click="signout">Sign Out</nav-menu-button>
-      </nav>
+    <nav class="nav-menu">
+      <!-- nav menu buttons on small viewport (< 600px) -->
+      <ui-icon-button class="nav-menu-button-small" buttonType="button" type="secondary" color="white" icon="arrow_back" @click="closeNav"></ui-icon-button>
+      <ui-button buttonType="button" class="nav-menu-button-small nav-menu-button-small-white" type="primary" color="none" has-dropdown>
+        <span class="nav-button-small-text">{{ currentNav }}</span>
+        <ui-menu slot="dropdown" :options="navOptions" @select="selectNavOption"></ui-menu>
+      </ui-button>
+      <div class="nav-menu-divider-small"></div>
+      <ui-icon-button class="nav-menu-button-small" buttonType="button" color="white" type="secondary" icon="add" tooltip="New Page" @click="openNav('new-page')"></ui-icon-button>
+      <ui-icon-button class="nav-menu-button-small" buttonType="button" color="white" type="secondary" icon="more_vert" has-dropdown ref="dropdownButton">
+        <ui-menu slot="dropdown" :options="settingsOptions" @close="$refs.dropdownButton.closeDropdown()" @select="selectSettingsOption"></ui-menu>
+      </ui-icon-button>
+      <!-- nav menu buttons on large viewport (600px+) -->
+      <nav-menu-button id="close" icon="arrow_back" size="large" @nav-click="closeNav">Clay</nav-menu-button>
+      <nav-menu-button id="my-pages" @nav-click="openNav">My Pages</nav-menu-button>
+      <nav-menu-button id="all-pages" @nav-click="openNav">All Pages</nav-menu-button>
+      <nav-menu-button id="new-page" icon="add" @nav-click="openNav">New Page</nav-menu-button>
+      <!-- custom nav buttons -->
+      <component v-for="(button, index) in customButtons" :is="button" :key="index"></component>
+      <div class="nav-menu-divider"></div>
+      <nav-menu-button v-if="isAdmin" id="users" @nav-click="openNav">Users</nav-menu-button>
+      <nav-menu-button id="signout" @nav-click="signout">Sign Out</nav-menu-button>
+    </nav>
   </transition>
 </template>
 
@@ -135,6 +137,9 @@
 
   export default {
     computed: {
+      customButtons() {
+        return Object.keys(_.get(window, 'kiln.navButtons', {}));
+      },
       displayNavMenu() {
         return !!_.get(this.$store, 'state.ui.currentNav');
       },
@@ -197,11 +202,11 @@
         }
       }
     },
-    components: {
+    components: _.merge({
       'nav-menu-button': navMenuButton,
       UiIconButton,
       UiMenu,
       UiButton
-    }
+    }, _.get(window, 'kiln.navButtons', {}))
   };
 </script>
