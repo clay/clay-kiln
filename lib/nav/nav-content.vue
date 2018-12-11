@@ -59,11 +59,11 @@
         return _.get(this.$store, 'state.ui.currentNav');
       }
     },
-    components: {
+    components: _.merge({
       'new-page': newPage,
       users,
       'my-pages': myPages,
       'all-pages': allPages
-    }
+    }, _.get(window, 'kiln.navContent', {}))
   };
 </script>
