@@ -116,7 +116,6 @@
       <nav-menu-button id="my-pages" @nav-click="openNav">My Pages</nav-menu-button>
       <nav-menu-button id="all-pages" @nav-click="openNav">All Pages</nav-menu-button>
       <nav-menu-button id="new-page" icon="add" @nav-click="openNav">New Page</nav-menu-button>
-      <div class="nav-menu-divider"></div>
       <!-- custom nav buttons -->
       <component v-for="(button, index) in customButtons" :is="button" :key="index"></component>
       <div class="nav-menu-divider"></div>
