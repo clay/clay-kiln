@@ -177,6 +177,7 @@
   import _ from 'lodash';
   import cuid from 'cuid';
   import store from '../core-data/store';
+  import { isLayout, isPage } from 'clayutils';
   import { placeholderProp, componentListProp, componentProp } from '../utils/references';
   import { isComponentInPage } from '../utils/component-elements';
   import { isEmpty } from '../utils/comparators';
@@ -191,6 +192,12 @@
 
   function getSchema(options) {
     return get(options.uri, options.path).schema;
+  }
+
+  function isPageArea(uri, path) {
+    const subschema = getSchema({uri, path});
+
+    return !!subschema[componentListProp].page;
   }
 
   export default {
@@ -211,7 +218,7 @@
       },
       isActive() {
         const isPageEditMode = _.get(store, 'state.editMode') === 'page',
-          isPageComponent = isComponentInPage(this.$options.uri);
+          isPageComponent = isLayout(this.$options.uri) || isPage(this.$options.uri) ? isPageArea(this.$options.uri, this.$options.path) : isComponentInPage(this.$options.uri);
 
         return isPageEditMode && isPageComponent || !isPageEditMode && !isPageComponent;
       },
