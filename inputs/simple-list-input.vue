@@ -26,7 +26,7 @@
       @input="onChange"
       @keydown.enter.prevent="onEnter"
       @keydown.tab="addItem"
-      @keyup.comma="addItem"
+      @keyup.comma="ignoreComma ? null : addItem()"
       @keydown.delete="focusLastItem"
       @keydown.left="focusLastItem"
       @keydown.right="focusFirstItem"
@@ -54,7 +54,7 @@
   import autocomplete from './autocomplete.vue';
 
   export default {
-    props: ['items', 'allowRepeatedItems', 'autocomplete', 'currentItem', 'disabled', 'isInitialFocus'],
+    props: ['items', 'allowRepeatedItems', 'autocomplete', 'currentItem', 'disabled', 'isInitialFocus', 'ignoreComma'],
     data() {
       return {
         val: '',
@@ -104,7 +104,7 @@
         hasItem = !!_.find(this.items, (item) => item.text === this.val);
 
         if (this.val && (!hasItem || hasItem && this.allowRepeatedItems)) {
-          this.$emit('add', { text: this.val.replace(',', '') }); // remove extra comma if using that to add item
+          this.$emit('add', { text: this.ignoreComma ? this.val : this.val.replace(',', '') }); // remove extra comma if using that to add item
 
           this.unselect();
         }
