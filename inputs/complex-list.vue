@@ -92,7 +92,7 @@
           :name="name + '.' + index"
           :data="item"
           :schema="args"
-          :key="index"
+          :key="`complex-list-items-${index}`"
           :isFiltered="isFiltered"
           :currentItem="currentItem"
           :isBelowMaxLength="isBelowMaxLength"

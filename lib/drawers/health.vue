@@ -77,7 +77,8 @@
     }
   }
 
-  .publish-error {
+  .publish-error,
+  .publish-meta-errors {
     border-bottom: 1px solid $divider-color;
     display: flex;
     flex-direction: column;
@@ -124,6 +125,10 @@
       @include type-caption();
     }
   }
+
+  .publish-meta-errors {
+
+  }
 </style>
 
 <template>
@@ -154,6 +159,10 @@
         </li>
       </ul>
     </div>
+    <div v-for="(metaError, index) in metaErrors" class="publish-meta-errors" :key="`meta-error-items-${index}`">
+      <span class="error-label">{{ metaError.label }}</span>
+      <span class="error-description">{{ metaError.description }}</span>
+    </div>
   </div>
 </template>
 
@@ -170,6 +179,7 @@
     computed: mapState({
       errors: (state) => state.validation.errors,
       warnings: (state) => state.validation.warnings,
+      metaErrors: (state) => state.validation.metaErrors,
       hasErrors() {
         return this.errors.length > 0;
       },
