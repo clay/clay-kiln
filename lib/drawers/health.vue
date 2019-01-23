@@ -125,10 +125,6 @@
       @include type-caption();
     }
   }
-
-  .publish-meta-errors {
-
-  }
 </style>
 
 <template>
@@ -138,23 +134,23 @@
       <span class="valid-description">This is good to publish.</span>
     </div>
 
-    <div v-for="error in errors" class="publish-error">
+    <div v-for="(error, index) in errors" class="publish-error" :key="`publish-error-item-${index}`">
       <span class="error-label">{{ error.label }}</span>
       <span class="error-description">{{ error.description }}</span>
       <span class="validation-info">Go To Components</span>
       <ul class="validation-items">
-        <li v-for="item in error.items" class="validation-item">
+        <li v-for="(item, idx) in error.items" class="validation-item" :key="`publish-error-validation-item-${idx}`">
           <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click.stop="openLocation(item.uri, item.field, item.path, item.location)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
         </li>
       </ul>
     </div>
 
-    <div v-for="warning in warnings" class="publish-warning">
+    <div v-for="(warning, index) in warnings" class="publish-warning" :key="`publish-warning-item-${index}`">
       <span class="warning-label">{{ warning.label }}</span>
       <span class="warning-description">{{ warning.description }}</span>
       <span class="validation-info">Go To Components</span>
       <ul class="validation-items">
-        <li v-for="item in warning.items" class="validation-item">
+        <li v-for="(item, idx) in warning.items" class="validation-item" :key="`publish-warning-validation-item-${idx}`">
           <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click.stop="openLocation(item.uri, item.field, item.path, item.location)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
         </li>
       </ul>
