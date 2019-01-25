@@ -78,7 +78,7 @@
   }
 
   .publish-error,
-  .publish-meta-errors {
+  .publish-metadata-errors {
     border-bottom: 1px solid $divider-color;
     display: flex;
     flex-direction: column;
@@ -102,7 +102,8 @@
     }
   }
 
-  .publish-warning {
+  .publish-warning,
+  .publish-metadata-warnings {
     border-bottom: 1px solid $divider-color;
     display: flex;
     flex-direction: column;
@@ -155,9 +156,15 @@
         </li>
       </ul>
     </div>
-    <div v-for="(metaError, index) in metaErrors" class="publish-meta-errors" :key="`meta-error-items-${index}`">
-      <span class="error-label">{{ metaError.label }}</span>
-      <span class="error-description">{{ metaError.description }}</span>
+    <div v-for="(metadataError, index) in metadataErrors" class="publish-metadata-errors" :key="`metadata-error-items-${index}`">
+      <span class="error-label">{{ metadataError.label }}</span>
+      <span class="error-description">{{ metadataError.description }}</span>
+    </div>
+    <pre>{{metadataErrors}}</pre>
+    <pre>{{metadataWarnings}}</pre>
+    <div v-for="(metadataWarning, index) in metadataWarnings" class="publish-metadata-warnings" :key="`metadata-warnings-items-${index}`">
+      <span class="warning-label">{{ metadataWarning.label }}</span>
+      <span class="warning-description">{{ metadataWarning.description }}</span>
     </div>
   </div>
 </template>
@@ -175,7 +182,8 @@
     computed: mapState({
       errors: (state) => state.validation.errors,
       warnings: (state) => state.validation.warnings,
-      metaErrors: (state) => state.validation.metaErrors,
+      metadataErrors: (state) => state.validation.metadataErrors,
+      metadataWarnings: (state) => state.validation.metadataWarnings,
       hasErrors() {
         return this.errors.length > 0;
       },
