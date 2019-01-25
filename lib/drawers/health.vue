@@ -159,12 +159,20 @@
     <div v-for="(metadataError, index) in metadataErrors" class="publish-metadata-errors" :key="`metadata-error-items-${index}`">
       <span class="error-label">{{ metadataError.label }}</span>
       <span class="error-description">{{ metadataError.description }}</span>
+      <ul class="validation-items">
+        <li v-for="(item, idx) in metadataError.items" class="validation-item" :key="`publish-error-validation-item-${idx}`">
+          <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
+        </li>
+      </ul>
     </div>
-    <pre>{{metadataErrors}}</pre>
-    <pre>{{metadataWarnings}}</pre>
     <div v-for="(metadataWarning, index) in metadataWarnings" class="publish-metadata-warnings" :key="`metadata-warnings-items-${index}`">
       <span class="warning-label">{{ metadataWarning.label }}</span>
       <span class="warning-description">{{ metadataWarning.description }}</span>
+      <ul class="validation-items">
+        <li v-for="(item, idx) in metadataWarning.items" class="validation-item" :key="`publish-error-validation-item-${idx}`">
+          <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
