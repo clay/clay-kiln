@@ -153,10 +153,13 @@
       tabType() {
         return this.name === 'publish-page' || 'publish-layout' ? 'icon-and-text' : 'text';
       },
+      /* eslint-disable complexity */
       tabs() {
         const errors = _.get(this.$store, 'state.validation.errors', []),
           warnings = _.get(this.$store, 'state.validation.warnings', []),
-          openHealth = errors.length > 0 || warnings.length > 0;
+          metadataErrors = _.get(this.$store, 'state.validation.metadataErrors', []),
+          metadataWarnings = _.get(this.$store, 'state.validation.metadataWarnings', []),
+          openHealth = errors.length > 0 || warnings.length > 0 || metadataErrors.length > 0 || metadataWarnings.length > 0;
 
         if (this.name === 'contributors') {
           return [{

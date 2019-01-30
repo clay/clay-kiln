@@ -912,6 +912,14 @@ render multiple components at once
         * [~runValidator(state)](#module_validators..runValidator) ⇒ <code>function</code>
         * [~runValidators(validators, state)](#module_validators..runValidators) ⇒ <code>Promise</code>
         * [~hasItems(error)](#module_validators..hasItems) ⇒ <code>Boolean</code>
+        * [~runMetaValidator(metadata)](#module_validators..runMetaValidator) ⇒ <code>function</code>
+        * [~runMetaValidators(uri, validators)](#module_validators..runMetaValidators) ⇒ <code>Promise</code>
+        * [~isMetadataError(scope, type)](#module_validators..isMetadataError) ⇒ <code>boolean</code>
+        * [~isMetadataWarning(scope, type)](#module_validators..isMetadataWarning) ⇒ <code>boolean</code>
+        * [~isGlobalMetadataError(validator)](#module_validators..isGlobalMetadataError) ⇒ <code>boolean</code>
+        * [~isGlobalMetadataWarning(validator)](#module_validators..isGlobalMetadataWarning) ⇒ <code>boolean</code>
+        * [~isSpecificMetadataWarning(validator, pageUri)](#module_validators..isSpecificMetadataWarning) ⇒ <code>boolean</code>
+        * [~isSpecificMetadataError(validator, pageUri)](#module_validators..isSpecificMetadataError) ⇒ <code>boolean</code>
 
 <a name="module_validators.validate"></a>
 
@@ -970,4 +978,109 @@ some may have been parsed out by the isActive check in runValidator, above
 | Param | Type |
 | --- | --- |
 | error | <code>object</code> | 
+
+<a name="module_validators..runMetaValidator"></a>
+
+### validators~runMetaValidator(metadata) ⇒ <code>function</code>
+run an metadata validator. if it returns items, add the label and description and items
+
+**Kind**: inner method of [<code>validators</code>](#module_validators)  
+
+| Param | Type |
+| --- | --- |
+| metadata | <code>object</code> | 
+
+<a name="module_validators..runMetaValidators"></a>
+
+### validators~runMetaValidators(uri, validators) ⇒ <code>Promise</code>
+run a list of validators using page metadata
+
+**Kind**: inner method of [<code>validators</code>](#module_validators)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| uri | <code>uri</code> | uri |
+| validators | <code>array</code> |  |
+
+<a name="module_validators..isMetadataError"></a>
+
+### validators~isMetadataError(scope, type) ⇒ <code>boolean</code>
+Check whether is a metadata error
+
+**Kind**: inner method of [<code>validators</code>](#module_validators)  
+
+| Param | Type |
+| --- | --- |
+| scope | <code>string</code> | 
+| type | <code>string</code> | 
+
+<a name="module_validators..isMetadataWarning"></a>
+
+### validators~isMetadataWarning(scope, type) ⇒ <code>boolean</code>
+Check whether is a metadata warning
+
+**Kind**: inner method of [<code>validators</code>](#module_validators)  
+
+| Param | Type |
+| --- | --- |
+| scope | <code>string</code> | 
+| type | <code>string</code> | 
+
+<a name="module_validators..isGlobalMetadataError"></a>
+
+### validators~isGlobalMetadataError(validator) ⇒ <code>boolean</code>
+Check whether is a metadata error
+
+**Kind**: inner method of [<code>validators</code>](#module_validators)  
+
+| Param | Type |
+| --- | --- |
+| validator | <code>object</code> | 
+| validator.scope | <code>string</code> | 
+| validator.type | <code>string</code> | 
+| validator.uri | <code>string</code> | 
+
+<a name="module_validators..isGlobalMetadataWarning"></a>
+
+### validators~isGlobalMetadataWarning(validator) ⇒ <code>boolean</code>
+Check whether is a metadata error
+
+**Kind**: inner method of [<code>validators</code>](#module_validators)  
+
+| Param | Type |
+| --- | --- |
+| validator | <code>object</code> | 
+| validator.scope | <code>string</code> | 
+| validator.type | <code>string</code> | 
+| validator.uri | <code>string</code> | 
+
+<a name="module_validators..isSpecificMetadataWarning"></a>
+
+### validators~isSpecificMetadataWarning(validator, pageUri) ⇒ <code>boolean</code>
+Check whether is a metadata warning for specific page
+
+**Kind**: inner method of [<code>validators</code>](#module_validators)  
+
+| Param | Type |
+| --- | --- |
+| validator | <code>object</code> | 
+| validator.scope | <code>string</code> | 
+| validator.type | <code>string</code> | 
+| validator.uri | <code>string</code> | 
+| pageUri | <code>string</code> | 
+
+<a name="module_validators..isSpecificMetadataError"></a>
+
+### validators~isSpecificMetadataError(validator, pageUri) ⇒ <code>boolean</code>
+Check whether is a metadata error for specific page
+
+**Kind**: inner method of [<code>validators</code>](#module_validators)  
+
+| Param | Type |
+| --- | --- |
+| validator | <code>object</code> | 
+| validator.scope | <code>string</code> | 
+| validator.type | <code>string</code> | 
+| validator.uri | <code>string</code> | 
+| pageUri | <code>string</code> | 
 
