@@ -183,12 +183,8 @@
       };
     },
     computed: mapState({
-      hasErrors: (state) =>
-        state.validation.errors && state.validation.errors.length > 0 ||
-        state.validation.metadataErrors && state.validation.metadataErrors.length > 0,
-      hasWarnings: (state) =>
-        state.validation.warnings && state.validation.warnings.length > 0 ||
-        state.validation.metadataWarnings && state.validation.metadataWarnings.length > 0,
+      hasErrors: (state) => state.validation.errors && state.validation.errors.length > 0,
+      hasWarnings: (state) => state.validation.warnings && state.validation.warnings.length > 0,
       isPublished: (state) => state.layout.state.published,
       isScheduled: (state) => state.layout.state.scheduled,
       uri: (state) => state.layout.uri,
