@@ -198,8 +198,14 @@
       hasWarnings() {
         return this.warnings.length > 0;
       },
+      hasMetadataErrors() {
+        return this.metadataErrors.length > 0;
+      },
+      hasMetadataWarnings() {
+        return this.metadataWarnings.length > 0;
+      },
       isValid() {
-        return !this.hasErrors && !this.hasWarnings;
+        return !this.hasErrors && !this.hasWarnings && !this.hasMetadataErrors && !this.hasMetadataWarnings;
       }
     }),
     methods: {
