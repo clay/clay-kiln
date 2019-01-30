@@ -193,19 +193,13 @@
       metadataErrors: (state) => state.validation.metadataErrors,
       metadataWarnings: (state) => state.validation.metadataWarnings,
       hasErrors() {
-        return this.errors.length > 0;
+        return this.errors.length > 0 || this.metadataErrors.length > 0;
       },
       hasWarnings() {
-        return this.warnings.length > 0;
-      },
-      hasMetadataErrors() {
-        return this.metadataErrors.length > 0;
-      },
-      hasMetadataWarnings() {
-        return this.metadataWarnings.length > 0;
+        return this.warnings.length > 0 || this.metadataWarnings.length > 0;
       },
       isValid() {
-        return !this.hasErrors && !this.hasWarnings && !this.hasMetadataErrors && !this.hasMetadataWarnings;
+        return !this.hasErrors && !this.hasWarnings;
       }
     }),
     methods: {
