@@ -37,6 +37,11 @@
   .kiln-inactive-placeholder {
     align-items: center;
     border-radius: 2px;
+
+    // explicitly setting box-sizing because Kiln placeholders rely on this property being set to border-box for proper styling,
+    // while the site using Kiln might have box-sizing set to something else, not set at all
+    box-sizing: border-box;
+
     cursor: pointer;
     display: flex;
     height: 100%;
