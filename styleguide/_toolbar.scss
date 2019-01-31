@@ -6,6 +6,10 @@ $height: 56px;
 @mixin toolbar-wrapper {
   @include toolbar-layer();
 
+  //explicitly setting box-sizing because Kiln toolbars rely on this property being set to border-box for proper styling,
+  //while the site using Kiln might have box-sizing set to something else, not set at all
+  box-sizing: border-box;
+
   left: 0;
   position: fixed;
   top: 0;
