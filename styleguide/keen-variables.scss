@@ -1,5 +1,12 @@
 // variables that override things in KeenUI components
 // https://github.com/JosephusPaye/Keen-UI/blob/master/Customization.md#customization
+// ****** IMPORTANT ******
+// Everything in this file is injected into every SASS file used by kiln.
+// It is very important that you do not include CSS Rules in this file,
+// otherwise those rules will be duplicated in every SASS file.
+//************************
+
+
 @import 'colors';
 @import 'typography';
 @import 'layers';
@@ -31,33 +38,3 @@ $ui-input-height: 2rem;
 // layout / component variables
 $divider-color: $divider-color;
 $ui-modal-mask-background: rgba($pure-black, $modal-opacity);
-
-.ui-tooltip {
-  font-family: $font-stack;
-}
-
-.ui-textbox__feedback {
-  font-family: $font-stack;
-}
-
-.ui-textbox {
-  // override margins, since fields will set them
-  margin: 0;
-}
-
-.ui-button__content {
-  // 14px buttons with white on blue (A400) neet to be bold for accesibility
-  font-weight: 600;
-}
-
-.ui-button--type-primary.ui-button--color-default .ui-button__icon,
-.ui-button--type-primary.ui-button--color-default .ui-button__dropdown-icon {
-  // icons for default color buttons should be the same color as the text
-  color: $text-color;
-}
-
-// html element in edit mode gets a smaller base font size
-// this sets the base sizing for KeenUI components, as they all use rem
-html.component-selector-wrapper {
-  font-size: 16px;
-}

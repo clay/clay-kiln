@@ -72,3 +72,33 @@
 .kiln-accent-color {
   color: $brand-accent-color;
 }
+
+.ui-tooltip {
+  font-family: $font-stack;
+}
+
+.ui-textbox__feedback {
+  font-family: $font-stack;
+}
+
+.ui-textbox {
+  // override margins, since fields will set them
+  margin: 0;
+}
+
+.ui-button__content {
+  // 14px buttons with white on blue (A400) neet to be bold for accesibility
+  font-weight: 600;
+}
+
+.ui-button--type-primary.ui-button--color-default .ui-button__icon,
+.ui-button--type-primary.ui-button--color-default .ui-button__dropdown-icon {
+  // icons for default color buttons should be the same color as the text
+  color: $text-color;
+}
+
+// html element in edit mode gets a smaller base font size
+// this sets the base sizing for KeenUI components, as they all use rem
+html.component-selector-wrapper {
+  font-size: 16px;
+}
