@@ -1,5 +1,12 @@
 // variables that override things in KeenUI components
 // https://github.com/JosephusPaye/Keen-UI/blob/master/Customization.md#customization
+// ****** IMPORTANT ******
+// Everything in this file is injected into every SASS file used by kiln.
+// It is very important that you do not include CSS Rules in this file,
+// otherwise those rules will be duplicated in every SASS file.
+//************************
+
+
 @import 'colors';
 @import 'typography';
 @import 'layers';
