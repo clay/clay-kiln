@@ -162,5 +162,7 @@
   "peerDependencies": {
     "amphora-search": "^6.2.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "sortablejs": "^1.8.1"
+  }
 }

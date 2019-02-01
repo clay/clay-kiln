@@ -125,48 +125,27 @@
 <script>
   import _ from 'lodash';
   import { find } from '@nymag/dom';
-  import dragula from 'dragula';
+  import sortable from 'sortablejs';
   import { requestTimeout } from './events';
   import listItem from './filterable-list-item.vue';
   import UiTextbox from 'keen/UiTextbox';
   import UiButton from 'keen/UiButton';
 
-  // Placeholder for Dragula instance
-  var drag;
+  let sortableList;
 
   /**
-   * get index of a child element in a container
-   * @param {Element} el
-   * @param {Element} container
-   * @returns {number}
-   */
-  function getIndex(el, container) {
-    return _.findIndex(container.children, (child) => child === el);
-  }
-
-  /**
-   * Add Dragula functionality
+   * Add SortableJS functionality
    *
    * @param {Element} el
    * @param {Function} reorder
    */
-  function addDragula(el, reorder) {
-    var oldIndex;
-
-    drag = dragula([el], {
-      direction: 'vertical'
-    });
-
-    drag.on('drag', function (selectedItem, container) {
-      oldIndex = getIndex(selectedItem, container);
-    });
-
-    drag.on('cancel', function () {
-      oldIndex = null;
-    });
-
-    drag.on('drop', function (selectedItem, container) {
-      reorder(selectedItem.getAttribute('data-item-id'), getIndex(selectedItem, container), oldIndex, selectedItem);
+  function addSortableJS(el, reorder) {
+    sortableList =  sortable.create(el, {
+      direction: 'vertical',
+      handle: '.drag_handle',
+      onEnd(evt) {
+        reorder(evt.item.getAttribute('data-item-id'), evt.newIndex, evt.oldIndex, evt.item);
+      }
     });
   }
 
@@ -302,9 +281,9 @@
       // set initial list data
       this.matches = this.fullContent;
 
-      // Add dragula
+      // Add Sortable
       if (this.hasReorder) {
-        addDragula(this.$refs.list, this.onReorder);
+        addSortableJS(this.$refs.list, this.onReorder);
       }
 
       this.$nextTick(() => {
@@ -315,9 +294,9 @@
       });
     },
     beforeDestroy() {
-      // Clean up any Dragula event handlers
-      if (drag) {
-        drag.destroy();
+      // Clean up any Sortable event handlers
+      if (sortableList) {
+        sortableList.destroy();
       }
     },
     methods: {
