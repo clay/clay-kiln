@@ -131,8 +131,6 @@
   import UiTextbox from 'keen/UiTextbox';
   import UiButton from 'keen/UiButton';
 
-  let sortableList;
-
   /**
    * Add SortableJS functionality
    *
@@ -140,7 +138,7 @@
    * @param {Function} reorder
    */
   function addSortableJS(el, reorder) {
-    sortableList =  sortable.create(el, {
+    sortable.create(el, {
       direction: 'vertical',
       handle: '.drag_handle',
       onEnd(evt) {
@@ -292,12 +290,6 @@
         // focus on the input if it wasn't focused before
         input && input.focus();
       });
-    },
-    beforeDestroy() {
-      // Clean up any Sortable event handlers
-      if (sortableList) {
-        sortableList.destroy();
-      }
     },
     methods: {
       focusOnIndex(index, childIndex) {
