@@ -67,6 +67,9 @@
   position: fixed;
   width: 300px;
   z-index: 9998;
+  li {
+    display: none;
+  }
 }
 
 .complex-list-trash .material-icons {
