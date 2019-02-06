@@ -130,6 +130,7 @@
   import listItem from './filterable-list-item.vue';
   import UiTextbox from 'keen/UiTextbox';
   import UiButton from 'keen/UiButton';
+  import { getDragDelay } from '../decorators/helpers';
 
   /**
    * Add SortableJS functionality
@@ -139,6 +140,7 @@
    */
   function addSortableJS(el, reorder) {
     sortable.create(el, {
+      delay: getDragDelay(),
       direction: 'vertical',
       handle: '.drag_handle',
       onEnd(evt) {
