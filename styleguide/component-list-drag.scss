@@ -67,6 +67,10 @@
   position: fixed;
   width: 300px;
   z-index: 9998;
+  li {
+    /* hide item to be deleted while it's on the trash item */
+    display: none;
+  }
 }
 
 .complex-list-trash .material-icons {
