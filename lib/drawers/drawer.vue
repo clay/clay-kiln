@@ -54,7 +54,7 @@
 <template>
   <transition name="drawer" mode="out-in" @after-enter="refreshTabs">
     <ui-tabs ref="tabs" v-if="isDrawerOpen" class="right-drawer" backgroundColor="clear" :fullwidth="true">
-      <ui-tab v-for="(tab, tabIndex) in tabs" :key="tabIndex" :title="tab.title" :selected="tab.selected" :disabled="tab.disabled" @select="onTabChange(tab.title)">
+      <ui-tab v-for="(tab, tabIndex) in activeDrawer.tabs" :key="`${tab.component}-${tabIndex}`" :title="tab.title" :selected="tab.selected" :disabled="tab.disabled" @select="onTabChange(tab)">
         <keep-alive>
           <component :is="tab.component" :args="tab.args" @selectTab="onSelectTab"></component>
         </keep-alive>
@@ -92,7 +92,8 @@
     const layoutURI = _.get(state, 'page.data.layout'),
       schema = getSchema(layoutURI),
       lists = getListsInHead(),
-      isPageEditMode = state.editMode === 'page';
+      isPageEditMode = state.editMode === 'page',
+      hashTabName = _.get(state, 'url.sites');
 
     return _.reduce(lists, (result, list) => {
       const isPageList = _.get(schema, `${list.path}.${componentListProp}.page`);
@@ -101,7 +102,7 @@
         result.push({
           title: label(list.path, schema[list.path]),
           component: 'head-components',
-          selected: false,
+          selected: hashTabName === 'head-components',
           args: {
             isPage: isPageList,
             path: list.path,
@@ -125,13 +126,14 @@
 
     return _.reduce(schema, (result, field, fieldName) => {
       const isPageList = _.get(field, `${componentListProp}.page`),
-        isInvisibleList = _.has(field, `${componentListProp}.invisible`);
+        isInvisibleList = _.has(field, `${componentListProp}.invisible`),
+        hashTabName = _.get(state, 'url.sites');
 
       if (isInvisibleList && (isPageEditMode && isPageList || !isPageEditMode && !isPageList)) {
         result.push({
           title: label(fieldName, field),
           component: 'invisible-components',
-          selected: false,
+          selected: hashTabName === 'visible-components',
           args: {
             path: fieldName,
             schema: field
@@ -145,71 +147,102 @@
   export default {
     computed: {
       name() {
-        return _.get(this.$store, 'state.ui.currentDrawer');
+        return _.get(this.$store, 'state.ui.currentNav');
       },
       isDrawerOpen() {
-        return !!this.name;
+        return !!this.name && this.activeDrawer;
       },
       tabType() {
         return this.name === 'publish-page' || 'publish-layout' ? 'icon-and-text' : 'text';
       },
       tabs() {
-        const errors = _.get(this.$store, 'state.validation.errors', []),
-          warnings = _.get(this.$store, 'state.validation.warnings', []),
-          openHealth = errors.length > 0 || warnings.length > 0;
+        const state = _.get(this.$store, 'state'),
+          errors = _.get(state, 'validation.errors', []),
+          warnings = _.get(state, 'validation.warnings', []),
+          hashTabName = _.get(state, 'url.sites'), // state.url.sites is just the second param in the url hash object
+          openHealth = errors.length > 0 || warnings.length > 0 || hashTabName === 'health';
 
-        if (this.name === 'contributors') {
-          return [{
-            title: 'Contributors',
-            component: 'contributors',
-            selected: true
-          },{
-            title: 'Page History',
-            component: 'page-history'
-          }];
-        } else if (this.name === 'layout-history') {
-          return [{
-            title: 'Layout History',
-            component: 'layout-history',
-            selected: true
-          }];
-        } else if (this.name === 'components') {
-          const state = _.get(this.$store, 'state'),
-            headLists = getHeadComponentLists(state),
-            invisibleLists = getInvisibleComponentLists(state);
 
-          return [{
-            title: 'Visible',
-            component: 'visible-components',
-            selected: true
-          }].concat(headLists).concat(invisibleLists);
-        } else if (this.name === 'preview') {
-          return [{
-            title: 'Preview',
-            component: 'preview',
-            selected: true
-          }];
-        } else if (this.name === 'publish-page') {
-          return [{
-            title: 'Health',
-            component: 'health',
-            selected: openHealth
-          }, {
-            title: 'Publish',
-            component: 'publish-page',
-            selected: !openHealth
-          }];
-        } else if (this.name === 'publish-layout') {
-          return [{
-            title: 'Health',
-            component: 'health',
-            selected: openHealth
-          }, {
-            title: 'Publish',
-            component: 'publish-layout',
-            selected: !openHealth
-          }];
-        }
+        let tabs = [
+          {
+            name: 'contributors',
+            tabs: [
+              {
+                title: 'Contributors',
+                component: 'contributors',
+                selected: hashTabName === 'contributors'
+              },
+              {
+                title: 'Page History',
+                component: 'page-history',
+                selected: hashTabName === 'page-history'
+              }
+            ]
+          },
+          {
+            name: 'layout-history',
+            tabs: [{
+              title: 'Layout History',
+              component: 'layout-history',
+              selected: true
+            }]
+          },
+          {
+            name: 'find-on-a-page',
+            tabs: [{
+              title: 'Visible',
+              component: 'visible-components',
+              selected: hashTabName === 'visible-components',
+            }].concat(getHeadComponentLists(state)).concat(getInvisibleComponentLists(state))
+          },
+          {
+            name: 'find-on-layout',
+            tabs: [{
+              title: 'Visible',
+              component: 'visible-components',
+              selected: hashTabName === 'visible-components',
+            }].concat(getHeadComponentLists(state)).concat(getInvisibleComponentLists(state))
+          },
+          {
+            name: 'preview',
+            tabs: [{
+              title: 'Preview',
+              component: 'preview',
+              selected: true
+            }]
+          },
+          {
+            name: 'publish-page',
+            tabs: [{
+              title: 'Health',
+              component: 'health',
+              selected: openHealth
+            },
+            {
+              title: 'Publish',
+              component: 'publish-page',
+              selected: !openHealth
+            }]
+          },
+          {
+            name: 'publish-layout',
+            tabs: [{
+              title: 'Health',
+              component: 'health',
+              selected: openHealth
+            },
+            {
+              title: 'Publish',
+              component: 'publish-layout',
+              selected: !openHealth
+            }]
+          }
+        ];
+
+        return tabs;
+      },
+      activeDrawer() {
+        return this.tabs.find((tab)=> tab.name === this.name);
       }
     },
     methods: {
@@ -222,8 +255,11 @@
           this.$nextTick(() => this.$refs.tabs.setActiveTab(activeTab.id));
         }
       },
-      onTabChange(title) {
-        this.$store.commit('SWITCH_TAB', title);
+      onTabChange(tab) {
+        const currentUrl = _.get(this.$store, 'state.url');
+
+        this.$store.dispatch('setHash', { menu: { tab: currentUrl.tab, sites: tab.component, status: '', query: ''} });
+        this.$store.commit('SWITCH_TAB', tab.title);
       },
       onSelectTab(title) {
         const tab = _.find(_.get(this, '$refs.tabs.tabs', []), (tab) => tab.title === title);

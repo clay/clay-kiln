@@ -26,7 +26,7 @@
     opacity: 0;
   }
 
-  /* don't scroll the page when left nav is open */
+  /* dont scroll the page when left nav is open */
   .nav-noscroll {
     height: 100%;
     overflow: hidden;
@@ -66,7 +66,7 @@
     },
     computed: {
       displayBackground() {
-        const navIsOpen = !!_.get(this.$store, 'state.ui.currentNav');
+        const navIsOpen = _.get(this.$store, 'state.ui.showNavBackground');
 
         // Toggle the `noscroll` class
         toggleNoScroll(navIsOpen);
@@ -76,6 +76,7 @@
     },
     methods: {
       closeNav() {
+        this.$store.dispatch('hideNavBackground');
         return this.$store.dispatch('closeNav');
       }
     }

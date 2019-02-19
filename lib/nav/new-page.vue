@@ -6,7 +6,7 @@
 
 <template>
   <filterable-list v-if="isAdmin" class="new-page-nav" :content="pages" :secondaryActions="secondaryActions" :initialExpanded="initialExpanded" filterLabel="Search Page Templates" :addTitle="addTitle" :addIcon="addIcon" header="Page Template" @child-action="itemClick" @add="addTemplate"></filterable-list>
-  <filterable-list v-else  class="new-page-nav":content="pages" :initialExpanded="initialExpanded" filterLabel="Search Page Templates" header="Page Template" @child-action="itemClick"></filterable-list>
+  <filterable-list v-else  class="new-page-nav" :content="pages" :initialExpanded="initialExpanded" filterLabel="Search Page Templates" header="Page Template" @child-action="itemClick"></filterable-list>
 </template>
 
 <script>
@@ -124,6 +124,15 @@
     },
     components: {
       'filterable-list': filterableList
+    },
+    activated() {
+    // set the url hash
+      this.$store.dispatch('setHash', { menu: {
+        tab: 'new-page',
+        sites: '',
+        status: '',
+        query: ''
+      }});
     }
   };
 </script>
