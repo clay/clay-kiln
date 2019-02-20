@@ -37,6 +37,10 @@
   .toolbar-action-menu.ui-icon-button {
     display: inline-flex;
 
+    &.drawerOpen {
+      background:  rgba(0, 0, 0, 0.1);
+    }
+
     @media screen and (min-width: 600px) {
       display: none;
     }
@@ -71,6 +75,11 @@
       }
     }
   }
+
+  .ui-menu-option__content.activeMenuButton {
+    background: $md-grey-200;
+  }
+
 </style>
 
 <template>
@@ -88,8 +97,12 @@
         <component v-for="(button, index) in customButtons" :is="button" :key="index"></component>
 
         <!-- display a dropdown menu of actions on smaller screens (viewport < 600px) -->
-        <ui-icon-button class="toolbar-action-menu" color="white" size="large" type="secondary" icon="more_vert" tooltip="Actions" has-dropdown ref="dropdownButton" @click="closeDrawer">
-          <ui-menu contain-focus has-icons slot="dropdown" :options="activeToolBarOptions" @close="$refs.dropdownButton.closeDropdown()" @select="optionAction"></ui-menu>
+        <ui-icon-button class="toolbar-action-menu" :class="{drawerOpen: !!currentDrawer}" color="white" size="large" type="secondary" icon="more_vert" tooltip="Actions" has-dropdown ref="dropdownButton" @click="closeDrawer">
+          <ui-menu class="toolbar-action-menu" contain-focus has-icons slot="dropdown" :options="activeToolBarOptions" @close="$refs.dropdownButton.closeDropdown()" @select="optionAction">
+            <template slot-scope="props" slot="option">
+              <div class="ui-menu-option__content" :class="{activeMenuButton: currentDrawer === props.option.id}"><span class="ui-icon ui-menu-option__icon material-icons" :class="props.option.icon">{{ props.option.icon }}</span> <div class="ui-menu-option__text">{{ props.option.label }}</div></div>
+            </template>
+          </ui-menu>
         </ui-icon-button>
 
         <!-- display individual buttons on larger screens (viewport >= 600px) -->
@@ -342,6 +355,7 @@
     methods: {
       toggleEditMode(option) {
         this.$store.dispatch('clearHash');
+        this.$store.dispatch('closeNav');
         const val = option.value,
           { message } = getLayoutNameAndInstance(this.$store),
           layoutAlert = { type: 'warning', text: message },
