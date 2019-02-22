@@ -52,7 +52,7 @@
 </style>
 
 <template>
-  <transition name="drawer" mode="out-in" @after-enter="refreshTabs">
+  <transition name="drawer" mode="out-in">
     <ui-tabs :key="name" ref="tabs" v-if="isDrawerOpen" class="right-drawer" backgroundColor="clear" :fullwidth="true">
       <ui-tab v-for="(tab, tabIndex) in activeDrawer.tabs" :key="`${tab.component}-${tabIndex}`" :title="tab.title" :selected="tab.selected" :disabled="tab.disabled" @select="onTabChange(tab)">
         <keep-alive>
@@ -246,17 +246,6 @@
       }
     },
     methods: {
-      refreshTabs() {
-        // refresh the tabs when we switch drawers,
-        // because it doesn't want to set the active tab automatically
-        if (this.$refs.tabs) {
-          const activeTab = _.find(this.$refs.tabs.tabs, (tab) => tab.selected);
-
-          if (activeTab) {
-            this.$nextTick(() => this.$refs.tabs.setActiveTab(activeTab.id));
-          }
-        }
-      },
       onTabChange(tab) {
         const currentUrl = _.get(this.$store, 'state.url');
 

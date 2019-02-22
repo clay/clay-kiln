@@ -469,12 +469,14 @@
           // (it's used to hide the "load more" button)
 
           // set the url hash
-          this.$store.dispatch('setHash', { menu: {
-            tab: isMyPages ? 'my-pages' : 'all-pages',
-            sites: siteFilter.join(','),
-            status: statusFilter,
-            query: this.query
-          }});
+          if (_.get(this.$store, 'state.ui.currentDrawer')) {
+            this.$store.dispatch('setHash', { menu: {
+              tab: isMyPages ? 'my-pages' : 'all-pages',
+              sites: siteFilter.join(','),
+              status: statusFilter,
+              query: this.query
+            }});
+          }
         });
       }
     },
