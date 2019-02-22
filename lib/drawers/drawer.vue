@@ -53,7 +53,7 @@
 
 <template>
   <transition name="drawer" mode="out-in" @after-enter="refreshTabs">
-    <ui-tabs ref="tabs" v-if="isDrawerOpen" class="right-drawer" backgroundColor="clear" :fullwidth="true">
+    <ui-tabs :key="name" ref="tabs" v-if="isDrawerOpen" class="right-drawer" backgroundColor="clear" :fullwidth="true">
       <ui-tab v-for="(tab, tabIndex) in activeDrawer.tabs" :key="`${tab.component}-${tabIndex}`" :title="tab.title" :selected="tab.selected" :disabled="tab.disabled" @select="onTabChange(tab)">
         <keep-alive>
           <component :is="tab.component" :args="tab.args" @selectTab="onSelectTab"></component>
