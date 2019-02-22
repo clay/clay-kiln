@@ -83,7 +83,7 @@
 </style>
 
 <template>
-  <div class="kiln-wrapper">
+  <div class="kiln-wrapper"  @keyup.esc.stop="closeDrawer">
     <alert-container></alert-container>
     <drawer></drawer>
     <ui-toolbar type="colored" text-color="white" @nav-icon-click="openNav">
@@ -341,7 +341,7 @@
         return _.get(this.$store, 'state.ui.snackbar') && _.toPlainObject(_.get(this.$store, 'state.ui.snackbar'));
       },
       currentDrawer() {
-        return _.get(this.$store, 'state.ui.currentNav');
+        return _.get(this.$store, 'state.ui.currentDrawer');
       }
     }),
     watch: {
@@ -389,25 +389,7 @@
         return this.$store.dispatch('redo');
       },
       toggleDrawer(name) {
-        const currentTab = _.get(this.$store, 'state.url.tab'),
-          currentNav = _.get(this.$store, 'state.ui.currentNav');
-
-        if (name !== currentTab) {
-          this.$store.dispatch('closeNav');
-          this.$nextTick(() => {
-            this.setHash({ tab: name, sites: '', status: '', query: ''});
-            return this.$store.dispatch('openNav', name);
-          });
-
-        } else if (currentNav) {
-          return this.$store.dispatch('closeNav');
-        }
-
-
-      },
-      setHash(hashObj) {
-        // set the url hash to allow deep-linking
-        this.$store.dispatch('setHash', { menu: hashObj });
+        return this.$store.dispatch('toggleDrawer', name);
       },
       optionAction(option) {
         if (option.action) {
@@ -423,7 +405,7 @@
 
           this.$store.dispatch('closeDrawer');
           this.$store.dispatch('showNavBackground', true);
-          return this.$store.dispatch('openNav', activeNav);
+          return this.$store.dispatch('openDrawer', activeNav);
         });
       }
     },

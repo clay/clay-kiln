@@ -147,7 +147,7 @@
   export default {
     computed: {
       name() {
-        return _.get(this.$store, 'state.ui.currentNav');
+        return _.get(this.$store, 'state.ui.currentDrawer');
       },
       isDrawerOpen() {
         return !!this.name && this.activeDrawer;
@@ -252,13 +252,23 @@
         if (this.$refs.tabs) {
           const activeTab = _.find(this.$refs.tabs.tabs, (tab) => tab.selected);
 
-          this.$nextTick(() => this.$refs.tabs.setActiveTab(activeTab.id));
+          if (activeTab) {
+            this.$nextTick(() => this.$refs.tabs.setActiveTab(activeTab.id));
+          }
         }
       },
       onTabChange(tab) {
         const currentUrl = _.get(this.$store, 'state.url');
 
-        this.$store.dispatch('setHash', { menu: { tab: currentUrl.tab, sites: tab.component, status: '', query: ''} });
+        let urlTab = null;
+
+        if (!currentUrl || !currentUrl.tab) {
+          urlTab = this.name || '';
+        } else {
+          urlTab = currentUrl.tab;
+        }
+
+        this.$store.dispatch('setHash', { menu: { tab: urlTab, sites: tab.component, status: '', query: ''} });
         this.$store.commit('SWITCH_TAB', tab.title);
       },
       onSelectTab(title) {

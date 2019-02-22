@@ -241,15 +241,6 @@
       person,
       UiTextbox,
       UiButton
-    },
-    activated() {
-      // set the url hash to allow deep-linking
-      this.$store.dispatch('setHash', { menu: {
-        tab: 'users',
-        sites: '',
-        status: '',
-        query: ''
-      }});
     }
   };
 </script>

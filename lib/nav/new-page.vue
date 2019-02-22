@@ -124,15 +124,6 @@
     },
     components: {
       'filterable-list': filterableList
-    },
-    activated() {
-    // set the url hash
-      this.$store.dispatch('setHash', { menu: {
-        tab: 'new-page',
-        sites: '',
-        status: '',
-        query: ''
-      }});
     }
   };
 </script>

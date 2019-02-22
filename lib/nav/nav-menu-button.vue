@@ -56,7 +56,7 @@
     props: ['id', 'icon', 'size'],
     computed: {
       isSelected() {
-        return _.get(this.$store, 'state.ui.currentNav') === this.id;
+        return _.get(this.$store, 'state.ui.currentDrawer') === this.id;
       }
     },
     methods: {

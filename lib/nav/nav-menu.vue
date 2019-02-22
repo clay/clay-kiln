@@ -95,6 +95,13 @@
   .nav-menu-leave-active {
     transition: transform $leave-viewport-time $sharp-curve;
   }
+
+  .mobile-nav-dropdown{
+    .ui-menu-option__text {
+      text-transform: capitalize;
+    }
+  }
+
 </style>
 
 <template>
@@ -104,8 +111,8 @@
       <ui-icon-button class="nav-menu-button-small" buttonType="button" type="secondary" color="white" icon="arrow_back" @click="closeNav"></ui-icon-button>
 
       <ui-button buttonType="button" class="nav-menu-button-small nav-menu-button-small-white" type="primary" color="none" has-dropdown>
-        <span class="nav-button-small-text">{{ currentNavName }}</span>
-        <ui-menu slot="dropdown" :options="mobileNavOptions" @select="openNav"></ui-menu>
+        <span class="nav-button-small-text">{{ currentDrawerName }}</span>
+        <ui-menu class="mobile-nav-dropdown" slot="dropdown" :options="mobileNavOptions" @select="openNav"></ui-menu>
       </ui-button>
       <div class="nav-menu-divider-small"></div>
       <ui-icon-button class="nav-menu-button-small" buttonType="button" color="white" type="secondary" :icon="newPageOption.icon" tooltip="newPageOption.label" @click="newPageOption.action(newPageOption.id)"></ui-icon-button>
@@ -140,7 +147,7 @@
         return Object.keys(_.get(window, 'kiln.navButtons', {}));
       },
       displayNavMenu() {
-        const navShouldBeOpen = this.menuOptions.findIndex( (option) => option.id === this.currentNav ) >= 0;
+        const navShouldBeOpen = this.menuOptions.findIndex( (option) => option.id === this.currentDrawer ) >= 0 || this.customButtons.find((button) => button === this.currentDrawer);
 
         if (navShouldBeOpen && !this.navBackgroundIsOpen) {
           this.$store.dispatch('showNavBackground');
@@ -153,17 +160,22 @@
       isAdmin() {
         return _.get(this.$store, 'state.user.auth') === 'admin';
       },
-      currentNav() {
-        return _.get(this.$store, 'state.ui.currentNav');
+      currentDrawer() {
+        return _.get(this.$store, 'state.ui.currentDrawer');
       },
-      currentNavName() {
-        return this.menuOptions.find((option) => option.id === this.currentNav).label;
+      currentDrawerName() {
+        const activeDrawer = this.menuOptions.find((option) => option.id === this.currentDrawer);
+
+        return activeDrawer ? activeDrawer.label : this.currentDrawer;
       },
       desktopNavOptions() {
         return this.menuOptions.filter((option) => option.desktopNav);
       },
       mobileNavOptions() {
-        return this.menuOptions.filter((option) => option.mobileNav);
+        let mobileNavOptions = this.menuOptions.filter((option) => option.mobileNav);
+
+
+        return [...mobileNavOptions, ...this.customButtons];
       },
       settingsOptions() {
         return this.menuOptions.filter((option) => option.settings && (option.adminOnly && this.isAdmin || !option.adminOnly));
@@ -175,7 +187,7 @@
         return [{
           id: 'my-pages',
           label: 'My Pages',
-          disabled: this.currentNav === 'my-pages',
+          disabled: this.currentDrawer === 'my-pages',
           action: this.openNav,
           desktopNav: true,
           mobileNav: true
@@ -183,7 +195,7 @@
         {
           id: 'all-pages',
           label: 'All Pages',
-          disabled: this.currentNav === 'all-pages',
+          disabled: this.currentDrawer === 'all-pages',
           action: this.openNav,
           desktopNav: true,
           mobileNav: true
@@ -213,17 +225,16 @@
     },
     methods: {
       openNav(id) {
-
         id = _.isString(id) ? id : id.id;
-
         setItem('claymenu:activetab', id);
-        this.$store.dispatch('openNav', id);
+
+        return this.$store.dispatch('toggleDrawer', id);
       },
       signout() {
         window.location.href = _.get(this.$store, 'state.site.path') + logoutRoute;
       },
       closeNav() {
-        this.$store.dispatch('closeNav');
+        this.$store.dispatch('closeDrawer');
         this.$store.dispatch('hideNavBackground');
       },
       selectSettingsOption(settingsOption) {
@@ -231,12 +242,12 @@
           settingsOption.action(settingsOption.id);
         }
       },
-      currentNavForAdminsOnly() {
-        if (!this.currentNav) {
+      currentDrawerForAdminsOnly() {
+        if (!this.currentDrawer) {
           return false;
         }
 
-        let requiresAdmin = this.menuOptions.find((option) => option.adminOnly && option.id === this.currentNav);
+        let requiresAdmin = this.menuOptions.find((option) => option.adminOnly && option.id === this.currentDrawer);
 
         return !!requiresAdmin;
       },
@@ -245,7 +256,7 @@
       }
     },
     updated() {
-      if (!this.isAdmin && this.currentNavForAdminsOnly()) {
+      if (!this.isAdmin && this.currentDrawerForAdminsOnly()) {
         this.openFirstAllowedNav();
       }
     },

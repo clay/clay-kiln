@@ -187,9 +187,7 @@ The Vuex state looks similar to this:
     currentAddComponentModal: { currentURI, parentURI, path, available }, // current "add component" modal
     currentModal: { title, type, size, data }, // current "simple" modal
     currentConfirm: { title, text, button, onConfirm }, // current "confirmation" modal
-    currentDrawer: null, // current right-hand drawer
-    currentNav: null, // current left-hand nav
-    currentNavConfig: null, // used to deep-link into the nav
+    currentDrawer: null, // current drawer menu, both left and right drawers
     currentSelection: null, // currently selected component, gets uri
     currentFocus: { uri, path }, // currently focused field/group
     currentProgress: 0, // progress bar, gets random number (to prevent flashes)

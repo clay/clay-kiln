@@ -86,7 +86,7 @@ function isStuffOpen(store) {
     _.get(store, 'state.ui.currentModal') ||
     _.get(store, 'state.ui.currentAddComponentModal') ||
     _.get(store, 'state.ui.currentConfirm') ||
-    _.get(store, 'state.ui.currentNav');
+    _.get(store, 'state.ui.currentDrawer');
 }
 
 // kick off loading when DOM is ready
