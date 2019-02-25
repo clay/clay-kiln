@@ -358,7 +358,7 @@ clear hash in window and store
 <a name="module_drawers.closeDrawer"></a>
 
 ### drawers.closeDrawer(store)
-close drawer without toggling a new drawer
+close drawer without toggling a new drawer, calls <a href="#module_deep-linking">clearHash</a>
 
 **Kind**: static method of [<code>drawers</code>](#module_drawers)
 
@@ -367,7 +367,7 @@ close drawer without toggling a new drawer
 | store | <code>Object</code> |
 
 ### drawers.openDrawer(store, nameOrConfig)
-open Drawer, will close any other open drawer
+open Drawer, will close any other open drawer, calls <a href="#module_deep-linking">setHash</a> so drawer is automatically deep-linked to
 
 **Kind**: static method of [<code>drawer</code>](#module_nav)
 
