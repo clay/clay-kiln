@@ -403,7 +403,6 @@
         return getItem('claymenu:activetab').then((savedTab) => {
           const activeNav = savedTab || 'all-pages';
 
-          this.$store.dispatch('closeDrawer');
           this.$store.dispatch('showNavBackground', true);
           return this.$store.dispatch('openDrawer', activeNav);
         });
