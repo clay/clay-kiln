@@ -51,7 +51,7 @@ Property | Description
 
 You may add options to the Clay menu to be displayed between `New Page` and `Sign Out` options. The trigger buttons should extend the `navMenuButton` component included in `window.kiln.components` and should be added to `window.kiln.navButtons.`
 
-Custom nav buttons should dispatch the `openNav` action with the same id used to name the nav button and nav content in the global `kiln` object.
+Custom nav buttons should dispatch the `openDrawer` action with the same id used to name the nav button and nav content in the global `kiln` object.
 
 The body of the nav option should be added to `window.kiln.navContent` using the same object key that was used to add the corresponding nav button.
 
