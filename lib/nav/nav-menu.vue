@@ -147,12 +147,14 @@
         return Object.keys(_.get(window, 'kiln.navButtons', {}));
       },
       displayNavMenu() {
-        const navShouldBeOpen = this.menuOptions.findIndex( (option) => option.id === this.currentDrawer ) >= 0 || this.customButtons.find((button) => button === this.currentDrawer);
-
-        if (navShouldBeOpen && !this.navBackgroundIsOpen) {
+        if (this.navShouldBeOpen && !this.navBackgroundIsOpen) {
           this.$store.dispatch('showNavBackground');
         }
-        return navShouldBeOpen;
+
+        return this.navShouldBeOpen;
+      },
+      navShouldBeOpen() {
+        return this.menuOptions.find( (option) => option.id === this.currentDrawer ) || this.customButtons.find((button) => button === this.currentDrawer);
       },
       navBackgroundIsOpen() {
         return _.get(this.$store, 'state.ui.showNavBackground');
