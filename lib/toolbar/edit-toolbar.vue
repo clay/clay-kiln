@@ -354,8 +354,7 @@
     },
     methods: {
       toggleEditMode(option) {
-        this.$store.dispatch('clearHash');
-        this.$store.dispatch('closeNav');
+        this.$store.dispatch('closeDrawer');
         const val = option.value,
           { message } = getLayoutNameAndInstance(this.$store),
           layoutAlert = { type: 'warning', text: message },
