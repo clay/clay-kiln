@@ -13,7 +13,8 @@
       "binaryLiterals": true,
       "templateStrings": true,
       "generators": true,
-      "modules": true
+      "modules": true,
+      "experimentalObjectRestSpread": true
     }
   },
   "plugins": ["html"],

@@ -41,7 +41,7 @@
 <template>
   <transition name="nav-content" mode="out-in">
     <keep-alive>
-      <component class="nav-content" v-if="currentNav" :is="currentNav"></component>
+      <component class="nav-content" v-if="currentDrawer" :is="currentDrawerComponent"></component>
     </keep-alive>
   </transition>
 </template>
@@ -55,8 +55,14 @@
 
   export default {
     computed: {
-      currentNav() {
-        return _.get(this.$store, 'state.ui.currentNav');
+      currentDrawerComponent() {
+        return this.showDrawer ? this.currentDrawer : null;
+      },
+      currentDrawer() {
+        return _.get(this.$store, 'state.ui.currentDrawer');
+      },
+      showDrawer() {
+        return !!this.$options.components[this.currentDrawer];
       }
     },
     components: _.merge({

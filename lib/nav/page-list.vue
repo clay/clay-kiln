@@ -192,7 +192,7 @@
    * @return {array}
    */
   function getInitialSites() {
-    const configSites = _.get(this.$store, 'state.ui.currentNavConfig.sites'),
+    const configSites = _.get(this.$store, 'state.url.sites'),
       selectedSites = configSites ? configSites.split(',') : [];
 
     // make an array of all sites, sorted by slug
@@ -353,12 +353,12 @@
     props: ['isMyPages'],
     data() {
       return {
-        query: _.get(this.$store, 'state.ui.currentNavConfig.query', ''),
+        query: _.get(this.$store, 'state.url.query', ''),
         offset: 0,
         total: null,
         sites: getInitialSites.call(this),
         pages: [],
-        selectedStatus: _.get(this.$store, 'state.ui.currentNavConfig.status', 'all'),
+        selectedStatus: _.get(this.$store, 'state.url.status', 'all'),
         isPopoverOpen: false
       };
     },
@@ -469,12 +469,14 @@
           // (it's used to hide the "load more" button)
 
           // set the url hash
-          this.$store.dispatch('setHash', { menu: {
-            tab: isMyPages ? 'my-pages' : 'all-pages',
-            sites: siteFilter.join(','),
-            status: statusFilter,
-            query: this.query
-          }});
+          if (_.get(this.$store, 'state.ui.currentDrawer')) {
+            this.$store.dispatch('setHash', { menu: {
+              tab: isMyPages ? 'my-pages' : 'all-pages',
+              sites: siteFilter.join(','),
+              status: statusFilter,
+              query: this.query
+            }});
+          }
         });
       }
     },

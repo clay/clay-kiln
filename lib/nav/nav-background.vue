@@ -26,7 +26,7 @@
     opacity: 0;
   }
 
-  /* don't scroll the page when left nav is open */
+  /* dont scroll the page when left nav is open */
   .nav-noscroll {
     height: 100%;
     overflow: hidden;
@@ -35,7 +35,7 @@
 
 <template>
   <transition name="nav-fade" v-if="displayBackground">
-      <div class="nav-background" @click.stop="closeNav">
+      <div class="nav-background" @click.stop="closeDrawer">
         <slot></slot>
       </div>
   </transition>
@@ -66,17 +66,18 @@
     },
     computed: {
       displayBackground() {
-        const navIsOpen = !!_.get(this.$store, 'state.ui.currentNav');
+        const drawerIsOpen = _.get(this.$store, 'state.ui.showNavBackground');
 
         // Toggle the `noscroll` class
-        toggleNoScroll(navIsOpen);
+        toggleNoScroll(drawerIsOpen);
         // Return test
-        return navIsOpen;
+        return drawerIsOpen;
       }
     },
     methods: {
-      closeNav() {
-        return this.$store.dispatch('closeNav');
+      closeDrawer() {
+        this.$store.dispatch('hideNavBackground');
+        return this.$store.dispatch('closeDrawer');
       }
     }
   };
