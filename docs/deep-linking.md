@@ -1,5 +1,7 @@
 # Deep Linking
 
+All Kiln Nav Drawers, i.e. the ui elements that slide in from the right and left, can be deep-linked to by manipulating the url hash. All page components and their property modals can also bee deep-linked to as the url hash is updated when they are being edited to reflect the name of the component.
+
 The kiln nav drawers, both left and right are opened with the [openDrawer](vuex-actions.md#module_drawers) function (or the toggleDrawer function which calls [openDrawer](vuex-actions.md#module_drawers) when opening and [closeDrawer](vuex-actions.md#module_drawers) when closing).  The [openDrawer](vuex-actions.md#module_drawers) function sets the url hash to the value passed to it.  The value can either be a string, indicating the name of the drawer to open, or an object, which includes the name, as well as further properties that can be used to deep-link to content within the drawer, such as to a tab or a specific ui element within the drawer.
 
 The hash can contain up to 4 values, each divided by a tilde.  For example: `#kiln~one~two~three~four`. The very first value in the hash, the #kiln~ value indicates that the hash is for a kiln ui element, rather than a page component.  The hash is parsed and stored in the vuex store on pageload. It is stored at store.state.url. That example hash (`#kiln~one~two~three~four`) would be stored like this:
