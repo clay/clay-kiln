@@ -1,171 +1,3 @@
-<style lang="sass">
-  @import '../../styleguide/colors';
-  @import '../../styleguide/typography';
-
-  .publish-drawer {
-    padding: 16px 0;
-  }
-
-  .publish-status {
-    border-bottom: 1px solid $divider-color;
-    display: flex;
-    flex-direction: column;
-    padding: 0 16px 16px;
-
-    .status-message {
-      @include type-subheading();
-    }
-
-    .status-time {
-      @include type-caption();
-
-      margin-top: 8px;
-    }
-
-    .status-link {
-      @include type-caption();
-
-      align-items: center;
-      color: $brand-primary-color;
-      display: flex;
-      justify-content: flex-start;
-      margin-top: 8px;
-
-      .status-link-text {
-        margin-left: 4px;
-        text-decoration: underline;
-      }
-    }
-
-    .status-undo-button {
-      margin-top: 16px;
-    }
-  }
-
-  .publish-actions {
-    border-bottom: 1px solid $divider-color;
-    display: flex;
-    flex-direction: column;
-    padding: 16px;
-
-    .action-message {
-      @include type-subheading();
-
-      align-items: center;
-      display: flex;
-      height: 32px;
-      justify-content: space-between;
-      margin-top: -6px;
-    }
-
-    .schedule-form {
-      align-items: flex-start;
-      display: flex;
-      justify-content: space-between;
-      margin-top: 8px;
-      width: 100%;
-
-      .schedule-date,
-      .schedule-time {
-        margin: 0;
-        width: 48%;
-      }
-    }
-
-    .action-button {
-      margin-top: 16px;
-    }
-
-    .action-error-message,
-    .action-warning-message,
-    .action-info-message {
-      @include type-caption();
-
-      cursor: pointer;
-      margin-top: 16px;
-    }
-
-    .action-info-message {
-      text-align: center;
-    }
-
-    .action-error-message {
-      color: $md-red;
-    }
-
-    .action-warning-message {
-      color: $md-orange;
-    }
-  }
-
-  .publish-section {
-    border-bottom: 1px solid $divider-color;
-    margin-bottom: 0;
-    padding: 0;
-
-    .ui-collapsible__header {
-      background-color: $pure-white;
-    }
-
-    .ui-collapsible__body {
-      border: none;
-    }
-  }
-
-  .publish-location {
-    .publish-location-form {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .location-description {
-      @include type-body();
-    }
-
-    .location-input {
-      margin-top: 8px;
-    }
-
-    .location-submit {
-      margin-top: 16px;
-    }
-  }
-
-  .publish-title {
-    .publish-title-form {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .title-description {
-      @include type-body();
-    }
-
-    .title-input {
-      margin-top: 8px;
-    }
-
-    .title-submit {
-      margin-top: 16px;
-    }
-  }
-
-  .publish-archive {
-    .ui-collapsible__body {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .archive-help {
-      @include type-body();
-    }
-
-    .archive-submit {
-      margin-top: 16px;
-    }
-  }
-</style>
-
 <template>
   <div class="publish-drawer">
     <!-- publish status -->
@@ -215,6 +47,12 @@
       </form>
     </ui-collapsible>
 
+     <!-- restoring -->
+    <ui-collapsible v-if="isPublished" class="publish-section publish-restore" title="Restore to Published Version">
+      <span class="archive-help">Restore the page to the published version.  NOTE: all changes made to the page since it was published, will be lost.</span>
+      <ui-button class="archive-submit" buttonType="button" type="primary" color="red" @click.stop="restorePage()">Archive</ui-button>
+    </ui-collapsible>
+
     <!-- archiving -->
     <ui-collapsible class="publish-section publish-archive" title="Archive Page">
       <span class="archive-help">You may archive any page that isn't published (or scheduled to be published). Archived pages will not show up in the Clay Menu unless you explicitly filter for them.</span>
@@ -245,6 +83,7 @@
   import UiIconButton from 'keen/UiIconButton';
   import timepicker from '../utils/timepicker.vue';
   import logger from '../utils/log';
+  import * as api from '../core-data/api.js';
 
   const log = logger(__filename);
 
@@ -564,6 +403,25 @@
             store.dispatch('finishProgress');
             store.dispatch('showSnackbar', 'Error archiving page');
           });
+      },
+      restorePage() {
+        api.getObject(`${this.$store.state.page.uri}@published`).then((result) => {
+          this.savePublishedElements(result.head);
+          this.savePublishedElements(result.main);
+        });
+      },
+      savePublishedElements(components, index = 0) {
+        if (index > components.length - 1) {
+          return null;
+        }
+
+        api.getObject(components[index]).then((component) => {
+          this.$store.dispatch('saveComponent', { uri: components[index].replace('@published',''), data: component }).then(()=> {
+            index++;
+            this.savePublishedElements(components, index++);
+          });
+        });
+
       }
     },
     mounted() {
@@ -593,3 +451,171 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../../styleguide/colors';
+  @import '../../styleguide/typography';
+
+  .publish-drawer {
+    padding: 16px 0;
+  }
+
+  .publish-status {
+    border-bottom: 1px solid $divider-color;
+    display: flex;
+    flex-direction: column;
+    padding: 0 16px 16px;
+
+    .status-message {
+      @include type-subheading();
+    }
+
+    .status-time {
+      @include type-caption();
+
+      margin-top: 8px;
+    }
+
+    .status-link {
+      @include type-caption();
+
+      align-items: center;
+      color: $brand-primary-color;
+      display: flex;
+      justify-content: flex-start;
+      margin-top: 8px;
+
+      .status-link-text {
+        margin-left: 4px;
+        text-decoration: underline;
+      }
+    }
+
+    .status-undo-button {
+      margin-top: 16px;
+    }
+  }
+
+  .publish-actions {
+    border-bottom: 1px solid $divider-color;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+
+    .action-message {
+      @include type-subheading();
+
+      align-items: center;
+      display: flex;
+      height: 32px;
+      justify-content: space-between;
+      margin-top: -6px;
+    }
+
+    .schedule-form {
+      align-items: flex-start;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      width: 100%;
+
+      .schedule-date,
+      .schedule-time {
+        margin: 0;
+        width: 48%;
+      }
+    }
+
+    .action-button {
+      margin-top: 16px;
+    }
+
+    .action-error-message,
+    .action-warning-message,
+    .action-info-message {
+      @include type-caption();
+
+      cursor: pointer;
+      margin-top: 16px;
+    }
+
+    .action-info-message {
+      text-align: center;
+    }
+
+    .action-error-message {
+      color: $md-red;
+    }
+
+    .action-warning-message {
+      color: $md-orange;
+    }
+  }
+
+  .publish-section {
+    border-bottom: 1px solid $divider-color;
+    margin-bottom: 0;
+    padding: 0;
+
+    .ui-collapsible__header {
+      background-color: $pure-white;
+    }
+
+    .ui-collapsible__body {
+      border: none;
+    }
+  }
+
+  .publish-location {
+    .publish-location-form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .location-description {
+      @include type-body();
+    }
+
+    .location-input {
+      margin-top: 8px;
+    }
+
+    .location-submit {
+      margin-top: 16px;
+    }
+  }
+
+  .publish-title {
+    .publish-title-form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .title-description {
+      @include type-body();
+    }
+
+    .title-input {
+      margin-top: 8px;
+    }
+
+    .title-submit {
+      margin-top: 16px;
+    }
+  }
+
+  .publish-archive {
+    .ui-collapsible__body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .archive-help {
+      @include type-body();
+    }
+
+    .archive-submit {
+      margin-top: 16px;
+    }
+  }
+</style>
