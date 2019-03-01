@@ -51,7 +51,7 @@ Property | Description
 
 You may add options to the Clay menu to be displayed between `New Page` and `Sign Out` options. The trigger buttons should extend the `navMenuButton` component included in `window.kiln.components` and should be added to `window.kiln.navButtons.`
 
-Custom nav buttons should dispatch the `openNav` action with the same id used to name the nav button and nav content in the global `kiln` object.
+Custom nav buttons should dispatch the `openDrawer` action with the same id used to name the nav button and nav content in the global `kiln` object.
 
 The body of the nav option should be added to `window.kiln.navContent` using the same object key that was used to add the corresponding nav button.
 
@@ -187,9 +187,7 @@ The Vuex state looks similar to this:
     currentAddComponentModal: { currentURI, parentURI, path, available }, // current "add component" modal
     currentModal: { title, type, size, data }, // current "simple" modal
     currentConfirm: { title, text, button, onConfirm }, // current "confirmation" modal
-    currentDrawer: null, // current right-hand drawer
-    currentNav: null, // current left-hand nav
-    currentNavConfig: null, // used to deep-link into the nav
+    currentDrawer: null, // current drawer menu, both left and right drawers
     currentSelection: null, // currently selected component, gets uri
     currentFocus: { uri, path }, // currently focused field/group
     currentProgress: 0, // progress bar, gets random number (to prevent flashes)

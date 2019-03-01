@@ -127,11 +127,11 @@
         return getItem('claymenu:activetab').then((savedTab) => {
           const activeNav = savedTab || 'all-pages';
 
-          return this.$store.dispatch('openNav', activeNav);
+          return this.$store.dispatch('openDrawer', activeNav);
         });
       },
       openNewPage() {
-        return this.$store.dispatch('openNav', 'new-page');
+        return this.$store.dispatch('openDrawer', 'new-page');
       }
     },
     components: {

@@ -37,6 +37,10 @@
   .toolbar-action-menu.ui-icon-button {
     display: inline-flex;
 
+    &.drawerOpen {
+      background:  rgba(0, 0, 0, 0.1);
+    }
+
     @media screen and (min-width: 600px) {
       display: none;
     }
@@ -61,10 +65,25 @@
   .toolbar-button-text {
     font-weight: bold;
   }
+
+  .kiln-toolbar-actions {
+    .toolbar-publish-button {
+      display: none;
+
+      @media screen and (min-width: 600px) {
+        display: inline-flex;
+      }
+    }
+  }
+
+  .ui-menu-option__content.activeMenuButton {
+    background: $md-grey-200;
+  }
+
 </style>
 
 <template>
-  <div class="kiln-wrapper">
+  <div class="kiln-wrapper"  @keyup.esc.stop="closeDrawer">
     <alert-container></alert-container>
     <drawer></drawer>
     <ui-toolbar type="colored" text-color="white" @nav-icon-click="openNav">
@@ -76,19 +95,30 @@
       <div class="kiln-toolbar-actions" slot="actions">
         <!-- always display custom buttons -->
         <component v-for="(button, index) in customButtons" :is="button" :key="index"></component>
+
         <!-- display a dropdown menu of actions on smaller screens (viewport < 600px) -->
-        <ui-icon-button class="toolbar-action-menu" color="white" size="large" type="secondary" icon="more_vert" tooltip="Actions" has-dropdown ref="dropdownButton" @click="closeDrawer">
-          <ui-menu contain-focus has-icons slot="dropdown" :options="toolbarOptions" @close="$refs.dropdownButton.closeDropdown()" @select="toggleDrawerFromMenu"></ui-menu>
+        <ui-icon-button class="toolbar-action-menu" :class="{drawerOpen: !!currentDrawer}" color="white" size="large" type="secondary" icon="more_vert" tooltip="Actions" has-dropdown ref="dropdownButton" @click="closeDrawer">
+          <ui-menu class="toolbar-action-menu" contain-focus has-icons slot="dropdown" :options="activeToolBarOptions" @close="$refs.dropdownButton.closeDropdown()" @select="optionAction">
+            <template slot-scope="props" slot="option">
+              <div class="ui-menu-option__content" :class="{activeMenuButton: currentDrawer === props.option.id}"><span class="ui-icon ui-menu-option__icon material-icons" :class="props.option.icon">{{ props.option.icon }}</span> <div class="ui-menu-option__text">{{ props.option.label }}</div></div>
+            </template>
+          </ui-menu>
         </ui-icon-button>
+
         <!-- display individual buttons on larger screens (viewport >= 600px) -->
-        <ui-icon-button class="toolbar-action-button" :disabled="!undoEnabled" color="white" size="large" type="secondary" icon="undo" tooltip="Undo" @click="undo"></ui-icon-button>
-        <ui-icon-button class="toolbar-action-button" :disabled="!redoEnabled" color="white" size="large" type="secondary" icon="redo" tooltip="Redo" @click="redo"></ui-icon-button>
-        <ui-icon-button v-if="isPageEditMode" class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'contributors' }" color="white" size="large" type="secondary" icon="people" tooltip="Contributors" @click.stop="toggleDrawer('contributors')"></ui-icon-button>
-        <ui-icon-button v-if="!isPageEditMode" class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'layout-history' }" color="white" size="large" type="secondary" icon="people" tooltip="Layout History" @click.stop="toggleDrawer('layout-history')"></ui-icon-button>
-        <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'components' }" color="white" size="large" type="secondary" icon="find_in_page" :tooltip="componentsTooltip" @click.stop="toggleDrawer('components')"></ui-icon-button>
-        <ui-icon-button class="toolbar-action-button" :class="{ 'is-open-drawer': currentDrawer === 'preview' }" color="white" size="large" type="secondary" icon="open_in_new" tooltip="Preview" @click.stop="toggleDrawer('preview')"></ui-icon-button>
-        <ui-button v-if="isPageEditMode" class="toolbar-publish-button" :class="{ 'is-open-drawer': currentDrawer === 'publish-page' }" type="primary" color="primary" size="large" @click.stop="toggleDrawer('publish-page')"><span class="toolbar-button-text">Publishing</span></ui-button>
-        <ui-button v-if="!isPageEditMode" class="toolbar-publish-button" :class="{ 'is-open-drawer': currentDrawer === 'publish-layout' }" type="primary" color="primary" size="large" @click.stop="toggleDrawer('publish-layout')"><span class="toolbar-button-text">Publishing</span></ui-button>
+        <component
+          size="large"
+          v-for="option in activeToolBarOptions"
+          :color="option.color || 'white'"
+          :type="option.type || 'secondary'"
+          :is="option.component || 'UiIconButton'"
+          :disabled="option.disabled"
+          :icon="!option.noDesktopIcon ? option.icon : null"
+          :key="option.id"
+          :class="{ 'is-open-drawer': currentDrawer === option.id, 'toolbar-action-button': option.icon && !option.noDesktopIcon, 'toolbar-publish-button': !option.icon || option.noDesktopIcon }"
+          :tooltip="option.label"
+          @click.stop="option.action(option.id)"
+        ><span class="toolbar-button-text" v-if="!option.icon || option.noDesktopIcon">{{ option.label }}</span></component>
       </div>
     </ui-toolbar>
     <div class="kiln-progress">
@@ -128,11 +158,9 @@
   import navContent from '../nav/nav-content.vue';
   import confirm from './confirm.vue';
   import alertContainer from './alert-container.vue';
-  import logger from '../utils/log';
   import { getLayoutNameAndInstance } from '../utils/references';
   import { getLastEditUser } from '../utils/history';
 
-  const log = logger(__filename);
 
   export default {
     data() {
@@ -172,6 +200,84 @@
         } else {
           return false;
         }
+      },
+      toolbarOptions() {
+        return [{
+          id: 'undo',
+          label: 'Undo',
+          icon: 'undo',
+          disabled: !this.undoEnabled,
+          action: this.undo
+        },
+        {
+          id: 'redo',
+          label: 'Redo',
+          icon: 'redo',
+          disabled: !this.redoEnabled,
+          action: this.redo
+        },
+        {
+          type: 'divider'
+        },
+        {
+          id: 'contributors',
+          label: 'Contributors',
+          icon: 'people',
+          presentWhen: this.isPageEditMode,
+          action: this.toggleDrawer
+        },
+        {
+          id: 'layout-history',
+          label: 'Layout History',
+          icon: 'people',
+          presentWhen: !this.isPageEditMode,
+          action: this.toggleDrawer
+        },
+        {
+          id: 'find-on-a-page',
+          label: 'Find on Page',
+          icon: 'find_in_page',
+          presentWhen: this.isPageEditMode,
+          action: this.toggleDrawer
+        },
+        {
+          id: 'find-on-layout',
+          label: 'Find on Layout',
+          icon: 'find_in_page',
+          presentWhen: !this.isPageEditMode,
+          action: this.toggleDrawer
+        },
+        {
+          id: 'preview',
+          label: 'Preview',
+          icon: 'open_in_new',
+          action: this.toggleDrawer
+        },
+        {
+          id: 'publish-page',
+          label: 'Publishing',
+          icon: 'publish',
+          noDesktopIcon: true,
+          action: this.toggleDrawer,
+          presentWhen: this.isPageEditMode,
+          component: 'UiButton',
+          type: 'primary',
+          color: 'primary'
+        },
+        {
+          id: 'publish-layout',
+          label: 'Publishing',
+          icon: 'publish',
+          noDesktopIcon: true,
+          action: this.toggleDrawer,
+          presentWhen: !this.isPageEditMode,
+          component: 'UiButton',
+          type: 'primary',
+          color: 'primary'
+        }];
+      },
+      activeToolBarOptions() {
+        return this.toolbarOptions.filter((option) => !option.type && typeof option.presentWhen === 'undefined' || !!option.presentWhen);
       },
       statusIcon() {
         return this.isPageEditMode ? 'mode_edit' : 'layers';
@@ -231,49 +337,6 @@
       componentsTooltip() {
         return this.isPageEditMode ? 'Find on Page' : 'Find on Layout';
       },
-      toolbarOptions() {
-        if (this.isPageEditMode) {
-          return [{
-            label: 'Undo',
-            icon: 'undo',
-            disabled: !this.undoEnabled
-          }, {
-            label: 'Redo',
-            icon: 'redo',
-            disabled: !this.redoEnabled
-          }, {
-            type: 'divider'
-          }, {
-            label: 'Contributors',
-            icon: 'people'
-          }, {
-            label: 'Find on Page',
-            icon: 'find_in_page'
-          }, {
-            label: 'Preview',
-            icon: 'open_in_new'
-          }];
-        } else {
-          // display fewer options in layout edit mode, until we have a 'layouts' index
-          return [{
-            label: 'Undo',
-            icon: 'undo',
-            disabled: !this.undoEnabled
-          }, {
-            label: 'Redo',
-            icon: 'redo',
-            disabled: !this.redoEnabled
-          }, {
-            type: 'divider'
-          }, {
-            label: 'Find on Layout',
-            icon: 'find_in_page'
-          }, {
-            label: 'Preview',
-            icon: 'open_in_new'
-          }];
-        }
-      },
       snackbar() {
         return _.get(this.$store, 'state.ui.snackbar') && _.toPlainObject(_.get(this.$store, 'state.ui.snackbar'));
       },
@@ -291,6 +354,7 @@
     },
     methods: {
       toggleEditMode(option) {
+        this.$store.dispatch('closeDrawer');
         const val = option.value,
           { message } = getLayoutNameAndInstance(this.$store),
           layoutAlert = { type: 'warning', text: message },
@@ -326,15 +390,9 @@
       toggleDrawer(name) {
         return this.$store.dispatch('toggleDrawer', name);
       },
-      toggleDrawerFromMenu(option) {
-        switch (option.label) {
-          case 'Undo': return this.undo();
-          case 'Redo': return this.redo();
-          case 'Contributors': return this.toggleDrawer('contributors');
-          case 'Find on Page': return this.toggleDrawer('components');
-          case 'Find on Layout': return this.toggleDrawer('components');
-          case 'Preview': return this.toggleDrawer('preview');
-          default: log.warn(`Unknown drawer: ${option.label}`);
+      optionAction(option) {
+        if (option.action) {
+          option.action(option.id);
         }
       },
       closeDrawer() {
@@ -344,7 +402,8 @@
         return getItem('claymenu:activetab').then((savedTab) => {
           const activeNav = savedTab || 'all-pages';
 
-          return this.$store.dispatch('openNav', activeNav);
+          this.$store.dispatch('showNavBackground', true);
+          return this.$store.dispatch('openDrawer', activeNav);
         });
       }
     },

@@ -355,6 +355,11 @@ clear hash in window and store
 <a name="module_drawers"></a>
 
 ## drawers
+
+* [drawers](#module_drawers)
+    * [.closeDrawer(store)](#module_drawers.closeDrawer)
+    * [.openDrawer(store, nameOrConfig)](#module_drawers.openDrawer)
+
 <a name="module_drawers.closeDrawer"></a>
 
 ### drawers.closeDrawer(store)
@@ -365,6 +370,18 @@ close drawer without toggling a new drawer
 | Param | Type |
 | --- | --- |
 | store | <code>Object</code> | 
+
+<a name="module_drawers.openDrawer"></a>
+
+### drawers.openDrawer(store, nameOrConfig)
+open drawer
+
+**Kind**: static method of [<code>drawers</code>](#module_drawers)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| store | <code>Object</code> |  |
+| nameOrConfig | <code>string</code> \| <code>object</code> | either just the tab name or a json object for deeper linking |
 
 <a name="module_forms"></a>
 
@@ -504,7 +521,7 @@ open nav tab
 | Param | Type | Description |
 | --- | --- | --- |
 | store | <code>object</code> |  |
-| nameOrConfig | <code>string</code> \| <code>object</code> | tab name, or clay menu config |
+| nameOrConfig | <code>string</code> \| <code>object</code> | tab name, or clay menu config openNav sets the ui.currentDrawer vuex variable, this allows drawers (the right slide-in menus) as well as the "nav" (the left slide-in menu) to be deep linked to. The openNav/closeNav are functions are depreciated. Should use the openDrawer/closeDrawer/toggleDrawer actions Just leaving these here in case any legacy plugins are still calling these functions |
 
 <a name="module_page-data"></a>
 

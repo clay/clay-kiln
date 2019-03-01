@@ -96,7 +96,7 @@
         >{{event.formattedAction}}</div>
         <div class="page-history-event-time">{{event.formattedTime}}</div>
         <div class="page-history-event-users">
-          <p v-for="(user, index) in event.users.reverse()">
+          <p v-for="(user, index) in event.users.reverse()" :key="index">
             <span v-if="index === 0">By </span>{{user.name || user.username}}<span v-if="index+1 < event.users.length">, <br/></span>
           </p>
         </div>
