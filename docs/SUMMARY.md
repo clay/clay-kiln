@@ -8,6 +8,7 @@
   * [Adding, Removing, and Reordering Components](manipulating-components.md)
   * [Editing Components](editing-components.md)
   * [Form Inputs](inputs.md)
+* [Deep Linking](deep-linking.md)
 
 ## API Documentation
 
