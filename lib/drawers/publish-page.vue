@@ -47,16 +47,17 @@
       </form>
     </ui-collapsible>
 
-     <!-- restoring -->
-    <ui-collapsible v-if="isPublished" class="publish-section publish-restore" title="Restore to Published Version">
-      <span class="archive-help">Restore the page to the published version.  NOTE: all changes made to the page since it was published, will be lost.</span>
-      <ui-button class="archive-submit" buttonType="button" type="primary" color="red" @click.stop="restorePage()">Archive</ui-button>
-    </ui-collapsible>
-
     <!-- archiving -->
     <ui-collapsible class="publish-section publish-archive" title="Archive Page">
       <span class="archive-help">You may archive any page that isn't published (or scheduled to be published). Archived pages will not show up in the Clay Menu unless you explicitly filter for them.</span>
       <ui-button class="archive-submit" buttonType="button" type="primary" color="red" :disabled="isScheduled || isPublished || isArchived" @click.stop="archivePage(true)">Archive</ui-button>
+    </ui-collapsible>
+
+
+    <!-- restore from published -->
+    <ui-collapsible class="publish-section publish-archive" title="Restore Published Version">
+      <span class="archive-help">You may override ALL local changes to the page by Restoring the Page to the Published Version.  This can not be undone.</span>
+      <ui-button class="action-button" buttonType="button" type="primary" color="red" @click.stop="restorePage()" :disabled="!isPublished">Restore</ui-button>
     </ui-collapsible>
   </div>
 </template>
@@ -84,6 +85,8 @@
   import timepicker from '../utils/timepicker.vue';
   import logger from '../utils/log';
   import * as api from '../core-data/api.js';
+  import { getComponentEl } from '../utils/component-elements';
+  import { getComponentNode } from '../utils/head-components';
 
   const log = logger(__filename);
 
@@ -404,25 +407,120 @@
             store.dispatch('showSnackbar', 'Error archiving page');
           });
       },
-      restorePage() {
-        api.getObject(`${this.$store.state.page.uri}@published`).then((result) => {
-          this.savePublishedElements(result.head);
-          this.savePublishedElements(result.main);
+
+
+
+
+
+
+      restorePageClick() {
+        this.$store.dispatch('openModal', {
+          title: 'Restore Published Version',
+          type: 'type-restore-published-version-modal',
+          data: {
+            name: 'restorePublishedVersion',
+            username: this.$store.state.user.username,
+            onConfirm: () => {
+              this.restorePage();
+            }
+          }
         });
       },
-      savePublishedElements(components, index = 0) {
+      restorePage() {
+        for (let prop in this.$store.state.page.data) {
+          if (prop !== 'layout') {
+            this.$store.state.page.data[prop].forEach((uri) => {
+              this.checkIfURIPublished(uri);
+            });
+          }
+        }
+        api.getObject(`${this.$store.state.page.uri}@published`).then((publishedPage) => {
+          this.saveHeadElements(publishedPage.head);
+          this.saveMainElements(publishedPage.main);
+        });
+      },
+      checkIfURIPublished(uri) {
+        let publishedVersion = uri.replace('@published', '') + '@published';
+
+        api.getObject(publishedVersion).then(() => {
+          // this uri HAS been published
+          this.loopThroughURIProps(uri, this.checkIfURIPublished);
+        }).catch(() => {
+          // this uri HASN'T been published.  Delete it
+          this.deleteURI(uri);
+        });
+      },
+      deleteURI(uri) {
+        let el = getComponentEl(uri);
+
+        if (el) {
+          this.$store.dispatch('removeComponent', el);
+        } else {
+          const componentNode = getComponentNode(uri);
+
+          this.$store.dispatch('removeHeadComponent', componentNode);
+        }
+      },
+      loopThroughURIProps(uri, callback) {
+        api.getObject(uri).then((componentObject) => {
+          // Loop through its keys looking for properties with a _ref property
+          for (let nestedComponent in componentObject) {
+            if (_.isArray(componentObject[nestedComponent])) {
+              componentObject[nestedComponent].forEach((arrayElement) => {
+                if (_.isObject(arrayElement) && arrayElement['_ref']) {
+                  callback(arrayElement['_ref']);
+                }
+              });
+            } else if (_.isObject(componentObject[nestedComponent]) && componentObject[nestedComponent]['_ref']) {
+              callback(componentObject[nestedComponent]['_ref']);
+            }
+          }
+        });
+      },
+      saveHeadElements(components, index = 0) {
         if (index > components.length - 1) {
           return null;
         }
 
         api.getObject(components[index]).then((component) => {
-          this.$store.dispatch('saveComponent', { uri: components[index].replace('@published',''), data: component }).then(()=> {
+          const uri = components[index].replace('@published',''),
+            data = component;
+
+          this.$store.dispatch('saveComponent', { uri, data }).then(()=> {
             index++;
-            this.savePublishedElements(components, index++);
+            this.saveHeadElements(components, index);
           });
         });
 
+      },
+      saveMainElements(components) {
+        components.forEach((component) => {
+          api.getObject(component.replace('@published','') + '@published').then((componentObj) => {
+            const data = JSON.parse(JSON.stringify(componentObj).replace(new RegExp('@published','g'),'')),
+              uri = component.replace('@published','');
+
+            this.$store.dispatch('saveComponent', { uri, data }).then(()=> {
+              this.loopThroughURIProps(uri, this.saveURI);
+            });
+          });
+        });
+      },
+      saveURI(uri) {
+        api.getObject(uri + '@published').then((componentObj) => {
+          const data = JSON.parse(JSON.stringify(componentObj).replace(new RegExp('@published','g'),''));
+
+          this.$store.dispatch('saveComponent', { uri, data }).then(()=> {
+            this.loopThroughURIProps(uri, this.saveURI);
+          });
+        });
       }
+
+
+
+
+
+
+
     },
     mounted() {
       const prefix = _.get(this.$store, 'state.site.prefix'),
@@ -458,6 +556,19 @@
 
   .publish-drawer {
     padding: 16px 0;
+
+    .section-heading {
+       @include type-subheading();
+    }
+
+    .section-text {
+      @include type-caption();
+      margin-top: 8px;
+    }
+
+    .action-button {
+      margin-top: 16px;
+    }
   }
 
   .publish-status {
@@ -524,10 +635,6 @@
         margin: 0;
         width: 48%;
       }
-    }
-
-    .action-button {
-      margin-top: 16px;
     }
 
     .action-error-message,

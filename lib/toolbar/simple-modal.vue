@@ -30,6 +30,7 @@
   import addUserModal from './add-user-modal.vue';
   import typeConfirmModal from './type-confirm-modal.vue';
   import typeReasonModal from './type-reason-modal.vue';
+  import typeRestorePublishedVersionModal from './type-restore-published-version-modal.vue';
   import addBookmarkModal from './add-bookmark.vue';
 
   const noscrollClass = 'noscroll',
@@ -97,7 +98,8 @@
       'add-user': addUserModal,
       'type-confirm': typeConfirmModal,
       'type-reason': typeReasonModal,
-      'add-bookmark': addBookmarkModal
+      'add-bookmark': addBookmarkModal,
+      typeRestorePublishedVersionModal
     })
   };
 </script>
