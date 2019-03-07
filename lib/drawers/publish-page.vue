@@ -57,7 +57,7 @@
     <!-- restore from published -->
     <ui-collapsible class="publish-section publish-archive" title="Restore Published Version">
       <span class="archive-help">You may override ALL local changes to the page by Restoring the Page to the Published Version.  This can not be undone.</span>
-      <ui-button class="action-button" buttonType="button" type="primary" color="red" @click.stop="restorePage()" :disabled="!isPublished">Restore</ui-button>
+      <ui-button class="action-button" buttonType="button" type="primary" color="red" @click.stop="restorePageClick()" :disabled="!isPublished">Restore</ui-button>
     </ui-collapsible>
   </div>
 </template>
@@ -85,7 +85,6 @@
   import timepicker from '../utils/timepicker.vue';
   import logger from '../utils/log';
   import * as api from '../core-data/api.js';
-  import { getComponentEl } from '../utils/component-elements';
   import { getComponentNode } from '../utils/head-components';
 
   const log = logger(__filename);
@@ -132,6 +131,7 @@
       currentTitle: (state) => state.page.state.title,
       isAdmin: (state) => state.user.auth === 'admin',
       isLayoutPublished: (state) => state.layout.state.published,
+      headComponents: (state) => state.page.data.head,
       statusMessage() {
         if (this.isScheduled) {
           return `Scheduled ${distanceInWordsToNow(this.scheduledDate, { addSuffix: true })}`;
@@ -407,12 +407,6 @@
             store.dispatch('showSnackbar', 'Error archiving page');
           });
       },
-
-
-
-
-
-
       restorePageClick() {
         this.$store.dispatch('openModal', {
           title: 'Restore Published Version',
@@ -427,57 +421,42 @@
         });
       },
       restorePage() {
-        for (let prop in this.$store.state.page.data) {
-          if (prop !== 'layout') {
-            this.$store.state.page.data[prop].forEach((uri) => {
-              this.checkIfURIPublished(uri);
-            });
-          }
-        }
         api.getObject(`${this.$store.state.page.uri}@published`).then((publishedPage) => {
-          this.saveHeadElements(publishedPage.head);
+          this.restoreHeadComponents(publishedPage.head, this.headComponents);
           this.saveMainElements(publishedPage.main);
         });
       },
-      checkIfURIPublished(uri) {
-        let publishedVersion = uri.replace('@published', '') + '@published';
-
-        api.getObject(publishedVersion).then(() => {
-          // this uri HAS been published
-          this.loopThroughURIProps(uri, this.checkIfURIPublished);
-        }).catch(() => {
-          // this uri HASN'T been published.  Delete it
-          this.deleteURI(uri);
+      restoreHeadComponents(publishedHeadComponents, unPublishedHeadComponents, index = 0) {
+        this.deleteHeadComponents(publishedHeadComponents, unPublishedHeadComponents, index).then(() => {
+          this.saveHeadElement(publishedHeadComponents);
         });
       },
-      deleteURI(uri) {
-        let el = getComponentEl(uri);
-
-        if (el) {
-          this.$store.dispatch('removeComponent', el);
-        } else {
-          const componentNode = getComponentNode(uri);
-
-          this.$store.dispatch('removeHeadComponent', componentNode);
-        }
-      },
-      loopThroughURIProps(uri, callback) {
-        api.getObject(uri).then((componentObject) => {
-          // Loop through its keys looking for properties with a _ref property
-          for (let nestedComponent in componentObject) {
-            if (_.isArray(componentObject[nestedComponent])) {
-              componentObject[nestedComponent].forEach((arrayElement) => {
-                if (_.isObject(arrayElement) && arrayElement['_ref']) {
-                  callback(arrayElement['_ref']);
-                }
-              });
-            } else if (_.isObject(componentObject[nestedComponent]) && componentObject[nestedComponent]['_ref']) {
-              callback(componentObject[nestedComponent]['_ref']);
-            }
+      deleteHeadComponents(publishedHeadComponents, unPublishedHeadComponents, index = 0) {
+        return new Promise((resolve) => {
+          if (unPublishedHeadComponents.length > 0) {
+            this.deleteHeadComponent(unPublishedHeadComponents, index).then((index)=> {
+              if (index > unPublishedHeadComponents.length - 1) {
+                resolve();
+              } else {
+                return this.restoreHeadComponents(publishedHeadComponents, unPublishedHeadComponents, index);
+              }
+            });
+          } else {
+            resolve();
           }
         });
       },
-      saveHeadElements(components, index = 0) {
+      deleteHeadComponent(headComponents, index) {
+        return new Promise((resolve) => {
+          const componentNode = getComponentNode(headComponents[index]);
+
+          this.$store.dispatch('removeHeadComponent', componentNode).then(() => {
+            index++;
+            resolve(index);
+          });
+        });
+      },
+      saveHeadElement(components, index = 0) {
         if (index > components.length - 1) {
           return null;
         }
@@ -486,41 +465,58 @@
           const uri = components[index].replace('@published',''),
             data = component;
 
-          this.$store.dispatch('saveComponent', { uri, data }).then(()=> {
+          let dataObj = {
+            newComponents: [data],
+            currentURI: uri,
+            path: 'head',
+            replace: true,
+            index: this.$store.state.page.data.head.length,
+            data: this.$store.state.page.data.head
+          };
+
+          this.$store.dispatch('addCreatedComponentsToPageArea', dataObj).then(()=> {
             index++;
-            this.saveHeadElements(components, index);
+            this.saveHeadElement(components, index);
           });
         });
-
       },
       saveMainElements(components) {
         components.forEach((component) => {
-          api.getObject(component.replace('@published','') + '@published').then((componentObj) => {
+          api.getObject(component).then((componentObj) => {
             const data = JSON.parse(JSON.stringify(componentObj).replace(new RegExp('@published','g'),'')),
               uri = component.replace('@published','');
 
             this.$store.dispatch('saveComponent', { uri, data }).then(()=> {
-              this.loopThroughURIProps(uri, this.saveURI);
+              this.loopThroughURIProps(component, componentObj, this.saveURI);
             });
           });
         });
       },
       saveURI(uri) {
-        api.getObject(uri + '@published').then((componentObj) => {
-          const data = JSON.parse(JSON.stringify(componentObj).replace(new RegExp('@published','g'),''));
+        api.getObject(uri).then((componentObj) => {
+          const data = JSON.parse(JSON.stringify(componentObj).replace(new RegExp('@published','g'),'')),
+            nonPublishedURI = uri.replace(new RegExp('@published','g'),''),
+            saveData = {uri: nonPublishedURI, data };
 
-          this.$store.dispatch('saveComponent', { uri, data }).then(()=> {
+          this.$store.dispatch('saveComponent', saveData).then(()=> {
             this.loopThroughURIProps(uri, this.saveURI);
           });
         });
+      },
+      loopThroughURIProps(uri, componentObj, callback) {
+        // Loop through its keys looking for properties with a _ref property
+        for (let nestedComponent in componentObj) {
+          if (_.isArray(componentObj[nestedComponent])) {
+            componentObj[nestedComponent].forEach((arrayElement) => {
+              if (_.isObject(arrayElement) && arrayElement['_ref']) {
+                callback(arrayElement['_ref']);
+              }
+            });
+          } else if (_.isObject(componentObj[nestedComponent]) && componentObj[nestedComponent]['_ref']) {
+            callback(componentObj[nestedComponent]['_ref']);
+          }
+        }
       }
-
-
-
-
-
-
-
     },
     mounted() {
       const prefix = _.get(this.$store, 'state.site.prefix'),
