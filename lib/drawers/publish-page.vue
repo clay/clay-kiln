@@ -85,7 +85,6 @@
   import timepicker from '../utils/timepicker.vue';
   import logger from '../utils/log';
   import * as api from '../core-data/api.js';
-  import { getComponentNode } from '../utils/head-components';
 
   const log = logger(__filename);
 
@@ -421,101 +420,67 @@
         });
       },
       restorePage() {
-        api.getObject(`${this.$store.state.page.uri}@published`).then((publishedPage) => {
-          this.restoreHeadComponents(publishedPage.head, this.headComponents);
-          this.saveMainElements(publishedPage.main);
-        });
-      },
-      restoreHeadComponents(publishedHeadComponents, unPublishedHeadComponents, index = 0) {
-        this.deleteHeadComponents(publishedHeadComponents, unPublishedHeadComponents, index).then(() => {
-          this.saveHeadElement(publishedHeadComponents);
-        });
-      },
-      deleteHeadComponents(publishedHeadComponents, unPublishedHeadComponents, index = 0) {
-        return new Promise((resolve) => {
-          if (unPublishedHeadComponents.length > 0) {
-            this.deleteHeadComponent(unPublishedHeadComponents, index).then((index)=> {
-              if (index > unPublishedHeadComponents.length - 1) {
-                resolve();
-              } else {
-                return this.restoreHeadComponents(publishedHeadComponents, unPublishedHeadComponents, index);
-              }
-            });
-          } else {
-            resolve();
-          }
-        });
-      },
-      deleteHeadComponent(headComponents, index) {
-        return new Promise((resolve) => {
-          const componentNode = getComponentNode(headComponents[index]);
-
-          this.$store.dispatch('removeHeadComponent', componentNode).then(() => {
-            index++;
-            resolve(index);
+        api.getObject(`${this.$store.state.page.uri}@published.json`).then((publishedPage) => {
+          this.restoreHeadComponents(publishedPage.head).then(() => {
+            this.saveMainComponents(publishedPage.main);
           });
         });
       },
-      saveHeadElement(components, index = 0) {
-        if (index > components.length - 1) {
-          return null;
-        }
+      restoreHeadComponents(publishedHeadComponents) {
+        return new Promise((resolve) => {
+          // delete current headComponents in one go, which takes care of removing any components that have been added since last publish & any reordering that may have been done
+          this.$store.dispatch('savePage', { head: [] }).then(() => {
+            this.saveHeadComponents(publishedHeadComponents).then(() => {
+              resolve();
+            });
+          });
+        });
+      },
+      saveHeadComponents(components) {
+        return new Promise((resolve) => {
+          const headComponents = [];
 
-        api.getObject(components[index]).then((component) => {
-          const uri = components[index].replace('@published',''),
-            data = component;
+          components.forEach((component) =>{
+            const data = JSON.parse(JSON.stringify(component).replace(new RegExp('@published','g'),''));
+
+            headComponents.push(data);
+          });
 
           let dataObj = {
-            newComponents: [data],
-            currentURI: uri,
+            newComponents: headComponents,
             path: 'head',
-            replace: true,
-            index: this.$store.state.page.data.head.length,
-            data: this.$store.state.page.data.head
+            replace: false,
+            index: 0,
+            data: []
           };
 
-          this.$store.dispatch('addCreatedComponentsToPageArea', dataObj).then(()=> {
-            index++;
-            this.saveHeadElement(components, index);
+          this.$store.dispatch('addCreatedComponentsToPageArea', dataObj).then(() => {
+            resolve();
           });
         });
       },
-      saveMainElements(components) {
-        components.forEach((component) => {
-          api.getObject(component).then((componentObj) => {
-            const data = JSON.parse(JSON.stringify(componentObj).replace(new RegExp('@published','g'),'')),
-              uri = component.replace('@published','');
+      saveMainComponents(components) {
+        return new Promise((resolve) => {
+          const headComponents = [];
 
-            this.$store.dispatch('saveComponent', { uri, data }).then(()=> {
-              this.loopThroughURIProps(component, componentObj, this.saveURI);
-            });
-          });
-        });
-      },
-      saveURI(uri) {
-        api.getObject(uri).then((componentObj) => {
-          const data = JSON.parse(JSON.stringify(componentObj).replace(new RegExp('@published','g'),'')),
-            nonPublishedURI = uri.replace(new RegExp('@published','g'),''),
-            saveData = {uri: nonPublishedURI, data };
+          components.forEach((component) =>{
+            const data = JSON.parse(JSON.stringify(component).replace(new RegExp('@published','g'),''));
 
-          this.$store.dispatch('saveComponent', saveData).then(()=> {
-            this.loopThroughURIProps(uri, componentObj, this.saveURI);
+            headComponents.push(data);
+          });
+
+          let dataObj = {
+            newComponents: headComponents,
+            path: 'main',
+            replace: true,
+            index: 0,
+            data: []
+          };
+
+          this.$store.dispatch('addCreatedComponentsToPageArea', dataObj).then(() => {
+            resolve();
           });
         });
-      },
-      loopThroughURIProps(uri, componentObj, callback) {
-        // Loop through its keys looking for properties with a _ref property
-        for (let nestedComponent in componentObj) {
-          if (_.isArray(componentObj[nestedComponent])) {
-            componentObj[nestedComponent].forEach((arrayElement) => {
-              if (_.isObject(arrayElement) && arrayElement['_ref']) {
-                callback(arrayElement['_ref']);
-              }
-            });
-          } else if (_.isObject(componentObj[nestedComponent]) && componentObj[nestedComponent]['_ref']) {
-            callback(componentObj[nestedComponent]['_ref']);
-          }
-        }
       }
     },
     mounted() {
