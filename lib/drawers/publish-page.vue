@@ -57,7 +57,7 @@
     <!-- restore from published -->
     <ui-collapsible class="publish-section publish-archive" title="Restore Published Version">
       <span class="archive-help">You may override ALL local changes to the page by Restoring the Page to the Published Version.  This can not be undone.</span>
-      <ui-button class="action-button" buttonType="button" type="primary" color="red" @click.stop="restorePageClick()" :disabled="!isPublished">Restore</ui-button>
+      <ui-button class="action-button" buttonType="button" type="primary" color="red" @click.stop="restorePage()" :disabled="!isPublished">Restore</ui-button>
     </ui-collapsible>
   </div>
 </template>
@@ -499,7 +499,7 @@
             saveData = {uri: nonPublishedURI, data };
 
           this.$store.dispatch('saveComponent', saveData).then(()=> {
-            this.loopThroughURIProps(uri, this.saveURI);
+            this.loopThroughURIProps(uri, componentObj, this.saveURI);
           });
         });
       },
