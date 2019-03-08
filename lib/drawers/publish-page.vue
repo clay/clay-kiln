@@ -57,7 +57,7 @@
     <!-- restore from published -->
     <ui-collapsible class="publish-section publish-archive" title="Restore Published Version">
       <span class="archive-help">You may override ALL local changes to the page by Restoring the Page to the Published Version.  This can not be undone.</span>
-      <ui-button class="action-button" buttonType="button" type="primary" color="red" @click.stop="restorePage()" :disabled="!isPublished">Restore</ui-button>
+      <ui-button class="action-button" buttonType="button" type="primary" color="red" @click.stop="restorePageClick()" :disabled="!isPublished">Restore</ui-button>
     </ui-collapsible>
   </div>
 </template>
@@ -422,7 +422,11 @@
       restorePage() {
         api.getObject(`${this.$store.state.page.uri}@published.json`).then((publishedPage) => {
           this.restoreHeadComponents(publishedPage.head).then(() => {
-            this.saveComponents(publishedPage.main, 'main');
+            this.saveComponents(publishedPage.main, 'main', true).then(() => {
+              this.$store.dispatch('showSnackbar', {
+                message: 'Page Restored to Published Version'
+              });
+            });
           });
         });
       },
@@ -436,7 +440,7 @@
           });
         });
       },
-      saveComponents(components, path) {
+      saveComponents(components, path, forceRender = false) {
         return new Promise((resolve) => {
           const arrComponents = [];
 
@@ -451,7 +455,8 @@
             path: path,
             replace: true,
             index: 0,
-            data: []
+            data: [],
+            forceRender
           };
 
           this.$store.dispatch('addCreatedComponentsToPageArea', dataObj).then(() => {
