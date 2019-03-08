@@ -422,7 +422,7 @@
       restorePage() {
         api.getObject(`${this.$store.state.page.uri}@published.json`).then((publishedPage) => {
           this.restoreHeadComponents(publishedPage.head).then(() => {
-            this.saveMainComponents(publishedPage.main);
+            this.saveComponents(publishedPage.main, 'main');
           });
         });
       },
@@ -430,48 +430,25 @@
         return new Promise((resolve) => {
           // delete current headComponents in one go, which takes care of removing any components that have been added since last publish & any reordering that may have been done
           this.$store.dispatch('savePage', { head: [] }).then(() => {
-            this.saveHeadComponents(publishedHeadComponents).then(() => {
+            this.saveComponents(publishedHeadComponents, 'head').then(() => {
               resolve();
             });
           });
         });
       },
-      saveHeadComponents(components) {
+      saveComponents(components, path) {
         return new Promise((resolve) => {
-          const headComponents = [];
+          const arrComponents = [];
 
           components.forEach((component) =>{
             const data = JSON.parse(JSON.stringify(component).replace(new RegExp('@published','g'),''));
 
-            headComponents.push(data);
+            arrComponents.push(data);
           });
 
           let dataObj = {
-            newComponents: headComponents,
-            path: 'head',
-            replace: false,
-            index: 0,
-            data: []
-          };
-
-          this.$store.dispatch('addCreatedComponentsToPageArea', dataObj).then(() => {
-            resolve();
-          });
-        });
-      },
-      saveMainComponents(components) {
-        return new Promise((resolve) => {
-          const headComponents = [];
-
-          components.forEach((component) =>{
-            const data = JSON.parse(JSON.stringify(component).replace(new RegExp('@published','g'),''));
-
-            headComponents.push(data);
-          });
-
-          let dataObj = {
-            newComponents: headComponents,
-            path: 'main',
+            newComponents: arrComponents,
+            path: path,
             replace: true,
             index: 0,
             data: []
