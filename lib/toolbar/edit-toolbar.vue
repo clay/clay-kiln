@@ -159,7 +159,7 @@
   import confirm from './confirm.vue';
   import alertContainer from './alert-container.vue';
   import { getLayoutNameAndInstance } from '../utils/references';
-  import { getLastEditUser } from '../utils/history';
+  import { getLastEditUser, hasPageChanges } from '../utils/history';
 
 
   export default {
@@ -181,14 +181,7 @@
         return Object.keys(window.kiln.toolbarButtons);
       },
       hasPageChanges: (state) => {
-        const pubTime = _.get(state, 'page.state.publishTime'), // latest published timestamp
-          upTime = _.get(state, 'page.state.updateTime'); // latest updated timestamp
-
-        if (pubTime && upTime) {
-          return isAfter(upTime, pubTime);
-        } else {
-          return false;
-        }
+        return hasPageChanges(state);
       },
       hasLayoutChanges: (state) => {
         const layoutState = _.get(state, 'layout.state'),

@@ -57,7 +57,7 @@
     <!-- restore from published -->
     <ui-collapsible class="publish-section publish-archive" title="Restore Published Version">
       <span class="archive-help">You may override ALL local changes to the page by Restoring the Page to the Published Version.  This can not be undone.</span>
-      <ui-button class="action-button" buttonType="button" type="primary" color="red" @click.stop="restorePageClick()" :disabled="!isPublished">Restore</ui-button>
+      <ui-button class="action-button" buttonType="button" type="primary" color="red" @click.stop="restorePageClick()" :disabled="!isPublished || !hasChanges">Restore</ui-button>
     </ui-collapsible>
   </div>
 </template>
@@ -72,7 +72,7 @@
   import { mapState } from 'vuex';
   import Routable from 'routable';
   import { uriToUrl } from '../utils/urls';
-  import { getLastEditUser } from '../utils/history';
+  import { getLastEditUser, hasPageChanges } from '../utils/history';
   import { htmlExt, editExt, getLayoutNameAndInstance } from '../utils/references';
   import { getTimezone, calendar, isInThePast } from '../utils/calendar';
   import { START_PROGRESS, FINISH_PROGRESS } from '../toolbar/mutationTypes';
@@ -131,6 +131,9 @@
       isAdmin: (state) => state.user.auth === 'admin',
       isLayoutPublished: (state) => state.layout.state.published,
       headComponents: (state) => state.page.data.head,
+      hasChanges: (state) => {
+        return hasPageChanges(state);
+      },
       statusMessage() {
         if (this.isScheduled) {
           return `Scheduled ${distanceInWordsToNow(this.scheduledDate, { addSuffix: true })}`;
@@ -420,15 +423,20 @@
         });
       },
       restorePage() {
+        this.$store.dispatch('currentlyRestoring', true);
         api.getObject(`${this.$store.state.page.uri}@published.json`).then((publishedPage) => {
           this.restoreHeadComponents(publishedPage.head).then(() => {
             this.saveComponents(publishedPage.main, 'main', true).then(() => {
               this.$store.dispatch('showSnackbar', {
                 message: 'Page Restored to Published Version'
               });
+              this.$store.dispatch('currentlyRestoring', false);
             });
           });
-        });
+        })
+          .catch(() => {
+            this.$store.dispatch('currentlyRestoring', false);
+          });
       },
       restoreHeadComponents(publishedHeadComponents) {
         return new Promise((resolve) => {
