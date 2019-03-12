@@ -37,11 +37,13 @@
 
 * [component-data](#module_component-data)
     * _static_
-        * [.saveComponent(store, uri, data, [eventID], [snapshot], [prevData])](#module_component-data.saveComponent) ⇒ <code>Promise</code>
+        * [.saveComponent(store, uri, data, [eventID], [snapshot], [prevData], forceSave)](#module_component-data.saveComponent) ⇒ <code>Promise</code>
         * [.removeComponent(store, data)](#module_component-data.removeComponent) ⇒ <code>Promise</code>
         * [.removeHeadComponent(store, startNode)](#module_component-data.removeHeadComponent) ⇒ <code>Promise</code>
+        * [.addCreatedComponentsToPageArea(store, newComponents, currentURI, path, replace, number, array, boolean)](#module_component-data.addCreatedComponentsToPageArea) ⇒ <code>Promise</code>
         * [.addComponents(store, [currentURI], parentURI, path, [replace], components)](#module_component-data.addComponents) ⇒ <code>Promise</code>
         * [.openAddComponent(store, [currentURI], parentURI, path)](#module_component-data.openAddComponent) ⇒ <code>Promise</code>
+        * [.currentlyRestoring(store, restoring)](#module_component-data.currentlyRestoring)
     * _inner_
         * [~logSaveError(uri, e, data, [eventID], [snapshot], store)](#module_component-data..logSaveError)
         * [~revertReject(uri, data, [snapshot], paths, store)](#module_component-data..revertReject) ⇒ <code>Promise</code>
@@ -53,7 +55,7 @@
 
 <a name="module_component-data.saveComponent"></a>
 
-### component-data.saveComponent(store, uri, data, [eventID], [snapshot], [prevData]) ⇒ <code>Promise</code>
+### component-data.saveComponent(store, uri, data, [eventID], [snapshot], [prevData], forceSave) ⇒ <code>Promise</code>
 save a component's data and re-render
 
 **Kind**: static method of [<code>component-data</code>](#module_component-data)  
@@ -66,6 +68,7 @@ save a component's data and re-render
 | [eventID] | <code>string</code> | when saving from a pubsub subscription |
 | [snapshot] | <code>boolean</code> | set to false if save is triggered by undo/redo |
 | [prevData] | <code>object</code> | manually passed in when undoing/redoing (because the store has already been updated) |
+| forceSave | <code>boolean</code> | if true, component will be saved even if it doesn't appear to have changed |
 
 <a name="module_component-data.removeComponent"></a>
 
@@ -91,6 +94,25 @@ remove head components (from page or layout)
 | --- | --- | --- |
 | store | <code>object</code> |  |
 | startNode | <code>Node</code> | comment with data-uri |
+
+<a name="module_component-data.addCreatedComponentsToPageArea"></a>
+
+### component-data.addCreatedComponentsToPageArea(store, newComponents, currentURI, path, replace, number, array, boolean) ⇒ <code>Promise</code>
+add components to a page area when they have already been created
+when the page is being reverted to the published version for instance
+
+**Kind**: static method of [<code>component-data</code>](#module_component-data)  
+
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
+| newComponents | <code>array</code> | 
+| currentURI | <code>string</code> | 
+| path | <code>string</code> | 
+| replace | <code>boolean</code> | 
+| number | <code>index</code> | 
+| array | <code>data</code> | 
+| boolean | <code>forceRender</code> | 
 
 <a name="module_component-data.addComponents"></a>
 
@@ -126,6 +148,18 @@ open the add components pane, or add a new components
 | [currentURI] | <code>string</code> | if we're inserting after a specific component |
 | parentURI | <code>string</code> |  |
 | path | <code>string</code> |  |
+
+<a name="module_component-data.currentlyRestoring"></a>
+
+### component-data.currentlyRestoring(store, restoring)
+open the add components pane, or add a new components
+
+**Kind**: static method of [<code>component-data</code>](#module_component-data)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| store | <code>object</code> |  |
+| restoring | <code>boolean</code> | if we're currently restoring a page |
 
 <a name="module_component-data..logSaveError"></a>
 

@@ -57,7 +57,7 @@
     <!-- restore from published -->
     <ui-collapsible class="publish-section publish-archive" title="Restore Published Version">
       <span class="archive-help">You may override ALL local changes to the page by Restoring the Page to the Published Version.  This can not be undone.</span>
-      <ui-button class="action-button" buttonType="button" type="primary" color="red" @click.stop="restorePageClick()" :disabled="!isPublished || !hasChanges">Restore</ui-button>
+      <ui-button class="action-button" buttonType="button" type="primary" color="red" @click.stop="restorePage()" :disabled="!isPublished || !hasChanges">Restore</ui-button>
     </ui-collapsible>
   </div>
 </template>
@@ -85,6 +85,7 @@
   import timepicker from '../utils/timepicker.vue';
   import logger from '../utils/log';
   import * as api from '../core-data/api.js';
+  import { updateStore } from '../component-data/create';
 
   const log = logger(__filename);
 
@@ -426,7 +427,8 @@
         this.$store.dispatch('currentlyRestoring', true);
         api.getObject(`${this.$store.state.page.uri}@published.json`).then((publishedPage) => {
           this.restoreHeadComponents(publishedPage.head).then(() => {
-            this.saveComponents(publishedPage.main, 'main', true).then(() => {
+            this.saveComponents(publishedPage.main, 'main', true).then((components) => {
+              this.loopThroughComponets(components);
               this.$store.dispatch('showSnackbar', {
                 message: 'Page Restored to Published Version'
               });
@@ -468,8 +470,37 @@
           };
 
           this.$store.dispatch('addCreatedComponentsToPageArea', dataObj).then(() => {
-            resolve();
+            resolve(arrComponents);
           });
+        });
+      },
+      updateStore(component) {
+        let newData = component,
+          uri = component['_ref'];
+
+        delete newData['_ref'];
+
+        newData = { ...this.$store.state.components[uri], ...newData};
+
+        if (JSON.stringify(newData) !== JSON.stringify(this.$store.state.components[uri])) {
+          updateStore(uri, newData);
+        }
+      },
+      loopThroughComponets(components) {
+        components.forEach((component) => {
+          if (_.isObject(component)) {
+            if (component['_ref']) {
+              this.updateStore(component);
+            }
+
+            for (let key in component) {
+              if (_.isObject(component[key]) && component[key]['_ref']) {
+                this.updateStore(component[key]);
+              } else if (_.isArray(component[key])) {
+                this.loopThroughComponets(component[key]);
+              }
+            }
+          }
         });
       }
     },
