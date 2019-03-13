@@ -489,7 +489,7 @@
 
         newData = { ...this.$store.state.components[uri], ...newData};
 
-        if (JSON.stringify(newData) !== JSON.stringify(this.$store.state.components[uri])) {
+        if (newData && this.$store.state.components[uri] && JSON.stringify(newData) !== JSON.stringify(this.$store.state.components[uri])) {
           this.$store.dispatch('saveComponent', { uri, data: newData }).then(() => {
             if (restoreTimer) {
               clearTimeout(restoreTimer);
