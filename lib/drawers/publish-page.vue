@@ -454,6 +454,7 @@
         });
       },
       saveComponents(components, path, forceRender = false) {
+        // Save Components and Rerender in the page
         return new Promise((resolve) => {
           const arrComponents = [];
 
@@ -478,6 +479,9 @@
         });
       },
       saveComponent(component) {
+        // Update the changed components in the Vue Store
+        // without this, vue won't be in sync with the rendered content
+        // and will revert to the unrestored content when editing
         let newData = component,
           uri = component['_ref'];
 
