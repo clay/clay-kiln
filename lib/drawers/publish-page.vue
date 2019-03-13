@@ -85,7 +85,6 @@
   import timepicker from '../utils/timepicker.vue';
   import logger from '../utils/log';
   import * as api from '../core-data/api.js';
-  import { updateStore } from '../component-data/create';
 
   const log = logger(__filename);
 
@@ -474,7 +473,7 @@
           });
         });
       },
-      updateStore(component) {
+      saveComponent(component) {
         let newData = component,
           uri = component['_ref'];
 
@@ -483,19 +482,19 @@
         newData = { ...this.$store.state.components[uri], ...newData};
 
         if (JSON.stringify(newData) !== JSON.stringify(this.$store.state.components[uri])) {
-          updateStore(uri, newData);
+          this.$store.dispatch('saveComponent', { uri, data: newData });
         }
       },
       loopThroughComponets(components) {
         components.forEach((component) => {
           if (_.isObject(component)) {
             if (component['_ref']) {
-              this.updateStore(component);
+              this.saveComponent(component);
             }
 
             for (let key in component) {
               if (_.isObject(component[key]) && component[key]['_ref']) {
-                this.updateStore(component[key]);
+                this.saveComponent(component[key]);
               } else if (_.isArray(component[key])) {
                 this.loopThroughComponets(component[key]);
               }
