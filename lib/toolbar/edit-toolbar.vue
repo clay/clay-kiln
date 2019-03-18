@@ -180,9 +180,7 @@
       customButtons() {
         return Object.keys(window.kiln.toolbarButtons);
       },
-      hasPageChanges: (state) => {
-        return hasPageChanges(state);
-      },
+      hasPageChanges: (state) => hasPageChanges(state) ,
       hasLayoutChanges: (state) => {
         const layoutState = _.get(state, 'layout.state'),
           pubTime = layoutState.publishTime, // latest published timestamp

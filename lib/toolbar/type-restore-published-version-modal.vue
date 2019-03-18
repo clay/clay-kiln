@@ -16,7 +16,7 @@
 
 <template>
   <div class="ui-reason type-reason">
-    <div class="ui-reason__message"><p>Are you sure you want to restore to the published version? This action cannot be undone and <b>all of the changes since the page was last published will be lost permanently</b>.</p><p>Please type your email address to verify you wish to continue.</p></div>
+    <div class="ui-reason__message"><p>Are you sure you want to restore to the published version? This action cannot be undone and <b>all of the changes since the page was last published will be lost permanently</b>.</p><p>Please type "restore page" to verify you wish to continue.</p></div>
     <ui-textbox class="type-reason-input" v-model="input" @keydown-enter="onEnter"></ui-textbox>
     <div class="ui-reason__footer">
       <ui-button ref="confirmButton" color="primary" :disabled="!correctInput" @click="confirm">Submit</ui-button>
@@ -38,7 +38,7 @@
     },
     computed: {
       correctInput() {
-        return this.input === this.data.username;
+        return this.input.toLowerCase() === 'restore page';
       }
     },
     methods: {

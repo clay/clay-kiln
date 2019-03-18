@@ -55,9 +55,9 @@
 
 
     <!-- restore from published -->
-    <ui-collapsible class="publish-section publish-archive" title="Restore Published Version">
-      <span class="archive-help">You may override ALL local changes to the page by Restoring the Page to the Published Version.  This can not be undone.</span>
-      <ui-button class="action-button" buttonType="button" type="primary" color="red" @click.stop="restorePageClick()" :disabled="!isPublished || !hasChanges">Restore</ui-button>
+    <ui-collapsible v-if="isPublished && hasChanges" class="publish-section publish-archive" title="Restore Published Version">
+      <span class="archive-help">You may override all changes by restoring to the most recently published version of this page. <strong>Warning:</strong> this action cannot be undone, you will lose all changes applied to this post since the last publish.</span>
+      <ui-button class="action-button" buttonType="button" type="primary" color="red" @click.stop="restorePageClick()">Restore</ui-button>
     </ui-collapsible>
   </div>
 </template>
@@ -133,9 +133,7 @@
       isAdmin: (state) => state.user.auth === 'admin',
       isLayoutPublished: (state) => state.layout.state.published,
       headComponents: (state) => state.page.data.head,
-      hasChanges: (state) => {
-        return hasPageChanges(state);
-      },
+      hasChanges: (state) => hasPageChanges(state),
       statusMessage() {
         if (this.isScheduled) {
           return `Scheduled ${distanceInWordsToNow(this.scheduledDate, { addSuffix: true })}`;
@@ -429,7 +427,7 @@
         api.getObject(`${this.$store.state.page.uri}@published.json`).then((publishedPage) => {
           this.restoreHeadComponents(publishedPage.head).then(() => {
             this.saveComponents(publishedPage.main, 'main', true).then((components) => {
-              this.loopThroughComponets(components);
+              this.loopThroughComponents(components);
             });
           });
         })
@@ -458,7 +456,7 @@
         return new Promise((resolve) => {
           const arrComponents = [];
 
-          components.forEach((component) =>{
+          components.forEach((component) => {
             const data = JSON.parse(JSON.stringify(component).replace(new RegExp('@published','g'),''));
 
             arrComponents.push(data);
@@ -487,20 +485,20 @@
 
         delete newData['_ref'];
 
-        newData = { ...this.$store.state.components[uri], ...newData};
+        newData = { ...this.$store.state.components[uri], ...newData };
 
         if (newData && this.$store.state.components[uri] && JSON.stringify(newData) !== JSON.stringify(this.$store.state.components[uri])) {
-          this.$store.dispatch('saveComponent', { uri, data: newData }).then(() => {
-            if (restoreTimer) {
-              clearTimeout(restoreTimer);
-            }
-            restoreTimer = setTimeout(() => {
-              this.finishedRestoring();
-            }, 2000);
-          });
+          this.$store.dispatch('saveComponent', { uri, data: newData });
         }
+
+        if (restoreTimer) {
+          clearTimeout(restoreTimer);
+        }
+        restoreTimer = setTimeout(() => {
+          this.finishedRestoring();
+        }, 2000);
       },
-      loopThroughComponets(components) {
+      loopThroughComponents(components) {
         components.forEach((component) => {
           if (_.isObject(component)) {
             if (component['_ref']) {
@@ -511,7 +509,7 @@
               if (_.isObject(component[key]) && component[key]['_ref']) {
                 this.saveComponent(component[key]);
               } else if (_.isArray(component[key])) {
-                this.loopThroughComponets(component[key]);
+                this.loopThroughComponents(component[key]);
               }
             }
           }
