@@ -155,13 +155,15 @@
       tabType() {
         return this.name === 'publish-page' || 'publish-layout' ? 'icon-and-text' : 'text';
       },
+      /* eslint-disable complexity */
       tabs() {
         const state = _.get(this.$store, 'state'),
           errors = _.get(state, 'validation.errors', []),
           warnings = _.get(state, 'validation.warnings', []),
+          metadataErrors = _.get(this.$store, 'state.validation.metadataErrors', []),
+          metadataWarnings = _.get(this.$store, 'state.validation.metadataWarnings', []),
           hashTabName = _.get(state, 'url.sites'), // state.url.sites is just the second param in the url hash object
-          openHealth = errors.length > 0 || warnings.length > 0 || hashTabName === 'health';
-
+          openHealth = errors.length > 0 || warnings.length > 0 || metadataErrors.length > 0 || metadataWarnings.length > 0;
 
         let tabs = [
           {
