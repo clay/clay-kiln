@@ -1,171 +1,3 @@
-<style lang="sass">
-  @import '../../styleguide/colors';
-  @import '../../styleguide/typography';
-
-  .publish-drawer {
-    padding: 16px 0;
-  }
-
-  .publish-status {
-    border-bottom: 1px solid $divider-color;
-    display: flex;
-    flex-direction: column;
-    padding: 0 16px 16px;
-
-    .status-message {
-      @include type-subheading();
-    }
-
-    .status-time {
-      @include type-caption();
-
-      margin-top: 8px;
-    }
-
-    .status-link {
-      @include type-caption();
-
-      align-items: center;
-      color: $brand-primary-color;
-      display: flex;
-      justify-content: flex-start;
-      margin-top: 8px;
-
-      .status-link-text {
-        margin-left: 4px;
-        text-decoration: underline;
-      }
-    }
-
-    .status-undo-button {
-      margin-top: 16px;
-    }
-  }
-
-  .publish-actions {
-    border-bottom: 1px solid $divider-color;
-    display: flex;
-    flex-direction: column;
-    padding: 16px;
-
-    .action-message {
-      @include type-subheading();
-
-      align-items: center;
-      display: flex;
-      height: 32px;
-      justify-content: space-between;
-      margin-top: -6px;
-    }
-
-    .schedule-form {
-      align-items: flex-start;
-      display: flex;
-      justify-content: space-between;
-      margin-top: 8px;
-      width: 100%;
-
-      .schedule-date,
-      .schedule-time {
-        margin: 0;
-        width: 48%;
-      }
-    }
-
-    .action-button {
-      margin-top: 16px;
-    }
-
-    .action-error-message,
-    .action-warning-message,
-    .action-info-message {
-      @include type-caption();
-
-      cursor: pointer;
-      margin-top: 16px;
-    }
-
-    .action-info-message {
-      text-align: center;
-    }
-
-    .action-error-message {
-      color: $md-red;
-    }
-
-    .action-warning-message {
-      color: $md-orange;
-    }
-  }
-
-  .publish-section {
-    border-bottom: 1px solid $divider-color;
-    margin-bottom: 0;
-    padding: 0;
-
-    .ui-collapsible__header {
-      background-color: $pure-white;
-    }
-
-    .ui-collapsible__body {
-      border: none;
-    }
-  }
-
-  .publish-location {
-    .publish-location-form {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .location-description {
-      @include type-body();
-    }
-
-    .location-input {
-      margin-top: 8px;
-    }
-
-    .location-submit {
-      margin-top: 16px;
-    }
-  }
-
-  .publish-title {
-    .publish-title-form {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .title-description {
-      @include type-body();
-    }
-
-    .title-input {
-      margin-top: 8px;
-    }
-
-    .title-submit {
-      margin-top: 16px;
-    }
-  }
-
-  .publish-archive {
-    .ui-collapsible__body {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .archive-help {
-      @include type-body();
-    }
-
-    .archive-submit {
-      margin-top: 16px;
-    }
-  }
-</style>
-
 <template>
   <div class="publish-drawer">
     <!-- publish status -->
@@ -220,6 +52,13 @@
       <span class="archive-help">You may archive any page that isn't published (or scheduled to be published). Archived pages will not show up in the Clay Menu unless you explicitly filter for them.</span>
       <ui-button class="archive-submit" buttonType="button" type="primary" color="red" :disabled="isScheduled || isPublished || isArchived" @click.stop="archivePage(true)">Archive</ui-button>
     </ui-collapsible>
+
+
+    <!-- restore from published -->
+    <ui-collapsible v-if="isPublished && hasChanges" class="publish-section publish-archive" title="Restore Published Version">
+      <span class="archive-help">You may override all changes by restoring to the most recently published version of this page. <strong>Warning:</strong> this action cannot be undone, you will lose all changes applied to this post since the last publish.</span>
+      <ui-button class="action-button" buttonType="button" type="primary" color="red" @click.stop="restorePageClick()">Restore</ui-button>
+    </ui-collapsible>
   </div>
 </template>
 
@@ -233,7 +72,7 @@
   import { mapState } from 'vuex';
   import Routable from 'routable';
   import { uriToUrl } from '../utils/urls';
-  import { getLastEditUser } from '../utils/history';
+  import { getLastEditUser, hasPageChanges } from '../utils/history';
   import { htmlExt, editExt, getLayoutNameAndInstance } from '../utils/references';
   import { getTimezone, calendar, isInThePast } from '../utils/calendar';
   import { START_PROGRESS, FINISH_PROGRESS } from '../toolbar/mutationTypes';
@@ -245,8 +84,11 @@
   import UiIconButton from 'keen/UiIconButton';
   import timepicker from '../utils/timepicker.vue';
   import logger from '../utils/log';
+  import * as api from '../core-data/api.js';
 
   const log = logger(__filename);
+
+  let restoreTimer = null;
 
   /**
    * determine if a url is navigable in our site's express router
@@ -290,6 +132,8 @@
       currentTitle: (state) => state.page.state.title,
       isAdmin: (state) => state.user.auth === 'admin',
       isLayoutPublished: (state) => state.layout.state.published,
+      headComponents: (state) => state.page.data.head,
+      hasChanges: (state) => hasPageChanges(state),
       statusMessage() {
         if (this.isScheduled) {
           return `Scheduled ${distanceInWordsToNow(this.scheduledDate, { addSuffix: true })}`;
@@ -564,6 +408,112 @@
             store.dispatch('finishProgress');
             store.dispatch('showSnackbar', 'Error archiving page');
           });
+      },
+      restorePageClick() {
+        this.$store.dispatch('openModal', {
+          title: 'Restore Published Version',
+          type: 'type-restore-published-version-modal',
+          data: {
+            name: 'restorePublishedVersion',
+            username: this.$store.state.user.username,
+            onConfirm: () => {
+              this.restorePage();
+            }
+          }
+        });
+      },
+      restorePage() {
+        this.$store.dispatch('currentlyRestoring', true);
+        api.getObject(`${this.$store.state.page.uri}@published.json`).then((publishedPage) => {
+          this.restoreHeadComponents(publishedPage.head).then(() => {
+            this.saveComponents(publishedPage.main, 'main', true).then((components) => {
+              this.loopThroughComponents(components);
+            });
+          });
+        })
+          .catch(() => {
+            this.$store.dispatch('currentlyRestoring', false);
+          });
+      },
+      finishedRestoring() {
+        this.$store.dispatch('showSnackbar', {
+          message: 'Page Restored to Published Version'
+        });
+        this.$store.dispatch('currentlyRestoring', false);
+      },
+      restoreHeadComponents(publishedHeadComponents) {
+        return new Promise((resolve) => {
+          // delete current headComponents in one go, which takes care of removing any components that have been added since last publish & any reordering that may have been done
+          this.$store.dispatch('savePage', { head: [] }).then(() => {
+            this.saveComponents(publishedHeadComponents, 'head').then(() => {
+              resolve();
+            });
+          });
+        });
+      },
+      saveComponents(components, path, forceRender = false) {
+        // Save Components and Rerender in the page
+        return new Promise((resolve) => {
+          const arrComponents = [];
+
+          components.forEach((component) => {
+            const data = JSON.parse(JSON.stringify(component).replace(new RegExp('@published','g'),''));
+
+            arrComponents.push(data);
+          });
+
+          let dataObj = {
+            newComponents: arrComponents,
+            path: path,
+            replace: true,
+            index: 0,
+            data: [],
+            forceRender
+          };
+
+          this.$store.dispatch('addCreatedComponentsToPageArea', dataObj).then(() => {
+            resolve(arrComponents);
+          });
+        });
+      },
+      saveComponent(component) {
+        // Update the changed components in the Vue Store
+        // without this, vue won't be in sync with the rendered content
+        // and will revert to the unrestored content when editing
+        let newData = component,
+          uri = component['_ref'];
+
+        delete newData['_ref'];
+
+        newData = { ...this.$store.state.components[uri], ...newData };
+
+        if (newData && this.$store.state.components[uri] && JSON.stringify(newData) !== JSON.stringify(this.$store.state.components[uri])) {
+          this.$store.dispatch('saveComponent', { uri, data: newData });
+        }
+
+        if (restoreTimer) {
+          clearTimeout(restoreTimer);
+        }
+        restoreTimer = setTimeout(() => {
+          this.finishedRestoring();
+        }, 2000);
+      },
+      loopThroughComponents(components) {
+        components.forEach((component) => {
+          if (_.isObject(component)) {
+            if (component['_ref']) {
+              this.saveComponent(component);
+            }
+
+            for (let key in component) {
+              if (_.isObject(component[key]) && component[key]['_ref']) {
+                this.saveComponent(component[key]);
+              } else if (_.isArray(component[key])) {
+                this.loopThroughComponents(component[key]);
+              }
+            }
+          }
+        });
       }
     },
     mounted() {
@@ -593,3 +543,180 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../../styleguide/colors';
+  @import '../../styleguide/typography';
+
+  .publish-drawer {
+    padding: 16px 0;
+
+    .section-heading {
+       @include type-subheading();
+    }
+
+    .section-text {
+      @include type-caption();
+      margin-top: 8px;
+    }
+
+    .action-button {
+      margin-top: 16px;
+    }
+  }
+
+  .publish-status {
+    border-bottom: 1px solid $divider-color;
+    display: flex;
+    flex-direction: column;
+    padding: 0 16px 16px;
+
+    .status-message {
+      @include type-subheading();
+    }
+
+    .status-time {
+      @include type-caption();
+
+      margin-top: 8px;
+    }
+
+    .status-link {
+      @include type-caption();
+
+      align-items: center;
+      color: $brand-primary-color;
+      display: flex;
+      justify-content: flex-start;
+      margin-top: 8px;
+
+      .status-link-text {
+        margin-left: 4px;
+        text-decoration: underline;
+      }
+    }
+
+    .status-undo-button {
+      margin-top: 16px;
+    }
+  }
+
+  .publish-actions {
+    border-bottom: 1px solid $divider-color;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+
+    .action-message {
+      @include type-subheading();
+
+      align-items: center;
+      display: flex;
+      height: 32px;
+      justify-content: space-between;
+      margin-top: -6px;
+    }
+
+    .schedule-form {
+      align-items: flex-start;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      width: 100%;
+
+      .schedule-date,
+      .schedule-time {
+        margin: 0;
+        width: 48%;
+      }
+    }
+
+    .action-error-message,
+    .action-warning-message,
+    .action-info-message {
+      @include type-caption();
+
+      cursor: pointer;
+      margin-top: 16px;
+    }
+
+    .action-info-message {
+      text-align: center;
+    }
+
+    .action-error-message {
+      color: $md-red;
+    }
+
+    .action-warning-message {
+      color: $md-orange;
+    }
+  }
+
+  .publish-section {
+    border-bottom: 1px solid $divider-color;
+    margin-bottom: 0;
+    padding: 0;
+
+    .ui-collapsible__header {
+      background-color: $pure-white;
+    }
+
+    .ui-collapsible__body {
+      border: none;
+    }
+  }
+
+  .publish-location {
+    .publish-location-form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .location-description {
+      @include type-body();
+    }
+
+    .location-input {
+      margin-top: 8px;
+    }
+
+    .location-submit {
+      margin-top: 16px;
+    }
+  }
+
+  .publish-title {
+    .publish-title-form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .title-description {
+      @include type-body();
+    }
+
+    .title-input {
+      margin-top: 8px;
+    }
+
+    .title-submit {
+      margin-top: 16px;
+    }
+  }
+
+  .publish-archive {
+    .ui-collapsible__body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .archive-help {
+      @include type-body();
+    }
+
+    .archive-submit {
+      margin-top: 16px;
+    }
+  }
+</style>
