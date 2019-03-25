@@ -1,0 +1,31 @@
+{
+  "docs": {
+    "Introduction": [
+      "intro"
+    ],
+    "KILN FUNDAMENTALS": [
+      "kiln_ui",
+      {
+        "type": "subcategory",
+        "label": "Clay Components",
+        "ids": [
+          "component",
+          "manipulating_components",
+          "editing_components",
+          "input"
+        ]
+      },
+      "deep_linking"
+    ],
+    "API DOCUMENTATION": [
+      {
+        "type": "subcategory",
+        "label": "Kiln API",
+        "ids": [
+          "api_kiln",
+          "vuex_actions"
+        ]
+      }
+    ]
+  }
+}
