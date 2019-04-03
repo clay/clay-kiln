@@ -32,6 +32,7 @@
       @keydown.right="focusFirstItem"
       @keydown.down="autocompleteFocus(false)"
       @keydown.up.prevent="autocompleteFocus(true)"
+      @keypress="(event) => $emit('keypress', event)"
       @focus="onFocus"
       @blur="onBlur"
       v-conditional-focus="focusOnInput" />
@@ -54,7 +55,7 @@
   import autocomplete from './autocomplete.vue';
 
   export default {
-    props: ['items', 'allowRepeatedItems', 'autocomplete', 'currentItem', 'disabled', 'isInitialFocus', 'ignoreComma'],
+    props: ['items', 'allowRepeatedItems', 'autocomplete', 'currentItem', 'disabled', 'isInitialFocus', 'ignoreComma', 'keypress'],
     data() {
       return {
         val: '',
