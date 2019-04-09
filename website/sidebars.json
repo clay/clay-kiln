@@ -23,7 +23,8 @@
         "label": "Kiln API",
         "ids": [
           "api_kiln",
-          "vuex_actions"
+          "vuex_actions",
+          "vuex_plugin"
         ]
       }
     ]
