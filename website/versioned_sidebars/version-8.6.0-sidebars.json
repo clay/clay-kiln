@@ -23,7 +23,8 @@
         "label": "Kiln API",
         "ids": [
           "version-8.6.0-api_kiln",
-          "version-8.6.0-vuex_actions"
+          "version-8.6.0-vuex_actions",
+          "version-8.6.0-vuex_plugin"
         ]
       }
     ]
