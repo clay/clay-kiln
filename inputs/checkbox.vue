@@ -28,7 +28,14 @@
 
 <template>
   <div class="kiln-single-checkbox">
-    <ui-checkbox color="accent" :name="name" :label="label" :value="data" @input="update"></ui-checkbox>
+    <ui-checkbox
+      color="accent"
+      :name="name"
+      :label="label"
+      :value="data"
+      @input="update"
+      v-dynamic-events="customEvents">
+    </ui-checkbox>
     <div class="ui-textbox__feedback" v-if="args.help">
       <div class="ui-textbox__feedback-text">{{ args.help }}</div>
     </div>
@@ -40,8 +47,10 @@
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import label from '../lib/utils/label';
   import UiCheckbox from 'keen/UiCheckbox';
+  import { DynamicEvents } from './mixins';
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {};

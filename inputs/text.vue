@@ -45,6 +45,7 @@
     :error="errorMessage"
     :disabled="isDisabled"
     iconPosition="right"
+    v-dynamic-events="customEvents"
     @input="update"
     @keydown-enter="closeFormOnEnter">
     <attached-button slot="icon" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
@@ -59,11 +60,13 @@
   import UiTextbox from 'keen/UiTextbox';
   import attachedButton from './attached-button.vue';
   import logger from '../lib/utils/log';
+  import { DynamicEvents } from './mixins';
 
   const validInputTypes = ['text', 'search', 'url', 'tel', 'password', 'multi-line'],
     log = logger(__filename);
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args', 'initialFocus'],
     data() {
       return {
