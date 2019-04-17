@@ -36,27 +36,54 @@ The root element of `<body>` components may include other attributes, such as `d
 
 ---
 
-## Model and Controller
+## Model.js
+`models.js` is an optional file that a component directory may contain. Its role is to expose two lifecycle hooks that allow an author to transform the component's data: save, which executes before the model is saved and render, which executes before the HTML is rendered.
 
-Models \(`model.js`\) and controllers \(`client.js` or `controller.js`\) are two types of JavaScript files your components may contain \(a third — `upgrade.js` — is [only used in Amphora](http://clay.github.io/amphora/docs/upgrade.html)\). Models allow components to perform logic on their data before saving and rendering, while controllers add client-side functionality to components. Both are optional.
+`save` and `render` are both optional, but `model.js` must export at least one of these functions. Both hooks take the same signature and are expected to return the data. For asynchronous operations, `save` and `render` may also return a promise.
 
-Controllers are _never_ run in edit mode, as they have the potential to interfere with Kiln. This means that certain embeds \(which rely on 3rd party JavaScript\) may need styling in edit mode. You may take advantage of the `.kiln-edit-mode` class on the `<body>` tag for this purpose.
+- URI: the component's URI
+- Data: the data associated with the component. This object will also be returned
+- Locals: information about the site defined outside the model
 
-Models are called when components save and re-render themselves. Both the `save()` and `render()` methods are optional, as many components require either one or the other. They both have the same function signature and may return objects \(the component data\) or promises \(that resolve to the component data\).
-
+Example:
 ```js
 module.exports.save = (uri, data, locals) => {
-// do some logic, then return the data that should save into the db
+
+  // set a timestamp on save
+  data.timestamp = Date.now().toString()
+
+  // must return data
+  return data;
 };
 
 module.exports.render = (uri, data, locals) => {
-// do some logic, then return the data that should be sent to handlebars
+
+  // add data to the model from an external service
+  return fetch('https://someservice.com/')
+    .then(({body}) => body.json())
+    .then((extraData) => {
+      data.extraData = extraData
+      return data
+    })
 };
 ```
 
-> If in doubt, use the `save()` method, as it only runs when data is saved. Calling the `render()` method \(every time a component renders\) to do slow or intensive logic will slow down your component for end-users.
+> If you're unsure of which method to use `save()` is usually preferable, as it only runs when data is saved. Calling the `render()` method \(every time a component renders\) to do slow or intensive logic will slow down your component for end-users.
 
 Models must be compiled and added to `window.kiln.componentModels` for Kiln to call them when saving and re-rendering components.
+
+## client.js
+client.js is the component's code that is executed in the client in view mode only (i.e., not edit mode). This file is optional. It expects a single default export which takes the following signature, where el is root HTML element of the component:
+
+```js
+module.exports = (el) => {
+  // client-side javascript goes here.
+}
+```
+Since `client.js` is not only expected in view mode it may be necessary to add additional styling to the component when in edit mode. You may take advantage of the `.kiln-edit-mode` class on the `<body>` tag for this purpose.
+
+## upgrade.js
+This file contains logic for upgrading between two versions of a component. For more info see the [Amphora update docs](https://docs.clayplatform.com/amphora/docs/data_versioning)
 
 ---
 
