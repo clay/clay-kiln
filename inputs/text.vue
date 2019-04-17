@@ -48,7 +48,7 @@
     v-dynamic-events="customEvents"
     @input="update"
     @keydown-enter="closeFormOnEnter">
-    <attached-button slot="icon" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
+    <attached-button slot="icon" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput" v-dynamic-events="customEvents"></attached-button>
   </ui-textbox>
 </template>
 

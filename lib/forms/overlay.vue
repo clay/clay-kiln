@@ -21,7 +21,7 @@
           <ui-tab v-for="(section, index) in sections" :key="index" :title="section.title" :selected="initialSection === index">
             <div class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 104px)`}">
               <div class="input-container">
-                <field v-for="(field, fieldIndex) in section" :key="fieldIndex" :name="field" :data="field.data" :schema="field.schema" :initialFocus="initialFocus"></field>
+                  <field v-for="(field, fieldIndex) in section.fields" :key="fieldIndex" :name="field.name" :data="fields[field.name]" :visibility="!field.schema || field.schema.visibility" :schema="field.schema || schema[field.name] || getFieldSchema(field.name)" :initialFocus="initialFocus"></field>
                 <div v-if="section.hasRequiredFields" class="required-footer">* Required fields</div>
               </div>
             </div>
@@ -29,7 +29,7 @@
         </ui-tabs>
         <div v-else class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 56px)`}">
           <div class="input-container">
-            <field v-for="(field, fieldIndex) in sections[0].fields" :key="fieldIndex" :name="field.name" :data="fields[field.name]" :visibility="field.schema.visibility" :schema="field.schema || schema[field.name] || getFieldSchema(field.name)" :initialFocus="initialFocus"></field>
+            <field v-for="(field, fieldIndex) in sections[0].fields" :key="fieldIndex" :name="field.name" :data="fields[field.name]" :visibility="!field.schema || field.schema.visibility" :schema="field.schema || schema[field.name] || getFieldSchema(field.name)" :initialFocus="initialFocus"></field>
             <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
           </div>
         </div>
@@ -130,8 +130,23 @@
           });
         } else {
           // no sections, so return a single "section" with all the fields
+          const sectionFields = {};
+
+          let schemaFields = fields || [path];
+
+          schemaFields.forEach((field) => {
+            sectionFields[field] = {
+              name: field,
+              data: this.fields[field],
+              schema: schema[field],
+              initialFocus: _.get(this.$store, 'state.ui.currentForm.initialFocus')
+            };
+          });
+
           sections = [{
-            fields: fields || [path], // group or single field
+            title: null,
+            fields: sectionFields,
+            hasRequiredFields: _.some(schema, (val, key) => _.includes(schemaFields, key) && _.has(val, `${fieldProp}.validate.required`))
           }];
         }
 
@@ -223,7 +238,7 @@
         }
       },
       initialSection() {
-        if (this.hasCurrentOverlayForm) {
+        if (this.hasCurrentOverlayForm && this.initialFocus) {
           const field = _.head(this.initialFocus.split('.'));
 
           return _.findIndex(this.sections, (section) => _.includes(section.fields, field));

@@ -1,20 +1,3 @@
-<style lang="sass">
-  @import '../styleguide/colors';
-
-  .autocomplete {
-    background-color: $card-bg-color;
-    box-shadow: 1px 2px 8px $md-grey-600;
-    display: block;
-    list-style: none;
-    margin: 0 0 8px;
-    padding: 0;
-    position: absolute;
-    top: 100%;
-    width: 100%;
-    z-index: 1;
-  }
-</style>
-
 <template>
   <ol class="autocomplete" v-if="showMatches">
     <li v-for="(match, index) in matches">
@@ -138,3 +121,20 @@
     },
   };
 </script>
+
+<style lang="sass">
+  @import '../styleguide/colors';
+
+  .autocomplete {
+    background-color: $card-bg-color;
+    box-shadow: 1px 2px 8px $md-grey-600;
+    display: block;
+    list-style: none;
+    margin: 0 0 8px;
+    padding: 0;
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    z-index: 1;
+  }
+</style>

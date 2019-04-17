@@ -1,6 +1,5 @@
 <template>
   <transition name="reveal" mode="out-in" @after-enter="onRevealResize">
-    <!-- use schema.visibility when it's there to figure out if you show field or not -->
     <fieldset class="kiln-field" :style="{ minHeight: minHeight }" v-if="inputName && isShown">
       <component :is="inputName" :name="name" :data="data" :schema="schema" :args="expandedInput" :initialFocus="initialFocus" @resize="onResize"></component>
     </fieldset>

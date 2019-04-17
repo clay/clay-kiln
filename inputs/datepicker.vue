@@ -33,6 +33,7 @@
     :error="errorMessage"
     :disabled="isDisabled"
     iconPosition="right"
+    v-dynamic-events="customEvents"
     @input="update">
     <attached-button slot="icon" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
   </ui-datepicker>
@@ -47,8 +48,10 @@
   import label from '../lib/utils/label';
   import UiDatepicker from 'keen/UiDatepicker';
   import attachedButton from './attached-button.vue';
+  import { DynamicEvents } from './mixins';
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {

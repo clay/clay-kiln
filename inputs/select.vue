@@ -99,6 +99,7 @@
     @input="handleInput"
     @dropdown-open="onDropdown"
     @dropdown-close="onDropdownClose"
+    v-dynamic-events="customEvents"
   >
     <attached-button slot="icon" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
   </ui-select>
@@ -114,8 +115,10 @@
   import { filterBySite } from '../lib/utils/site-filter';
   import UiSelect from 'keen/UiSelect';
   import attachedButton from './attached-button.vue';
+  import { DynamicEvents } from './mixins';
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {

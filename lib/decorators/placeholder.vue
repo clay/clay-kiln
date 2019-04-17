@@ -1,164 +1,3 @@
-<style lang="sass">
-  @import '../../styleguide/colors';
-  @import '../../styleguide/typography';
-  @import '../../styleguide/animations';
-
-  // all editable elements should have some kind of ux showing they can be edited
-  .component-selector-wrapper *[data-editable] {
-    cursor: pointer;
-  }
-
-  // editable TEXT elements should use a caret rather than a pointer through
-  .component-selector-wrapper  p[data-editable],
-  .component-selector-wrapper  blockquote[data-editable] {
-    cursor: text;
-  }
-
-  .component-selector-wrapper *[data-editable].kiln-internals {
-    cursor: default;
-  }
-
-  .kiln-collapsed > *:not(.kiln-placeholder) {
-    display: none;
-  }
-
-  .kiln-placeholder {
-    transition: background-color $standard-time $standard-curve;
-
-    .placeholder-label,
-    .placeholder-icon,
-    .placeholder-text {
-      transition: color $standard-time $standard-curve;
-    }
-  }
-
-  .kiln-permanent-placeholder,
-  .kiln-placeholder,
-  .kiln-inactive-placeholder {
-    align-items: center;
-    border-radius: 2px;
-
-    // explicitly setting box-sizing because Kiln placeholders rely on this property being set to border-box for proper styling,
-    // while the site using Kiln might have box-sizing set to something else, not set at all
-    box-sizing: border-box;
-
-    cursor: pointer;
-    display: flex;
-    height: 100%;
-    justify-content: center;
-    padding: 16px 24px;
-    position: relative;
-    width: 100%;
-
-    .placeholder-add-component {
-      flex: 0 0 auto;
-    }
-
-    .placeholder-label {
-      align-items: center;
-      display: flex;
-      flex: 1 1 auto;
-      flex-flow: row wrap;
-      justify-content: center;
-    }
-
-    .placeholder-label-collapsible {
-      align-items: center;
-      display: flex;
-      flex: 1 1 auto;
-      flex-flow: row nowrap;
-      justify-content: space-between;
-    }
-
-    .placeholder-icon {
-      flex: 0 0 auto;
-    }
-
-    .placeholder-text {
-      @include type-button();
-
-      flex: 0 1 auto;
-      line-height: 18px;
-      text-align: center;
-    }
-  }
-
-  // collapsible placeholders
-  .collapsible-component-list > .kiln-placeholder {
-    // using !important here to override the inline placeholder height (min-height) styles,
-    // as collapsible list placeholders should ALWAYS be a set height
-    height: 68px !important;
-    margin: 0 0 20px;
-    min-height: 68px !important;
-  }
-
-  .kiln-permanent-placeholder {
-    background-color: $permanent-placeholder-bg-color;
-    cursor: pointer;
-
-    .placeholder-label {
-      color: $permanent-placeholder-color;
-    }
-
-    .placeholder-icon {
-      color: $permanent-placeholder-color;
-    }
-
-    .placeholder-text {
-      color: $permanent-placeholder-color;
-    }
-  }
-
-  .kiln-inactive-placeholder {
-    background-color: $inactive-placeholder-bg-color;
-    cursor: not-allowed;
-
-    .placeholder-label {
-      color: $inactive-placeholder-color;
-    }
-
-    .placeholder-icon {
-      color: $inactive-placeholder-color;
-    }
-
-    .placeholder-text {
-      color: $inactive-placeholder-color;
-    }
-  }
-
-  .kiln-placeholder {
-    background-color: $placeholder-bg-color;
-
-    .placeholder-label {
-      color: $placeholder-color;
-    }
-
-    .placeholder-icon {
-      color: $placeholder-color;
-    }
-
-    .placeholder-text {
-      color: $placeholder-color;
-    }
-  }
-
-  .kiln-placeholder.kiln-error-placeholder {
-    background-color: $placeholder-error-bg-color;
-
-    .placeholder-label {
-      color: $placeholder-error-color;
-    }
-
-    .placeholder-icon {
-      color: $placeholder-error-color;
-    }
-
-    .placeholder-text {
-      color: $placeholder-error-color;
-    }
-  }
-</style>
-
 <template>
   <div :class="placeholderClass" :style="{ minHeight: placeholderHeight }" :ref="uid">
     <!-- collapsible component list placeholders (always displayed, even if the list is empty) -->
@@ -328,3 +167,164 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../../styleguide/colors';
+  @import '../../styleguide/typography';
+  @import '../../styleguide/animations';
+
+  // all editable elements should have some kind of ux showing they can be edited
+  .component-selector-wrapper *[data-editable] {
+    cursor: pointer;
+  }
+
+  // editable TEXT elements should use a caret rather than a pointer through
+  .component-selector-wrapper  p[data-editable],
+  .component-selector-wrapper  blockquote[data-editable] {
+    cursor: text;
+  }
+
+  .component-selector-wrapper *[data-editable].kiln-internals {
+    cursor: default;
+  }
+
+  .kiln-collapsed > *:not(.kiln-placeholder) {
+    display: none;
+  }
+
+  .kiln-placeholder {
+    transition: background-color $standard-time $standard-curve;
+
+    .placeholder-label,
+    .placeholder-icon,
+    .placeholder-text {
+      transition: color $standard-time $standard-curve;
+    }
+  }
+
+  .kiln-permanent-placeholder,
+  .kiln-placeholder,
+  .kiln-inactive-placeholder {
+    align-items: center;
+    border-radius: 2px;
+
+    // explicitly setting box-sizing because Kiln placeholders rely on this property being set to border-box for proper styling,
+    // while the site using Kiln might have box-sizing set to something else, not set at all
+    box-sizing: border-box;
+
+    cursor: pointer;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    padding: 16px 24px;
+    position: relative;
+    width: 100%;
+
+    .placeholder-add-component {
+      flex: 0 0 auto;
+    }
+
+    .placeholder-label {
+      align-items: center;
+      display: flex;
+      flex: 1 1 auto;
+      flex-flow: row wrap;
+      justify-content: center;
+    }
+
+    .placeholder-label-collapsible {
+      align-items: center;
+      display: flex;
+      flex: 1 1 auto;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+    }
+
+    .placeholder-icon {
+      flex: 0 0 auto;
+    }
+
+    .placeholder-text {
+      @include type-button();
+
+      flex: 0 1 auto;
+      line-height: 18px;
+      text-align: center;
+    }
+  }
+
+  // collapsible placeholders
+  .collapsible-component-list > .kiln-placeholder {
+    // using !important here to override the inline placeholder height (min-height) styles,
+    // as collapsible list placeholders should ALWAYS be a set height
+    height: 68px !important;
+    margin: 0 0 20px;
+    min-height: 68px !important;
+  }
+
+  .kiln-permanent-placeholder {
+    background-color: $permanent-placeholder-bg-color;
+    cursor: pointer;
+
+    .placeholder-label {
+      color: $permanent-placeholder-color;
+    }
+
+    .placeholder-icon {
+      color: $permanent-placeholder-color;
+    }
+
+    .placeholder-text {
+      color: $permanent-placeholder-color;
+    }
+  }
+
+  .kiln-inactive-placeholder {
+    background-color: $inactive-placeholder-bg-color;
+    cursor: not-allowed;
+
+    .placeholder-label {
+      color: $inactive-placeholder-color;
+    }
+
+    .placeholder-icon {
+      color: $inactive-placeholder-color;
+    }
+
+    .placeholder-text {
+      color: $inactive-placeholder-color;
+    }
+  }
+
+  .kiln-placeholder {
+    background-color: $placeholder-bg-color;
+
+    .placeholder-label {
+      color: $placeholder-color;
+    }
+
+    .placeholder-icon {
+      color: $placeholder-color;
+    }
+
+    .placeholder-text {
+      color: $placeholder-color;
+    }
+  }
+
+  .kiln-placeholder.kiln-error-placeholder {
+    background-color: $placeholder-error-bg-color;
+
+    .placeholder-label {
+      color: $placeholder-error-color;
+    }
+
+    .placeholder-icon {
+      color: $placeholder-error-color;
+    }
+
+    .placeholder-text {
+      color: $placeholder-error-color;
+    }
+  }
+</style>

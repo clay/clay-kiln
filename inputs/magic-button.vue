@@ -110,36 +110,6 @@
   ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
 </docs>
 
-<style lang="sass">
-  @import '../styleguide/colors';
-
-  .magic-button-icon svg {
-    fill: $text-color;
-    height: 18px;
-    // offset this for visual balance
-    margin-left: 3px;
-    margin-top: 3px;
-    transition: 100ms fill ease;
-    width: 20px;
-  }
-
-  .is-active .magic-button-icon svg {
-    fill: $brand-primary-color;
-  }
-
-  .is-disabled .magic-button-icon {
-    pointer-events: none;
-
-    svg {
-      fill: $text-disabled-color;
-    }
-  }
-
-  .is-invalid .magic-button-icon svg {
-    fill: $md-red;
-  }
-</style>
-
 <template>
   <ui-icon-button
     buttonType="button"
@@ -365,7 +335,10 @@
     },
     methods: {
       doMagic() {
-        const field = this.args.field,
+        this.$emit('doMagic');
+
+        const myMagic = this.args.myMagic,
+          field = this.args.field,
           component = this.args.component,
           transform = this.args.transform,
           transformArg = this.args.transformArg,
@@ -375,6 +348,11 @@
           storePath = this.args.store,
           store = this.$store,
           name = this.name;
+
+        if (myMagic && myMagic === 'only') {
+          // magic is handled through kilnjs
+          return;
+        }
 
         // unset isInvalidDrag after clicking somewhere in the form
         // (since the button is stopping propagation)
@@ -419,3 +397,33 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../styleguide/colors';
+
+  .magic-button-icon svg {
+    fill: $text-color;
+    height: 18px;
+    // offset this for visual balance
+    margin-left: 3px;
+    margin-top: 3px;
+    transition: 100ms fill ease;
+    width: 20px;
+  }
+
+  .is-active .magic-button-icon svg {
+    fill: $brand-primary-color;
+  }
+
+  .is-disabled .magic-button-icon {
+    pointer-events: none;
+
+    svg {
+      fill: $text-disabled-color;
+    }
+  }
+
+  .is-invalid .magic-button-icon svg {
+    fill: $md-red;
+  }
+</style>

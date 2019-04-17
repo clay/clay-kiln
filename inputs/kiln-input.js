@@ -2,12 +2,15 @@ import store from '../lib/core-data/store';
 
 export default class KilnInput {
   constructor(schema, inputName) {
-    Object.assign(this, { inputName, schemaName: schema.name, ...schema[inputName] });
-
-    this.subscribeToMutations();
+    Object.assign(this, {
+      inputName,
+      schemaName: schema.name,
+      subscribedEvents: {},
+      ...schema[inputName]
+    });
   };
 
-  addEvent(event, fn) {
+  on(event, fn) {
     this.events = this.events || {};
     this.events[event] = fn;
   }
@@ -43,29 +46,33 @@ export default class KilnInput {
     });
   }
 
+  subscribe(event, fn, scoped = false) {
+    this.subscribedEvents[event] = {
+      func: fn,
+      scoped
+    };
+
+    this.subscribeToMutations();
+  }
+
   subscribeToMutations() {
     if (this.unsubscribe) {
       this.unsubscribe();
     }
 
     // (mutation, state)
+    // SOME USEFUL EVENTS TO SUBSCRIBE TO: CLOSE_FORM, OPEN_FORM, UPDATE_FORMDATA (when the data is changed, but not yet saved), UPDATE_COMPONENT (when data is actually saved)
     this.unsubscribe = store.subscribe((mutation) => {
-      switch (mutation.type) {
-        case 'CLOSE_FORM':
-          if (this.closeForm && typeof this.closeForm === 'function') {
-            this.closeForm();
-          }
-          break;
-        case 'OPEN_FORM':
-          if (this.openForm && typeof this.openForm === 'function') {
-            this.openForm();
-          }
-          break;
-        default:
-
-          break;
+      if (this.subscribedToEvent(mutation)) {
+        this.subscribedEvents[mutation.type].func(mutation.payload);
       }
     });
+  }
+
+  subscribedToEvent( { type } ) {
+    const event = this.subscribedEvents[type];
+
+    return event && typeof event.func === 'function' && (!event.scoped || !store.state.url || event.scoped && store.state.url.component === this.schemaName);
   }
 
   value(val) {
@@ -77,5 +84,9 @@ export default class KilnInput {
     } else {
       return store.state.ui.currentForm ? store.state.ui.currentForm.fields[this.inputName] : null;
     }
+  }
+
+  uri() {
+    return store.state.url;
   }
 };
