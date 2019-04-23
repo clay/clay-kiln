@@ -71,8 +71,12 @@
   require('codemirror/mode/css/css');
   // yaml mode
   require('codemirror/mode/yaml/yaml');
+  require('codemirror/mode/sass/sass');
+  require('codemirror/mode/javascript/javascript');
   // show selections
   require('codemirror/addon/selection/active-line.js');
+
+  let editor = null;
 
   export default {
     mixins: [DynamicEvents],
@@ -134,21 +138,27 @@
         this.isDisabled = false;
       }
     },
+    updated() {
+      if (editor.doc && this.args && editor.doc.modeOption !== this.args.mode) {
+        editor.setOption('mode', this.args.mode);
+      };
+    },
     mounted() {
-      const editor = Codemirror.fromTextArea(find(this.$el, '.codemirror'), {
-          value: this.data,
-          mode: this.args.mode,
-          lint: true,
-          styleActiveLine: true,
-          lineNumbers: true,
-          tabSize: 2,
-          extraKeys: {
-            // close form when hitting meta+enter on both windows and macos
-            'Cmd-Enter': () => this.$store.dispatch('unfocus'),
-            'Ctrl-Enter': () => this.$store.dispatch('unfocus')
-          }
-        }),
-        store = this.$store,
+      editor = Codemirror.fromTextArea(find(this.$el, '.codemirror'), {
+        value: this.data,
+        mode: this.args.mode,
+        lint: true,
+        styleActiveLine: true,
+        lineNumbers: true,
+        tabSize: 2,
+        extraKeys: {
+          // close form when hitting meta+enter on both windows and macos
+          'Cmd-Enter': () => this.$store.dispatch('unfocus'),
+          'Ctrl-Enter': () => this.$store.dispatch('unfocus')
+        }
+      });
+
+      const store = this.$store,
         name = this.name,
         initialFocus = this.initialFocus;
 
@@ -161,9 +171,11 @@
         }
       });
 
-      this.schema.events.forEach((event) => {
-        editor.on(event, this.schema.events[event]);
-      });
+      if (this.schema.events && _.isObject(this.schema.events)) {
+        Object.keys(this.schema.events).forEach((key) => {
+          editor.on(key, this.schema.events[key]);
+        });
+      }
 
       editor.on('change', (instance) => store.commit(UPDATE_FORMDATA, { path: name, data: instance.getValue() }));
 

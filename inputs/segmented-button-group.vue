@@ -20,75 +20,6 @@
   By default (when `multiple` is false or unset), this will return data as a **string** with the value of the selected option. If `multiple` is `true`, this will return an **object** where each option is a key with a `true` / `false` value. Note that the single-select mode is the same format as a `radio` input, and the multi-select mode is the same as a `checkbox-group`.
 </docs>
 
-<style lang="sass">
-  @import '../styleguide/mixins';
-  @import '../styleguide/typography';
-  @import '../styleguide/colors';
-  @import '../styleguide/animations';
-
-  .segmented-button-group {
-    align-items: flex-start;
-    display: flex;
-    flex-flow: row wrap;
-    font-family: $font-stack;
-    margin-bottom: 16px;
-
-    .reveal-enter,
-    .reveal-leave-to {
-      opacity: 0;
-    }
-
-    .reveal-enter-to,
-    .reveal-leave {
-      opacity: 1;
-    }
-
-    .reveal-enter-active,
-    .reveal-leave-active {
-      transition: opacity $standard-time $standard-curve;
-    }
-
-    .ui-textbox__label {
-      @include clearfix();
-
-      width: 100%;
-    }
-
-    &:hover {
-      .ui-textbox__label-text {
-        color: rgba(black, 0.75);
-      }
-    }
-
-    &.has-floating-label {
-      .ui-textbox__label-text {
-        display: table;
-      }
-    }
-
-    &.is-invalid {
-      .ui-textbox__label-text {
-        color: $md-red;
-      }
-
-      .ui-textbox__feedback {
-        color: $md-red;
-      }
-    }
-  }
-
-  // some tiny styling tweaks when buttons are grouped
-  .segmented-button-group-input {
-    .segmented-button {
-      margin-bottom: 0;
-    }
-
-    .ui-textbox__label-text {
-      font-size: 14px;
-    }
-  }
-</style>
-
 <template>
   <div class="segmented-button-group has-label has-floating-label" :class="{ 'is-invalid': this.isInvalid }">
     <span class="ui-textbox__label">
@@ -174,3 +105,72 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../styleguide/mixins';
+  @import '../styleguide/typography';
+  @import '../styleguide/colors';
+  @import '../styleguide/animations';
+
+  .segmented-button-group {
+    align-items: flex-start;
+    display: flex;
+    flex-flow: row wrap;
+    font-family: $font-stack;
+    margin-bottom: 16px;
+
+    .reveal-enter,
+    .reveal-leave-to {
+      opacity: 0;
+    }
+
+    .reveal-enter-to,
+    .reveal-leave {
+      opacity: 1;
+    }
+
+    .reveal-enter-active,
+    .reveal-leave-active {
+      transition: opacity $standard-time $standard-curve;
+    }
+
+    .ui-textbox__label {
+      @include clearfix();
+
+      width: 100%;
+    }
+
+    &:hover {
+      .ui-textbox__label-text {
+        color: rgba(black, 0.75);
+      }
+    }
+
+    &.has-floating-label {
+      .ui-textbox__label-text {
+        display: table;
+      }
+    }
+
+    &.is-invalid {
+      .ui-textbox__label-text {
+        color: $md-red;
+      }
+
+      .ui-textbox__feedback {
+        color: $md-red;
+      }
+    }
+  }
+
+  // some tiny styling tweaks when buttons are grouped
+  .segmented-button-group-input {
+    .segmented-button {
+      margin-bottom: 0;
+    }
+
+    .ui-textbox__label-text {
+      font-size: 14px;
+    }
+  }
+</style>

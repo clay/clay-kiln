@@ -57,10 +57,9 @@
 
 <script>
   import _ from 'lodash';
-  import isAfter from 'date-fns/is_after';
-  import addSeconds from 'date-fns/add_seconds';
   import toggleEdit from '../utils/toggle-edit';
   import { getItem } from '../utils/local';
+  import { hasPageChanges } from '../utils/history';
   import navBackground from '../nav/nav-background.vue';
   import navMenu from '../nav/nav-menu.vue';
   import navContent from '../nav/nav-content.vue';
@@ -86,14 +85,7 @@
         return _.get(this.$store, 'state.page.state');
       },
       hasChanges() {
-        const pubTime = _.get(this.pageState, 'publishTime'), // latest published timestamp
-          upTime = _.get(this.pageState, 'updateTime'); // latest updated timestamp
-
-        if (pubTime && upTime) {
-          return isAfter(upTime, addSeconds(pubTime, 30)); // give it 30 seconds of leeway, in case there are slow updates to the server
-        } else {
-          return false;
-        }
+        return hasPageChanges(this.$store.state);
       },
       status() {
         if (this.isLoading) {

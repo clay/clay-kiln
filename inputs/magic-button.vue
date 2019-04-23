@@ -335,10 +335,7 @@
     },
     methods: {
       doMagic() {
-        this.$emit('doMagic');
-
-        const myMagic = this.args.myMagic,
-          field = this.args.field,
+        const field = this.args.field,
           component = this.args.component,
           transform = this.args.transform,
           transformArg = this.args.transformArg,
@@ -348,11 +345,6 @@
           storePath = this.args.store,
           store = this.$store,
           name = this.name;
-
-        if (myMagic && myMagic === 'only') {
-          // magic is handled through kilnjs
-          return;
-        }
 
         // unset isInvalidDrag after clicking somewhere in the form
         // (since the button is stopping propagation)
