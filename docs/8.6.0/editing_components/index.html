@@ -1,0 +1,408 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Editing Components · Kiln</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;hr&gt;
+"/><meta name="docsearch:version" content="8.6.0"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Editing Components · Kiln"/><meta property="og:type" content="website"/><meta property="og:url" content="https://clay.github.io//clay-kiln/"/><meta property="og:description" content="&lt;hr&gt;
+"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/clay-kiln/"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/clay-kiln/css/main.css"/><script src="/clay-kiln/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/clay-kiln/"><img class="logo" src="/clay-kiln/img/kiln.png" alt="Kiln"/><h2 class="headerTitleWithLogo">Kiln</h2></a><a href="/clay-kiln/versions"><h3>8.6.0</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/clay-kiln/docs/8.6.0/intro" target="_self">Introduction</a></li><li class=""><a href="https://github.com/clay/clay-kiln" target="_self">Github</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>KILN FUNDAMENTALS</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Introduction<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/intro">Introduction</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">KILN FUNDAMENTALS<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/kiln_ui">The Kiln UI</a></li><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Clay Components</h4><ul><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/component">Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/manipulating_components">Adding, Removing, and Reordering Components</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/clay-kiln/docs/8.6.0/editing_components">Editing Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/input">Form Inputs</a></li></ul></div><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/deep_linking">Deep Linking</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">API DOCUMENTATION<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Kiln API</h4><ul><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/api_kiln">API</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/vuex_actions">Vuex Actions</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/vuex_plugin">Vuex Plugins</a></li></ul></div></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Editing Components</h1></header><article><div><span><hr>
+<p>Components are edited through the fields and forms that are declared in their <code>schema.yml</code> file. This means that developers have maximum flexibility with the template and styling of their components, but end users get a consistent and manageable editing experience.</p>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="inline-wysiwyg"></a><a href="#inline-wysiwyg" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Inline WYSIWYG</h2>
+<p>The simplest possible form is an inline WYSIWYG field. It consists of a property in the schema, and a <code>data-editable</code> attribute on the editable element in the template.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">title:</span>
+<span class="hljs-attr">  _has:</span> <span class="hljs-string">inline</span>
+</code></pre>
+<pre><code class="hljs css language-handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span> <span class="hljs-attr">data-editable</span>=<span class="hljs-string">"title"</span>&gt;</span></span><span class="hljs-template-variable">{{ title }}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+</span></code></pre>
+<p>When someone clicks the <code>data-editable</code> title, it will open an inline WYSIWYG form. The field will inherit styles from your component, for a proper WYSYWIG experience.</p>
+<p><img src="/clay-kiln/img/inline_form.png" alt="inline form"></p>
+<blockquote>
+<p><code>data-editable</code> may reference any field or group of fields, even fields inside of complex lists! This is perfectly valid syntax:
+<code>handlebars {{#each hotTopics}} &lt;li data-editable=&quot;content.{{@index}}.text&quot;&gt;{{ text }}&lt;/li&gt; {{/each}}</code></p>
+</blockquote>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="inline-reordering"></a><a href="#inline-reordering" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Inline Reordering</h2>
+<p>Complex-list items can be reordered and deleted inline without opening a setting modal if their template markup allows for it.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">articles:</span>
+<span class="hljs-attr">  _has:</span>
+<span class="hljs-attr">    input:</span> <span class="hljs-string">complex-list</span>
+<span class="hljs-attr">    props:</span>
+<span class="hljs-bullet">      -</span>
+<span class="hljs-attr">        prop:</span> <span class="hljs-string">articleSlug</span>
+<span class="hljs-attr">        _label:</span> <span class="hljs-string">Article</span> <span class="hljs-string">Slug</span>
+<span class="hljs-attr">        _has:</span> <span class="hljs-string">text</span>
+<span class="hljs-bullet">      -</span>
+<span class="hljs-attr">        prop:</span> <span class="hljs-string">headline</span>
+<span class="hljs-attr">        _label:</span> <span class="hljs-string">Headline</span>
+<span class="hljs-attr">        _has:</span> <span class="hljs-string">text</span>
+
+</code></pre>
+<pre><code class="hljs css language-handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ul</span> <span class="hljs-attr">data-reorderable</span>=<span class="hljs-string">"articles"</span> <span class="hljs-attr">data-reorderable-prop</span>=<span class="hljs-string">"articleSlug"</span>&gt;</span>
+  </span><span class="hljs-template-tag">{{#<span class="hljs-name"><span class="hljs-builtin-name">each</span></span> articles}}</span><span class="xml">
+    <span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">data-reorderable-item</span>=<span class="hljs-string">"</span></span></span><span class="hljs-template-variable">{{ this.articleSlug }}</span><span class="xml"><span class="hljs-tag"><span class="hljs-string">"</span>&gt;</span></span><span class="hljs-template-variable">{{ this.headline }}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span> // data-reorderable-item is set to articles[@index].articleSlug
+  </span><span class="hljs-template-tag">{{/<span class="hljs-name"><span class="hljs-builtin-name">each</span></span>}}</span><span class="xml">
+<span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
+</span></code></pre>
+<p>The parent element that contains the list items must have a <code>data-reorderable</code> attribute where the value is the name of the complex-list field (similar to <code>data-editable</code> on inline fields) and a <code>data-reorderable-prop</code> attribute where the value is a <em>unique</em> property that all complex-list items have.
+Each list item element should be a direct child of the <code>data-reorderable</code> element and should have a <code>data-reorderable-item</code> attribute where the value is the value of that item's <code>data-reorderable-prop</code> property.</p>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="placeholders"></a><a href="#placeholders" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Placeholders</h2>
+<p>Placeholders display when fields are empty and are used to prompt end users to add information. They can be added to any field or group.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">title:</span>
+<span class="hljs-attr">  _placeholder:</span>
+<span class="hljs-attr">    text:</span> <span class="hljs-string">Title</span>
+<span class="hljs-attr">    height:</span> <span class="hljs-number">24</span><span class="hljs-string">px</span>
+<span class="hljs-attr">  _has:</span> <span class="hljs-string">text</span>
+</code></pre>
+<p>The placeholder will display inside of the element with the relevant <code>data-editable</code> attribute.</p>
+<p><img src="/clay-kiln/img/placeholder.png" alt="placeholder"></p>
+<blockquote>
+<h4><a class="anchor" aria-hidden="true" id="placeholder-heights"></a><a href="#placeholder-heights" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Placeholder Heights</h4>
+<p>The placeholder height specified in the config is the minimum height of the displayed placeholder. The placeholder will be taller if its parent element has an explicitly set height. When deciding what height to set in the config, remember that it should reflect the height of the content that goes in the field.</p>
+</blockquote>
+<h3><a class="anchor" aria-hidden="true" id="permanent-placeholders"></a><a href="#permanent-placeholders" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Permanent Placeholders</h3>
+<p>If you want to display a placeholder for some field, but don't want to allow users to click into it, use the <code>data-placeholder</code> attribute. This is useful for situations where a component doesn't have anything to display in edit mode (like ads), but shouldn't be relegated to an invisible component list (like...ads).</p>
+<p>You must also add the <code>permanent</code> property to the placeholder config to force the placeholder to always display. Permanent placeholders are styled more subtly than regular placeholders since end users don't click on them to edit anything.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">adSizes:</span>
+<span class="hljs-attr">  _label:</span> <span class="hljs-string">Ad</span> <span class="hljs-string">Sizes</span>
+<span class="hljs-attr">  _has:</span> <span class="hljs-string">text</span>
+<span class="hljs-attr">  _placeholder:</span>
+<span class="hljs-attr">    text:</span> <span class="hljs-string">Ad</span> <span class="hljs-string">(${adSizes})</span>
+<span class="hljs-attr">    height:</span> <span class="hljs-number">100</span><span class="hljs-string">px</span>
+<span class="hljs-attr">    permanent:</span> <span class="hljs-literal">true</span>
+</code></pre>
+<p>Placeholders can display the value of a field, which is useful for components not visible during edit mode, e.g. third-party embeds. The syntax for displaying a value in the placeholder text is <code>${fieldName}</code>, which is similar to <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals">JavaScript template literals</a>. Note that <code>permanent</code> must be enabled.</p>
+<p><img src="/clay-kiln/img/permanent_placeholder.png" alt="permanent placeholder"></p>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="editing-components-with-forms"></a><a href="#editing-components-with-forms" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Editing Components with Forms</h2>
+<p>Inline WYSIWYG fields can accomplish a lot, but not every bit of data in a component is a string of formatted text. For everything else, there are overlay forms.</p>
+<p><img src="/clay-kiln/img/overlay_form.png" alt="overlay form"></p>
+<p>Any fields and groups that aren't inline WYSIWYG inputs will display in overlays. Kiln provides an <a href="/clay-kiln/docs/8.6.0/input">ever-growing variety of fields</a> that can be used to edit almost any kind of data you desire. To open these forms, add a <code>data-editable</code> attribute on the relevant element and point it to a field or group.</p>
+<pre><code class="hljs css language-handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">data-editable</span>=<span class="hljs-string">"myField"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</span></code></pre>
+<p>Overlay forms frequently consist of a single field. This is a perfectly acceptable user experience because overlay forms will open where the user clicks.</p>
+<p><img src="/clay-kiln/img/overlay_form_single_field.png" alt="overlay form single field"></p>
+<h3><a class="anchor" aria-hidden="true" id="groups"></a><a href="#groups" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Groups</h3>
+<p>For forms with multiple fields, those fields must be combined into groups. A group must have a <code>fields</code> property and may have <code>_label</code> and <code>_placeholder</code> properties.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">title:</span>
+<span class="hljs-attr">  _label:</span> <span class="hljs-string">Title</span>
+<span class="hljs-attr">  _has:</span> <span class="hljs-string">text</span>
+
+<span class="hljs-attr">url:</span>
+<span class="hljs-attr">  _label:</span> <span class="hljs-string">URL</span>
+<span class="hljs-attr">  _has:</span>
+<span class="hljs-attr">    input:</span> <span class="hljs-string">text</span>
+<span class="hljs-attr">    type:</span> <span class="hljs-string">url</span>
+
+<span class="hljs-attr">_groups:</span>
+<span class="hljs-attr">  link:</span>
+<span class="hljs-attr">    _label:</span> <span class="hljs-string">Link</span> <span class="hljs-string">Information</span>
+<span class="hljs-attr">    fields:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">title</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">url</span>
+</code></pre>
+<p>When end users click the <code>data-editable</code> attribute that points to this group, it will open an overlay form with all of the group's fields, in order.</p>
+<pre><code class="hljs css language-handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">data-editable</span>=<span class="hljs-string">"link"</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"</span></span></span><span class="hljs-template-variable">{{ url }}</span><span class="xml"><span class="hljs-tag"><span class="hljs-string">"</span>&gt;</span></span><span class="hljs-template-variable">{{ title }}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+</span></code></pre>
+<h3><a class="anchor" aria-hidden="true" id="group-placeholders"></a><a href="#group-placeholders" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Group Placeholders</h3>
+<p>If you add a <code>_placeholder</code> to a group, you must either make it permanent or specify what fields it should check with <code>ifEmpty</code>.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">_groups:</span>
+<span class="hljs-attr">  link:</span>
+<span class="hljs-attr">    _label:</span> <span class="hljs-string">Link</span> <span class="hljs-string">Information</span>
+<span class="hljs-attr">    _placeholder:</span>
+<span class="hljs-attr">      text:</span> <span class="hljs-string">Link</span>
+<span class="hljs-attr">      height:</span> <span class="hljs-number">24</span><span class="hljs-string">px</span>
+<span class="hljs-attr">      ifEmpty:</span> <span class="hljs-string">url</span>
+<span class="hljs-attr">    fields:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">title</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">url</span>
+</code></pre>
+<p>Placeholders in groups may check multiple fields with <code>ifEmpty</code>. This is useful for components with editable links, as you'll usually want to display a placeholder when either the url or the link text are empty. Operators are case-insensitive, and you can use <code>AND</code>, <code>OR</code>, or <code>XOR</code>.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">_groups:</span>
+<span class="hljs-attr">  link:</span>
+<span class="hljs-attr">    _label:</span> <span class="hljs-string">Link</span> <span class="hljs-string">Information</span>
+<span class="hljs-attr">    _placeholder:</span>
+<span class="hljs-attr">      text:</span> <span class="hljs-string">Link</span>
+<span class="hljs-attr">      height:</span> <span class="hljs-number">24</span><span class="hljs-string">px</span>
+<span class="hljs-attr">      ifEmpty:</span> <span class="hljs-string">url</span> <span class="hljs-string">or</span> <span class="hljs-string">title</span>
+<span class="hljs-attr">    fields:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">title</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">url</span>
+</code></pre>
+<blockquote>
+<h4><a class="anchor" aria-hidden="true" id="using-xor"></a><a href="#using-xor" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Using XOR</h4>
+<p>Please note that when comparing <em>more than two fields</em>, you cannot use <code>XOR</code> (as it's logically impossible to XOR more than two boolean values). For <code>AND</code>, <code>OR</code>, and <code>XOR</code> you must also use the same comparator between each field rather than mixing and matching them.</p>
+</blockquote>
+<p>Placeholders in groups may use deep field comparison to calculate emptiness of complex-lists. For example, <code>ifEmpty: 'byline.names'</code> will look for emptiness in the prop <code>names</code> in all items in the <code>byline</code> complex-list. Note that deep field comparison is only supported up to two levels deep, so using <code>isEmpty: byline.names.text</code> will throw an error.</p>
+<h3><a class="anchor" aria-hidden="true" id="settings-group"></a><a href="#settings-group" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Settings Group</h3>
+<p>The <em>Component Settings Form</em> is a special type of overlay form that's created when you add a group called <code>settings</code> to your schema. Components with <code>settings</code> groups get a button in their component selector to open the settings form, so don't add <code>data-editable=&quot;settings&quot;</code> to any elements in the template. Settings groups must not have <code>_label</code> (their form will be titled &quot;[Component Name] Settings&quot;), though they may have <code>_placeholder</code> (this is useful for permanent placeholders).</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">_groups:</span>
+<span class="hljs-attr">  settings:</span>
+<span class="hljs-attr">    fields:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">title</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">url</span>
+</code></pre>
+<p><img src="/clay-kiln/img/settings_form.png" alt="setting form"></p>
+<blockquote>
+<h4><a class="anchor" aria-hidden="true" id="head-and-invisible-component-settings"></a><a href="#head-and-invisible-component-settings" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Head and Invisible Component Settings</h4>
+<p>Components in <code>&lt;head&gt;</code> or invisible lists must have <em>all</em> of their fields available in settings forms, as they don't have any visible elements that can be clicked. The settings forms are accessible from the <a href="manipulating_components#head-lists">Find on Page drawer</a></p>
+</blockquote>
+<p>Settings forms are useful for <code>&lt;head&gt;</code> and invisible components, as well as <em>optional</em> fields that aren't frequently accessed. They're also useful to provide manual fallbacks for automatic component logic, such as fields that are generated in <code>model.js</code> files.</p>
+<h3><a class="anchor" aria-hidden="true" id="tabbed-form-sections"></a><a href="#tabbed-form-sections" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Tabbed Form Sections</h3>
+<p>Overlay and settings forms may split their fields into tabs. This is useful to group related fields by feature, or to provide a consistent tab for fields that override others. Sections are declared by wrapping the section name in parenthesis in the <code>fields</code> property.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">_groups:</span>
+<span class="hljs-attr">  settings:</span>
+<span class="hljs-attr">    fields:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">imageUrl</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">caption</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">slideshowType</span> <span class="hljs-string">(Slideshow)</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">slideshowLink</span> <span class="hljs-string">(Slideshow)</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">slideshowButtonText</span> <span class="hljs-string">(Slideshow)</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">sass</span> <span class="hljs-string">(Custom</span> <span class="hljs-string">Styles)</span>
+</code></pre>
+<p>If you specify sections for some fields but leave the other fields blank, they'll be added to a <em>General</em> section. Fields and sections will appear in the form in the order they've been listed.</p>
+<p><img src="/clay-kiln/img/form_tabs.png" alt="form tabs"></p>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="field-configuration"></a><a href="#field-configuration" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Field Configuration</h2>
+<p>All fields in Kiln have a standard configuration, no matter what kind of input they use. As noted above, the most basic properties of the field config are <code>_label</code> and <code>_has</code>. These denote the label that appears when looking at the form and what kind of input the field uses. <code>_has</code> can be a string (if the input has no arguments) or an object with an <code>input</code> property.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">title:</span>
+<span class="hljs-attr">  _label:</span> <span class="hljs-string">Title</span>
+<span class="hljs-attr">  _has:</span> <span class="hljs-string">text</span>
+
+<span class="hljs-attr">url:</span>
+<span class="hljs-attr">  _label:</span> <span class="hljs-string">URL</span>
+<span class="hljs-attr">  _has:</span>
+<span class="hljs-attr">    input:</span> <span class="hljs-string">text</span>
+<span class="hljs-attr">    type:</span> <span class="hljs-string">url</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="reveal"></a><a href="#reveal" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Reveal</h3>
+<p>Fields (and certain input options) may also have a special <code>_reveal</code> property, which allows you to hide or show the field based on some data.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">syndication:</span>
+<span class="hljs-attr">  _label:</span> <span class="hljs-string">Article</span> <span class="hljs-string">Syndication</span> <span class="hljs-string">Type</span>
+<span class="hljs-attr">  _has:</span>
+<span class="hljs-attr">    input:</span> <span class="hljs-string">radio</span>
+<span class="hljs-attr">    options:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">original</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">copy</span>
+
+<span class="hljs-attr">syndicationUrl:</span>
+<span class="hljs-attr">  _label:</span> <span class="hljs-string">Original</span> <span class="hljs-string">Article</span> <span class="hljs-string">URL</span>
+<span class="hljs-attr">  _has:</span>
+<span class="hljs-attr">    input:</span> <span class="hljs-string">text</span>
+<span class="hljs-attr">    type:</span> <span class="hljs-string">url</span>
+<span class="hljs-attr">  _reveal:</span>
+<span class="hljs-attr">    field:</span> <span class="hljs-string">syndication</span>
+<span class="hljs-attr">    operator:</span> <span class="hljs-string">===</span>
+<span class="hljs-attr">    value:</span> <span class="hljs-string">copy</span>
+</code></pre>
+<p>In this example, the <em>Original Article URL</em> field would only be displayed if the <em>Article Syndication Type</em> was set to <code>copy</code> since that would mean the article was being syndicated from some other place. You can compare against other fields or even against the site you're on.</p>
+<ul>
+<li><strong>field</strong> - to compare against, and/or...</li>
+<li><strong>sites</strong> - to compare against (will be true if the current site is one of them)</li>
+<li><strong>operator</strong> - optional operator to use for the comparison (defaults to <code>===</code>)</li>
+<li><strong>value</strong> - optional value to compare against, when you want to compare against a single value</li>
+<li><strong>values</strong> - array of optional values to compare against, when you want to compare against multiple values</li>
+</ul>
+<p>If neither <code>operator</code>, <code>value</code>, nor <code>values</code> are specified, the field will be shown when the compared field has any data (the same as the <code>not-empty</code> operator). The syntax for comparing against sites is the same as <a href="manipulating_components#site-specific-components">site-specific components in lists</a>.</p>
+<p>When comparing against multiple <code>values</code>, the comparison will be true if at least one of the values matches.</p>
+<p><strong>Operators:</strong></p>
+<ul>
+<li><code>===</code></li>
+<li><code>!==</code></li>
+<li><code>&lt;</code></li>
+<li><code>&gt;</code></li>
+<li><code>&lt;=</code></li>
+<li><code>&gt;=</code></li>
+<li><code>typeof</code></li>
+<li><code>regex</code></li>
+<li><code>length-equals</code> (compares the length of strings and arrays)</li>
+<li><code>length-less-than</code> (compares the length of strings and arrays)</li>
+<li><code>length-greater-than</code> (compares the length of strings and arrays)</li>
+<li><code>empty</code> (only checks field data, no value needed)</li>
+<li><code>not-empty</code> (only checks field data, no value needed)</li>
+<li><code>truthy</code> (only checks field data, no value needed)</li>
+<li><code>falsy</code> (only checks field data, no value needed)</li>
+</ul>
+<blockquote>
+<h4><a class="anchor" aria-hidden="true" id="deep-field-comparisons"></a><a href="#deep-field-comparisons" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Deep Field Comparisons</h4>
+<p>You can compare against deep fields (like <code>checkbox-group</code> or <code>complex-list</code>) by using dot-separated paths, e.g. <code>featureTypes.New York Magazine Story</code>. Don't worry about the spaces, as Kiln will parse it correctly to pull the relevant data. Note that this only works against proper <em>fields</em>, not any arbitrary non-kiln property.</p>
+</blockquote>
+<h3><a class="anchor" aria-hidden="true" id="standard-input-arguments"></a><a href="#standard-input-arguments" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Standard Input Arguments</h3>
+<p>Kiln's inputs are highly customized to the type of data they handle, but there are some shared arguments that work with most inputs.</p>
+<ul>
+<li><p><strong>help</strong> - description/helper text for the field, which generally appears below it</p></li>
+<li><p><strong>attachedButton</strong> - an icon button that may be attached to the field, to allow additional functionality</p></li>
+<li><p><strong>validate</strong> - an object that contains pre-publish validation rules:</p></li>
+<li><p><strong>validate.required</strong> - either <code>true</code> or an object that described the conditions that should make this field required (using the same properties as <code>_reveal</code>)</p></li>
+<li><p><strong>validate.min</strong> - minimum number (for numerical inputs) or length (for text and array inputs) that the field must meet</p></li>
+<li><p><strong>validate.max</strong> - maximum number (for numerical inputs) or length (for text and array inputs) that the field must not exceed</p></li>
+<li><p><strong>validate.pattern</strong> - regex pattern, for text inputs</p></li>
+</ul>
+<blockquote>
+<h4><a class="anchor" aria-hidden="true" id="min-and-max-validation"></a><a href="#min-and-max-validation" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Min and Max Validation</h4>
+<p><code>min</code> and <code>max</code> validation only run if the field is filled out. This differentiates it from the <code>required</code> validation, which specifies that a field <em>must</em> be filled out to be valid. Thus, it is possible to have an optional field that, <em>if</em> it is filled out, must have more/less than <em>x items</em> or a value greater/less than <em>y</em>.</p>
+</blockquote>
+<p>Validation rules may also have custom error messages, that will appear in the same place as the help text. If you do not specify a message, default error messages will appear.</p>
+<ul>
+<li><strong>validate.requiredMessage</strong> - will appear when required validation fails</li>
+<li><strong>validate.minMessage</strong> - will appear when minimum validation fails</li>
+<li><strong>validate.maxMessage</strong> - will appear when maximum validation fails</li>
+<li><strong>validate.patternMessage</strong> - will appear when pattern validation fails (very handy to set, as the default message is vague)</li>
+</ul>
+<p>Attached buttons are very useful when combined with custom Kiln inputs, but Kiln comes with two built-in: <code>lock</code> and <code>mediaplay-picker</code>.</p>
+<p><strong>Lock</strong> is a button that disables a field until the user clicks the button. This provides a small amount of friction before editing important (and rarely-edited) fields, similar to macOS's system preferences.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">adName:</span>
+<span class="hljs-attr">  _label:</span> <span class="hljs-string">Name</span>
+<span class="hljs-attr">  _has:</span>
+<span class="hljs-attr">    input:</span> <span class="hljs-string">text</span>
+<span class="hljs-attr">    help:</span> <span class="hljs-string">The</span> <span class="hljs-string">name</span> <span class="hljs-string">DFP</span> <span class="hljs-string">uses</span> <span class="hljs-string">to</span> <span class="hljs-string">traffic</span> <span class="hljs-string">the</span> <span class="hljs-string">appropriate</span> <span class="hljs-string">ad</span>
+<span class="hljs-attr">    attachedButton:</span> <span class="hljs-string">lock</span>
+</code></pre>
+<p><img src="/clay-kiln/img/locked_field.png" alt="locked field"></p>
+<p>Clicking the lock toggles the input between disabled and enabled state.</p>
+<p><img src="/clay-kiln/img/unlocked_field.png" alt="unlocked field"></p>
+<p><strong>Magic Button</strong> is a button that fetches data, allowing a quick population of fields based on other fields, other component data, or the result of api calls.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-comment"># pull short headline from regular headline</span>
+<span class="hljs-attr">shortHeadline:</span>
+<span class="hljs-attr">  _label:</span> <span class="hljs-string">Short</span> <span class="hljs-string">Headline</span>
+<span class="hljs-attr">  _has:</span>
+<span class="hljs-attr">    input:</span> <span class="hljs-string">wysiwyg</span>
+<span class="hljs-attr">    attachedButton:</span>
+<span class="hljs-attr">      name:</span> <span class="hljs-string">magic-button</span>
+<span class="hljs-attr">      field:</span> <span class="hljs-string">headline</span>
+
+<span class="hljs-comment"># pull feed image from first image component</span>
+<span class="hljs-attr">feedImage:</span>
+<span class="hljs-attr">  _label:</span> <span class="hljs-string">Feed</span> <span class="hljs-string">Image</span>
+<span class="hljs-attr">  _has:</span>
+<span class="hljs-attr">    input:</span> <span class="hljs-string">text</span>
+<span class="hljs-attr">    type:</span> <span class="hljs-string">url</span>
+<span class="hljs-attr">    attachedButton:</span>
+<span class="hljs-attr">      name:</span> <span class="hljs-string">magic-button</span>
+<span class="hljs-attr">      component:</span> <span class="hljs-string">image</span>
+<span class="hljs-attr">      transform:</span> <span class="hljs-string">getComponentInstance</span>
+<span class="hljs-attr">      url:</span> <span class="hljs-string">$SITE_PREFIX</span>
+<span class="hljs-attr">      property:</span> <span class="hljs-string">url</span>
+
+<span class="hljs-comment"># pull image caption from image management server's api</span>
+<span class="hljs-attr">caption:</span>
+<span class="hljs-attr">  _label:</span> <span class="hljs-string">Image</span> <span class="hljs-string">Caption</span>
+<span class="hljs-attr">  _has:</span>
+<span class="hljs-attr">    input:</span> <span class="hljs-string">text</span>
+<span class="hljs-attr">    attachedButton:</span>
+<span class="hljs-attr">      name:</span> <span class="hljs-string">magic-button</span>
+<span class="hljs-attr">      field:</span> <span class="hljs-string">url</span>
+<span class="hljs-attr">      url:</span> <span class="hljs-attr">http://my-image-api.biz/</span>
+<span class="hljs-attr">      property:</span> <span class="hljs-string">metadata.caption</span>
+</code></pre>
+<p>For more information about <code>magic-button</code>, <a href="/clay-kiln/docs/8.6.0/input#magic-button">please see its specific documentation</a>.</p>
+<blockquote>
+<h4><a class="anchor" aria-hidden="true" id="multiple-attached-buttons"></a><a href="#multiple-attached-buttons" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Multiple Attached Buttons</h4>
+<p>Inputs may include multiple attached buttons, but be warned that this does take up horizontal space from the main input. For this reason, more than two attached buttons on a single input is not recommended.
+<code>attachedButton: - lock - name: magic-button field: title</code></p>
+</blockquote>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="cross-component-communication"></a><a href="#cross-component-communication" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Cross Component Communication</h2>
+<p>Components can affect other components on the page by publishing and subscribing to properties (such as <code>title</code>, <code>description</code>, <code>ledeImage</code>, etc). This allows many-to-many communication in Kiln, as multiple components can publish or subscribe to the same property, and components can publish or subscribe to multiple different properties. There are no restrictions on pubsub property names, so be sure to avoid unintended collisions!</p>
+<h3><a class="anchor" aria-hidden="true" id="publishing"></a><a href="#publishing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Publishing</h3>
+<p>To publish to a property, add <code>_publish</code> to your field. The component will send data to that property <em>after</em> their <code>model.save()</code> logic is run (if they have any). This allows that component to perform logic before propagating its data, such as generating extra fields.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-comment"># non-user-editable fields, set by model.js and used for pubsub</span>
+<span class="hljs-attr">plaintextTitle:</span>
+<span class="hljs-attr">  _publish:</span> <span class="hljs-string">pageTitle</span>
+<span class="hljs-attr">  _has:</span>
+<span class="hljs-attr">    help:</span> <span class="hljs-string">Plaintext</span> <span class="hljs-string">page</span> <span class="hljs-string">title,</span> <span class="hljs-string">set</span> <span class="hljs-string">by</span> <span class="hljs-string">seoHeadline,</span> <span class="hljs-string">shortHeadline,</span> <span class="hljs-string">or</span> <span class="hljs-string">primaryHeadline.</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="scoped-publishing"></a><a href="#scoped-publishing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Scoped Publishing</h4>
+<p>There are some situations where a component wants to limit the data they're sending to a certain subset of components on the page, rather than all components that listen to a property. For example, a slideshow that sets the width of its children shouldn't <em>also</em> set the width of any other slideshow's children on the same page. To limit which components are affected by a property, you may use scoped publishing.</p>
+<p>There are currently three scopes you may publish to: <code>global</code> (default), <code>children</code>, and <code>parents</code>.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">slideshowWidth:</span>
+<span class="hljs-attr">  _publish:</span>
+<span class="hljs-attr">    name:</span> <span class="hljs-string">width</span>
+<span class="hljs-attr">    scope:</span> <span class="hljs-string">children</span>
+<span class="hljs-attr">  _has:</span>
+<span class="hljs-attr">    help:</span> <span class="hljs-string">Width</span> <span class="hljs-string">should</span> <span class="hljs-string">propagate</span> <span class="hljs-string">only</span> <span class="hljs-string">to</span> <span class="hljs-string">children</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="subscribing"></a><a href="#subscribing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Subscribing</h3>
+<p>Components that want to subscribe to properties should have <code>_subscribe</code> on the field(s) they want to update, with the name of the property it should subscribe to. Subscribed properties will trigger a component to save, thus allowing the subscribed component's <code>model.save()</code> method to do logic on the incoming data before it's sent to the server.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">ogTitle:</span>
+<span class="hljs-attr">  _subscribe:</span> <span class="hljs-string">pageTitle</span>
+<span class="hljs-attr">  _label:</span> <span class="hljs-attr">OG:Title</span>
+<span class="hljs-attr">  _has:</span> <span class="hljs-string">text</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="many-to-many-communication"></a><a href="#many-to-many-communication" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Many-To-Many Communication</h3>
+<p>Both <code>_publish</code> and <code>_subscribe</code> can receive a single property (as a string) <em>or an array of properties</em>. This extremely powerful tool allows you to create complicated many-to-many communication workflows in a safe and standardized way.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">title:</span>
+<span class="hljs-attr">  _has:</span> <span class="hljs-string">text</span>
+<span class="hljs-attr">  _publish:</span>
+<span class="hljs-bullet">    -</span> <span class="hljs-string">ogTitle</span>
+<span class="hljs-bullet">    -</span> <span class="hljs-string">twitterTitle</span>
+<span class="hljs-attr">  _subscribe:</span>
+<span class="hljs-bullet">    -</span> <span class="hljs-string">pageTitle</span>
+<span class="hljs-bullet">    -</span> <span class="hljs-string">overrideTitle</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="scoped-many-to-many-communication"></a><a href="#scoped-many-to-many-communication" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Scoped Many-To-Many Communication</h4>
+<p>Scoped publishing may be used in many-to-many communication, and you may intersperse scoped and unscoped properties as needed.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">title:</span>
+<span class="hljs-attr">  _has:</span> <span class="hljs-string">text</span>
+<span class="hljs-attr">  _publish:</span>
+<span class="hljs-bullet">    -</span> <span class="hljs-string">ogTitle</span>
+<span class="hljs-bullet">    -</span> <span class="hljs-string">twitterTitle</span>
+<span class="hljs-attr">    - name:</span> <span class="hljs-string">socialTitle</span>
+<span class="hljs-attr">      scope:</span> <span class="hljs-string">children</span>
+<span class="hljs-attr">    - name:</span> <span class="hljs-string">articleTitle</span>
+<span class="hljs-attr">      scope:</span> <span class="hljs-string">parents</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="pubsub-tips"></a><a href="#pubsub-tips" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>PubSub Tips</h3>
+<p>Kiln intelligently prevents a component from publishing more than once during pubsub, so you may safely create circular pubsub logic. For example, a <code>tags</code> component may update an <code>article</code>'s <code>primaryTag</code> field, and the <code>article</code> may also allow editing of that field (and propagating those changes back to <code>tags</code>).</p>
+<p>As cross-component updating is a feature of Kiln, it only works client-side. For third-party microservices or manual API calls, please make use of <a href="https://github.com/nymag/amphora/pull/73">cascading PUTs</a> to affect multiple components.</p>
+<p>If you have data you want to propagate when publishing (which happens server-side), have your <a href="http://clay.github.io/amphora/docs/basics/publishing.html">publishing service</a> add that data to the locals object, which will be passed into all components' <code>model.save()</code> method.</p>
+<h3><a class="anchor" aria-hidden="true" id="kiln-subscribers"></a><a href="#kiln-subscribers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Kiln Subscribers</h3>
+<p>Kiln itself subscribes to a few specific properties, which it uses to update its index of pages. Publishing to <code>kilnTitle</code> will update the page title, and <code>kilnAuthors</code> will update the page authors. You can see the results in the Clay Menu.</p>
+<p><img src="/clay-kiln/img/clay_menu.png" alt="clay menu"></p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/clay-kiln/docs/8.6.0/manipulating_components"><span class="arrow-prev">← </span><span>Adding, Removing, and Reordering Components</span></a><a class="docs-next button" href="/clay-kiln/docs/8.6.0/input"><span>Form Inputs</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#inline-wysiwyg">Inline WYSIWYG</a></li><li><a href="#inline-reordering">Inline Reordering</a></li><li><a href="#placeholders">Placeholders</a><ul class="toc-headings"><li><a href="#permanent-placeholders">Permanent Placeholders</a></li></ul></li><li><a href="#editing-components-with-forms">Editing Components with Forms</a><ul class="toc-headings"><li><a href="#groups">Groups</a></li><li><a href="#group-placeholders">Group Placeholders</a></li><li><a href="#settings-group">Settings Group</a></li><li><a href="#tabbed-form-sections">Tabbed Form Sections</a></li></ul></li><li><a href="#field-configuration">Field Configuration</a><ul class="toc-headings"><li><a href="#reveal">Reveal</a></li><li><a href="#standard-input-arguments">Standard Input Arguments</a></li></ul></li><li><a href="#cross-component-communication">Cross Component Communication</a><ul class="toc-headings"><li><a href="#publishing">Publishing</a></li><li><a href="#subscribing">Subscribing</a></li><li><a href="#many-to-many-communication">Many-To-Many Communication</a></li><li><a href="#pubsub-tips">PubSub Tips</a></li><li><a href="#kiln-subscribers">Kiln Subscribers</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/clay-kiln/" class="nav-home"></a><div><h5>Docs</h5><a href="/clay-kiln/docs/en/intro">Introduction</a><a href="/clay-kiln/docs/en/api_kiln">API Reference</a></div><div><h5>More</h5><a target="_blank" href="https://github.com/clay/clay-kiln">GitHub</a></div></section><section class="copyright">Copyright © 2019 New York Media</section></footer></div></body></html>

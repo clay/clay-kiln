@@ -1,0 +1,205 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Adding, Removing, and Reordering Components · Kiln</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;hr&gt;
+"/><meta name="docsearch:version" content="8.6.0"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Adding, Removing, and Reordering Components · Kiln"/><meta property="og:type" content="website"/><meta property="og:url" content="https://clay.github.io//clay-kiln/"/><meta property="og:description" content="&lt;hr&gt;
+"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/clay-kiln/"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/clay-kiln/css/main.css"/><script src="/clay-kiln/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/clay-kiln/"><img class="logo" src="/clay-kiln/img/kiln.png" alt="Kiln"/><h2 class="headerTitleWithLogo">Kiln</h2></a><a href="/clay-kiln/versions"><h3>8.6.0</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/clay-kiln/docs/8.6.0/intro" target="_self">Introduction</a></li><li class=""><a href="https://github.com/clay/clay-kiln" target="_self">Github</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>KILN FUNDAMENTALS</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Introduction<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/intro">Introduction</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">KILN FUNDAMENTALS<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/kiln_ui">The Kiln UI</a></li><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Clay Components</h4><ul><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/component">Components</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/clay-kiln/docs/8.6.0/manipulating_components">Adding, Removing, and Reordering Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/editing_components">Editing Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/input">Form Inputs</a></li></ul></div><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/deep_linking">Deep Linking</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">API DOCUMENTATION<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Kiln API</h4><ul><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/api_kiln">API</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/vuex_actions">Vuex Actions</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.6.0/vuex_plugin">Vuex Plugins</a></li></ul></div></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Adding, Removing, and Reordering Components</h1></header><article><div><span><hr>
+<p><img src="/clay-kiln/img/add_component.png" alt="add component"></p>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="component-lists"></a><a href="#component-lists" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Component Lists</h2>
+<p>Components are added, removed, and reordered in fields called <em>component lists</em>, of which there are <strong>four types</strong>.</p>
+<h3><a class="anchor" aria-hidden="true" id="basic-lists"></a><a href="#basic-lists" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Basic Lists</h3>
+<p>Components that contain child component lists need to do two things: Render an <em>editable</em> list in their template and specify a <em>config</em> in their <code>schema.yml</code>.</p>
+<pre><code class="hljs css language-handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">data-editable</span>=<span class="hljs-string">"myList"</span>&gt;</span></span><span class="hljs-template-variable">{{&gt; component-list myList }}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</span></code></pre>
+<blockquote>
+<p>You'll notice that <code>data-editable</code> is the same attribute used to specify editable fields. The <code>component-list</code> handlebars partial comes from <a href="https://github.com/clay/handlebars#partials">our included library of helpers and partials</a> and renders a list of components with their data. The element with <code>data-editable</code> must be the <em>immediate parent</em> of the components in the list.</p>
+</blockquote>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">myList:</span>
+<span class="hljs-attr">  _componentList:</span>
+<span class="hljs-attr">    include:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">some-component</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">some-other-component</span>
+</code></pre>
+<p>This would create a basic list with drag &amp; drop functionality. When selecting components inside this list, you'd see <em>Remove</em> and <em>Add Component</em> buttons that would allow you to remove those components or add new instances of <code>some-component</code> and <code>some-other-component</code>. When adding components to a list, a component's default data is cloned into a new instance.</p>
+<h4><a class="anchor" aria-hidden="true" id="placeholders"></a><a href="#placeholders" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Placeholders</h4>
+<p>Basic lists also allow placeholders, which will display (and prompt users to add components) when the list is empty.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">myList:</span>
+<span class="hljs-attr">  _placeholder:</span>
+<span class="hljs-attr">    height:</span> <span class="hljs-number">600</span><span class="hljs-string">px</span>
+<span class="hljs-attr">  _componentList:</span>
+<span class="hljs-attr">    include:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">some-component</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">some-other-component</span>
+</code></pre>
+<p><img src="/clay-kiln/img/list_placeholder.png" alt="list placeholder"></p>
+<h4><a class="anchor" aria-hidden="true" id="collapsible-lists"></a><a href="#collapsible-lists" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Collapsible Lists</h4>
+<p>In edit mode, basic component lists may be expanded and collapsed. This feature only affects edit mode, so it's useful for removing visual clutter in component lists that aren't displayed in view mode. Note that this is different than <em>invisible</em> component lists, which are editable through the &quot;Find on Page&quot; / &quot;Find on Layout&quot; drawer.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">myList:</span>
+<span class="hljs-attr">  _placeholder:</span>
+<span class="hljs-attr">      text:</span> <span class="hljs-string">Article</span> <span class="hljs-string">Content</span>
+<span class="hljs-attr">  _componentList:</span>
+<span class="hljs-attr">    include:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">tweet</span>
+<span class="hljs-attr">    collapse:</span> <span class="hljs-literal">true</span>
+</code></pre>
+<p><img src="/clay-kiln/img/list_open.png" alt="list open"></p>
+<p>Collapsible lists will <em>always</em> display their placeholder, as well as an expand/collapse toggle.</p>
+<p><img src="/clay-kiln/img/list_collapsed.png" alt="list collapsed"></p>
+<p>When collapsible lists are empty, they'll display the same &quot;Add Component&quot; button as other component lists.</p>
+<p><img src="/clay-kiln/img/list_empty.png" alt="list empty"></p>
+<h4><a class="anchor" aria-hidden="true" id="validation"></a><a href="#validation" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Validation</h4>
+<p>Similarly to <a href="/clay-kiln/docs/8.6.0/editing_components#standard-input-arguments">editable fields</a>, component lists may contain validation for <code>min</code> and <code>max</code> lengths.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">myList:</span>
+<span class="hljs-attr">  _componentList:</span>
+<span class="hljs-attr">    include:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">some-component</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">some-other-component</span>
+<span class="hljs-attr">    validate:</span>
+<span class="hljs-attr">      min:</span> <span class="hljs-number">1</span>
+<span class="hljs-attr">      max:</span> <span class="hljs-number">10</span>
+</code></pre>
+<p>Similarly to text inputs, component lists may also prevent users from adding components over the maximum with <code>enforceMaxlength</code>.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">myList:</span>
+<span class="hljs-attr">  _componentList:</span>
+<span class="hljs-attr">    include:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">some-component</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">some-other-component</span>
+<span class="hljs-attr">    validate:</span>
+<span class="hljs-attr">      max:</span> <span class="hljs-number">10</span>
+<span class="hljs-attr">    enforceMaxlength:</span> <span class="hljs-literal">true</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="head-lists"></a><a href="#head-lists" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Head Lists</h3>
+<p>Components in the <code>&lt;head&gt;</code> of the page require a different syntax. Much like how you denote the start of <code>&lt;head&gt;</code> components with a <code>&lt;!-- data-editable --&gt;</code> comment, you use html comments for the beginning <em>and the end</em> of these component lists.</p>
+<pre><code class="hljs css language-handlebars"><span class="xml"><span class="hljs-comment">&lt;!-- data-editable="myList" --&gt;</span>
+</span><span class="hljs-template-variable">{{&gt; component-list myList }}</span><span class="xml">
+<span class="hljs-comment">&lt;!-- data-editable-end --&gt;</span>
+</span></code></pre>
+<p>The <code>schema.yml</code> config of a head list is the same as a basic list.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">myList:</span>
+<span class="hljs-attr">  _componentList:</span>
+<span class="hljs-attr">    include:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">some-component</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">some-other-component</span>
+</code></pre>
+<p>Head component lists get added as tabs to the <em>Find on Page</em> drawer in Kiln automatically, allowing them to be edited.</p>
+<p><img src="/clay-kiln/img/head_list.png" alt="head list"></p>
+<h3><a class="anchor" aria-hidden="true" id="invisible-lists"></a><a href="#invisible-lists" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Invisible Lists</h3>
+<p>It's useful to have a component list for various components that might not have public-facing visual elements, such as tracking scripts, affiliate marketing scripts, pixels, or lightboxes. If these components must live in the <code>&lt;body&gt;</code> (rather than the <code>&lt;head&gt;</code>), you may add a property to the component list to make them appear as tabs in the <em>Find on Page</em> drawer, allowing them to be edited.</p>
+<pre><code class="hljs css language-handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">data-editable</span>=<span class="hljs-string">"myList"</span>&gt;</span></span><span class="hljs-template-variable">{{&gt; component-list myList }}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</span></code></pre>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">myList:</span>
+<span class="hljs-attr">  _componentList:</span>
+<span class="hljs-attr">    invisible:</span> <span class="hljs-literal">true</span>
+<span class="hljs-attr">    include:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">some-component</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">some-other-component</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="page-areas"></a><a href="#page-areas" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Page Areas</h3>
+<p>Page areas are a special type of component list that only exists in layouts. By adding a property to the layout's <code>schema.yml</code>, you can specify that certain component lists exist in the page's data (and thus are specific to that page) rather than the layout's data (thus being shared amongst all pages with that layout).</p>
+<pre><code class="hljs css language-handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">data-editable</span>=<span class="hljs-string">"myList"</span>&gt;</span></span><span class="hljs-template-variable">{{&gt; component-list myList }}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</span></code></pre>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">myList:</span>
+<span class="hljs-attr">  _componentList:</span>
+<span class="hljs-attr">    page:</span> <span class="hljs-literal">true</span>
+<span class="hljs-attr">    include:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">some-component</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">some-other-component</span>
+</code></pre>
+<p>The data for component lists inside components (including layouts) looks like an array of objects:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"myList"</span>: [{
+    <span class="hljs-attr">"_ref"</span>: <span class="hljs-string">"domain.com/_components/some-component/instances/some-instance"</span>
+  }, {
+    <span class="hljs-attr">"_ref"</span>: <span class="hljs-string">"domain.com/_components/some-other-component/instances/some-instance"</span>
+  }]
+}
+</code></pre>
+<p>Meanwhile, the data for component lists inside page data looks like an array of strings:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"myList"</span>: [
+    <span class="hljs-string">"domain.com/_components/some-component/instances/some-instance"</span>,
+    <span class="hljs-string">"domain.com/_components/some-other-component/instances/some-instance"</span>
+  ]
+}
+</code></pre>
+<p>Page areas may also have placeholders.</p>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="site-specific-components"></a><a href="#site-specific-components" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Site-Specific Components</h2>
+<p>All types of component lists allow whitelisting of components using the <code>include</code> property in the config. You may also specify that components in a list should be included or excluded on a specific site. To do so, add a comma-separated list of sites in parenthesis after the name of the component in the include list:</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">content:</span>
+<span class="hljs-attr">  _componentList:</span>
+<span class="hljs-attr">    include:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">blockquote</span> <span class="hljs-string">(site1,</span> <span class="hljs-string">site2)</span> <span class="hljs-comment"># allow on site1 and site2 ONLY</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">paragraph</span> <span class="hljs-comment"># allow on all sites</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">image</span> <span class="hljs-string">(not:site1)</span> <span class="hljs-comment"># allow on all sites EXCEPT site1</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">link</span> <span class="hljs-string">(site1,</span> <span class="hljs-string">site2,</span> <span class="hljs-string">site3,</span> <span class="hljs-attr">not:site2,</span> <span class="hljs-attr">not:site3)</span> <span class="hljs-comment"># only allow on site1</span>
+      <span class="hljs-comment"># if (for some reason) you both include and exclude a site, it'll filter by the</span>
+      <span class="hljs-comment"># included sites first, then filter out the excluded.</span>
+</code></pre>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="fuzzy-lists"></a><a href="#fuzzy-lists" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Fuzzy Lists</h2>
+<p>Additionally, all types of component lists may be set to <em>fuzzy</em>. The default <code>include</code> list is appropriate for most situations, but there are certain scenarios where you might want to be less strict. For example, the body of an article might be restricted to paragraphs and images 99% of the time, but you still want to allow your interactive team to create one-off components and add them through Kiln's UI.</p>
+<p>You may make any component list <em>fuzzy</em> by adding that property in the config. This will add a <em>View All Components</em> button into the header of the Add Components modal, which will list <em>all components available in your Clay installation</em>.</p>
+<p><img src="/clay-kiln/img/fuzzy_list.png" alt="fuzzy list"></p>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="component-properties"></a><a href="#component-properties" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Component Properties</h2>
+<p>In addition to component lists, you can use <em>component properties</em> if you want a single child component instead of an array of children.</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">tags:</span>
+<span class="hljs-attr">  _component:</span>
+<span class="hljs-attr">    include:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">normal-tags</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">fancy-tags</span>
+</code></pre>
+<p>This allows you to swap out different components in a specific place, for example, if you have two different tagging components with different styles and functionality. As with component lists, you may include a <code>_placeholder</code>. If your component property is editable, the child component's selector will allow you to remove it (and the placeholder that displays will allow you to add it).</p>
+<blockquote>
+<p>Component properties are not allowed in the layout or page data, only in normal components. Because of this, they are also not allowed in the <code>&lt;head&gt;</code> of the page.</p>
+</blockquote>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/clay-kiln/docs/8.6.0/component"><span class="arrow-prev">← </span><span>Components</span></a><a class="docs-next button" href="/clay-kiln/docs/8.6.0/editing_components"><span>Editing Components</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#component-lists">Component Lists</a><ul class="toc-headings"><li><a href="#basic-lists">Basic Lists</a></li><li><a href="#head-lists">Head Lists</a></li><li><a href="#invisible-lists">Invisible Lists</a></li><li><a href="#page-areas">Page Areas</a></li></ul></li><li><a href="#site-specific-components">Site-Specific Components</a></li><li><a href="#fuzzy-lists">Fuzzy Lists</a></li><li><a href="#component-properties">Component Properties</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/clay-kiln/" class="nav-home"></a><div><h5>Docs</h5><a href="/clay-kiln/docs/en/intro">Introduction</a><a href="/clay-kiln/docs/en/api_kiln">API Reference</a></div><div><h5>More</h5><a target="_blank" href="https://github.com/clay/clay-kiln">GitHub</a></div></section><section class="copyright">Copyright © 2019 New York Media</section></footer></div></body></html>
