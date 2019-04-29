@@ -1,42 +1,3 @@
-<style lang="sass">
-  @import '../../styleguide/toolbar';
-  @import '../../styleguide/layers';
-
-  .kiln-wrapper.view-mode {
-    @include toolbar-wrapper();
-
-    pointer-events: none;
-
-    & > * {
-      pointer-events: all;
-    }
-
-    .view-menu-button {
-      margin: 10px;
-    }
-
-    .kiln-progress {
-      height: 3px;
-      left: 0;
-      position: fixed;
-      top: 0;
-      width: 100%;
-    }
-
-    .view-edit-button,
-    .view-new-button {
-      margin: 10px 18px;
-    }
-
-    .ui-snackbar-container {
-      @include confirm-layer();
-
-      bottom: 0;
-      position: fixed;
-    }
-  }
-</style>
-
 <template>
   <div class="kiln-wrapper view-mode">
     <alert-container></alert-container>
@@ -51,7 +12,13 @@
     <nav-content></nav-content>
     <simple-modal></simple-modal>
     <confirm></confirm>
-    <ui-snackbar-container ref="snacks"></ui-snackbar-container>
+    <ui-snackbar-container
+      ref="snacks"
+      :position="snackbar.position"
+      :transition="snackbar.transition"
+      :queueSnackbars="snackbar.queueSnackbars"
+      :duration="snackbar.duration"
+    ></ui-snackbar-container>
   </div>
 </template>
 
@@ -105,9 +72,8 @@
     },
     watch: {
       snackbar(val) {
-        if (val) {
+        if (Object.keys(val).length) {
           this.$refs.snacks.createSnackbar(val);
-          this.$store.dispatch('hideSnackbar'); // clear the store
         }
       }
     },
@@ -139,3 +105,42 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../../styleguide/toolbar';
+  @import '../../styleguide/layers';
+
+  .kiln-wrapper.view-mode {
+    @include toolbar-wrapper();
+
+    pointer-events: none;
+
+    & > * {
+      pointer-events: all;
+    }
+
+    .view-menu-button {
+      margin: 10px;
+    }
+
+    .kiln-progress {
+      height: 3px;
+      left: 0;
+      position: fixed;
+      top: 0;
+      width: 100%;
+    }
+
+    .view-edit-button,
+    .view-new-button {
+      margin: 10px 18px;
+    }
+
+    .ui-snackbar-container {
+      @include confirm-layer();
+
+      bottom: 0;
+      position: fixed;
+    }
+  }
+</style>
