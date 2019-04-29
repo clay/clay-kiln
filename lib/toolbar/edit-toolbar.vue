@@ -132,7 +132,13 @@
     <nav-content></nav-content>
     <simple-modal></simple-modal>
     <confirm></confirm>
-    <ui-snackbar-container ref="snacks"></ui-snackbar-container>
+    <ui-snackbar-container
+      ref="snacks"
+      :position="snackbar.position"
+      :transition="snackbar.transition"
+      :queueSnackbars="snackbar.queueSnackbars"
+      :duration="snackbar.duration"
+    ></ui-snackbar-container>
   </div>
 </template>
 
@@ -337,9 +343,8 @@
     }),
     watch: {
       snackbar(val) {
-        if (val) {
+        if (Object.keys(val).length) {
           this.$refs.snacks.createSnackbar(val);
-          this.$store.dispatch('hideSnackbar'); // clear the store
         }
       }
     },

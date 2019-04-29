@@ -23,6 +23,7 @@
         "label": "Kiln API",
         "ids": [
           "api_kiln",
+          "snackbar",
           "vuex_actions",
           "vuex_plugin"
         ]
