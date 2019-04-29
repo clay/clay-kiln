@@ -15,7 +15,6 @@
 
       bottom: 0;
       position: fixed;
-      left: 50%;
     }
 
     .alert-container {
