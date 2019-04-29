@@ -301,7 +301,8 @@ WYSIWYG returns a **string** of HTML.
 
 ### WYSIWYG Events that can be attached to Kiln-Input using kiln.js
 
-* **text-change**	- Emitted when the wysiwyg value is changed. The handler is called with the new value.
+* **change**	- Emitted when the wysiwyg value is changed. The handler is called with the new value.
+* **text-change**	- Emitted when the wysiwyg value is changed. The handler is called with an object that contains the changes made to the field.
 * **selection-change** - Emitted when what is selected by the user within the wysiwyg field changes.
 
 ---
@@ -311,8 +312,8 @@ WYSIWYG returns a **string** of HTML.
 A multi-line text input which allows a rich editing experience, but appears inline rather than in a form. It will inherit styles from the component you're editing, rather than looking like a Kiln text input. [It supports exactly the same arguments and returns the same format as `wysiwyg`.](input.md#wysiwyg)
 
 ### Inline Events that can be attached to Kiln-Input using kiln.js
-
-* **text-change**	- Emitted when the inline value is changed. The handler is called with the new value.
+* **change** - Emitted when the inline value is changed. The handler is called with the new value.
+* **text-change**	- Emitted when the inline value is changed. The handler is called with an object that contains the changes made to the field.
 * **selection-change** - Emitted when what is selected by the user within the inline field changes.
 
 ---

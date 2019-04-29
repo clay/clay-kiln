@@ -30,6 +30,19 @@ export default class KilnInput {
     });
   }
 
+  rerender(uri = null) {
+    if (uri) {
+      // rerender specific component
+    } else {
+      // rerender components of this type
+      const componentsToReRender = Object.keys(store.state.components).filter((key)=> key.includes(`/_components/${ this.schemaName }/instances/`));
+
+      componentsToReRender.forEach((key) => {
+        store.dispatch('triggerModelRender', { uri: key, data: store.state.components[key] });
+      });
+    }
+  }
+
   setProp(prop, value) {
     return new Promise((resolve) => {
       store.dispatch('updateSchemaProp', { schemaName: this.schemaName, inputName: this.inputName, prop, value }).then(()=> {
@@ -75,6 +88,10 @@ export default class KilnInput {
     return event && typeof event.func === 'function' && (!event.scoped || !store.state.url || event.scoped && store.state.url.component === this.schemaName);
   }
 
+  uri() {
+    return store.state.url;
+  }
+
   value(val) {
     if (val) {
       // set the value of the field
@@ -86,7 +103,11 @@ export default class KilnInput {
     }
   }
 
-  uri() {
-    return store.state.url;
+  updateLayout() {
+    store.dispatch('updateLayout');
+  }
+
+  saveComponent() {
+    store.dispatch('saveComponent',{ uri: 'localhost/_components/paragraph/instances/cjuv9rjel00083h5z0w65qxfw', data: { text: 'Lorum ipsum!' }});
   }
 };
