@@ -72,7 +72,7 @@
     },
     watch: {
       snackbar(val) {
-        if (Object.keys(val).length > 0) {
+        if (Object.keys(val).length) {
           this.$refs.snacks.createSnackbar(val);
         }
       }
