@@ -72,7 +72,7 @@
     },
     watch: {
       snackbar(val) {
-        if (val) {
+        if (Object.keys(val).length > 0 && val.constructor === Object) {
           this.$refs.snacks.createSnackbar(val);
         }
       }
