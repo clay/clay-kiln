@@ -262,7 +262,9 @@
             if (_.includes(window.location.href, uriToUrl(uri))) {
               // if we're already looking at /_pages/whatever, display the status message
               store.commit(FINISH_PROGRESS);
-              store.dispatch('showSnackbar', 'Unpublished Page');
+              store.dispatch('showSnackbar', {
+                message: 'Unpublished Page'
+              });
             } else {
               // if we're looking at the published page, navigate to the latest version
               window.location.href = `${uriToUrl(uri)}${htmlExt}${editExt}`;
