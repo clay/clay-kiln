@@ -103,9 +103,10 @@
           schemaSections = _.get(currentForm, 'schema.sections'),
           fields = _.get(currentForm, 'schema.fields'),
           path = _.get(currentForm, 'path'),
-          currentURI = _.get(this.$store, 'state.ui.currentSelection.uri'),
+          currentURI = _.get(this.$store, 'state.ui.currentSelection.uri') || _.get(this.$store, 'state.ui.currentForm.uri'),
           componentName = getComponentName(currentURI),
           schema = this.$store.state.schemas[componentName];
+
 
         let sections = [];
 
