@@ -6,8 +6,6 @@ sidebar_label: Kilnjs
 
 ---
 
-Kilnjs
-
 Kilnjs is an optional Javascript file that transforms the schema.yaml file into a dynamic Javascript Object that affects how Kiln interacts with components that use the schema.  With it, events can be attached to the inputs that are used by kiln to edit components.  These events can be used to hide or reveal different fields in the schema, update the values of those fields, make api calls, subscribe to Vuex mutations, and just about any other action allowed by JavaScript.
 
 Using Kilnjs, you can remove the logic from the schema.yaml file and move it into JavaScript, keeping the schema file for presentational information.
@@ -25,11 +23,60 @@ A function that recieves a parameter called schema that also returns the schema.
 
 The real power of Kilnjs comes from the KilnInput object, which can be used to make the fields within a schema truly dynamic.  Using KilnInput you can add events to the different form inputs as detailed on the [Form Inputs page](input).  You can also subscribe to Vuex actions as described below.
 
+To make a schema field a KilnInput, you set it to a new instance of KilnInput, passing it to the schema and the name of the field.
+
+```
+const KilnInput = window.kiln.kilnInput;
+
+module.exports = (schema) => {
+  schema.title = new KilnInput(schema, 'title');
+
+  return schema;
+};
+```
+
+---
+
+## Events
+
+You can attach events to the schema inputs.  The events you can attach vary depending upon the type input. The different events are detailed on the [Form Inputs page](input).
+
+* ***on(event, callbackFunction)*** - pass it the event as a string, along with a callback function that is run after the event happens
+
+```
+  schema.enableSocialButtons.on('input', (val) => {
+    if(val) {
+      schema.shareServices.show();
+    } else {
+      schema.shareServices.hide();
+    }
+  });
+```
+
+### Validation
+
+By attaching events, one of the things you can use kilnjs for is to do field validation.
+
+```
+module.exports = (schema) => {
+  schema.title = new KilnInput(schema, 'title');
+
+  schema.title.on('keydown', (e) => {
+    // prevent numbers from being entered in the title field
+    if (!isNaN(e.key)) {
+      e.preventDefault();
+    }
+  });
+
+  return schema;
+};
+```
+
 ---
 
 ## Vuex Actions to Subscribe To
 
-The following are Vuex actions that you can subscribe to using Kiln.js. The actions can be scoped so that they only trigger the subscription function when the action is triggered by a component of the same type as the subscribing component. In other words, if scope is set to true on a paragraph element, then the subscription function would only be called when a paragraph element triggers the Vuex action, but not when any other type of component triggers the Vuex action.  When the scope is set to false, the subscription function is called whenever _any_ component triggers the Vuex action.
+The following are some of the Vuex actions that you can subscribe to using Kiln.js. The actions can be scoped so that they only trigger the subscription function when the action is triggered by a component of the same type as the subscribing component. In other words, if scope is set to true on a paragraph element, then the subscription function would only be called when a paragraph element triggers the Vuex action, but not when any other type of component triggers the Vuex action.  When the scope is set to false, the subscription function is called whenever _any_ component triggers the Vuex action.
 
 * ***OPEN_FORM*** - Triggered when a Kiln form is opened. Note that this can triggered by both a modal form _and_ an inline form, so just clicking into a paragraph or other inline field will trigger this action. The payload returned from this action contains a JSON representation of the Schema along with the component uri that was opened in the form.
 
@@ -45,13 +92,22 @@ The following are Vuex actions that you can subscribe to using Kiln.js. The acti
 
 KilnInput also provides its own set of custom methods.
 
+### setProp
+
+* ***setProp(prop, value)*** - change value of a property on the input
+
+```
+kilninput.setProp('_has', { ...kilninput['_has'], input: 'select' });
+```
+
+### show/hide
+
 * ***show()*** - used to make an input visible.
 
 * ***hide()*** - used to make an input invisible
 
-#### show/hide example
 ```
-schema.enableSocialButtons.on('input', (val) => {
+  schema.enableSocialButtons.on('input', (val) => {
     if(val) {
       schema.shareServices.show();
     } else {
@@ -60,8 +116,34 @@ schema.enableSocialButtons.on('input', (val) => {
   });
 ```
 
+### url
+
+* ***url()*** - returns the url object from Vuex state of the component that is currently being edited. Object contains the component name, the instance, and the path
+
+```
+  kilnInput.url()
+
+  /// returns an object structured like this
+
+  {
+    component: "meta-title"
+    instance: "cjtfuc3rw00019fz9egagqev0"
+    path: "settings"
+  }
+```
+
+### value
+
+* ***value(val)*** - used to set and retrieve value on an input. If a value is passed, it sets the value, otherwise it retrieves it.
+
+```
+schema.title.value(); // gets the value of title
+schema.title.value('Some New Value'); // sets the value of title
+```
 
 ---
+
+### Example kiln.js file
 
 ```
 'use strict';
@@ -78,12 +160,7 @@ module.exports = (schema) => {
   schema.tagline = new KilnInput(schema, 'tagline');
 
 
-  /* subscribe to any Vuex action.
-    examples
-    OPEN_FORM (when the form gains focus, even if the form is inline)
-    CLOSE_FORM (when the form loses focus, even if the form is inline)
-    UPDATE_FORMDATA (when the data is changed, but not yet saved)
-    UPDATE_COMPONENT (when data is actually saved) */
+  /* subscribe to a Vuex action. */
   schema.enableSocialButtons.subscribe('OPEN_FORM', (payload)=> {
     // .value() returns the value of the field
     //  pass a value to .value(someValue) sets the value of the field

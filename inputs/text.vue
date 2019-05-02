@@ -27,6 +27,7 @@
 
 <template>
   <ui-textbox
+    :key="myKey"
     :autosize="false"
     :value="value"
     :type="type"
@@ -70,7 +71,8 @@
     props: ['name', 'data', 'schema', 'args', 'initialFocus'],
     data() {
       return {
-        isDisabled: false
+        isDisabled: false,
+        myKey: ''
       };
     },
     computed: {
