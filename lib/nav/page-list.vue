@@ -84,6 +84,15 @@
     }
 
     .page-list-header {
+      @include type-list-header();
+
+      height: auto;
+      justify-content: start;
+
+      &:hover {
+        background-color: transparent;
+      }
+
       &-site {
         flex: 0 0 $site-column;
       }
@@ -117,6 +126,10 @@
         @media screen and (min-width: $all-columns-sidebar) {
           display: inline;
         }
+      }
+
+      & > .ui-button__content {
+        font-weight: normal;
       }
     }
   }
@@ -152,10 +165,19 @@
     </div>
     <div class="page-list-headers">
       <span v-if="multipleSitesSelected" class="page-list-header page-list-header-site">Site</span>
-      <span class="page-list-header page-list-header-title">Title</span>
-      <span class="page-list-header page-list-header-byline">Byline</span>
-      <span class="page-list-header page-list-header-status">Status</span>
-      <span class="page-list-header page-list-header-collaborators">Collaborators</span>
+      <ui-button
+        v-for="header in headerTitles"
+        :key="header.key"
+        buttonType="button"
+        :class="[`page-list-header page-list-header-${header.key}`]"
+        disableRipple
+        :icon="this.sortBy === header.sortField && this.sortOrder === 'desc' ? 'arrow_downward' : 'arrow_upward'"
+        size="small"
+        type="secondary"
+        @click="header.key !== 'collaborators' && sortByField(header.sortField)"
+      >
+        {{ header.title }}
+      </ui-button>
     </div>
     <div class="page-list-readout">
       <page-list-item
@@ -185,7 +207,9 @@
   import statusSelector from './status-selector.vue';
   import pageListItem from './page-list-item.vue';
 
-  const DEFAULT_QUERY_SIZE = 50;
+  const DEFAULT_QUERY_SIZE = 50,
+    SORT_DESC = 'desc',
+    SORT_ASC = 'asc';
 
   /**
    * get data for all sites, and format it into something we can use
@@ -216,16 +240,15 @@
    * @param {string} username
    * @return {object}
    */
-  function buildQuery({ siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username }) { // eslint-disable-line
+  function buildQuery({ siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username, sortBy, sortOrder }) { // eslint-disable-line
     let query = {
       index: 'pages',
       body: {
         size: DEFAULT_QUERY_SIZE,
         from: offset,
         sort: {
-          updateTime: {
-            order: 'desc'
-          }
+          [sortBy]: { order: sortOrder },
+          updateTime: { order: SORT_DESC }
         },
         query: {}
       }
@@ -359,7 +382,26 @@
         sites: getInitialSites.call(this),
         pages: [],
         selectedStatus: _.get(this.$store, 'state.url.status', 'all'),
-        isPopoverOpen: false
+        isPopoverOpen: false,
+        sortBy: 'updateTime',
+        sortOrder: 'desc',
+        headerTitles: [{
+          title: 'Title',
+          key: 'title',
+          sortField: 'title.raw'
+        }, {
+          title: 'Byline',
+          key: 'byline',
+          sortField: 'authors.raw'
+        }, {
+          title: 'Status',
+          key: 'status',
+          sortField: 'status'
+        }, {
+          title: 'Collaborators',
+          key: 'collaborators',
+          sortField: 'users'
+        }]
       };
     },
     computed: {
@@ -442,18 +484,39 @@
         this.offset = 0;
         this.fetchPages();
       },
+      sortByField(field) {
+        this.sortBy = field;
+        this.sortOrder = this.toggleSortOrder(this.sortOrder);
+        this.offset = 0;
+
+        console.log('SORTING -->', {field, order: this.sortOrder});
+
+        this.fetchPages();
+      },
+      toggleSortOrder(order) {
+        return order === SORT_DESC ? SORT_ASC : SORT_DESC;
+      },
       fetchPages() {
-        const siteFilter = _.map(this.selectedSites, (site) => site.slug),
-          queryText = this.queryText,
-          queryUser = this.queryUser,
-          offset = this.offset,
+        const {
+            isMyPages,
+            offset,
+            queryText,
+            queryUser,
+            selectedSites,
+            selectedStatus: statusFilter,
+            sortBy,
+            sortOrder
+          } = this,
+          siteFilter = _.map(selectedSites, (site) => site.slug),
           prefix = _.get(this.$store, 'state.site.prefix'),
-          isMyPages = this.isMyPages,
           username = _.get(this.$store, 'state.user.username'),
-          statusFilter = this.selectedStatus,
-          query = buildQuery({ siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username });
+          query = buildQuery({ siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username, sortBy, sortOrder });
+
+        console.log('QUERY -->', {query});
 
         return postJSON(prefix + searchRoute, query).then((res) => {
+          console.log({res});
+
           const hits = _.get(res, 'hits.hits') || [],
             total = _.get(res, 'hits.total'),
             pages = _.map(hits, (hit) => Object.assign({}, hit._source, { uri: hit._id }));
@@ -477,7 +540,7 @@
               query: this.query
             }});
           }
-        });
+        }).catch((e) => console.error(e));
       }
     },
     mounted() {
