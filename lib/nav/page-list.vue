@@ -561,6 +561,10 @@
       toggleSortOrder(order) {
         return order === SORT_DESC ? SORT_ASC : SORT_DESC;
       },
+      /**
+       * Makes a query to ES to fetch for all pages
+       * @returns {Promise}
+       */
       fetchPages() {
         const {
             isMyPages,
