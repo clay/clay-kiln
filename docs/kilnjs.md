@@ -19,7 +19,18 @@ module.exports = (schema) => {
   return schema;
 };
 ```
-A function that recieves a parameter called schema that also returns the schema.  The schema contains a JSON representation of the schema.yaml file and can be manipulated before returning.  Values can be changed, added, or deleted directly on the JSON object without any other outside code.  Anything you can do to a JSON object can be done to the schema.  However, the JSON that is returned still needs to conform to the structure needed by Kiln.  Deleting properties or adding properties that Kiln doesn't recognize can and will result in errors.
+A function that recieves a parameter called schema that also returns the schema.  The schema contains a JSON representation of the schema.yaml file and can be manipulated before returning.  Values can be changed, added, or deleted directly on the JSON object without any other outside code.  Anything you can do to a JSON object can be done to the schema.
+
+```
+schema['_groups'].settings['_placeholder'].height = '200px';
+```
+
+However, note that the JSON that is returned still needs to conform to the structure needed by Kiln.  Deleting properties or adding properties that Kiln doesn't recognize can and will result in errors.
+
+
+---
+
+## KilnInput
 
 The real power of Kilnjs comes from the KilnInput object, which can be used to make the fields within a schema truly dynamic.  Using KilnInput you can add events to the different form inputs as detailed on the [Form Inputs page](input).  You can also subscribe to Vuex actions as described below.
 
@@ -134,16 +145,26 @@ kilnInput.getComponentInstances('paragraph');
 
 ```
 // if a paragraph component is updated, then rerender the instances of the snash component
-eventBus.subscribe('UPDATE_COMPONENT', (payload)=> {
+kilnInput.subscribe('UPDATE_COMPONENT', (payload)=> {
     if (payload.data.componentVariation === 'paragraph') {
       let snashInstances = eventBus.getComponentInstances('snash');
       snashInstances.forEach((instance) => {
-        eventBus.reRenderInstance(instance);
+        kilnInput.reRenderInstance(instance);
       });
     }
   }, false);
 ```
 
+### saveComponent
+
+* ***saveComponent(uri, data)*** - Saves the component at the provided uri with the provided data.  Saving a component this way will also rerender the it on the page with the updated data.
+
+```
+const uri = 'localhost/_components/paragraph/instances/cjue4dl7i00062a65rpexptmp',
+  data = { text: "This is a paragraph" };
+
+kilnInput.saveComponent(uri, data);
+```
 
 
 
@@ -194,49 +215,6 @@ kilninput.setProp('_has', { ...kilninput['_has'], input: 'select' });
 ```
 schema.title.value(); // gets the value of title
 schema.title.value('Some New Value'); // sets the value of title
-```
-
----
-
-### Example kiln.js file
-
-```
-'use strict';
-
-const KilnInput = window.kiln.kilnInput;
-
-module.exports = (schema) => {
-  // direct manipulation of schema property
-  schema['_groups'].settings['_placeholder'].height = '200px';
-
-  // wrapping schema fields in KilnInputs - pass the schema and the name of the field
-  schema.enableSocialButtons = new KilnInput(schema, 'enableSocialButtons');
-  schema.shareServices = new KilnInput(schema, 'shareServices');
-  schema.tagline = new KilnInput(schema, 'tagline');
-
-
-  /* subscribe to a Vuex action. */
-  schema.enableSocialButtons.subscribe('OPEN_FORM', (payload)=> {
-    // .value() returns the value of the field
-    //  pass a value to .value(someValue) sets the value of the field
-    if (!schema.enableSocialButtons.value()) {
-      // .hide and .show will display or not display the fields (if the field is a KilnInput wrapped field)
-      schema.shareServices.hide();
-    } else {
-      schema.shareServices.show();
-    }
-  }, true);
-
-  schema.enableSocialButtons.on('input', (val) => {
-    if(val) {
-      schema.shareServices.show();
-    } else {
-      schema.shareServices.hide();
-    }
-  });
-
-  return schema;
-};
 ```
 
 ---

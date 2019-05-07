@@ -50,6 +50,10 @@ export default class KilnInput {
     });
   }
 
+  saveComponent(uri, data) {
+    store.dispatch('saveComponent', { uri, data});
+  }
+
   setProp(prop, value) {
     return new Promise((resolve) => {
       store.dispatch('updateSchemaProp', { schemaName: this.schemaName, inputName: this.inputName, prop, value }).then(()=> {
