@@ -86,11 +86,66 @@ The following are some of the Vuex actions that you can subscribe to using Kiln.
 
 * ***UPDATE_COMPONENT*** - Triggered when a component is saved.  The payload returns a json object containing all the fields in the component's schema, with the values for each of them.
 
+* ***UPDATE_PAGE_STATE*** - Triggered when the page state changes.  When it is published, unpublished, etc. The payload returned contains the page meta information, including published date/time, update date/time, history, users, etc.
+
+Often you might not wish to associate a subscription with a specific field, but rather to something more general.  You can instantiate a KilnInput without referencing a specific field. Of course, if it makes sense to create a connection between a field and the action involved with a subscription, you can use the subscribe function on a field.  It can be done either way.  It's just a matter of what makes the intent clearer.
+
+```
+module.exports = (schema) => {
+  const subscriptions = new KilnInput(schema);
+
+  schema.myDate = new KilnInput(schema, 'myDate');
+
+  subscriptions.subscribe('UPDATE_COMPONENT', (payload)=> {
+    // do something when a component has been updated
+    // you can also test the type of component updated
+    // by checking the value of payload.data.componentVariation
+    // and only reacting when it's a certain type of component
+    // or if the component's new value is equal or not to some value
+  }, false);
+
+  schema.myDate.subscribe('UPDATE_COMPONENT', (payload)=> {
+    // same as above, just attached to the myDate field, which implies
+    // you want to do something to the myDate field with the payload
+  });
+
+  return schema;
+};
+
+```
+
 ---
 
 ## Kilnjs custom methods
 
 KilnInput also provides its own set of custom methods.
+
+### getComponentInstances
+
+* ***getComponentInstances(componentName)*** - returns an array containing the uris of all components of type componentName that are on the current page.
+
+```
+kilnInput.getComponentInstances('paragraph');
+```
+
+### reRenderInstance
+
+* ***reRenderInstance(uri)*** - Fetchs the component's data and passes it through the components model.render function, thus refreshing it on the page. For instance, if some outside source has updated component data and does not trigger a page refresh, you could force a component rerender that would include the updated data.
+
+```
+// if a paragraph component is updated, then rerender the instances of the snash component
+eventBus.subscribe('UPDATE_COMPONENT', (payload)=> {
+    if (payload.data.componentVariation === 'paragraph') {
+      let snashInstances = eventBus.getComponentInstances('snash');
+      snashInstances.forEach((instance) => {
+        eventBus.reRenderInstance(instance);
+      });
+    }
+  }, false);
+```
+
+
+
 
 ### setProp
 

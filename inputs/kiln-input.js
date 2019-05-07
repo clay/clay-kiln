@@ -1,4 +1,5 @@
 import store from '../lib/core-data/store';
+import * as api from '../lib/core-data/api.js';
 
 export default class KilnInput {
   constructor(schema, inputName) {
@@ -9,6 +10,19 @@ export default class KilnInput {
       ...schema[inputName]
     });
   };
+
+  getComponentInstances(componentName) {
+    const components = store.state.components,
+      instances = [];
+
+    Object.keys(components).forEach((key)=> {
+      if (key.includes(`_components/${componentName}/instances`)) {
+        instances.push(key);
+      }
+    });
+
+    return instances;
+  }
 
   on(event, fn) {
     this.events = this.events || {};
@@ -27,6 +41,12 @@ export default class KilnInput {
         this.visibility = false;
         resolve(this);
       }
+    });
+  }
+
+  reRenderInstance(uri) {
+    api.getJSON(`http://${uri}`).then((component) => {
+      store.dispatch('triggerModelRender', { uri, component });
     });
   }
 
