@@ -88,6 +88,7 @@
 
       height: auto;
       justify-content: start;
+      padding: 0;
 
       &:hover {
         background-color: transparent;
@@ -120,6 +121,7 @@
       }
 
       &-collaborators {
+        cursor: default;
         display: none;
         flex: 0 0 $collaborators-column;
 
@@ -130,6 +132,7 @@
 
       & > .ui-button__content {
         font-weight: normal;
+        justify-content: start;
       }
     }
   }
@@ -171,7 +174,8 @@
         buttonType="button"
         :class="[`page-list-header page-list-header-${header.key}`]"
         disableRipple
-        :icon="this.sortBy === header.sortField && this.sortOrder === 'desc' ? 'arrow_downward' : 'arrow_upward'"
+        :icon="sortBy === header.sortField ? sortIcon : null"
+        iconPosition="right"
         size="small"
         type="secondary"
         @click="header.key !== 'collaborators' && sortByField(header.sortField)"
@@ -247,12 +251,22 @@
         size: DEFAULT_QUERY_SIZE,
         from: offset,
         sort: {
-          [sortBy]: { order: sortOrder },
-          updateTime: { order: SORT_DESC }
+          [sortBy]: { order: sortOrder }
         },
         query: {}
       }
     };
+
+    // Status sorting is handled differently,
+    // we have to deal with boolean properties
+    if (sortBy === 'status') {
+      query.body.sort = {
+        published: { order: sortOrder },
+        publishTime: { order: sortOrder },
+        scheduled: { order: sortOrder },
+        scheduledTime: { order: sortOrder }
+      };
+    }
 
     _.set(query, 'body.query.bool.must', []);
 
@@ -383,7 +397,7 @@
         pages: [],
         selectedStatus: _.get(this.$store, 'state.url.status', 'all'),
         isPopoverOpen: false,
-        sortBy: 'updateTime',
+        sortBy: 'title.raw',
         sortOrder: 'desc',
         headerTitles: [{
           title: 'Title',
@@ -430,15 +444,34 @@
         const user = this.query.match(/user:(\S+)/i);
 
         return user ? user[1] : '';
+      },
+      sortIcon() {
+        return this.sortOrder === SORT_DESC ? 'arrow_downward' : 'arrow_upward';
       }
     },
     methods: {
+      /**
+       * Sets the isPopoverOpen prop to true
+       * when the popover is opened
+       * @returns {void}
+       */
       onPopoverOpen() {
         this.isPopoverOpen = true;
       },
+      /**
+       * Sets the isPopoverOpen prop to false
+       * when the popover is closed
+       * @returns {void}
+       */
       onPopoverClose() {
         this.isPopoverOpen = false;
       },
+      /**
+       * Sets the selected site in the state
+       * and refetches the pages
+       * @param {String} slug
+       * @returns {void}
+       */
       selectSite(slug) {
         const site = _.find(this.sites, (s) => s.slug === slug);
 
@@ -447,12 +480,23 @@
         this.offset = 0;
         this.fetchPages();
       },
+      /**
+       * Sets the selected sites is there are multiple selected
+       * @param {String[]} allSites
+       * @returns {void}
+       */
       selectMultipleSites(allSites) {
         this.sites = _.map(this.sites, (site) => {
           site.selected = allSites;
           return site;
         });
       },
+      /**
+       * Sets the selected site in the state
+       * and refetches the pages
+       * @param {String} slug
+       * @returns {void}
+       */
       setSingleSite(slug) {
         // loop through all sites, making sure that only one is selected
         _.each(this.sites, (site) => {
@@ -472,6 +516,12 @@
         this.offset = 0;
         this.fetchPages();
       }, 300),
+      /**
+       * Sets the selected status in the state
+       * and refetches the pages
+       * @param {String} status
+       * @returns {void}
+       */
       selectStatus(status) {
         this.selectedStatus = status;
 
@@ -479,20 +529,35 @@
         this.offset = 0;
         this.fetchPages();
       },
+      /**
+       * Sets the built query in the state
+       * and refetches the pages
+       * @param {Object} query
+       * @returns {void}
+       */
       setQuery(query) {
         this.query = query;
         this.offset = 0;
         this.fetchPages();
       },
+      /**
+       * Sets the sort order and sort field in the state
+       * and refetches the pages
+       * @param {String} field
+       * @returns {void}
+       */
       sortByField(field) {
+        this.sortOrder = this.sortBy === field ? this.toggleSortOrder(this.sortOrder) : SORT_ASC;
         this.sortBy = field;
-        this.sortOrder = this.toggleSortOrder(this.sortOrder);
         this.offset = 0;
-
-        console.log('SORTING -->', {field, order: this.sortOrder});
 
         this.fetchPages();
       },
+      /**
+       * Toggles the sort order between ascending and descending
+       * @param {String} order
+       * @returns {String}
+       */
       toggleSortOrder(order) {
         return order === SORT_DESC ? SORT_ASC : SORT_DESC;
       },
@@ -512,35 +577,29 @@
           username = _.get(this.$store, 'state.user.username'),
           query = buildQuery({ siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username, sortBy, sortOrder });
 
-        console.log('QUERY -->', {query});
+        return postJSON(prefix + searchRoute, query)
+          .then((res) => {
+            const hits = _.get(res, 'hits.hits') || [],
+              total = _.get(res, 'hits.total'),
+              pages = _.map(hits, (hit) => Object.assign({}, hit._source, { uri: hit._id }));
 
-        return postJSON(prefix + searchRoute, query).then((res) => {
-          console.log({res});
+            this.pages = offset === 0 ? pages : this.pages.concat(pages);
 
-          const hits = _.get(res, 'hits.hits') || [],
-            total = _.get(res, 'hits.total'),
-            pages = _.map(hits, (hit) => Object.assign({}, hit._source, { uri: hit._id }));
+            this.offset = offset + pages.length;
+            this.total = total; // update the total for this particular query
+            // (it's used to hide the "load more" button)
 
-          if (offset === 0) {
-            this.pages = pages;
-          } else {
-            this.pages = this.pages.concat(pages);
-          }
-
-          this.offset = offset + pages.length;
-          this.total = total; // update the total for this particular query
-          // (it's used to hide the "load more" button)
-
-          // set the url hash
-          if (_.get(this.$store, 'state.ui.currentDrawer')) {
-            this.$store.dispatch('setHash', { menu: {
-              tab: isMyPages ? 'my-pages' : 'all-pages',
-              sites: siteFilter.join(','),
-              status: statusFilter,
-              query: this.query
-            }});
-          }
-        }).catch((e) => console.error(e));
+            // set the url hash
+            if (_.get(this.$store, 'state.ui.currentDrawer')) {
+              this.$store.dispatch('setHash', { menu: {
+                tab: isMyPages ? 'my-pages' : 'all-pages',
+                sites: siteFilter.join(','),
+                status: statusFilter,
+                query: this.query
+              }});
+            }
+          })
+          .catch((e) => console.error(e));
       }
     },
     mounted() {
