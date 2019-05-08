@@ -12,6 +12,10 @@
   import { shouldBeRevealed } from './field-helpers';
   import { expand } from './inputs';
 
+  // hash of all inputs, added to global
+  window.kiln = window.kiln || {}; // note: this is here for testing. it should already exist when this file is imported
+  window.kiln.inputs = window.kiln.inputs || {};
+
   export default {
     props: ['name', 'data', 'schema', 'initialFocus', 'visibility'],
     data() {

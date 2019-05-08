@@ -5,7 +5,7 @@ export default class KilnInput {
   constructor(schema, inputName) {
     Object.assign(this, {
       inputName,
-      schemaName: schema.name,
+      schemaName: schema.schema_name,
       subscribedEvents: {},
       ...schema[inputName]
     });
