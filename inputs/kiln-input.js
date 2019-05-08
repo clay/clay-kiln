@@ -84,8 +84,6 @@ export default class KilnInput {
       this.unsubscribe();
     }
 
-    // (mutation, state)
-    // SOME USEFUL EVENTS TO SUBSCRIBE TO: CLOSE_FORM, OPEN_FORM, UPDATE_FORMDATA (when the data is changed, but not yet saved), UPDATE_COMPONENT (when data is actually saved)
     this.unsubscribe = store.subscribe((mutation) => {
       if (this.subscribedToEvent(mutation)) {
         this.subscribedEvents[mutation.type].func(mutation.payload);
