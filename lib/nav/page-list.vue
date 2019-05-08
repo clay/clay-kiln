@@ -257,17 +257,6 @@
       }
     };
 
-    // Status sorting is handled differently,
-    // we have to deal with boolean properties
-    if (sortBy === 'status') {
-      query.body.sort = {
-        published: { order: sortOrder },
-        publishTime: { order: sortOrder },
-        scheduled: { order: sortOrder },
-        scheduledTime: { order: sortOrder }
-      };
-    }
-
     _.set(query, 'body.query.bool.must', []);
 
     // filter for only "My Pages", and filter users
@@ -339,6 +328,15 @@
       query.body.query.bool.must.push({
         term: { archived: false }
       });
+
+      // Status sorting is handled differently,
+      // we have to deal with boolean properties
+      if (sortBy === 'status') {
+        query.body.sort = {
+          published: { order: sortOrder },
+          scheduled: { order: sortOrder }
+        };
+      }
     } else if (statusFilter === 'draft') {
       query.body.query.bool.must.push({
         term: { published: false }
@@ -365,22 +363,35 @@
       query.body.query.bool.must.push({
         term: { published: true }
       });
+
       // also sort by last published timestamp
-      query.body.sort = {
-        publishTime: { order: 'desc' }
-      };
+      if (sortBy === 'status') {
+        query.body.sort = {
+          publishTime: { order: sortOrder }
+        };
+      }
     } else if (statusFilter === 'scheduled') {
       query.body.query.bool.must.push({
         term: { scheduled: true }
       });
-      // also sort by last scheduled time
-      query.body.sort = {
-        scheduledTime: { order: 'desc' }
-      };
+
+      // also sort by scheduledlast scheduled time
+      if (sortBy === 'status') {
+        query.body.sort = {
+          scheduledTime: { order: sortOrder }
+        };
+      }
     } else if (statusFilter === 'archived') {
       query.body.query.bool.must.push({
         term: { archived: true }
       });
+
+      // Also, sort by last update time
+      if (sortBy === 'status') {
+        query.body.sort = {
+          updateTime: { order: sortOrder }
+        };
+      }
     }
 
     return query;
@@ -398,7 +409,7 @@
         selectedStatus: _.get(this.$store, 'state.url.status', 'all'),
         isPopoverOpen: false,
         sortBy: 'title.raw',
-        sortOrder: 'desc',
+        sortOrder: SORT_ASC,
         headerTitles: [{
           title: 'Title',
           key: 'title',
@@ -481,7 +492,7 @@
         this.fetchPages();
       },
       /**
-       * Sets the selected sites is there are multiple selected
+       * Sets the selected sites if there are multiple selected
        * @param {String[]} allSites
        * @returns {void}
        */
@@ -511,6 +522,11 @@
         this.offset = 0;
         this.fetchPages();
       },
+      /**
+       * Triggers a request to filter the pages with
+       * a 300 ms delay
+       * @returns {void}
+       */
       filterList: _.debounce(function () {
         this.$store.commit('FILTER_PAGELIST_SEARCH', this.query);
         this.offset = 0;
