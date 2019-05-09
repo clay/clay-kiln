@@ -19,7 +19,7 @@ module.exports = (schema) => {
   return schema;
 };
 ```
-A function that recieves a parameter called schema that also returns the schema.  The schema contains a JSON representation of the schema.yaml file and can be manipulated before returning.  Values can be changed, added, or deleted directly on the JSON object without any other outside code.  Anything you can do to a JSON object can be done to the schema.
+A function that receives a parameter called schema that also returns the schema.  The schema contains a JSON representation of the schema.yaml file and can be manipulated before returning.  Values can be changed, added, or deleted directly on the JSON object without any other outside code.  Anything you can do to a JSON object can be done to the schema.
 
 ```
 schema['_groups'].settings['_placeholder'].height = '200px';
@@ -87,13 +87,13 @@ module.exports = (schema) => {
 
 ## Vuex Actions to Subscribe To
 
-The following are some of the Vuex actions that you can subscribe to using Kiln.js. The actions can be scoped so that they only trigger the subscription function when the action is triggered by a component of the same type as the subscribing component. In other words, if scope is set to true on a paragraph element, then the subscription function would only be called when a paragraph element triggers the Vuex action, but not when any other type of component triggers the Vuex action.  When the scope is set to false, the subscription function is called whenever _any_ component triggers the Vuex action.
+The following are some of the Vuex actions that you can subscribe to using Kiln.js. The actions can be scoped so that they only trigger the subscription function when the action is triggered by a component of the same type as the subscribing component. In other words, if the scope is set to true on a paragraph element, then the subscription function would only be called when a paragraph element triggers the Vuex action, but not when any other type of component triggers the Vuex action.  When the scope is set to false, the subscription function is called whenever _any_ component triggers the Vuex action.
 
 * ***OPEN_FORM*** - Triggered when a Kiln form is opened. Note that this can triggered by both a modal form _and_ an inline form, so just clicking into a paragraph or other inline field will trigger this action. The payload returned from this action contains a JSON representation of the Schema along with the component uri that was opened in the form.
 
 * ***CLOSE_FORM*** - Triggered when a Kiln form is closed. For inline fields this occurs when the field loses focus.  When the user clicks out of the field.  The payload returned from this action is undefined.
 
-* ***UPDATE_FORMDATA*** - Triggered when a user changes the data in a form field.  This happens "on change", _not_ "on save". The payload returns and object containing the path (field being changed) and data (the new value).
+* ***UPDATE_FORMDATA*** - Triggered when an user changes the data in a form field.  This happens "on change", _not_ "on save". The payload returns an object containing the path (field being changed) and data (the new value).
 
 * ***UPDATE_COMPONENT*** - Triggered when a component is saved.  The payload returns a json object containing all the fields in the component's schema, with the values for each of them.
 
@@ -157,7 +157,7 @@ kilnInput.subscribe('UPDATE_COMPONENT', (payload)=> {
 
 ### saveComponent
 
-* ***saveComponent(uri, data)*** - Saves the component at the provided uri with the provided data.  Saving a component this way will also rerender the it on the page with the updated data.
+* ***saveComponent(uri, data)*** - Saves the component at the provided uri with the provided data.  Saving a component this way will also rerender it on the page with the updated data.
 
 ```
 const uri = 'localhost/_components/paragraph/instances/cjue4dl7i00062a65rpexptmp',
@@ -194,7 +194,7 @@ kilninput.setProp('_has', { ...kilninput['_has'], input: 'select' });
 
 ### url
 
-* ***url()*** - returns the url object from Vuex state of the component that is currently being edited. Object contains the component name, the instance, and the path
+* ***url()*** - returns the url object from Vuex state of the component that is currently being edited. The object contains the component name, the instance, and the path
 
 ```
   kilnInput.url()
