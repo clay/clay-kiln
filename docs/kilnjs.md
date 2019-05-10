@@ -141,7 +141,7 @@ kilnInput.getComponentInstances('paragraph');
 
 ### reRenderInstance
 
-* ***reRenderInstance(uri)*** - Fetchs the component's data and passes it through the components model.render function, thus refreshing it on the page. For instance, if some outside source has updated component data and does not trigger a page refresh, you could force a component rerender that would include the updated data.
+* ***reRenderInstance(uri)*** - Fetches the component's data and passes it through the components model.render function, thus refreshing it on the page. For instance, if some outside source has updated component data and does not trigger a page refresh, you could force a component rerender that would include the updated data.
 
 ```
 // if a paragraph component is updated, then rerender the instances of the snash component
