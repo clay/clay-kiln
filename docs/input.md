@@ -223,7 +223,7 @@ A material design calendar picker. Allows specifying minimum and maximum dates. 
 
 Datepicker returns a **string** with the date in `YYYY-MM-DD` format.
 
-### Complex List Events that can be attached to Kiln-Input using kiln.js
+### Datepicker Events that can be attached to Kiln-Input using kiln.js
 
 * **input**	- Emitted when the datepicker value is changed. The handler is called with the new value.
 * **touch** - Emitted when the datepicker is focused for the first time and then blurred.
@@ -449,12 +449,12 @@ Abutton is the opposite of a magic-button.  Instead of "magic", it uses JavaScri
 
 ### abutton Arguments
 
-* **tooltip** - text that will display in a tooltip. used to explain what each button is doing, so make it concise!
+* **tooltip** - text that will display in a tooltip. Used to explain what each button is doing, so make it concise!
 * **icon** - The name of a [material design icon](https://material.io/tools/icons/?style=baseline).  Will appear as the icon of the button, defaults to check_circle.
 
 ### abutton Events that can be attached to Kiln-Input using kiln.js
 
-* **click**	- Emitted when the radio button gains focus.
+* **click**	- Emitted when the abutton is clicked.
 
 ---
 # `radio`
@@ -537,14 +537,14 @@ Note that you should use `min`/`max` to set the hardcoded limits for the range i
 If you specify the `start` as a single (numerical) value, Range will return a single **number**. If you specify the `start` as an array of two (numerical) values, Range will return an **array of numbers** with two values.
 Note that the `start` value and the data of this input's value **must** be of the same type. This input will error if `start` is an array and the value passed from the component data is a number or vice versa.
 
-### Range Events that can be attached to Kiln-Input using kiln.js and the order in which they occur.  Each returns the value of the range as they occur
+### Range Events that can be attached to Kiln-Input using kiln.js and the order in which they occur. Each event returns the value of the range as they occur.
 
-* **start**
-* **slide**
-* **update**
-* **change**
-* **set**
-* **end**
+* **start** - Emitted when a handle is activated, starting dragging
+* **slide** - Emitted when a slider is moved by tapping it, and when a handle moves while dragging,
+* **update** - Emitted when a slider is moved by tapping it, when a handle moves while dragging, when the .set() method is called, when bound using the .on() method, and when a handle is moved by arrow keys
+* **change** - Emitted when a handle is released after dragging, and when a slider is moved by tapping it
+* **set** - Emitted when a handle is released after dragging, when a slider is moved by tapping it, when a handle is moved by arrow keys, and when the .set() method is called
+* **end** - Emitted when a handle is released after dragging
 
 ---
 
@@ -727,7 +727,7 @@ Simple List will format data as an **array of objects**, where each object has a
 ### Simple List Events that can be attached to Kiln-Input using kiln.js
 
 * **add**	- Emitted when an item is added to the list, returns the added value.
-* **remove**	- Emitted an item is removed from the list.  Returns the index of the removed item.
+* **remove**	- Emitted when an item is removed from the list.  Returns the index of the removed item.
 
 ---
 

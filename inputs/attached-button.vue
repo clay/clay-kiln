@@ -12,7 +12,7 @@
       @disable="onDisable"
       @enable="onEnable"
       @doMagic="$emit('doMagic')"
-      @abuttonclick="$emit('abuttonclick')"></component>
+      @abuttonclick="$emit('abuttonclick')" />
   </div>
 </template>
 
