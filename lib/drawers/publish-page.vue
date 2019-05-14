@@ -397,7 +397,7 @@
       },
       archivePage(archived) {
         this.$store.dispatch('startProgress');
-        return this.$store.dispatch('updatePageList', { archived })
+        return this.$store.dispatch('updatePageList', { archived, shouldPatchArchive: true })
           .then(() => {
             this.$store.dispatch('finishProgress');
             this.$store.dispatch('showSnackbar', {
