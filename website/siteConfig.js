@@ -76,7 +76,7 @@ const siteConfig = {
 
   // Open Graph and Twitter card images.
   ogImage: '',
-  twitterImage: '',
+  twitterImage: ''
 
   // Show documentation's last contributor's name.
   // enableUpdateBy: true,
