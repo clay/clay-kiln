@@ -126,6 +126,7 @@
     "nouislider": "^12.0.0",
     "nprogress": "^0.2.0",
     "optimize-css-assets-webpack-plugin": "^3.2.0",
+    "path-to-regexp": "^3.0.0",
     "postcss-loader": "^2.0.8",
     "pre-commit": "^1.2.2",
     "promise-queue": "^2.2.3",
