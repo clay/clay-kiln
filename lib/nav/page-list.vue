@@ -257,6 +257,15 @@
       }
     };
 
+    // Status sorting is handled differently,
+    // we have to deal with boolean properties
+    if (sortBy === 'status') {
+      query.body.sort = {
+        published: { order: sortOrder },
+        scheduled: { order: sortOrder }
+      };
+    }
+
     _.set(query, 'body.query.bool.must', []);
 
     // filter for only "My Pages", and filter users
@@ -328,15 +337,6 @@
       query.body.query.bool.must.push({
         term: { archived: false }
       });
-
-      // Status sorting is handled differently,
-      // we have to deal with boolean properties
-      if (sortBy === 'status') {
-        query.body.sort = {
-          published: { order: sortOrder },
-          scheduled: { order: sortOrder }
-        };
-      }
     } else if (statusFilter === 'draft') {
       query.body.query.bool.must.push({
         term: { published: false }
