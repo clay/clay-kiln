@@ -67,14 +67,15 @@
   import attachedButton from './attached-button.vue';
   import { DynamicEvents } from './mixins';
 
+
   // scss mode
-  require('codemirror/mode/css/css');
+  import 'codemirror/mode/css/css';
   // yaml mode
-  require('codemirror/mode/yaml/yaml');
-  require('codemirror/mode/sass/sass');
-  require('codemirror/mode/javascript/javascript');
+  import 'codemirror/mode/yaml/yaml';
+  import 'codemirror/mode/sass/sass';
+  import 'codemirror/mode/javascript/javascript';
   // show selections
-  require('codemirror/addon/selection/active-line.js');
+  import 'codemirror/addon/selection/active-line.js';
 
   let editor = null;
 

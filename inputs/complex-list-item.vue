@@ -7,9 +7,9 @@
           <div class="complex-list-item-actions">
             <div class="complex-list-item-actions-inner ui-button-group">
               <div class="complex-list-item-actions-left ui-button-group">
-                <ui-icon-button v-if="!isFirstItem && !isFiltered" buttonType="button" type="secondary" color="black" icon="keyboard_arrow_up" @click.stop.prevent="$emit('moveItem', {index: originalIndex, direction: 'up'})"></ui-icon-button>
+                <ui-icon-button v-if="!isFirstItem && !isFiltered" buttonType="button" type="secondary" color="black" icon="keyboard_arrow_up" @click.stop.prevent="moveItem('up')" />
                 <span class="complex-list-item-position">{{ originalIndex + 1 }}/{{ total }}</span>
-                <ui-icon-button v-if="!isLastItem && !isFiltered" buttonType="button" type="secondary" color="black" icon="keyboard_arrow_down" @click.stop.prevent="$emit('moveItem', {index: originalIndex, direction: 'down'})"></ui-icon-button>
+                <ui-icon-button v-if="!isLastItem && !isFiltered" buttonType="button" type="secondary" color="black" icon="keyboard_arrow_down" @click.stop.prevent="moveItem('down')" />
               </div>
               <transition name="complex-list-item-actions" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
                 <div v-if="isCurrentItem" class="complex-list-item-actions-right ui-button-group">
@@ -110,6 +110,9 @@
         this.$nextTick(() => {
           velocity(el, 'fadeIn', { duration: 250, complete: done });
         });
+      },
+      moveItem(direction) {
+        this.$emit('moveItem', { index: this.originalIndex, direction });
       },
       leave(el, done) {
         this.$nextTick(() => {

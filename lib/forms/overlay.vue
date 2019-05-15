@@ -21,7 +21,7 @@
           <ui-tab v-for="(section, index) in sections" :key="index" :title="section.title" :selected="initialSection === index">
             <div class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 104px)`}">
               <div class="input-container">
-                  <field v-for="(field, fieldIndex) in section.fields" :key="fieldIndex" :name="field.name" :data="fields[field.name]" :visibility="!field.schema || field.schema.visibility" :schema="field.schema || schema[field.name] || getFieldSchema(field.name)" :initialFocus="initialFocus"></field>
+                <field v-for="(field, fieldIndex) in section.fields" :key="fieldIndex" :name="field.name" :data="fields[field.name]" :visibility="!field.schema || field.schema.visibility" :schema="field.schema || schema[field.name] || getFieldSchema(field.name)" :initialFocus="initialFocus"></field>
                 <div v-if="section.hasRequiredFields" class="required-footer">* Required fields</div>
               </div>
             </div>
@@ -105,8 +105,8 @@
           path = _.get(currentForm, 'path'),
           currentURI = _.get(this.$store, 'state.ui.currentSelection.uri') || _.get(this.$store, 'state.ui.currentForm.uri'),
           componentName = getComponentName(currentURI),
-          schema = this.$store.state.schemas[componentName];
-
+          schema = this.$store.state.schemas[componentName],
+          initialFocus = _.get(this.$store, 'state.ui.currentForm.initialFocus');
 
         let sections = [];
 
@@ -119,7 +119,7 @@
                 name: field,
                 data: this.fields[field],
                 schema: schema[field],
-                initialFocus: _.get(this.$store, 'state.ui.currentForm.initialFocus')
+                initialFocus
               };
             });
 
@@ -140,7 +140,7 @@
               name: field,
               data: this.fields[field],
               schema: schema[field],
-              initialFocus: _.get(this.$store, 'state.ui.currentForm.initialFocus')
+              initialFocus
             };
           });
 

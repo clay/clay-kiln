@@ -271,8 +271,7 @@
       }
     },
     mounted() {
-      const THIS = this,
-        isSingleLine = this.isSingleLine,
+      const isSingleLine = this.isSingleLine,
         isMultiLine = this.isMultiLine,
         isMultiComponent = this.isMultiComponent,
         pseudoBullet = this.args.pseudoBullet,
@@ -733,7 +732,7 @@
         }
       });
 
-      editor.on('text-change', function onTextChange({}, {}, source) {
+      editor.on('text-change', ({}, {}, source) => {
         let html;
 
         // convert / sanitize output to save
@@ -750,9 +749,7 @@
           store.commit(UPDATE_FORMDATA, { path: name, data: html });
         }
 
-
-        THIS.$emit('change', html);
-
+        this.$emit('change', html);
 
         // check that source is user to prevent infinite loop!
         if (source === 'user') {
