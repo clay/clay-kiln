@@ -1,14 +1,15 @@
 <template>
     <ui-icon-button
-    buttonType="button"
-    color="default"
-    type="secondary"
-    :ariaLabel="args.tooltip"
-    :icon="args.icon || 'check_circle'"
-    :loading="loading"
-    :tooltip="args.tooltip"
-    v-if="isShown"
-    @click="$emit('abuttonclick')" />
+      buttonType="button"
+      color="default"
+      type="secondary"
+      :ariaLabel="args.tooltip"
+      :icon="args.icon || 'check_circle'"
+      :loading="loading"
+      :tooltip="args.tooltip"
+      v-if="isShown"
+      @click="$emit('abuttonclick')"
+    />
 </template>
 
 <script>
