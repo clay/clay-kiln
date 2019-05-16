@@ -71,6 +71,7 @@
   import getTime from 'date-fns/get_time';
   import { mapState } from 'vuex';
   import Routable from 'routable';
+  import pathToRegexp from 'path-to-regexp';
   import { uriToUrl } from '../utils/urls';
   import { getLastEditUser, hasPageChanges } from '../utils/history';
   import { htmlExt, editExt, getLayoutNameAndInstance } from '../utils/references';
@@ -98,7 +99,8 @@
    */
   function isValidUrl(val, routes) {
     return !!_.find(routes, function (route) {
-      const r = new Routable(route);
+      const regexRoute = pathToRegexp(route),
+        r = new Routable(regexRoute);
 
       return r.test(val) || r.test('/' + val); // test with and without the beginning slash
     });
