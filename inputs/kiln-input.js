@@ -1,22 +1,27 @@
 import store from '../lib/core-data/store';
 import * as api from '../lib/core-data/api.js';
+import { replaceVersion } from 'clayutils';
 
 export default class KilnInput {
   constructor(schema, inputName) {
     Object.assign(this, {
       inputName,
-      schemaName: schema.schema_name,
+      schemaName: schema.schemaName,
       subscribedEvents: {},
       ...schema[inputName]
     });
   };
+
+  getComponentData(uri) {
+    return api.getJSON(`http://${uri}`);
+  }
 
   getComponentInstances(componentName) {
     const components = store.state.components,
       instances = [];
 
     Object.keys(components).forEach((key)=> {
-      if (key.includes(`_components/${componentName}/instances`)) {
+      if (key.includes(`_components/${componentName}/instances`) && Object.keys(components[key]).length > 0) {
         instances.push(key);
       }
     });
@@ -44,6 +49,10 @@ export default class KilnInput {
     });
   }
 
+  publishComponent(uri, data) {
+    this.saveComponent(replaceVersion(uri, 'published'), data);
+  }
+
   reRenderInstance(uri) {
     api.getJSON(`http://${uri}`).then((component) => {
       store.dispatch('triggerModelRender', { uri, component });
@@ -51,7 +60,7 @@ export default class KilnInput {
   }
 
   saveComponent(uri, data) {
-    store.dispatch('saveComponent', { uri, data});
+    return store.dispatch('saveComponent', { uri, data});
   }
 
   setProp(prop, value) {
