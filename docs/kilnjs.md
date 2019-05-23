@@ -21,7 +21,7 @@ module.exports = (schema) => {
 ```
 A function that receives a parameter called schema that also returns the schema. The schema contains a JSON representation of the schema.yaml file and can be manipulated before returning. Values can be changed, added, or deleted directly on the JSON object without any other outside code. Anything you can do to a JSON object can be done to the schema.
 
-```
+```js
 schema['_groups'].settings['_placeholder'].height = '200px';
 ```
 
@@ -32,9 +32,9 @@ However, note that the JSON that is returned still needs to conform to the struc
 
 ## KilnInput
 
-The real power of Kiln.js comes from the KilnInput object, which can be used to make the fields within a schema truly dynamic. Using KilnInput you can add events to the different form inputs as detailed on the [Form Inputs page](input). You can also subscribe to Vuex actions as described below.
+The real power of Kiln.js comes from the KilnInput object, which can be used to make the fields within a schema truly dynamic. Using 'KilnInput' you can add events to the different form inputs as detailed on the [Form Inputs page](input). You can also subscribe to Vuex actions as described below.
 
-To make a schema field a KilnInput, you set it to a new instance of KilnInput, passing it to the schema and the name of the field.
+To make a schema field a `KilnInput`, you set it to a new instance of `KilnInput`, passing it to the schema and the name of the field.
 
 ```js
 const KilnInput = window.kiln.kilnInput;
@@ -56,7 +56,7 @@ You can attach events to the schema inputs. The events you can attach vary depen
 
 ```js
   schema.enableSocialButtons.on('input', (val) => {
-    if(val) {
+    if (val) {
       schema.shareServices.show();
     } else {
       schema.shareServices.hide();
@@ -89,17 +89,17 @@ module.exports = (schema) => {
 
 The following are some of the Vuex actions that you can subscribe to using Kiln.js. The actions can be scoped so that they only trigger the subscription function when the action is triggered by a component of the same type as the subscribing component. In other words, if the scope is set to **true** on a paragraph element, then the subscription function would only be called when a paragraph element triggers the Vuex action, but not when any other type of component triggers the Vuex action. When the scope is set to **false**, the subscription function is called whenever _any_ component triggers the Vuex action.
 
-* ***OPEN_FORM*** - Triggered when a Kiln form is opened. Note that this can triggered by both a modal form _and_ an inline form, so just clicking into a paragraph or other inline field will trigger this action. The payload returned from this action contains a JSON representation of the Schema along with the component uri that was opened in the form.
+* ***OPEN_FORM*** - Triggered when a Kiln form is opened. Note that this can be triggered by both a modal form _and_ an inline form, so just clicking into a paragraph or other inline field will trigger this action. The payload returned from this action contains a JSON representation of the Schema along with the component URI that was opened in the form.
 
-* ***CLOSE_FORM*** - Triggered when a Kiln form is closed. For inline fields this occurs when the field loses focus. When the user clicks out of the field. The payload returned from this action is undefined.
+* ***CLOSE_FORM*** - Triggered when a Kiln form is closed. For inline fields this occurs when the field loses focus. When the user clicks out of the field. The payload returned from this action is `undefined`.
 
 * ***UPDATE_FORMDATA*** - Triggered when an user changes the data in a form field. ⚠️This happens "on change", _not_ "on save".⚠️ The payload returns an object containing the path (field being changed) and data (the new value).
 
-* ***UPDATE_COMPONENT*** - Triggered when a component is saved. The payload returns a json object containing all the fields in the component's schema, with the values for each of them.
+* ***UPDATE_COMPONENT*** - Triggered when a component is saved. The payload returns a JSON object containing all the fields in the component's schema, with the values for each of them.
 
 * ***UPDATE_PAGE_STATE*** - Triggered when the page state changes. When it is published, unpublished, etc. The payload returned contains the page meta information, including published date/time, update date/time, history, users, etc.
 
-Often you might not wish to associate a subscription with a specific field, but rather to something more general. You can instantiate a KilnInput without referencing a specific field. Of course, if it makes sense to create a connection between a field and the action involved with a subscription, you can use the subscribe function on a field. It can be done either way. It's just a matter of what makes the intent clearer.
+Often you might not wish to associate a subscription with a specific field, but rather to something more general. You can instantiate a `KilnInput` without referencing a specific field. Of course, if it makes sense to create a connection between a field and the action involved with a subscription, you can use the subscribe function on a field. It can be done either way. It's just a matter of what makes the intent clearer.
 
 ```js
 module.exports = (schema) => {
@@ -129,7 +129,7 @@ module.exports = (schema) => {
 
 ## Kiln.js custom methods
 
-KilnInput also provides its own set of custom methods.
+`KilnInput` also provides its own set of custom methods.
 
 ### getComponentInstances
 
@@ -145,7 +145,7 @@ kilnInput.getComponentInstances('paragraph');
 
 ```js
 // if a paragraph component is updated, then rerender the instances of the snash component
-kilnInput.subscribe('UPDATE_COMPONENT', (payload)=> {
+kilnInput.subscribe('UPDATE_COMPONENT', (payload) => {
     if (payload.data.componentVariation === 'paragraph') {
       let snashInstances = eventBus.getComponentInstances('snash');
       snashInstances.forEach((instance) => {

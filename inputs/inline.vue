@@ -22,9 +22,6 @@
     },
     components: {
       wysiwyg
-    },
-    methods: {
-
     }
   };
 </script>

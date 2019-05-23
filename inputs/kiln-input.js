@@ -21,7 +21,7 @@ export default class KilnInput {
     const components = store.state.components,
       instances = [];
 
-    Object.keys(components).forEach((key)=> {
+    Object.keys(components).forEach((key) => {
       if (key.includes(`_components/${componentName}/instances`) && Object.keys(components[key]).length > 0) {
         instances.push(key);
       }
@@ -41,10 +41,10 @@ export default class KilnInput {
 
   hide() {
     return new Promise((resolve) => {
-      let props = { schemaName: this.schemaName, inputName: this.inputName, prop: 'visibility', value: false };
+      const props = { schemaName: this.schemaName, inputName: this.inputName, prop: 'visibility', value: false };
 
       if (store.state.schemas[this.schemaName]) {
-        store.dispatch('updateSchemaProp', props).then(()=> {
+        store.dispatch('updateSchemaProp', props).then(() => {
           resolve(this);
         });
       } else {
@@ -65,22 +65,24 @@ export default class KilnInput {
   }
 
   saveComponent(uri, data) {
-    return store.dispatch('saveComponent', { uri, data});
+    return store.dispatch('saveComponent', { uri, data });
   }
 
   setProp(prop, value) {
     return new Promise((resolve) => {
-      store.dispatch('updateSchemaProp', { schemaName: this.schemaName, inputName: this.inputName, prop, value }).then(()=> {
-        resolve(this);
-      });
+      store.dispatch('updateSchemaProp', { schemaName: this.schemaName, inputName: this.inputName, prop, value })
+        .then(()=> {
+          resolve(this);
+        });
     });
   }
 
   show() {
     return new Promise((resolve) => {
-      store.dispatch('updateSchemaProp', { schemaName: this.schemaName, inputName: this.inputName, prop: 'visibility', value: true }).then(()=> {
-        resolve(this);
-      });
+      store.dispatch('updateSchemaProp', { schemaName: this.schemaName, inputName: this.inputName, prop: 'visibility', value: true })
+        .then(()=> {
+          resolve(this);
+        });
     });
   }
 
