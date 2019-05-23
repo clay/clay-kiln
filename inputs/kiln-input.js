@@ -1,6 +1,7 @@
 import store from '../lib/core-data/store';
 import * as api from '../lib/core-data/api.js';
 import { replaceVersion } from 'clayutils';
+import _ from 'lodash';
 
 export default class KilnInput {
   constructor(schema, inputName) {
@@ -27,6 +28,10 @@ export default class KilnInput {
     });
 
     return instances;
+  }
+
+  getState() {
+    return _.cloneDeep(store.state);
   }
 
   on(event, fn) {
