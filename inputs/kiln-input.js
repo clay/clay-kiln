@@ -41,12 +41,8 @@ export default class KilnInput {
 
   hide() {
     return new Promise((resolve) => {
-      const props = { schemaName: this.schemaName, inputName: this.inputName, prop: 'visibility', value: false };
-
       if (store.state.schemas[this.schemaName]) {
-        store.dispatch('updateSchemaProp', props).then(() => {
-          resolve(this);
-        });
+        return this.setProp('visibility', false);
       } else {
         this.visibility = false;
         resolve(this);
@@ -70,20 +66,20 @@ export default class KilnInput {
 
   setProp(prop, value) {
     return new Promise((resolve) => {
-      store.dispatch('updateSchemaProp', { schemaName: this.schemaName, inputName: this.inputName, prop, value })
-        .then(()=> {
-          resolve(this);
-        });
+      if (this[prop] !== value ) {
+        store.dispatch('updateSchemaProp', { schemaName: this.schemaName, inputName: this.inputName, prop, value })
+          .then(()=> {
+            resolve(this);
+          });
+      } else {
+        resolve(this);
+      }
     });
   }
 
   show() {
-    return new Promise((resolve) => {
-      store.dispatch('updateSchemaProp', { schemaName: this.schemaName, inputName: this.inputName, prop: 'visibility', value: true })
-        .then(()=> {
-          resolve(this);
-        });
-    });
+    // just an alias/shortcut for calling setProp('visibility', true);
+    return this.setProp('visibility', true);
   }
 
   subscribe(event, fn, scoped = false) {
@@ -107,7 +103,7 @@ export default class KilnInput {
     });
   }
 
-  subscribedToEvent( { type } ) {
+  subscribedToEvent({ type }) {
     const event = this.subscribedEvents[type];
 
     return event && typeof event.func === 'function' && (!event.scoped || !store.state.url || event.scoped && store.state.url.component === this.schemaName);
@@ -121,7 +117,7 @@ export default class KilnInput {
   value(val) {
     if (val) {
       // set the value of the field
-      store.dispatch('updateFormData', { path: this.inputName, val }).then(()=> {
+      store.dispatch('updateFormData', { path: this.inputName, val }).then(() => {
         return store.state.ui.currentForm ? store.state.ui.currentForm.fields[this.inputName] : null;
       });
     } else {

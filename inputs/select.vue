@@ -252,7 +252,6 @@
   };
 </script>
 
-
 <style lang="sass">
   @import '../styleguide/typography';
 

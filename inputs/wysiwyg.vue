@@ -271,18 +271,20 @@
       }
     },
     mounted() {
-      const isSingleLine = this.isSingleLine,
-        isMultiLine = this.isMultiLine,
-        isMultiComponent = this.isMultiComponent,
+      const {
+          isSingleLine,
+          isMultiLine,
+          isMultiComponent,
+          maxLength,
+          store,
+          name
+        } = this,
         pseudoBullet = this.args.pseudoBullet,
-        maxLength = this.maxLength,
         currentURI = _.get(this.$store, 'state.ui.currentForm.uri'),
         currentPath = _.get(this.$store, 'state.ui.currentForm.path'),
         currentFieldEl = getFieldEl(currentURI, currentPath),
         rules = generatePasteRules(this.args.paste, getComponentName(currentURI), this.name),
         buttons = _.map(this.args.buttons, (button) => parsePhraseButton(button)).concat(['clean']),
-        store = this.$store,
-        name = this.name,
         el = find(this.$el, '.wysiwyg-content'),
         appendText = _.get(store, 'state.ui.currentForm.appendText'),
         parent = currentFieldEl && getParentComponent(getComponentEl(currentFieldEl)),
