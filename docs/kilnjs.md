@@ -99,6 +99,10 @@ The following are some of the Vuex actions that you can subscribe to using Kiln.
 
 * ***UPDATE_PAGE_STATE*** - Triggered when the page state changes. When it is published, unpublished, etc. The payload returned contains the page meta information, including published date/time, update date/time, history, users, etc.
 
+* ***COMPONENT_ADDED*** - Triggered when a component is added to the page. The payload returned contains the name of the component added as well as its URI.  This is triggered _after_ the component is fully added and saved, so all its values are availabe in the Vuex store.
+
+* ***REMOVE_COMPONENT*** - Triggered when a component is removed from the page. The payload returned contains the name of the component removed as well as its URI.
+
 Often you might not wish to associate a subscription with a specific field, but rather to something more general. You can instantiate a `KilnInput` without referencing a specific field. Of course, if it makes sense to create a connection between a field and the action involved with a subscription, you can use the subscribe function on a field. It can be done either way. It's just a matter of what makes the intent clearer.
 
 ```js
@@ -131,12 +135,45 @@ module.exports = (schema) => {
 
 `KilnInput` also provides its own set of custom methods.
 
+### getComponentData
+
+* ***getComponentData(uri)*** - returns a promise from the API call to the component data that when resolved will return an object containing the component's properties and their values.
+
+```js
+kilnInput.getComponentData('localhost/_components/kilnjs-example/instances/cjw2igpzp00053h624fdnon2e');
+```
+
 ### getComponentInstances
 
 * ***getComponentInstances(componentName)*** - returns an array containing the uris of all components of type componentName that are on the current page.
 
 ```js
 kilnInput.getComponentInstances('paragraph');
+```
+
+### getState
+
+* ***getState()*** - returns a copy of the entire Vuex store as a JSON object. Should really only be used for reading, but altering it will not mutate the actual store because it's only a copy.
+
+```js
+kilnInput.getState();
+```
+
+### publishComponent
+
+* ***publishComponent()*** - Publishs the component at the URI with the data provided.
+
+```js
+const URI = 'localhost/_components/kilnjs-example/instances/cjw2igpzp00053h624fdnon2e',
+  componentData = {
+    "size": "h2",
+    "title": "",
+    "pubDate": "5/23/2019, 4:19:43 PM",
+    "pageTitle": "Clay Starter Article",
+    "componentVariation": "kilnjs-example"
+  }
+
+kilnInput.publishComponent(URI, componentData);
 ```
 
 ### reRenderInstance
