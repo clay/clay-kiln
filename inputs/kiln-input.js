@@ -137,6 +137,17 @@ export default class KilnInput {
     return this.setProp('visibility', true);
   }
 
+  showSnackBar({ message = '', duration = 3000, position = 'left', queueSnackbars = false, transition = 'fade' }) {
+    store.dispatch('showSnackbar', {
+      message,
+      duration,
+      position,
+      queueSnackbars,
+      transition
+    });
+  }
+
+
   /**
   * save a component
   * @param {string} event

@@ -227,6 +227,14 @@ kilninput.setProp('_has', { ...kilninput['_has'], input: 'select' });
   });
 ```
 
+### showSnackBar
+
+* ***showSnackBar({ message = '', duration = 3000, position = 'left', queueSnackbars = false, transition = 'fade' })*** - Displays the SnackBar element with the provided message.
+
+```js
+kilnInput.showSnackBar({ message: 'Hey, this is a message that I want the user to see!', position: 'center' })
+```
+
 ### url
 
 * ***url()*** - returns the url object from Vuex state of the component that is currently being edited. The object contains the component name, the instance, and the path.
@@ -255,3 +263,19 @@ schema.title.value('Some New Value'); // sets the value of title
 ```
 
 ---
+
+## Form Validation
+
+Along with input level validation, you can also perform form validation using kiln.js.  To do this, you add a function to the schame named `formValidation`. This function is called just before a form is saved and if it returns `false` then the form will not be saved.  The snackBar element can be used to convey a message to the user explaining why the form wasn't saved.
+
+```js
+  schema.formValidation = () => {
+    if (schema.size.value() === 'h2' && schema.title.value().length > 40) {
+      kilnInput.showSnackBar({ message: 'When size is H2, the Title can\'t be longer than 40 chars', position: 'center' })
+      return false;
+    }
+
+
+    return true;
+  };
+```
