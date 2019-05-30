@@ -32,6 +32,208 @@
   Note that the `start` value and the data of this input's value **must** be of the same type. This input will error if `start` is an array and the value passed from the component data is a number, or vice versa.
 </docs>
 
+<template>
+  <div class="editor-range ui-textbox has-label has-floating-label" :class="rangeClasses">
+    <div class="ui-textbox__content">
+      <label class="ui-textbox__label">
+        <div class="ui-textbox__label-text is-floating">{{ label }}</div>
+        <div class="editor-range-input"></div>
+      </label>
+
+      <div class="ui-textbox__feedback" v-if="hasFeedback || showError">
+        <div class="ui-textbox__feedback-text" v-if="showError">{{ error }}</div>
+        <div class="ui-textbox__feedback-text" v-else>{{ args.help }}</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import _ from 'lodash';
+  import { find, findAll } from '@nymag/dom';
+  import slider from 'nouislider';
+  import keycode from 'keycode';
+  import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
+  import label from '../lib/utils/label';
+  import { getValidationError } from '../lib/forms/field-helpers';
+  import { DynamicEvents } from './mixins';
+
+  /**
+   * get range value for each handle,
+   * used for keyboard support
+   * @param  {number|array} val
+   * @param  {number} index
+   * @return {number}
+   */
+  function getNumber(val, index) {
+    if (_.isNumber(val)) {
+      return val;
+    } else if (_.isArray(val)) {
+      return val[index];
+    } else {
+      throw new Error('Unable to get value from range input!');
+    }
+  }
+
+  /**
+   * set range value back into input,
+   * used for keyboard support
+   * @param {number} val
+   * @param {number|array} rawVal
+   * @param {number} index
+   * @param {function} setter
+   */
+  function setNumber(val, rawVal, index, setter) {
+    if (_.isNumber(rawVal)) {
+      setter(val);
+    } else if (_.isArray(rawVal) && index === 0) {
+      setter([val, rawVal[1]]);
+    } else if (_.isArray(rawVal) && index === 1) {
+      setter([rawVal[0], val]);
+    } else {
+      throw new Error('Unable to set value into range input!');
+    }
+  }
+
+  export default {
+    mixins: [DynamicEvents],
+    props: ['name', 'data', 'schema', 'args'],
+    data() {
+      return {
+        values: this.data || this.isDualPoint ? [0, 0] : 0
+      };
+    },
+    computed: {
+      label() {
+        return label(this.name, this.schema);
+      },
+      start() {
+        return this.args.start || 0;
+      },
+      isDualPoint() {
+        return _.isArray(this.start);
+      },
+      step() {
+        return this.args.step || 1;
+      },
+      min() {
+        return this.args.min || 0;
+      },
+      max() {
+        return this.args.max || 10;
+      },
+      minLabel() {
+        return this.args.minLabel || this.min.toString();
+      },
+      maxLabel() {
+        return this.args.maxLabel || this.max.toString();
+      },
+      tooltips() {
+        return this.args.tooltips !== false;
+      },
+      errorMessage() {
+        return getValidationError(this.data, this.args.validate, this.$store, this.name);
+      },
+      showError() {
+        return !!this.errorMessage;
+      },
+      hasFeedback() {
+        return this.args.help || this.showError;
+      },
+      rangeClasses() {
+        return {
+          'has-tooltips': this.tooltips
+        };
+      }
+    },
+    methods: {
+      update(values) {
+        // if we're dealing with a single value, grab it directly
+        // otherwise grab the whole array
+        const val = this.isDualPoint ? values : _.head(values);
+
+        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: val });
+      }
+    },
+    mounted() {
+      const el = find(this.$el, '.editor-range-input'),
+        step = this.step,
+        min = this.min,
+        max = this.max,
+        minLabel = this.minLabel,
+        maxLabel = this.maxLabel;
+
+      slider.create(el, {
+        start: this.data ? this.data : this.start,
+        step: step,
+        range: { min, max },
+        format: {
+          to: (val) => new Number(val),
+          from: (val) => new Number(val)
+        },
+        connect: this.isDualPoint ? [false, true, false] : [true, false],
+        tooltips: this.tooltips,
+        pips: {
+          mode: 'steps',
+          filter(val, type) {
+            if (!type || val % step !== 0) {
+              return -1; // only show pips for each step
+            }
+
+            // make sure we always show the min and max values
+            if (val === min) {
+              return 2;
+            }
+
+            if (val === max) {
+              return 2;
+            }
+
+            // use small pips for each step between the min and max values
+            if (val % step === 0) {
+              return 0;
+            }
+          },
+          format: {
+            to(val) {
+              if (val === min) {
+                return minLabel;
+              }
+
+              if (val === max) {
+                return maxLabel;
+              }
+            }
+          }
+        }
+      });
+
+      // add keyboard support
+      _.each(findAll(el, '.noUi-handle'), (handle, index) => {
+        handle.addEventListener('keydown', (e) => {
+          const key = keycode(e),
+            val = getNumber(el.noUiSlider.get(), index);
+
+          if (key === 'left' && val > this.min) {
+            setNumber(val - this.step, el.noUiSlider.get(), index, el.noUiSlider.set);
+          }
+          if (key === 'right' && val < this.max) {
+            setNumber(val + this.step, el.noUiSlider.get(), index, el.noUiSlider.set);
+          }
+        });
+      });
+
+      el.noUiSlider.on('update', this.update);
+
+      if (this.schema.events && _.isObject(this.schema.events)) {
+        Object.keys(this.schema.events).forEach((key) => {
+          el.noUiSlider.on(key, this.schema.events[key]);
+        });
+      }
+    }
+  };
+</script>
+
 <style lang="sass">
   @import '../styleguide/colors';
   @import '../styleguide/typography';
@@ -216,205 +418,3 @@
     }
   }
 </style>
-
-<template>
-  <div class="editor-range ui-textbox has-label has-floating-label" :class="rangeClasses">
-    <div class="ui-textbox__content">
-      <label class="ui-textbox__label">
-        <div class="ui-textbox__label-text is-floating">{{ label }}</div>
-        <div class="editor-range-input"></div>
-      </label>
-
-      <div class="ui-textbox__feedback" v-if="hasFeedback || showError">
-        <div class="ui-textbox__feedback-text" v-if="showError">{{ error }}</div>
-        <div class="ui-textbox__feedback-text" v-else>{{ args.help }}</div>
-      </div>
-    </div>
-  </div>
-</template>
-
-<script>
-  import _ from 'lodash';
-  import { find, findAll } from '@nymag/dom';
-  import slider from 'nouislider';
-  import keycode from 'keycode';
-  import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
-  import label from '../lib/utils/label';
-  import { getValidationError } from '../lib/forms/field-helpers';
-  import logger from '../lib/utils/log';
-
-  const log = logger(__filename);
-
-  /**
-   * get range value for each handle,
-   * used for keyboard support
-   * @param  {number|array} val
-   * @param  {number} index
-   * @return {number}
-   */
-  function getNumber(val, index) {
-    if (_.isNumber(val)) {
-      return val;
-    } else if (_.isArray(val)) {
-      return val[index];
-    } else {
-      throw new Error('Unable to get value from range input!');
-    }
-  }
-
-  /**
-   * set range value back into input,
-   * used for keyboard support
-   * @param {number} val
-   * @param {number|array} rawVal
-   * @param {number} index
-   * @param {function} setter
-   */
-  function setNumber(val, rawVal, index, setter) {
-    if (_.isNumber(rawVal)) {
-      setter(val);
-    } else if (_.isArray(rawVal) && index === 0) {
-      setter([val, rawVal[1]]);
-    } else if (_.isArray(rawVal) && index === 1) {
-      setter([rawVal[0], val]);
-    } else {
-      throw new Error('Unable to set value into range input!');
-    }
-  }
-
-  export default {
-    props: ['name', 'data', 'schema', 'args'],
-    data() {
-      return {
-        values: this.data || this.isDualPoint ? [0, 0] : 0
-      };
-    },
-    computed: {
-      label() {
-        return label(this.name, this.schema);
-      },
-      start() {
-        return this.args.start || 0;
-      },
-      isDualPoint() {
-        return _.isArray(this.start);
-      },
-      step() {
-        return this.args.step || 1;
-      },
-      min() {
-        return this.args.min || 0;
-      },
-      max() {
-        return this.args.max || 10;
-      },
-      minLabel() {
-        return this.args.minLabel || this.min.toString();
-      },
-      maxLabel() {
-        return this.args.maxLabel || this.max.toString();
-      },
-      tooltips() {
-        return this.args.tooltips !== false;
-      },
-      errorMessage() {
-        return getValidationError(this.data, this.args.validate, this.$store, this.name);
-      },
-      showError() {
-        return !!this.errorMessage;
-      },
-      hasFeedback() {
-        return this.args.help || this.showError;
-      },
-      rangeClasses() {
-        return {
-          'has-tooltips': this.tooltips
-        };
-      }
-    },
-    methods: {
-      update(values) {
-        // if we're dealing with a single value, grab it directly
-        // otherwise grab the whole array
-        const val = this.isDualPoint ? values : _.head(values);
-
-        this.$store.commit(UPDATE_FORMDATA, { path: this.name, data: val });
-      }
-    },
-    mounted() {
-      const el = find(this.$el, '.editor-range-input'),
-        step = this.step,
-        min = this.min,
-        max = this.max,
-        minLabel = this.minLabel,
-        maxLabel = this.maxLabel;
-
-      if (this.data && typeof this.data !== typeof this.start) {
-        log.error(`Unable to initialize range input, type of range data (${this.data} [${typeof this.data}]) must match type of start value defined in schema (${this.start} [${typeof this.start}]).`, { action: 'range input mount', data: this.data, start: this.start });
-        throw new Error('Unable to initialize range input');
-      }
-
-      slider.create(el, {
-        start: this.data ? this.data : this.start,
-        step: step,
-        range: { min, max },
-        format: {
-          to: (val) => new Number(val),
-          from: (val) => new Number(val)
-        },
-        connect: this.isDualPoint ? [false, true, false] : [true, false],
-        tooltips: this.tooltips,
-        pips: {
-          mode: 'steps',
-          filter(val, type) {
-            if (!type || val % step !== 0) {
-              return -1; // only show pips for each step
-            }
-
-            // make sure we always show the min and max values
-            if (val === min) {
-              return 2;
-            }
-
-            if (val === max) {
-              return 2;
-            }
-
-            // use small pips for each step between the min and max values
-            if (val % step === 0) {
-              return 0;
-            }
-          },
-          format: {
-            to(val) {
-              if (val === min) {
-                return minLabel;
-              }
-
-              if (val === max) {
-                return maxLabel;
-              }
-            }
-          }
-        }
-      });
-
-      // add keyboard support
-      _.each(findAll(el, '.noUi-handle'), (handle, index) => {
-        handle.addEventListener('keydown', (e) => {
-          const key = keycode(e),
-            val = getNumber(el.noUiSlider.get(), index);
-
-          if (key === 'left' && val > this.min) {
-            setNumber(val - this.step, el.noUiSlider.get(), index, el.noUiSlider.set);
-          }
-          if (key === 'right' && val < this.max) {
-            setNumber(val + this.step, el.noUiSlider.get(), index, el.noUiSlider.set);
-          }
-        });
-      });
-
-      el.noUiSlider.on('update', this.update);
-    }
-  };
-</script>

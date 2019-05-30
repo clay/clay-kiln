@@ -70,16 +70,6 @@
   By default (when `multiple` is false or unset), this will return data as a **string** with the value of the selected option. If `multiple` is `true`, this will return an **object** where each option is a key with a `true` / `false` value. Note that the single-select mode is the same format as a `radio` input, and the multi-select mode is the same as a `checkbox-group`.
 </docs>
 
-<style lang="sass">
-  @import '../styleguide/typography';
-
-  .editor-no-options {
-    @include type-body();
-
-    color: $text-disabled-color;
-  }
-</style>
-
 <template>
   <ui-select
     v-if="hasOptions"
@@ -99,6 +89,7 @@
     @input="handleInput"
     @dropdown-open="onDropdown"
     @dropdown-close="onDropdownClose"
+    v-dynamic-events="customEvents"
   >
     <attached-button slot="icon" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
   </ui-select>
@@ -114,8 +105,10 @@
   import { filterBySite } from '../lib/utils/site-filter';
   import UiSelect from 'keen/UiSelect';
   import attachedButton from './attached-button.vue';
+  import { DynamicEvents } from './mixins';
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {
@@ -258,3 +251,13 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../styleguide/typography';
+
+  .editor-no-options {
+    @include type-body();
+
+    color: $text-disabled-color;
+  }
+</style>

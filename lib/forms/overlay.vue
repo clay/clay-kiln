@@ -1,106 +1,3 @@
-<style lang="sass">
-  @import '../../styleguide/colors';
-  @import '../../styleguide/forms';
-  @import '../../styleguide/layers';
-  @import '../../styleguide/cards';
-
-  .kiln-overlay-form {
-    @include form();
-    @include overlay-layer();
-    @include card();
-
-    // height is computed when rendering, so we can animate it
-    display: block;
-    height: auto;
-    max-height: calc(100vh - 100px);
-    max-width: 100vw;
-    opacity: 0;
-    position: fixed;
-    transform: translateX(-50%);
-    width: 600px;
-
-    .form-header {
-      align-items: center;
-      background-color: $card-header-bg-color;
-      border-top-left-radius: 2px;
-      border-top-right-radius: 2px;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, .16);
-      display: flex;
-      height: 56px;
-      justify-content: space-between;
-      opacity: 0;
-      // visually align the right buttons
-      padding: 0 14px 0 24px;
-      position: relative;
-      width: 100%;
-    }
-
-    .form-header-title {
-      @include type-title();
-
-      margin: 0;
-    }
-
-    .form-header-actions {
-      align-items: center;
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .form-close-divider {
-      border-left: 1px solid $divider-color;
-      height: 22px;
-      margin-left: 10px;
-      width: 10px;
-    }
-
-    .form-contents {
-      // fade this in after form opens
-      display: block;
-      height: calc(100% - 56px);
-      opacity: 0;
-      position: relative;
-      width: 100%;
-
-      .ui-tabs {
-        // input container already has padding
-        height: 100%;
-        margin: 0;
-      }
-
-      .ui-tabs__body {
-        border: none;
-        height: 100%;
-        // input container already has padding
-        padding: 0;
-      }
-    }
-
-    .input-container-wrapper {
-      height: 100%;
-      margin: 0;
-      overflow: auto;
-      padding: 0;
-      width: 100%;
-    }
-
-    .input-container {
-      height: auto;
-      min-height: 100%;
-      padding: 16px 24px 24px;
-      position: relative;
-      width: 100%;
-    }
-
-    .required-footer {
-      @include type-caption();
-
-      margin-top: 10px;
-      width: 100%;
-    }
-  }
-</style>
-
 <template>
   <transition name="overlay-fade-resize" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
     <form class="kiln-overlay-form" v-if="hasCurrentOverlayForm" :key="formKey" :style="{ top: formTop, left: formLeft }" @submit.stop.prevent="save">
@@ -124,7 +21,7 @@
           <ui-tab v-for="(section, index) in sections" :key="index" :title="section.title" :selected="initialSection === index">
             <div class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 104px)`}">
               <div class="input-container">
-                <field v-for="(field, fieldIndex) in section.fields" :key="fieldIndex" :name="field" :data="fields[field]" :schema="schema[field]" :initialFocus="initialFocus"></field>
+                <field v-for="(field, fieldIndex) in section.fields" :key="fieldIndex" :name="field.name" :data="fields[field.name]" :visibility="!field.schema || field.schema.visibility" :schema="field.schema || schema[field.name] || getFieldSchema(field.name)" :initialFocus="initialFocus"></field>
                 <div v-if="section.hasRequiredFields" class="required-footer">* Required fields</div>
               </div>
             </div>
@@ -132,7 +29,7 @@
         </ui-tabs>
         <div v-else class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 56px)`}">
           <div class="input-container">
-            <field v-for="(field, fieldIndex) in sections[0].fields" :key="fieldIndex" :name="field" :data="fields[field]" :schema="schema[field] || getFieldSchema(field)" :initialFocus="initialFocus"></field>
+            <field v-for="(field, fieldIndex) in sections[0].fields" :key="fieldIndex" :name="field.name" :data="fields[field.name]" :visibility="!field.schema || field.schema.visibility" :schema="field.schema || schema[field.name] || getFieldSchema(field.name)" :initialFocus="initialFocus"></field>
             <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
           </div>
         </div>
@@ -151,12 +48,13 @@
   import { has as hasGroup } from '../core-data/groups';
   import label from '../utils/label';
   import logger from '../utils/log';
-  import { fieldProp, componentListProp, bookmarkProp, getComponentName } from '../utils/references';
+  import { fieldProp, inputProp, componentListProp, bookmarkProp, getComponentName } from '../utils/references';
   import { getComponentEl } from '../utils/component-elements';
   import field from './field.vue';
   import UiIconButton from 'keen/UiIconButton';
   import UiTabs from 'keen/UiTabs';
   import UiTab from 'keen/UiTab';
+  import { expand } from './inputs';
 
   const log = logger(__filename);
 
@@ -194,25 +92,66 @@
         }
       },
       hasSections: (state) => state.ui.currentForm.schema.sections && state.ui.currentForm.schema.sections.length > 1,
+      expandedInput() {
+        return expand(this.schema[fieldProp]);
+      },
+      inputName() {
+        return this.expandedInput[inputProp];
+      },
       sections() {
         const currentForm = _.get(this.$store, 'state.ui.currentForm'),
-          sections = _.get(currentForm, 'schema.sections'),
+          schemaSections = _.get(currentForm, 'schema.sections'),
           fields = _.get(currentForm, 'schema.fields'),
           path = _.get(currentForm, 'path'),
-          schema = this.schema;
+          currentURI = _.get(this.$store, 'state.ui.currentSelection.uri') || _.get(this.$store, 'state.ui.currentForm.uri'),
+          componentName = getComponentName(currentURI),
+          schema = this.$store.state.schemas[componentName],
+          initialFocus = _.get(this.$store, 'state.ui.currentForm.initialFocus');
 
-        if (!_.isEmpty(sections)) {
-          return _.map(sections, (section) => ({
-            title: section.title,
-            fields: section.fields,
-            hasRequiredFields: _.some(schema, (val, key) => _.includes(section.fields, key) && _.has(val, `${fieldProp}.validate.required`))
-          }));
+        let sections = [];
+
+        if (!_.isEmpty(schemaSections)) {
+          sections = _.map(schemaSections, (section) => {
+            const sectionFields = {};
+
+            section.fields.forEach((field) => {
+              sectionFields[field] = {
+                name: field,
+                data: this.fields[field],
+                schema: schema[field],
+                initialFocus
+              };
+            });
+
+            return {
+              title: section.title,
+              fields: sectionFields,
+              hasRequiredFields: _.some(schema, (val, key) => _.includes(section.fields, key) && _.has(val, `${fieldProp}.validate.required`))
+            };
+          });
         } else {
           // no sections, so return a single "section" with all the fields
-          return [{
-            fields: fields || [path], // group or single field
+          const sectionFields = {};
+
+          let schemaFields = fields || [path];
+
+          schemaFields.forEach((field) => {
+            sectionFields[field] = {
+              name: field,
+              data: this.fields[field],
+              schema: schema[field],
+              initialFocus
+            };
+          });
+
+          sections = [{
+            title: null,
+            fields: sectionFields,
+            hasRequiredFields: _.some(schema, (val, key) => _.includes(schemaFields, key) && _.has(val, `${fieldProp}.validate.required`))
           }];
         }
+
+        return sections;
       },
       fields: (state) => state.ui.currentForm.fields,
       schema: (state) => getSchema(state.ui.currentForm.uri),
@@ -300,7 +239,7 @@
         }
       },
       initialSection() {
-        if (this.hasCurrentOverlayForm) {
+        if (this.hasCurrentOverlayForm && this.initialFocus) {
           const field = _.head(this.initialFocus.split('.'));
 
           return _.findIndex(this.sections, (section) => _.includes(section.fields, field));
@@ -473,3 +412,106 @@
     })
   };
 </script>
+
+<style lang="sass">
+  @import '../../styleguide/colors';
+  @import '../../styleguide/forms';
+  @import '../../styleguide/layers';
+  @import '../../styleguide/cards';
+
+  .kiln-overlay-form {
+    @include form();
+    @include overlay-layer();
+    @include card();
+
+    // height is computed when rendering, so we can animate it
+    display: block;
+    height: auto;
+    max-height: calc(100vh - 100px);
+    max-width: 100vw;
+    opacity: 0;
+    position: fixed;
+    transform: translateX(-50%);
+    width: 600px;
+
+    .form-header {
+      align-items: center;
+      background-color: $card-header-bg-color;
+      border-top-left-radius: 2px;
+      border-top-right-radius: 2px;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, .16);
+      display: flex;
+      height: 56px;
+      justify-content: space-between;
+      opacity: 0;
+      // visually align the right buttons
+      padding: 0 14px 0 24px;
+      position: relative;
+      width: 100%;
+    }
+
+    .form-header-title {
+      @include type-title();
+
+      margin: 0;
+    }
+
+    .form-header-actions {
+      align-items: center;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .form-close-divider {
+      border-left: 1px solid $divider-color;
+      height: 22px;
+      margin-left: 10px;
+      width: 10px;
+    }
+
+    .form-contents {
+      // fade this in after form opens
+      display: block;
+      height: calc(100% - 56px);
+      opacity: 0;
+      position: relative;
+      width: 100%;
+
+      .ui-tabs {
+        // input container already has padding
+        height: 100%;
+        margin: 0;
+      }
+
+      .ui-tabs__body {
+        border: none;
+        height: 100%;
+        // input container already has padding
+        padding: 0;
+      }
+    }
+
+    .input-container-wrapper {
+      height: 100%;
+      margin: 0;
+      overflow: auto;
+      padding: 0;
+      width: 100%;
+    }
+
+    .input-container {
+      height: auto;
+      min-height: 100%;
+      padding: 16px 24px 24px;
+      position: relative;
+      width: 100%;
+    }
+
+    .required-footer {
+      @include type-caption();
+
+      margin-top: 10px;
+      width: 100%;
+    }
+  }
+</style>

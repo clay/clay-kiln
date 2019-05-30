@@ -12,7 +12,8 @@
           "component",
           "manipulating_components",
           "editing_components",
-          "input"
+          "input",
+          "kilnjs"
         ]
       },
       "deep_linking"

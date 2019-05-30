@@ -5,16 +5,20 @@
 </docs>
 
 <template>
-  <component is="wysiwyg" :name="name" :data="data" :schema="schema" :args="args" :initialFocus="initialFocus"></component>
+  <wysiwyg :name="name" :data="data" :schema="schema" :args="args" :initialFocus="initialFocus"  v-dynamic-events="customEvents" />
 </template>
 
 <script>
   import wysiwyg from './wysiwyg.vue';
+  import { DynamicEvents } from './mixins';
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args', 'initialFocus'],
     data() {
-      return {};
+      return {
+        value: null
+      };
     },
     components: {
       wysiwyg

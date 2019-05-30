@@ -27,6 +27,7 @@
 
 <template>
   <ui-textbox
+    :key="myKey"
     :autosize="false"
     :value="value"
     :type="type"
@@ -45,9 +46,19 @@
     :error="errorMessage"
     :disabled="isDisabled"
     iconPosition="right"
+    v-dynamic-events="customEvents"
     @input="update"
     @keydown-enter="closeFormOnEnter">
-    <attached-button slot="icon" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
+    <attached-button
+      slot="icon"
+      :name="name"
+      :data="data"
+      :schema="schema"
+      :args="args"
+      @disable="disableInput"
+      @enable="enableInput"
+      v-dynamic-events="customEvents"
+    />
   </ui-textbox>
 </template>
 
@@ -59,15 +70,18 @@
   import UiTextbox from 'keen/UiTextbox';
   import attachedButton from './attached-button.vue';
   import logger from '../lib/utils/log';
+  import { DynamicEvents } from './mixins';
 
   const validInputTypes = ['text', 'search', 'url', 'tel', 'password', 'multi-line'],
     log = logger(__filename);
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args', 'initialFocus'],
     data() {
       return {
-        isDisabled: false
+        isDisabled: false,
+        myKey: ''
       };
     },
     computed: {

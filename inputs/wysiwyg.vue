@@ -65,128 +65,8 @@
   WYSIWYG returns a **string** of HTML.
 </docs>
 
-<style lang="sass">
-  @import '../styleguide/colors';
-  @import '../styleguide/typography';
-  @import '~quill/dist/quill.core.css';
-  @import '~quill/dist/quill.bubble.css';
-
-  .editor-inline .wysiwyg-input {
-    @include normal-text();
-
-    cursor: text;
-    min-height: 19px;
-    outline: none;
-    white-space: normal;
-
-    &::selection {
-      background-color: $text-selection;
-    }
-  }
-
-  .editor-inline .ql-container,
-  .editor-inline .ql-editor {
-    @include normal-text();
-  }
-
-  .wysiwyg-input *::selection {
-    background-color: $text-selection;
-  }
-
-  // quill overrides
-  .ql-editor {
-    overflow: visible;
-    padding: 0;
-  }
-
-  .kiln-overlay-form .ql-container {
-    @include type-body();
-
-    font-size: 16px;
-    letter-spacing: normal;
-    line-height: normal;
-  }
-
-  .ql-container.ql-bubble:not(.ql-disabled) a {
-    white-space: inherit;
-  }
-
-  .ql-bubble .ql-editor a {
-    text-decoration: inherit;
-  }
-
-  // link preview tooltip
-  .ql-container.ql-bubble:not(.ql-disabled) a::before {
-    @include type-caption();
-
-    color: $pure-white;
-  }
-
-  .ql-bubble .ql-tooltip {
-    // appear above field descriptions, other stuff after the input
-    z-index: 1;
-  }
-
-  // larger toolbar
-  .ql-bubble.ql-toolbar button,
-  .ql-bubble .ql-toolbar button {
-    height: 32px;
-    width: 32px;
-  }
-
-  // toolbar phrase button
-  .kiln-phrase-button {
-    // todo: make buttons more material-design-y
-    @include normal-text();
-
-    color: #ccc;
-    // note: windows displays this about a pixel larger than macos
-    font-size: 21px;
-    font-weight: bold;
-
-    &:hover {
-      color: #fff;
-    }
-  }
-
-  // all phrases should have some sort of highlight, so users can
-  // reason about them in edit mode. for now, we are doing different colors
-  // for different kiln phrase classes
-  .ql-editor .kiln-phrase {
-    background-color: #fff2a8;
-  }
-
-  .ql-editor .clay-annotated {
-    background-color: #a8d1ff;
-  }
-
-  .ql-editor .clay-designed {
-    background-color: #ffb7b7;
-  }
-
-  .ui-textbox__input.wysiwyg-content {
-    height: auto;
-    min-height: 32px;
-  }
-  .ui-textbox__counter--wysiwyg {
-    font-size: 16px;
-    background-color: rgba($placeholder-bg-color, 0.75);
-    color: $placeholder-color;
-    line-height: 1em;
-    padding: .5em 1em;
-    top: auto;
-    mix-blend-mode: multiply;
-    font-family: $font-stack;
-  }
-
-  .ui-textbox__counter--wysiwyg-error {
-    background-color: rgba($placeholder-error-bg-color, 0.75);
-    color: $placeholder-error-color;
-  }
-</style>
-
 <template>
-  <div class="wysiwyg-input" :class="classes">
+  <div class="wysiwyg-input" :class="classes" ref="wysiwygInput">
     <attached-button class="ui-textbox__icon-wrapper" v-if="isStyled" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
 
     <div v-if="isStyled" class="ui-textbox__content">
@@ -231,6 +111,7 @@
   import { getNewlinesBeforeCaret, getLastOffsetWithNewlines } from './wysiwyg-caret';
   import { parsePhraseButton, parseFormats, createPhraseBlots } from './wysiwyg-phrase';
   import attachedButton from './attached-button.vue';
+  import { DynamicEvents } from './mixins';
 
   const Delta = Quill.import('delta'),
     Clipboard = Quill.import('modules/clipboard'),
@@ -291,6 +172,7 @@
   };
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args', 'initialFocus'],
     data() {
       return {
@@ -389,18 +271,20 @@
       }
     },
     mounted() {
-      const isSingleLine = this.isSingleLine,
-        isMultiLine = this.isMultiLine,
-        isMultiComponent = this.isMultiComponent,
+      const {
+          isSingleLine,
+          isMultiLine,
+          isMultiComponent,
+          maxLength,
+          store,
+          name
+        } = this,
         pseudoBullet = this.args.pseudoBullet,
-        maxLength = this.maxLength,
         currentURI = _.get(this.$store, 'state.ui.currentForm.uri'),
         currentPath = _.get(this.$store, 'state.ui.currentForm.path'),
         currentFieldEl = getFieldEl(currentURI, currentPath),
         rules = generatePasteRules(this.args.paste, getComponentName(currentURI), this.name),
         buttons = _.map(this.args.buttons, (button) => parsePhraseButton(button)).concat(['clean']),
-        store = this.$store,
-        name = this.name,
         el = find(this.$el, '.wysiwyg-content'),
         appendText = _.get(store, 'state.ui.currentForm.appendText'),
         parent = currentFieldEl && getParentComponent(getComponentEl(currentFieldEl)),
@@ -798,6 +682,12 @@
         }
       });
 
+      if (this.schema.events && _.isObject(this.schema.events)) {
+        Object.keys(this.schema.events).forEach((key) => {
+          editor.on(key, this.schema.events[key]);
+        });
+      }
+
 
       // add handlers for phrase buttons
       _.each(phrases, (phrase) => {
@@ -844,7 +734,7 @@
         }
       });
 
-      editor.on('text-change', function onTextChange({}, {}, source) {
+      editor.on('text-change', ({}, {}, source) => {
         let html;
 
         // convert / sanitize output to save
@@ -860,6 +750,8 @@
         } else {
           store.commit(UPDATE_FORMDATA, { path: name, data: html });
         }
+
+        this.$emit('change', html);
 
         // check that source is user to prevent infinite loop!
         if (source === 'user') {
@@ -898,3 +790,123 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../styleguide/colors';
+  @import '../styleguide/typography';
+  @import '~quill/dist/quill.core.css';
+  @import '~quill/dist/quill.bubble.css';
+
+  .editor-inline .wysiwyg-input {
+    @include normal-text();
+
+    cursor: text;
+    min-height: 19px;
+    outline: none;
+    white-space: normal;
+
+    &::selection {
+      background-color: $text-selection;
+    }
+  }
+
+  .editor-inline .ql-container,
+  .editor-inline .ql-editor {
+    @include normal-text();
+  }
+
+  .wysiwyg-input *::selection {
+    background-color: $text-selection;
+  }
+
+  // quill overrides
+  .ql-editor {
+    overflow: visible;
+    padding: 0;
+  }
+
+  .kiln-overlay-form .ql-container {
+    @include type-body();
+
+    font-size: 16px;
+    letter-spacing: normal;
+    line-height: normal;
+  }
+
+  .ql-container.ql-bubble:not(.ql-disabled) a {
+    white-space: inherit;
+  }
+
+  .ql-bubble .ql-editor a {
+    text-decoration: inherit;
+  }
+
+  // link preview tooltip
+  .ql-container.ql-bubble:not(.ql-disabled) a::before {
+    @include type-caption();
+
+    color: $pure-white;
+  }
+
+  .ql-bubble .ql-tooltip {
+    // appear above field descriptions, other stuff after the input
+    z-index: 1;
+  }
+
+  // larger toolbar
+  .ql-bubble.ql-toolbar button,
+  .ql-bubble .ql-toolbar button {
+    height: 32px;
+    width: 32px;
+  }
+
+  // toolbar phrase button
+  .kiln-phrase-button {
+    // todo: make buttons more material-design-y
+    @include normal-text();
+
+    color: #ccc;
+    // note: windows displays this about a pixel larger than macos
+    font-size: 21px;
+    font-weight: bold;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+
+  // all phrases should have some sort of highlight, so users can
+  // reason about them in edit mode. for now, we are doing different colors
+  // for different kiln phrase classes
+  .ql-editor .kiln-phrase {
+    background-color: #fff2a8;
+  }
+
+  .ql-editor .clay-annotated {
+    background-color: #a8d1ff;
+  }
+
+  .ql-editor .clay-designed {
+    background-color: #ffb7b7;
+  }
+
+  .ui-textbox__input.wysiwyg-content {
+    height: auto;
+    min-height: 32px;
+  }
+  .ui-textbox__counter--wysiwyg {
+    font-size: 16px;
+    background-color: rgba($placeholder-bg-color, 0.75);
+    color: $placeholder-color;
+    line-height: 1em;
+    padding: .5em 1em;
+    top: auto;
+    mix-blend-mode: multiply;
+    font-family: $font-stack;
+  }
+
+  .ui-textbox__counter--wysiwyg-error {
+    background-color: rgba($placeholder-error-bg-color, 0.75);
+    color: $placeholder-error-color;
+  }
+</style>

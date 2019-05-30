@@ -110,36 +110,6 @@
   ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
 </docs>
 
-<style lang="sass">
-  @import '../styleguide/colors';
-
-  .magic-button-icon svg {
-    fill: $text-color;
-    height: 18px;
-    // offset this for visual balance
-    margin-left: 3px;
-    margin-top: 3px;
-    transition: 100ms fill ease;
-    width: 20px;
-  }
-
-  .is-active .magic-button-icon svg {
-    fill: $brand-primary-color;
-  }
-
-  .is-disabled .magic-button-icon {
-    pointer-events: none;
-
-    svg {
-      fill: $text-disabled-color;
-    }
-  }
-
-  .is-invalid .magic-button-icon svg {
-    fill: $md-red;
-  }
-</style>
-
 <template>
   <ui-icon-button
     buttonType="button"
@@ -419,3 +389,33 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../styleguide/colors';
+
+  .magic-button-icon svg {
+    fill: $text-color;
+    height: 18px;
+    // offset this for visual balance
+    margin-left: 3px;
+    margin-top: 3px;
+    transition: 100ms fill ease;
+    width: 20px;
+  }
+
+  .is-active .magic-button-icon svg {
+    fill: $brand-primary-color;
+  }
+
+  .is-disabled .magic-button-icon {
+    pointer-events: none;
+
+    svg {
+      fill: $text-disabled-color;
+    }
+  }
+
+  .is-invalid .magic-button-icon svg {
+    fill: $md-red;
+  }
+</style>

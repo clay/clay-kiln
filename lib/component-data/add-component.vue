@@ -1,70 +1,3 @@
-<style lang="sass">
-  @import '../../styleguide/colors';
-  @import '../../styleguide/layers';
-  @import '../../styleguide/cards';
-  @import '../../styleguide/typography';
-
-  .add-component-modal {
-    @include overlay-layer();
-    @include card();
-
-    // height is computed when rendering, so we can animate it
-    display: block;
-    height: auto;
-    max-height: calc(100vh - 100px);
-    max-width: 100vw;
-    opacity: 0;
-    position: fixed;
-    transform: translateX(-50%);
-    width: 600px;
-
-    .add-component-header {
-      align-items: center;
-      background-color: $card-header-bg-color;
-      border-top-left-radius: 2px;
-      border-top-right-radius: 2px;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, .16);
-      display: flex;
-      height: 56px;
-      justify-content: space-between;
-      opacity: 0;
-      // visually align the right buttons
-      padding: 0 14px 0 24px;
-      position: relative;
-      width: 100%;
-    }
-
-    .add-component-header-title {
-      @include type-title();
-
-      margin: 0;
-    }
-
-    .add-component-header-actions {
-      align-items: center;
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .add-component-close-divider {
-      border-left: 1px solid $divider-color;
-      height: 22px;
-      margin-left: 10px;
-      width: 10px;
-    }
-
-    .add-component-list {
-      // fade this in after form opens
-      display: block;
-      height: 500px;
-      opacity: 0;
-      padding: 8px;
-      position: relative;
-      width: 100%;
-    }
-  }
-</style>
-
 <template>
   <transition name="overlay-fade-resize" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
     <div class="add-component-modal" v-if="hasAddComponentModal" :style="{ top: modalTop, left: modalLeft }" @click.stop>
@@ -316,3 +249,70 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../../styleguide/colors';
+  @import '../../styleguide/layers';
+  @import '../../styleguide/cards';
+  @import '../../styleguide/typography';
+
+  .add-component-modal {
+    @include overlay-layer();
+    @include card();
+
+    // height is computed when rendering, so we can animate it
+    display: block;
+    height: auto;
+    max-height: calc(100vh - 100px);
+    max-width: 100vw;
+    opacity: 0;
+    position: fixed;
+    transform: translateX(-50%);
+    width: 600px;
+
+    .add-component-header {
+      align-items: center;
+      background-color: $card-header-bg-color;
+      border-top-left-radius: 2px;
+      border-top-right-radius: 2px;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, .16);
+      display: flex;
+      height: 56px;
+      justify-content: space-between;
+      opacity: 0;
+      // visually align the right buttons
+      padding: 0 14px 0 24px;
+      position: relative;
+      width: 100%;
+    }
+
+    .add-component-header-title {
+      @include type-title();
+
+      margin: 0;
+    }
+
+    .add-component-header-actions {
+      align-items: center;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .add-component-close-divider {
+      border-left: 1px solid $divider-color;
+      height: 22px;
+      margin-left: 10px;
+      width: 10px;
+    }
+
+    .add-component-list {
+      // fade this in after form opens
+      display: block;
+      height: 500px;
+      opacity: 0;
+      padding: 8px;
+      position: relative;
+      width: 100%;
+    }
+  }
+</style>

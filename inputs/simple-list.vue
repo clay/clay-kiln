@@ -49,44 +49,6 @@
   Simple List will format data as an **array of objects**, where each object has a `text` property. If the `propertyName` argument is set, each object will also have a property (denoted by the value of the `propertyName` argument) that will be a **boolean**. Only one of the objects (the "primary item") will have this custom property set to `true`.
 </docs>
 
-<style lang="sass">
-  @import '../styleguide/animations';
-
-  .simple-list {
-    .simple-list-items {
-      align-items: center;
-      display: flex;
-      flex-flow: row wrap;
-      height: auto;
-      justify-content: flex-start;
-    }
-
-    .simple-list-items-wrapper {
-      align-items: flex-start;
-      display: inline-flex;
-      flex: 0 0 auto;
-      flex-flow: row wrap;
-      justify-content: flex-start;
-      max-width: 100%;
-    }
-
-    .list-items-enter,
-    .list-items-leave-to {
-      opacity: 0;
-    }
-
-    .list-items-enter-to,
-    .list-items-leave {
-      opacity: 1;
-    }
-
-    .list-items-enter-active,
-    .list-items-leave-active {
-      transition: opacity $standard-time $standard-curve;
-    }
-  }
-</style>
-
 <template>
   <div class="simple-list ui-textbox has-label has-floating-label" :class="classes">
     <attached-button class="ui-textbox__icon-wrapper" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
@@ -106,7 +68,8 @@
               :disabled="isDisabled"
               @remove="removeItem"
               @select="selectItem"
-              @dblclick.native="setPrimary(index)"></simple-list-item>
+              @dblclick.native="setPrimary(index)"
+              v-dynamic-events="customEvents"></simple-list-item>
           </transition-group>
           <simple-list-input
             :items="items"
@@ -120,7 +83,8 @@
             @select="selectItem"
             @focus="onFocus"
             @blur="onBlur"
-            @resize="onResize"></simple-list-input>
+            @resize="onResize"
+            v-dynamic-events="customEvents"></simple-list-input>
         </div>
       </label>
 
@@ -145,10 +109,12 @@
   import simpleListInput from './simple-list-input.vue';
   import attachedButton from './attached-button.vue';
   import { addListItem, getItemIndex, getProp} from '../lib/lists/helpers';
+  import { DynamicEvents } from './mixins';
 
   const log = logger(__filename);
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args', 'initialFocus'],
     data() {
       return {
@@ -333,3 +299,41 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../styleguide/animations';
+
+  .simple-list {
+    .simple-list-items {
+      align-items: center;
+      display: flex;
+      flex-flow: row wrap;
+      height: auto;
+      justify-content: flex-start;
+    }
+
+    .simple-list-items-wrapper {
+      align-items: flex-start;
+      display: inline-flex;
+      flex: 0 0 auto;
+      flex-flow: row wrap;
+      justify-content: flex-start;
+      max-width: 100%;
+    }
+
+    .list-items-enter,
+    .list-items-leave-to {
+      opacity: 0;
+    }
+
+    .list-items-enter-to,
+    .list-items-leave {
+      opacity: 1;
+    }
+
+    .list-items-enter-active,
+    .list-items-leave-active {
+      transition: opacity $standard-time $standard-curve;
+    }
+  }
+</style>
