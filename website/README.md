@@ -55,6 +55,16 @@ root-directory
       ├── version-0.0.0-sidebars.json
 ```
 
+# Versioning the Code
+To create a version of the docs to match the version of an NPM release, run this command with the version number of the release.
+```
+$ yarn version X.X.X
+```
+or
+```
+$ npm version X.X.X
+```
+
 # Publish the website
 The Clay-kiln website will live on GitHub page. You just need to run the following commands:
 ```
