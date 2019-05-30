@@ -1,0 +1,124 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Components · Kiln</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;hr&gt;
+"/><meta name="docsearch:version" content="8.8.0"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Components · Kiln"/><meta property="og:type" content="website"/><meta property="og:url" content="https://clay.github.io//clay-kiln/"/><meta property="og:description" content="&lt;hr&gt;
+"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/clay-kiln/"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/clay-kiln/css/main.css"/><script src="/clay-kiln/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/clay-kiln/"><img class="logo" src="/clay-kiln/img/kiln.png" alt="Kiln"/><h2 class="headerTitleWithLogo">Kiln</h2></a><a href="/clay-kiln/versions"><h3>8.8.0</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/clay-kiln/docs/8.8.0/intro" target="_self">Introduction</a></li><li class=""><a href="https://github.com/clay/clay-kiln" target="_self">Github</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>KILN FUNDAMENTALS</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Introduction<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/intro">Introduction</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">KILN FUNDAMENTALS<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/kiln_ui">The Kiln UI</a></li><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Clay Components</h4><ul><li class="navListItem navListItemActive"><a class="navItem" href="/clay-kiln/docs/8.8.0/component">Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/manipulating_components">Adding, Removing, and Reordering Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/editing_components">Editing Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/input">Form Inputs</a></li></ul></div><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/deep_linking">Deep Linking</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">API DOCUMENTATION<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Kiln API</h4><ul><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/api_kiln">API</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/snackbar">Snackbar</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/vuex_actions">Vuex Actions</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/vuex_plugin">Vuex Plugins</a></li></ul></div></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Components</h1></header><article><div><span><hr>
+<p><a href="https://github.com/nymag/amphora/wiki#clay-is-divided-into-components">Components are reusable, configurable, self-contained bits of the web.</a></p>
+<p>Components in Clay consist of templates, styles, JavaScript models (data handling) and controllers (client-side functionality), as well as <code>schema.yml</code> files that define how they're edited with Kiln. General information on components is available in the <a href="http://clay.github.io/amphora/">Amphora docs</a>, so this section will limit itself to discussing the requirements needed to edit components in Kiln.</p>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="template"></a><a href="#template" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Template</h2>
+<p>Kiln assumes that every component has a <a href="http://handlebarsjs.com/">Handlebars</a> template, and that it uses <code>data-uri</code> to reference the URI of the component instance. For regular components that live in the <code>&lt;body&gt;</code> of a page, you must use a <em>single root tag</em> (which cannot be <code>&lt;a&gt;</code>) that contains <code>data-uri</code>:</p>
+<pre><code class="hljs css language-handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">data-uri</span>=<span class="hljs-string">"</span></span></span><span class="hljs-template-variable">{{ default _ref _self }}</span><span class="xml"><span class="hljs-tag"><span class="hljs-string">"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"</span></span></span><span class="hljs-template-variable">{{ componentVariation }}</span><span class="xml"><span class="hljs-tag"><span class="hljs-string">"</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- stuff inside the component, including elements and &lt;style&gt; tags --&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</span></code></pre>
+<p>For components that live in the <code>&lt;head&gt;</code> of the page, templates are handled a little differently. As <code>&lt;meta&gt;</code> tags cannot contain child elements (almost all <code>&lt;head&gt;</code> components consist of <code>&lt;meta&gt;</code> tags), you must use an html comment at the beginning of your component:</p>
+<pre><code class="hljs css language-handlebars"><span class="xml"><span class="hljs-comment">&lt;!-- data-uri="</span></span><span class="hljs-template-variable">{{ default _ref _self}}</span><span class="xml"><span class="hljs-comment">" --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"something"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"something else"</span> /&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"another thing"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"another bit of data"</span> /&gt;</span>
+</span></code></pre>
+<p>The root element of <code>&lt;body&gt;</code> components may include other attributes, such as <code>data-editable</code> or <code>data-placeholder</code> (more on those in Editing Components), and must be <em>relatively positioned</em> so the Component Selectors can display correctly.</p>
+<blockquote>
+<h4><a class="anchor" aria-hidden="true" id="note"></a><a href="#note" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Note</h4>
+<p>Templates must be precompiled and added to <code>window.kiln.componentTemplates</code> for Kiln to re-render components after saving.</p>
+</blockquote>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="modeljs"></a><a href="#modeljs" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Model.js</h2>
+<p><code>models.js</code> is an optional file that a component directory may contain. Its role is to expose two lifecycle hooks that allow an author to transform the component's data: save, which executes before the model is saved and render, which executes before the HTML is rendered.</p>
+<p><code>save</code> and <code>render</code> are both optional, but <code>model.js</code> must export at least one of these functions. Both hooks take the same signature and are expected to return the data. For asynchronous operations, <code>save</code> and <code>render</code> may also return a promise.</p>
+<ul>
+<li>URI: the component's URI</li>
+<li>Data: the data associated with the component. This object will also be returned</li>
+<li>Locals: information about the site defined outside the model</li>
+</ul>
+<p>Example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-built_in">module</span>.exports.save = <span class="hljs-function">(<span class="hljs-params">uri, data, locals</span>) =&gt;</span> {
+
+  <span class="hljs-comment">// set a timestamp on save</span>
+  data.timestamp = <span class="hljs-built_in">Date</span>.now().toString()
+
+  <span class="hljs-comment">// must return data</span>
+  <span class="hljs-keyword">return</span> data;
+};
+
+<span class="hljs-built_in">module</span>.exports.render = <span class="hljs-function">(<span class="hljs-params">uri, data, locals</span>) =&gt;</span> {
+
+  <span class="hljs-comment">// add data to the model from an external service</span>
+  <span class="hljs-keyword">return</span> fetch(<span class="hljs-string">'https://someservice.com/'</span>)
+    .then(<span class="hljs-function">(<span class="hljs-params">{body}</span>) =&gt;</span> body.json())
+    .then(<span class="hljs-function">(<span class="hljs-params">extraData</span>) =&gt;</span> {
+      data.extraData = extraData
+      <span class="hljs-keyword">return</span> data
+    })
+};
+</code></pre>
+<blockquote>
+<p>If you're unsure of which method to use <code>save()</code> is usually preferable, as it only runs when data is saved. Calling the <code>render()</code> method (every time a component renders) to do slow or intensive logic will slow down your component for end-users.</p>
+</blockquote>
+<p>Models must be compiled and added to <code>window.kiln.componentModels</code> for Kiln to call them when saving and re-rendering components.</p>
+<h2><a class="anchor" aria-hidden="true" id="clientjs"></a><a href="#clientjs" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>client.js</h2>
+<p>client.js is the component's code that is executed in the client in view mode only (i.e., not edit mode). This file is optional. It expects a single default export which takes the following signature, where el is root HTML element of the component:</p>
+<pre><code class="hljs css language-js"><span class="hljs-built_in">module</span>.exports = <span class="hljs-function">(<span class="hljs-params">el</span>) =&gt;</span> {
+  <span class="hljs-comment">// client-side javascript goes here.</span>
+}
+</code></pre>
+<p>Since <code>client.js</code> is not only expected in view mode it may be necessary to add additional styling to the component when in edit mode. You may take advantage of the <code>.kiln-edit-mode</code> class on the <code>&lt;body&gt;</code> tag for this purpose.</p>
+<h2><a class="anchor" aria-hidden="true" id="upgradejs"></a><a href="#upgradejs" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>upgrade.js</h2>
+<p>This file contains logic for upgrading between two versions of a component. For more info see the <a href="https://docs.clayplatform.com/amphora/docs/data_versioning">Amphora update docs</a></p>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="schema"></a><a href="#schema" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Schema</h2>
+<p>Schemas (or <em>schemata</em>, for pedants like myself) are the main connective tissue between components and Kiln. They define what kinds of fields components have, as well as how those fields are grouped. They also provide <code>_description</code> text for the components' Info Modals, <code>_version</code> for upgrading data programmatically, <code>_allowBookmarks</code> for easy duplication across pages, and <code>_confirmRemoval</code> for extra peace-of-mind on components like ads.</p>
+<p>Schemas for components that are currently on the page are automatically parsed by Amphora and added to the page when Kiln loads. Schemas for other components are added when those components are added.</p>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="styles-and-style-variations"></a><a href="#styles-and-style-variations" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Styles and Style Variations</h2>
+<p>By convention (and especially if you use <code>claycli</code>), component styles go in a <code>styleguides/</code> folder in the root of your Clay installation. This folder may contain folders for each site you're hosting, as well as a <code>_default</code> folder. When rendering, components will be loaded with styles from the site-specific styleguide of the site you're serving them on, falling back to the <code>_default</code> styles if those do not exist. For example, (when serving the <code>article</code> component on <code>nymag.com</code>) Clay will check if <code>styleguides/nymag/components/article.css</code> exists, and if not it will attempt to load <code>styleguides/_default/components/article.css</code>.</p>
+<p>If you want to reuse the same component in different contexts, you may do so by adding additional css files to your site (and/or <code>_default</code>) styleguides. These &quot;variations&quot; are defined with the convention <code>component-name_variation-name.css</code> and live alongside the regular <code>component-name.css</code> files. Once you've added one or more variations to a component, a &quot;Component Variation&quot; tab will appear in that component's Settings allowing users to pick which variation they'd like to use for that instance of the component. Picking &quot;None&quot; or &quot;Default&quot; will set the component to use the default (<code>component-name.css</code>) styles instead of a variation.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/clay-kiln/docs/8.8.0/kiln_ui"><span class="arrow-prev">← </span><span>The Kiln UI</span></a><a class="docs-next button" href="/clay-kiln/docs/8.8.0/manipulating_components"><span>Adding, Removing, and Reordering Components</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#template">Template</a></li><li><a href="#modeljs">Model.js</a></li><li><a href="#clientjs">client.js</a></li><li><a href="#upgradejs">upgrade.js</a></li><li><a href="#schema">Schema</a></li><li><a href="#styles-and-style-variations">Styles and Style Variations</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/clay-kiln/" class="nav-home"></a><div><h5>Docs</h5><a href="/clay-kiln/docs/en/intro">Introduction</a><a href="/clay-kiln/docs/en/api_kiln">API Reference</a></div><div><h5>More</h5><a target="_blank" href="https://github.com/clay/clay-kiln">GitHub</a></div></section><section class="copyright">Copyright © 2019 New York Media</section></footer></div></body></html>

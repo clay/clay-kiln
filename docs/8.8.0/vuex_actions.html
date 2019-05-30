@@ -1,0 +1,1292 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Vuex Actions · Kiln</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;h2&gt;&lt;a class=&quot;anchor&quot; aria-hidden=&quot;true&quot; id=&quot;modules&quot;&gt;&lt;/a&gt;&lt;a href=&quot;#modules&quot; aria-hidden=&quot;true&quot; class=&quot;hash-link&quot;&gt;&lt;svg class=&quot;hash-link-icon&quot; aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Modules&lt;/h2&gt;
+"/><meta name="docsearch:version" content="8.8.0"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Vuex Actions · Kiln"/><meta property="og:type" content="website"/><meta property="og:url" content="https://clay.github.io//clay-kiln/"/><meta property="og:description" content="&lt;h2&gt;&lt;a class=&quot;anchor&quot; aria-hidden=&quot;true&quot; id=&quot;modules&quot;&gt;&lt;/a&gt;&lt;a href=&quot;#modules&quot; aria-hidden=&quot;true&quot; class=&quot;hash-link&quot;&gt;&lt;svg class=&quot;hash-link-icon&quot; aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Modules&lt;/h2&gt;
+"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/clay-kiln/"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/clay-kiln/css/main.css"/><script src="/clay-kiln/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/clay-kiln/"><img class="logo" src="/clay-kiln/img/kiln.png" alt="Kiln"/><h2 class="headerTitleWithLogo">Kiln</h2></a><a href="/clay-kiln/versions"><h3>8.8.0</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/clay-kiln/docs/8.8.0/intro" target="_self">Introduction</a></li><li class=""><a href="https://github.com/clay/clay-kiln" target="_self">Github</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>API DOCUMENTATION</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Introduction<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/intro">Introduction</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">KILN FUNDAMENTALS<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/kiln_ui">The Kiln UI</a></li><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Clay Components</h4><ul><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/component">Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/manipulating_components">Adding, Removing, and Reordering Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/editing_components">Editing Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/input">Form Inputs</a></li></ul></div><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/deep_linking">Deep Linking</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">API DOCUMENTATION<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Kiln API</h4><ul><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/api_kiln">API</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/snackbar">Snackbar</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/clay-kiln/docs/8.8.0/vuex_actions">Vuex Actions</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.8.0/vuex_plugin">Vuex Plugins</a></li></ul></div></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Vuex Actions</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="modules"></a><a href="#modules" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Modules</h2>
+<dl>
+<dt><a href="#module_component-data">component-data</a></dt>
+<dd></dd>
+<dt><a href="#module_decorators">decorators</a></dt>
+<dd></dd>
+<dt><a href="#module_deep-linking">deep-linking</a></dt>
+<dd></dd>
+<dt><a href="#module_drawers">drawers</a></dt>
+<dd></dd>
+<dt><a href="#module_forms">forms</a></dt>
+<dd></dd>
+<dt><a href="#module_layout-state">layout-state</a></dt>
+<dd></dd>
+<dt><a href="#module_lists">lists</a></dt>
+<dd></dd>
+<dt><a href="#module_nav">nav</a></dt>
+<dd></dd>
+<dt><a href="#module_page-data">page-data</a></dt>
+<dd></dd>
+<dt><a href="#module_page-state">page-state</a></dt>
+<dd></dd>
+<dt><a href="#module_preloader">preloader</a></dt>
+<dd></dd>
+<dt><a href="#module_toolbar">toolbar</a></dt>
+<dd></dd>
+<dt><a href="#module_undo">undo</a></dt>
+<dd></dd>
+<dt><a href="#module_validators">validators</a></dt>
+<dd></dd>
+</dl>
+<p><a name="module_component-data"></a></p>
+<h2><a class="anchor" aria-hidden="true" id="component-data"></a><a href="#component-data" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data</h2>
+<ul>
+<li><a href="#module_component-data">component-data</a>
+<ul>
+<li><em>static</em>
+<ul>
+<li><a href="#module_component-data.saveComponent">.saveComponent(store, uri, data, [eventID], [snapshot], [prevData], forceSave)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_component-data.removeComponent">.removeComponent(store, data)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_component-data.removeHeadComponent">.removeHeadComponent(store, startNode)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_component-data.addCreatedComponentsToPageArea">.addCreatedComponentsToPageArea(store, newComponents, currentURI, path, replace, number, array, boolean)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_component-data.addComponents">.addComponents(store, [currentURI], parentURI, path, [replace], components)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_component-data.openAddComponent">.openAddComponent(store, [currentURI], parentURI, path)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_component-data.currentlyRestoring">.currentlyRestoring(store, restoring)</a></li>
+</ul></li>
+<li><em>inner</em>
+<ul>
+<li><a href="#module_component-data..logSaveError">~logSaveError(uri, e, data, [eventID], [snapshot], store)</a></li>
+<li><a href="#module_component-data..revertReject">~revertReject(uri, data, [snapshot], paths, store)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_component-data..clientSave">~clientSave(uri, data, oldData, store, [eventID], [snapshot], paths)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_component-data..findIndex">~findIndex(data, [uri])</a> ⇒ <code>number</code></li>
+<li><a href="#module_component-data..addComponentsToComponentList">~addComponentsToComponentList(store, data, [currentURI], parentURI, path, [replace], components)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_component-data..addComponentsToComponentProp">~addComponentsToComponentProp(store, data, parentURI, path, components)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_component-data..addComponentsToPageArea">~addComponentsToPageArea(store, currentURI, path, replace, components)</a> ⇒ <code>Promise</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<p><a name="module_component-data.saveComponent"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-datasavecomponentstore-uri-data-eventid-snapshot-prevdata-forcesave-code-promise-code"></a><a href="#component-datasavecomponentstore-uri-data-eventid-snapshot-prevdata-forcesave-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data.saveComponent(store, uri, data, [eventID], [snapshot], [prevData], forceSave) ⇒ <code>Promise</code></h3>
+<p>save a component's data and re-render</p>
+<p><strong>Kind</strong>: static method of <a href="#module_component-data"><code>component-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td><td></td></tr>
+<tr><td>uri</td><td><code>string</code></td><td></td></tr>
+<tr><td>data</td><td><code>object</code></td><td>(may be a subset of the data)</td></tr>
+<tr><td>[eventID]</td><td><code>string</code></td><td>when saving from a pubsub subscription</td></tr>
+<tr><td>[snapshot]</td><td><code>boolean</code></td><td>set to false if save is triggered by undo/redo</td></tr>
+<tr><td>[prevData]</td><td><code>object</code></td><td>manually passed in when undoing/redoing (because the store has already been updated)</td></tr>
+<tr><td>forceSave</td><td><code>boolean</code></td><td>if true, component will be saved even if it doesn't appear to have changed</td></tr>
+</tbody>
+</table>
+<p><a name="module_component-data.removeComponent"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-dataremovecomponentstore-data-code-promise-code"></a><a href="#component-dataremovecomponentstore-data-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data.removeComponent(store, data) ⇒ <code>Promise</code></h3>
+<p>remove a component from its parent
+note: removes from parent component OR page</p>
+<p><strong>Kind</strong>: static method of <a href="#module_component-data"><code>component-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td><td></td></tr>
+<tr><td>data</td><td><code>Element</code></td><td>{el, msg} where el is the component to delete</td></tr>
+</tbody>
+</table>
+<p><a name="module_component-data.removeHeadComponent"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-dataremoveheadcomponentstore-startnode-code-promise-code"></a><a href="#component-dataremoveheadcomponentstore-startnode-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data.removeHeadComponent(store, startNode) ⇒ <code>Promise</code></h3>
+<p>remove head components (from page or layout)</p>
+<p><strong>Kind</strong>: static method of <a href="#module_component-data"><code>component-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td><td></td></tr>
+<tr><td>startNode</td><td><code>Node</code></td><td>comment with data-uri</td></tr>
+</tbody>
+</table>
+<p><a name="module_component-data.addCreatedComponentsToPageArea"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-dataaddcreatedcomponentstopageareastore-newcomponents-currenturi-path-replace-number-array-boolean-code-promise-code"></a><a href="#component-dataaddcreatedcomponentstopageareastore-newcomponents-currenturi-path-replace-number-array-boolean-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data.addCreatedComponentsToPageArea(store, newComponents, currentURI, path, replace, number, array, boolean) ⇒ <code>Promise</code></h3>
+<p>add components to a page area when they have already been created
+when the page is being reverted to the published version for instance</p>
+<p><strong>Kind</strong>: static method of <a href="#module_component-data"><code>component-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>newComponents</td><td><code>array</code></td></tr>
+<tr><td>currentURI</td><td><code>string</code></td></tr>
+<tr><td>path</td><td><code>string</code></td></tr>
+<tr><td>replace</td><td><code>boolean</code></td></tr>
+<tr><td>number</td><td><code>index</code></td></tr>
+<tr><td>array</td><td><code>data</code></td></tr>
+<tr><td>boolean</td><td><code>forceRender</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_component-data.addComponents"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-dataaddcomponentsstore-currenturi-parenturi-path-replace-components-code-promise-code"></a><a href="#component-dataaddcomponentsstore-currenturi-parenturi-path-replace-components-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data.addComponents(store, [currentURI], parentURI, path, [replace], components) ⇒ <code>Promise</code></h3>
+<p>add components to a parent component (or page)
+note: allows multiple components to be added at once
+note: always creates new instances of the components you're adding
+note: allows you to replace a specific uri, or add components after it
+note: if no currentURI passed in, it will add new components to the end (and won't replace anything)</p>
+<p><strong>Kind</strong>: static method of <a href="#module_component-data"><code>component-data</code></a>  <br>
+<strong>Returns</strong>: <code>Promise</code> - with the last added component's el</p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td><td></td></tr>
+<tr><td>[currentURI]</td><td><code>string</code></td><td>if adding after / replacing a specific component</td></tr>
+<tr><td>parentURI</td><td><code>string</code></td><td></td></tr>
+<tr><td>path</td><td><code>string</code></td><td></td></tr>
+<tr><td>[replace]</td><td><code>boolean</code></td><td>to replace the current URI</td></tr>
+<tr><td>components</td><td><code>array</code></td><td>to add (object with name and [data])</td></tr>
+</tbody>
+</table>
+<p><a name="module_component-data.openAddComponent"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-dataopenaddcomponentstore-currenturi-parenturi-path-code-promise-code"></a><a href="#component-dataopenaddcomponentstore-currenturi-parenturi-path-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data.openAddComponent(store, [currentURI], parentURI, path) ⇒ <code>Promise</code></h3>
+<p>open the add components pane, or add a new components</p>
+<p><strong>Kind</strong>: static method of <a href="#module_component-data"><code>component-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td><td></td></tr>
+<tr><td>[currentURI]</td><td><code>string</code></td><td>if we're inserting after a specific component</td></tr>
+<tr><td>parentURI</td><td><code>string</code></td><td></td></tr>
+<tr><td>path</td><td><code>string</code></td><td></td></tr>
+</tbody>
+</table>
+<p><a name="module_component-data.currentlyRestoring"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-datacurrentlyrestoringstore-restoring"></a><a href="#component-datacurrentlyrestoringstore-restoring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data.currentlyRestoring(store, restoring)</h3>
+<p>open the add components pane, or add a new components</p>
+<p><strong>Kind</strong>: static method of <a href="#module_component-data"><code>component-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td><td></td></tr>
+<tr><td>restoring</td><td><code>boolean</code></td><td>if we're currently restoring a page</td></tr>
+</tbody>
+</table>
+<p><a name="module_component-data..logSaveError"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-data-logsaveerroruri-e-data-eventid-snapshot-store"></a><a href="#component-data-logsaveerroruri-e-data-eventid-snapshot-store" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data~logSaveError(uri, e, data, [eventID], [snapshot], store)</h3>
+<p>log errors when components save and display them to the user</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_component-data"><code>component-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>uri</td><td><code>string</code></td></tr>
+<tr><td>e</td><td><code>Error</code></td></tr>
+<tr><td>data</td><td><code>object</code></td></tr>
+<tr><td>[eventID]</td><td><code>string</code></td></tr>
+<tr><td>[snapshot]</td><td><code>boolean</code></td></tr>
+<tr><td>store</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_component-data..revertReject"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-data-revertrejecturi-data-snapshot-paths-store-code-promise-code"></a><a href="#component-data-revertrejecturi-data-snapshot-paths-store-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data~revertReject(uri, data, [snapshot], paths, store) ⇒ <code>Promise</code></h3>
+<p>re-render (reverting) a component and stop the saving promise chain</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_component-data"><code>component-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>uri</td><td><code>string</code></td></tr>
+<tr><td>data</td><td><code>object</code></td></tr>
+<tr><td>[snapshot]</td><td><code>boolean</code></td></tr>
+<tr><td>paths</td><td><code>array</code></td></tr>
+<tr><td>store</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_component-data..clientSave"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-data-clientsaveuri-data-olddata-store-eventid-snapshot-paths-code-promise-code"></a><a href="#component-data-clientsaveuri-data-olddata-store-eventid-snapshot-paths-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data~clientSave(uri, data, oldData, store, [eventID], [snapshot], paths) ⇒ <code>Promise</code></h3>
+<p>save data client-side and queue up api call for the server
+note: this uses the components' model.js (if it exists) and handlebars template
+note: server-side saving and/or re-rendering has been removed in kiln v4.x</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_component-data"><code>component-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>uri</td><td><code>string</code></td><td></td></tr>
+<tr><td>data</td><td><code>object</code></td><td></td></tr>
+<tr><td>oldData</td><td><code>object</code></td><td></td></tr>
+<tr><td>store</td><td><code>object</code></td><td></td></tr>
+<tr><td>[eventID]</td><td><code>string</code></td><td></td></tr>
+<tr><td>[snapshot]</td><td><code>boolean</code></td><td>passed through to render</td></tr>
+<tr><td>paths</td><td><code>array</code></td><td></td></tr>
+</tbody>
+</table>
+<p><a name="module_component-data..findIndex"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-data-findindexdata-uri-code-number-code"></a><a href="#component-data-findindexdata-uri-code-number-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data~findIndex(data, [uri]) ⇒ <code>number</code></h3>
+<p>find the index of a uri in a list
+this is broken out into a separate function so we don't assume an index of 0 is falsy</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_component-data"><code>component-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>data</td><td><code>array</code></td></tr>
+<tr><td>[uri]</td><td><code>string</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_component-data..addComponentsToComponentList"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-data-addcomponentstocomponentliststore-data-currenturi-parenturi-path-replace-components-code-promise-code"></a><a href="#component-data-addcomponentstocomponentliststore-data-currenturi-parenturi-path-replace-components-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data~addComponentsToComponentList(store, data, [currentURI], parentURI, path, [replace], components) ⇒ <code>Promise</code></h3>
+<p>add one or more components to a component list</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_component-data"><code>component-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td><td></td></tr>
+<tr><td>data</td><td><code>array</code></td><td>list data</td></tr>
+<tr><td>[currentURI]</td><td><code>string</code></td><td>if you want to add after / replace a specific current component</td></tr>
+<tr><td>parentURI</td><td><code>string</code></td><td></td></tr>
+<tr><td>path</td><td><code>string</code></td><td>of the list</td></tr>
+<tr><td>[replace]</td><td><code>boolean</code></td><td>to replace currentURI</td></tr>
+<tr><td>components</td><td><code>array</code></td><td>with { name, [data] }</td></tr>
+</tbody>
+</table>
+<p><a name="module_component-data..addComponentsToComponentProp"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-data-addcomponentstocomponentpropstore-data-parenturi-path-components-code-promise-code"></a><a href="#component-data-addcomponentstocomponentpropstore-data-parenturi-path-components-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data~addComponentsToComponentProp(store, data, parentURI, path, components) ⇒ <code>Promise</code></h3>
+<p>replace a single component in another component's property</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_component-data"><code>component-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td><td></td></tr>
+<tr><td>data</td><td><code>object</code></td><td></td></tr>
+<tr><td>parentURI</td><td><code>string</code></td><td></td></tr>
+<tr><td>path</td><td><code>string</code></td><td></td></tr>
+<tr><td>components</td><td><code>array</code></td><td>note: it'll only replace using the first thing in this array</td></tr>
+</tbody>
+</table>
+<p><a name="module_component-data..addComponentsToPageArea"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-data-addcomponentstopageareastore-currenturi-path-replace-components-code-promise-code"></a><a href="#component-data-addcomponentstopageareastore-currenturi-path-replace-components-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data~addComponentsToPageArea(store, currentURI, path, replace, components) ⇒ <code>Promise</code></h3>
+<p>add one or more components to a page area</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_component-data"><code>component-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>currentURI</td><td><code>string</code></td></tr>
+<tr><td>path</td><td><code>string</code></td></tr>
+<tr><td>replace</td><td><code>boolean</code></td></tr>
+<tr><td>components</td><td><code>array</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_decorators"></a></p>
+<h2><a class="anchor" aria-hidden="true" id="decorators"></a><a href="#decorators" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>decorators</h2>
+<ul>
+<li><a href="#module_decorators">decorators</a>
+<ul>
+<li><a href="#module_decorators.unselect">.unselect(store)</a></li>
+<li><a href="#module_decorators.select">.select(store, el)</a></li>
+<li><a href="#module_decorators.scrollToComponent">.scrollToComponent(store, el)</a></li>
+<li><a href="#module_decorators.navigateComponents">.navigateComponents(store, direction)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_decorators.unfocus">.unfocus(store)</a> ⇒ <code>Promise</code></li>
+</ul></li>
+</ul>
+<p><a name="module_decorators.unselect"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="decoratorsunselectstore"></a><a href="#decoratorsunselectstore" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>decorators.unselect(store)</h3>
+<p>unselect currently-selected component</p>
+<p><strong>Kind</strong>: static method of <a href="#module_decorators"><code>decorators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_decorators.select"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="decoratorsselectstore-el"></a><a href="#decoratorsselectstore-el" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>decorators.select(store, el)</h3>
+<p>select a component</p>
+<p><strong>Kind</strong>: static method of <a href="#module_decorators"><code>decorators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>el</td><td><code>element</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_decorators.scrollToComponent"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="decoratorsscrolltocomponentstore-el"></a><a href="#decoratorsscrolltocomponentstore-el" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>decorators.scrollToComponent(store, el)</h3>
+<p>Scroll user to the component. &quot;Weeee!&quot; or &quot;What the?&quot;</p>
+<p><strong>Kind</strong>: static method of <a href="#module_decorators"><code>decorators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>el</td><td><code>Element</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_decorators.navigateComponents"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="decoratorsnavigatecomponentsstore-direction-code-promise-code"></a><a href="#decoratorsnavigatecomponentsstore-direction-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>decorators.navigateComponents(store, direction) ⇒ <code>Promise</code></h3>
+<p>navigate to the previous or next component</p>
+<p><strong>Kind</strong>: static method of <a href="#module_decorators"><code>decorators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td><td></td></tr>
+<tr><td>direction</td><td><code>string</code></td><td>'prev' or 'next'</td></tr>
+</tbody>
+</table>
+<p><a name="module_decorators.unfocus"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="decoratorsunfocusstore-code-promise-code"></a><a href="#decoratorsunfocusstore-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>decorators.unfocus(store) ⇒ <code>Promise</code></h3>
+<p>unfocus currently-focused field/group</p>
+<p><strong>Kind</strong>: static method of <a href="#module_decorators"><code>decorators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_deep-linking"></a></p>
+<h2><a class="anchor" aria-hidden="true" id="deep-linking"></a><a href="#deep-linking" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>deep-linking</h2>
+<ul>
+<li><a href="#module_deep-linking">deep-linking</a>
+<ul>
+<li><a href="#module_deep-linking.parseURLHash">.parseURLHash(store)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_deep-linking.setHash">.setHash(commit, [uri], [path], [initialFocus], [menu])</a></li>
+<li><a href="#module_deep-linking.clearHash">.clearHash(commit)</a></li>
+</ul></li>
+</ul>
+<p><a name="module_deep-linking.parseURLHash"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="deep-linkingparseurlhashstore-code-promise-code"></a><a href="#deep-linkingparseurlhashstore-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>deep-linking.parseURLHash(store) ⇒ <code>Promise</code></h3>
+<p>parse url hash, opening form or clay menu as necessary</p>
+<p><strong>Kind</strong>: static method of <a href="#module_deep-linking"><code>deep-linking</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_deep-linking.setHash"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="deep-linkingsethashcommit-uri-path-initialfocus-menu"></a><a href="#deep-linkingsethashcommit-uri-path-initialfocus-menu" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>deep-linking.setHash(commit, [uri], [path], [initialFocus], [menu])</h3>
+<p>set hash in window and store</p>
+<p><strong>Kind</strong>: static method of <a href="#module_deep-linking"><code>deep-linking</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>commit</td><td><code>function</code></td></tr>
+<tr><td>[uri]</td><td><code>string</code></td></tr>
+<tr><td>[path]</td><td><code>string</code></td></tr>
+<tr><td>[initialFocus]</td><td><code>string</code></td></tr>
+<tr><td>[menu]</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_deep-linking.clearHash"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="deep-linkingclearhashcommit"></a><a href="#deep-linkingclearhashcommit" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>deep-linking.clearHash(commit)</h3>
+<p>clear hash in window and store</p>
+<p><strong>Kind</strong>: static method of <a href="#module_deep-linking"><code>deep-linking</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>commit</td><td><code>function</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_drawers"></a></p>
+<h2><a class="anchor" aria-hidden="true" id="drawers"></a><a href="#drawers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>drawers</h2>
+<ul>
+<li><a href="#module_drawers">drawers</a>
+<ul>
+<li><a href="#module_drawers.closeDrawer">.closeDrawer(store)</a></li>
+<li><a href="#module_drawers.openDrawer">.openDrawer(store, nameOrConfig)</a></li>
+</ul></li>
+</ul>
+<p><a name="module_drawers.closeDrawer"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="drawersclosedrawerstore"></a><a href="#drawersclosedrawerstore" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>drawers.closeDrawer(store)</h3>
+<p>close drawer without toggling a new drawer</p>
+<p><strong>Kind</strong>: static method of <a href="#module_drawers"><code>drawers</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>Object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_drawers.openDrawer"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="drawersopendrawerstore-nameorconfig"></a><a href="#drawersopendrawerstore-nameorconfig" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>drawers.openDrawer(store, nameOrConfig)</h3>
+<p>open drawer</p>
+<p><strong>Kind</strong>: static method of <a href="#module_drawers"><code>drawers</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>Object</code></td><td></td></tr>
+<tr><td>nameOrConfig</td><td><code>string</code> \ <code>object</code></td><td>either just the tab name or a json object for deeper linking</td></tr>
+</tbody>
+</table>
+<p><a name="module_forms"></a></p>
+<h2><a class="anchor" aria-hidden="true" id="forms"></a><a href="#forms" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>forms</h2>
+<ul>
+<li><a href="#module_forms">forms</a>
+<ul>
+<li><em>static</em>
+<ul>
+<li><a href="#module_forms.openForm">.openForm(store, uri, path, [el], [offset], [appendText], [initialFocus], pos)</a></li>
+</ul></li>
+<li><em>inner</em>
+<ul>
+<li><a href="#module_forms..hasDataChanged">~hasDataChanged(newData, oldData)</a> ⇒ <code>Boolean</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<p><a name="module_forms.openForm"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="formsopenformstore-uri-path-el-offset-appendtext-initialfocus-pos"></a><a href="#formsopenformstore-uri-path-el-offset-appendtext-initialfocus-pos" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>forms.openForm(store, uri, path, [el], [offset], [appendText], [initialFocus], pos)</h3>
+<p>open form</p>
+<p><strong>Kind</strong>: static method of <a href="#module_forms"><code>forms</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td><td></td></tr>
+<tr><td>uri</td><td><code>string</code></td><td>component uri</td></tr>
+<tr><td>path</td><td><code>string</code></td><td>field/form path</td></tr>
+<tr><td>[el]</td><td><code>Element</code></td><td>parent element (for inline forms)</td></tr>
+<tr><td>[offset]</td><td><code>number</code></td><td>caret offset (for text inputs)</td></tr>
+<tr><td>[appendText]</td><td><code>string</code></td><td>text to append (for text inputs, used when splitting/merging components with text fields)</td></tr>
+<tr><td>[initialFocus]</td><td><code>string</code></td><td>if focusing on a specific field when opening the form</td></tr>
+<tr><td>pos</td><td><code>object</code></td><td>x/y coordinates used to position overlay forms</td></tr>
+</tbody>
+</table>
+<p><a name="module_forms..hasDataChanged"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="forms-hasdatachangednewdata-olddata-code-boolean-code"></a><a href="#forms-hasdatachangednewdata-olddata-code-boolean-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>forms~hasDataChanged(newData, oldData) ⇒ <code>Boolean</code></h3>
+<p>determine if data in form has changed
+note: convert data to plain objects, since they're reactive</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_forms"><code>forms</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>newData</td><td><code>object</code></td><td>from form</td></tr>
+<tr><td>oldData</td><td><code>object</code></td><td>from store</td></tr>
+</tbody>
+</table>
+<p><a name="module_layout-state"></a></p>
+<h2><a class="anchor" aria-hidden="true" id="layout-state"></a><a href="#layout-state" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>layout-state</h2>
+<ul>
+<li><a href="#module_layout-state">layout-state</a>
+<ul>
+<li><a href="#module_layout-state.fetchLayoutState">.fetchLayoutState(store, [preloadOptions])</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_layout-state.updateLayout">.updateLayout(store, [data], [preloadOptions])</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_layout-state.scheduleLayout">.scheduleLayout(store, timestamp)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_layout-state.unscheduleLayout">.unscheduleLayout(store, [publishing])</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_layout-state.publishLayout">.publishLayout(store)</a> ⇒ <code>Promise</code></li>
+</ul></li>
+</ul>
+<p><a name="module_layout-state.fetchLayoutState"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="layout-statefetchlayoutstatestore-preloadoptions-code-promise-code"></a><a href="#layout-statefetchlayoutstatestore-preloadoptions-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>layout-state.fetchLayoutState(store, [preloadOptions]) ⇒ <code>Promise</code></h3>
+<p>get the list data for a specific layout
+note: if prefix / uri is specified, this does NOT commit the data (only returns it),
+allowing the preloader to use it when doing the initial preload of data</p>
+<p><strong>Kind</strong>: static method of <a href="#module_layout-state"><code>layout-state</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>[preloadOptions]</td><td><code>object</code></td></tr>
+<tr><td>[preloadOptions.uri]</td><td><code>string</code></td></tr>
+<tr><td>[preloadOptions.prefix]</td><td><code>string</code></td></tr>
+<tr><td>[preloadOptions.user]</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_layout-state.updateLayout"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="layout-stateupdatelayoutstore-data-preloadoptions-code-promise-code"></a><a href="#layout-stateupdatelayoutstore-data-preloadoptions-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>layout-state.updateLayout(store, [data], [preloadOptions]) ⇒ <code>Promise</code></h3>
+<p>update a layout's title, or just the latest timestamp + user</p>
+<p><strong>Kind</strong>: static method of <a href="#module_layout-state"><code>layout-state</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>[data]</td><td><code>object</code></td></tr>
+<tr><td>[data.title]</td><td><code>string</code></td></tr>
+<tr><td>[preloadOptions]</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_layout-state.scheduleLayout"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="layout-stateschedulelayoutstore-timestamp-code-promise-code"></a><a href="#layout-stateschedulelayoutstore-timestamp-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>layout-state.scheduleLayout(store, timestamp) ⇒ <code>Promise</code></h3>
+<p>schedule the layout and update its index</p>
+<p><strong>Kind</strong>: static method of <a href="#module_layout-state"><code>layout-state</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>timestamp</td><td><code>Date</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_layout-state.unscheduleLayout"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="layout-stateunschedulelayoutstore-publishing-code-promise-code"></a><a href="#layout-stateunschedulelayoutstore-publishing-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>layout-state.unscheduleLayout(store, [publishing]) ⇒ <code>Promise</code></h3>
+<p>unschedule the layout
+get updated layout state if the call wasn't made during layout publish</p>
+<p><strong>Kind</strong>: static method of <a href="#module_layout-state"><code>layout-state</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>[publishing]</td><td><code>Boolean</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_layout-state.publishLayout"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="layout-statepublishlayoutstore-code-promise-code"></a><a href="#layout-statepublishlayoutstore-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>layout-state.publishLayout(store) ⇒ <code>Promise</code></h3>
+<p>publish layout
+note: layouts index is updated server-side, including unscheduling the layout
+if it's currently scheduled
+also note: this will trigger a fetch of the updated (published) layout state</p>
+<p><strong>Kind</strong>: static method of <a href="#module_layout-state"><code>layout-state</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_lists"></a></p>
+<h2><a class="anchor" aria-hidden="true" id="lists"></a><a href="#lists" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>lists</h2>
+<p><a name="module_nav"></a></p>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="nav"></a><a href="#nav" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>nav</h2>
+<p><a name="module_nav.openNav"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="navopennavstore-nameorconfig"></a><a href="#navopennavstore-nameorconfig" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>nav.openNav(store, nameOrConfig)</h3>
+<p>open nav tab</p>
+<p><strong>Kind</strong>: static method of <a href="#module_nav"><code>nav</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td><td></td></tr>
+<tr><td>nameOrConfig</td><td><code>string</code> \ <code>object</code></td><td>tab name, or clay menu config openNav sets the ui.currentDrawer vuex variable, this allows drawers (the right slide-in menus) as well as the &quot;nav&quot; (the left slide-in menu) to be deep linked to. The openNav/closeNav are functions are depreciated. Should use the openDrawer/closeDrawer/toggleDrawer actions Just leaving these here in case any legacy plugins are still calling these functions</td></tr>
+</tbody>
+</table>
+<p><a name="module_page-data"></a></p>
+<h2><a class="anchor" aria-hidden="true" id="page-data"></a><a href="#page-data" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>page-data</h2>
+<ul>
+<li><a href="#module_page-data">page-data</a>
+<ul>
+<li><em>static</em>
+<ul>
+<li><a href="#module_page-data.savePage">.savePage(store, data, [snapshot])</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_page-data.createPage">.createPage(store, id)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_page-data.publishPage">.publishPage(store, uri)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_page-data.unpublishPage">.unpublishPage(store, uri)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_page-data.schedulePage">.schedulePage(store, uri, timestamp)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_page-data.unschedulePage">.unschedulePage(store, [publishing])</a> ⇒ <code>Promise</code></li>
+</ul></li>
+<li><em>inner</em>
+<ul>
+<li><a href="#module_page-data..shouldRender">~shouldRender(paths)</a> ⇒ <code>boolean</code></li>
+<li><a href="#module_page-data..removeURI">~removeURI(uri, store)</a> ⇒ <code>Promise</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<p><a name="module_page-data.savePage"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="page-datasavepagestore-data-snapshot-code-promise-code"></a><a href="#page-datasavepagestore-data-snapshot-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>page-data.savePage(store, data, [snapshot]) ⇒ <code>Promise</code></h3>
+<p>save a page's data, but do not re-render
+because, uh, that would just be reloading the page</p>
+<p><strong>Kind</strong>: static method of <a href="#module_page-data"><code>page-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td><td></td></tr>
+<tr><td>data</td><td><code>*</code></td><td>to save</td></tr>
+<tr><td>[snapshot]</td><td><code>boolean</code></td><td>false if we're undoing/redoing</td></tr>
+</tbody>
+</table>
+<p><a name="module_page-data.createPage"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="page-datacreatepagestore-id-code-promise-code"></a><a href="#page-datacreatepagestore-id-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>page-data.createPage(store, id) ⇒ <code>Promise</code></h3>
+<p>create a new page, then return its editable link</p>
+<p><strong>Kind</strong>: static method of <a href="#module_page-data"><code>page-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>id</td><td><code>string</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_page-data.publishPage"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="page-datapublishpagestore-uri-code-promise-code"></a><a href="#page-datapublishpagestore-uri-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>page-data.publishPage(store, uri) ⇒ <code>Promise</code></h3>
+<p>manually publish the page</p>
+<p><strong>Kind</strong>: static method of <a href="#module_page-data"><code>page-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>uri</td><td><code>string</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_page-data.unpublishPage"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="page-dataunpublishpagestore-uri-code-promise-code"></a><a href="#page-dataunpublishpagestore-uri-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>page-data.unpublishPage(store, uri) ⇒ <code>Promise</code></h3>
+<p>remove uri from /uris/</p>
+<p><strong>Kind</strong>: static method of <a href="#module_page-data"><code>page-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>uri</td><td><code>string</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_page-data.schedulePage"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="page-dataschedulepagestore-uri-timestamp-code-promise-code"></a><a href="#page-dataschedulepagestore-uri-timestamp-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>page-data.schedulePage(store, uri, timestamp) ⇒ <code>Promise</code></h3>
+<p>schedule the page to publish</p>
+<p><strong>Kind</strong>: static method of <a href="#module_page-data"><code>page-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>uri</td><td><code>string</code></td></tr>
+<tr><td>timestamp</td><td><code>Date</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_page-data.unschedulePage"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="page-dataunschedulepagestore-publishing-code-promise-code"></a><a href="#page-dataunschedulepagestore-publishing-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>page-data.unschedulePage(store, [publishing]) ⇒ <code>Promise</code></h3>
+<p>unschedule the page
+get updated page state if the call wasn't made during a page publish</p>
+<p><strong>Kind</strong>: static method of <a href="#module_page-data"><code>page-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>[publishing]</td><td><code>Boolean</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_page-data..shouldRender"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="page-data-shouldrenderpaths-code-boolean-code"></a><a href="#page-data-shouldrenderpaths-code-boolean-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>page-data~shouldRender(paths) ⇒ <code>boolean</code></h3>
+<p>iterate through the paths we're saving
+if one of them ISN'T in the internalPageProps, we should re-render</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_page-data"><code>page-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>paths</td><td><code>array</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_page-data..removeURI"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="page-data-removeuriuri-store-code-promise-code"></a><a href="#page-data-removeuriuri-store-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>page-data~removeURI(uri, store) ⇒ <code>Promise</code></h3>
+<p>remove uri from /uris/</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_page-data"><code>page-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>uri</td><td><code>String</code></td></tr>
+<tr><td>store</td><td><code>Object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_page-state"></a></p>
+<h2><a class="anchor" aria-hidden="true" id="page-state"></a><a href="#page-state" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>page-state</h2>
+<ul>
+<li><a href="#module_page-state">page-state</a>
+<ul>
+<li><em>static</em>
+<ul>
+<li><a href="#module_page-state.updatePageList">.updatePageList(store, [data])</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_page-state.getListData">.getListData(store, uri, [prefix])</a> ⇒ <code>Promise</code></li>
+</ul></li>
+<li><em>inner</em>
+<ul>
+<li><a href="#module_page-state..sequentialUpdate">~sequentialUpdate(prefix, uri, data)</a> ⇒ <code>Promise</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<p><a name="module_page-state.updatePageList"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="page-stateupdatepageliststore-data-code-promise-code"></a><a href="#page-stateupdatepageliststore-data-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>page-state.updatePageList(store, [data]) ⇒ <code>Promise</code></h3>
+<p>update page list with data provided from pubsub
+note: if called without data, this just updates the updateTime and user
+(e.g. when saving components in the page)
+note: if called with a user, it adds the user (with updateTime) to the page (instead of current user)</p>
+<p><strong>Kind</strong>: static method of <a href="#module_page-state"><code>page-state</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>[data]</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_page-state.getListData"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="page-stategetlistdatastore-uri-prefix-code-promise-code"></a><a href="#page-stategetlistdatastore-uri-prefix-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>page-state.getListData(store, uri, [prefix]) ⇒ <code>Promise</code></h3>
+<p>get the list data for a specific page
+note: if the prefix is specified, this does NOT commit the data (only returns it),
+allowing the preloader to use it when doing the initial preload of data</p>
+<p><strong>Kind</strong>: static method of <a href="#module_page-state"><code>page-state</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td><td></td></tr>
+<tr><td>uri</td><td><code>string</code></td><td></td></tr>
+<tr><td>[prefix]</td><td><code>string</code></td><td>passed in when preloading (e.g. if site isn't in store yet)</td></tr>
+</tbody>
+</table>
+<p><a name="module_page-state..sequentialUpdate"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="page-state-sequentialupdateprefix-uri-data-code-promise-code"></a><a href="#page-state-sequentialupdateprefix-uri-data-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>page-state~sequentialUpdate(prefix, uri, data) ⇒ <code>Promise</code></h3>
+<p>run page list updates sequentially, grabbing from the store after each to prevent race conditions</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_page-state"><code>page-state</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>prefix</td><td><code>string</code></td></tr>
+<tr><td>uri</td><td><code>string</code></td></tr>
+<tr><td>data</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_preloader"></a></p>
+<h2><a class="anchor" aria-hidden="true" id="preloader"></a><a href="#preloader" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>preloader</h2>
+<ul>
+<li><a href="#module_preloader">preloader</a>
+<ul>
+<li><a href="#module_preloader..getComponentModels">~getComponentModels()</a> ⇒ <code>object</code></li>
+<li><a href="#module_preloader..reduceComponents">~reduceComponents(result, val)</a> ⇒ <code>obj</code></li>
+<li><a href="#module_preloader..composeLayoutData">~composeLayoutData(layoutSchema, components, original)</a> ⇒ <code>object</code></li>
+<li><a href="#module_preloader..reduceTemplates">~reduceTemplates(result, val, key)</a> ⇒ <code>obj</code></li>
+<li><a href="#module_preloader..getPageStatus">~getPageStatus(state)</a> ⇒ <code>string</code></li>
+</ul></li>
+</ul>
+<p><a name="module_preloader..getComponentModels"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="preloader-getcomponentmodels-code-object-code"></a><a href="#preloader-getcomponentmodels-code-object-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>preloader~getComponentModels() ⇒ <code>object</code></h3>
+<p>get component models so we can mount them on window.kiln.componentModels
+if they aren't already mounted (backwards-compatability)</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_preloader"><code>preloader</code></a>  <br>
+<a name="module_preloader..reduceComponents"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="preloader-reducecomponentsresult-val-code-obj-code"></a><a href="#preloader-reducecomponentsresult-val-code-obj-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>preloader~reduceComponents(result, val) ⇒ <code>obj</code></h3>
+<p>extract component data from preloadData obj</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_preloader"><code>preloader</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>result</td><td><code>obj</code></td></tr>
+<tr><td>val</td><td><code>obj</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_preloader..composeLayoutData"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="preloader-composelayoutdatalayoutschema-components-original-code-object-code"></a><a href="#preloader-composelayoutdatalayoutschema-components-original-code-object-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>preloader~composeLayoutData(layoutSchema, components, original) ⇒ <code>object</code></h3>
+<p>extract layout data from original data</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_preloader"><code>preloader</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>layoutSchema</td><td><code>object</code></td><td>schema for layout</td></tr>
+<tr><td>components</td><td><code>object</code></td><td>key/value store of components</td></tr>
+<tr><td>original</td><td><code>object</code></td><td>original preloaded data</td></tr>
+</tbody>
+</table>
+<p><a name="module_preloader..reduceTemplates"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="preloader-reducetemplatesresult-val-key-code-obj-code"></a><a href="#preloader-reducetemplatesresult-val-key-code-obj-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>preloader~reduceTemplates(result, val, key) ⇒ <code>obj</code></h3>
+<p>make precompiled hbs templates ready for user</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_preloader"><code>preloader</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>result</td><td><code>obj</code></td></tr>
+<tr><td>val</td><td><code>obj</code></td></tr>
+<tr><td>key</td><td><code>string</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_preloader..getPageStatus"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="preloader-getpagestatusstate-code-string-code"></a><a href="#preloader-getpagestatusstate-code-string-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>preloader~getPageStatus(state) ⇒ <code>string</code></h3>
+<p>get string state to pass to progress bar</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_preloader"><code>preloader</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>state</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_toolbar"></a></p>
+<h2><a class="anchor" aria-hidden="true" id="toolbar"></a><a href="#toolbar" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>toolbar</h2>
+<ul>
+<li><a href="#module_toolbar">toolbar</a>
+<ul>
+<li><a href="#module_toolbar.startProgress">.startProgress(commit, type)</a></li>
+<li><a href="#module_toolbar.finishProgress">.finishProgress(commit, type)</a></li>
+<li><a href="#module_toolbar.addAlert">.addAlert(store, config)</a></li>
+<li><a href="#module_toolbar.removeAlert">.removeAlert(store, config)</a></li>
+<li><a href="#module_toolbar.showSnackbar">.showSnackbar(store, config)</a></li>
+</ul></li>
+</ul>
+<p><a name="module_toolbar.startProgress"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="toolbarstartprogresscommit-type"></a><a href="#toolbarstartprogresscommit-type" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>toolbar.startProgress(commit, type)</h3>
+<p>start progress bar. if already started, this will cause a slight pause
+before continuing the progress bar</p>
+<p><strong>Kind</strong>: static method of <a href="#module_toolbar"><code>toolbar</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>commit</td><td><code>function</code></td><td></td></tr>
+<tr><td>type</td><td><code>string</code></td><td>e.g. 'save' or 'publish'</td></tr>
+</tbody>
+</table>
+<p><a name="module_toolbar.finishProgress"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="toolbarfinishprogresscommit-type"></a><a href="#toolbarfinishprogresscommit-type" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>toolbar.finishProgress(commit, type)</h3>
+<p>finish the progress bar.</p>
+<p><strong>Kind</strong>: static method of <a href="#module_toolbar"><code>toolbar</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>commit</td><td><code>function</code></td><td></td></tr>
+<tr><td>type</td><td><code>string</code></td><td>e.g. 'save' or 'publish'</td></tr>
+</tbody>
+</table>
+<p><a name="module_toolbar.addAlert"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="toolbaraddalertstore-config"></a><a href="#toolbaraddalertstore-config" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>toolbar.addAlert(store, config)</h3>
+<p>add alert to the array</p>
+<p><strong>Kind</strong>: static method of <a href="#module_toolbar"><code>toolbar</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td><td></td></tr>
+<tr><td>config</td><td><code>string</code> \ <code>object</code></td><td>the text of the alert (for info), or an object with { type, text }</td></tr>
+</tbody>
+</table>
+<p><a name="module_toolbar.removeAlert"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="toolbarremovealertstore-config"></a><a href="#toolbarremovealertstore-config" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>toolbar.removeAlert(store, config)</h3>
+<p>remove an alert from the array, specifying the index</p>
+<p><strong>Kind</strong>: static method of <a href="#module_toolbar"><code>toolbar</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td><td></td></tr>
+<tr><td>config</td><td><code>number</code> \ <code>object</code></td><td>index or an equivalent config object</td></tr>
+</tbody>
+</table>
+<p><a name="module_toolbar.showSnackbar"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="toolbarshowsnackbarstore-config"></a><a href="#toolbarshowsnackbarstore-config" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>toolbar.showSnackbar(store, config)</h3>
+<p>trigger a new snackbar. note: this happens imperatively (toolbar handles the actual creation, by watching this value)
+note: if you want the snackbar to have an action, pass in both <code>action</code> (the text of the button) and <code>onActionClick</code> (a reference to the function you want invoked)</p>
+<p><strong>Kind</strong>: static method of <a href="#module_toolbar"><code>toolbar</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td><td></td></tr>
+<tr><td>config</td><td><code>string</code> \ <code>object</code></td><td>message or full config object</td></tr>
+</tbody>
+</table>
+<p><a name="module_undo"></a></p>
+<h2><a class="anchor" aria-hidden="true" id="undo"></a><a href="#undo" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>undo</h2>
+<ul>
+<li><a href="#module_undo">undo</a>
+<ul>
+<li><em>static</em>
+<ul>
+<li><a href="#module_undo.createSnapshot">.createSnapshot(store)</a></li>
+<li><a href="#module_undo.setFixedPoint">.setFixedPoint(store)</a></li>
+<li><a href="#module_undo.undo">.undo(store)</a></li>
+<li><a href="#module_undo.redo">.redo(store)</a></li>
+</ul></li>
+<li><em>inner</em>
+<ul>
+<li><a href="#module_undo..getChangedComponents">~getChangedComponents(current, compare)</a> ⇒ <code>object</code></li>
+<li><a href="#module_undo..saveChangedComponents">~saveChangedComponents(changedComponents, store)</a></li>
+</ul></li>
+</ul></li>
+</ul>
+<p><a name="module_undo.createSnapshot"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="undocreatesnapshotstore"></a><a href="#undocreatesnapshotstore" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>undo.createSnapshot(store)</h3>
+<p>create snapshot. called from the plugin listening to batched renders</p>
+<p><strong>Kind</strong>: static method of <a href="#module_undo"><code>undo</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_undo.setFixedPoint"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="undosetfixedpointstore"></a><a href="#undosetfixedpointstore" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>undo.setFixedPoint(store)</h3>
+<p>&quot;You're a fixed point in time and space. You're a fact. That's never meant to happen.&quot;
+when doing a manual save from some point in history, we need to
+remove snapshots after that point (to preserve the expected undo functionality)</p>
+<p><strong>Kind</strong>: static method of <a href="#module_undo"><code>undo</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_undo.undo"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="undoundostore"></a><a href="#undoundostore" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>undo.undo(store)</h3>
+<p>undo: sets cursor back one, re-saves affected components with old data</p>
+<p><strong>Kind</strong>: static method of <a href="#module_undo"><code>undo</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_undo.redo"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="undoredostore"></a><a href="#undoredostore" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>undo.redo(store)</h3>
+<p>redo: sets cursor forward one, re-saves affected components with new data</p>
+<p><strong>Kind</strong>: static method of <a href="#module_undo"><code>undo</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_undo..getChangedComponents"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="undo-getchangedcomponentscurrent-compare-code-object-code"></a><a href="#undo-getchangedcomponentscurrent-compare-code-object-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>undo~getChangedComponents(current, compare) ⇒ <code>object</code></h3>
+<p>get changed components, used by undo and redo</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_undo"><code>undo</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>current</td><td><code>object</code></td><td></td></tr>
+<tr><td>compare</td><td><code>object</code></td><td>(prev/next components object)</td></tr>
+</tbody>
+</table>
+<p><a name="module_undo..saveChangedComponents"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="undo-savechangedcomponentschangedcomponents-store"></a><a href="#undo-savechangedcomponentschangedcomponents-store" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>undo~saveChangedComponents(changedComponents, store)</h3>
+<p>render multiple components at once</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_undo"><code>undo</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>changedComponents</td><td><code>object</code></td></tr>
+<tr><td>store</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_validators"></a></p>
+<h2><a class="anchor" aria-hidden="true" id="validators"></a><a href="#validators" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>validators</h2>
+<ul>
+<li><a href="#module_validators">validators</a>
+<ul>
+<li><em>static</em>
+<ul>
+<li><a href="#module_validators.validate">.validate(store)</a> ⇒ <code>Promise</code></li>
+</ul></li>
+<li><em>inner</em>
+<ul>
+<li><a href="#module_validators..isComponentInPageHeadList">~isComponentInPageHeadList(uri, state)</a> ⇒ <code>Boolean</code></li>
+<li><a href="#module_validators..runValidator">~runValidator(state)</a> ⇒ <code>function</code></li>
+<li><a href="#module_validators..runValidators">~runValidators(validators, state)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_validators..hasItems">~hasItems(error)</a> ⇒ <code>Boolean</code></li>
+<li><a href="#module_validators..runMetaValidator">~runMetaValidator(metadata)</a> ⇒ <code>function</code></li>
+<li><a href="#module_validators..runMetaValidators">~runMetaValidators(uri, validators)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_validators..isMetadataError">~isMetadataError(scope, type)</a> ⇒ <code>boolean</code></li>
+<li><a href="#module_validators..isMetadataWarning">~isMetadataWarning(scope, type)</a> ⇒ <code>boolean</code></li>
+<li><a href="#module_validators..isGlobalMetadataError">~isGlobalMetadataError(validator)</a> ⇒ <code>boolean</code></li>
+<li><a href="#module_validators..isGlobalMetadataWarning">~isGlobalMetadataWarning(validator)</a> ⇒ <code>boolean</code></li>
+<li><a href="#module_validators..isSpecificMetadataWarning">~isSpecificMetadataWarning(validator, pageUri)</a> ⇒ <code>boolean</code></li>
+<li><a href="#module_validators..isSpecificMetadataError">~isSpecificMetadataError(validator, pageUri)</a> ⇒ <code>boolean</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<p><a name="module_validators.validate"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="validatorsvalidatestore-code-promise-code"></a><a href="#validatorsvalidatestore-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>validators.validate(store) ⇒ <code>Promise</code></h3>
+<p>trigger validation</p>
+<p><strong>Kind</strong>: static method of <a href="#module_validators"><code>validators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_validators..isComponentInPageHeadList"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="validators-iscomponentinpageheadlisturi-state-code-boolean-code"></a><a href="#validators-iscomponentinpageheadlisturi-state-code-boolean-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>validators~isComponentInPageHeadList(uri, state) ⇒ <code>Boolean</code></h3>
+<p>determine if a component is in a page-specific head list</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_validators"><code>validators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>uri</td><td><code>string</code></td></tr>
+<tr><td>state</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_validators..runValidator"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="validators-runvalidatorstate-code-function-code"></a><a href="#validators-runvalidatorstate-code-function-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>validators~runValidator(state) ⇒ <code>function</code></h3>
+<p>run an individual validator. if it returns items, add the label and description</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_validators"><code>validators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>state</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_validators..runValidators"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="validators-runvalidatorsvalidators-state-code-promise-code"></a><a href="#validators-runvalidatorsvalidators-state-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>validators~runValidators(validators, state) ⇒ <code>Promise</code></h3>
+<p>run a list of validators</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_validators"><code>validators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>validators</td><td><code>array</code></td></tr>
+<tr><td>state</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_validators..hasItems"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="validators-hasitemserror-code-boolean-code"></a><a href="#validators-hasitemserror-code-boolean-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>validators~hasItems(error) ⇒ <code>Boolean</code></h3>
+<p>make sure that all errors have items that can display.
+some may have been parsed out by the isActive check in runValidator, above</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_validators"><code>validators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>error</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_validators..runMetaValidator"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="validators-runmetavalidatormetadata-code-function-code"></a><a href="#validators-runmetavalidatormetadata-code-function-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>validators~runMetaValidator(metadata) ⇒ <code>function</code></h3>
+<p>run an metadata validator. if it returns items, add the label and description and items</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_validators"><code>validators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>metadata</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_validators..runMetaValidators"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="validators-runmetavalidatorsuri-validators-code-promise-code"></a><a href="#validators-runmetavalidatorsuri-validators-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>validators~runMetaValidators(uri, validators) ⇒ <code>Promise</code></h3>
+<p>run a list of validators using page metadata</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_validators"><code>validators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>uri</td><td><code>uri</code></td><td>uri</td></tr>
+<tr><td>validators</td><td><code>array</code></td><td></td></tr>
+</tbody>
+</table>
+<p><a name="module_validators..isMetadataError"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="validators-ismetadataerrorscope-type-code-boolean-code"></a><a href="#validators-ismetadataerrorscope-type-code-boolean-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>validators~isMetadataError(scope, type) ⇒ <code>boolean</code></h3>
+<p>Check whether is a metadata error</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_validators"><code>validators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>scope</td><td><code>string</code></td></tr>
+<tr><td>type</td><td><code>string</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_validators..isMetadataWarning"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="validators-ismetadatawarningscope-type-code-boolean-code"></a><a href="#validators-ismetadatawarningscope-type-code-boolean-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>validators~isMetadataWarning(scope, type) ⇒ <code>boolean</code></h3>
+<p>Check whether is a metadata warning</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_validators"><code>validators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>scope</td><td><code>string</code></td></tr>
+<tr><td>type</td><td><code>string</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_validators..isGlobalMetadataError"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="validators-isglobalmetadataerrorvalidator-code-boolean-code"></a><a href="#validators-isglobalmetadataerrorvalidator-code-boolean-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>validators~isGlobalMetadataError(validator) ⇒ <code>boolean</code></h3>
+<p>Check whether is a metadata error</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_validators"><code>validators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>validator</td><td><code>object</code></td></tr>
+<tr><td>validator.scope</td><td><code>string</code></td></tr>
+<tr><td>validator.type</td><td><code>string</code></td></tr>
+<tr><td>validator.uri</td><td><code>string</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_validators..isGlobalMetadataWarning"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="validators-isglobalmetadatawarningvalidator-code-boolean-code"></a><a href="#validators-isglobalmetadatawarningvalidator-code-boolean-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>validators~isGlobalMetadataWarning(validator) ⇒ <code>boolean</code></h3>
+<p>Check whether is a metadata error</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_validators"><code>validators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>validator</td><td><code>object</code></td></tr>
+<tr><td>validator.scope</td><td><code>string</code></td></tr>
+<tr><td>validator.type</td><td><code>string</code></td></tr>
+<tr><td>validator.uri</td><td><code>string</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_validators..isSpecificMetadataWarning"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="validators-isspecificmetadatawarningvalidator-pageuri-code-boolean-code"></a><a href="#validators-isspecificmetadatawarningvalidator-pageuri-code-boolean-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>validators~isSpecificMetadataWarning(validator, pageUri) ⇒ <code>boolean</code></h3>
+<p>Check whether is a metadata warning for a specific page</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_validators"><code>validators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>validator</td><td><code>object</code></td></tr>
+<tr><td>validator.scope</td><td><code>string</code></td></tr>
+<tr><td>validator.type</td><td><code>string</code></td></tr>
+<tr><td>validator.uri</td><td><code>string</code></td></tr>
+<tr><td>pageUri</td><td><code>string</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_validators..isSpecificMetadataError"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="validators-isspecificmetadataerrorvalidator-pageuri-code-boolean-code"></a><a href="#validators-isspecificmetadataerrorvalidator-pageuri-code-boolean-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>validators~isSpecificMetadataError(validator, pageUri) ⇒ <code>boolean</code></h3>
+<p>Check whether is a metadata error for specific page</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_validators"><code>validators</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>validator</td><td><code>object</code></td></tr>
+<tr><td>validator.scope</td><td><code>string</code></td></tr>
+<tr><td>validator.type</td><td><code>string</code></td></tr>
+<tr><td>validator.uri</td><td><code>string</code></td></tr>
+<tr><td>pageUri</td><td><code>string</code></td></tr>
+</tbody>
+</table>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/clay-kiln/docs/8.8.0/snackbar"><span class="arrow-prev">← </span><span>Snackbar</span></a><a class="docs-next button" href="/clay-kiln/docs/8.8.0/vuex_plugin"><span>Vuex Plugins</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#modules">Modules</a></li><li><a href="#component-data">component-data</a><ul class="toc-headings"><li><a href="#component-datasavecomponentstore-uri-data-eventid-snapshot-prevdata-forcesave-code-promise-code">component-data.saveComponent(store, uri, data, [eventID], [snapshot], [prevData], forceSave) ⇒ Promise</a></li><li><a href="#component-dataremovecomponentstore-data-code-promise-code">component-data.removeComponent(store, data) ⇒ Promise</a></li><li><a href="#component-dataremoveheadcomponentstore-startnode-code-promise-code">component-data.removeHeadComponent(store, startNode) ⇒ Promise</a></li><li><a href="#component-dataaddcreatedcomponentstopageareastore-newcomponents-currenturi-path-replace-number-array-boolean-code-promise-code">component-data.addCreatedComponentsToPageArea(store, newComponents, currentURI, path, replace, number, array, boolean) ⇒ Promise</a></li><li><a href="#component-dataaddcomponentsstore-currenturi-parenturi-path-replace-components-code-promise-code">component-data.addComponents(store, [currentURI], parentURI, path, [replace], components) ⇒ Promise</a></li><li><a href="#component-dataopenaddcomponentstore-currenturi-parenturi-path-code-promise-code">component-data.openAddComponent(store, [currentURI], parentURI, path) ⇒ Promise</a></li><li><a href="#component-datacurrentlyrestoringstore-restoring">component-data.currentlyRestoring(store, restoring)</a></li><li><a href="#component-data-logsaveerroruri-e-data-eventid-snapshot-store">component-data~logSaveError(uri, e, data, [eventID], [snapshot], store)</a></li><li><a href="#component-data-revertrejecturi-data-snapshot-paths-store-code-promise-code">component-data~revertReject(uri, data, [snapshot], paths, store) ⇒ Promise</a></li><li><a href="#component-data-clientsaveuri-data-olddata-store-eventid-snapshot-paths-code-promise-code">component-data~clientSave(uri, data, oldData, store, [eventID], [snapshot], paths) ⇒ Promise</a></li><li><a href="#component-data-findindexdata-uri-code-number-code">component-data~findIndex(data, [uri]) ⇒ number</a></li><li><a href="#component-data-addcomponentstocomponentliststore-data-currenturi-parenturi-path-replace-components-code-promise-code">component-data~addComponentsToComponentList(store, data, [currentURI], parentURI, path, [replace], components) ⇒ Promise</a></li><li><a href="#component-data-addcomponentstocomponentpropstore-data-parenturi-path-components-code-promise-code">component-data~addComponentsToComponentProp(store, data, parentURI, path, components) ⇒ Promise</a></li><li><a href="#component-data-addcomponentstopageareastore-currenturi-path-replace-components-code-promise-code">component-data~addComponentsToPageArea(store, currentURI, path, replace, components) ⇒ Promise</a></li></ul></li><li><a href="#decorators">decorators</a><ul class="toc-headings"><li><a href="#decoratorsunselectstore">decorators.unselect(store)</a></li><li><a href="#decoratorsselectstore-el">decorators.select(store, el)</a></li><li><a href="#decoratorsscrolltocomponentstore-el">decorators.scrollToComponent(store, el)</a></li><li><a href="#decoratorsnavigatecomponentsstore-direction-code-promise-code">decorators.navigateComponents(store, direction) ⇒ Promise</a></li><li><a href="#decoratorsunfocusstore-code-promise-code">decorators.unfocus(store) ⇒ Promise</a></li></ul></li><li><a href="#deep-linking">deep-linking</a><ul class="toc-headings"><li><a href="#deep-linkingparseurlhashstore-code-promise-code">deep-linking.parseURLHash(store) ⇒ Promise</a></li><li><a href="#deep-linkingsethashcommit-uri-path-initialfocus-menu">deep-linking.setHash(commit, [uri], [path], [initialFocus], [menu])</a></li><li><a href="#deep-linkingclearhashcommit">deep-linking.clearHash(commit)</a></li></ul></li><li><a href="#drawers">drawers</a><ul class="toc-headings"><li><a href="#drawersclosedrawerstore">drawers.closeDrawer(store)</a></li><li><a href="#drawersopendrawerstore-nameorconfig">drawers.openDrawer(store, nameOrConfig)</a></li></ul></li><li><a href="#forms">forms</a><ul class="toc-headings"><li><a href="#formsopenformstore-uri-path-el-offset-appendtext-initialfocus-pos">forms.openForm(store, uri, path, [el], [offset], [appendText], [initialFocus], pos)</a></li><li><a href="#forms-hasdatachangednewdata-olddata-code-boolean-code">forms~hasDataChanged(newData, oldData) ⇒ Boolean</a></li></ul></li><li><a href="#layout-state">layout-state</a><ul class="toc-headings"><li><a href="#layout-statefetchlayoutstatestore-preloadoptions-code-promise-code">layout-state.fetchLayoutState(store, [preloadOptions]) ⇒ Promise</a></li><li><a href="#layout-stateupdatelayoutstore-data-preloadoptions-code-promise-code">layout-state.updateLayout(store, [data], [preloadOptions]) ⇒ Promise</a></li><li><a href="#layout-stateschedulelayoutstore-timestamp-code-promise-code">layout-state.scheduleLayout(store, timestamp) ⇒ Promise</a></li><li><a href="#layout-stateunschedulelayoutstore-publishing-code-promise-code">layout-state.unscheduleLayout(store, [publishing]) ⇒ Promise</a></li><li><a href="#layout-statepublishlayoutstore-code-promise-code">layout-state.publishLayout(store) ⇒ Promise</a></li></ul></li><li><a href="#lists">lists</a></li><li><a href="#nav">nav</a><ul class="toc-headings"><li><a href="#navopennavstore-nameorconfig">nav.openNav(store, nameOrConfig)</a></li></ul></li><li><a href="#page-data">page-data</a><ul class="toc-headings"><li><a href="#page-datasavepagestore-data-snapshot-code-promise-code">page-data.savePage(store, data, [snapshot]) ⇒ Promise</a></li><li><a href="#page-datacreatepagestore-id-code-promise-code">page-data.createPage(store, id) ⇒ Promise</a></li><li><a href="#page-datapublishpagestore-uri-code-promise-code">page-data.publishPage(store, uri) ⇒ Promise</a></li><li><a href="#page-dataunpublishpagestore-uri-code-promise-code">page-data.unpublishPage(store, uri) ⇒ Promise</a></li><li><a href="#page-dataschedulepagestore-uri-timestamp-code-promise-code">page-data.schedulePage(store, uri, timestamp) ⇒ Promise</a></li><li><a href="#page-dataunschedulepagestore-publishing-code-promise-code">page-data.unschedulePage(store, [publishing]) ⇒ Promise</a></li><li><a href="#page-data-shouldrenderpaths-code-boolean-code">page-data~shouldRender(paths) ⇒ boolean</a></li><li><a href="#page-data-removeuriuri-store-code-promise-code">page-data~removeURI(uri, store) ⇒ Promise</a></li></ul></li><li><a href="#page-state">page-state</a><ul class="toc-headings"><li><a href="#page-stateupdatepageliststore-data-code-promise-code">page-state.updatePageList(store, [data]) ⇒ Promise</a></li><li><a href="#page-stategetlistdatastore-uri-prefix-code-promise-code">page-state.getListData(store, uri, [prefix]) ⇒ Promise</a></li><li><a href="#page-state-sequentialupdateprefix-uri-data-code-promise-code">page-state~sequentialUpdate(prefix, uri, data) ⇒ Promise</a></li></ul></li><li><a href="#preloader">preloader</a><ul class="toc-headings"><li><a href="#preloader-getcomponentmodels-code-object-code">preloader~getComponentModels() ⇒ object</a></li><li><a href="#preloader-reducecomponentsresult-val-code-obj-code">preloader~reduceComponents(result, val) ⇒ obj</a></li><li><a href="#preloader-composelayoutdatalayoutschema-components-original-code-object-code">preloader~composeLayoutData(layoutSchema, components, original) ⇒ object</a></li><li><a href="#preloader-reducetemplatesresult-val-key-code-obj-code">preloader~reduceTemplates(result, val, key) ⇒ obj</a></li><li><a href="#preloader-getpagestatusstate-code-string-code">preloader~getPageStatus(state) ⇒ string</a></li></ul></li><li><a href="#toolbar">toolbar</a><ul class="toc-headings"><li><a href="#toolbarstartprogresscommit-type">toolbar.startProgress(commit, type)</a></li><li><a href="#toolbarfinishprogresscommit-type">toolbar.finishProgress(commit, type)</a></li><li><a href="#toolbaraddalertstore-config">toolbar.addAlert(store, config)</a></li><li><a href="#toolbarremovealertstore-config">toolbar.removeAlert(store, config)</a></li><li><a href="#toolbarshowsnackbarstore-config">toolbar.showSnackbar(store, config)</a></li></ul></li><li><a href="#undo">undo</a><ul class="toc-headings"><li><a href="#undocreatesnapshotstore">undo.createSnapshot(store)</a></li><li><a href="#undosetfixedpointstore">undo.setFixedPoint(store)</a></li><li><a href="#undoundostore">undo.undo(store)</a></li><li><a href="#undoredostore">undo.redo(store)</a></li><li><a href="#undo-getchangedcomponentscurrent-compare-code-object-code">undo~getChangedComponents(current, compare) ⇒ object</a></li><li><a href="#undo-savechangedcomponentschangedcomponents-store">undo~saveChangedComponents(changedComponents, store)</a></li></ul></li><li><a href="#validators">validators</a><ul class="toc-headings"><li><a href="#validatorsvalidatestore-code-promise-code">validators.validate(store) ⇒ Promise</a></li><li><a href="#validators-iscomponentinpageheadlisturi-state-code-boolean-code">validators~isComponentInPageHeadList(uri, state) ⇒ Boolean</a></li><li><a href="#validators-runvalidatorstate-code-function-code">validators~runValidator(state) ⇒ function</a></li><li><a href="#validators-runvalidatorsvalidators-state-code-promise-code">validators~runValidators(validators, state) ⇒ Promise</a></li><li><a href="#validators-hasitemserror-code-boolean-code">validators~hasItems(error) ⇒ Boolean</a></li><li><a href="#validators-runmetavalidatormetadata-code-function-code">validators~runMetaValidator(metadata) ⇒ function</a></li><li><a href="#validators-runmetavalidatorsuri-validators-code-promise-code">validators~runMetaValidators(uri, validators) ⇒ Promise</a></li><li><a href="#validators-ismetadataerrorscope-type-code-boolean-code">validators~isMetadataError(scope, type) ⇒ boolean</a></li><li><a href="#validators-ismetadatawarningscope-type-code-boolean-code">validators~isMetadataWarning(scope, type) ⇒ boolean</a></li><li><a href="#validators-isglobalmetadataerrorvalidator-code-boolean-code">validators~isGlobalMetadataError(validator) ⇒ boolean</a></li><li><a href="#validators-isglobalmetadatawarningvalidator-code-boolean-code">validators~isGlobalMetadataWarning(validator) ⇒ boolean</a></li><li><a href="#validators-isspecificmetadatawarningvalidator-pageuri-code-boolean-code">validators~isSpecificMetadataWarning(validator, pageUri) ⇒ boolean</a></li><li><a href="#validators-isspecificmetadataerrorvalidator-pageuri-code-boolean-code">validators~isSpecificMetadataError(validator, pageUri) ⇒ boolean</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/clay-kiln/" class="nav-home"></a><div><h5>Docs</h5><a href="/clay-kiln/docs/en/intro">Introduction</a><a href="/clay-kiln/docs/en/api_kiln">API Reference</a></div><div><h5>More</h5><a target="_blank" href="https://github.com/clay/clay-kiln">GitHub</a></div></section><section class="copyright">Copyright © 2019 New York Media</section></footer></div></body></html>
