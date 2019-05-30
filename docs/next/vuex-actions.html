@@ -31,6 +31,12 @@
 <dt><a href="#module_validators">validators</a></dt>
 <dd></dd>
 </dl>
+<h2><a class="anchor" aria-hidden="true" id="functions"></a><a href="#functions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Functions</h2>
+<dl>
+<dt><a href="#isPageSpecific">isPageSpecific(uri, store)</a> ⇒ <code>boolean</code></dt>
+<dd><p>is uri page spectific</p>
+</dd>
+</dl>
 <p><a name="module_component-data"></a></p>
 <h2><a class="anchor" aria-hidden="true" id="component-data"></a><a href="#component-data" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data</h2>
 <ul>
@@ -38,12 +44,17 @@
 <ul>
 <li><em>static</em>
 <ul>
+<li><a href="#module_component-data.updateSchemaProp">.updateSchemaProp(store, schemaName, inputName, prop, value)</a></li>
+<li><a href="#module_component-data.triggerModelSave">.triggerModelSave(uri, data)</a> ⇒ <code>promise</code></li>
+<li><a href="#module_component-data.triggerModelRender">.triggerModelRender(store, uri, data)</a> ⇒ <code>promise</code></li>
 <li><a href="#module_component-data.saveComponent">.saveComponent(store, uri, data, [eventID], [snapshot], [prevData], forceSave)</a> ⇒ <code>Promise</code></li>
 <li><a href="#module_component-data.removeComponent">.removeComponent(store, data)</a> ⇒ <code>Promise</code></li>
 <li><a href="#module_component-data.removeHeadComponent">.removeHeadComponent(store, startNode)</a> ⇒ <code>Promise</code></li>
 <li><a href="#module_component-data.addCreatedComponentsToPageArea">.addCreatedComponentsToPageArea(store, newComponents, currentURI, path, replace, number, array, boolean)</a> ⇒ <code>Promise</code></li>
 <li><a href="#module_component-data.addComponents">.addComponents(store, [currentURI], parentURI, path, [replace], components)</a> ⇒ <code>Promise</code></li>
 <li><a href="#module_component-data.openAddComponent">.openAddComponent(store, [currentURI], parentURI, path)</a> ⇒ <code>Promise</code></li>
+<li><a href="#module_component-data.componentAdded">.componentAdded(store, componentName, uri)</a></li>
+<li><a href="#module_component-data.closeAddComponent">.closeAddComponent(store)</a></li>
 <li><a href="#module_component-data.currentlyRestoring">.currentlyRestoring(store, restoring)</a></li>
 </ul></li>
 <li><em>inner</em>
@@ -58,6 +69,50 @@
 </ul></li>
 </ul></li>
 </ul>
+<p><a name="module_component-data.updateSchemaProp"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-dataupdateschemapropstore-schemaname-inputname-prop-value"></a><a href="#component-dataupdateschemapropstore-schemaname-inputname-prop-value" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data.updateSchemaProp(store, schemaName, inputName, prop, value)</h3>
+<p>update a property value on a component schema</p>
+<p><strong>Kind</strong>: static method of <a href="#module_component-data"><code>component-data</code></a>  <br>
+<strong>Return{promise}</strong>:</p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>schemaName</td><td><code>string</code></td></tr>
+<tr><td>inputName</td><td><code>string</code></td></tr>
+<tr><td>prop</td><td><code>string</code></td></tr>
+<tr><td>value</td><td><code>object</code> \</td><td><code>string</code> \</td><td><code>number</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_component-data.triggerModelSave"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-datatriggermodelsaveuri-data-code-promise-code"></a><a href="#component-datatriggermodelsaveuri-data-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data.triggerModelSave(uri, data) ⇒ <code>promise</code></h3>
+<p>trigger a the model.save of a component</p>
+<p><strong>Kind</strong>: static method of <a href="#module_component-data"><code>component-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>uri</td><td><code>string</code></td></tr>
+<tr><td>data</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_component-data.triggerModelRender"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-datatriggermodelrenderstore-uri-data-code-promise-code"></a><a href="#component-datatriggermodelrenderstore-uri-data-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data.triggerModelRender(store, uri, data) ⇒ <code>promise</code></h3>
+<p>trigger a the model.render of a component</p>
+<p><strong>Kind</strong>: static method of <a href="#module_component-data"><code>component-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>uri</td><td><code>string</code></td></tr>
+<tr><td>data</td><td><code>object</code></td></tr>
+</tbody>
+</table>
 <p><a name="module_component-data.saveComponent"></a></p>
 <h3><a class="anchor" aria-hidden="true" id="component-datasavecomponentstore-uri-data-eventid-snapshot-prevdata-forcesave-code-promise-code"></a><a href="#component-datasavecomponentstore-uri-data-eventid-snapshot-prevdata-forcesave-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data.saveComponent(store, uri, data, [eventID], [snapshot], [prevData], forceSave) ⇒ <code>Promise</code></h3>
 <p>save a component's data and re-render</p>
@@ -157,6 +212,32 @@ note: if no currentURI passed in, it will add new components to the end (and won
 <tr><td>[currentURI]</td><td><code>string</code></td><td>if we're inserting after a specific component</td></tr>
 <tr><td>parentURI</td><td><code>string</code></td><td></td></tr>
 <tr><td>path</td><td><code>string</code></td><td></td></tr>
+</tbody>
+</table>
+<p><a name="module_component-data.componentAdded"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-datacomponentaddedstore-componentname-uri"></a><a href="#component-datacomponentaddedstore-componentname-uri" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data.componentAdded(store, componentName, uri)</h3>
+<p>Store the last item added</p>
+<p><strong>Kind</strong>: static method of <a href="#module_component-data"><code>component-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>componentName</td><td><code>string</code></td></tr>
+<tr><td>uri</td><td><code>string</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_component-data.closeAddComponent"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="component-datacloseaddcomponentstore"></a><a href="#component-datacloseaddcomponentstore" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>component-data.closeAddComponent(store)</h3>
+<p>Close the add component</p>
+<p><strong>Kind</strong>: static method of <a href="#module_component-data"><code>component-data</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
 </tbody>
 </table>
 <p><a name="module_component-data.currentlyRestoring"></a></p>
@@ -455,7 +536,9 @@ this is broken out into a separate function so we don't assume an index of 0 is 
 <ul>
 <li><em>static</em>
 <ul>
+<li><a href="#module_forms.updateFormData">.updateFormData(store, path, val)</a></li>
 <li><a href="#module_forms.openForm">.openForm(store, uri, path, [el], [offset], [appendText], [initialFocus], pos)</a></li>
+<li><a href="#module_forms.closeForm">.closeForm(store)</a> ⇒ <code>promise</code></li>
 </ul></li>
 <li><em>inner</em>
 <ul>
@@ -463,6 +546,20 @@ this is broken out into a separate function so we don't assume an index of 0 is 
 </ul></li>
 </ul></li>
 </ul>
+<p><a name="module_forms.updateFormData"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="formsupdateformdatastore-path-val"></a><a href="#formsupdateformdatastore-path-val" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>forms.updateFormData(store, path, val)</h3>
+<p>Update form data</p>
+<p><strong>Kind</strong>: static method of <a href="#module_forms"><code>forms</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
+<tr><td>path</td><td><code>string</code></td></tr>
+<tr><td>val</td><td><code>string</code> \</td><td><code>number</code></td></tr>
+</tbody>
+</table>
 <p><a name="module_forms.openForm"></a></p>
 <h3><a class="anchor" aria-hidden="true" id="formsopenformstore-uri-path-el-offset-appendtext-initialfocus-pos"></a><a href="#formsopenformstore-uri-path-el-offset-appendtext-initialfocus-pos" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>forms.openForm(store, uri, path, [el], [offset], [appendText], [initialFocus], pos)</h3>
 <p>open form</p>
@@ -480,6 +577,18 @@ this is broken out into a separate function so we don't assume an index of 0 is 
 <tr><td>[appendText]</td><td><code>string</code></td><td>text to append (for text inputs, used when splitting/merging components with text fields)</td></tr>
 <tr><td>[initialFocus]</td><td><code>string</code></td><td>if focusing on a specific field when opening the form</td></tr>
 <tr><td>pos</td><td><code>object</code></td><td>x/y coordinates used to position overlay forms</td></tr>
+</tbody>
+</table>
+<p><a name="module_forms.closeForm"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="formscloseformstore-code-promise-code"></a><a href="#formscloseformstore-code-promise-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>forms.closeForm(store) ⇒ <code>promise</code></h3>
+<p>Close a form</p>
+<p><strong>Kind</strong>: static method of <a href="#module_forms"><code>forms</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>store</td><td><code>object</code></td></tr>
 </tbody>
 </table>
 <p><a name="module_forms..hasDataChanged"></a></p>
@@ -797,16 +906,22 @@ allowing the preloader to use it when doing the initial preload of data</p>
 <li><a href="#module_preloader">preloader</a>
 <ul>
 <li><a href="#module_preloader..getComponentModels">~getComponentModels()</a> ⇒ <code>object</code></li>
+<li><a href="#module_preloader..getComponentKilnjs">~getComponentKilnjs()</a> ⇒ <code>object</code></li>
 <li><a href="#module_preloader..reduceComponents">~reduceComponents(result, val)</a> ⇒ <code>obj</code></li>
 <li><a href="#module_preloader..composeLayoutData">~composeLayoutData(layoutSchema, components, original)</a> ⇒ <code>object</code></li>
 <li><a href="#module_preloader..reduceTemplates">~reduceTemplates(result, val, key)</a> ⇒ <code>obj</code></li>
 <li><a href="#module_preloader..getPageStatus">~getPageStatus(state)</a> ⇒ <code>string</code></li>
+<li><a href="#module_preloader..getSchemas">~getSchemas(schemas, kilnjs)</a> ⇒ <code>object</code></li>
 </ul></li>
 </ul>
 <p><a name="module_preloader..getComponentModels"></a></p>
 <h3><a class="anchor" aria-hidden="true" id="preloader-getcomponentmodels-code-object-code"></a><a href="#preloader-getcomponentmodels-code-object-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>preloader~getComponentModels() ⇒ <code>object</code></h3>
 <p>get component models so we can mount them on window.kiln.componentModels
 if they aren't already mounted (backwards-compatability)</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_preloader"><code>preloader</code></a>  <br>
+<a name="module_preloader..getComponentKilnjs"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="preloader-getcomponentkilnjs-code-object-code"></a><a href="#preloader-getcomponentkilnjs-code-object-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>preloader~getComponentKilnjs() ⇒ <code>object</code></h3>
+<p>get component kiln files so we can mount them on window.kiln.componentKilnjs</p>
 <p><strong>Kind</strong>: inner method of <a href="#module_preloader"><code>preloader</code></a>  <br>
 <a name="module_preloader..reduceComponents"></a></p>
 <h3><a class="anchor" aria-hidden="true" id="preloader-reducecomponentsresult-val-code-obj-code"></a><a href="#preloader-reducecomponentsresult-val-code-obj-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>preloader~reduceComponents(result, val) ⇒ <code>obj</code></h3>
@@ -859,6 +974,19 @@ if they aren't already mounted (backwards-compatability)</p>
 </thead>
 <tbody>
 <tr><td>state</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+<p><a name="module_preloader..getSchemas"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="preloader-getschemasschemas-kilnjs-code-object-code"></a><a href="#preloader-getschemasschemas-kilnjs-code-object-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>preloader~getSchemas(schemas, kilnjs) ⇒ <code>object</code></h3>
+<p>run a copy of the schema through its kiln.js file (if it has one)</p>
+<p><strong>Kind</strong>: inner method of <a href="#module_preloader"><code>preloader</code></a></p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>schemas</td><td><code>object</code></td></tr>
+<tr><td>kilnjs</td><td><code>function</code></td></tr>
 </tbody>
 </table>
 <p><a name="module_toolbar"></a></p>
@@ -1238,4 +1366,17 @@ some may have been parsed out by the isActive check in runValidator, above</p>
 <tr><td>error</td><td><code>object</code></td></tr>
 </tbody>
 </table>
-</span></div></article></div><div class="docs-prevnext"></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#modules">Modules</a></li><li><a href="#component-data">component-data</a><ul class="toc-headings"><li><a href="#component-datasavecomponentstore-uri-data-eventid-snapshot-prevdata-forcesave-code-promise-code">component-data.saveComponent(store, uri, data, [eventID], [snapshot], [prevData], forceSave) ⇒ Promise</a></li><li><a href="#component-dataremovecomponentstore-data-code-promise-code">component-data.removeComponent(store, data) ⇒ Promise</a></li><li><a href="#component-dataremoveheadcomponentstore-startnode-code-promise-code">component-data.removeHeadComponent(store, startNode) ⇒ Promise</a></li><li><a href="#component-dataaddcreatedcomponentstopageareastore-newcomponents-currenturi-path-replace-number-array-boolean-code-promise-code">component-data.addCreatedComponentsToPageArea(store, newComponents, currentURI, path, replace, number, array, boolean) ⇒ Promise</a></li><li><a href="#component-dataaddcomponentsstore-currenturi-parenturi-path-replace-components-code-promise-code">component-data.addComponents(store, [currentURI], parentURI, path, [replace], components) ⇒ Promise</a></li><li><a href="#component-dataopenaddcomponentstore-currenturi-parenturi-path-code-promise-code">component-data.openAddComponent(store, [currentURI], parentURI, path) ⇒ Promise</a></li><li><a href="#component-datacurrentlyrestoringstore-restoring">component-data.currentlyRestoring(store, restoring)</a></li><li><a href="#component-data-logsaveerroruri-e-data-eventid-snapshot-store">component-data~logSaveError(uri, e, data, [eventID], [snapshot], store)</a></li><li><a href="#component-data-revertrejecturi-data-snapshot-paths-store-code-promise-code">component-data~revertReject(uri, data, [snapshot], paths, store) ⇒ Promise</a></li><li><a href="#component-data-clientsaveuri-data-olddata-store-eventid-snapshot-paths-code-promise-code">component-data~clientSave(uri, data, oldData, store, [eventID], [snapshot], paths) ⇒ Promise</a></li><li><a href="#component-data-findindexdata-uri-code-number-code">component-data~findIndex(data, [uri]) ⇒ number</a></li><li><a href="#component-data-addcomponentstocomponentliststore-data-currenturi-parenturi-path-replace-components-code-promise-code">component-data~addComponentsToComponentList(store, data, [currentURI], parentURI, path, [replace], components) ⇒ Promise</a></li><li><a href="#component-data-addcomponentstocomponentpropstore-data-parenturi-path-components-code-promise-code">component-data~addComponentsToComponentProp(store, data, parentURI, path, components) ⇒ Promise</a></li><li><a href="#component-data-addcomponentstopageareastore-currenturi-path-replace-components-code-promise-code">component-data~addComponentsToPageArea(store, currentURI, path, replace, components) ⇒ Promise</a></li></ul></li><li><a href="#decorators">decorators</a><ul class="toc-headings"><li><a href="#decoratorsunselectstore">decorators.unselect(store)</a></li><li><a href="#decoratorsselectstore-el">decorators.select(store, el)</a></li><li><a href="#decoratorsscrolltocomponentstore-el">decorators.scrollToComponent(store, el)</a></li><li><a href="#decoratorsnavigatecomponentsstore-direction-code-promise-code">decorators.navigateComponents(store, direction) ⇒ Promise</a></li><li><a href="#decoratorsunfocusstore-code-promise-code">decorators.unfocus(store) ⇒ Promise</a></li></ul></li><li><a href="#deep-linking">deep-linking</a><ul class="toc-headings"><li><a href="#deep-linkingparseurlhashstore-code-promise-code">deep-linking.parseURLHash(store) ⇒ Promise</a></li><li><a href="#deep-linkingsethashcommit-uri-path-initialfocus-menu">deep-linking.setHash(commit, [uri], [path], [initialFocus], [menu])</a></li><li><a href="#deep-linkingclearhashcommit">deep-linking.clearHash(commit)</a></li></ul></li><li><a href="#drawers">drawers</a><ul class="toc-headings"><li><a href="#drawersclosedrawerstore">drawers.closeDrawer(store)</a></li><li><a href="#drawersopendrawerstore-nameorconfig">drawers.openDrawer(store, nameOrConfig)</a></li></ul></li><li><a href="#forms">forms</a><ul class="toc-headings"><li><a href="#formsopenformstore-uri-path-el-offset-appendtext-initialfocus-pos">forms.openForm(store, uri, path, [el], [offset], [appendText], [initialFocus], pos)</a></li><li><a href="#forms-hasdatachangednewdata-olddata-code-boolean-code">forms~hasDataChanged(newData, oldData) ⇒ Boolean</a></li></ul></li><li><a href="#layout-state">layout-state</a><ul class="toc-headings"><li><a href="#layout-statefetchlayoutstatestore-preloadoptions-code-promise-code">layout-state.fetchLayoutState(store, [preloadOptions]) ⇒ Promise</a></li><li><a href="#layout-stateupdatelayoutstore-data-preloadoptions-code-promise-code">layout-state.updateLayout(store, [data], [preloadOptions]) ⇒ Promise</a></li><li><a href="#layout-stateschedulelayoutstore-timestamp-code-promise-code">layout-state.scheduleLayout(store, timestamp) ⇒ Promise</a></li><li><a href="#layout-stateunschedulelayoutstore-publishing-code-promise-code">layout-state.unscheduleLayout(store, [publishing]) ⇒ Promise</a></li><li><a href="#layout-statepublishlayoutstore-code-promise-code">layout-state.publishLayout(store) ⇒ Promise</a></li></ul></li><li><a href="#lists">lists</a></li><li><a href="#nav">nav</a><ul class="toc-headings"><li><a href="#navopennavstore-nameorconfig">nav.openNav(store, nameOrConfig)</a></li></ul></li><li><a href="#page-data">page-data</a><ul class="toc-headings"><li><a href="#page-datasavepagestore-data-snapshot-code-promise-code">page-data.savePage(store, data, [snapshot]) ⇒ Promise</a></li><li><a href="#page-datacreatepagestore-id-code-promise-code">page-data.createPage(store, id) ⇒ Promise</a></li><li><a href="#page-datapublishpagestore-uri-code-promise-code">page-data.publishPage(store, uri) ⇒ Promise</a></li><li><a href="#page-dataunpublishpagestore-uri-code-promise-code">page-data.unpublishPage(store, uri) ⇒ Promise</a></li><li><a href="#page-dataschedulepagestore-uri-timestamp-code-promise-code">page-data.schedulePage(store, uri, timestamp) ⇒ Promise</a></li><li><a href="#page-dataunschedulepagestore-publishing-code-promise-code">page-data.unschedulePage(store, [publishing]) ⇒ Promise</a></li><li><a href="#page-data-shouldrenderpaths-code-boolean-code">page-data~shouldRender(paths) ⇒ boolean</a></li><li><a href="#page-data-removeuriuri-store-code-promise-code">page-data~removeURI(uri, store) ⇒ Promise</a></li></ul></li><li><a href="#page-state">page-state</a><ul class="toc-headings"><li><a href="#page-stateupdatepageliststore-data-code-promise-code">page-state.updatePageList(store, [data]) ⇒ Promise</a></li><li><a href="#page-stategetlistdatastore-uri-prefix-code-promise-code">page-state.getListData(store, uri, [prefix]) ⇒ Promise</a></li><li><a href="#page-state-sequentialupdateprefix-uri-data-code-promise-code">page-state~sequentialUpdate(prefix, uri, data) ⇒ Promise</a></li></ul></li><li><a href="#preloader">preloader</a><ul class="toc-headings"><li><a href="#preloader-getcomponentmodels-code-object-code">preloader~getComponentModels() ⇒ object</a></li><li><a href="#preloader-reducecomponentsresult-val-code-obj-code">preloader~reduceComponents(result, val) ⇒ obj</a></li><li><a href="#preloader-composelayoutdatalayoutschema-components-original-code-object-code">preloader~composeLayoutData(layoutSchema, components, original) ⇒ object</a></li><li><a href="#preloader-reducetemplatesresult-val-key-code-obj-code">preloader~reduceTemplates(result, val, key) ⇒ obj</a></li><li><a href="#preloader-getpagestatusstate-code-string-code">preloader~getPageStatus(state) ⇒ string</a></li></ul></li><li><a href="#toolbar">toolbar</a><ul class="toc-headings"><li><a href="#toolbarstartprogresscommit-type">toolbar.startProgress(commit, type)</a></li><li><a href="#toolbarfinishprogresscommit-type">toolbar.finishProgress(commit, type)</a></li><li><a href="#toolbaraddalertstore-config">toolbar.addAlert(store, config)</a></li><li><a href="#toolbarremovealertstore-config">toolbar.removeAlert(store, config)</a></li><li><a href="#toolbarshowsnackbarstore-config">toolbar.showSnackbar(store, config)</a></li></ul></li><li><a href="#undo">undo</a><ul class="toc-headings"><li><a href="#undocreatesnapshotstore">undo.createSnapshot(store)</a></li><li><a href="#undosetfixedpointstore">undo.setFixedPoint(store)</a></li><li><a href="#undoundostore">undo.undo(store)</a></li><li><a href="#undoredostore">undo.redo(store)</a></li><li><a href="#undo-getchangedcomponentscurrent-compare-code-object-code">undo~getChangedComponents(current, compare) ⇒ object</a></li><li><a href="#undo-savechangedcomponentschangedcomponents-store">undo~saveChangedComponents(changedComponents, store)</a></li></ul></li><li><a href="#validators">validators</a><ul class="toc-headings"><li><a href="#validatorsrunmetavalidatormetadata-code-function-code">validators.runMetaValidator(metadata) ⇒ function</a></li><li><a href="#validatorsrunmetavalidatorsuri-errorvalidators-warningvalidators-code-promise-code">validators.runMetaValidators(uri, errorValidators, warningValidators) ⇒ Promise</a></li><li><a href="#validatorsismetadataerrorscope-type-code-boolean-code">validators.isMetadataError(scope, type) ⇒ boolean</a></li><li><a href="#validatorsismetadatawarningscope-type-code-boolean-code">validators.isMetadataWarning(scope, type) ⇒ boolean</a></li><li><a href="#validatorsisglobalmetadataerrorvalidator-code-boolean-code">validators.isGlobalMetadataError(validator) ⇒ boolean</a></li><li><a href="#validatorsisglobalmetadatawarningvalidator-code-boolean-code">validators.isGlobalMetadataWarning(validator) ⇒ boolean</a></li><li><a href="#validatorsisspecificmetadatawarningvalidator-pageuri-code-boolean-code">validators.isSpecificMetadataWarning(validator, pageUri) ⇒ boolean</a></li><li><a href="#validatorsisspecificmetadataerrorvalidator-pageuri-code-boolean-code">validators.isSpecificMetadataError(validator, pageUri) ⇒ boolean</a></li><li><a href="#validatorsvalidatestore-code-promise-code">validators.validate(store) ⇒ Promise</a></li><li><a href="#validators-iscomponentinpageheadlisturi-state-code-boolean-code">validators~isComponentInPageHeadList(uri, state) ⇒ Boolean</a></li><li><a href="#validators-runvalidatorstate-code-function-code">validators~runValidator(state) ⇒ function</a></li><li><a href="#validators-runvalidatorsvalidators-state-code-promise-code">validators~runValidators(validators, state) ⇒ Promise</a></li><li><a href="#validators-hasitemserror-code-boolean-code">validators~hasItems(error) ⇒ Boolean</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/clay-kiln/" class="nav-home"></a><div><h5>Docs</h5><a href="/clay-kiln/docs/en/intro">Introduction</a><a href="/clay-kiln/docs/en/api_kiln">API Reference</a></div><div><h5>More</h5><a target="_blank" href="https://github.com/clay/clay-kiln">GitHub</a></div></section><section class="copyright">Copyright © 2019 New York Media</section></footer></div></body></html>
+<p><a name="isPageSpecific"></a></p>
+<h2><a class="anchor" aria-hidden="true" id="ispagespecificuri-store-code-boolean-code"></a><a href="#ispagespecificuri-store-code-boolean-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>isPageSpecific(uri, store) ⇒ <code>boolean</code></h2>
+<p>is uri page spectific</p>
+<p><strong>Kind</strong>: global function</p>
+<table>
+<thead>
+<tr><th>Param</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td>uri</td><td><code>string</code></td></tr>
+<tr><td>store</td><td><code>object</code></td></tr>
+</tbody>
+</table>
+</span></div></article></div><div class="docs-prevnext"></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#modules">Modules</a></li><li><a href="#functions">Functions</a></li><li><a href="#component-data">component-data</a><ul class="toc-headings"><li><a href="#component-dataupdateschemapropstore-schemaname-inputname-prop-value">component-data.updateSchemaProp(store, schemaName, inputName, prop, value)</a></li><li><a href="#component-datatriggermodelsaveuri-data-code-promise-code">component-data.triggerModelSave(uri, data) ⇒ promise</a></li><li><a href="#component-datatriggermodelrenderstore-uri-data-code-promise-code">component-data.triggerModelRender(store, uri, data) ⇒ promise</a></li><li><a href="#component-datasavecomponentstore-uri-data-eventid-snapshot-prevdata-forcesave-code-promise-code">component-data.saveComponent(store, uri, data, [eventID], [snapshot], [prevData], forceSave) ⇒ Promise</a></li><li><a href="#component-dataremovecomponentstore-data-code-promise-code">component-data.removeComponent(store, data) ⇒ Promise</a></li><li><a href="#component-dataremoveheadcomponentstore-startnode-code-promise-code">component-data.removeHeadComponent(store, startNode) ⇒ Promise</a></li><li><a href="#component-dataaddcreatedcomponentstopageareastore-newcomponents-currenturi-path-replace-number-array-boolean-code-promise-code">component-data.addCreatedComponentsToPageArea(store, newComponents, currentURI, path, replace, number, array, boolean) ⇒ Promise</a></li><li><a href="#component-dataaddcomponentsstore-currenturi-parenturi-path-replace-components-code-promise-code">component-data.addComponents(store, [currentURI], parentURI, path, [replace], components) ⇒ Promise</a></li><li><a href="#component-dataopenaddcomponentstore-currenturi-parenturi-path-code-promise-code">component-data.openAddComponent(store, [currentURI], parentURI, path) ⇒ Promise</a></li><li><a href="#component-datacomponentaddedstore-componentname-uri">component-data.componentAdded(store, componentName, uri)</a></li><li><a href="#component-datacloseaddcomponentstore">component-data.closeAddComponent(store)</a></li><li><a href="#component-datacurrentlyrestoringstore-restoring">component-data.currentlyRestoring(store, restoring)</a></li><li><a href="#component-data-logsaveerroruri-e-data-eventid-snapshot-store">component-data~logSaveError(uri, e, data, [eventID], [snapshot], store)</a></li><li><a href="#component-data-revertrejecturi-data-snapshot-paths-store-code-promise-code">component-data~revertReject(uri, data, [snapshot], paths, store) ⇒ Promise</a></li><li><a href="#component-data-clientsaveuri-data-olddata-store-eventid-snapshot-paths-code-promise-code">component-data~clientSave(uri, data, oldData, store, [eventID], [snapshot], paths) ⇒ Promise</a></li><li><a href="#component-data-findindexdata-uri-code-number-code">component-data~findIndex(data, [uri]) ⇒ number</a></li><li><a href="#component-data-addcomponentstocomponentliststore-data-currenturi-parenturi-path-replace-components-code-promise-code">component-data~addComponentsToComponentList(store, data, [currentURI], parentURI, path, [replace], components) ⇒ Promise</a></li><li><a href="#component-data-addcomponentstocomponentpropstore-data-parenturi-path-components-code-promise-code">component-data~addComponentsToComponentProp(store, data, parentURI, path, components) ⇒ Promise</a></li><li><a href="#component-data-addcomponentstopageareastore-currenturi-path-replace-components-code-promise-code">component-data~addComponentsToPageArea(store, currentURI, path, replace, components) ⇒ Promise</a></li></ul></li><li><a href="#decorators">decorators</a><ul class="toc-headings"><li><a href="#decoratorsunselectstore">decorators.unselect(store)</a></li><li><a href="#decoratorsselectstore-el">decorators.select(store, el)</a></li><li><a href="#decoratorsscrolltocomponentstore-el">decorators.scrollToComponent(store, el)</a></li><li><a href="#decoratorsnavigatecomponentsstore-direction-code-promise-code">decorators.navigateComponents(store, direction) ⇒ Promise</a></li><li><a href="#decoratorsunfocusstore-code-promise-code">decorators.unfocus(store) ⇒ Promise</a></li></ul></li><li><a href="#deep-linking">deep-linking</a><ul class="toc-headings"><li><a href="#deep-linkingparseurlhashstore-code-promise-code">deep-linking.parseURLHash(store) ⇒ Promise</a></li><li><a href="#deep-linkingsethashcommit-uri-path-initialfocus-menu">deep-linking.setHash(commit, [uri], [path], [initialFocus], [menu])</a></li><li><a href="#deep-linkingclearhashcommit">deep-linking.clearHash(commit)</a></li></ul></li><li><a href="#drawers">drawers</a><ul class="toc-headings"><li><a href="#drawersclosedrawerstore">drawers.closeDrawer(store)</a></li><li><a href="#drawersopendrawerstore-nameorconfig">drawers.openDrawer(store, nameOrConfig)</a></li></ul></li><li><a href="#forms">forms</a><ul class="toc-headings"><li><a href="#formsupdateformdatastore-path-val">forms.updateFormData(store, path, val)</a></li><li><a href="#formsopenformstore-uri-path-el-offset-appendtext-initialfocus-pos">forms.openForm(store, uri, path, [el], [offset], [appendText], [initialFocus], pos)</a></li><li><a href="#formscloseformstore-code-promise-code">forms.closeForm(store) ⇒ promise</a></li><li><a href="#forms-hasdatachangednewdata-olddata-code-boolean-code">forms~hasDataChanged(newData, oldData) ⇒ Boolean</a></li></ul></li><li><a href="#layout-state">layout-state</a><ul class="toc-headings"><li><a href="#layout-statefetchlayoutstatestore-preloadoptions-code-promise-code">layout-state.fetchLayoutState(store, [preloadOptions]) ⇒ Promise</a></li><li><a href="#layout-stateupdatelayoutstore-data-preloadoptions-code-promise-code">layout-state.updateLayout(store, [data], [preloadOptions]) ⇒ Promise</a></li><li><a href="#layout-stateschedulelayoutstore-timestamp-code-promise-code">layout-state.scheduleLayout(store, timestamp) ⇒ Promise</a></li><li><a href="#layout-stateunschedulelayoutstore-publishing-code-promise-code">layout-state.unscheduleLayout(store, [publishing]) ⇒ Promise</a></li><li><a href="#layout-statepublishlayoutstore-code-promise-code">layout-state.publishLayout(store) ⇒ Promise</a></li></ul></li><li><a href="#lists">lists</a></li><li><a href="#nav">nav</a><ul class="toc-headings"><li><a href="#navopennavstore-nameorconfig">nav.openNav(store, nameOrConfig)</a></li></ul></li><li><a href="#page-data">page-data</a><ul class="toc-headings"><li><a href="#page-datasavepagestore-data-snapshot-code-promise-code">page-data.savePage(store, data, [snapshot]) ⇒ Promise</a></li><li><a href="#page-datacreatepagestore-id-code-promise-code">page-data.createPage(store, id) ⇒ Promise</a></li><li><a href="#page-datapublishpagestore-uri-code-promise-code">page-data.publishPage(store, uri) ⇒ Promise</a></li><li><a href="#page-dataunpublishpagestore-uri-code-promise-code">page-data.unpublishPage(store, uri) ⇒ Promise</a></li><li><a href="#page-dataschedulepagestore-uri-timestamp-code-promise-code">page-data.schedulePage(store, uri, timestamp) ⇒ Promise</a></li><li><a href="#page-dataunschedulepagestore-publishing-code-promise-code">page-data.unschedulePage(store, [publishing]) ⇒ Promise</a></li><li><a href="#page-data-shouldrenderpaths-code-boolean-code">page-data~shouldRender(paths) ⇒ boolean</a></li><li><a href="#page-data-removeuriuri-store-code-promise-code">page-data~removeURI(uri, store) ⇒ Promise</a></li></ul></li><li><a href="#page-state">page-state</a><ul class="toc-headings"><li><a href="#page-stateupdatepageliststore-data-code-promise-code">page-state.updatePageList(store, [data]) ⇒ Promise</a></li><li><a href="#page-stategetlistdatastore-uri-prefix-code-promise-code">page-state.getListData(store, uri, [prefix]) ⇒ Promise</a></li><li><a href="#page-state-sequentialupdateprefix-uri-data-code-promise-code">page-state~sequentialUpdate(prefix, uri, data) ⇒ Promise</a></li></ul></li><li><a href="#preloader">preloader</a><ul class="toc-headings"><li><a href="#preloader-getcomponentmodels-code-object-code">preloader~getComponentModels() ⇒ object</a></li><li><a href="#preloader-getcomponentkilnjs-code-object-code">preloader~getComponentKilnjs() ⇒ object</a></li><li><a href="#preloader-reducecomponentsresult-val-code-obj-code">preloader~reduceComponents(result, val) ⇒ obj</a></li><li><a href="#preloader-composelayoutdatalayoutschema-components-original-code-object-code">preloader~composeLayoutData(layoutSchema, components, original) ⇒ object</a></li><li><a href="#preloader-reducetemplatesresult-val-key-code-obj-code">preloader~reduceTemplates(result, val, key) ⇒ obj</a></li><li><a href="#preloader-getpagestatusstate-code-string-code">preloader~getPageStatus(state) ⇒ string</a></li><li><a href="#preloader-getschemasschemas-kilnjs-code-object-code">preloader~getSchemas(schemas, kilnjs) ⇒ object</a></li></ul></li><li><a href="#toolbar">toolbar</a><ul class="toc-headings"><li><a href="#toolbarstartprogresscommit-type">toolbar.startProgress(commit, type)</a></li><li><a href="#toolbarfinishprogresscommit-type">toolbar.finishProgress(commit, type)</a></li><li><a href="#toolbaraddalertstore-config">toolbar.addAlert(store, config)</a></li><li><a href="#toolbarremovealertstore-config">toolbar.removeAlert(store, config)</a></li><li><a href="#toolbarshowsnackbarstore-config">toolbar.showSnackbar(store, config)</a></li></ul></li><li><a href="#undo">undo</a><ul class="toc-headings"><li><a href="#undocreatesnapshotstore">undo.createSnapshot(store)</a></li><li><a href="#undosetfixedpointstore">undo.setFixedPoint(store)</a></li><li><a href="#undoundostore">undo.undo(store)</a></li><li><a href="#undoredostore">undo.redo(store)</a></li><li><a href="#undo-getchangedcomponentscurrent-compare-code-object-code">undo~getChangedComponents(current, compare) ⇒ object</a></li><li><a href="#undo-savechangedcomponentschangedcomponents-store">undo~saveChangedComponents(changedComponents, store)</a></li></ul></li><li><a href="#validators">validators</a><ul class="toc-headings"><li><a href="#validatorsrunmetavalidatormetadata-code-function-code">validators.runMetaValidator(metadata) ⇒ function</a></li><li><a href="#validatorsrunmetavalidatorsuri-errorvalidators-warningvalidators-code-promise-code">validators.runMetaValidators(uri, errorValidators, warningValidators) ⇒ Promise</a></li><li><a href="#validatorsismetadataerrorscope-type-code-boolean-code">validators.isMetadataError(scope, type) ⇒ boolean</a></li><li><a href="#validatorsismetadatawarningscope-type-code-boolean-code">validators.isMetadataWarning(scope, type) ⇒ boolean</a></li><li><a href="#validatorsisglobalmetadataerrorvalidator-code-boolean-code">validators.isGlobalMetadataError(validator) ⇒ boolean</a></li><li><a href="#validatorsisglobalmetadatawarningvalidator-code-boolean-code">validators.isGlobalMetadataWarning(validator) ⇒ boolean</a></li><li><a href="#validatorsisspecificmetadatawarningvalidator-pageuri-code-boolean-code">validators.isSpecificMetadataWarning(validator, pageUri) ⇒ boolean</a></li><li><a href="#validatorsisspecificmetadataerrorvalidator-pageuri-code-boolean-code">validators.isSpecificMetadataError(validator, pageUri) ⇒ boolean</a></li><li><a href="#validatorsvalidatestore-code-promise-code">validators.validate(store) ⇒ Promise</a></li><li><a href="#validators-iscomponentinpageheadlisturi-state-code-boolean-code">validators~isComponentInPageHeadList(uri, state) ⇒ Boolean</a></li><li><a href="#validators-runvalidatorstate-code-function-code">validators~runValidator(state) ⇒ function</a></li><li><a href="#validators-runvalidatorsvalidators-state-code-promise-code">validators~runValidators(validators, state) ⇒ Promise</a></li><li><a href="#validators-hasitemserror-code-boolean-code">validators~hasItems(error) ⇒ Boolean</a></li></ul></li><li><a href="#ispagespecificuri-store-code-boolean-code">isPageSpecific(uri, store) ⇒ boolean</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/clay-kiln/" class="nav-home"></a><div><h5>Docs</h5><a href="/clay-kiln/docs/en/intro">Introduction</a><a href="/clay-kiln/docs/en/api_kiln">API Reference</a></div><div><h5>More</h5><a target="_blank" href="https://github.com/clay/clay-kiln">GitHub</a></div></section><section class="copyright">Copyright © 2019 New York Media</section></footer></div></body></html>
