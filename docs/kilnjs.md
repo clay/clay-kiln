@@ -6,7 +6,7 @@ sidebar_label: Kilnjs
 
 ---
 
-⚠️You must being using Clay-cli version 3.10.2 or greater to use Kiln.js⚠️
+⚠️You must being using Clay-cli version **3.10.2** or greater to use Kiln.js⚠️
 
 Kiln.js is an optional JavaScript file that transforms the schema.yaml file into a dynamic JavaScript Object that affects how Kiln interacts with components that use the schema. With it, events can be attached to the inputs that are used by kiln to edit components. These events can be used to hide or reveal different fields in the schema, update the values of those fields, make API calls, subscribe to Vuex mutations, and just about any other action allowed by JavaScript.
 
