@@ -1,0 +1,271 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Kilnjs · Kiln</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;hr&gt;
+"/><meta name="docsearch:version" content="8.10.0"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Kilnjs · Kiln"/><meta property="og:type" content="website"/><meta property="og:url" content="https://clay.github.io//clay-kiln/"/><meta property="og:description" content="&lt;hr&gt;
+"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/clay-kiln/"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/clay-kiln/js/scrollSpy.js"></script><link rel="stylesheet" href="/clay-kiln/css/main.css"/><script src="/clay-kiln/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/clay-kiln/"><img class="logo" src="/clay-kiln/img/kiln.png" alt="Kiln"/><h2 class="headerTitleWithLogo">Kiln</h2></a><a href="/clay-kiln/versions"><h3>8.10.0</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/clay-kiln/docs/intro" target="_self">Introduction</a></li><li class=""><a href="https://github.com/clay/clay-kiln" target="_self">Github</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Clay Components</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Introduction<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/intro">Introduction</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">KILN FUNDAMENTALS<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/kiln_ui">The Kiln UI</a></li><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Clay Components</h4><ul><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/component">Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/manipulating_components">Adding, Removing, and Reordering Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/editing_components">Editing Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/input">Form Inputs</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/clay-kiln/docs/kilnjs">Kilnjs</a></li></ul></div><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/deep_linking">Deep Linking</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">API DOCUMENTATION<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Kiln API</h4><ul><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/api_kiln">API</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/snackbar">Snackbar</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/vuex_actions">Vuex Actions</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/vuex_plugin">Vuex Plugins</a></li></ul></div></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Kilnjs</h1></header><article><div><span><hr>
+<p>⚠️You must being using Clay-cli version <strong>3.10.2</strong> or greater to use Kiln.js⚠️</p>
+<p>Kiln.js is an optional JavaScript file that transforms the schema.yaml file into a dynamic JavaScript Object that affects how Kiln interacts with components that use the schema. With it, events can be attached to the inputs that are used by kiln to edit components. These events can be used to hide or reveal different fields in the schema, update the values of those fields, make API calls, subscribe to Vuex mutations, and just about any other action allowed by JavaScript.</p>
+<p>Using Kiln.js, you can remove the logic from the schema.yaml file and move it into JavaScript, keeping the schema file for presentational information.</p>
+<p>To take advantage of the power that Kiln.js provides you need to create a file called kiln.js within a component folder, in the same location where you place the component's schema, model, and client files. At a minimum, it should look like this.</p>
+<pre><code class="hljs css language-js"><span class="hljs-meta">'use strict'</span>;
+
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function">(<span class="hljs-params">schema</span>) =&gt;</span> {
+
+  <span class="hljs-keyword">return</span> schema;
+};
+</code></pre>
+<p>A function that receives a parameter called schema that also returns the schema. The schema contains a JSON representation of the schema.yaml file and can be manipulated before returning. Values can be changed, added, or deleted directly on the JSON object without any other outside code. Anything you can do to a JSON object can be done to the schema.</p>
+<pre><code class="hljs css language-js">schema[<span class="hljs-string">'_groups'</span>].settings[<span class="hljs-string">'_placeholder'</span>].height = <span class="hljs-string">'200px'</span>;
+</code></pre>
+<p>However, note that the JSON that is returned still needs to conform to the structure needed by Kiln. ⚠️Deleting properties or adding properties that Kiln doesn't recognize can and will result in errors.⚠️</p>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="kilninput"></a><a href="#kilninput" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>KilnInput</h2>
+<p>The real power of Kiln.js comes from the KilnInput object, which can be used to make the fields within a schema truly dynamic. Using 'KilnInput' you can add events to the different form inputs as detailed on the <a href="input">Form Inputs page</a>. You can also subscribe to Vuex actions as described below.</p>
+<p>To make a schema field a <code>KilnInput</code>, you set it to a new instance of <code>KilnInput</code>, passing it to the schema and the name of the field.</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> KilnInput = <span class="hljs-built_in">window</span>.kiln.kilnInput;
+
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function">(<span class="hljs-params">schema</span>) =&gt;</span> {
+  schema.title = <span class="hljs-keyword">new</span> KilnInput(schema, <span class="hljs-string">'title'</span>);
+
+  <span class="hljs-keyword">return</span> schema;
+};
+</code></pre>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="events"></a><a href="#events" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Events</h2>
+<p>You can attach events to the schema inputs. The events you can attach vary depending upon the type input. The different events are detailed on the <a href="input">Form Inputs page</a>.</p>
+<ul>
+<li><strong><em>on(event, callbackFunction)</em></strong> - pass it the event as a string, along with a callback function that is run after the event happens.</li>
+</ul>
+<pre><code class="hljs css language-js">  schema.enableSocialButtons.on(<span class="hljs-string">'input'</span>, (val) =&gt; {
+    <span class="hljs-keyword">if</span> (val) {
+      schema.shareServices.show();
+    } <span class="hljs-keyword">else</span> {
+      schema.shareServices.hide();
+    }
+  });
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="validation"></a><a href="#validation" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Validation</h3>
+<p>By attaching events, one of the things you can use kiln.js for is to do field validation.</p>
+<pre><code class="hljs css language-js"><span class="hljs-built_in">module</span>.exports = <span class="hljs-function">(<span class="hljs-params">schema</span>) =&gt;</span> {
+  schema.title = <span class="hljs-keyword">new</span> KilnInput(schema, <span class="hljs-string">'title'</span>);
+
+  schema.title.on(<span class="hljs-string">'keydown'</span>, (e) =&gt; {
+    <span class="hljs-comment">// prevent numbers from being entered in the title field</span>
+    <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">isNaN</span>(e.key)) {
+      e.preventDefault();
+    }
+  });
+
+  <span class="hljs-keyword">return</span> schema;
+};
+</code></pre>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="vuex-actions-to-subscribe-to"></a><a href="#vuex-actions-to-subscribe-to" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Vuex Actions to Subscribe To</h2>
+<p>The following are some of the Vuex actions that you can subscribe to using Kiln.js. The actions can be scoped so that they only trigger the subscription function when the action is triggered by a component of the same type as the subscribing component. In other words, if the scope is set to <strong>true</strong> on a paragraph element, then the subscription function would only be called when a paragraph element triggers the Vuex action, but not when any other type of component triggers the Vuex action. When the scope is set to <strong>false</strong>, the subscription function is called whenever <em>any</em> component triggers the Vuex action.</p>
+<ul>
+<li><p><strong><em>OPEN_FORM</em></strong> - Triggered when a Kiln form is opened. Note that this can be triggered by both a modal form <em>and</em> an inline form, so just clicking into a paragraph or other inline field will trigger this action. The payload returned from this action contains a JSON representation of the Schema along with the component URI that was opened in the form.</p></li>
+<li><p><strong><em>CLOSE_FORM</em></strong> - Triggered when a Kiln form is closed. For inline fields this occurs when the field loses focus. When the user clicks out of the field. The payload returned from this action is <code>undefined</code>.</p></li>
+<li><p><strong><em>UPDATE_FORMDATA</em></strong> - Triggered when an user changes the data in a form field. ⚠️This happens &quot;on change&quot;, <em>not</em> &quot;on save&quot;.⚠️ The payload returns an object containing the path (field being changed) and data (the new value).</p></li>
+<li><p><strong><em>UPDATE_COMPONENT</em></strong> - Triggered when a component is saved. The payload returns a JSON object containing all the fields in the component's schema, with the values for each of them.</p></li>
+<li><p><strong><em>UPDATE_PAGE_STATE</em></strong> - Triggered when the page state changes. When it is published, unpublished, etc. The payload returned contains the page meta information, including published date/time, update date/time, history, users, etc.</p></li>
+<li><p><strong><em>COMPONENT_ADDED</em></strong> - Triggered when a component is added to the page. The payload returned contains the name of the component added as well as its URI.  This is triggered <em>after</em> the component is fully added and saved, so all its values are availabe in the Vuex store.</p></li>
+<li><p><strong><em>REMOVE_COMPONENT</em></strong> - Triggered when a component is removed from the page. The payload returned contains the name of the component removed as well as its URI.</p></li>
+</ul>
+<p>Often you might not wish to associate a subscription with a specific field, but rather to something more general. You can instantiate a <code>KilnInput</code> without referencing a specific field. Of course, if it makes sense to create a connection between a field and the action involved with a subscription, you can use the subscribe function on a field. It can be done either way. It's just a matter of what makes the intent clearer.</p>
+<pre><code class="hljs css language-js"><span class="hljs-built_in">module</span>.exports = <span class="hljs-function">(<span class="hljs-params">schema</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> subscriptions = <span class="hljs-keyword">new</span> KilnInput(schema);
+
+  schema.myDate = <span class="hljs-keyword">new</span> KilnInput(schema, <span class="hljs-string">'myDate'</span>);
+
+  subscriptions.subscribe(<span class="hljs-string">'UPDATE_COMPONENT'</span>, (payload) =&gt; {
+    <span class="hljs-comment">// do something when a component has been updated</span>
+    <span class="hljs-comment">// you can also test the type of component updated</span>
+    <span class="hljs-comment">// by checking the value of payload.data.componentVariation</span>
+    <span class="hljs-comment">// and only reacting when it's a certain type of component</span>
+    <span class="hljs-comment">// or if the component's new value is equal or not to some value</span>
+  }, <span class="hljs-literal">false</span>);
+
+  schema.myDate.subscribe(<span class="hljs-string">'UPDATE_COMPONENT'</span>, (payload) =&gt; {
+    <span class="hljs-comment">// same as above, just attached to the myDate field, which implies</span>
+    <span class="hljs-comment">// you want to do something to the myDate field with the payload</span>
+  });
+
+  <span class="hljs-keyword">return</span> schema;
+};
+
+</code></pre>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="kilnjs-custom-methods"></a><a href="#kilnjs-custom-methods" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Kiln.js custom methods</h2>
+<p><code>KilnInput</code> also provides its own set of custom methods.</p>
+<h3><a class="anchor" aria-hidden="true" id="getcomponentdata"></a><a href="#getcomponentdata" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getComponentData</h3>
+<ul>
+<li><strong><em>getComponentData(uri)</em></strong> - returns a promise from the API call to the component data that when resolved will return an object containing the component's properties and their values.</li>
+</ul>
+<pre><code class="hljs css language-js">kilnInput.getComponentData(<span class="hljs-string">'localhost/_components/kilnjs-example/instances/cjw2igpzp00053h624fdnon2e'</span>);
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="getcomponentinstances"></a><a href="#getcomponentinstances" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getComponentInstances</h3>
+<ul>
+<li><strong><em>getComponentInstances(componentName)</em></strong> - returns an array containing the uris of all components of type componentName that are on the current page.</li>
+</ul>
+<pre><code class="hljs css language-js">kilnInput.getComponentInstances(<span class="hljs-string">'paragraph'</span>);
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="getstate"></a><a href="#getstate" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getState</h3>
+<ul>
+<li><strong><em>getState()</em></strong> - returns a copy of the entire Vuex store as a JSON object. Should really only be used for reading, but altering it will not mutate the actual store because it's only a copy.</li>
+</ul>
+<pre><code class="hljs css language-js">kilnInput.getState();
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="publishcomponent"></a><a href="#publishcomponent" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>publishComponent</h3>
+<ul>
+<li><strong><em>publishComponent()</em></strong> - Publishs the component at the URI with the data provided.</li>
+</ul>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> URI = <span class="hljs-string">'localhost/_components/kilnjs-example/instances/cjw2igpzp00053h624fdnon2e'</span>,
+  componentData = {
+    <span class="hljs-string">"size"</span>: <span class="hljs-string">"h2"</span>,
+    <span class="hljs-string">"title"</span>: <span class="hljs-string">""</span>,
+    <span class="hljs-string">"pubDate"</span>: <span class="hljs-string">"5/23/2019, 4:19:43 PM"</span>,
+    <span class="hljs-string">"pageTitle"</span>: <span class="hljs-string">"Clay Starter Article"</span>,
+    <span class="hljs-string">"componentVariation"</span>: <span class="hljs-string">"kilnjs-example"</span>
+  }
+
+kilnInput.publishComponent(URI, componentData);
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="rerenderinstance"></a><a href="#rerenderinstance" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>reRenderInstance</h3>
+<ul>
+<li><strong><em>reRenderInstance(uri)</em></strong> - Fetches the component's data and passes it through the components model.render function, thus refreshing it on the page. For instance, if some outside source has updated component data and does not trigger a page refresh, you could force a component rerender that would include the updated data.</li>
+</ul>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// if a paragraph component is updated, then rerender the instances of the snash component</span>
+kilnInput.subscribe(<span class="hljs-string">'UPDATE_COMPONENT'</span>, (payload) =&gt; {
+    <span class="hljs-keyword">if</span> (payload.data.componentVariation === <span class="hljs-string">'paragraph'</span>) {
+      <span class="hljs-keyword">let</span> snashInstances = eventBus.getComponentInstances(<span class="hljs-string">'snash'</span>);
+      snashInstances.forEach(<span class="hljs-function">(<span class="hljs-params">instance</span>) =&gt;</span> {
+        kilnInput.reRenderInstance(instance);
+      });
+    }
+  }, <span class="hljs-literal">false</span>);
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="savecomponent"></a><a href="#savecomponent" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>saveComponent</h3>
+<ul>
+<li><strong><em>saveComponent(uri, data)</em></strong> - Saves the component at the provided URI with the provided data. Saving a component this way will also re-render it on the page with the updated data.</li>
+</ul>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> uri = <span class="hljs-string">'localhost/_components/paragraph/instances/cjue4dl7i00062a65rpexptmp'</span>,
+  data = { <span class="hljs-attr">text</span>: <span class="hljs-string">"This is a paragraph"</span> };
+
+kilnInput.saveComponent(uri, data);
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="setprop"></a><a href="#setprop" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setProp</h3>
+<ul>
+<li><strong><em>setProp(prop, value)</em></strong> - change value of a property on the input</li>
+</ul>
+<pre><code class="hljs css language-js">kilninput.setProp(<span class="hljs-string">'_has'</span>, { ...kilninput[<span class="hljs-string">'_has'</span>], <span class="hljs-attr">input</span>: <span class="hljs-string">'select'</span> });
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="show-hide"></a><a href="#show-hide" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>show/hide</h3>
+<ul>
+<li><p><strong><em>show()</em></strong> - used to make an input visible.</p></li>
+<li><p><strong><em>hide()</em></strong> - used to make an input invisible</p></li>
+</ul>
+<pre><code class="hljs css language-js">  schema.enableSocialButtons.on(<span class="hljs-string">'input'</span>, (val) =&gt; {
+    <span class="hljs-keyword">if</span> (val) {
+      schema.shareServices.show();
+    } <span class="hljs-keyword">else</span> {
+      schema.shareServices.hide();
+    }
+  });
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="showsnackbar"></a><a href="#showsnackbar" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>showSnackBar</h3>
+<ul>
+<li><strong><em>showSnackBar({ message = '', duration = 3000, position = 'left', queueSnackbars = false, transition = 'fade' })</em></strong> - Displays the SnackBar element with the provided message.</li>
+</ul>
+<pre><code class="hljs css language-js">kilnInput.showSnackBar({ <span class="hljs-attr">message</span>: <span class="hljs-string">'Hey, this is a message that I want the user to see!'</span>, <span class="hljs-attr">position</span>: <span class="hljs-string">'center'</span> })
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="url"></a><a href="#url" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>url</h3>
+<ul>
+<li><strong><em>url()</em></strong> - returns the url object from Vuex state of the component that is currently being edited. The object contains the component name, the instance, and the path.</li>
+</ul>
+<pre><code class="hljs css language-js">  kilnInput.url()
+
+  <span class="hljs-comment">/**
+   * returns an object structured like this
+   *
+   * {
+   *   component: "meta-title"
+   *   instance: "cjtfuc3rw00019fz9egagqev0"
+   *   path: "settings"
+   * }
+   */</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="value"></a><a href="#value" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>value</h3>
+<ul>
+<li><strong><em>value(val)</em></strong> - used to set and retrieve value on an input. If a value is passed, it sets the value, otherwise it retrieves it.</li>
+</ul>
+<pre><code class="hljs css language-js">schema.title.value(); <span class="hljs-comment">// gets the value of title</span>
+schema.title.value(<span class="hljs-string">'Some New Value'</span>); <span class="hljs-comment">// sets the value of title</span>
+</code></pre>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="form-validation"></a><a href="#form-validation" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Form Validation</h2>
+<p>Along with input level validation, you can also perform form validation using kiln.js.  To do this, you add a function to the schame named <code>formValidation</code>. This function is called just before a form is saved and if it returns <code>false</code> then the form will not be saved.  The snackBar element can be used to convey a message to the user explaining why the form wasn't saved.</p>
+<pre><code class="hljs css language-js">  schema.formValidation = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">if</span> (schema.size.value() === <span class="hljs-string">'h2'</span> &amp;&amp; schema.title.value().length &gt; <span class="hljs-number">40</span>) {
+      kilnInput.showSnackBar({ <span class="hljs-attr">message</span>: <span class="hljs-string">'When size is H2, the Title can\'t be longer than 40 chars'</span>, <span class="hljs-attr">position</span>: <span class="hljs-string">'center'</span> })
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+
+
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+  };
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/clay-kiln/docs/input"><span class="arrow-prev">← </span><span>Form Inputs</span></a><a class="docs-next button" href="/clay-kiln/docs/deep_linking"><span>Deep Linking</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#kilninput">KilnInput</a></li><li><a href="#events">Events</a><ul class="toc-headings"><li><a href="#validation">Validation</a></li></ul></li><li><a href="#vuex-actions-to-subscribe-to">Vuex Actions to Subscribe To</a></li><li><a href="#kilnjs-custom-methods">Kiln.js custom methods</a><ul class="toc-headings"><li><a href="#getcomponentdata">getComponentData</a></li><li><a href="#getcomponentinstances">getComponentInstances</a></li><li><a href="#getstate">getState</a></li><li><a href="#publishcomponent">publishComponent</a></li><li><a href="#rerenderinstance">reRenderInstance</a></li><li><a href="#savecomponent">saveComponent</a></li><li><a href="#setprop">setProp</a></li><li><a href="#show-hide">show/hide</a></li><li><a href="#showsnackbar">showSnackBar</a></li><li><a href="#url">url</a></li><li><a href="#value">value</a></li></ul></li><li><a href="#form-validation">Form Validation</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/clay-kiln/" class="nav-home"></a><div><h5>Docs</h5><a href="/clay-kiln/docs/en/intro">Introduction</a><a href="/clay-kiln/docs/en/api_kiln">API Reference</a></div><div><h5>More</h5><a target="_blank" href="https://github.com/clay/clay-kiln">GitHub</a></div></section><section class="copyright">Copyright © 2019 New York Media</section></footer></div></body></html>
