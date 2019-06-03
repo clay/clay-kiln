@@ -5,7 +5,7 @@ workflow "Deploy to GitHub Pages" {
 
   action "Filter branch" {
   uses = "actions/bin/filter@master"
-  args = "branch master"
+  args = "branch deploy_test"
 }
 
 action "Update version" {
