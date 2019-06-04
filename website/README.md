@@ -7,7 +7,9 @@ You will need to have `Node >= 8.x` and `Yarn >= 1.5`.
 ```sh
 $ yarn
 ```
+
 or
+
 ```sh
 $ npm install
 ```
@@ -17,7 +19,9 @@ $ npm install
 ```sh
 $ yarn start
 ```
+
 or
+
 ```sh
 $ npm run start
 ```
@@ -56,30 +60,60 @@ root-directory
 ```
 
 # Versioning the Code
-To create a version of the docs to match the version of an NPM release, run this command with the version number of the release.
+
+The first step to begin the process of versioning your documentation is to generate the `versions` script on your website directory with the following command.
+
+```sh
+yarn examples versions
 ```
+
+or
+
+```sh
+npm run examples versions
+```
+
+Then, you proceed to create a version of the docs that you need. In this case, it needs to match the version of your current `package.json`. To do this we will use the following command followed by the version number that you want.
+
+```sh
 $ yarn version X.X.X
 ```
+
 or
-```
+
+```sh
 $ npm version X.X.X
 ```
 
+This will create all the files needed to handle the version that you just built, but this will be necessary only in 2 cases:
+
+1. If the documentation doesn't have a version set
+2. If there is a major update on the number of the version
+
+For other cases, we have an active call [update version](https://github.com/clay/clay-kiln/blob/master/.github/main.workflow) that will handle the change of the version automatically.
+
 # Publish the website
-The Clay-kiln website will live on GitHub page. You just need to run the following commands:
-```
+
+This process is automatically done by an action call [Build and push docs](https://github.com/clay/clay-kiln/blob/master/.github/main.workflow) but you can deploy your documentation manually. You just need to run the following commands:
+
+```sh
 $ yarn build
 ```
+
 or
-```
+
+```sh
 $ npm run build
 ```
 
-Then you just need to deploy the static files generated. These files will be pushed to the `gh-page` branch.
-```
+Then, deploy the static files generated. These files will be pushed to the `gh-page` branch.
+
+```sh
 $ yarn deploy
 ```
+
 or
-```
+
+```sh
 $ npm run deploy
 ```
