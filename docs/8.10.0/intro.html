@@ -1,0 +1,100 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Introduction · Kiln</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;hr&gt;
+"/><meta name="docsearch:version" content="8.10.0"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Introduction · Kiln"/><meta property="og:type" content="website"/><meta property="og:url" content="https://clay.github.io//clay-kiln/"/><meta property="og:description" content="&lt;hr&gt;
+"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/clay-kiln/"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/clay-kiln/js/scrollSpy.js"></script><link rel="stylesheet" href="/clay-kiln/css/main.css"/><script src="/clay-kiln/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/clay-kiln/"><img class="logo" src="/clay-kiln/img/kiln.png" alt="Kiln"/><h2 class="headerTitleWithLogo">Kiln</h2></a><a href="/clay-kiln/versions"><h3>8.10.0</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive siteNavItemActive"><a href="/clay-kiln/docs/8.10.0/intro" target="_self">Introduction</a></li><li class=""><a href="https://github.com/clay/clay-kiln" target="_self">Github</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Introduction</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Introduction<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem navListItemActive"><a class="navItem" href="/clay-kiln/docs/8.10.0/intro">Introduction</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">KILN FUNDAMENTALS<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.10.0/kiln_ui">The Kiln UI</a></li><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Clay Components</h4><ul><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.10.0/component">Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.10.0/manipulating_components">Adding, Removing, and Reordering Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.10.0/editing_components">Editing Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.10.0/input">Form Inputs</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.10.0/kilnjs">Kilnjs</a></li></ul></div><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.10.0/deep_linking">Deep Linking</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">API DOCUMENTATION<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Kiln API</h4><ul><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.10.0/api_kiln">API</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.10.0/snackbar">Snackbar</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.10.0/vuex_actions">Vuex Actions</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/8.10.0/vuex_plugin">Vuex Plugins</a></li></ul></div></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Introduction</h1></header><article><div><span><hr>
+<p><img src="http://i.imgur.com/RleQNNh.png?1" alt="illustration of a kiln"  /></p>
+<p>Editing tools for Clay</p>
+<p>Powering <a href="http://nymag.com/">New York Magazine</a>, <a href="http://www.vulture.com/">Vulture</a>, <a href="https://www.thecut.com/">The Cut</a>, <a href="http://www.grubstreet.com/">Grub Street</a>.
+Created by New York Media.</p>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="installation"></a><a href="#installation" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Installation</h2>
+<pre><code class="hljs">npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save clay-kiln</span>
+</code></pre>
+<p>Kiln comes with compiled scripts and styles, most of which will be automatically inlined by the template.</p>
+<p>The logged-in scripts must be copied (from <code>dist/clay-kiln-edit.js</code> and <code>dist/clay-kiln-view.js</code>) into your publicly-served assets directory, as they'll be linked by <code>&lt;script src=&quot;[site assetPath]/js/clay-kiln-edit.js&quot;&gt;</code> and <code>&lt;script src=&quot;[site assetPath]/js/clay-kiln-view.js&quot;&gt;</code>.</p>
+<p>This allows your end users' browsers to cache the (fairly weighty) Kiln application code, speeding up page loads across your sites.</p>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="usage"></a><a href="#usage" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Usage</h2>
+<p>As Kiln itself is a component, it must be included in your layouts and have some data, e.g. <code>allow: true</code> (a convention we use for components that don't otherwise have data in them). Add an instance of Kiln to your bootstraps:</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">components:</span>
+<span class="hljs-attr">  clay-kiln:</span>
+<span class="hljs-attr">    instances:</span>
+<span class="hljs-attr">      general:</span>
+<span class="hljs-attr">        allow:</span> <span class="hljs-literal">true</span>
+</code></pre>
+<p>Then create a <em>non-editable</em> component list in your layout (preferably near the end), and add a reference to your Kiln instance:</p>
+<pre><code class="hljs css language-yaml"><span class="hljs-attr">components:</span>
+<span class="hljs-attr">  layout:</span>
+<span class="hljs-attr">    instances:</span>
+<span class="hljs-attr">      article:</span>
+<span class="hljs-attr">        kilnInternals:</span>
+<span class="hljs-bullet">          -</span>
+<span class="hljs-attr">            _ref:</span> <span class="hljs-string">/_components/clay-kiln/instances/general</span>
+</code></pre>
+<p>Make sure you add that component list to your layout template, and double check that it isn't editable:</p>
+<pre><code class="hljs css language-handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"kiln-internals"</span>&gt;</span></span><span class="hljs-template-variable">{{ &gt; component-list kilnInternals }}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</span></code></pre>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="user-experience"></a><a href="#user-experience" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>User Experience</h2>
+<p>On public-facing pages, Kiln will add a very small snippet of JavaScript that enabled users to type Shift+CLAY to redirect them to the Clay login page, <code>/_auth/login</code>.</p>
+<p>When users are logged-in, they will see some Kiln buttons in the top left corner which will allow them to access the Clay Menu and enter Edit Mode.</p>
+<p>When users are in Edit Mode, they will see a toolbar across the top of the screen which will enable all Kiln functionality on the current page.</p>
+<blockquote>
+<p>Users may also enter edit mode directly on any page by appending <code>?edit=true</code> to the URL.</p>
+</blockquote>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-next button" href="/clay-kiln/docs/8.10.0/kiln_ui"><span>The Kiln UI</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#installation">Installation</a></li><li><a href="#usage">Usage</a></li><li><a href="#user-experience">User Experience</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/clay-kiln/" class="nav-home"></a><div><h5>Docs</h5><a href="/clay-kiln/docs/en/intro">Introduction</a><a href="/clay-kiln/docs/en/api_kiln">API Reference</a></div><div><h5>More</h5><a target="_blank" href="https://github.com/clay/clay-kiln">GitHub</a></div></section><section class="copyright">Copyright © 2019 New York Media</section></footer></div></body></html>
