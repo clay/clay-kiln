@@ -189,6 +189,10 @@ export default class KilnInput {
     return event && typeof event.func === 'function' && (!event.scoped || event.scoped && store.state.url && store.state.url.component === this.schemaName);
   }
 
+  uri() {
+    return `${store.state.site.prefix}/_components/${this.schemaName}/instances/${store.state.url.instance}`;
+  }
+
   /**
   * get the vuex url object, which contains the hash elements
   * @return {object}
@@ -197,6 +201,15 @@ export default class KilnInput {
     // JSONing out the Vue object into a standard JavaScript object
     return JSON.parse(JSON.stringify(store.state.url));
   }
+
+  /**
+  * get the custom validators from the window.kiln object
+  * @return {object}
+  */
+  validators() {
+    return window.kiln.validators;
+  }
+
 
   /**
   * Get or set the value for the input

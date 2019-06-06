@@ -276,9 +276,9 @@
           isMultiLine,
           isMultiComponent,
           maxLength,
-          store,
           name
         } = this,
+        store = this.$store,
         pseudoBullet = this.args.pseudoBullet,
         currentURI = _.get(this.$store, 'state.ui.currentForm.uri'),
         currentPath = _.get(this.$store, 'state.ui.currentForm.path'),
