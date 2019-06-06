@@ -6,7 +6,7 @@
  */
 
 const repoUrl = 'https://github.com/clay/clay-kiln';
-
+projectName = process.env.PROJECT_NAME || 'clay-kiln';
 // See https://docusaurus.io/docs/site-config for all the possible
 // site configuration options.
 
@@ -20,7 +20,7 @@ const siteConfig = {
   //   baseUrl: '/test-site/',
 
   // Used for publishing and more
-  projectName: 'clay-kiln',
+  projectName,
   organizationName: 'kilnplatform',
   // For top-level user or org sites, the organization is still the same.
   // e.g., for the https://JoelMarcey.github.io site, it would be set like...
