@@ -208,6 +208,10 @@ export default class KilnInput {
 
   /**
   * validate a value using a kiln.validator
+  * @param {function} validator
+  * @param {string} value
+  * @param {boolean} addToErrors
+  * @returns {object}
   */
   validateField(validator, value, addToErrors = true) {
     const customValidator = this.validators()[validator];
