@@ -734,7 +734,7 @@
         }
       });
 
-      editor.on('text-change', ({}, {}, source) => {
+      editor.on('text-change', (delta, oldDelta, source) => {
         let html;
 
         // convert / sanitize output to save

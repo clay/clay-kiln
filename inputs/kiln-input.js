@@ -189,6 +189,10 @@ export default class KilnInput {
     return event && typeof event.func === 'function' && (!event.scoped || event.scoped && store.state.url && store.state.url.component === this.schemaName);
   }
 
+  /**
+  * return the uri for the component currently being edited
+  * @return {string}
+  */
   uri() {
     return `${store.state.site.prefix}/_components/${this.schemaName}/instances/${store.state.url.instance}`;
   }
@@ -200,6 +204,36 @@ export default class KilnInput {
   url() {
     // JSONing out the Vue object into a standard JavaScript object
     return JSON.parse(JSON.stringify(store.state.url));
+  }
+
+  /**
+  * validate a value using a kiln.validator
+  */
+  validateField(validator, value, addToErrors = true) {
+    const customValidator = this.validators()[validator];
+
+    if (customValidator.kilnjsValidate) {
+      let error = customValidator.kilnjsValidate(value);
+
+      error = {
+        ...error,
+        [`${error.type}s`]:[{
+          uri: this.uri(),
+          field: this.inputName,
+          location: this.schemaName,
+          preview: error.preview ? error.preview : ''
+        }]
+      };
+
+      console.log(error);
+
+      if (addToErrors) {
+        // add to health
+        return store.dispatch('addToKilnjsValidation', { error });
+      }
+
+      return error;
+    }
   }
 
   /**
