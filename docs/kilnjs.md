@@ -156,10 +156,11 @@ module.exports = (schema) => {
   return schema;
 };
 ```
-You have access to all of the custom validators in the window.kiln.validators object, so if you wish to write a reusable validation function that can be used across components, you could add a function to any of the existing validators or add a new one. For example you could use the same custom penelopecruz validator inline rather than adding it to the schema.validation object. However, running the validator this way will not add the error/warning to the health tab and you will need to communicate the error to the user manually using the snackbar component.
+You have access to all of the custom validators loaded in the kiln.validators object, so if you wish to write a reusable validation function that can be used across components, you could add a function to any of the existing validators or add a new one. For example you could use the same custom penelopecruz validator inline rather than adding it to the schema.validation object. However, running the validator this way will not add the error/warning to the health tab and you will need to communicate the error to the user manually using the snackbar component.
 
 ```js
-const error = window.kiln.validators.penelopeCruz.kilnjsValidate(schema.title.value());
+const validators = schema.fieldName.validators(),
+  error = validators.penelopeCruz.kilnjsValidate(schema.title.value());
 ```
 
 #### Form Validation
@@ -345,6 +346,14 @@ kilnInput.showSnackBar({ message: 'Hey, this is a message that I want the user t
    *   path: "settings"
    * }
    */
+```
+
+### Validators
+
+* ***validators()*** - returns all the custom validators loaded into kiln.validators
+
+```js
+const validators = schema.fieldName.validators();
 ```
 
 ### value

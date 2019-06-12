@@ -207,47 +207,12 @@ export default class KilnInput {
   }
 
   /**
-  * validate a value using a kiln.validator
-  * @param {function} validator
-  * @param {string} value
-  * @param {boolean} addToErrors
-  * @returns {object}
-  */
-  validateField(validator, value, addToErrors = true) {
-    const customValidator = this.validators()[validator];
-
-    if (customValidator.kilnjsValidate) {
-      let error = customValidator.kilnjsValidate(value);
-
-      error = {
-        ...error,
-        [`${error.type}s`]:[{
-          uri: this.uri(),
-          field: this.inputName,
-          location: this.schemaName,
-          preview: error.preview ? error.preview : ''
-        }]
-      };
-
-      console.log(error);
-
-      if (addToErrors) {
-        // add to health
-        return store.dispatch('addToKilnjsValidation', { error });
-      }
-
-      return error;
-    }
-  }
-
-  /**
   * get the custom validators from the window.kiln object
   * @return {object}
   */
   validators() {
     return window.kiln.validators;
   }
-
 
   /**
   * Get or set the value for the input
