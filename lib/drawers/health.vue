@@ -145,8 +145,27 @@
         </li>
       </ul>
     </div>
-
+        <div v-for="(error, index) in kilnjsErrors" class="publish-error" :key="`publish-kilnjs-error-item-${index}`">
+      <span class="error-label">{{ error.label }}</span>
+      <span class="error-description">{{ error.description }}</span>
+      <span class="validation-info">Go To Components</span>
+      <ul class="validation-items">
+        <li v-for="(item, idx) in error.items" class="validation-item" :key="`publish-kilnjs-error-validation-item-${idx}`">
+          <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click.stop="openLocation(item.uri, item.field, item.path, item.location)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
+        </li>
+      </ul>
+    </div>
     <div v-for="(warning, index) in warnings" class="publish-warning" :key="`publish-warning-item-${index}`">
+      <span class="warning-label">{{ warning.label }}</span>
+      <span class="warning-description">{{ warning.description }}</span>
+      <span class="validation-info">Go To Components</span>
+      <ul class="validation-items">
+        <li v-for="(item, idx) in warning.items" class="validation-item" :key="`publish-warning-validation-item-${idx}`">
+          <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click.stop="openLocation(item.uri, item.field, item.path, item.location)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
+        </li>
+      </ul>
+    </div>
+    <div v-for="(warning, index) in kilnjsWarnings" class="publish-warning" :key="`publish-kilnjs-warning-item-${index}`">
       <span class="warning-label">{{ warning.label }}</span>
       <span class="warning-description">{{ warning.description }}</span>
       <span class="validation-info">Go To Components</span>
@@ -190,6 +209,8 @@
     computed: mapState({
       errors: (state) => state.validation.errors,
       warnings: (state) => state.validation.warnings,
+      kilnjsErrors: (state) => state.validation.kilnjsErrors,
+      kilnjsWarnings: (state) => state.validation.kilnjsWarnings,
       metadataErrors: (state) => state.validation.metadataErrors,
       metadataWarnings: (state) => state.validation.metadataWarnings,
       hasErrors() {
