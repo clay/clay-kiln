@@ -313,7 +313,7 @@ Kiln's inputs are highly customized to the type of data they handle, but there a
 * **attachedButton** - an icon button that may be attached to the field, to allow additional functionality
 * **validate** - an object that contains pre-publish validation rules:
 
-* **validate.required** - either `true` or an object that described the conditions that should make this field required (using the same properties as `_reveal`)
+* **validate.required** - either `true` or an object that describes the conditions that should make this field required (using the same properties as `_reveal`)
 * **validate.min** - minimum number (for numerical inputs) or length (for text and array inputs) that the field must meet
 * **validate.max** - maximum number (for numerical inputs) or length (for text and array inputs) that the field must not exceed
 * **validate.pattern** - regex pattern, for text inputs

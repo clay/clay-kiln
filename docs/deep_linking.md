@@ -8,7 +8,7 @@ sidebar_label: Deep Linking
 
 All Kiln Nav Drawers, i.e. the UI elements that slide in from the right and left, can be deep-linked to by manipulating the url hash. All page components and their property modals can also be deep-linked to as the url hash is updated when they are being edited to reflect the name of the component.
 
-The kiln nav drawers, both left and right are opened with the [openDrawer](vuex_actions.md#module_drawers) function (or the toggleDrawer function which calls [openDrawer](vuex_actions.md#module_drawers) when opening and [closeDrawer](vuex_actions.md#module_drawers) when closing).  The [openDrawer](vuex_actions.md#module_drawers) function sets the url hash to the value passed to it.  The value can either be a string, indicating the name of the drawer to open, or an object, which includes the name, as well as further properties that can be used to deep-link to content within the drawer, such as to a tab or a specific UI element within the drawer.
+The kiln nav drawers, both left and right, are opened with the [openDrawer](vuex_actions.md#module_drawers) function (or the toggleDrawer function which calls [openDrawer](vuex_actions.md#module_drawers) when opening and [closeDrawer](vuex_actions.md#module_drawers) when closing. The [openDrawer](vuex_actions.md#module_drawers) function sets the url hash to the value passed to it. The value can either be a string, indicating the name of the drawer to open; or an object, which includes the name, as well as further properties that can be used to deep-link to content within the drawer, such as to a tab or a specific UI element within the drawer.
 
 The hash can contain up to 4 values, each divided by a tilde.  For example: `#kiln~one~two~three~four`. The very first value in the hash, the #kiln~ value indicates that the hash is for a kiln UI element, rather than a page component.  The hash is parsed and stored in the vuex store on pageload. It is stored at store.state.url. That example hash (`#kiln~one~two~three~four`) would be stored like this:
 ```
@@ -30,7 +30,7 @@ Kiln plugins can also take advantage of the hash deep-linking. The easiest way t
 
 ### Alert Plugin Example
 
-index.js - adds a nav button, and nav content to the window.kiln object.  The nav button will appear in the left nav and the nav content will appear in the left drawer when that button is clicked.  The drawer will also open if the url hash is set to `#kiln~alert`.
+index.js - Adds a nav button, and nav content to the window.kiln object. The nav button will appear in the left nav and the nav content will appear in the left drawer when that button is clicked. The drawer will also open if the url hash is set to `#kiln~alert`.
 ```js
 module.exports = () => {
   window.kiln.navButtons['alert'] = require('./nav-button.vue');
@@ -38,7 +38,7 @@ module.exports = () => {
 };
 ```
 
-nav-button.vue - the markup for the nav button, with a click event attached that runs the toggleDrawer function, which will open the drawer if it's closed, and close it if it's open.
+nav-button.vue - The markup for the nav button, with a click event attached that runs the toggleDrawer function, which will open the drawer if it's closed, and close it if it's open.
 
 ```vue
 <template>
@@ -65,7 +65,7 @@ module.exports = {
 </script>
 ```
 
-main.vue - the contents of the drawer.  The two buttons each set the url hash to a different value, and each of the two paragraphs is only shown when the url hash matches a certain value.  Click the Danger button and the url hash becomes `#kiln~alert~danger`.  If you refresh the page after clicking that button, the alert drawer will be open, with the Danger paragraph visible.
+main.vue - The contents of the drawer.  The two buttons each set the url hash to a different value, and each of the two paragraphs is only shown when the url hash matches a certain value. Click the Danger button and the url hash becomes `#kiln~alert~danger`. If you refresh the page after clicking that button, the alert drawer will be open, with the Danger paragraph visible.
 ```
 <template>
   <div>
