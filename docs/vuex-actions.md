@@ -31,18 +31,31 @@
 <dd></dd>
 </dl>
 
+## Functions
+
+<dl>
+<dt><a href="#isPageSpecific">isPageSpecific(uri, store)</a> ⇒ <code>boolean</code></dt>
+<dd><p>is uri page spectific</p>
+</dd>
+</dl>
+
 <a name="module_component-data"></a>
 
 ## component-data
 
 * [component-data](#module_component-data)
     * _static_
+        * [.updateSchemaProp(store, schemaName, inputName, prop, value)](#module_component-data.updateSchemaProp)
+        * [.triggerModelSave(uri, data)](#module_component-data.triggerModelSave) ⇒ <code>promise</code>
+        * [.triggerModelRender(store, uri, data)](#module_component-data.triggerModelRender) ⇒ <code>promise</code>
         * [.saveComponent(store, uri, data, [eventID], [snapshot], [prevData], forceSave)](#module_component-data.saveComponent) ⇒ <code>Promise</code>
         * [.removeComponent(store, data)](#module_component-data.removeComponent) ⇒ <code>Promise</code>
         * [.removeHeadComponent(store, startNode)](#module_component-data.removeHeadComponent) ⇒ <code>Promise</code>
         * [.addCreatedComponentsToPageArea(store, newComponents, currentURI, path, replace, number, array, boolean)](#module_component-data.addCreatedComponentsToPageArea) ⇒ <code>Promise</code>
         * [.addComponents(store, [currentURI], parentURI, path, [replace], components)](#module_component-data.addComponents) ⇒ <code>Promise</code>
         * [.openAddComponent(store, [currentURI], parentURI, path)](#module_component-data.openAddComponent) ⇒ <code>Promise</code>
+        * [.componentAdded(store, componentName, uri)](#module_component-data.componentAdded)
+        * [.closeAddComponent(store)](#module_component-data.closeAddComponent)
         * [.currentlyRestoring(store, restoring)](#module_component-data.currentlyRestoring)
     * _inner_
         * [~logSaveError(uri, e, data, [eventID], [snapshot], store)](#module_component-data..logSaveError)
@@ -52,6 +65,47 @@
         * [~addComponentsToComponentList(store, data, [currentURI], parentURI, path, [replace], components)](#module_component-data..addComponentsToComponentList) ⇒ <code>Promise</code>
         * [~addComponentsToComponentProp(store, data, parentURI, path, components)](#module_component-data..addComponentsToComponentProp) ⇒ <code>Promise</code>
         * [~addComponentsToPageArea(store, currentURI, path, replace, components)](#module_component-data..addComponentsToPageArea) ⇒ <code>Promise</code>
+
+<a name="module_component-data.updateSchemaProp"></a>
+
+### component-data.updateSchemaProp(store, schemaName, inputName, prop, value)
+update a property value on a component schema
+
+**Kind**: static method of [<code>component-data</code>](#module_component-data)  
+**Return{promise}**:   
+
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
+| schemaName | <code>string</code> | 
+| inputName | <code>string</code> | 
+| prop | <code>string</code> | 
+| value | <code>object</code> \| <code>string</code> \| <code>number</code> | 
+
+<a name="module_component-data.triggerModelSave"></a>
+
+### component-data.triggerModelSave(uri, data) ⇒ <code>promise</code>
+trigger a the model.save of a component
+
+**Kind**: static method of [<code>component-data</code>](#module_component-data)  
+
+| Param | Type |
+| --- | --- |
+| uri | <code>string</code> | 
+| data | <code>object</code> | 
+
+<a name="module_component-data.triggerModelRender"></a>
+
+### component-data.triggerModelRender(store, uri, data) ⇒ <code>promise</code>
+trigger a the model.render of a component
+
+**Kind**: static method of [<code>component-data</code>](#module_component-data)  
+
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
+| uri | <code>string</code> | 
+| data | <code>object</code> | 
 
 <a name="module_component-data.saveComponent"></a>
 
@@ -147,6 +201,30 @@ open the add components pane, or add a new components
 | [currentURI] | <code>string</code> | if we're inserting after a specific component |
 | parentURI | <code>string</code> |  |
 | path | <code>string</code> |  |
+
+<a name="module_component-data.componentAdded"></a>
+
+### component-data.componentAdded(store, componentName, uri)
+Store the last item added
+
+**Kind**: static method of [<code>component-data</code>](#module_component-data)  
+
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
+| componentName | <code>string</code> | 
+| uri | <code>string</code> | 
+
+<a name="module_component-data.closeAddComponent"></a>
+
+### component-data.closeAddComponent(store)
+Close the add component
+
+**Kind**: static method of [<code>component-data</code>](#module_component-data)  
+
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
 
 <a name="module_component-data.currentlyRestoring"></a>
 
@@ -422,9 +500,24 @@ open drawer
 
 * [forms](#module_forms)
     * _static_
+        * [.updateFormData(store, path, val)](#module_forms.updateFormData)
         * [.openForm(store, uri, path, [el], [offset], [appendText], [initialFocus], pos)](#module_forms.openForm)
+        * [.closeForm(store)](#module_forms.closeForm) ⇒ <code>promise</code>
     * _inner_
         * [~hasDataChanged(newData, oldData)](#module_forms..hasDataChanged) ⇒ <code>Boolean</code>
+
+<a name="module_forms.updateFormData"></a>
+
+### forms.updateFormData(store, path, val)
+Update form data
+
+**Kind**: static method of [<code>forms</code>](#module_forms)  
+
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
+| path | <code>string</code> | 
+| val | <code>string</code> \| <code>number</code> | 
 
 <a name="module_forms.openForm"></a>
 
@@ -443,6 +536,17 @@ open form
 | [appendText] | <code>string</code> | text to append (for text inputs, used when splitting/merging components with text fields) |
 | [initialFocus] | <code>string</code> | if focusing on a specific field when opening the form |
 | pos | <code>object</code> | x/y coordinates used to position overlay forms |
+
+<a name="module_forms.closeForm"></a>
+
+### forms.closeForm(store) ⇒ <code>promise</code>
+Close a form
+
+**Kind**: static method of [<code>forms</code>](#module_forms)  
+
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
 
 <a name="module_forms..hasDataChanged"></a>
 
@@ -732,16 +836,24 @@ run page list updates sequentially, grabbing from the store after each to preven
 
 * [preloader](#module_preloader)
     * [~getComponentModels()](#module_preloader..getComponentModels) ⇒ <code>object</code>
+    * [~getComponentKilnjs()](#module_preloader..getComponentKilnjs) ⇒ <code>object</code>
     * [~reduceComponents(result, val)](#module_preloader..reduceComponents) ⇒ <code>obj</code>
     * [~composeLayoutData(layoutSchema, components, original)](#module_preloader..composeLayoutData) ⇒ <code>object</code>
     * [~reduceTemplates(result, val, key)](#module_preloader..reduceTemplates) ⇒ <code>obj</code>
     * [~getPageStatus(state)](#module_preloader..getPageStatus) ⇒ <code>string</code>
+    * [~getSchemas(schemas, kilnjs)](#module_preloader..getSchemas) ⇒ <code>object</code>
 
 <a name="module_preloader..getComponentModels"></a>
 
 ### preloader~getComponentModels() ⇒ <code>object</code>
 get component models so we can mount them on window.kiln.componentModels
 if they aren't already mounted (backwards-compatability)
+
+**Kind**: inner method of [<code>preloader</code>](#module_preloader)  
+<a name="module_preloader..getComponentKilnjs"></a>
+
+### preloader~getComponentKilnjs() ⇒ <code>object</code>
+get component kiln files so we can mount them on window.kiln.componentKilnjs
 
 **Kind**: inner method of [<code>preloader</code>](#module_preloader)  
 <a name="module_preloader..reduceComponents"></a>
@@ -792,6 +904,18 @@ get string state to pass to progress bar
 | Param | Type |
 | --- | --- |
 | state | <code>object</code> | 
+
+<a name="module_preloader..getSchemas"></a>
+
+### preloader~getSchemas(schemas, kilnjs) ⇒ <code>object</code>
+run a copy of the schema through its kiln.js file (if it has one)
+
+**Kind**: inner method of [<code>preloader</code>](#module_preloader)  
+
+| Param | Type |
+| --- | --- |
+| schemas | <code>object</code> | 
+| kilnjs | <code>function</code> | 
 
 <a name="module_toolbar"></a>
 
@@ -1134,4 +1258,16 @@ some may have been parsed out by the isActive check in runValidator, above
 | Param | Type |
 | --- | --- |
 | error | <code>object</code> | 
+
+<a name="isPageSpecific"></a>
+
+## isPageSpecific(uri, store) ⇒ <code>boolean</code>
+is uri page spectific
+
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| uri | <code>string</code> | 
+| store | <code>object</code> | 
 
