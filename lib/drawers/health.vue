@@ -1,3 +1,52 @@
+<template>
+  <div class="health-drawer">
+    <div v-if="isValid" class="publish-valid">
+      <span class="valid-label">Checks pass!</span>
+      <span class="valid-description">This is good to publish.</span>
+    </div>
+    <health-item :errors="errors" errorLevel="error" errorKey="error" />
+    <health-item :errors="kilnjsErrors" errorLevel="error" errorKey="kilnjs-error" />
+    <health-item :errors="warnings" errorLevel="warning" errorKey="warning" />
+    <health-item :errors="kilnjsWarnings" errorLevel="warning" errorKey="kilnjs-warning" />
+    <health-item :errors="metadataErrors" errorLevel="error" errorKey="metadata-error" :openItem="false" />
+    <health-item :errors="metadataWarnings" errorLevel="warning" errorKey="metadata-warnings" :openItem="false" />
+  </div>
+</template>
+
+
+<script>
+  import { mapState } from 'vuex';
+  import UiIcon from 'keen/UiIcon';
+  import healthItem from './health-item';
+
+  export default {
+    data() {
+      return {};
+    },
+    computed: mapState({
+      errors: (state) => state.validation.errors,
+      warnings: (state) => state.validation.warnings,
+      kilnjsErrors: (state) =>  state.validation.kilnjsErrors.filter((error) => error.type === 'error'),
+      kilnjsWarnings: (state) =>  state.validation.kilnjsErrors.filter((error) => error.type === 'warning'),
+      metadataErrors: (state) => state.validation.metadataErrors,
+      metadataWarnings: (state) => state.validation.metadataWarnings,
+      hasErrors() {
+        return this.errors.length > 0 || this.metadataErrors.length > 0;
+      },
+      hasWarnings() {
+        return this.warnings.length > 0 || this.metadataWarnings.length > 0;
+      },
+      isValid() {
+        return !this.hasErrors && !this.hasWarnings;
+      }
+    }),
+    components: {
+      UiIcon,
+      healthItem
+    }
+  };
+</script>
+
 <style lang="sass">
   @import '../../styleguide/colors';
   @import '../../styleguide/typography';
@@ -84,9 +133,7 @@
     flex-direction: column;
     padding: 16px;
 
-    &:first-of-type {
-      padding-top: 0;
-    }
+
 
     .error-label {
       @include type-subheading();
@@ -109,9 +156,7 @@
     flex-direction: column;
     padding: 16px;
 
-    &:first-of-type {
-      padding-top: 0;
-    }
+
 
     .warning-label {
       @include type-subheading();
@@ -127,96 +172,3 @@
     }
   }
 </style>
-
-<template>
-  <div class="health-drawer">
-    <div v-if="isValid" class="publish-valid">
-      <span class="valid-label">Checks pass!</span>
-      <span class="valid-description">This is good to publish.</span>
-    </div>
-
-    <div v-for="(error, index) in errors" class="publish-error" :key="`publish-error-item-${index}`">
-      <span class="error-label">{{ error.label }}</span>
-      <span class="error-description">{{ error.description }}</span>
-      <span class="validation-info">Go To Components</span>
-      <ul class="validation-items">
-        <li v-for="(item, idx) in error.items" class="validation-item" :key="`publish-error-validation-item-${idx}`">
-          <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click.stop="openLocation(item.uri, item.field, item.path, item.location)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
-        </li>
-      </ul>
-    </div>
-
-    <div v-for="(warning, index) in warnings" class="publish-warning" :key="`publish-warning-item-${index}`">
-      <span class="warning-label">{{ warning.label }}</span>
-      <span class="warning-description">{{ warning.description }}</span>
-      <span class="validation-info">Go To Components</span>
-      <ul class="validation-items">
-        <li v-for="(item, idx) in warning.items" class="validation-item" :key="`publish-warning-validation-item-${idx}`">
-          <span class="validation-item-location" :class="{ 'validation-item-link': item.uri && item.field }" @click.stop="openLocation(item.uri, item.field, item.path, item.location)">{{ item.location }}</span> <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
-        </li>
-      </ul>
-    </div>
-    <div v-for="(metadataError, index) in metadataErrors" class="publish-metadata-errors" :key="`metadata-error-items-${index}`">
-      <span class="error-label">{{ metadataError.label }}</span>
-      <span class="error-description">{{ metadataError.description }}</span>
-      <ul class="validation-items">
-        <li v-for="(item, idx) in metadataError.items" class="validation-item" :key="`publish-error-validation-item-${idx}`">
-          <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
-        </li>
-      </ul>
-    </div>
-    <div v-for="(metadataWarning, index) in metadataWarnings" class="publish-metadata-warnings" :key="`metadata-warnings-items-${index}`">
-      <span class="warning-label">{{ metadataWarning.label }}</span>
-      <span class="warning-description">{{ metadataWarning.description }}</span>
-      <ul class="validation-items">
-        <li v-for="(item, idx) in metadataWarning.items" class="validation-item" :key="`publish-error-validation-item-${idx}`">
-          <span v-if="item.preview" class="validation-item-preview">{{ item.preview }}</span>
-        </li>
-      </ul>
-    </div>
-  </div>
-</template>
-
-
-<script>
-  import { mapState } from 'vuex';
-  import { getFieldEl, getComponentEl } from '../utils/component-elements';
-  import UiIcon from 'keen/UiIcon';
-
-  export default {
-    data() {
-      return {};
-    },
-    computed: mapState({
-      errors: (state) => state.validation.errors,
-      warnings: (state) => state.validation.warnings,
-      metadataErrors: (state) => state.validation.metadataErrors,
-      metadataWarnings: (state) => state.validation.metadataWarnings,
-      hasErrors() {
-        return this.errors.length > 0 || this.metadataErrors.length > 0;
-      },
-      hasWarnings() {
-        return this.warnings.length > 0 || this.metadataWarnings.length > 0;
-      },
-      isValid() {
-        return !this.hasErrors && !this.hasWarnings;
-      }
-    }),
-    methods: {
-      openLocation(uri, field, path, location) {
-        const el = getFieldEl(uri, path),
-          componentEl = el && getComponentEl(el);
-
-        this.$store.commit('OPEN_VALIDATION_LINK', location);
-        if (componentEl) {
-          // component exists and is in the body (not a head component)
-          this.$store.dispatch('select', componentEl);
-        }
-        this.$store.dispatch('focus', { uri, path, initialFocus: field, el });
-      }
-    },
-    components: {
-      UiIcon
-    }
-  };
-</script>

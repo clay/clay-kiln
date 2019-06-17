@@ -21,7 +21,7 @@
           <ui-tab v-for="(section, index) in sections" :key="index" :title="section.title" :selected="initialSection === index">
             <div class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 104px)`}">
               <div class="input-container">
-                <field v-for="(field, fieldIndex) in section.fields" :key="fieldIndex" :name="field.name" :data="fields[field.name]" :visibility="!field.schema || field.schema.visibility" :schema="field.schema || schema[field.name] || getFieldSchema(field.name)" :initialFocus="initialFocus"></field>
+                <field v-for="(field, fieldIndex) in section.fields" :key="JSON.stringify(field.schema) + fieldIndex" :name="field.name" :data="fields[field.name]" :visibility="!field.schema || field.schema.visibility" :schema="field.schema || schema[field.name] || getFieldSchema(field.name)" :initialFocus="initialFocus"></field>
                 <div v-if="section.hasRequiredFields" class="required-footer">* Required fields</div>
               </div>
             </div>
@@ -29,7 +29,7 @@
         </ui-tabs>
         <div v-else class="input-container-wrapper" :style="{ 'max-height': `calc(100vh - ${formTop} - 56px)`}">
           <div class="input-container">
-            <field v-for="(field, fieldIndex) in sections[0].fields" :key="fieldIndex" :name="field.name" :data="fields[field.name]" :visibility="!field.schema || field.schema.visibility" :schema="field.schema || schema[field.name] || getFieldSchema(field.name)" :initialFocus="initialFocus"></field>
+            <field v-for="(field, fieldIndex) in sections[0].fields" :key="JSON.stringify(field.schema) + fieldIndex" :name="field.name" :data="fields[field.name]" :visibility="!field.schema || field.schema.visibility" :schema="field.schema || schema[field.name] || getFieldSchema(field.name)" :initialFocus="initialFocus"></field>
             <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
           </div>
         </div>
