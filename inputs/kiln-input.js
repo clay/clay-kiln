@@ -13,9 +13,57 @@ export default class KilnInput {
       inputName,
       schemaName: schema.schemaName,
       subscribedEvents: {},
+      cachedResponses: {},
       ...schema[inputName]
     });
   };
+
+  /**
+   * Runs an Fetch call and returns a promise with the response or if cached, returns a stored promise without making another call
+  * @param {string} url
+  * @param {object} options - fetch config options (headers, etc.)
+  * @param {boolean} cache
+  * @param {number} timeOutIn
+  * @return {Promise}
+  */
+  fetch(url, options = {}, cache = true, timeOutIn = 5000) {
+    const controller = new AbortController(),
+      config = { ...options, signal: controller.signal };
+
+    if (this.cachedResponses[url] && cache) {
+      const response = new Response(new Blob([this.cachedResponses[url]]));
+
+      return Promise.resolve(response);
+    }
+
+    window.setTimeout(() => {
+      controller.abort();
+    }, timeOutIn);
+
+
+    return fetch(url, config)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`${response.status}: ${response.statusText}`);
+        }
+
+        if (cache === true ) {
+          response.clone().text().then((content) => {
+            this.cachedResponses[url] = content;
+          });
+        }
+
+        return response;
+      })
+      .catch((error) => {
+        if (error.name === 'AbortError') {
+          throw new Error('Timeout');
+        }
+
+        throw new Error(error.message);
+      });
+  }
+
 
   /**
    * fetchs and returns a component as a json object

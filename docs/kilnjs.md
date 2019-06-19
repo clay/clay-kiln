@@ -230,6 +230,34 @@ module.exports = (schema) => {
 
 `KilnInput` also provides its own set of custom methods.
 
+### fetch
+
+* ***fetch(url, options, cache, timeOutIn)*** - a function that wraps a standard fetch call that provides caching and throws a catchable error if the call takes longer than a set amount of time.
+  * url - The url of the endpoint to which you're making the fetch call
+  * options - A JSON object that holds the request options of a fetch call. Can be used to set the methods, headers, body, etc.  The same as you would use in a standard fetch().
+  * cache - A boolean value that defaults to true. When true, it will cache future calls to the exact same url during this session. Set to false and it will make a new fetch call everytime it is invoked.
+  * timeOutIn - The number of milliseconds before the fetch will timeout.  Defaults to 5000. When the call times out, the fetch is aborted and an error is thrown with the message 'Timeout'.
+
+An example use of the kilninput fetch function.
+```js
+eventBus.fetch(
+  'https://httpstat.us/200/cors?sleep=1000',
+  { headers: { Accept: 'application/json' } },
+  false,
+  500
+)
+.then((response) => response.json())
+.then((json) => {
+  // do something with the returned json
+  // you will never make it into this callback if the call timeouts
+})
+.catch(error => {
+  if (error.message === 'Timeout') {
+    // Do something in response to the call timing out
+  }
+});
+```
+
 ### getComponentData
 
 * ***getComponentData(uri)*** - returns a promise from the API call to the component data that when resolved will return an object containing the component's properties and their values.
