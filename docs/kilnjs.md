@@ -234,9 +234,9 @@ module.exports = (schema) => {
 
 * ***fetch(url, options, cache, timeOutIn)*** - a function that wraps a standard fetch call that provides caching and throws a catchable error if the call takes longer than a set amount of time.
   * url - The url of the endpoint to which you're making the fetch call
-  * options - A JSON object that holds the request options of a fetch call. Can be used to se the methods, headers, body, etc.  The same as you would use in a standard fetch().
+  * options - A JSON object that holds the request options of a fetch call. Can be used to set the methods, headers, body, etc.  The same as you would use in a standard fetch().
   * cache - A boolean value that defaults to true. When true, it will cache future calls to the exact same url during this session. Set to false and it will make a new fetch call everytime it is invoked.
-  * timeOutIn - The number of milliseconds before the fetch will timeout.  Defaults to 5000. When the call timesout, the fetch is aborted and an error is thrown with the message 'Timeout'.
+  * timeOutIn - The number of milliseconds before the fetch will timeout.  Defaults to 5000. When the call times out, the fetch is aborted and an error is thrown with the message 'Timeout'.
 
 An example use of the kilninput fetch function.
 ```js
