@@ -22,7 +22,7 @@
     "browser": true,
     "commonjs": true,
     "mocha": true,
-    "es6": true,
+    "es6": true
   },
   // add global vars for chai, etc
   "globals": {
@@ -33,13 +33,16 @@
   "rules": {
     // possible errors
     "no-extra-parens": 1,
-    "valid-jsdoc": [1, {
-      "requireReturn": false,
-      "requireParamDescription": false,
-      "requireReturnDescription": false
-    }],
+    "valid-jsdoc": [
+      1,
+      {
+        "requireReturn": false,
+        "requireParamDescription": false,
+        "requireReturnDescription": false
+      }
+    ],
     // best practices
-    "complexity": [2, 8],
+    "complexity": [2, 20],
     "curly": [2, "all"],
     "default-case": 2,
     "guard-for-in": 2,
@@ -76,8 +79,8 @@
     "semi": [2, "always"],
     "keyword-spacing": 2,
     "space-before-blocks": [2, "always"],
-    "space-before-function-paren": [2, {"anonymous": "always", "named": "never"}],
-    "space-infix-ops": [1, {"int32Hint": false}],
+    "space-before-function-paren": [2, { "anonymous": "always", "named": "never" }],
+    "space-infix-ops": [1, { "int32Hint": false }],
     "spaced-comment": [2, "always"],
     "arrow-parens": 1,
     // es6
