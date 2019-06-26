@@ -42,7 +42,7 @@
       }
     ],
     // best practices
-    "complexity": [2, 20],
+    "complexity": [1, 8],
     "curly": [2, "all"],
     "default-case": 2,
     "guard-for-in": 2,
