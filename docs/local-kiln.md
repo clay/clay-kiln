@@ -4,7 +4,7 @@ title: Running Kiln Locally
 sidebar_label: Running Kiln Locally
 ---
 
-To develop Kiln you need to run it locally. If you want to use the Vue Development Tools plugin in your browser, you will also need to run it locally because the Vue Development Tools only work when Vue is in development mode and Kiln is only in development mode when it is run locally.
+Kiln must be run locally for development. This will ensure that Kiln and Vue Development Tools run in development mode.
 
 ### Steps to run it locally
 
