@@ -1,0 +1,141 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Plugins · Kiln</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;hr&gt;
+"/><meta name="docsearch:version" content="8.11.1"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Plugins · Kiln"/><meta property="og:type" content="website"/><meta property="og:url" content="https://clay.github.io//clay-kiln/"/><meta property="og:description" content="&lt;hr&gt;
+"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/clay-kiln/"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/clay-kiln/js/scrollSpy.js"></script><link rel="stylesheet" href="/clay-kiln/css/main.css"/><script src="/clay-kiln/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/clay-kiln/"><img class="logo" src="/clay-kiln/img/kiln.png" alt="Kiln"/><h2 class="headerTitleWithLogo">Kiln</h2></a><a href="/clay-kiln/versions"><h3>8.11.1</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/clay-kiln/docs/intro" target="_self">Introduction</a></li><li class=""><a href="https://github.com/clay/clay-kiln" target="_self">Github</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>KILN FUNDAMENTALS</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Introduction<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/intro">Introduction</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">KILN FUNDAMENTALS<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/kiln_ui">The Kiln UI</a></li><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Clay Components</h4><ul><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/component">Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/manipulating_components">Adding, Removing, and Reordering Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/editing_components">Editing Components</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/input">Form Inputs</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/kilnjs">Kilnjs</a></li></ul></div><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/deep_linking">Deep Linking</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/clay-kiln/docs/plugins">Plugins</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">API DOCUMENTATION<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Kiln API</h4><ul><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/api_kiln">API</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/snackbar">Snackbar</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/vuex_actions">Vuex Actions</a></li><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/vuex_plugin">Vuex Plugins</a></li></ul></div></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Local Kiln<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/clay-kiln/docs/local-kiln">Running Kiln Locally</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Plugins</h1></header><article><div><span><hr>
+<p>Custom plugins can be added to Kiln to add additional functionality. Plugins live inside the website instance running Clay, within the <code>services/kiln/plugins</code> folder.  Each plugin should live inside its own folder within the plugins folder. (i.e. <code>services/kiln/plugins/my-plugin</code>)  The <code>services/kiln/index.js</code> file should require the plugin.</p>
+<pre><code class="hljs css language-js"> <span class="hljs-built_in">require</span>(<span class="hljs-string">'./my-plugin'</span>)();
+</code></pre>
+<p>The <code>services/kiln/plugins/my-plugin/index.js</code>, which will be required by the above statement, should be an exported function that includes all the components needed by the plugin. It should add the components to the global <code>window.kiln</code> object.</p>
+<h2><a class="anchor" aria-hidden="true" id="plugin-buttons"></a><a href="#plugin-buttons" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Plugin Buttons</h2>
+<pre><code class="hljs css language-js"><span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-built_in">window</span>.kiln.navButtons[<span class="hljs-string">'myPlugin'</span>] = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./nav-button.vue'</span>);
+  <span class="hljs-built_in">window</span>.kiln.navContent[<span class="hljs-string">'myPlugin'</span>] = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./main.vue'</span>);
+};
+</code></pre>
+<p>Any buttons added to the <code>window.kiln.navButtons</code> array will appear in Kiln's navigation drawer. Any components added to the <code>window.kiln.navContent</code> array will be available to show as content within the navigation drawer. To display the <code>nav-button.vue</code> can be as simple as this.</p>
+<pre><code class="hljs css language-js">&lt;template&gt;
+  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">nav-menu-button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"test"</span> <span class="hljs-attr">icon</span>=<span class="hljs-string">"loyalty"</span> @<span class="hljs-attr">nav-click</span>=<span class="hljs-string">"openNav"</span>&gt;</span>Test<span class="hljs-tag">&lt;/<span class="hljs-name">nav-menu-button</span>&gt;</span></span>
+<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span></span>
+ <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript"><span class="hljs-meta">
+'use strict'</span>;
+
+<span class="hljs-comment">// import the navMenuButton component from the global kiln object</span>
+<span class="hljs-keyword">const</span> navMenuButton = <span class="hljs-built_in">window</span>.kiln.utils.components.navMenuButton;
+
+<span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">methods</span>: {
+    openNav() {
+      <span class="hljs-comment">// when the nav-menu-button is clicked, we toggle the drawer open or closed to show or hide the navContent component we set in the index.js file named 'myPlugin'</span>
+      <span class="hljs-keyword">this</span>.$store.dispatch(<span class="hljs-string">'toggleDrawer'</span>, <span class="hljs-string">'myPlugin'</span>);
+    }
+  },
+  <span class="hljs-attr">components</span>: {
+    navMenuButton
+  }
+};
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>
+</code></pre>
+<p>Which will add the Test button to the nav, like this:</p>
+<p><img src="/clay-kiln/img/navbutton.png" alt="nav button"></p>
+<hr>
+<p>You can also add buttons to the Kiln Toolbar by adding them to the <code>windows.kiln.toolbarButtons</code> array.</p>
+<pre><code class="hljs css language-js"><span class="hljs-built_in">window</span>.kiln.toolbarButtons[<span class="hljs-string">'test'</span>] = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./toolbar-button.vue'</span>);
+</code></pre>
+<p>Then the <code>toolbar-button.vue</code> file would then look very similar to the <code>nav-button.vue</code> file above. The biggest change is that you wouldn't use a nav-menu-button component because those are styled so as to be used in the left nav:</p>
+<pre><code class="hljs css language-js">&lt;template&gt;
+  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">UiIconButton</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"test"</span> <span class="hljs-attr">icon</span>=<span class="hljs-string">"favorite"</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">"openNav"</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span></span>
+ <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript"><span class="hljs-meta">
+'use strict'</span>;
+<span class="hljs-keyword">const</span> UiIconButton = <span class="hljs-built_in">window</span>.kiln.utils.components.UiIconButton;
+
+<span class="hljs-built_in">module</span>.exports = {
+  data() {
+    <span class="hljs-keyword">return</span> {};
+  },
+  <span class="hljs-attr">methods</span>: {
+    openNav() {
+      <span class="hljs-keyword">this</span>.$store.dispatch(<span class="hljs-string">'toggleDrawer'</span>, <span class="hljs-string">'test'</span>);
+    }
+  },
+  <span class="hljs-attr">components</span>: {
+    UiIconButton
+  }
+};
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>
+</code></pre>
+<p>This will add a button that looks like this:</p>
+<p><img src="/clay-kiln/img/toolbarbutton.png" alt="Toolbar button"></p>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="plugin-content"></a><a href="#plugin-content" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Plugin Content</h2>
+<p>Content for your plugin will appear within the nav content drawer and should be added to the <code>window.kiln.navContent</code> array.</p>
+<pre><code class="hljs css language-js">  <span class="hljs-built_in">window</span>.kiln.navContent[<span class="hljs-string">'myPlugin'</span>] = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./main.vue'</span>);
+</code></pre>
+<p>Plugins are most often built as a Vue App that exists inside the Kiln Vue App and can be as simple or as complex as you need.  As a part of the Kiln app, it has access to the Vuex Store and all of the data it contains and can both read and write to that data, having access to all Kiln's Vuex Actions.</p>
+<p>Plugins can range from something as simple as this</p>
+<p><img src="/clay-kiln/img/clear_cache.png" alt="Clear Cache Plugin"></p>
+<p>to something as complex as this</p>
+<p><img src="/clay-kiln/img/agora.png" alt="Agora Plugin"></p>
+<p>In fact, a plugin can be even simpler than either of those and doesn't actually require anything to be added to the <code>window.kiln.navContent</code> array at all. Instead of opening a content drawer, clicking the nav button could trigger a JavaScript function that makes an API call to perform some backend function, or it could update some piece of data in Kiln's state or any other JavaScript function that you write.</p>
+<p>As an example, if the Clear Cache plugin cleared the cache for every page rather than the entered urls, then you could just write a function to clear every cache and call that function upon clicking the Clear Cache button rather than requiring further user input.</p>
+<p><strong>See Also:</strong></p>
+<ul>
+<li><a href="vuex_actions">Vuex Actions</a></li>
+<li><a href="vuex_plugin">Vuex Plugins</a></li>
+</ul>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/clay-kiln/docs/deep_linking"><span class="arrow-prev">← </span><span>Deep Linking</span></a><a class="docs-next button" href="/clay-kiln/docs/api_kiln"><span>API</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#plugin-buttons">Plugin Buttons</a></li><li><a href="#plugin-content">Plugin Content</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/clay-kiln/" class="nav-home"></a><div><h5>Docs</h5><a href="/clay-kiln/docs/en/intro">Introduction</a><a href="/clay-kiln/docs/en/api_kiln">API Reference</a></div><div><h5>More</h5><a target="_blank" href="https://github.com/clay/clay-kiln">GitHub</a></div></section><section class="copyright">Copyright © 2019 New York Media</section></footer></div></body></html>
