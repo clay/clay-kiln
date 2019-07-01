@@ -16,7 +16,8 @@
           "kilnjs"
         ]
       },
-      "deep_linking"
+      "deep_linking",
+      "plugins"
     ],
     "API DOCUMENTATION": [
       {
@@ -29,6 +30,9 @@
           "vuex_plugin"
         ]
       }
+    ],
+    "Local Kiln": [
+      "local-kiln"
     ]
   }
 }
