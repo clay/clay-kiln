@@ -45,11 +45,12 @@
         }
 
         // expand any syntax sugar, so they're an array of objects
-        buttons = _.map(buttons, (button) => _.isString(button) ? { name: button } : button);
+        buttons = _.map(buttons, button => _.isString(button) ? { name: button } : button);
 
         return _.filter(buttons, (button) => {
           if (!_.get(window, `kiln.inputs['${button.name}']`)) {
             log.warn(`Attached button (${button.name}) for '${this.name}' not found!`, { action: 'hasButton', input: this.args });
+  
             return false;
           } else {
             return true;

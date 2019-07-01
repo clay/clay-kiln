@@ -2,7 +2,7 @@
 import Vue from 'vue';
 import { mount, shallowMount } from '@vue/test-utils';
 import * as cuid from 'cuid';
-import Quill from 'quill/dist/quill.min.js';
+import Quill from 'quill/dist/quill.min';
 import { convertDeltaToHtml } from 'node-quill-converter';
 import Delta from 'quill-delta';
 

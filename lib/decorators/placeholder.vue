@@ -39,7 +39,7 @@
   }
 
   function isPageArea(uri, path) {
-    const subschema = getSchema({uri, path});
+    const subschema = getSchema({ uri, path });
 
     return !!subschema[componentListProp].page;
   }
@@ -58,7 +58,7 @@
         return !!_.get(getSchema(this.$options), `${placeholderProp}.permanent`);
       },
       isError() {
-        return _.find(_.get(store, 'state.validation.errors', []), (error) => _.find(error.items, (item) => item.uri === this.$options.uri && item.path === this.$options.path));
+        return _.find(_.get(store, 'state.validation.errors', []), error => _.find(error.items, item => item.uri === this.$options.uri && item.path === this.$options.path));
       },
       isActive() {
         const isPageEditMode = _.get(store, 'state.editMode') === 'page',

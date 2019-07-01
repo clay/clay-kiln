@@ -41,7 +41,7 @@ export function splitParagraphs(str) {
   // because we're parsing out <p> tags, we can conclude that two <br> tags
   // means a "real" paragraph (e.g. the writer intended for this to be a paragraph break),
   // whereas a single <br> tag is intended to simply be a line break.
-  let paragraphs = _.map(str.split(/<br\s?\/><br\s?\/>/ig), (s) => s.trim());
+  let paragraphs = _.map(str.split(/<br\s?\/><br\s?\/>/ig), s => s.trim());
 
   // handle blocks and headers that should be parsed out as separate components
   return _.reduce(paragraphs, function (result, graf) {
@@ -96,7 +96,10 @@ export function cleanCharacters(str) {
  */
 export function matchComponents(strings, rules) {
   return _.filter(_.map(strings, function (str) {
-    let cleanStr, matchedRule, matchedObj, matchedValue;
+    let cleanStr,
+      matchedRule,
+      matchedObj,
+      matchedValue;
 
     // do some more post-splitting sanitization:
     cleanStr = cleanCharacters(str);

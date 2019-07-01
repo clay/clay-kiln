@@ -32,9 +32,9 @@
       return {
         secondaryActions: [{
           icon: 'settings',
-          tooltip: (id) => `${label(getComponentName(id))} Settings`,
+          tooltip: id => `${label(getComponentName(id))} Settings`,
           action: this.openSettings,
-          enable: (id) => hasGroup(id, 'settings')
+          enable: id => hasGroup(id, 'settings')
         }]
       };
     },
@@ -52,7 +52,7 @@
           } else {
             return !isComponentInPage(uri);
           }
-        }), (el) => getName(el.getAttribute(refAttr), selected));
+        }), el => getName(el.getAttribute(refAttr), selected));
       }
     },
     methods: {

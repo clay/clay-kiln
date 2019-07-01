@@ -10,11 +10,11 @@ describe('wysiwyg phrase', () => {
     );
     test(
       'returns button config for phrase button without class',
-      () => expect(fn({ phrase: { button: 'P' }})).toBe('phrase')
+      () => expect(fn({ phrase: { button: 'P' } })).toBe('phrase')
     );
     test(
       'returns buttons config for phrase button with class',
-      () => expect(fn({ phrase: { class: 'clay-annotated' }})).toBe('phrase-clay-annotated')
+      () => expect(fn({ phrase: { class: 'clay-annotated' } })).toBe('phrase-clay-annotated')
     );
 
     test(

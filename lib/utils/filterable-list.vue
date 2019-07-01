@@ -192,6 +192,7 @@
         // pass along the item, but only pass along children that match
         items.push(_.assign({}, item, { children: childMatches }));
       }
+  
       return items;
     }, []);
   }
@@ -206,9 +207,10 @@
    */
   function expandCurrentlyExpanded(list, matches) {
     return _.map(list, (item) => {
-      if (!item.expanded && _.find(matches, (match) => item.id === match.id && match.expanded)) {
+      if (!item.expanded && _.find(matches, match => item.id === match.id && match.expanded)) {
         item.expanded = true;
       }
+  
       return item;
     });
   }
@@ -227,6 +229,7 @@
       fullContent() {
         return _.map(_.cloneDeep(this.content), (item) => {
           item.expanded = this.hasChildAction && item.id === this.initialExpanded;
+  
           return item;
         });
       },
@@ -238,7 +241,7 @@
         return _.isEqual(this.focusIndex, [null, null]);
       },
       selectedIndex() {
-        return _.findIndex(this.matches, (item) => item.selected);
+        return _.findIndex(this.matches, item => item.selected);
       },
       hasFilter() {
         return !_.has(this.$listeners, 'reorder');

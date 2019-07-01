@@ -68,6 +68,7 @@ function trimLinebreaks(str) {
   let trimmed = str.replace(/^(<br \/><br \/>|<br \/>)/i, '');
 
   trimmed = trimmed.replace(/(<br \/><br \/>|<br \/>)$/i, '');
+
   return trimmed;
 }
 
@@ -91,9 +92,9 @@ export function sanitizeInlineHTML(str) {
   // all text coming out of Quill will have each line wrapped in <p>,
   // so we need to convert those to <br> line breaks
   return trimLinebreaks(sanitized.split('</p>')
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0)
-    .map((line) => line.replace('<p>', ''))
+    .map(line => line.trim())
+    .filter(line => line.length > 0)
+    .map(line => line.replace('<p>', ''))
     .join('<br />'));
 };
 
@@ -132,18 +133,18 @@ export function sanitizeMultiComponentHTML(str) {
 
   if (hasWellFormedParagraphs(sanitized)) {
     return trimLinebreaks(sanitized.split('</p>')
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0)
-      .map((line) => line.replace('<p>', ''))
+      .map(line => line.trim())
+      .filter(line => line.length > 0)
+      .map(line => line.replace('<p>', ''))
       .join('<br /><br />'));
   } else {
     // non-wellformed paragraphs must be split on paragraph tags,
     // and non-graf tags must have extra line breaks because google docs
     // decided to stop wrapping them in <p> tags
     let result = trimLinebreaks(sanitized.split('</p>')
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0)
-      .map((line) => line.replace('<p>', ''))
+      .map(line => line.trim())
+      .filter(line => line.length > 0)
+      .map(line => line.replace('<p>', ''))
       .join('<br />'));
 
     return result.replace(/<\/(blockquote|h1|h2|h3|h4)><br\s?\/>/ig, '</$1><br /><br />');

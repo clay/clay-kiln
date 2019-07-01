@@ -62,6 +62,7 @@
               label: _.startCase(provider)
             });
           }
+  
           return results;
         }, []);
       }
@@ -78,6 +79,7 @@
           };
 
         store.dispatch('startProgress', 'save');
+  
         return postJSON(prefix + usersBareRoute, user)
           .then(() => {
             store.dispatch('closeModal');

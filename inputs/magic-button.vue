@@ -178,6 +178,7 @@
 
         if (data) {
           found = data;
+  
           return false;
         }
       });
@@ -202,6 +203,7 @@
 
         if (data) {
           found = data;
+  
           return false;
         }
       });
@@ -237,7 +239,7 @@
    * @return {Promise}
    */
   function getAPI(url) {
-    return send(url).then((res) => res.json());
+    return send(url).then(res => res.json());
   }
 
   /**
@@ -250,7 +252,7 @@
       if (_.isString(property) && !_.isEmpty(property)) {
         return _.get(data, property);
       } else if (_.isArray(property) && !_.isEmpty(property)) {
-        return _.get(data, _.find(property, (prop) => !_.isEmpty(data[prop])));
+        return _.get(data, _.find(property, prop => !_.isEmpty(data[prop])));
       } else {
         return data;
       }
