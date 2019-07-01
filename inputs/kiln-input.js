@@ -2,6 +2,7 @@ import store from '../lib/core-data/store';
 import * as api from '../lib/core-data/api.js';
 import { replaceVersion } from 'clayutils';
 import _cloneDeep from 'lodash/cloneDeep';
+import { addProtocol } from '../lib/utils/urls';
 
 export default class KilnInput {
   /**
@@ -71,7 +72,9 @@ export default class KilnInput {
   * @return {Promise}
   */
   getComponentData(uri) {
-    return api.getJSON(`http://${uri}`);
+    const url = addProtocol(uri);
+
+    return api.getJSON(url);
   }
 
   /**
