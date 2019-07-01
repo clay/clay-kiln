@@ -24,12 +24,12 @@
       return {};
     },
     computed: mapState({
-      errors: (state) => state.validation.errors,
-      warnings: (state) => state.validation.warnings,
-      kilnjsErrors: (state) =>  state.validation.kilnjsErrors.filter((error) => error.type === 'error'),
-      kilnjsWarnings: (state) =>  state.validation.kilnjsErrors.filter((error) => error.type === 'warning'),
-      metadataErrors: (state) => state.validation.metadataErrors,
-      metadataWarnings: (state) => state.validation.metadataWarnings,
+      errors: state => state.validation.errors,
+      warnings: state => state.validation.warnings,
+      kilnjsErrors: state => state.validation.kilnjsErrors.filter(error => error.type === 'error'),
+      kilnjsWarnings: state => state.validation.kilnjsErrors.filter(error => error.type === 'warning'),
+      metadataErrors: state => state.validation.metadataErrors,
+      metadataWarnings: state => state.validation.metadataWarnings,
       hasErrors() {
         return this.errors.length > 0 || this.metadataErrors.length > 0;
       },

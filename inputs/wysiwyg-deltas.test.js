@@ -48,7 +48,7 @@ describe('wysiwyg deltas', () => {
 
   describe('generateDeltas', () => {
     const fn = lib.generateDeltas,
-      fakeMatchers = [(node) => new Delta({ insert: node.textContent })];
+      fakeMatchers = [node => new Delta({ insert: node.textContent })];
 
     test(
       'generates empty delta for empty string',

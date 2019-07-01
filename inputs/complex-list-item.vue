@@ -83,7 +83,7 @@
         return this.index + 1 === this.total;
       },
       fieldNames() {
-        return _.map(this.props, (field) => field.prop); // names for all the fields in this item
+        return _.map(this.props, field => field.prop); // names for all the fields in this item
       },
       fields() {
         return this.data; // data for all the fields in this item
@@ -94,12 +94,13 @@
             fieldSchema = _.omit(field, ['prop']);
 
           obj[fieldName] = fieldSchema;
+  
           return obj;
         }, {});
       },
       hasRequiredFields() {
         // true if any of the fields in the current item have required validation
-        return _.some(this.props, (obj) => _.has(obj, `${fieldProp}.validate.required`));
+        return _.some(this.props, obj => _.has(obj, `${fieldProp}.validate.required`));
       },
       originalIndex() {
         return this.originalItems.indexOf(this.data);

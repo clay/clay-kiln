@@ -59,6 +59,7 @@
     // if the progress bar has ended (or is paused), stop animating
     if (!np.isStarted() || this.paused) {
       this.pausedStep = step;
+  
       return;
     }
 
@@ -109,7 +110,7 @@
 
   export default {
     computed: mapState({
-      currentProgress: (state) => state.ui.currentProgress
+      currentProgress: state => state.ui.currentProgress
     }),
     watch: {
       currentProgress(val) {

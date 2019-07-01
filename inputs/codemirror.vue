@@ -178,7 +178,7 @@
         });
       }
 
-      editor.on('change', (instance) => store.commit(UPDATE_FORMDATA, { path: name, data: instance.getValue() }));
+      editor.on('change', instance => store.commit(UPDATE_FORMDATA, { path: name, data: instance.getValue() }));
 
       editor.on('focus', this.onFocus);
       editor.on('blur', this.onBlur);

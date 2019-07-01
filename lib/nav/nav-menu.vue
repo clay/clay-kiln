@@ -154,7 +154,7 @@
         return this.navShouldBeOpen;
       },
       navShouldBeOpen() {
-        return this.menuOptions.find( (option) => option.id === this.currentDrawer ) || this.customButtons.find((button) => button === this.currentDrawer);
+        return this.menuOptions.find(option => option.id === this.currentDrawer) || this.customButtons.find(button => button === this.currentDrawer);
       },
       navBackgroundIsOpen() {
         return _.get(this.$store, 'state.ui.showNavBackground');
@@ -166,24 +166,24 @@
         return _.get(this.$store, 'state.ui.currentDrawer');
       },
       currentDrawerName() {
-        const activeDrawer = this.menuOptions.find((option) => option.id === this.currentDrawer);
+        const activeDrawer = this.menuOptions.find(option => option.id === this.currentDrawer);
 
         return activeDrawer ? activeDrawer.label : this.currentDrawer;
       },
       desktopNavOptions() {
-        return this.menuOptions.filter((option) => option.desktopNav);
+        return this.menuOptions.filter(option => option.desktopNav);
       },
       mobileNavOptions() {
-        let mobileNavOptions = this.menuOptions.filter((option) => option.mobileNav);
+        let mobileNavOptions = this.menuOptions.filter(option => option.mobileNav);
 
 
         return [...mobileNavOptions, ...this.customButtons];
       },
       settingsOptions() {
-        return this.menuOptions.filter((option) => option.settings && (option.adminOnly && this.isAdmin || !option.adminOnly));
+        return this.menuOptions.filter(option => option.settings && (option.adminOnly && this.isAdmin || !option.adminOnly));
       },
       newPageOption() {
-        return this.menuOptions.find((option) => option.id === 'new-page');
+        return this.menuOptions.find(option => option.id === 'new-page');
       },
       menuOptions() {
         return [{
@@ -249,12 +249,12 @@
           return false;
         }
 
-        let requiresAdmin = this.menuOptions.find((option) => option.adminOnly && option.id === this.currentDrawer);
+        let requiresAdmin = this.menuOptions.find(option => option.adminOnly && option.id === this.currentDrawer);
 
         return !!requiresAdmin;
       },
       openFirstAllowedNav() {
-        this.openNav(this.menuOptions.find((option) => !option.adminOnly).id);
+        this.openNav(this.menuOptions.find(option => !option.adminOnly).id);
       }
     },
     updated() {

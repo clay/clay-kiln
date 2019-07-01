@@ -102,7 +102,7 @@
           this.displayAutocomplete = false;
         }
 
-        hasItem = !!_.find(this.items, (item) => item.text === this.val);
+        hasItem = !!_.find(this.items, item => item.text === this.val);
 
         if (this.val && (!hasItem || hasItem && this.allowRepeatedItems)) {
           this.$emit('add', { text: this.ignoreComma ? this.val : this.val.replace(',', '') }); // remove extra comma if using that to add item
