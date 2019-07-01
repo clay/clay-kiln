@@ -12,7 +12,7 @@ To develop Kiln you need to run it locally. If you want to use the Vue Developme
 2. cd into newly cloned clay-kiln directory and run the command `npm link`
 
 ---
-The next 2 steps are only neccessary if you are actively developing Clay-Kiln, not if you just want a local version linked so you can use the Vue dev tools in your browser.
+The next 2 steps are only necessary if you are actively developing Clay-Kiln, not if you just want a local version linked so you can use the Vue dev tools in your browser.
 
   * While still in the clay-kiln directory, run `npm install`
   * Start a watch on Kiln that will recompile as you make any changes to the code by running `npm run watch`
