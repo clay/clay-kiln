@@ -4,8 +4,9 @@
   "description": "Editor tools for Clay",
   "template": "template.handlebars",
   "scripts": {
-    "lint": "eslint --ext .js,.vue edit.js view.js view-public.js directives inputs lib test",
-    "lint:fix": "eslint --fix --fix-type layout --ext .js,.vue edit.js view.js view-public.js directives inputs lib test",
+    "lint": "eslint --quiet --ext .js,.vue edit.js view.js view-public.js directives inputs lib test",
+    "lint:warnings": "eslint --ext .js,.vue edit.js view.js view-public.js directives inputs lib test",
+    "lint:fix": "eslint --fix --ext .js,.vue edit.js view.js view-public.js directives inputs lib test",
     "lint:stats": "eslint --format node_modules/eslint-stats/byErrorandWarning.js --ext .js,.vue edit.js view.js view-public.js directives inputs lib test",
     "jest": "jest",
     "test": "npm run lint && BABEL_ENV=test npm run jest -- --coverage --no-cache",
