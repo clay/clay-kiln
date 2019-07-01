@@ -44,7 +44,7 @@
     props: ['sites'],
     computed: {
       allSitesSelected() {
-        return _.every(this.sites, (site) => site.selected);
+        return _.every(this.sites, site => site.selected);
       },
       multiSelectColor() {
         return this.allSitesSelected ? 'red' : 'accent';

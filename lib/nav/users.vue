@@ -155,8 +155,8 @@
             size: 500, // todo: paginate this once we redesign the clay menu (use the same pagination UI)
             from: 0,
             sort: [
-              { name: { order: 'asc' }},
-              { username: { order: 'asc' }}
+              { name: { order: 'asc' } },
+              { username: { order: 'asc' } }
             ]
           }
         }).then((res) => {
@@ -185,7 +185,7 @@
       // note: toggleAdmin is called when this loads, because of course it is
       toggleAdmin(id, val) {
         const prefix = _.get(this.$store, 'state.site.prefix'),
-          index = _.findIndex(this.users, (user) => user.id === id),
+          index = _.findIndex(this.users, user => user.id === id),
           auth = this.users[index].auth;
 
         if (val && auth === 'write' || !val && auth === 'admin') {
@@ -201,7 +201,7 @@
         }
       },
       deleteUser(id) {
-        const index = _.findIndex(this.users, (u) => u.id === id),
+        const index = _.findIndex(this.users, u => u.id === id),
           username = this.users[index].username;
 
         this.$store.dispatch('openConfirm', {
@@ -216,6 +216,7 @@
           prefix = _.get(store, 'state.site.prefix');
 
         this.users.splice(index, 1);
+  
         return remove(prefix + usersRoute + id).then((oldUser) => {
           store.dispatch('showSnackbar', {
             message: `Removed ${username} from Clay`,

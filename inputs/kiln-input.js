@@ -47,7 +47,7 @@ export default class KilnInput {
           throw new Error(`${response.status}: ${response.statusText}`);
         }
 
-        if (cache === true ) {
+        if (cache === true) {
           response.clone().text().then((content) => {
             this.cachedResponses[url] = content;
           });
@@ -165,9 +165,11 @@ export default class KilnInput {
   */
   setProp(prop, value) {
     return new Promise((resolve) => {
-      if (this[prop] !== value ) {
-        store.dispatch('updateSchemaProp', { schemaName: this.schemaName, inputName: this.inputName, prop, value })
-          .then(()=> {
+      if (this[prop] !== value) {
+        store.dispatch('updateSchemaProp', {
+          schemaName: this.schemaName, inputName: this.inputName, prop, value
+        })
+          .then(() => {
             resolve(this);
           });
       } else {
@@ -185,7 +187,9 @@ export default class KilnInput {
     return this.setProp('visibility', true);
   }
 
-  showSnackBar({ message = '', duration = 3000, position = 'left', queueSnackbars = false, transition = 'fade' }) {
+  showSnackBar({
+    message = '', duration = 3000, position = 'left', queueSnackbars = false, transition = 'fade'
+  }) {
     store.dispatch('showSnackbar', {
       message,
       duration,

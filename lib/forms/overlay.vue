@@ -48,7 +48,9 @@
   import { has as hasGroup } from '../core-data/groups';
   import label from '../utils/label';
   import logger from '../utils/log';
-  import { fieldProp, inputProp, componentListProp, bookmarkProp, getComponentName } from '../utils/references';
+  import {
+    fieldProp, inputProp, componentListProp, bookmarkProp, getComponentName
+  } from '../utils/references';
   import { getComponentEl } from '../utils/component-elements';
   import field from './field.vue';
   import UiIconButton from 'keen/UiIconButton';
@@ -65,9 +67,9 @@
       };
     },
     computed: mapState({
-      hasCurrentOverlayForm: (state) => !_.isNull(state.ui.currentForm) && !state.ui.currentForm.inline,
-      uri: (state) => state.ui.currentForm.uri,
-      formKey: (state) => state.ui.currentForm.uri + state.ui.currentForm.path,
+      hasCurrentOverlayForm: state => !_.isNull(state.ui.currentForm) && !state.ui.currentForm.inline,
+      uri: state => state.ui.currentForm.uri,
+      formKey: state => state.ui.currentForm.uri + state.ui.currentForm.path,
       formLeft: (state) => {
         const path = state.ui.currentForm.path,
           val = _.get(state, 'ui.currentForm.pos.x');
@@ -91,7 +93,7 @@
           return label(state.ui.currentForm.path, state.ui.currentForm.schema);
         }
       },
-      hasSections: (state) => state.ui.currentForm.schema.sections && state.ui.currentForm.schema.sections.length > 1,
+      hasSections: state => state.ui.currentForm.schema.sections && state.ui.currentForm.schema.sections.length > 1,
       expandedInput() {
         return expand(this.schema[fieldProp]);
       },
@@ -153,8 +155,8 @@
 
         return sections;
       },
-      fields: (state) => state.ui.currentForm.fields,
-      schema: (state) => getSchema(state.ui.currentForm.uri),
+      fields: state => state.ui.currentForm.fields,
+      schema: state => getSchema(state.ui.currentForm.uri),
       hasBookmark() {
         return _.get(this.$store, 'state.user.auth') === 'admin' && _.get(this.schema, bookmarkProp);
       },
@@ -162,14 +164,14 @@
         // true if any of the fields in the current form have required validation
         return _.some(this.schema, (val, key) => _.includes(Object.keys(this.fields), key) && _.has(val, `${fieldProp}.validate.required`));
       },
-      componentLabel: (state) => label(getComponentName(state.ui.currentForm.uri)),
+      componentLabel: state => label(getComponentName(state.ui.currentForm.uri)),
       hasSettings(state) {
         return state.ui.currentForm.path !== 'settings' && hasGroup(state.ui.currentForm.uri, 'settings');
       },
       customButtons() {
         return Object.keys(_.get(window, 'kiln.selectorButtons', {}));
       },
-      isCurrentlySelected: (state) => _.get(state, 'ui.currentForm.uri') === _.get(state, 'ui.currentSelection.uri'),
+      isCurrentlySelected: state => _.get(state, 'ui.currentForm.uri') === _.get(state, 'ui.currentSelection.uri'),
       hasRemove(state) {
         return this.isCurrentlySelected && _.get(state, 'ui.currentSelection.parentField.isEditable');
       },
@@ -242,7 +244,7 @@
         if (this.hasCurrentOverlayForm && this.initialFocus) {
           const field = _.head(this.initialFocus.split('.'));
 
-          return _.findIndex(this.sections, (section) => _.includes(section.fields, field));
+          return _.findIndex(this.sections, section => _.includes(section.fields, field));
         } else {
           return 0;
         }
@@ -282,19 +284,23 @@
           velocity(el, { width: 600 }, { duration: 180 });
           velocity(headerEl, { opacity: 1 }, { delay: 225, duration: 50 });
           velocity(innerEl, { opacity: 1 }, { delay: 225, duration: 50 });
-          velocity(el, { height: finalHeight }, { delay: 35, duration: 240, complete: () => {
+          velocity(el, { height: finalHeight }, {
+            delay: 35,
+            duration: 240,
+            complete: () => {
             // set the height to auto, so forms can grow if the fields inside them grow
             // (e.g. adding complex-list items)
             // el.style.height = 'auto';
-            el.style.maxHeight = `calc(100vh - ${this.formTop})`;
-            el.style.height = 'auto';
+              el.style.maxHeight = `calc(100vh - ${this.formTop})`;
+              el.style.height = 'auto';
 
-            // manually reset the initial width of the indicator, see https://github.com/JosephusPaye/Keen-UI/issues/328
-            if (this.$refs.tabs) {
-              this.$refs.tabs.refreshIndicator();
+              // manually reset the initial width of the indicator, see https://github.com/JosephusPaye/Keen-UI/issues/328
+              if (this.$refs.tabs) {
+                this.$refs.tabs.refreshIndicator();
+              }
+              done();
             }
-            done();
-          } });
+          });
         });
       },
       leave(el, done) {
@@ -355,12 +361,14 @@
               name: componentName,
               onConfirm: (input) => {
                 this.$store.dispatch('unselect');
-                return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', {el: el, msg: input}));
+
+                return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', { el: el, msg: input }));
               }
             }
           });
         } else {
           this.$store.dispatch('unselect');
+
           return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', el));
         }
       },
@@ -376,12 +384,13 @@
           name = getComponentName(uri);
 
         this.$store.commit('DUPLICATE_COMPONENT', name);
+
         return this.$store.dispatch('addComponents', {
           currentURI: uri,
           parentURI: _.get(this.$store, 'state.ui.currentSelection.parentURI'),
           path: _.get(this.$store, 'state.ui.currentSelection.parentField.path'),
           components: [{ name }]
-        }).then((newEl) => this.$store.dispatch('select', newEl));
+        }).then(newEl => this.$store.dispatch('select', newEl));
       },
       duplicateComponentWithData() {
         const uri = _.get(this.$store, 'state.ui.currentForm.uri'),
@@ -389,12 +398,13 @@
           data = _.get(this.$store, `state.components["${uri}"]`);
 
         this.$store.commit('DUPLICATE_COMPONENT_WITH_DATA', name);
+
         return this.$store.dispatch('addComponents', {
           currentURI: uri,
           parentURI: _.get(this.$store, 'state.ui.currentSelection.parentURI'),
           path: _.get(this.$store, 'state.ui.currentSelection.parentField.path'),
           components: [{ name, data }]
-        }).then((newEl) => this.$store.dispatch('select', newEl));
+        }).then(newEl => this.$store.dispatch('select', newEl));
       },
       save() {
         this.$store.dispatch('unfocus');

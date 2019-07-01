@@ -77,6 +77,7 @@
     methods: {
       closeDrawer() {
         this.$store.dispatch('hideNavBackground');
+  
         return this.$store.dispatch('closeDrawer');
       }
     }

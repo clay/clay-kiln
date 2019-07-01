@@ -149,6 +149,7 @@
           } else {
             obj[option.value] = false;
           }
+  
           return obj;
         }, {});
 

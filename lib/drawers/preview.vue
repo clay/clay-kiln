@@ -99,7 +99,7 @@
       };
     },
     computed: mapState({
-      url: (state) => uriToUrl(state.page.uri) + '.html',
+      url: state => uriToUrl(state.page.uri) + '.html',
       copyIcon() {
         return this.isInvalid ? 'error_outline' : 'content_copy';
       }

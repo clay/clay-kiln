@@ -26,6 +26,7 @@ function toPlainText(str) {
   if (!_.isString(str)) {
     return '';
   }
+
   return decode(striptags(str.replace('&nbsp;', ' ')));
 }
 
@@ -93,7 +94,8 @@ export function toSlug(data) {
  * @returns {string}
  */
 export function formatUrl(data, format) {
-  var datafield = toPlainText(data).trim().toLowerCase().replace(/[^\w]/g, '-').replace(/--+/g, '-');
+  var datafield = toPlainText(data).trim().toLowerCase().replace(/[^\w]/g, '-')
+    .replace(/--+/g, '-');
 
   if (_.isString(format) && !_.isEmpty(format)) {
     return format.replace(/\$DATAFIELD/g, datafield);

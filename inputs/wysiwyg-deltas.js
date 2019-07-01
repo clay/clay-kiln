@@ -23,6 +23,7 @@ export function renderDeltas(deltas) {
     tempQuill = new Quill(temp);
 
   tempQuill.setContents(deltas);
+
   return removeParagraphs(tempQuill.root.innerHTML);
 }
 
@@ -34,7 +35,7 @@ export function renderDeltas(deltas) {
  * @param  {array} textMatchers
  * @return {object}
  */
-function traverse(node, elementMatchers, textMatchers) {  // Post-order
+function traverse(node, elementMatchers, textMatchers) { // Post-order
   if (node.nodeType === node.TEXT_NODE) {
     // run text matchers for node
     return _.reduce(textMatchers, (delta, matcher) => matcher(node, delta), new Delta());
@@ -51,6 +52,7 @@ function traverse(node, elementMatchers, textMatchers) {  // Post-order
         /* istanbul ignore next: ql-matchers are very rarely called */
         childDelta = _.reduce(childMatchers, (childDelta, matcher) => matcher(childNode, childDelta), childDelta);
       }
+
       return delta.concat(childDelta);
     }, new Delta());
   } else {
@@ -70,6 +72,7 @@ export function generateDeltas(html, elementMatchers, textMatchers) {
   const temp = document.createElement('div');
 
   temp.innerHTML = html;
+
   return traverse(temp, elementMatchers, textMatchers);
 }
 
@@ -85,7 +88,7 @@ export function deltaEndsWith(delta, text) {
     i = delta.ops.length - 1;
 
   for (; i >= 0 && endText.length < text.length; --i) {
-    let op  = delta.ops[i];
+    let op = delta.ops[i];
 
     /* istanbul ignore if: copied from quill, but never hit in our code */
     if (typeof op.insert !== 'string') {
@@ -94,6 +97,7 @@ export function deltaEndsWith(delta, text) {
       endText = op.insert + endText;
     }
   }
+
   return endText.slice(-1 * text.length) === text;
 }
 
@@ -107,6 +111,7 @@ export function matchLineBreak(node, delta) {
   if (node.tagName === 'BR' && !deltaEndsWith(delta, '\n')) {
     delta.insert('\n');
   }
+
   return delta;
 }
 
@@ -120,5 +125,6 @@ export function matchParagraphs(node, delta) {
   if (node.tagName === 'P' && !deltaEndsWith(delta, '\n') && node.textContent.length > 0) {
     delta.insert('\n');
   }
+
   return delta;
 }

@@ -80,6 +80,7 @@
       contributors() {
         return _.map(_.cloneDeep(_.get(this.$store, 'state.page.state.users', [])), (user) => {
           user.formattedTime = formatStatusTime(user.updateTime);
+  
           return user;
         }).reverse();
       }

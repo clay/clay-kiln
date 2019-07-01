@@ -59,7 +59,7 @@
         return this.args.multiple || false;
       },
       options() {
-        return _.map(this.args.options, (option) => ({
+        return _.map(this.args.options, option => ({
           schema: _.assign({}, this.schema, { [labelProp]: option.title }),
           args: _.assign({}, { options: option.values, multiple: this.multiple }),
           isShown: shouldBeRevealed(this.$store, _.get(option, revealProp, {}), this.name)
@@ -90,7 +90,7 @@
         return !this.showError && this.args.help;
       },
       hasReveal() {
-        return _.some(this.args.options, (option) => _.has(option, revealProp));
+        return _.some(this.args.options, option => _.has(option, revealProp));
       }
     },
     methods: {

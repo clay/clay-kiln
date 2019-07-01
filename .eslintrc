@@ -1,7 +1,8 @@
 {
+  "extends": "airbnb-base/whitespace",
   "parserOptions": {
     "sourceType": "module",
-    "ecmaVersion": 6,
+    "ecmaVersion": 2018,
     "ecmaFeatures": {
       "arrowFunctions": true,
       "blockBindings": true,
@@ -13,8 +14,7 @@
       "binaryLiterals": true,
       "templateStrings": true,
       "generators": true,
-      "modules": true,
-      "experimentalObjectRestSpread": true
+      "modules": true
     }
   },
   "plugins": ["html"],
@@ -28,7 +28,9 @@
   "globals": {
     "expect": false,
     "chai": false,
-    "sinon": false
+    "sinon": false,
+    "jest": false,
+    "mockLogger": false
   },
   "rules": {
     // possible errors
@@ -74,7 +76,7 @@
     "no-trailing-spaces": 2,
     "no-underscore-dangle": 0,
     "no-unneeded-ternary": 1,
-    "one-var": 2,
+    "one-var": ["error", { "const": "consecutive", "let": "consecutive" }],
     "quotes": [2, "single", "avoid-escape"],
     "semi": [2, "always"],
     "keyword-spacing": 2,
@@ -83,6 +85,19 @@
     "space-infix-ops": [1, { "int32Hint": false }],
     "spaced-comment": [2, "always"],
     "arrow-parens": 1,
+    "no-inline-comments": 0,
+    "comma-dangle": ["error", "never"],
+    "sort-keys": "off",
+    "sort-vars": "off",
+    "sort-imports": "off",
+    "import/no-internal-modules": "off",
+    "import/no-default-export": "off",
+    "import/no-namespace": "off",
+    "import/no-relative-parent-imports": "off",
+    "import/no-extraneous-dependencies": "off",
+    "no-use-before-define": "off",
+    "no-mixed-operators": "off",
+    "no-ternary": "off",
     // es6
     "generator-star-spacing": [2, "before"],
     // legacy jshint rules

@@ -86,8 +86,8 @@
     },
     computed: {
       type() {
-        return  this.args.type === 'multi-line' || !this.args.type ?
-          'text' : this.args.type;
+        return this.args.type === 'multi-line' || !this.args.type
+          ? 'text' : this.args.type;
       },
       isMultiline() {
         return this.args.type === 'multi-line';
@@ -114,8 +114,8 @@
         return `${label(this.name, this.schema)}${this.isRequired ? '*' : ''}`;
       },
       errorMessage() {
-        const validationData = this.isNumerical && _.isNumber(this.data) ?
-          parseFloat(this.data) : this.data;
+        const validationData = this.isNumerical && _.isNumber(this.data)
+          ? parseFloat(this.data) : this.data;
 
         return getValidationError(validationData, this.args.validate, this.$store, this.name);
       },
@@ -132,7 +132,6 @@
     methods: {
       // every time the value of the input changes, update the store
       update(val) {
-
         if (this.isNumerical) {
           const n = parseFloat(val);
 
@@ -160,13 +159,12 @@
     },
     mounted() {
       if (this.initialFocus === this.name) {
-
         this.$nextTick(() => {
-
           // validate input type
           if (!validInputTypes.includes(this.type)) {
             log.error(`Input must be on of type: ${validInputTypes.toString()}.
             Received: ${this.type}`);
+  
             return;
           }
           setCaret(this.$el, _.get(this, '$store.state.ui.currentForm.initialOffset'), this.data);

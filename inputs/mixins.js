@@ -19,7 +19,7 @@ export const DynamicEvents = {
   },
   computed: {
     customEvents() {
-      return this.schema.events ? Object.keys(this.schema.events).map((key) => key ) : [];
+      return this.schema.events ? Object.keys(this.schema.events).map(key => key) : [];
     }
   },
   methods: {
