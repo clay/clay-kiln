@@ -106,7 +106,7 @@ to something as complex as this
 
 ![Agora Plugin](/clay-kiln/img/agora.png)
 
-In fact, a plugin can be even simpler than either of those and doesn't actually require anything to be added to the `window.kiln.navcontent` array at all. Instead of opening a content drawer, clicking the nav button could trigger a JavaScript function that makes an API call to perform some backend function, or it could update some piece of data in Kiln's state, or any other JavaScript function that you write.
+In fact, a plugin can be even simpler than either of those and doesn't actually require anything to be added to the `window.kiln.navcontent` array at all. Instead of opening a content drawer, clicking the nav button could trigger a JavaScript function that makes an API call to perform some backend function, or it could update some piece of data in Kiln's state or any other JavaScript function that you write.
 
 As an example, if the Clear Cache plugin cleared the cache for every page rather than the entered urls, then you could just write a function to clear every cache and call that function upon clicking the Clear Cache button rather than requiring further user input.
 
