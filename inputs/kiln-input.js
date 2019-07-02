@@ -2,7 +2,7 @@ import store from '../lib/core-data/store';
 import * as api from '../lib/core-data/api.js';
 import { replaceVersion } from 'clayutils';
 import _cloneDeep from 'lodash/cloneDeep';
-import { addProtocol } from '../lib/utils/urls';
+
 
 export default class KilnInput {
   /**
@@ -72,7 +72,7 @@ export default class KilnInput {
   * @return {Promise}
   */
   getComponentData(uri) {
-    const url = addProtocol(uri);
+    const url = this.addProtocol(uri);
 
     return api.getJSON(url);
   }
@@ -267,5 +267,17 @@ export default class KilnInput {
     } else {
       return store.state.ui.currentForm ? store.state.ui.currentForm.fields[this.inputName] : null;
     }
+  }
+
+  addProtocol(url, location) {
+    const pattern = /^((http|https):\/\/)/;
+
+    if (!pattern.test(url)) {
+      location = location || /* istanbul ignore next: can't stub window.location */ window.location;
+
+      url = `${location.protocol}//${url}`;
+    }
+
+    return url;
   }
 };
