@@ -74,8 +74,6 @@ export default class KilnInput {
   getComponentData(uri) {
     const url = addProtocol(uri);
 
-    console.log(url);
-
     return api.getJSON(url);
   }
 
