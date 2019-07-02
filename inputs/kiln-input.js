@@ -269,6 +269,12 @@ export default class KilnInput {
     }
   }
 
+  /**
+  * Check url string for protocol and if it doesn't have one, add the protocol of the current url
+  * @param {string} url
+  * @param {object} location - only passed in testing
+  * @return {string}
+  */
   addProtocol(url, location) {
     const pattern = /^((http|https):\/\/)/;
 
