@@ -375,7 +375,7 @@
         term: { scheduled: true }
       });
 
-      // also sort by scheduledlast scheduled time
+      // also sort by last scheduled time
       if (sortBy === 'status') {
         query.body.sort = {
           scheduledTime: { order: sortOrder }
