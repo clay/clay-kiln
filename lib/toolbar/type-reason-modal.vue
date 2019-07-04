@@ -50,6 +50,7 @@
       },
       confirm() {
         this.$emit('close');
+  
         return this.data.onConfirm(this.input);
       },
       deny() {

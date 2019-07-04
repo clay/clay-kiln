@@ -5,7 +5,9 @@
 <script>
   import _ from 'lodash';
   import { getComponentNode } from '../utils/head-components';
-  import { getComponentName, refProp, componentListProp, removeProp } from '../utils/references';
+  import {
+    getComponentName, refProp, componentListProp, removeProp
+  } from '../utils/references';
   import { has } from '../core-data/groups';
   import label from '../utils/label';
   import filterableList from '../utils/filterable-list.vue';
@@ -31,14 +33,14 @@
       return {
         secondaryActions: [{
           icon: 'settings',
-          tooltip: (id) => `${label(getComponentName(id))} Settings`,
+          tooltip: id => `${label(getComponentName(id))} Settings`,
           action: this.openSettings,
           // note: all head components _should_ have settings groups, because there's no other way to edit them
           // but we need to protect against poorly written schemas that don't
-          enable: (id) => has(id, 'settings')
+          enable: id => has(id, 'settings')
         }, {
           icon: 'delete',
-          tooltip: (id) => `Remove ${label(getComponentName(id))}`,
+          tooltip: id => `Remove ${label(getComponentName(id))}`,
           action: this.removeComponent
         }]
       };
@@ -85,7 +87,7 @@
               text: `Are you sure you want to remove this <strong>${name}</strong>?`,
               name: name,
               onConfirm: (input) => {
-                this.$store.dispatch('removeHeadComponent', {el: componentNode, msg: input});
+                this.$store.dispatch('removeHeadComponent', { el: componentNode, msg: input });
               }
             }
           });
@@ -105,7 +107,7 @@
           componentList = _.reduce(_.get(this.$store, `state.components['${this.uri}'].${this.path}`), (list, val) => list.concat({ [refProp]: val[refProp] }), []);
           componentList.splice(oldIndex, 1); // remove at the old index
           componentList.splice(index, 0, { [refProp]: id }); // add at the new index
-          this.$store.dispatch('saveComponent', { uri: this.uri, data: { [this.path]: componentList }});
+          this.$store.dispatch('saveComponent', { uri: this.uri, data: { [this.path]: componentList } });
         }
       },
       openAddComponent() {

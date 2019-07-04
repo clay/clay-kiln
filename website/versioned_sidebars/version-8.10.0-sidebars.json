@@ -1,0 +1,34 @@
+{
+  "version-8.10.0-docs": {
+    "Introduction": [
+      "version-8.10.0-intro"
+    ],
+    "KILN FUNDAMENTALS": [
+      "version-8.10.0-kiln_ui",
+      {
+        "type": "subcategory",
+        "label": "Clay Components",
+        "ids": [
+          "version-8.10.0-component",
+          "version-8.10.0-manipulating_components",
+          "version-8.10.0-editing_components",
+          "version-8.10.0-input",
+          "version-8.10.0-kilnjs"
+        ]
+      },
+      "version-8.10.0-deep_linking"
+    ],
+    "API DOCUMENTATION": [
+      {
+        "type": "subcategory",
+        "label": "Kiln API",
+        "ids": [
+          "version-8.10.0-api_kiln",
+          "version-8.10.0-snackbar",
+          "version-8.10.0-vuex_actions",
+          "version-8.10.0-vuex_plugin"
+        ]
+      }
+    ]
+  }
+}

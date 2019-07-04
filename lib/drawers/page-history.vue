@@ -167,8 +167,8 @@
           if (event.users.length > 0) {
             event.avatar = {
               name: event.users.slice(-1)[0].name || event.users.slice(-1)[0].username,
-              imageUrl:  event.users.slice(-1)[0].imageUrl,
-              stacked: event.users.length > 1,
+              imageUrl: event.users.slice(-1)[0].imageUrl,
+              stacked: event.users.length > 1
             };
           } else {
             event.avatar = {};
@@ -178,10 +178,10 @@
         }).reverse();
 
         // remove unschedule events created by the clay robot
-        history = history.filter((event) => !(event.action === 'unschedule' && _.find(event.users, (user) => user.username === 'robot' && user.provider === 'clay')));
+        history = history.filter(event => !(event.action === 'unschedule' && _.find(event.users, user => user.username === 'robot' && user.provider === 'clay')));
 
         return history;
-      },
+      }
     },
     mounted: function () {
       store.dispatch('getListData', { uri: pageUri() });
@@ -190,7 +190,7 @@
     },
     components: {
       UiButton,
-      avatar,
+      avatar
     }
   };
 </script>

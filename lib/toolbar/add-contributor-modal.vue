@@ -90,13 +90,13 @@
             size: 500, // todo: paginate this once we redesign the clay menu (use the same pagination UI)
             from: 0,
             sort: [
-              { name: { order: 'asc' }},
-              { username: { order: 'asc' }}
+              { name: { order: 'asc' } },
+              { username: { order: 'asc' } }
             ]
           }
         }).then((res) => {
           const hits = _.get(res, 'hits.hits') || [],
-            users = _.map(hits, (hit) => hit._source);
+            users = _.map(hits, hit => hit._source);
 
           // set the filtered user data
           this.users = users;
@@ -109,10 +109,12 @@
         const name = user.name || user.username;
 
         this.$store.dispatch('startProgress');
+  
         return this.$store.dispatch('updatePageList', { user })
           .then(() => {
             this.$store.dispatch('finishProgress');
             this.$store.dispatch('showSnackbar', `Added ${name} to this page`); // todo: allow undoing this
+  
             return this.$store.dispatch('closeModal');
           })
           .catch((e) => {

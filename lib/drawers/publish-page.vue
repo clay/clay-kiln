@@ -22,7 +22,7 @@
       </form>
       <span class="action-info-message">Time Zone: {{ timezone }}</span>
       <ui-button v-if="showSchedule" :disabled="disableSchedule || isArchived || hasErrors || !isLayoutPublished" class="action-button" buttonType="button" color="orange" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
-      <ui-button v-else :disabled="isArchived || hasErrors || !isLayoutPublished" class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
+      <ui-button v-else :disabled="isPublishing || isArchived || hasErrors || !isLayoutPublished" class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
       <span v-if="!isLayoutPublished && isAdmin" class="action-error-message" @click="goToLayout">Layout must be published first</span>
       <span v-else-if="!isLayoutPublished" class="action-error-message">Layout must be published first (by an admin)</span>
       <span v-else-if="hasErrors" class="action-error-message" @click="goToHealth">Please fix errors before publishing</span>
@@ -120,26 +120,25 @@
       };
     },
     computed: mapState({
-      hasErrors: (state) =>
-        state.validation.errors && state.validation.errors.length > 0 ||
-        state.validation.metadataErrors && state.validation.metadataErrors.length > 0,
-      hasWarnings: (state) =>
-        state.validation.warnings && state.validation.warnings.length > 0 ||
-        state.validation.metadataWarnings && state.validation.metadataWarnings.length > 0,
-      isPublished: (state) => state.page.state.published,
-      isScheduled: (state) => state.page.state.scheduled,
-      isArchived: (state) => state.page.state.archived,
-      uri: (state) => state.page.uri,
-      url: (state) => state.page.state.url,
-      publishedDate: (state) => state.page.state.publishTime,
-      createdDate: (state) => state.page.state.createdAt,
-      scheduledDate: (state) => state.page.state.scheduledTime,
-      lastUpdated: (state) => state.page.state.updateTime,
-      currentTitle: (state) => state.page.state.title,
-      isAdmin: (state) => state.user.auth === 'admin',
-      isLayoutPublished: (state) => state.layout.state.published,
-      headComponents: (state) => state.page.data.head,
-      hasChanges: (state) => hasPageChanges(state),
+      hasErrors: state => state.validation.errors && state.validation.errors.length > 0
+      || state.validation.metadataErrors && state.validation.metadataErrors.length > 0,
+      hasWarnings: state => state.validation.warnings && state.validation.warnings.length > 0
+      || state.validation.metadataWarnings && state.validation.metadataWarnings.length > 0,
+      isPublished: state => state.page.state.published,
+      isPublishing: state => state.ui.currentlyPublishing,
+      isScheduled: state => state.page.state.scheduled,
+      isArchived: state => state.page.state.archived,
+      uri: state => state.page.uri,
+      url: state => state.page.state.url,
+      publishedDate: state => state.page.state.publishTime,
+      createdDate: state => state.page.state.createdAt,
+      scheduledDate: state => state.page.state.scheduledTime,
+      lastUpdated: state => state.page.state.updateTime,
+      currentTitle: state => state.page.state.title,
+      isAdmin: state => state.user.auth === 'admin',
+      isLayoutPublished: state => state.layout.state.published,
+      headComponents: state => state.page.data.head,
+      hasChanges: state => hasPageChanges(state),
       statusMessage() {
         if (this.isScheduled) {
           return `Scheduled ${distanceInWordsToNow(this.scheduledDate, { addSuffix: true })}`;
@@ -161,9 +160,9 @@
         } else if (this.isPublished) {
           return `${dateFormat(this.publishedDate, 'MMMM Do [at] h:mm A')} (${tz} time)`;
         } else if (this.isArchived) {
-          return `${ dateFormat(this.lastUpdated, 'MMMM Do [at] h:mm A') } (${tz} time)`;
+          return `${dateFormat(this.lastUpdated, 'MMMM Do [at] h:mm A')} (${tz} time)`;
         } else if (this.createdDate) {
-          return `${ dateFormat(this.createdDate, 'MMMM Do [at] h:mm A') } (${tz} time)`;
+          return `${dateFormat(this.createdDate, 'MMMM Do [at] h:mm A')} (${tz} time)`;
         } else {
           return 'Some time ago';
         }
@@ -215,7 +214,7 @@
         const { message } = getLayoutNameAndInstance(this.$store),
           layoutAlert = { type: 'warning', text: message },
           lastUser = getLastEditUser(_.get(this.$store, 'state.layout.state'), _.get(this.$store, 'state.user')),
-          layoutUserAlert = lastUser && { type: 'info', message: `Edited less than 5 minutes ago${ lastUser.name ? ` by ${lastUser.name}` : '' }` };
+          layoutUserAlert = lastUser && { type: 'info', message: `Edited less than 5 minutes ago${lastUser.name ? ` by ${lastUser.name}` : ''}` };
 
         this.$store.commit('TOGGLE_EDIT_MODE', 'layout');
         this.$store.dispatch('closeDrawer');
@@ -303,21 +302,23 @@
           });
       },
       publishPage() {
-        this.$store.dispatch('publishPage', this.uri)
-          .catch((e) => {
-            log.error(`Error publishing page: ${e.message}`, { action: 'publishPage' });
-            this.$store.dispatch('showSnackbar', {
-              message: 'Error publishing page',
-              action: 'Retry',
-              onActionClick: () => this.publishPage()
-            });
-            throw e;
-          })
-          .then(() => this.$store.dispatch('showSnackbar', {
-            message: 'Published Page',
-            action: 'View',
-            onActionClick: () => window.open(this.url)
-          }));
+        this.$store.dispatch('isPublishing', true).then(() => {
+          this.$store.dispatch('publishPage', this.uri)
+            .catch((e) => {
+              log.error(`Error publishing page: ${e.message}`, { action: 'publishPage' });
+              this.$store.dispatch('showSnackbar', {
+                message: 'Error publishing page',
+                action: 'Retry',
+                onActionClick: () => this.publishPage()
+              });
+              throw e;
+            })
+            .then(() => this.$store.dispatch('showSnackbar', {
+              message: 'Published Page',
+              action: 'View',
+              onActionClick: () => window.open(this.url)
+            }));
+        });
       },
       formatDate(date) {
         return dateFormat(date, 'M/D/YY');
@@ -399,7 +400,8 @@
       },
       archivePage(archived) {
         this.$store.dispatch('startProgress');
-        return this.$store.dispatch('updatePageList', { archived })
+  
+        return this.$store.dispatch('updatePageList', { archived, shouldPatchArchive: true })
           .then(() => {
             this.$store.dispatch('finishProgress');
             this.$store.dispatch('showSnackbar', {
@@ -407,6 +409,7 @@
               action: 'Undo',
               onActionClick: () => this.archivePage(!archived)
             });
+  
             return this.$store.dispatch('closeModal');
           })
           .catch((e) => {
@@ -463,7 +466,7 @@
           const arrComponents = [];
 
           components.forEach((component) => {
-            const data = JSON.parse(JSON.stringify(component).replace(new RegExp('@published','g'),''));
+            const data = JSON.parse(JSON.stringify(component).replace(new RegExp('@published', 'g'), ''));
 
             arrComponents.push(data);
           });

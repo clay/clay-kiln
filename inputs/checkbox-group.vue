@@ -70,6 +70,7 @@
     :help="args.help"
     :error="errorMessage"
     :invalid="isInvalid"
+    v-dynamic-events="customEvents"
     @input="update"></ui-checkbox-group>
   </div>
   <span v-else class="editor-no-options">{{ label }}: No options available on current site.</span>
@@ -83,8 +84,10 @@
   import label from '../lib/utils/label';
   import { shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
   import UiCheckboxGroup from 'keen/UiCheckboxGroup';
+  import { DynamicEvents } from './mixins';
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {
@@ -146,6 +149,7 @@
           } else {
             obj[option.value] = false;
           }
+  
           return obj;
         }, {});
 

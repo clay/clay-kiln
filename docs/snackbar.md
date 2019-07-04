@@ -8,11 +8,11 @@ The Snackbar is a UI element that alerts the user when they have completed a tas
 ![snackbar](/clay-kiln/img/snackbar.png)
 
 When showing the snackbar the following properties can be set:
-* ***action*** - the string that will appear as the "action" message, defaults to blank string
-* ***duration*** - time in milliseconds the snackbar is shown in this container. Defaults to 5000
-* ***message*** - the string that will appear in the snackbar
-* ***onActionClick*** - function that will be called when the action string is clicked, defaults to a non-function, i.e. nothing will be called
-* ***position*** - The position of snackbars relative to the container. One of 'left', 'center' or 'right'.  Defaults to 'left'
+* ***action*** - The string that will appear as the "action" message, defaults to blank string
+* ***duration*** - Time in milliseconds the snackbar is shown in this container. Defaults to 5000
+* ***message*** - The string that will appear in the snackbar
+* ***onActionClick*** - Function that will be called when the action string is clicked. Defaults to a non-function, i.e. nothing will be called
+* ***position*** - The position of snackbars relative to the container. One of 'left', 'center' or 'right'. Defaults to 'left'
 * ***queueSnackbars*** - Whether or not snackbars should be queued and shown one after the other. False by default, creating a new snackbar while one is visible will cause the visible one to immediately transition out for the new one. Set to true to ensure that each snackbar is shown for its complete duration.
 * ***transition*** - The show/hide transition of snackbars in the container. One of 'slide' or 'fade'. Defaults to 'slide'
 

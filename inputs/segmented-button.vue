@@ -18,66 +18,18 @@
   By default (when `multiple` is false or unset), this will return data as a **string** with the value of the selected option. If `multiple` is `true`, this will return an **object** where each option is a key with a `true` / `false` value. Note that the single-select mode is the same format as a `radio` input, and the multi-select mode is the same as a `checkbox-group`.
 </docs>
 
-<style lang="sass">
-  @import '../styleguide/mixins';
-  @import '../styleguide/typography';
-  @import '../styleguide/colors';
-  @import '../styleguide/animations';
-
-  .segmented-button {
-    align-items: flex-start;
-    display: flex;
-    flex-flow: row wrap;
-    font-family: $font-stack;
-    margin-bottom: 16px;
-
-    .ui-textbox__label {
-      @include clearfix();
-
-      width: 100%;
-    }
-
-    .button-toggle {
-      background-color: $card-bg-color;
-      border-radius: 2px;
-      cursor: pointer;
-      display: flex;
-      flex-flow: row nowrap;
-      float: left;
-      margin: 10px 0;
-      transition: $standard-time $toggle-curve;
-      will-change: background, box-shadow;
-
-      &.is-selected {
-        // raise toggle buttons when one is selected
-        box-shadow: 0 1px 5px rgba(0, 0, 0, .2), 0 2px 2px rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .12);
-      }
-    }
-
-    &.has-floating-label {
-      .ui-textbox__label-text {
-        display: table;
-      }
-    }
-
-    &.is-invalid {
-      .ui-textbox__label-text {
-        color: $md-red;
-      }
-
-      .ui-textbox__feedback {
-        color: $md-red;
-      }
-    }
-  }
-</style>
-
 <template>
   <div class="segmented-button has-label has-floating-label" :class="{ 'is-invalid': this.isInvalid }">
     <span class="ui-textbox__label">
       <div class="ui-textbox__label-text is-floating">{{ label }}</div>
       <div class="button-toggle" :class="{ 'is-selected': isSelected }">
-        <segmented-button-segment v-for="(option, optionIndex) in options" :key="optionIndex" :name="name" :option="option" :update="update"></segmented-button-segment>
+        <segmented-button-segment
+          v-for="(option, optionIndex) in options"
+          :key="optionIndex"
+          :name="name"
+          :option="option"
+          @update="update"
+          v-dynamic-events="customEvents"></segmented-button-segment>
       </div>
     </span>
 
@@ -95,8 +47,10 @@
   import { shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
   import label from '../lib/utils/label';
   import SegmentedButtonSegment from './segmented-button-segment.vue';
+  import { DynamicEvents } from './mixins';
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {};
@@ -170,3 +124,57 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../styleguide/mixins';
+  @import '../styleguide/typography';
+  @import '../styleguide/colors';
+  @import '../styleguide/animations';
+
+  .segmented-button {
+    align-items: flex-start;
+    display: flex;
+    flex-flow: row wrap;
+    font-family: $font-stack;
+    margin-bottom: 16px;
+
+    .ui-textbox__label {
+      @include clearfix();
+
+      width: 100%;
+    }
+
+    .button-toggle {
+      background-color: $card-bg-color;
+      border-radius: 2px;
+      cursor: pointer;
+      display: flex;
+      flex-flow: row nowrap;
+      float: left;
+      margin: 10px 0;
+      transition: $standard-time $toggle-curve;
+      will-change: background, box-shadow;
+
+      &.is-selected {
+        // raise toggle buttons when one is selected
+        box-shadow: 0 1px 5px rgba(0, 0, 0, .2), 0 2px 2px rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .12);
+      }
+    }
+
+    &.has-floating-label {
+      .ui-textbox__label-text {
+        display: table;
+      }
+    }
+
+    &.is-invalid {
+      .ui-textbox__label-text {
+        color: $md-red;
+      }
+
+      .ui-textbox__feedback {
+        color: $md-red;
+      }
+    }
+  }
+</style>

@@ -60,11 +60,12 @@
     },
     methods: {
       itemClick(id, title) {
-        const category = _.find(this.pages, (category) => _.find(category.children, (child) => child.id === id));
+        const category = _.find(this.pages, category => _.find(category.children, child => child.id === id));
 
         this.$store.commit('CREATE_PAGE', title);
+
         return setItem('kiln-page-category', category.id) // save category so it'll be open next time
-          .then(() => this.$store.dispatch('createPage', id).then((url) => window.location.href = url));
+          .then(() => this.$store.dispatch('createPage', id).then(url => window.location.href = url));
       },
       editTemplate(id) {
         const prefix = _.get(this.$store, 'state.site.prefix');
@@ -82,28 +83,33 @@
       onDeleteConfirm(id) {
         let currentCategoryID;
 
-        return this.$store.dispatch('updateList', { listName: 'new-pages', fn: (items) => {
-          let currentCategoryIndex, currentCategory, currentIndex;
+        return this.$store.dispatch('updateList', {
+          listName: 'new-pages',
+          fn: (items) => {
+            let currentCategoryIndex,
+              currentCategory,
+              currentIndex;
 
-          items = sortPages(items);
-          currentCategoryIndex = _.findIndex(items, (item) => _.find(item.children, (child) => child.id === id));
-          currentCategory = items[currentCategoryIndex];
-          currentIndex = _.findIndex(currentCategory.children, (child) => child.id === id);
+            items = sortPages(items);
+            currentCategoryIndex = _.findIndex(items, item => _.find(item.children, child => child.id === id));
+            currentCategory = items[currentCategoryIndex];
+            currentIndex = _.findIndex(currentCategory.children, child => child.id === id);
 
-          // remove page from the category it's inside
-          currentCategory.children.splice(currentIndex, 1);
+            // remove page from the category it's inside
+            currentCategory.children.splice(currentIndex, 1);
 
-          // set the category that should be expanded after we save this
-          // note: the category may be removed (below) if the last child is removed
-          currentCategoryID = currentCategory.id;
+            // set the category that should be expanded after we save this
+            // note: the category may be removed (below) if the last child is removed
+            currentCategoryID = currentCategory.id;
 
-          // if the category doesn't contain any children anymore, remove it
-          if (_.isEmpty(currentCategory.children)) {
-            items.splice(currentCategoryIndex, 1);
+            // if the category doesn't contain any children anymore, remove it
+            if (_.isEmpty(currentCategory.children)) {
+              items.splice(currentCategoryIndex, 1);
+            }
+
+            return items;
           }
-
-          return items;
-        }}).then(() => this.$store.commit('CHANGE_FAVORITE_PAGE_CATEGORY', currentCategoryID));
+        }).then(() => this.$store.commit('CHANGE_FAVORITE_PAGE_CATEGORY', currentCategoryID));
       },
       addTemplate() {
         const isMetaKeyPressed = _.get(this.$store, 'state.ui.metaKey'),
@@ -112,8 +118,9 @@
 
         if (isMetaKeyPressed) {
           this.$store.commit('CREATE_PAGE', currentPageID);
+
           return this.$store.dispatch('createPage', currentPageID)
-            .then((url) => window.location.href = url);
+            .then(url => window.location.href = url);
         } else {
           this.$store.dispatch('openModal', {
             title: 'Add Page Template',

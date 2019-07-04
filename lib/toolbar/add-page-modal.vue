@@ -41,6 +41,7 @@
           if (page.children) {
             categories.push(page.title);
           }
+  
           return categories;
         }, []);
       },
@@ -57,25 +58,29 @@
           uri = _.get(this.$store, 'state.page.uri'),
           id = uri.match(/pages\/([A-Za-z0-9\-]+)/)[1];
 
-        return this.$store.dispatch('updateList', { listName: 'new-pages', fn: (items) => {
-          let currentCategory;
+        return this.$store.dispatch('updateList', {
+          listName: 'new-pages',
+          fn: (items) => {
+            let currentCategory;
 
-          items = sortPages(items);
-          currentCategory = _.find(items, (item) => item.id === categoryID);
+            items = sortPages(items);
+            currentCategory = _.find(items, item => item.id === categoryID);
 
-          if (currentCategory) {
+            if (currentCategory) {
             // add to existing category
-            currentCategory.children.push({ id, title });
-          } else {
+              currentCategory.children.push({ id, title });
+            } else {
             // add to new category
-            items.push({
-              id: categoryID,
-              title: categoryTitle,
-              children: [{ id, title }]
-            });
+              items.push({
+                id: categoryID,
+                title: categoryTitle,
+                children: [{ id, title }]
+              });
+            }
+  
+            return sortPages(items); // sort them again after adding the item (todo: in the future, just put them in the right place)
           }
-          return sortPages(items); // sort them again after adding the item (todo: in the future, just put them in the right place)
-        }})
+        })
           .then(() => this.$store.dispatch('closeModal'))
           .then(() => {
             this.$store.dispatch('closeModal');

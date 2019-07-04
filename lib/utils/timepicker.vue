@@ -66,9 +66,11 @@
         }
       },
       disableInput() {
+        this.$emit('disable');
         this.isDisabled = true;
       },
       enableInput() {
+        this.$emit('enable');
         this.isDisabled = false;
       },
       clear() {

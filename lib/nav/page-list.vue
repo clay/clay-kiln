@@ -329,10 +329,10 @@
        * @returns {void}
        */
       selectSite(slug) {
-        const site = _.find(this.sites, (s) => s.slug === slug);
+        const site = _.find(this.sites, s => s.slug === slug);
 
         site.selected = !site.selected;
-        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, (site) => site.slug).join(', '));
+        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, site => site.slug).join(', '));
         this.offset = 0;
         this.fetchPages();
       },
@@ -344,6 +344,7 @@
       selectMultipleSites(allSites) {
         this.sites = _.map(this.sites, (site) => {
           site.selected = allSites;
+  
           return site;
         });
       },
@@ -363,7 +364,7 @@
           }
         });
 
-        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, (site) => site.slug).join(', '));
+        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, site => site.slug).join(', '));
         this.offset = 0;
         this.fetchPages();
       },
@@ -437,16 +438,18 @@
             sortBy,
             sortOrder
           } = this,
-          siteFilter = _.map(selectedSites, (site) => site.slug),
+          siteFilter = _.map(selectedSites, site => site.slug),
           prefix = _.get(this.$store, 'state.site.prefix'),
           username = _.get(this.$store, 'state.user.username'),
-          query = buildQuery({ siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username, sortBy, sortOrder });
+          query = buildQuery({
+            siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username, sortBy, sortOrder
+          });
 
         return postJSON(prefix + searchRoute, query)
-          .then((res) => {
+          .then(res => {
             const hits = _.get(res, 'hits.hits') || [],
               total = _.get(res, 'hits.total'),
-              pages = _.map(hits, (hit) => Object.assign({}, hit._source, { uri: hit._id }));
+              pages = _.map(hits, hit => Object.assign({}, hit._source, { uri: hit._id }));
 
             this.pages = offset === 0 ? pages : this.pages.concat(pages);
 
@@ -464,7 +467,7 @@
               }});
             }
           })
-          .catch((e) => console.error(e));
+          .catch(console.error);
       }
     },
     mounted() {
