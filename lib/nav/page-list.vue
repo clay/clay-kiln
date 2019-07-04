@@ -1,158 +1,3 @@
-<style lang="sass">
-  @import '../../styleguide/colors';
-  @import '../../styleguide/typography';
-  @import '../../styleguide/clay-menu-columns';
-
-  .page-list {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-
-    // note: left nav menu appears at 600px (it's 200px wide),
-    // so all other breakpoints go from 800px
-    @media screen and (min-width: $site-title-status-columns) {
-      max-width: calc(100vw - 200px);
-    }
-
-    @media screen and (min-width: $all-columns-sidebar) {
-      max-width: $all-columns;
-    }
-  }
-
-  .page-list-controls {
-    align-items: center;
-    display: flex;
-    flex: 0 0 auto;
-    padding: 8px;
-    width: 100%;
-
-    @media screen and (min-width: $site-title-status-columns-sidebar) {
-      padding: 16px 16px 16px 8px;
-    }
-  }
-
-  .page-list-sites {
-    flex: 0 0 auto;
-    margin-right: 8px;
-    max-width: 140px;
-
-    @media screen and (min-width: $site-title-status-columns-sidebar) {
-      max-width: 300px;
-    }
-  }
-
-  .page-list-search {
-    flex: 0 1 100%;
-  }
-
-  .page-list-status-small {
-    display: inline-flex;
-    flex: 0 0 auto;
-    margin-left: 8px;
-
-    @media screen and (min-width: $all-columns-sidebar) {
-      display: none;
-    }
-  }
-
-  .status-selector.page-list-status-large {
-    display: none;
-    flex: 0 0 auto;
-    margin-left: 8px;
-
-    .status-selector-radio:first-child {
-      margin-left: 0;
-    }
-
-    @media screen and (min-width: $all-columns-sidebar) {
-      display: flex;
-    }
-  }
-
-  .page-list-headers {
-    @include type-list-header();
-
-    align-items: center;
-    background-color: $md-grey-50;
-    border-top: 1px solid $divider-color;
-    display: none;
-    flex: 0 0 auto;
-    padding: 8px 16px;
-
-    @media screen and (min-width: $site-title-status-columns-sidebar) {
-      display: flex;
-    }
-
-    .page-list-header {
-      @include type-list-header();
-
-      height: auto;
-      justify-content: start;
-      padding: 0;
-
-      &:hover {
-        background-color: transparent;
-      }
-
-      &-site {
-        flex: 0 0 $site-column;
-      }
-
-      &-title {
-        flex: 1 1 $title-column;
-      }
-
-      &-byline {
-        display: none;
-        flex: 0 0 $byline-column;
-
-        @media screen and (min-width: $site-title-byline-status-columns-sidebar) {
-          display: inline;
-        }
-      }
-
-      &-status {
-        flex: 0 0 $status-column;
-        text-align: right;
-
-        @media screen and (min-width: $all-columns-sidebar) {
-          text-align: left;
-        }
-      }
-
-      &-collaborators {
-        cursor: default;
-        display: none;
-        flex: 0 0 $collaborators-column;
-
-        @media screen and (min-width: $all-columns-sidebar) {
-          display: inline;
-        }
-      }
-
-      & > .ui-button__content {
-        font-weight: normal;
-        justify-content: start;
-      }
-    }
-  }
-
-  .page-list-readout {
-    display: flex;
-    flex: 0 1 100%;
-    flex-direction: column;
-    overflow-y: scroll;
-
-    .page-list-load-more {
-      border-top: 1px solid $divider-color;
-      display: flex;
-      flex: 0 0 auto;
-      justify-content: center;
-      padding: 16px;
-    }
-  }
-</style>
-
 <template>
   <div class="page-list">
     <div class="page-list-controls">
@@ -639,3 +484,158 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../../styleguide/colors';
+  @import '../../styleguide/typography';
+  @import '../../styleguide/clay-menu-columns';
+
+  .page-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    // note: left nav menu appears at 600px (it's 200px wide),
+    // so all other breakpoints go from 800px
+    @media screen and (min-width: $site-title-status-columns) {
+      max-width: calc(100vw - 200px);
+    }
+
+    @media screen and (min-width: $all-columns-sidebar) {
+      max-width: $all-columns;
+    }
+  }
+
+  .page-list-controls {
+    align-items: center;
+    display: flex;
+    flex: 0 0 auto;
+    padding: 8px;
+    width: 100%;
+
+    @media screen and (min-width: $site-title-status-columns-sidebar) {
+      padding: 16px 16px 16px 8px;
+    }
+  }
+
+  .page-list-sites {
+    flex: 0 0 auto;
+    margin-right: 8px;
+    max-width: 140px;
+
+    @media screen and (min-width: $site-title-status-columns-sidebar) {
+      max-width: 300px;
+    }
+  }
+
+  .page-list-search {
+    flex: 0 1 100%;
+  }
+
+  .page-list-status-small {
+    display: inline-flex;
+    flex: 0 0 auto;
+    margin-left: 8px;
+
+    @media screen and (min-width: $all-columns-sidebar) {
+      display: none;
+    }
+  }
+
+  .status-selector.page-list-status-large {
+    display: none;
+    flex: 0 0 auto;
+    margin-left: 8px;
+
+    .status-selector-radio:first-child {
+      margin-left: 0;
+    }
+
+    @media screen and (min-width: $all-columns-sidebar) {
+      display: flex;
+    }
+  }
+
+  .page-list-headers {
+    @include type-list-header();
+
+    align-items: center;
+    background-color: $md-grey-50;
+    border-top: 1px solid $divider-color;
+    display: none;
+    flex: 0 0 auto;
+    padding: 8px 16px;
+
+    @media screen and (min-width: $site-title-status-columns-sidebar) {
+      display: flex;
+    }
+
+    .page-list-header {
+      @include type-list-header();
+
+      height: auto;
+      justify-content: start;
+      padding: 0;
+
+      &:hover {
+        background-color: transparent;
+      }
+
+      &-site {
+        flex: 0 0 $site-column;
+      }
+
+      &-title {
+        flex: 1 1 $title-column;
+      }
+
+      &-byline {
+        display: none;
+        flex: 0 0 $byline-column;
+
+        @media screen and (min-width: $site-title-byline-status-columns-sidebar) {
+          display: inline;
+        }
+      }
+
+      &-status {
+        flex: 0 0 $status-column;
+        text-align: right;
+
+        @media screen and (min-width: $all-columns-sidebar) {
+          text-align: left;
+        }
+      }
+
+      &-collaborators {
+        cursor: default;
+        display: none;
+        flex: 0 0 $collaborators-column;
+
+        @media screen and (min-width: $all-columns-sidebar) {
+          display: inline;
+        }
+      }
+
+      & > .ui-button__content {
+        font-weight: normal;
+        justify-content: start;
+      }
+    }
+  }
+
+  .page-list-readout {
+    display: flex;
+    flex: 0 1 100%;
+    flex-direction: column;
+    overflow-y: scroll;
+
+    .page-list-load-more {
+      border-top: 1px solid $divider-color;
+      display: flex;
+      flex: 0 0 auto;
+      justify-content: center;
+      padding: 16px;
+    }
+  }
+</style>
