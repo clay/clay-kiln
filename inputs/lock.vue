@@ -5,13 +5,22 @@
 </docs>
 
 <template>
-  <ui-icon-button buttonType="button" color="default" type="secondary" ariaLabel="Lock" :icon="icon" @click.stop.prevent="toggleLock"></ui-icon-button>
+  <ui-icon-button
+    buttonType="button"
+    color="default"
+    type="secondary"
+    ariaLabel="Lock"
+    :icon="icon"
+    @click.stop.prevent="toggleLock"
+    v-dynamic-events="customEvents"></ui-icon-button>
 </template>
 
 <script>
   import UiIconButton from 'keen/UiIconButton';
+  import { DynamicEvents } from './mixins';
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {

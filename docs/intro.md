@@ -23,7 +23,9 @@ This allows your end users' browsers to cache the (fairly weighty) Kiln applicat
 
 ## Usage
 
-As Kiln itself is a component, it must be included in your layouts and have some data, e.g. `allow: true` (a convention we use for components that don't otherwise have data in them). Add an instance of Kiln to your bootstraps:
+As Kiln itself is a component, it must be included in your layouts and have some data, e.g. `allow: true` (a convention we use for components that don't, otherwise have data in them). 
+
+First, add an instance of Kiln to your bootstraps:
 
 ```yaml
 components:
@@ -53,7 +55,7 @@ Make sure you add that component list to your layout template, and double check 
 
 ## User Experience
 
-On public-facing pages, Kiln will add a very small snippet of JavaScript that enabled users to type <kbd>Shift+CLAY</kbd> to redirect them to the Clay login page, `/_auth/login`.
+On public-facing pages, Kiln will add a very small snippet of JavaScript that enables users to type <kbd>Shift+CLAY</kbd> to redirect them to the Clay login page, `/_auth/login`.
 
 When users are logged-in, they will see some Kiln buttons in the top left corner which will allow them to access the Clay Menu and enter Edit Mode.
 

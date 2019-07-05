@@ -40,7 +40,7 @@ const inputReq = require.context('./inputs', false, /\.vue$/),
   },
   nprogress = new NProgress(progressOptions),
   // shortKey is a Quill convention to test for cmd on mac and ctrl on windows
-  SHORTKEY = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
+  SHORTKEY = (/Mac/i).test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 
 // Require all scss/css files needed
 require.context('./styleguide', true, /^.*\.(scss|css)$/);
@@ -82,11 +82,11 @@ window.kiln.utils = utilsAPI;
  * @return {Boolean}
  */
 function isStuffOpen(store) {
-  return _.get(store, 'state.ui.currentFocus') ||
-    _.get(store, 'state.ui.currentModal') ||
-    _.get(store, 'state.ui.currentAddComponentModal') ||
-    _.get(store, 'state.ui.currentConfirm') ||
-    _.get(store, 'state.ui.currentDrawer');
+  return _.get(store, 'state.ui.currentFocus')
+    || _.get(store, 'state.ui.currentModal')
+    || _.get(store, 'state.ui.currentAddComponentModal')
+    || _.get(store, 'state.ui.currentConfirm')
+    || _.get(store, 'state.ui.currentDrawer');
 }
 
 // kick off loading when DOM is ready
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
   store.dispatch('startProgress', 'offline');
 
   // add external plugins
-  _.forOwn(window.kiln.plugins || {}, (plugin) => plugin(store));
+  _.forOwn(window.kiln.plugins || {}, plugin => plugin(store));
 
   // add `kiln-edit-mode` class to body. this allows certain components
   // (e.g. embeds that rely on client-side js, which doesn't run in edit mode)
@@ -140,6 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const pageTemplateIds = _.get(store, 'state.lists[new-pages].items', [])
           .reduce((acc, { id, title, children }) => {
             acc.concat({ id, title }); // for non-nested lists
+
             return acc.concat(...children);
           }, []),
         currentPageURI = _.get(store, 'state.page.uri'),
@@ -152,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
         store.dispatch('addAlert', { type: 'error', text: connectionLostMessage, permanent: true });
       } else if (lastEditUser) {
         // show message if another user has edited this page in the last 5 minutes
-        store.dispatch('addAlert', { type: 'info', text: `Edited less than 5 minutes ago${ lastEditUser.name ? ` by ${lastEditUser.name}` : '' }` });
+        store.dispatch('addAlert', { type: 'info', text: `Edited less than 5 minutes ago${lastEditUser.name ? ` by ${lastEditUser.name}` : ''}` });
       }
 
       // display a status message if you're editing a page template
@@ -165,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.body.addEventListener('click', (e) => {
     const ePath = getEventPath(e);
 
-    if (_.find(ePath, (el) => el.classList && (el.classList.contains('ui-calendar') || el.classList.contains('kiln-overlay-form')))) {
+    if (_.find(ePath, el => el.classList && (el.classList.contains('ui-calendar') || el.classList.contains('kiln-overlay-form')))) {
       return;
     }
 

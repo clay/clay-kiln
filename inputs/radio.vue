@@ -62,7 +62,8 @@
     :help="args.help"
     :error="errorMessage"
     :invalid="isInvalid"
-    @input="update"></ui-radio-group>
+    @input="update"
+    v-dynamic-events="customEvents"></ui-radio-group>
   </div>
   <span v-else class="editor-no-options">{{ label }}: No options available on current site.</span>
 </template>
@@ -74,8 +75,10 @@
   import label from '../lib/utils/label';
   import { shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
   import UiRadioGroup from 'keen/UiRadioGroup';
+  import { DynamicEvents } from './mixins';
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {

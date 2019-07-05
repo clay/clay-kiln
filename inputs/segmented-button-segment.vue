@@ -1,3 +1,31 @@
+<template>
+  <button class="segmented-button-segment" type="button" :class="{ 'is-checked': option.checked }" :id="option.id" :ref="option.id" :name="name" @click.stop.prevent="$emit('update', option.value)">
+    <ui-icon v-if="option.hasMaterialIcon" :icon="option.icon"></ui-icon>
+    <img v-else-if="option.hasImgIcon" class="segmented-button-img" :src="option.icon" :alt="option.text" />
+    <span v-else class="segmented-button-text">{{ option.text }}</span>
+    <ui-ripple-ink :trigger="option.id"></ui-ripple-ink>
+    <ui-tooltip v-if="option.hasMaterialIcon || option.hasImgIcon" :trigger="option.id">{{ option.text }}</ui-tooltip>
+  </button>
+</template>
+
+<script>
+  import UiIcon from 'keen/UiIcon';
+  import UiTooltip from 'keen/UiTooltip';
+  import UiRippleInk from 'keen/UiRippleInk';
+
+  export default {
+    props: ['name', 'option', 'update'],
+    data() {
+      return {};
+    },
+    components: {
+      UiIcon,
+      UiTooltip,
+      UiRippleInk
+    }
+  };
+</script>
+
 <style lang="sass">
   @import '../styleguide/colors';
   @import '../styleguide/animations';
@@ -73,31 +101,3 @@
     }
   }
 </style>
-
-<template>
-  <button class="segmented-button-segment" type="button" :class="{ 'is-checked': option.checked }" :id="option.id" :ref="option.id" :name="name" @click.stop.prevent="update(option.value)">
-    <ui-icon v-if="option.hasMaterialIcon" :icon="option.icon"></ui-icon>
-    <img v-else-if="option.hasImgIcon" class="segmented-button-img" :src="option.icon" :alt="option.text" />
-    <span v-else class="segmented-button-text">{{ option.text }}</span>
-    <ui-ripple-ink :trigger="option.id"></ui-ripple-ink>
-    <ui-tooltip v-if="option.hasMaterialIcon || option.hasImgIcon" :trigger="option.id">{{ option.text }}</ui-tooltip>
-  </button>
-</template>
-
-<script>
-  import UiIcon from 'keen/UiIcon';
-  import UiTooltip from 'keen/UiTooltip';
-  import UiRippleInk from 'keen/UiRippleInk';
-
-  export default {
-    props: ['name', 'option', 'update'],
-    data() {
-      return {};
-    },
-    components: {
-      UiIcon,
-      UiTooltip,
-      UiRippleInk
-    }
-  };
-</script>

@@ -65,128 +65,8 @@
   WYSIWYG returns a **string** of HTML.
 </docs>
 
-<style lang="sass">
-  @import '../styleguide/colors';
-  @import '../styleguide/typography';
-  @import '~quill/dist/quill.core.css';
-  @import '~quill/dist/quill.bubble.css';
-
-  .editor-inline .wysiwyg-input {
-    @include normal-text();
-
-    cursor: text;
-    min-height: 19px;
-    outline: none;
-    white-space: normal;
-
-    &::selection {
-      background-color: $text-selection;
-    }
-  }
-
-  .editor-inline .ql-container,
-  .editor-inline .ql-editor {
-    @include normal-text();
-  }
-
-  .wysiwyg-input *::selection {
-    background-color: $text-selection;
-  }
-
-  // quill overrides
-  .ql-editor {
-    overflow: visible;
-    padding: 0;
-  }
-
-  .kiln-overlay-form .ql-container {
-    @include type-body();
-
-    font-size: 16px;
-    letter-spacing: normal;
-    line-height: normal;
-  }
-
-  .ql-container.ql-bubble:not(.ql-disabled) a {
-    white-space: inherit;
-  }
-
-  .ql-bubble .ql-editor a {
-    text-decoration: inherit;
-  }
-
-  // link preview tooltip
-  .ql-container.ql-bubble:not(.ql-disabled) a::before {
-    @include type-caption();
-
-    color: $pure-white;
-  }
-
-  .ql-bubble .ql-tooltip {
-    // appear above field descriptions, other stuff after the input
-    z-index: 1;
-  }
-
-  // larger toolbar
-  .ql-bubble.ql-toolbar button,
-  .ql-bubble .ql-toolbar button {
-    height: 32px;
-    width: 32px;
-  }
-
-  // toolbar phrase button
-  .kiln-phrase-button {
-    // todo: make buttons more material-design-y
-    @include normal-text();
-
-    color: #ccc;
-    // note: windows displays this about a pixel larger than macos
-    font-size: 21px;
-    font-weight: bold;
-
-    &:hover {
-      color: #fff;
-    }
-  }
-
-  // all phrases should have some sort of highlight, so users can
-  // reason about them in edit mode. for now, we are doing different colors
-  // for different kiln phrase classes
-  .ql-editor .kiln-phrase {
-    background-color: #fff2a8;
-  }
-
-  .ql-editor .clay-annotated {
-    background-color: #a8d1ff;
-  }
-
-  .ql-editor .clay-designed {
-    background-color: #ffb7b7;
-  }
-
-  .ui-textbox__input.wysiwyg-content {
-    height: auto;
-    min-height: 32px;
-  }
-  .ui-textbox__counter--wysiwyg {
-    font-size: 16px;
-    background-color: rgba($placeholder-bg-color, 0.75);
-    color: $placeholder-color;
-    line-height: 1em;
-    padding: .5em 1em;
-    top: auto;
-    mix-blend-mode: multiply;
-    font-family: $font-stack;
-  }
-
-  .ui-textbox__counter--wysiwyg-error {
-    background-color: rgba($placeholder-error-bg-color, 0.75);
-    color: $placeholder-error-color;
-  }
-</style>
-
 <template>
-  <div class="wysiwyg-input" :class="classes">
+  <div class="wysiwyg-input" :class="classes" ref="wysiwygInput">
     <attached-button class="ui-textbox__icon-wrapper" v-if="isStyled" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
 
     <div v-if="isStyled" class="ui-textbox__content">
@@ -222,15 +102,20 @@
   import { find, closest } from '@nymag/dom';
   import { getComponentName, refAttr, editAttr } from '../lib/utils/references';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
-  import { getPrevComponent, getNextComponent, getParentComponent, getComponentEl, getFieldEl } from '../lib/utils/component-elements';
+  import {
+    getPrevComponent, getNextComponent, getParentComponent, getComponentEl, getFieldEl
+  } from '../lib/utils/component-elements';
   import { shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
   import label from '../lib/utils/label';
   import { sanitizeInlineHTML, sanitizeMultiComponentHTML, sanitizeBlockHTML } from './wysiwyg-sanitize';
   import { splitParagraphs, matchComponents, generatePasteRules } from './wysiwyg-paste';
-  import { renderDeltas, generateDeltas, deltaEndsWith, matchLineBreak, matchParagraphs } from './wysiwyg-deltas';
+  import {
+    renderDeltas, generateDeltas, deltaEndsWith, matchLineBreak, matchParagraphs
+  } from './wysiwyg-deltas';
   import { getNewlinesBeforeCaret, getLastOffsetWithNewlines } from './wysiwyg-caret';
   import { parsePhraseButton, parseFormats, createPhraseBlots } from './wysiwyg-phrase';
   import attachedButton from './attached-button.vue';
+  import { DynamicEvents } from './mixins';
 
   const Delta = Quill.import('delta'),
     Clipboard = Quill.import('modules/clipboard'),
@@ -241,7 +126,8 @@
   // store references for multi-paragraph paste here.
   // this way, the paste function can set these, and they can be checked
   // AFTER the generated deltas have been pasted in.
-  let firstComponentToUpdate, otherComponentsToUpdate;
+  let firstComponentToUpdate,
+    otherComponentsToUpdate;
 
   /**
    * handle multi-paragraph paste
@@ -252,7 +138,9 @@
    * @param  {array} textMatchers
    * @return {object}                 delta of changes to current component, saved automatically
    */
-  function handleMultiParagraphPaste(components, { quill, current, elementMatchers, textMatchers }) {
+  function handleMultiParagraphPaste(components, {
+    quill, current, elementMatchers, textMatchers
+  }) {
     const firstComponent = _.head(components),
       otherComponents = _.tail(components);
 
@@ -280,17 +168,19 @@
 
   // add sanitization to all quill links
   Link.sanitize = (value) => {
-    if (!/^\w+:/.test(value) && !/^#/.test(value)) {
+    if (!(/^\w+:/).test(value) && !(/^#/).test(value)) {
       // no protocol, and the link doesn't start with a hash (in-page links),
       // so add http://
       // note: links that start with // are an antipattern, and this will NOT handle them
       // https://jeremywagner.me/blog/stop-using-the-protocol-relative-url
       value = `http://${value}`;
     }
+
     return originalLinkSanitize.call(Link, value);
   };
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args', 'initialFocus'],
     data() {
       return {
@@ -389,18 +279,20 @@
       }
     },
     mounted() {
-      const isSingleLine = this.isSingleLine,
-        isMultiLine = this.isMultiLine,
-        isMultiComponent = this.isMultiComponent,
+      const {
+          isSingleLine,
+          isMultiLine,
+          isMultiComponent,
+          maxLength,
+          name
+        } = this,
+        store = this.$store,
         pseudoBullet = this.args.pseudoBullet,
-        maxLength = this.maxLength,
-        currentURI = _.get(this.$store, 'state.ui.currentForm.uri'),
-        currentPath = _.get(this.$store, 'state.ui.currentForm.path'),
+        currentURI = _.get(store, 'state.ui.currentForm.uri'),
+        currentPath = _.get(store, 'state.ui.currentForm.path'),
         currentFieldEl = getFieldEl(currentURI, currentPath),
         rules = generatePasteRules(this.args.paste, getComponentName(currentURI), this.name),
-        buttons = _.map(this.args.buttons, (button) => parsePhraseButton(button)).concat(['clean']),
-        store = this.$store,
-        name = this.name,
+        buttons = _.map(this.args.buttons, button => parsePhraseButton(button)).concat(['clean']),
         el = find(this.$el, '.wysiwyg-content'),
         appendText = _.get(store, 'state.ui.currentForm.appendText'),
         parent = currentFieldEl && getParentComponent(getComponentEl(currentFieldEl)),
@@ -410,7 +302,7 @@
           component: getComponentName(currentURI),
           uri: currentURI,
           parentURI: parent && parent.getAttribute(refAttr),
-          parentPath:  currentFieldEl && getComponentEl(currentFieldEl).parentNode.getAttribute(editAttr)
+          parentPath: currentFieldEl && getComponentEl(currentFieldEl).parentNode.getAttribute(editAttr)
         },
         hintFormats = ['color'],
         phrases = createPhraseBlots(this.args.buttons),
@@ -423,7 +315,9 @@
       class ClayClipboard extends Clipboard {
         convert(html) {
           let [elementMatchers, textMatchers] = this.prepareMatching(),
-            sanitized, delta, components;
+            sanitized,
+            delta,
+            components;
 
           if (_.isString(html)) {
             this.container.innerHTML = html.replace(/\>\r?\n +\</g, '><'); // remove spaces between tags
@@ -459,6 +353,7 @@
           }
 
           this.container.innerHTML = '';
+
           return delta;
         }
       }
@@ -539,7 +434,7 @@
 
         return {
           add,
-          remove,
+          remove
         };
       }
 
@@ -680,6 +575,7 @@
 
                       // remove the text after the caret, and create a new component with it
                       this.quill.deleteText(index, fieldLength - index);
+
                       return store.dispatch('unfocus').then(() => {
                         return store.dispatch('addComponents', {
                           currentURI: current.uri,
@@ -704,6 +600,7 @@
                       this.quill.setSelection(index + charsUntilNewline);
                     } else if (deletingWholeLine) {
                       this.quill.deleteText(index, length);
+
                       return false; // just delete the line, don't add a newline
                     } else {
                       // create a newline
@@ -735,8 +632,8 @@
                       // so merge the text after the caret with the previous component
                       store.dispatch('unfocus')
                         .then(() => find(`[${refAttr}="${current.uri}"]`)) // find the (updated) component in the dom
-                        .then((currentComponentEl) => store.dispatch('removeComponent', currentComponentEl))
-                        .then((prevComponent) => focusPreviousComponent(-1, prevComponent, textAfterCaret));
+                        .then(currentComponentEl => store.dispatch('removeComponent', currentComponentEl))
+                        .then(prevComponent => focusPreviousComponent(-1, prevComponent, textAfterCaret));
                     } // if there isn't a previous component, don't do ANYTHING
                   } else {
                     // normal delete behavior
@@ -798,6 +695,12 @@
         }
       });
 
+      if (this.schema.events && _.isObject(this.schema.events)) {
+        Object.keys(this.schema.events).forEach((key) => {
+          editor.on(key, this.schema.events[key]);
+        });
+      }
+
 
       // add handlers for phrase buttons
       _.each(phrases, (phrase) => {
@@ -810,7 +713,7 @@
 
       // add hints
       if (maxLength) {
-        tooLong = hint(editor, {color: errorColor});
+        tooLong = hint(editor, { color: errorColor });
       }
 
       this.editor = editor; // save reference to the editor
@@ -844,7 +747,7 @@
         }
       });
 
-      editor.on('text-change', function onTextChange({}, {}, source) {
+      editor.on('text-change', ({}, {}, source) => {
         let html;
 
         // convert / sanitize output to save
@@ -860,6 +763,8 @@
         } else {
           store.commit(UPDATE_FORMDATA, { path: name, data: html });
         }
+
+        this.$emit('change', html);
 
         // check that source is user to prevent infinite loop!
         if (source === 'user') {
@@ -898,3 +803,123 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../styleguide/colors';
+  @import '../styleguide/typography';
+  @import '~quill/dist/quill.core.css';
+  @import '~quill/dist/quill.bubble.css';
+
+  .editor-inline .wysiwyg-input {
+    @include normal-text();
+
+    cursor: text;
+    min-height: 19px;
+    outline: none;
+    white-space: normal;
+
+    &::selection {
+      background-color: $text-selection;
+    }
+  }
+
+  .editor-inline .ql-container,
+  .editor-inline .ql-editor {
+    @include normal-text();
+  }
+
+  .wysiwyg-input *::selection {
+    background-color: $text-selection;
+  }
+
+  // quill overrides
+  .ql-editor {
+    overflow: visible;
+    padding: 0;
+  }
+
+  .kiln-overlay-form .ql-container {
+    @include type-body();
+
+    font-size: 16px;
+    letter-spacing: normal;
+    line-height: normal;
+  }
+
+  .ql-container.ql-bubble:not(.ql-disabled) a {
+    white-space: inherit;
+  }
+
+  .ql-bubble .ql-editor a {
+    text-decoration: inherit;
+  }
+
+  // link preview tooltip
+  .ql-container.ql-bubble:not(.ql-disabled) a::before {
+    @include type-caption();
+
+    color: $pure-white;
+  }
+
+  .ql-bubble .ql-tooltip {
+    // appear above field descriptions, other stuff after the input
+    z-index: 1;
+  }
+
+  // larger toolbar
+  .ql-bubble.ql-toolbar button,
+  .ql-bubble .ql-toolbar button {
+    height: 32px;
+    width: 32px;
+  }
+
+  // toolbar phrase button
+  .kiln-phrase-button {
+    // todo: make buttons more material-design-y
+    @include normal-text();
+
+    color: #ccc;
+    // note: windows displays this about a pixel larger than macos
+    font-size: 21px;
+    font-weight: bold;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+
+  // all phrases should have some sort of highlight, so users can
+  // reason about them in edit mode. for now, we are doing different colors
+  // for different kiln phrase classes
+  .ql-editor .kiln-phrase {
+    background-color: #fff2a8;
+  }
+
+  .ql-editor .clay-annotated {
+    background-color: #a8d1ff;
+  }
+
+  .ql-editor .clay-designed {
+    background-color: #ffb7b7;
+  }
+
+  .ui-textbox__input.wysiwyg-content {
+    height: auto;
+    min-height: 32px;
+  }
+  .ui-textbox__counter--wysiwyg {
+    font-size: 16px;
+    background-color: rgba($placeholder-bg-color, 0.75);
+    color: $placeholder-color;
+    line-height: 1em;
+    padding: .5em 1em;
+    top: auto;
+    mix-blend-mode: multiply;
+    font-family: $font-stack;
+  }
+
+  .ui-textbox__counter--wysiwyg-error {
+    background-color: rgba($placeholder-error-bg-color, 0.75);
+    color: $placeholder-error-color;
+  }
+</style>

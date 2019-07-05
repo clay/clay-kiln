@@ -183,15 +183,15 @@
       };
     },
     computed: mapState({
-      hasErrors: (state) => state.validation.errors && state.validation.errors.length > 0,
-      hasWarnings: (state) => state.validation.warnings && state.validation.warnings.length > 0,
-      isPublished: (state) => state.layout.state.published,
-      isScheduled: (state) => state.layout.state.scheduled,
-      uri: (state) => state.layout.uri,
-      publishedDate: (state) => state.layout.state.publishTime,
-      createdDate: (state) => state.layout.state.createTime,
-      scheduledDate: (state) => state.layout.state.scheduledTime,
-      lastUpdated: (state) => state.layout.state.updateTime,
+      hasErrors: state => state.validation.errors && state.validation.errors.length > 0,
+      hasWarnings: state => state.validation.warnings && state.validation.warnings.length > 0,
+      isPublished: state => state.layout.state.published,
+      isScheduled: state => state.layout.state.scheduled,
+      uri: state => state.layout.uri,
+      publishedDate: state => state.layout.state.publishTime,
+      createdDate: state => state.layout.state.createTime,
+      scheduledDate: state => state.layout.state.scheduledTime,
+      lastUpdated: state => state.layout.state.updateTime,
       defaultTitle() {
         const { name, instance } = getLayoutNameAndInstance(this.$store);
 
@@ -217,7 +217,7 @@
         } else if (this.isPublished) {
           return `${dateFormat(this.publishedDate, 'MMMM Do [at] h:mm A')} (${tz} time)`;
         } else if (this.createdDate) {
-          return `${ dateFormat(this.createdDate, 'MMMM Do [at] h:mm A') } (${tz} time)`;
+          return `${dateFormat(this.createdDate, 'MMMM Do [at] h:mm A')} (${tz} time)`;
         } else {
           return 'Some time ago';
         }

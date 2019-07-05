@@ -49,34 +49,6 @@
   Complex lists will always return an **array of objects**, where each object has the properties defined as `props` in the Schema.
 </docs>
 
-<style lang="sass">
-  @import '../styleguide/animations';
-
-  .complex-list {
-    margin: 0;
-    width: 100%;
-
-    > .ui-textbox {
-      margin-bottom: 10px;
-    }
-  }
-
-  .hide-show-enter,
-  .hide-show-leave-to {
-    opacity: 0;
-  }
-
-  .hide-show-enter-to,
-  .hide-show-leave {
-    opacity: 1;
-  }
-
-  .hide-show-enter-active,
-  .hide-show-leave-active {
-    transition: opacity $standard-time $standard-curve;
-  }
-</style>
-
 <template>
   <transition mode="out-in" name="hide-show" @after-enter="onResize">
     <div class="complex-list" v-if="items.length" v-click-outside="unselect">
@@ -96,11 +68,12 @@
           :isFiltered="isFiltered"
           :currentItem="currentItem"
           :isBelowMaxLength="isBelowMaxLength"
-          :addItem="addItem"
-          :removeItem="removeItem"
-          :moveItem="moveItem"
           :initialFocus="initialFocus"
-          @current="onCurrentChange">
+          @current="onCurrentChange"
+          @removeItem="removeItem"
+          @moveItem="moveItem"
+          @addItem="addItem"
+          v-dynamic-events="customEvents">
         </item>
       </transition-group>
     </div>
@@ -115,6 +88,7 @@
   import UiButton from 'keen/UiButton';
   import UiTextbox from 'keen/UiTextbox';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
+  import { DynamicEvents } from './mixins';
 
   /**
    * recursively build keys to filter by
@@ -169,6 +143,7 @@
   }
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args', 'initialFocus'],
     data() {
       return {
@@ -219,9 +194,10 @@
         }
       },
       addItem(index) {
-        const props = _.map(_.get(this.args, 'props', []), (item) => item.prop),
+        const props = _.map(_.get(this.args, 'props', []), item => item.prop),
           newObj = _.reduce(props, (obj, prop) => {
             obj[prop] = null;
+  
             return obj;
           }, {});
 
@@ -237,7 +213,7 @@
         items.splice(index, 1); // remove item at the specified index
         this.updateFormData(items);
       },
-      moveItem(index, direction) {
+      moveItem({ index, direction }) {
         let items = _.cloneDeep(this.items),
           item = _.head(items.splice(index, 1));
 
@@ -266,3 +242,31 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../styleguide/animations';
+
+  .complex-list {
+    margin: 0;
+    width: 100%;
+
+    > .ui-textbox {
+      margin-bottom: 10px;
+    }
+  }
+
+  .hide-show-enter,
+  .hide-show-leave-to {
+    opacity: 0;
+  }
+
+  .hide-show-enter-to,
+  .hide-show-leave {
+    opacity: 1;
+  }
+
+  .hide-show-enter-active,
+  .hide-show-leave-active {
+    transition: opacity $standard-time $standard-curve;
+  }
+</style>

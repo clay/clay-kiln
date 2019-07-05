@@ -70,16 +70,6 @@
   By default (when `multiple` is false or unset), this will return data as a **string** with the value of the selected option. If `multiple` is `true`, this will return an **object** where each option is a key with a `true` / `false` value. Note that the single-select mode is the same format as a `radio` input, and the multi-select mode is the same as a `checkbox-group`.
 </docs>
 
-<style lang="sass">
-  @import '../styleguide/typography';
-
-  .editor-no-options {
-    @include type-body();
-
-    color: $text-disabled-color;
-  }
-</style>
-
 <template>
   <ui-select
     v-if="hasOptions"
@@ -99,6 +89,7 @@
     @input="handleInput"
     @dropdown-open="onDropdown"
     @dropdown-close="onDropdownClose"
+    v-dynamic-events="customEvents"
   >
     <attached-button slot="icon" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
   </ui-select>
@@ -114,8 +105,10 @@
   import { filterBySite } from '../lib/utils/site-filter';
   import UiSelect from 'keen/UiSelect';
   import attachedButton from './attached-button.vue';
+  import { DynamicEvents } from './mixins';
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {
@@ -125,9 +118,9 @@
     },
     mounted() {
       if (this.args.list) {
-        this.fetchListItems().then( (listItems) => {
+        this.fetchListItems().then((listItems) => {
           this.listOptions = listItems;
-        }).catch( () => {
+        }).catch(() => {
           log.error(`Error getting list for ${this.args.list}`);
         });
       }
@@ -136,20 +129,20 @@
       keys() {
         return _.assign({
           label: 'name',
-          value: 'value',
+          value: 'value'
         }, this.args.keys || {});
       },
       NULL_OPTION() {
         return {
           [this.keys.label]: 'None',
-          [this.keys.value]: null,
+          [this.keys.value]: null
         };
       },
       // combine arg/prop options, fetched list options, and a null option for non-multiple selects
       options() {
         const propOptions = this.args.options || [],
           currentSlug = _.get(this.$store, 'state.site.slug'),
-          noneOption = propOptions.find((val)=>{
+          noneOption = propOptions.find((val) => {
             return val.name === 'None' || val.name === 'Default';
           });
 
@@ -182,11 +175,11 @@
           // defaults to pass Keen's type check
           return this.args.multiple ? [] : this.NULL_OPTION;
         } else if (this.args.multiple) {
-          return _.filter(this.options, (option) => !!this.data[option.value]);
+          return _.filter(this.options, option => !!this.data[option.value]);
         } else if (this.args.storeRawData) {
           return this.data;
         } else {
-          return _.find(this.options, (option) => this.data === option.value);
+          return _.find(this.options, option => this.data === option.value);
         }
       },
       hasOptions() {
@@ -221,7 +214,7 @@
           // set all existing options in data to false
           data = _.mapValues(_.cloneDeep(this.data), () => false);
           // for each of the selected options, set the related key in the data to true
-          _.forEach(value, (option) => data[option.value] = true);
+          _.forEach(value, option => data[option.value] = true);
         } else if (this.args.storeRawData) {
           data = _.cloneDeep(value);
         } else {
@@ -258,3 +251,13 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../styleguide/typography';
+
+  .editor-no-options {
+    @include type-body();
+
+    color: $text-disabled-color;
+  }
+</style>

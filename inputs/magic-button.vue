@@ -110,36 +110,6 @@
   ☆.。.:*・°☆.。.:*・°☆.。.:*・°☆.。.:*・°☆
 </docs>
 
-<style lang="sass">
-  @import '../styleguide/colors';
-
-  .magic-button-icon svg {
-    fill: $text-color;
-    height: 18px;
-    // offset this for visual balance
-    margin-left: 3px;
-    margin-top: 3px;
-    transition: 100ms fill ease;
-    width: 20px;
-  }
-
-  .is-active .magic-button-icon svg {
-    fill: $brand-primary-color;
-  }
-
-  .is-disabled .magic-button-icon {
-    pointer-events: none;
-
-    svg {
-      fill: $text-disabled-color;
-    }
-  }
-
-  .is-invalid .magic-button-icon svg {
-    fill: $md-red;
-  }
-</style>
-
 <template>
   <ui-icon-button
     buttonType="button"
@@ -208,6 +178,7 @@
 
         if (data) {
           found = data;
+  
           return false;
         }
       });
@@ -232,6 +203,7 @@
 
         if (data) {
           found = data;
+  
           return false;
         }
       });
@@ -267,7 +239,7 @@
    * @return {Promise}
    */
   function getAPI(url) {
-    return send(url).then((res) => res.json());
+    return send(url).then(res => res.json());
   }
 
   /**
@@ -280,7 +252,7 @@
       if (_.isString(property) && !_.isEmpty(property)) {
         return _.get(data, property);
       } else if (_.isArray(property) && !_.isEmpty(property)) {
-        return _.get(data, _.find(property, (prop) => !_.isEmpty(data[prop])));
+        return _.get(data, _.find(property, prop => !_.isEmpty(data[prop])));
       } else {
         return data;
       }
@@ -419,3 +391,33 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../styleguide/colors';
+
+  .magic-button-icon svg {
+    fill: $text-color;
+    height: 18px;
+    // offset this for visual balance
+    margin-left: 3px;
+    margin-top: 3px;
+    transition: 100ms fill ease;
+    width: 20px;
+  }
+
+  .is-active .magic-button-icon svg {
+    fill: $brand-primary-color;
+  }
+
+  .is-disabled .magic-button-icon {
+    pointer-events: none;
+
+    svg {
+      fill: $text-disabled-color;
+    }
+  }
+
+  .is-invalid .magic-button-icon svg {
+    fill: $md-red;
+  }
+</style>

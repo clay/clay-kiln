@@ -31,6 +31,7 @@
     :name="name"
     :schema="schema"
     :args="args"
+    v-dynamic-events="customEvents"
     @update="update">
   </timepicker>
 </template>
@@ -43,8 +44,10 @@
   import { shouldBeRequired } from '../lib/forms/field-helpers';
   import label from '../lib/utils/label';
   import timepicker from '../lib/utils/timepicker.vue';
+  import { DynamicEvents } from './mixins';
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args'],
     data() {
       return {};

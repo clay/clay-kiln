@@ -173,10 +173,10 @@
       return {};
     },
     computed: mapState({
-      pageState: (state) => state.page.state,
-      layoutState: (state) => state.layout.state,
-      isLoading: (state) => state.isLoading,
-      isPageEditMode: (state) => state.editMode === 'page',
+      pageState: state => state.page.state,
+      layoutState: state => state.layout.state,
+      isLoading: state => state.isLoading,
+      isPageEditMode: state => state.editMode === 'page',
       undoEnabled: (state) => {
         return !state.undo.atStart && !state.ui.currentFocus && !state.ui.currentPane;
       },
@@ -186,7 +186,7 @@
       customButtons() {
         return Object.keys(window.kiln.toolbarButtons);
       },
-      hasPageChanges: (state) => hasPageChanges(state) ,
+      hasPageChanges: state => hasPageChanges(state),
       hasLayoutChanges: (state) => {
         const layoutState = _.get(state, 'layout.state'),
           pubTime = layoutState.publishTime, // latest published timestamp
@@ -274,7 +274,7 @@
         }];
       },
       activeToolBarOptions() {
-        return this.toolbarOptions.filter((option) => !option.type && typeof option.presentWhen === 'undefined' || !!option.presentWhen);
+        return this.toolbarOptions.filter(option => !option.type && typeof option.presentWhen === 'undefined' || !!option.presentWhen);
       },
       statusIcon() {
         return this.isPageEditMode ? 'mode_edit' : 'layers';
@@ -320,13 +320,19 @@
       toggleOptions(state) {
         if (this.isAdmin) {
           return [
-            { label: 'Edit Page', value: 'page', icon: 'mode_edit', disabled: state.editMode === 'page' },
-            { label: 'Edit Layout', value: 'layout', icon: 'layers', disabled: state.editMode === 'layout' },
+            {
+              label: 'Edit Page', value: 'page', icon: 'mode_edit', disabled: state.editMode === 'page'
+            },
+            {
+              label: 'Edit Layout', value: 'layout', icon: 'layers', disabled: state.editMode === 'layout'
+            },
             { label: 'View Page', value: 'view', icon: 'remove_red_eye' }
           ];
         } else {
           return [
-            { label: 'Edit Page', value: 'page', icon: 'mode_edit', disabled: true },
+            {
+              label: 'Edit Page', value: 'page', icon: 'mode_edit', disabled: true
+            },
             { label: 'View Page', value: 'view', icon: 'remove_red_eye' }
           ];
         }
@@ -399,6 +405,7 @@
           const activeNav = savedTab || 'all-pages';
 
           this.$store.dispatch('showNavBackground', true);
+  
           return this.$store.dispatch('openDrawer', activeNav);
         });
       }

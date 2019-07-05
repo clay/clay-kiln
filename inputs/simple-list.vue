@@ -49,44 +49,6 @@
   Simple List will format data as an **array of objects**, where each object has a `text` property. If the `propertyName` argument is set, each object will also have a property (denoted by the value of the `propertyName` argument) that will be a **boolean**. Only one of the objects (the "primary item") will have this custom property set to `true`.
 </docs>
 
-<style lang="sass">
-  @import '../styleguide/animations';
-
-  .simple-list {
-    .simple-list-items {
-      align-items: center;
-      display: flex;
-      flex-flow: row wrap;
-      height: auto;
-      justify-content: flex-start;
-    }
-
-    .simple-list-items-wrapper {
-      align-items: flex-start;
-      display: inline-flex;
-      flex: 0 0 auto;
-      flex-flow: row wrap;
-      justify-content: flex-start;
-      max-width: 100%;
-    }
-
-    .list-items-enter,
-    .list-items-leave-to {
-      opacity: 0;
-    }
-
-    .list-items-enter-to,
-    .list-items-leave {
-      opacity: 1;
-    }
-
-    .list-items-enter-active,
-    .list-items-leave-active {
-      transition: opacity $standard-time $standard-curve;
-    }
-  }
-</style>
-
 <template>
   <div class="simple-list ui-textbox has-label has-floating-label" :class="classes">
     <attached-button class="ui-textbox__icon-wrapper" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
@@ -106,7 +68,8 @@
               :disabled="isDisabled"
               @remove="removeItem"
               @select="selectItem"
-              @dblclick.native="setPrimary(index)"></simple-list-item>
+              @dblclick.native="setPrimary(index)"
+              v-dynamic-events="customEvents"></simple-list-item>
           </transition-group>
           <simple-list-input
             :items="items"
@@ -120,7 +83,8 @@
             @select="selectItem"
             @focus="onFocus"
             @blur="onBlur"
-            @resize="onResize"></simple-list-input>
+            @resize="onResize"
+            v-dynamic-events="customEvents"></simple-list-input>
         </div>
       </label>
 
@@ -144,11 +108,13 @@
   import simpleListItem from './simple-list-item.vue';
   import simpleListInput from './simple-list-input.vue';
   import attachedButton from './attached-button.vue';
-  import { addListItem, getItemIndex, getProp} from '../lib/lists/helpers';
+  import { addListItem, getItemIndex, getProp } from '../lib/lists/helpers';
+  import { DynamicEvents } from './mixins';
 
   const log = logger(__filename);
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args', 'initialFocus'],
     data() {
       return {
@@ -164,18 +130,22 @@
         if (!_.isEmpty(this.data) && _.isString(_.head(this.data))) {
           // array of strings! convert to array of objects internally, but save it back to the store as strings
           this.type = 'strings';
-          return _.map(this.data, (item) => item.text);
+
+          return _.map(this.data, item => item.text);
         } else if (!_.isEmpty(this.data) && _.isObject(_.head(this.data))) {
           // array of objects!
           this.type = 'objects';
+
           return _.cloneDeep(this.data);
         } else if ((!this.data || _.isEmpty(this.data)) && !!this.args.propertyName) {
           // empty data, but we're using propertyName so we want an array of objects
           this.type = 'objects';
+
           return [];
         } else if ((!this.data || _.isEmpty(this.data)) && !this.args.propertyName) {
           // empty data, but no propertyName so we want an array of strings
           this.type = 'strings';
+
           return [];
         } else {
           log.error('Unknown data type!', { action: 'compute items', items: this.data });
@@ -273,7 +243,10 @@
         }
       },
       addItem(newItem) {
-        let countProperty, itemIndex, listName, stringProperty;
+        let countProperty,
+          itemIndex,
+          listName,
+          stringProperty;
 
         this.items.push(newItem);
         this.update(this.items);
@@ -282,33 +255,39 @@
         if (this.args.autocomplete && this.args.autocomplete.allowCreate) {
           listName = this.args.autocomplete.list;
 
-          return this.$store.dispatch('updateList', { listName: listName, fn: (items) => {
+          return this.$store.dispatch('updateList', {
+            listName: listName,
+            fn: (items) => {
             // validate that the list has items with these properties
-            stringProperty = getProp(items, 'text');
-            countProperty = getProp(items, 'count');
+              stringProperty = getProp(items, 'text');
+              countProperty = getProp(items, 'count');
 
-            if (stringProperty && countProperty) {
-              itemIndex = getItemIndex(items, newItem.text, 'text');
+              if (stringProperty && countProperty) {
+                itemIndex = getItemIndex(items, newItem.text, 'text');
 
-              if (itemIndex !== -1) {
+                if (itemIndex !== -1) {
                 // increase count if the item already exists in the list
-                items[itemIndex][countProperty]++;
-                return items;
-              } else {
+                  items[itemIndex][countProperty]++;
+
+                  return items;
+                } else {
                 // add item to the list
-                _.set(newItem, countProperty, 1);
-                return addListItem(items, newItem);
-              }
-            } else if (_.isString(_.head(items))) {
+                  _.set(newItem, countProperty, 1);
+
+                  return addListItem(items, newItem);
+                }
+              } else if (_.isString(_.head(items))) {
               // if the list is just an array of strings, just add the string
               // property
-              return addListItem(items, newItem.text);
-            } else if (items.length === 0) {
-              log.warn('The list is empty, unable to determine data structure. Adding item with default data structure.', { action: 'adding item to a list' });
-              _.set(newItem, 'count', 1);
-              return addListItem(items, newItem);
+                return addListItem(items, newItem.text);
+              } else if (items.length === 0) {
+                log.warn('The list is empty, unable to determine data structure. Adding item with default data structure.', { action: 'adding item to a list' });
+                _.set(newItem, 'count', 1);
+
+                return addListItem(items, newItem);
+              }
             }
-          }});
+          });
         }
       },
       setPrimary(index) {
@@ -333,3 +312,41 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '../styleguide/animations';
+
+  .simple-list {
+    .simple-list-items {
+      align-items: center;
+      display: flex;
+      flex-flow: row wrap;
+      height: auto;
+      justify-content: flex-start;
+    }
+
+    .simple-list-items-wrapper {
+      align-items: flex-start;
+      display: inline-flex;
+      flex: 0 0 auto;
+      flex-flow: row wrap;
+      justify-content: flex-start;
+      max-width: 100%;
+    }
+
+    .list-items-enter,
+    .list-items-leave-to {
+      opacity: 0;
+    }
+
+    .list-items-enter-to,
+    .list-items-leave {
+      opacity: 1;
+    }
+
+    .list-items-enter-active,
+    .list-items-leave-active {
+      transition: opacity $standard-time $standard-curve;
+    }
+  }
+</style>

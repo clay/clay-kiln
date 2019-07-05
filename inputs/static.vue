@@ -89,7 +89,7 @@
       staticText() {
         let str = this.args.text || '${' + this.name + '}';
 
-        return interpolate(str, (prop) => getFieldData(this.$store, prop, this.name, _.get(this.$store, 'state.ui.currentForm.uri')));
+        return interpolate(str, prop => getFieldData(this.$store, prop, this.name, _.get(this.$store, 'state.ui.currentForm.uri')));
       }
     }
   };

@@ -92,6 +92,8 @@ Schemas \(or _schemata_, for pedants like myself\) are the main connective tissu
 
 Schemas for components that are currently on the page are automatically parsed by Amphora and added to the page when Kiln loads. Schemas for other components are added when those components are added.
 
+Using [Kilnjs](kilnjs), the schema can be made dynamic.
+
 ---
 
 ## Styles and Style Variations

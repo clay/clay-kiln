@@ -106,6 +106,15 @@
       }
     };
 
+    // Status sorting is handled differently,
+    // we have to deal with boolean properties
+    if (sortBy === 'status') {
+      query.body.sort = {
+        published: { order: sortOrder },
+        scheduled: { order: sortOrder }
+      };
+    }
+
     _.set(query, 'body.query.bool.must', []);
 
     // filter for only "My Pages", and filter users
@@ -177,15 +186,6 @@
       query.body.query.bool.must.push({
         term: { archived: false }
       });
-
-      // Status sorting is handled differently,
-      // we have to deal with boolean properties
-      if (sortBy === 'status') {
-        query.body.sort = {
-          published: { order: sortOrder },
-          scheduled: { order: sortOrder }
-        };
-      }
     } else if (statusFilter === 'draft') {
       query.body.query.bool.must.push({
         term: { published: false }
@@ -224,7 +224,7 @@
         term: { scheduled: true }
       });
 
-      // also sort by scheduledlast scheduled time
+      // also sort by last scheduled time
       if (sortBy === 'status') {
         query.body.sort = {
           scheduledTime: { order: sortOrder }
@@ -333,10 +333,10 @@
        * @returns {void}
        */
       selectSite(slug) {
-        const site = _.find(this.sites, (s) => s.slug === slug);
+        const site = _.find(this.sites, s => s.slug === slug);
 
         site.selected = !site.selected;
-        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, (site) => site.slug).join(', '));
+        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, site => site.slug).join(', '));
         this.offset = 0;
         this.fetchPages();
       },
@@ -348,6 +348,7 @@
       selectMultipleSites(allSites) {
         this.sites = _.map(this.sites, (site) => {
           site.selected = allSites;
+
           return site;
         });
       },
@@ -367,7 +368,7 @@
           }
         });
 
-        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, (site) => site.slug).join(', '));
+        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, site => site.slug).join(', '));
         this.offset = 0;
         this.fetchPages();
       },
@@ -454,16 +455,18 @@
             sortBy,
             sortOrder
           } = this,
-          siteFilter = _.map(selectedSites, (site) => site.slug),
+          siteFilter = _.map(selectedSites, site => site.slug),
           prefix = _.get(this.$store, 'state.site.prefix'),
           username = _.get(this.$store, 'state.user.username'),
-          query = buildQuery({ siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username, sortBy, sortOrder });
+          query = buildQuery({
+            siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username, sortBy, sortOrder
+          });
 
         return postJSON(prefix + searchRoute, query)
-          .then((res) => {
+          .then(res => {
             const hits = _.get(res, 'hits.hits') || [],
               total = _.get(res, 'hits.total'),
-              pages = _.map(hits, (hit) => Object.assign({}, hit._source, { uri: hit._id }));
+              pages = _.map(hits, hit => Object.assign({}, hit._source, { uri: hit._id }));
 
             this.pages = offset === 0 ? pages : this.pages.concat(pages);
 
@@ -473,15 +476,17 @@
 
             // set the url hash
             if (_.get(this.$store, 'state.ui.currentDrawer')) {
-              this.$store.dispatch('setHash', { menu: {
-                tab: isMyPages ? 'my-pages' : 'all-pages',
-                sites: siteFilter.join(','),
-                status: statusFilter,
-                query: this.query
-              }});
+              this.$store.dispatch('setHash', {
+                menu: {
+                  tab: isMyPages ? 'my-pages' : 'all-pages',
+                  sites: siteFilter.join(','),
+                  status: statusFilter,
+                  query: this.query
+                }
+              });
             }
           })
-          .catch((e) => console.error(e));
+          .catch(console.error);
       }
     },
     mounted() {

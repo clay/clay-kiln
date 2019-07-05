@@ -28,56 +28,25 @@
   Codemirror inputs, no matter what mode you select, will return a **string** of plaintext.
 </docs>
 
-<style lang="sass">
-  @import '~codemirror/lib/codemirror.css';
-  @import '../styleguide/colors';
-
-  .codemirror-wrapper {
-    .CodeMirror {
-      font-family: monospace;
-      padding: 0;
-      transition: all 200ms ease;
-    }
-
-    .ui-textbox__feedback {
-      border-top: 1px solid $divider-color;
-      transition: all 200ms ease;
-    }
-
-    &:hover:not(.is-disabled) {
-      .ui-textbox__feedback {
-        border-top: 1px solid rgba(black, 0.3);
-      }
-    }
-
-    &.is-active:not(.is-disabled) {
-      .ui-textbox__feedback {
-        border-top: 2px solid $brand-primary-color;
-      }
-    }
-
-    &.is-invalid:not(.is-disabled) {
-      .CodeMirror {
-        border-bottom: 1px solid $md-red;
-      }
-    }
-
-    &.is-disabled {
-      .ui-textbox__feedback {
-        border-top: 1px dotted $divider-color;
-      }
-    }
-  }
-</style>
-
 <template>
   <div class="codemirror-wrapper ui-textbox has-label is-multi-line" :class="classes">
-    <attached-button class="ui-textbox__icon-wrapper" :name="name" :data="data" :schema="schema" :args="args" @disable="disableInput" @enable="enableInput"></attached-button>
+    <attached-button
+      class="ui-textbox__icon-wrapper"
+      :name="name"
+      :data="data"
+      :schema="schema"
+      :args="args"
+      @disable="disableInput"
+      @enable="enableInput"
+    ></attached-button>
 
     <div class="ui-textbox__content">
       <label class="ui-textbox__label">
         <div class="ui-textbox__label-text is-floating">{{ label }}</div>
-        <textarea class="ui-textbox__input codemirror" :value="data"></textarea>
+        <textarea
+          class="ui-textbox__input codemirror"
+          :value="data"
+        ></textarea>
       </label>
 
       <div class="ui-textbox__feedback" v-if="hasFeedback">
@@ -96,15 +65,22 @@
   import label from '../lib/utils/label';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import attachedButton from './attached-button.vue';
+  import { DynamicEvents } from './mixins';
+
 
   // scss mode
-  require('codemirror/mode/css/css');
+  import 'codemirror/mode/css/css';
   // yaml mode
-  require('codemirror/mode/yaml/yaml');
+  import 'codemirror/mode/yaml/yaml';
+  import 'codemirror/mode/sass/sass';
+  import 'codemirror/mode/javascript/javascript';
   // show selections
-  require('codemirror/addon/selection/active-line.js');
+  import 'codemirror/addon/selection/active-line.js';
+
+  let editor = null;
 
   export default {
+    mixins: [DynamicEvents],
     props: ['name', 'data', 'schema', 'args', 'initialFocus'],
     data() {
       return {
@@ -163,21 +139,27 @@
         this.isDisabled = false;
       }
     },
+    updated() {
+      if (editor.doc && this.args && editor.doc.modeOption !== this.args.mode) {
+        editor.setOption('mode', this.args.mode);
+      };
+    },
     mounted() {
-      const editor = Codemirror.fromTextArea(find(this.$el, '.codemirror'), {
-          value: this.data,
-          mode: this.args.mode,
-          lint: true,
-          styleActiveLine: true,
-          lineNumbers: true,
-          tabSize: 2,
-          extraKeys: {
-            // close form when hitting meta+enter on both windows and macos
-            'Cmd-Enter': () => this.$store.dispatch('unfocus'),
-            'Ctrl-Enter': () => this.$store.dispatch('unfocus')
-          }
-        }),
-        store = this.$store,
+      editor = Codemirror.fromTextArea(find(this.$el, '.codemirror'), {
+        value: this.data,
+        mode: this.args.mode,
+        lint: true,
+        styleActiveLine: true,
+        lineNumbers: true,
+        tabSize: 2,
+        extraKeys: {
+          // close form when hitting meta+enter on both windows and macos
+          'Cmd-Enter': () => this.$store.dispatch('unfocus'),
+          'Ctrl-Enter': () => this.$store.dispatch('unfocus')
+        }
+      });
+
+      const store = this.$store,
         name = this.name,
         initialFocus = this.initialFocus;
 
@@ -190,7 +172,13 @@
         }
       });
 
-      editor.on('change', (instance) => store.commit(UPDATE_FORMDATA, { path: name, data: instance.getValue() }));
+      if (this.schema.events && _.isObject(this.schema.events)) {
+        Object.keys(this.schema.events).forEach((key) => {
+          editor.on(key, this.schema.events[key]);
+        });
+      }
+
+      editor.on('change', instance => store.commit(UPDATE_FORMDATA, { path: name, data: instance.getValue() }));
 
       editor.on('focus', this.onFocus);
       editor.on('blur', this.onBlur);
@@ -200,3 +188,45 @@
     }
   };
 </script>
+
+<style lang="sass">
+  @import '~codemirror/lib/codemirror.css';
+  @import '../styleguide/colors';
+
+  .codemirror-wrapper {
+    .CodeMirror {
+      font-family: monospace;
+      padding: 0;
+      transition: all 200ms ease;
+    }
+
+    .ui-textbox__feedback {
+      border-top: 1px solid $divider-color;
+      transition: all 200ms ease;
+    }
+
+    &:hover:not(.is-disabled) {
+      .ui-textbox__feedback {
+        border-top: 1px solid rgba(black, 0.3);
+      }
+    }
+
+    &.is-active:not(.is-disabled) {
+      .ui-textbox__feedback {
+        border-top: 2px solid $brand-primary-color;
+      }
+    }
+
+    &.is-invalid:not(.is-disabled) {
+      .CodeMirror {
+        border-bottom: 1px solid $md-red;
+      }
+    }
+
+    &.is-disabled {
+      .ui-textbox__feedback {
+        border-top: 1px dotted $divider-color;
+      }
+    }
+  }
+</style>
