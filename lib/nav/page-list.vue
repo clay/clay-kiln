@@ -3,13 +3,16 @@
     <div class="page-list-controls">
       <ui-button buttonType="button" class="page-list-sites" type="secondary" color="default" has-dropdown ref="sitesDropdown" @dropdown-open="onPopoverOpen" @dropdown-close="onPopoverClose">
         <span class="page-list-selected-site">{{ selectedSite }}</span>
-        <site-selector slot="dropdown" :sites="sites" @select="selectSite" @multi-select="selectMultipleSites"></site-selector>
+        <site-selector slot="dropdown" :sites="sites" @select="selectSite" @multi-select="selectMultipleSites" />
       </ui-button>
-      <ui-textbox class="page-list-search" v-model.trim="query" type="search" autofocus placeholder="Search by Title or Byline" @input="filterList"></ui-textbox>
+      <ui-textbox class="page-list-search" v-model.trim="query" type="search" autofocus placeholder="Search by Title or Byline" @input="filterList" />
       <ui-icon-button class="page-list-status-small" type="secondary" icon="filter_list" has-dropdown ref="statusDropdown" @dropdown-open="onPopoverOpen" @dropdown-close="onPopoverClose">
-        <status-selector slot="dropdown" :selectedStatus="selectedStatus" :vertical="true" @select="selectStatus"></status-selector>
+        <status-selector slot="dropdown" :selectedStatus="selectedStatus" :vertical="true" @select="selectStatus" />
       </ui-icon-button>
       <status-selector class="page-list-status-large" :selectedStatus="selectedStatus" @select="selectStatus"></status-selector>
+      <ui-icon-button class="page-list-sort" type="secondary" icon="sort" has-dropdown ref="statusDropdown" @dropdown-open="onPopoverOpen" @dropdown-close="onPopoverClose">
+        <sort-selector slot="dropdown" :selectedSort="sortBy" :vertical="true" @select="sortByDate" />
+      </ui-icon-button>
     </div>
     <div class="page-list-headers">
       <span v-if="multipleSitesSelected" class="page-list-header page-list-header-site">Site</span>
@@ -53,6 +56,7 @@
   import UiTextbox from 'keen/UiTextbox';
   import UiIconButton from 'keen/UiIconButton';
   import siteSelector from './site-selector.vue';
+  import sortSelector from './sort-selector.vue';
   import statusSelector from './status-selector.vue';
   import pageListItem from './page-list-item.vue';
 
@@ -253,8 +257,8 @@
         pages: [],
         selectedStatus: _.get(this.$store, 'state.url.status', 'all'),
         isPopoverOpen: false,
-        sortBy: 'title.raw',
-        sortOrder: SORT_ASC,
+        sortBy: 'updateTime',
+        sortOrder: SORT_DESC,
         headerTitles: [{
           title: 'Title',
           key: 'title',
@@ -424,6 +428,19 @@
         return order === SORT_DESC ? SORT_ASC : SORT_DESC;
       },
       /**
+       * Sets the sort order and sort field for date fields
+       * and refetches pages
+       * @param {String} field
+       * @returns {void}
+       */
+      sortByDate(field) {
+        this.sortOrder = SORT_DESC;
+        this.sortBy = field;
+        this.offset = 0;
+
+        this.fetchPages();
+      },
+      /**
        * Makes a query to ES to fetch for all pages
        * @returns {Promise}
        */
@@ -484,6 +501,7 @@
       UiTextbox,
       UiIconButton,
       'site-selector': siteSelector,
+      'sort-selector': sortSelector,
       'status-selector': statusSelector,
       'page-list-item': pageListItem
     }
@@ -559,6 +577,12 @@
     @media screen and (min-width: $all-columns-sidebar) {
       display: flex;
     }
+  }
+
+  .page-list-sort {
+    display: inline-flex;
+    flex: 0 0 auto;
+    margin-left: 8px;
   }
 
   .page-list-headers {
