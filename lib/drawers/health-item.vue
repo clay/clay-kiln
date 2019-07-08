@@ -28,10 +28,12 @@ export default {
         // component exists and is in the body (not a head component)
         this.$store.dispatch('select', componentEl);
       }
-      this.$store.dispatch('focus', { uri, path, initialFocus: field, el });
+      this.$store.dispatch('focus', {
+        uri, path, initialFocus: field, el
+      });
     }
   },
-  props:{
+  props: {
     errors: {},
     errorLevel: {},
     errorKey: {},

@@ -108,7 +108,7 @@
   import simpleListItem from './simple-list-item.vue';
   import simpleListInput from './simple-list-input.vue';
   import attachedButton from './attached-button.vue';
-  import { addListItem, getItemIndex, getProp} from '../lib/lists/helpers';
+  import { addListItem, getItemIndex, getProp } from '../lib/lists/helpers';
   import { DynamicEvents } from './mixins';
 
   const log = logger(__filename);
@@ -130,18 +130,22 @@
         if (!_.isEmpty(this.data) && _.isString(_.head(this.data))) {
           // array of strings! convert to array of objects internally, but save it back to the store as strings
           this.type = 'strings';
-          return _.map(this.data, (item) => item.text);
+
+          return _.map(this.data, item => item.text);
         } else if (!_.isEmpty(this.data) && _.isObject(_.head(this.data))) {
           // array of objects!
           this.type = 'objects';
+
           return _.cloneDeep(this.data);
         } else if ((!this.data || _.isEmpty(this.data)) && !!this.args.propertyName) {
           // empty data, but we're using propertyName so we want an array of objects
           this.type = 'objects';
+
           return [];
         } else if ((!this.data || _.isEmpty(this.data)) && !this.args.propertyName) {
           // empty data, but no propertyName so we want an array of strings
           this.type = 'strings';
+
           return [];
         } else {
           log.error('Unknown data type!', { action: 'compute items', items: this.data });
@@ -239,7 +243,10 @@
         }
       },
       addItem(newItem) {
-        let countProperty, itemIndex, listName, stringProperty;
+        let countProperty,
+          itemIndex,
+          listName,
+          stringProperty;
 
         this.items.push(newItem);
         this.update(this.items);
@@ -248,33 +255,39 @@
         if (this.args.autocomplete && this.args.autocomplete.allowCreate) {
           listName = this.args.autocomplete.list;
 
-          return this.$store.dispatch('updateList', { listName: listName, fn: (items) => {
+          return this.$store.dispatch('updateList', {
+            listName: listName,
+            fn: (items) => {
             // validate that the list has items with these properties
-            stringProperty = getProp(items, 'text');
-            countProperty = getProp(items, 'count');
+              stringProperty = getProp(items, 'text');
+              countProperty = getProp(items, 'count');
 
-            if (stringProperty && countProperty) {
-              itemIndex = getItemIndex(items, newItem.text, 'text');
+              if (stringProperty && countProperty) {
+                itemIndex = getItemIndex(items, newItem.text, 'text');
 
-              if (itemIndex !== -1) {
+                if (itemIndex !== -1) {
                 // increase count if the item already exists in the list
-                items[itemIndex][countProperty]++;
-                return items;
-              } else {
+                  items[itemIndex][countProperty]++;
+
+                  return items;
+                } else {
                 // add item to the list
-                _.set(newItem, countProperty, 1);
-                return addListItem(items, newItem);
-              }
-            } else if (_.isString(_.head(items))) {
+                  _.set(newItem, countProperty, 1);
+
+                  return addListItem(items, newItem);
+                }
+              } else if (_.isString(_.head(items))) {
               // if the list is just an array of strings, just add the string
               // property
-              return addListItem(items, newItem.text);
-            } else if (items.length === 0) {
-              log.warn('The list is empty, unable to determine data structure. Adding item with default data structure.', { action: 'adding item to a list' });
-              _.set(newItem, 'count', 1);
-              return addListItem(items, newItem);
+                return addListItem(items, newItem.text);
+              } else if (items.length === 0) {
+                log.warn('The list is empty, unable to determine data structure. Adding item with default data structure.', { action: 'adding item to a list' });
+                _.set(newItem, 'count', 1);
+
+                return addListItem(items, newItem);
+              }
             }
-          }});
+          });
         }
       },
       setPrimary(index) {

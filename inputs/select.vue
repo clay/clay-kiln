@@ -118,9 +118,9 @@
     },
     mounted() {
       if (this.args.list) {
-        this.fetchListItems().then( (listItems) => {
+        this.fetchListItems().then((listItems) => {
           this.listOptions = listItems;
-        }).catch( () => {
+        }).catch(() => {
           log.error(`Error getting list for ${this.args.list}`);
         });
       }
@@ -129,20 +129,20 @@
       keys() {
         return _.assign({
           label: 'name',
-          value: 'value',
+          value: 'value'
         }, this.args.keys || {});
       },
       NULL_OPTION() {
         return {
           [this.keys.label]: 'None',
-          [this.keys.value]: null,
+          [this.keys.value]: null
         };
       },
       // combine arg/prop options, fetched list options, and a null option for non-multiple selects
       options() {
         const propOptions = this.args.options || [],
           currentSlug = _.get(this.$store, 'state.site.slug'),
-          noneOption = propOptions.find((val)=>{
+          noneOption = propOptions.find((val) => {
             return val.name === 'None' || val.name === 'Default';
           });
 
@@ -175,11 +175,11 @@
           // defaults to pass Keen's type check
           return this.args.multiple ? [] : this.NULL_OPTION;
         } else if (this.args.multiple) {
-          return _.filter(this.options, (option) => !!this.data[option.value]);
+          return _.filter(this.options, option => !!this.data[option.value]);
         } else if (this.args.storeRawData) {
           return this.data;
         } else {
-          return _.find(this.options, (option) => this.data === option.value);
+          return _.find(this.options, option => this.data === option.value);
         }
       },
       hasOptions() {
@@ -214,7 +214,7 @@
           // set all existing options in data to false
           data = _.mapValues(_.cloneDeep(this.data), () => false);
           // for each of the selected options, set the related key in the data to true
-          _.forEach(value, (option) => data[option.value] = true);
+          _.forEach(value, option => data[option.value] = true);
         } else if (this.args.storeRawData) {
           data = _.cloneDeep(value);
         } else {

@@ -36,6 +36,7 @@ export function parseFormats(buttons) {
       // e.g. { script: sup }, { list: ordered }
       result.push(Object.keys(button)[0]);
     }
+
     return result;
   }, ['header', 'blockquote']); // also support these formats, so we can paste them in
 }
@@ -46,7 +47,7 @@ export function parseFormats(buttons) {
  * @returns {array} phrases
  */
 function filterPhraseButtons(buttons) {
-  return _.filter(buttons, (button) => button === 'phrase' || _.isObject(button) && button.phrase);
+  return _.filter(buttons, button => button === 'phrase' || _.isObject(button) && button.phrase);
 }
 
 /**
@@ -75,6 +76,7 @@ export function createPhraseBlots(buttons) {
           let node = super.create();
 
           node.classList.add('kiln-phrase'); // add class so it won't be sanitized out
+
           return node;
         }
 

@@ -2,6 +2,7 @@ import store from '../lib/core-data/store';
 import * as api from '../lib/core-data/api.js';
 import { replaceVersion } from 'clayutils';
 import _cloneDeep from 'lodash/cloneDeep';
+import { addProtocol } from '../lib/utils/urls';
 
 export default class KilnInput {
   /**
@@ -47,7 +48,7 @@ export default class KilnInput {
           throw new Error(`${response.status}: ${response.statusText}`);
         }
 
-        if (cache === true ) {
+        if (cache === true) {
           response.clone().text().then((content) => {
             this.cachedResponses[url] = content;
           });
@@ -71,7 +72,9 @@ export default class KilnInput {
   * @return {Promise}
   */
   getComponentData(uri) {
-    return api.getJSON(`http://${uri}`);
+    const url = addProtocol(uri);
+
+    return api.getJSON(url);
   }
 
   /**
@@ -165,9 +168,11 @@ export default class KilnInput {
   */
   setProp(prop, value) {
     return new Promise((resolve) => {
-      if (this[prop] !== value ) {
-        store.dispatch('updateSchemaProp', { schemaName: this.schemaName, inputName: this.inputName, prop, value })
-          .then(()=> {
+      if (this[prop] !== value) {
+        store.dispatch('updateSchemaProp', {
+          schemaName: this.schemaName, inputName: this.inputName, prop, value
+        })
+          .then(() => {
             resolve(this);
           });
       } else {
@@ -185,7 +190,9 @@ export default class KilnInput {
     return this.setProp('visibility', true);
   }
 
-  showSnackBar({ message = '', duration = 3000, position = 'left', queueSnackbars = false, transition = 'fade' }) {
+  showSnackBar({
+    message = '', duration = 3000, position = 'left', queueSnackbars = false, transition = 'fade'
+  }) {
     store.dispatch('showSnackbar', {
       message,
       duration,
@@ -252,7 +259,7 @@ export default class KilnInput {
   * @return {string|number|object|array}
   */
   value(val) {
-    if (val) {
+    if (val != null) {
       // set the value of the field
       return store.dispatch('updateFormData', { path: this.inputName, val }).then(() => {
         return store.state.ui.currentForm ? store.state.ui.currentForm.fields[this.inputName] : null;

@@ -182,6 +182,7 @@
           }
 
           enabledActions.push(_.assign({}, action, generated));
+  
           return enabledActions;
         }, []);
       },

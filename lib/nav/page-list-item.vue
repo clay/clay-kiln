@@ -244,7 +244,7 @@
       protocol: 'http:', // note: assumes http (until we have protocol in site configs)
       port: site.port.toString(),
       hostname: site.host,
-      host: site.host,
+      host: site.host
     }) + htmlExt;
   }
 
@@ -293,7 +293,7 @@
         return this.pageStatus.statusTime;
       },
       site() {
-        return _.find(_.get(this.$store, 'state.allSites'), (site) => site.slug === this.page.siteSlug);
+        return _.find(_.get(this.$store, 'state.allSites'), site => site.slug === this.page.siteSlug);
       },
       siteName() {
         return this.site && this.site.name;

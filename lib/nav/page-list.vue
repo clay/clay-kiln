@@ -260,16 +260,17 @@
         this.isPopoverOpen = false;
       },
       selectSite(slug) {
-        const site = _.find(this.sites, (s) => s.slug === slug);
+        const site = _.find(this.sites, s => s.slug === slug);
 
         site.selected = !site.selected;
-        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, (site) => site.slug).join(', '));
+        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, site => site.slug).join(', '));
         this.offset = 0;
         this.fetchPages();
       },
       selectMultipleSites(allSites) {
         this.sites = _.map(this.sites, (site) => {
           site.selected = allSites;
+  
           return site;
         });
       },
@@ -283,7 +284,7 @@
           }
         });
 
-        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, (site) => site.slug).join(', '));
+        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, site => site.slug).join(', '));
         this.offset = 0;
         this.fetchPages();
       },
@@ -305,7 +306,7 @@
         this.fetchPages();
       },
       fetchPages() {
-        const siteFilter = _.map(this.selectedSites, (site) => site.slug),
+        const siteFilter = _.map(this.selectedSites, site => site.slug),
           queryText = this.queryText,
           queryUser = this.queryUser,
           offset = this.offset,
@@ -313,7 +314,9 @@
           isMyPages = this.isMyPages,
           username = _.get(this.$store, 'state.user.username'),
           statusFilter = this.selectedStatus,
-          query = buildQuery({ siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username });
+          query = buildQuery({
+            siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username
+          });
 
         return postJSON(prefix + searchRoute, query).then((res) => {
           const hits = _.get(res, 'hits.hits') || [],

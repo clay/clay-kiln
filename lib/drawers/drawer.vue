@@ -110,6 +110,7 @@
           }
         });
       }
+  
       return result;
     }, []);
   }
@@ -140,6 +141,7 @@
           }
         });
       }
+  
       return result;
     }, []);
   }
@@ -194,7 +196,7 @@
             tabs: [{
               title: 'Visible',
               component: 'visible-components',
-              selected: hashTabName === 'visible-components',
+              selected: hashTabName === 'visible-components'
             }].concat(getHeadComponentLists(state)).concat(getInvisibleComponentLists(state))
           },
           {
@@ -202,7 +204,7 @@
             tabs: [{
               title: 'Visible',
               component: 'visible-components',
-              selected: hashTabName === 'visible-components',
+              selected: hashTabName === 'visible-components'
             }].concat(getHeadComponentLists(state)).concat(getInvisibleComponentLists(state))
           },
           {
@@ -244,7 +246,7 @@
         return tabs;
       },
       activeDrawer() {
-        return this.tabs.find((tab)=> tab.name === this.name);
+        return this.tabs.find(tab => tab.name === this.name);
       }
     },
     methods: {
@@ -259,11 +261,15 @@
           urlTab = currentUrl.tab;
         }
 
-        this.$store.dispatch('setHash', { menu: { tab: urlTab, sites: tab.component, status: '', query: ''} });
+        this.$store.dispatch('setHash', {
+          menu: {
+            tab: urlTab, sites: tab.component, status: '', query: ''
+          }
+        });
         this.$store.commit('SWITCH_TAB', tab.title);
       },
       onSelectTab(title) {
-        const tab = _.find(_.get(this, '$refs.tabs.tabs', []), (tab) => tab.title === title);
+        const tab = _.find(_.get(this, '$refs.tabs.tabs', []), tab => tab.title === title);
 
         this.$refs.tabs.setActiveTab(tab.id);
       }

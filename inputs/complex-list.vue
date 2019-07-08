@@ -194,9 +194,10 @@
         }
       },
       addItem(index) {
-        const props = _.map(_.get(this.args, 'props', []), (item) => item.prop),
+        const props = _.map(_.get(this.args, 'props', []), item => item.prop),
           newObj = _.reduce(props, (obj, prop) => {
             obj[prop] = null;
+  
             return obj;
           }, {});
 

@@ -49,8 +49,8 @@
       };
     },
     computed: mapState({
-      hasAddComponentModal: (state) => !_.isNull(state.ui.currentAddComponentModal),
-      config: (state) => state.ui.currentAddComponentModal || {},
+      hasAddComponentModal: state => !_.isNull(state.ui.currentAddComponentModal),
+      config: state => state.ui.currentAddComponentModal || {},
       modalLeft: (state) => {
         const val = _.get(state, 'ui.currentAddComponentModal.pos.x');
 
@@ -84,7 +84,7 @@
           return [{
             icon: 'delete',
             tooltip: 'Remove Bookmark',
-            enable: (id) => _.includes(id, '/_components/'), // only enable these on bookmarks
+            enable: id => _.includes(id, '/_components/'), // only enable these on bookmarks
             action: this.removeBookmark
           }];
         }
@@ -122,11 +122,12 @@
             });
 
           this.loaded = true; // switch to the sorted list
-          return _.map(_.map(sortedComponents, (component) => ({
+
+          return _.map(_.map(sortedComponents, component => ({
             id: component.name,
             title: label(component.name)
           })).concat(unsortedComponents), (item) => {
-            const bookmarks = _.find(allBookmarks, (b) => b.name === item.id);
+            const bookmarks = _.find(allBookmarks, b => b.name === item.id);
 
             if (bookmarks) {
               // bookmarks should always be sorted alphabetically
@@ -165,13 +166,17 @@
           velocity(el, { width: 600 }, { duration: 180 });
           velocity(headerEl, { opacity: 1 }, { delay: 225, duration: 50 });
           velocity(innerEl, { opacity: 1 }, { delay: 225, duration: 50 });
-          velocity(el, { height: finalHeight }, { delay: 35, duration: 240, complete: () => {
+          velocity(el, { height: finalHeight }, {
+            delay: 35,
+            duration: 240,
+            complete: () => {
             // set the height to auto, so forms can grow if the fields inside them grow
             // (e.g. adding complex-list items)
             // el.style.height = 'auto';
-            el.style.maxHeight = `calc(100vh - ${this.modalTop})`;
-            done();
-          } });
+              el.style.maxHeight = `calc(100vh - ${this.modalTop})`;
+              done();
+            }
+          });
         });
       },
       leave(el, done) {
@@ -196,23 +201,28 @@
         });
       },
       onDeleteConfirm(id) {
-        return this.$store.dispatch('updateList', { listName: 'bookmarks', fn: (items) => {
-          let componentIndex, component, bookmarkIndex;
+        return this.$store.dispatch('updateList', {
+          listName: 'bookmarks',
+          fn: (items) => {
+            let componentIndex,
+              component,
+              bookmarkIndex;
 
-          componentIndex = _.findIndex(items, (item) => _.find(item.children, (child) => child.id === id));
-          component = items[componentIndex];
-          bookmarkIndex = _.findIndex(component.children, (child) => child.id === id);
+            componentIndex = _.findIndex(items, item => _.find(item.children, child => child.id === id));
+            component = items[componentIndex];
+            bookmarkIndex = _.findIndex(component.children, child => child.id === id);
 
-          // remove bookmark from the component it's inside
-          component.children.splice(bookmarkIndex, 1);
+            // remove bookmark from the component it's inside
+            component.children.splice(bookmarkIndex, 1);
 
-          // if the component doesn't contain any bookmarks anymore, remove it from the list
-          if (_.isEmpty(component.children)) {
-            items.splice(componentIndex, 1);
+            // if the component doesn't contain any bookmarks anymore, remove it from the list
+            if (_.isEmpty(component.children)) {
+              items.splice(componentIndex, 1);
+            }
+
+            return items;
           }
-
-          return items;
-        }});
+        });
       },
       itemClick(id) {
         const self = this,

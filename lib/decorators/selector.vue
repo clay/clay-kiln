@@ -397,24 +397,26 @@
         const name = this.componentName;
 
         this.$store.commit('DUPLICATE_COMPONENT', name);
+  
         return this.$store.dispatch('addComponents', {
           currentURI: this.uri,
           parentURI: this.parentURI,
           path: this.parentField.path,
           components: [{ name }]
-        }).then((newEl) => this.$store.dispatch('select', newEl));
+        }).then(newEl => this.$store.dispatch('select', newEl));
       },
       duplicateComponentWithData() {
         const name = this.componentName,
           data = getData(this.uri);
 
         this.$store.commit('DUPLICATE_COMPONENT_WITH_DATA', name);
+  
         return this.$store.dispatch('addComponents', {
           currentURI: this.uri,
           parentURI: this.parentURI,
           path: this.parentField.path,
           components: [{ name, data }]
-        }).then((newEl) => this.$store.dispatch('select', newEl));
+        }).then(newEl => this.$store.dispatch('select', newEl));
       },
       removeComponent() {
         const el = this.$options.componentEl,
@@ -429,18 +431,20 @@
               name: this.componentName,
               onConfirm: (input) => {
                 this.$store.dispatch('unselect');
-                return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', {el: el, msg: input}));
+  
+                return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', { el: el, msg: input }));
               }
             }
           });
         } else {
           this.$store.dispatch('unselect');
+  
           return this.$store.dispatch('unfocus').then(() => this.$store.dispatch('removeComponent', el));
         }
       },
       setSelectorPosition() {
         this.selectorPosition = calculateSelectorPosition(this.$options.componentEl);
-      },
+      }
     },
     components: _.assign({}, _.get(window, 'kiln.selectorButtons', {}), { UiIconButton })
   };

@@ -39,21 +39,25 @@
           name = getComponentName(uri),
           componentLabel = label(name);
 
-        return this.$store.dispatch('updateList', { listName: 'bookmarks', fn: (items) => {
-          const currentComponentBookmarks = _.find(items, (item) => item.name === name);
+        return this.$store.dispatch('updateList', {
+          listName: 'bookmarks',
+          fn: (items) => {
+            const currentComponentBookmarks = _.find(items, item => item.name === name);
 
-          if (currentComponentBookmarks) {
+            if (currentComponentBookmarks) {
             // add to existing component bookmarks
-            currentComponentBookmarks.children.push({ id: uri, title });
-          } else {
+              currentComponentBookmarks.children.push({ id: uri, title });
+            } else {
             // add to new component bookmarks
-            items.push({
-              name,
-              children: [{ id: uri, title }]
-            });
+              items.push({
+                name,
+                children: [{ id: uri, title }]
+              });
+            }
+  
+            return items;
           }
-          return items;
-        }})
+        })
           .then(() => this.$store.dispatch('closeModal'))
           .then(() => {
             this.$store.dispatch('closeModal');

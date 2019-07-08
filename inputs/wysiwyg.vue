@@ -102,12 +102,16 @@
   import { find, closest } from '@nymag/dom';
   import { getComponentName, refAttr, editAttr } from '../lib/utils/references';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
-  import { getPrevComponent, getNextComponent, getParentComponent, getComponentEl, getFieldEl } from '../lib/utils/component-elements';
+  import {
+    getPrevComponent, getNextComponent, getParentComponent, getComponentEl, getFieldEl
+  } from '../lib/utils/component-elements';
   import { shouldBeRequired, getValidationError } from '../lib/forms/field-helpers';
   import label from '../lib/utils/label';
   import { sanitizeInlineHTML, sanitizeMultiComponentHTML, sanitizeBlockHTML } from './wysiwyg-sanitize';
   import { splitParagraphs, matchComponents, generatePasteRules } from './wysiwyg-paste';
-  import { renderDeltas, generateDeltas, deltaEndsWith, matchLineBreak, matchParagraphs } from './wysiwyg-deltas';
+  import {
+    renderDeltas, generateDeltas, deltaEndsWith, matchLineBreak, matchParagraphs
+  } from './wysiwyg-deltas';
   import { getNewlinesBeforeCaret, getLastOffsetWithNewlines } from './wysiwyg-caret';
   import { parsePhraseButton, parseFormats, createPhraseBlots } from './wysiwyg-phrase';
   import attachedButton from './attached-button.vue';
@@ -122,7 +126,8 @@
   // store references for multi-paragraph paste here.
   // this way, the paste function can set these, and they can be checked
   // AFTER the generated deltas have been pasted in.
-  let firstComponentToUpdate, otherComponentsToUpdate;
+  let firstComponentToUpdate,
+    otherComponentsToUpdate;
 
   /**
    * handle multi-paragraph paste
@@ -133,7 +138,9 @@
    * @param  {array} textMatchers
    * @return {object}                 delta of changes to current component, saved automatically
    */
-  function handleMultiParagraphPaste(components, { quill, current, elementMatchers, textMatchers }) {
+  function handleMultiParagraphPaste(components, {
+    quill, current, elementMatchers, textMatchers
+  }) {
     const firstComponent = _.head(components),
       otherComponents = _.tail(components);
 
@@ -161,13 +168,14 @@
 
   // add sanitization to all quill links
   Link.sanitize = (value) => {
-    if (!/^\w+:/.test(value) && !/^#/.test(value)) {
+    if (!(/^\w+:/).test(value) && !(/^#/).test(value)) {
       // no protocol, and the link doesn't start with a hash (in-page links),
       // so add http://
       // note: links that start with // are an antipattern, and this will NOT handle them
       // https://jeremywagner.me/blog/stop-using-the-protocol-relative-url
       value = `http://${value}`;
     }
+
     return originalLinkSanitize.call(Link, value);
   };
 
@@ -284,7 +292,7 @@
         currentPath = _.get(store, 'state.ui.currentForm.path'),
         currentFieldEl = getFieldEl(currentURI, currentPath),
         rules = generatePasteRules(this.args.paste, getComponentName(currentURI), this.name),
-        buttons = _.map(this.args.buttons, (button) => parsePhraseButton(button)).concat(['clean']),
+        buttons = _.map(this.args.buttons, button => parsePhraseButton(button)).concat(['clean']),
         el = find(this.$el, '.wysiwyg-content'),
         appendText = _.get(store, 'state.ui.currentForm.appendText'),
         parent = currentFieldEl && getParentComponent(getComponentEl(currentFieldEl)),
@@ -294,7 +302,7 @@
           component: getComponentName(currentURI),
           uri: currentURI,
           parentURI: parent && parent.getAttribute(refAttr),
-          parentPath:  currentFieldEl && getComponentEl(currentFieldEl).parentNode.getAttribute(editAttr)
+          parentPath: currentFieldEl && getComponentEl(currentFieldEl).parentNode.getAttribute(editAttr)
         },
         hintFormats = ['color'],
         phrases = createPhraseBlots(this.args.buttons),
@@ -307,7 +315,9 @@
       class ClayClipboard extends Clipboard {
         convert(html) {
           let [elementMatchers, textMatchers] = this.prepareMatching(),
-            sanitized, delta, components;
+            sanitized,
+            delta,
+            components;
 
           if (_.isString(html)) {
             this.container.innerHTML = html.replace(/\>\r?\n +\</g, '><'); // remove spaces between tags
@@ -343,6 +353,7 @@
           }
 
           this.container.innerHTML = '';
+
           return delta;
         }
       }
@@ -423,7 +434,7 @@
 
         return {
           add,
-          remove,
+          remove
         };
       }
 
@@ -564,6 +575,7 @@
 
                       // remove the text after the caret, and create a new component with it
                       this.quill.deleteText(index, fieldLength - index);
+
                       return store.dispatch('unfocus').then(() => {
                         return store.dispatch('addComponents', {
                           currentURI: current.uri,
@@ -588,6 +600,7 @@
                       this.quill.setSelection(index + charsUntilNewline);
                     } else if (deletingWholeLine) {
                       this.quill.deleteText(index, length);
+
                       return false; // just delete the line, don't add a newline
                     } else {
                       // create a newline
@@ -619,8 +632,8 @@
                       // so merge the text after the caret with the previous component
                       store.dispatch('unfocus')
                         .then(() => find(`[${refAttr}="${current.uri}"]`)) // find the (updated) component in the dom
-                        .then((currentComponentEl) => store.dispatch('removeComponent', currentComponentEl))
-                        .then((prevComponent) => focusPreviousComponent(-1, prevComponent, textAfterCaret));
+                        .then(currentComponentEl => store.dispatch('removeComponent', currentComponentEl))
+                        .then(prevComponent => focusPreviousComponent(-1, prevComponent, textAfterCaret));
                     } // if there isn't a previous component, don't do ANYTHING
                   } else {
                     // normal delete behavior
@@ -700,7 +713,7 @@
 
       // add hints
       if (maxLength) {
-        tooLong = hint(editor, {color: errorColor});
+        tooLong = hint(editor, { color: errorColor });
       }
 
       this.editor = editor; // save reference to the editor

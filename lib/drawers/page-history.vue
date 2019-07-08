@@ -141,7 +141,7 @@
     },
     components: {
       UiButton,
-      avatar,
+      avatar
     }
   };
 </script>

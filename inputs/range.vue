@@ -168,8 +168,8 @@
         step: step,
         range: { min, max },
         format: {
-          to: (val) => new Number(val),
-          from: (val) => new Number(val)
+          to: val => new Number(val),
+          from: val => new Number(val)
         },
         connect: this.isDualPoint ? [false, true, false] : [true, false],
         tooltips: this.tooltips,

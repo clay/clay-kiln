@@ -81,6 +81,7 @@
       contributors() {
         return _.map(this.users, (user) => {
           user.formattedTime = formatStatusTime(user.updateTime);
+  
           return user;
         }).reverse();
       }

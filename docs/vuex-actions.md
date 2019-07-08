@@ -668,6 +668,7 @@ open nav tab
     * _static_
         * [.savePage(store, data, [snapshot])](#module_page-data.savePage) ⇒ <code>Promise</code>
         * [.createPage(store, id)](#module_page-data.createPage) ⇒ <code>Promise</code>
+        * [.isPublishing(store, isPublishing)](#module_page-data.isPublishing)
         * [.publishPage(store, uri)](#module_page-data.publishPage) ⇒ <code>Promise</code>
         * [.unpublishPage(store, uri)](#module_page-data.unpublishPage) ⇒ <code>Promise</code>
         * [.schedulePage(store, uri, timestamp)](#module_page-data.schedulePage) ⇒ <code>Promise</code>
@@ -701,6 +702,18 @@ create a new page, then return its editable link
 | --- | --- |
 | store | <code>object</code> | 
 | id | <code>string</code> | 
+
+<a name="module_page-data.isPublishing"></a>
+
+### page-data.isPublishing(store, isPublishing)
+set currentlyPublishing in state
+
+**Kind**: static method of [<code>page-data</code>](#module_page-data)  
+
+| Param | Type |
+| --- | --- |
+| store | <code>object</code> | 
+| isPublishing | <code>boolean</code> | 
 
 <a name="module_page-data.publishPage"></a>
 
@@ -1082,6 +1095,8 @@ render multiple components at once
     * _static_
         * [.runMetaValidator(metadata)](#module_validators.runMetaValidator) ⇒ <code>function</code>
         * [.runMetaValidators(uri, errorValidators, warningValidators)](#module_validators.runMetaValidators) ⇒ <code>Promise</code>
+        * [.runKilnjsValidators(schemas, components)](#module_validators.runKilnjsValidators) ⇒ <code>array</code>
+        * [.getSchemasWithValidationRules(schemas)](#module_validators.getSchemasWithValidationRules) ⇒ <code>object</code>
         * [.isMetadataError(scope, type)](#module_validators.isMetadataError) ⇒ <code>boolean</code>
         * [.isMetadataWarning(scope, type)](#module_validators.isMetadataWarning) ⇒ <code>boolean</code>
         * [.isGlobalMetadataError(validator)](#module_validators.isGlobalMetadataError) ⇒ <code>boolean</code>
@@ -1094,6 +1109,9 @@ render multiple components at once
         * [~runValidator(state)](#module_validators..runValidator) ⇒ <code>function</code>
         * [~runValidators(validators, state)](#module_validators..runValidators) ⇒ <code>Promise</code>
         * [~hasItems(error)](#module_validators..hasItems) ⇒ <code>Boolean</code>
+        * [~validKilnjsValidator(validators, validationRule)](#module_validators..validKilnjsValidator) ⇒ <code>boolean</code>
+        * [~getKilnJsFieldAndValue(validationRule, component)](#module_validators..getKilnJsFieldAndValue) ⇒ <code>object</code>
+        * [~getKilnJsError(validationError, errorItem, errors)](#module_validators..getKilnJsError) ⇒ <code>array</code>
 
 <a name="module_validators.runMetaValidator"></a>
 
@@ -1118,6 +1136,29 @@ run a list of validators using page metadata
 | uri | <code>uri</code> | page uri |
 | errorValidators | <code>array</code> | validators for errors |
 | warningValidators | <code>array</code> | validators for warnings |
+
+<a name="module_validators.runKilnjsValidators"></a>
+
+### validators.runKilnjsValidators(schemas, components) ⇒ <code>array</code>
+Run the kilnjsValidators
+
+**Kind**: static method of [<code>validators</code>](#module_validators)  
+
+| Param | Type |
+| --- | --- |
+| schemas | <code>object</code> | 
+| components | <code>object</code> | 
+
+<a name="module_validators.getSchemasWithValidationRules"></a>
+
+### validators.getSchemasWithValidationRules(schemas) ⇒ <code>object</code>
+Get the schemas that have a validation property
+
+**Kind**: static method of [<code>validators</code>](#module_validators)  
+
+| Param | Type |
+| --- | --- |
+| schemas | <code>object</code> | 
 
 <a name="module_validators.isMetadataError"></a>
 
@@ -1258,6 +1299,45 @@ some may have been parsed out by the isActive check in runValidator, above
 | Param | Type |
 | --- | --- |
 | error | <code>object</code> | 
+
+<a name="module_validators..validKilnjsValidator"></a>
+
+### validators~validKilnjsValidator(validators, validationRule) ⇒ <code>boolean</code>
+Check if the validationRule has the correct properties to run validation with
+
+**Kind**: inner method of [<code>validators</code>](#module_validators)  
+
+| Param | Type |
+| --- | --- |
+| validators | <code>object</code> | 
+| validationRule | <code>object</code> | 
+
+<a name="module_validators..getKilnJsFieldAndValue"></a>
+
+### validators~getKilnJsFieldAndValue(validationRule, component) ⇒ <code>object</code>
+Get the inputs from a validationRule, either as a string or as an array
+the fieldName is the name of the input that will have the focus when the user clicks to that error from the Health Tab
+the value is what will be tested by the rule
+
+**Kind**: inner method of [<code>validators</code>](#module_validators)  
+
+| Param | Type |
+| --- | --- |
+| validationRule | <code>object</code> | 
+| component | <code>object</code> | 
+
+<a name="module_validators..getKilnJsError"></a>
+
+### validators~getKilnJsError(validationError, errorItem, errors) ⇒ <code>array</code>
+Add error to Errors, either as a completely new error, or as an entry in an existing error
+
+**Kind**: inner method of [<code>validators</code>](#module_validators)  
+
+| Param | Type |
+| --- | --- |
+| validationError | <code>object</code> | 
+| errorItem | <code>object</code> | 
+| errors | <code>array</code> | 
 
 <a name="isPageSpecific"></a>
 
