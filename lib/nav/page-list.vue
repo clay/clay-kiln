@@ -3,20 +3,33 @@
     <div class="page-list-controls">
       <ui-button buttonType="button" class="page-list-sites" type="secondary" color="default" has-dropdown ref="sitesDropdown" @dropdown-open="onPopoverOpen" @dropdown-close="onPopoverClose">
         <span class="page-list-selected-site">{{ selectedSite }}</span>
-        <site-selector slot="dropdown" :sites="sites" @select="selectSite" @multi-select="selectMultipleSites"></site-selector>
+        <site-selector slot="dropdown" :sites="sites" @select="selectSite" @multi-select="selectMultipleSites" />
       </ui-button>
-      <ui-textbox class="page-list-search" v-model.trim="query" type="search" autofocus placeholder="Search by Title or Byline" @input="filterList"></ui-textbox>
+      <ui-textbox class="page-list-search" v-model.trim="query" type="search" autofocus placeholder="Search by Title or Byline" @input="filterList" />
       <ui-icon-button class="page-list-status-small" type="secondary" icon="filter_list" has-dropdown ref="statusDropdown" @dropdown-open="onPopoverOpen" @dropdown-close="onPopoverClose">
-        <status-selector slot="dropdown" :selectedStatus="selectedStatus" :vertical="true" @select="selectStatus"></status-selector>
+        <status-selector slot="dropdown" :selectedStatus="selectedStatus" :vertical="true" @select="selectStatus" />
       </ui-icon-button>
       <status-selector class="page-list-status-large" :selectedStatus="selectedStatus" @select="selectStatus"></status-selector>
+      <ui-icon-button class="page-list-sort" type="secondary" icon="sort" has-dropdown ref="statusDropdown" @dropdown-open="onPopoverOpen" @dropdown-close="onPopoverClose">
+        <sort-selector slot="dropdown" :selectedSort="sortBy" :vertical="true" @select="sortByDate" />
+      </ui-icon-button>
     </div>
     <div class="page-list-headers">
       <span v-if="multipleSitesSelected" class="page-list-header page-list-header-site">Site</span>
-      <span class="page-list-header page-list-header-title">Title</span>
-      <span class="page-list-header page-list-header-byline">Byline</span>
-      <span class="page-list-header page-list-header-status">Status</span>
-      <span class="page-list-header page-list-header-collaborators">Collaborators</span>
+      <ui-button
+        v-for="header in headerTitles"
+        :key="header.key"
+        buttonType="button"
+        :class="[`page-list-header page-list-header-${header.key}`]"
+        disableRipple
+        :icon="sortBy === header.sortField ? sortIcon : null"
+        iconPosition="right"
+        size="small"
+        type="secondary"
+        @click="header.key !== 'collaborators' && sortByField(header.sortField)"
+      >
+        {{ header.title }}
+      </ui-button>
     </div>
     <div class="page-list-readout">
       <page-list-item
@@ -43,10 +56,13 @@
   import UiTextbox from 'keen/UiTextbox';
   import UiIconButton from 'keen/UiIconButton';
   import siteSelector from './site-selector.vue';
+  import sortSelector from './sort-selector.vue';
   import statusSelector from './status-selector.vue';
   import pageListItem from './page-list-item.vue';
 
-  const DEFAULT_QUERY_SIZE = 50;
+  const DEFAULT_QUERY_SIZE = 50,
+    SORT_DESC = 'desc',
+    SORT_ASC = 'asc';
 
   /**
    * get data for all sites, and format it into something we can use
@@ -77,20 +93,27 @@
    * @param {string} username
    * @return {object}
    */
-  function buildQuery({ siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username }) { // eslint-disable-line
+  function buildQuery({ siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username, sortBy, sortOrder }) { // eslint-disable-line
     let query = {
       index: 'pages',
       body: {
         size: DEFAULT_QUERY_SIZE,
         from: offset,
         sort: {
-          updateTime: {
-            order: 'desc'
-          }
+          [sortBy]: { order: sortOrder }
         },
         query: {}
       }
     };
+
+    // Status sorting is handled differently,
+    // we have to deal with boolean properties
+    if (sortBy === 'status') {
+      query.body.sort = {
+        published: { order: sortOrder },
+        scheduled: { order: sortOrder }
+      };
+    }
 
     _.set(query, 'body.query.bool.must', []);
 
@@ -189,22 +212,35 @@
       query.body.query.bool.must.push({
         term: { published: true }
       });
+
       // also sort by last published timestamp
-      query.body.sort = {
-        publishTime: { order: 'desc' }
-      };
+      if (sortBy === 'status') {
+        query.body.sort = {
+          publishTime: { order: sortOrder }
+        };
+      }
     } else if (statusFilter === 'scheduled') {
       query.body.query.bool.must.push({
         term: { scheduled: true }
       });
+
       // also sort by last scheduled time
-      query.body.sort = {
-        scheduledTime: { order: 'desc' }
-      };
+      if (sortBy === 'status') {
+        query.body.sort = {
+          scheduledTime: { order: sortOrder }
+        };
+      }
     } else if (statusFilter === 'archived') {
       query.body.query.bool.must.push({
         term: { archived: true }
       });
+
+      // Also, sort by last update time
+      if (sortBy === 'status') {
+        query.body.sort = {
+          updateTime: { order: sortOrder }
+        };
+      }
     }
 
     return query;
@@ -220,7 +256,26 @@
         sites: getInitialSites.call(this),
         pages: [],
         selectedStatus: _.get(this.$store, 'state.url.status', 'all'),
-        isPopoverOpen: false
+        isPopoverOpen: false,
+        sortBy: 'updateTime',
+        sortOrder: SORT_DESC,
+        headerTitles: [{
+          title: 'Title',
+          key: 'title',
+          sortField: 'title.raw'
+        }, {
+          title: 'Byline',
+          key: 'byline',
+          sortField: 'authors.raw'
+        }, {
+          title: 'Status',
+          key: 'status',
+          sortField: 'status'
+        }, {
+          title: 'Collaborators',
+          key: 'collaborators',
+          sortField: 'users'
+        }]
       };
     },
     computed: {
@@ -249,15 +304,34 @@
         const user = this.query.match(/user:(\S+)/i);
 
         return user ? user[1] : '';
+      },
+      sortIcon() {
+        return this.sortOrder === SORT_DESC ? 'arrow_downward' : 'arrow_upward';
       }
     },
     methods: {
+      /**
+       * Sets the isPopoverOpen prop to true
+       * when the popover is opened
+       * @returns {void}
+       */
       onPopoverOpen() {
         this.isPopoverOpen = true;
       },
+      /**
+       * Sets the isPopoverOpen prop to false
+       * when the popover is closed
+       * @returns {void}
+       */
       onPopoverClose() {
         this.isPopoverOpen = false;
       },
+      /**
+       * Sets the selected site in the state
+       * and refetches the pages
+       * @param {String} slug
+       * @returns {void}
+       */
       selectSite(slug) {
         const site = _.find(this.sites, s => s.slug === slug);
 
@@ -266,13 +340,24 @@
         this.offset = 0;
         this.fetchPages();
       },
+      /**
+       * Sets the selected sites if there are multiple selected
+       * @param {String[]} allSites
+       * @returns {void}
+       */
       selectMultipleSites(allSites) {
         this.sites = _.map(this.sites, (site) => {
           site.selected = allSites;
-  
+
           return site;
         });
       },
+      /**
+       * Sets the selected site in the state
+       * and refetches the pages
+       * @param {String} slug
+       * @returns {void}
+       */
       setSingleSite(slug) {
         // loop through all sites, making sure that only one is selected
         _.each(this.sites, (site) => {
@@ -287,11 +372,22 @@
         this.offset = 0;
         this.fetchPages();
       },
+      /**
+       * Triggers a request to filter the pages with
+       * a 300 ms delay
+       * @returns {void}
+       */
       filterList: _.debounce(function () {
         this.$store.commit('FILTER_PAGELIST_SEARCH', this.query);
         this.offset = 0;
         this.fetchPages();
       }, 300),
+      /**
+       * Sets the selected status in the state
+       * and refetches the pages
+       * @param {String} status
+       * @returns {void}
+       */
       selectStatus(status) {
         this.selectedStatus = status;
 
@@ -299,51 +395,98 @@
         this.offset = 0;
         this.fetchPages();
       },
+      /**
+       * Sets the built query in the state
+       * and refetches the pages
+       * @param {Object} query
+       * @returns {void}
+       */
       setQuery(query) {
         this.query = query;
         this.offset = 0;
         this.fetchPages();
       },
+      /**
+       * Sets the sort order and sort field in the state
+       * and refetches the pages
+       * @param {String} field
+       * @returns {void}
+       */
+      sortByField(field) {
+        this.sortOrder = this.sortBy === field ? this.toggleSortOrder(this.sortOrder) : SORT_ASC;
+        this.sortBy = field;
+        this.offset = 0;
+
+        this.fetchPages();
+      },
+      /**
+       * Toggles the sort order between ascending and descending
+       * @param {String} order
+       * @returns {String}
+       */
+      toggleSortOrder(order) {
+        return order === SORT_DESC ? SORT_ASC : SORT_DESC;
+      },
+      /**
+       * Sets the sort order and sort field for date fields
+       * and refetches pages
+       * @param {String} field
+       * @returns {void}
+       */
+      sortByDate(field) {
+        this.sortOrder = SORT_DESC;
+        this.sortBy = field;
+        this.offset = 0;
+
+        this.fetchPages();
+      },
+      /**
+       * Makes a query to ES to fetch for all pages
+       * @returns {Promise}
+       */
       fetchPages() {
-        const siteFilter = _.map(this.selectedSites, site => site.slug),
-          queryText = this.queryText,
-          queryUser = this.queryUser,
-          offset = this.offset,
+        const {
+            isMyPages,
+            offset,
+            queryText,
+            queryUser,
+            selectedSites,
+            selectedStatus: statusFilter,
+            sortBy,
+            sortOrder
+          } = this,
+          siteFilter = _.map(selectedSites, site => site.slug),
           prefix = _.get(this.$store, 'state.site.prefix'),
-          isMyPages = this.isMyPages,
           username = _.get(this.$store, 'state.user.username'),
-          statusFilter = this.selectedStatus,
           query = buildQuery({
-            siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username
+            siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username, sortBy, sortOrder
           });
 
-        return postJSON(prefix + searchRoute, query).then((res) => {
-          const hits = _.get(res, 'hits.hits') || [],
-            total = _.get(res, 'hits.total'),
-            pages = _.map(hits, hit => Object.assign({}, hit._source, { uri: hit._id }));
+        return postJSON(prefix + searchRoute, query)
+          .then(res => {
+            const hits = _.get(res, 'hits.hits') || [],
+              total = _.get(res, 'hits.total'),
+              pages = _.map(hits, hit => Object.assign({}, hit._source, { uri: hit._id }));
 
-          if (offset === 0) {
-            this.pages = pages;
-          } else {
-            this.pages = this.pages.concat(pages);
-          }
+            this.pages = offset === 0 ? pages : this.pages.concat(pages);
 
-          this.offset = offset + pages.length;
-          this.total = total; // update the total for this particular query
-          // (it's used to hide the "load more" button)
+            this.offset = offset + pages.length;
+            this.total = total; // update the total for this particular query
+            // (it's used to hide the "load more" button)
 
-          // set the url hash
-          if (_.get(this.$store, 'state.ui.currentDrawer')) {
-            this.$store.dispatch('setHash', {
-              menu: {
-                tab: isMyPages ? 'my-pages' : 'all-pages',
-                sites: siteFilter.join(','),
-                status: statusFilter,
-                query: this.query
-              }
-            });
-          }
-        });
+            // set the url hash
+            if (_.get(this.$store, 'state.ui.currentDrawer')) {
+              this.$store.dispatch('setHash', {
+                menu: {
+                  tab: isMyPages ? 'my-pages' : 'all-pages',
+                  sites: siteFilter.join(','),
+                  status: statusFilter,
+                  query: this.query
+                }
+              });
+            }
+          })
+          .catch(console.error);
       }
     },
     mounted() {
@@ -358,6 +501,7 @@
       UiTextbox,
       UiIconButton,
       'site-selector': siteSelector,
+      'sort-selector': sortSelector,
       'status-selector': statusSelector,
       'page-list-item': pageListItem
     }
@@ -435,6 +579,12 @@
     }
   }
 
+  .page-list-sort {
+    display: inline-flex;
+    flex: 0 0 auto;
+    margin-left: 8px;
+  }
+
   .page-list-headers {
     @include type-list-header();
 
@@ -450,6 +600,16 @@
     }
 
     .page-list-header {
+      @include type-list-header();
+
+      height: auto;
+      justify-content: start;
+      padding: 0;
+
+      &:hover {
+        background-color: transparent;
+      }
+
       &-site {
         flex: 0 0 $site-column;
       }
@@ -477,12 +637,18 @@
       }
 
       &-collaborators {
+        cursor: default;
         display: none;
         flex: 0 0 $collaborators-column;
 
         @media screen and (min-width: $all-columns-sidebar) {
           display: inline;
         }
+      }
+
+      & > .ui-button__content {
+        font-weight: normal;
+        justify-content: start;
       }
     }
   }
