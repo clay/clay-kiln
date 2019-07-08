@@ -340,12 +340,14 @@
 
               // set the url hash
               if (_.get(this.$store, 'state.ui.currentDrawer')) {
-                this.$store.dispatch('setHash', { menu: {
-                  tab: isMyPages ? 'my-pages' : 'all-pages',
-                  sites: siteFilter.join(','),
-                  status: statusFilter,
-                  query: this.query
-                }});
+                this.$store.dispatch('setHash', {
+                  menu: {
+                    tab: isMyPages ? 'my-pages' : 'all-pages',
+                    sites: siteFilter.join(','),
+                    status: statusFilter,
+                    query: this.query
+                  }
+                });
               }
             });
         });

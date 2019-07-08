@@ -125,7 +125,7 @@
           formattedHistory = formatHistoryToDisplay(pageHistory, cacheUsers);
 
         return formattedHistory;
-      },
+      }
     },
     mounted: function () {
       const usersIds = _.uniq(_.flatMap(_.get(this.$store, 'state.page.state.history'), (history) => _.map(history.users, (user) => user.id)));
