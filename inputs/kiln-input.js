@@ -259,7 +259,7 @@ export default class KilnInput {
   * @return {string|number|object|array}
   */
   value(val) {
-    if (val) {
+    if (val != null) {
       // set the value of the field
       return store.dispatch('updateFormData', { path: this.inputName, val }).then(() => {
         return store.state.ui.currentForm ? store.state.ui.currentForm.fields[this.inputName] : null;
