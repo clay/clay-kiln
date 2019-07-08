@@ -45,6 +45,7 @@
   import siteSelector from './site-selector.vue';
   import statusSelector from './status-selector.vue';
   import pageListItem from './page-list-item.vue';
+  import { getUsersData } from '../utils/users';
 
   const DEFAULT_QUERY_SIZE = 50;
 
@@ -317,27 +318,33 @@
         return postJSON(prefix + searchRoute, query).then((res) => {
           const hits = _.get(res, 'hits.hits') || [],
             total = _.get(res, 'hits.total'),
-            pages = _.map(hits, (hit) => Object.assign({}, hit._source, { uri: hit._id }));
+            pages = _.map(hits, (hit) => Object.assign({}, hit._source, { uri: hit._id })),
+            usersIds = _.uniq(_.map(_.flatMap(pages, (page) => page.users), (user) => user.id));
 
-          if (offset === 0) {
-            this.pages = pages;
-          } else {
-            this.pages = this.pages.concat(pages);
-          }
+          return getUsersData(usersIds)
+            .then((usersData) => {
+              this.$store.dispatch('saveUsers', usersData);
 
-          this.offset = offset + pages.length;
-          this.total = total; // update the total for this particular query
-          // (it's used to hide the "load more" button)
+              if (offset === 0) {
+                this.pages = pages;
+              } else {
+                this.pages = this.pages.concat(pages);
+              }
 
-          // set the url hash
-          if (_.get(this.$store, 'state.ui.currentDrawer')) {
-            this.$store.dispatch('setHash', { menu: {
-              tab: isMyPages ? 'my-pages' : 'all-pages',
-              sites: siteFilter.join(','),
-              status: statusFilter,
-              query: this.query
-            }});
-          }
+              this.offset = offset + pages.length;
+              this.total = total; // update the total for this particular query
+              // (it's used to hide the "load more" button)
+
+              // set the url hash
+              if (_.get(this.$store, 'state.ui.currentDrawer')) {
+                this.$store.dispatch('setHash', { menu: {
+                  tab: isMyPages ? 'my-pages' : 'all-pages',
+                  sites: siteFilter.join(','),
+                  status: statusFilter,
+                  query: this.query
+                }});
+              }
+            });
         });
       }
     },
