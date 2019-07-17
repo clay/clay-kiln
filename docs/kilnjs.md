@@ -28,7 +28,7 @@ A function that receives a parameter called schema that also returns the schema.
 schema['_groups'].settings['_placeholder'].height = '200px';
 ```
 
-However, note that the JSON that is returned still needs to conform to the structure needed by Kiln. 
+However, note that the JSON that is returned still needs to conform to the structure needed by Kiln.
 > Deleting properties or adding properties that Kiln doesn't recognize can and will result in errors.
 
 
@@ -192,9 +192,11 @@ The following are some of the Vuex actions that you can subscribe to using Kilnj
 * ***CLOSE_FORM*** - Triggered when a Kiln form is closed. For inline fields this occurs when the field loses focus. When the user clicks out of the field. The payload returned from this action is `undefined`.
 
 * ***UPDATE_FORMDATA*** - Triggered when an user changes the data in a form field. The payload returns an object containing the path (field being changed) and data (the new value).
- > This action happens "on change", _not_ "on save".
+ > The UPDATE_FORMDATA happens "on change", _not_ "on save".
 
 * ***UPDATE_COMPONENT*** - Triggered when a component is saved. The payload returns a JSON object containing all the fields in the component's schema, with the values for each of them.
+
+* ***PRELOAD_SUCCESS*** - Triggered when preloaded data is added to the store. The payload returns a JSON object containing the stable state of the store including users, components, page state and layout state.
 
 * ***UPDATE_PAGE_STATE*** - Triggered when the page state changes. When it is published, unpublished, etc. The payload returned contains the page meta information, including published date/time, update date/time, history, users, etc.
 
