@@ -207,10 +207,11 @@
 <li><p><strong><em>UPDATE_FORMDATA</em></strong> - Triggered when an user changes the data in a form field. The payload returns an object containing the path (field being changed) and data (the new value).</p></li>
 </ul>
 <blockquote>
-<p>This action happens &quot;on change&quot;, <em>not</em> &quot;on save&quot;.</p>
+<p>The UPDATE_FORMDATA happens &quot;on change&quot;, <em>not</em> &quot;on save&quot;.</p>
 </blockquote>
 <ul>
 <li><p><strong><em>UPDATE_COMPONENT</em></strong> - Triggered when a component is saved. The payload returns a JSON object containing all the fields in the component's schema, with the values for each of them.</p></li>
+<li><p><strong><em>PRELOAD_SUCCESS</em></strong> - Triggered when preloaded data is added to the store. The payload returns a JSON object containing the stable state of the store including users, components, page state and layout state.</p></li>
 <li><p><strong><em>UPDATE_PAGE_STATE</em></strong> - Triggered when the page state changes. When it is published, unpublished, etc. The payload returned contains the page meta information, including published date/time, update date/time, history, users, etc.</p></li>
 <li><p><strong><em>COMPONENT_ADDED</em></strong> - Triggered when a component is added to the page. The payload returned contains the name of the component added as well as its URI.  This is triggered <em>after</em> the component is fully added and saved, so all its values are availabe in the Vuex store.</p></li>
 <li><p><strong><em>REMOVE_COMPONENT</em></strong> - Triggered when a component is removed from the page. The payload returned contains the name of the component removed as well as its URI.</p></li>
