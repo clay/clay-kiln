@@ -270,7 +270,7 @@
       selectMultipleSites(allSites) {
         this.sites = _.map(this.sites, (site) => {
           site.selected = allSites;
-  
+
           return site;
         });
       },
@@ -321,19 +321,14 @@
         return postJSON(prefix + searchRoute, query).then((res) => {
           const hits = _.get(res, 'hits.hits') || [],
             total = _.get(res, 'hits.total'),
-            pages = _.map(hits, (hit) => Object.assign({}, hit._source, { uri: hit._id })),
-            usersIds = _.uniq(_.map(_.flatMap(pages, (page) => page.users), (user) => user.id));
+            pages = _.map(hits, hit => ({ ...hit._source, uri: hit._id })),
+            usersIds = _.uniq(_.map(_.flatMap(pages, page => page.users), user => user.id));
 
           return getUsersData(usersIds)
-            .then((usersData) => {
+            .then(usersData => {
               this.$store.dispatch('saveUsers', usersData);
 
-              if (offset === 0) {
-                this.pages = pages;
-              } else {
-                this.pages = this.pages.concat(pages);
-              }
-
+              this.pages = offset === 0 ? pages : this.pages.concat(pages);
               this.offset = offset + pages.length;
               this.total = total; // update the total for this particular query
               // (it's used to hide the "load more" button)

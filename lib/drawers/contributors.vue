@@ -79,9 +79,9 @@
     },
     computed: {
       contributors() {
-        return _.map(this.users, (user) => {
+        return this.users.map(user => {
           user.formattedTime = formatStatusTime(user.updateTime);
-  
+
           return user;
         }).reverse();
       }
@@ -92,10 +92,10 @@
       };
     },
     mounted() {
-      const usersIds = _.uniq(_.map(_.cloneDeep(_.get(this.$store, 'state.page.state.users')), (user) => user.id));
+      const usersIds = _.uniq(_.map(_.cloneDeep(_.get(this.$store, 'state.page.state.users')), user => user.id));
 
       return getUsersData(usersIds)
-        .then((usersData) => {
+        .then(usersData => {
           this.users = usersData;
         });
     },

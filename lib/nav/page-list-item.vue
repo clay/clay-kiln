@@ -302,7 +302,7 @@
         return this.page.title ? _.truncate(this.page.title, { length: 75 }) : 'No Title';
       },
       users() {
-        const pageUsersData = _.flatMap(this.page.users, (user) => _.filter(_.get(this.$store, 'state.users'), (cacheUser) => cacheUser.id === user.id));
+        const pageUsersData = _.flatMap(this.page.users, user => _.filter(_.get(this.$store, 'state.users'), cacheUser => cacheUser.id === user.id));
 
         return _.take(pageUsersData, 4);
       }
