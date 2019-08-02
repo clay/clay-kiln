@@ -322,7 +322,7 @@
           const hits = _.get(res, 'hits.hits') || [],
             total = _.get(res, 'hits.total'),
             pages = _.map(hits, hit => ({ ...hit._source, uri: hit._id })),
-            usersIds = _.uniq(_.map(_.flatMap(pages, page => page.users), user => user.id));
+            usersIds = _.uniq(_.map(_.flatMap(pages, page => page.users), getUserId));
 
           return getUsersData(usersIds)
             .then(usersData => {
@@ -345,7 +345,10 @@
                 });
               }
             });
-        });
+        }).catch(console.error);
+      },
+      getUserId({ id = '', username, provider }) {
+        return id || btoa(`${username}@${provider}`);
       }
     },
     mounted() {
