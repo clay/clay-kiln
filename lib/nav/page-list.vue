@@ -54,14 +54,18 @@
    */
   function getInitialSites() {
     const configSites = _.get(this.$store, 'state.url.sites'),
-      selectedSites = configSites ? configSites.split(',') : [];
+      selectedSites = configSites ? configSites.split(',') : [],
+      currentSlug = _.get(this.$store, 'state.site.subsiteSlug') || _.get(this.$store, 'state.site.slug');
 
     // make an array of all sites, sorted by slug
     return _.sortBy(_.map(_.get(this.$store, 'state.allSites'), (site) => {
+      const siteSlug = site.subsiteSlug || site.slug;
+
       return {
         slug: site.slug,
+        subsiteSlug: site.subsiteSlug,
         name: site.name,
-        selected: selectedSites.length ? _.includes(selectedSites, site.slug) : site.slug === _.get(this.$store, 'state.site.slug')
+        selected: selectedSites.length ? _.includes(selectedSites, siteSlug) : siteSlug === currentSlug
       };
     }), 'name');
   }
@@ -77,7 +81,7 @@
    * @param {string} username
    * @return {object}
    */
-  function buildQuery({ siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username }) { // eslint-disable-line
+  function buildQuery({ siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username, subsiteFilter }) { // eslint-disable-line
     let query = {
       index: 'pages',
       body: {
@@ -130,20 +134,43 @@
       });
     }
 
-    // filter by selected sites
+    // filter by selected sites with subsite support
+    const siteFilterShould = {
+      bool: {
+        should: []
+      }
+    };
+
     if (siteFilter.length) {
-      query.body.query.bool.must.push({
+      siteFilterShould.bool.should.push({
         terms: {
           siteSlug: siteFilter
         }
       });
     } else {
-      query.body.query.bool.must.push({
+      siteFilterShould.bool.should.push({
         terms: {
           siteSlug: ['no-site-selected']
         }
       });
     }
+
+    if (subsiteFilter.length) {
+      siteFilterShould.bool.should.push({
+        terms: {
+          subsiteSlug: subsiteFilter
+        }
+      });
+    } else {
+      // slug is shared between parent and subsites. if parent is selected, we don't want to bring subsite pages back
+      query.body.query.bool.must_not = {
+        exists: {
+          field: 'subsiteSlug'
+        }
+      };
+    }
+
+    query.body.query.bool.must.push(siteFilterShould);
 
     // filter by search string
     if (queryText) {
@@ -259,10 +286,10 @@
         this.isPopoverOpen = false;
       },
       selectSite(slug) {
-        const site = _.find(this.sites, s => s.slug === slug);
+        const site = _.find(this.sites, s => s.subsiteSlug === slug || s.slug === slug);
 
         site.selected = !site.selected;
-        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, site => site.slug).join(', '));
+        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, site => site.subsiteSlug || site.slug).join(', '));
         this.offset = 0;
         this.fetchPages();
       },
@@ -276,14 +303,14 @@
       setSingleSite(slug) {
         // loop through all sites, making sure that only one is selected
         _.each(this.sites, (site) => {
-          if (site.slug === slug) {
+          if (site.subsiteSlug === slug || site.slug === slug) {
             site.selected = true;
           } else {
             site.selected = false;
           }
         });
 
-        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, site => site.slug).join(', '));
+        this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, site => site.subsiteSlug || site.slug).join(', '));
         this.offset = 0;
         this.fetchPages();
       },
@@ -305,7 +332,8 @@
         this.fetchPages();
       },
       fetchPages() {
-        const siteFilter = _.map(this.selectedSites, site => site.slug),
+        const siteFilter = _.map(_.filter(this.selectedSites, site => !site.subsiteSlug), site => site.slug),
+          subsiteFilter = _.map(_.filter(this.selectedSites, site => site.subsiteSlug), site => site.subsiteSlug),
           queryText = this.queryText,
           queryUser = this.queryUser,
           offset = this.offset,
@@ -314,7 +342,7 @@
           username = _.get(this.$store, 'state.user.username'),
           statusFilter = this.selectedStatus,
           query = buildQuery({
-            siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username
+            siteFilter, queryText, queryUser, offset, statusFilter, isMyPages, username, subsiteFilter
           });
 
         return postJSON(prefix + searchRoute, query).then((res) => {
