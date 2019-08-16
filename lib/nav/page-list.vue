@@ -285,8 +285,11 @@
       onPopoverClose() {
         this.isPopoverOpen = false;
       },
+      compareSite(site, slug) {
+        return site.subsiteSlug === slug || site.slug === slug;
+      },
       selectSite(slug) {
-        const site = _.find(this.sites, s => s.subsiteSlug === slug || s.slug === slug);
+        const site = _.find(this.sites, s => this.compareSite(s, slug));
 
         site.selected = !site.selected;
         this.$store.commit('FILTER_PAGELIST_SITE', _.map(this.selectedSites, site => site.subsiteSlug || site.slug).join(', '));
@@ -303,7 +306,7 @@
       setSingleSite(slug) {
         // loop through all sites, making sure that only one is selected
         _.each(this.sites, (site) => {
-          if (site.subsiteSlug === slug || site.slug === slug) {
+          if (this.compareSite(site, slug)) {
             site.selected = true;
           } else {
             site.selected = false;
