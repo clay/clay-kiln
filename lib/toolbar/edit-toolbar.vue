@@ -407,6 +407,7 @@
           const activeNav = savedTab || 'all-pages';
 
           this.$store.dispatch('showNavBackground', true);
+
           return this.$store.dispatch('openDrawer', activeNav);
         });
       }
