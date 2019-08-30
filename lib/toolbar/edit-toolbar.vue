@@ -107,6 +107,7 @@
 
         <!-- display individual buttons on larger screens (viewport >= 600px) -->
         <component
+          :ref="option.id"
           size="large"
           v-for="option in activeToolBarOptions"
           :color="option.color || 'white'"
@@ -394,6 +395,7 @@
       },
       optionAction(option) {
         if (option.action) {
+          this.$refs[action].focus();
           option.action(option.id);
         }
       },
@@ -405,7 +407,7 @@
           const activeNav = savedTab || 'all-pages';
 
           this.$store.dispatch('showNavBackground', true);
-  
+
           return this.$store.dispatch('openDrawer', activeNav);
         });
       }
