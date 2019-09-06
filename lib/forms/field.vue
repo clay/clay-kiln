@@ -1,6 +1,6 @@
 <template>
   <transition name="reveal" mode="out-in" @after-enter="onRevealResize">
-    <fieldset class="kiln-field" :style="{ minHeight: minHeight }" v-if="inputName && isShown">
+    <fieldset class="kiln-field" :style="{ minHeight: minHeight }" v-if="inputName && isShown" :disabled="isDisabled">
       <component :is="inputName" :name="name" :data="data" :schema="schema" :args="expandedInput" :initialFocus="initialFocus" @resize="onResize"></component>
     </fieldset>
   </transition>
@@ -17,7 +17,7 @@
   window.kiln.inputs = window.kiln.inputs || {};
 
   export default {
-    props: ['name', 'data', 'schema', 'initialFocus', 'visibility'],
+    props: ['name', 'data', 'schema', 'initialFocus', 'visibility', 'disabled'],
     data() {
       return {
         minHeight: '0px'
@@ -41,6 +41,9 @@
         const revealConfig = _.get(this.schema, revealProp, {});
 
         return shouldBeRevealed(this.$store, revealConfig, this.name);
+      },
+      isDisabled() {
+        return !!this.disabled;
       }
     },
     methods: {
