@@ -27,7 +27,7 @@
 <template>
   <div class="site-selector">
     <div class="site-selector-body">
-      <ui-checkbox v-for="site in sites" color="accent" :key="site.slug" :label="site.name" :value="site.selected" @change="select(site.slug)"></ui-checkbox>
+      <ui-checkbox v-for="site in sites" color="accent" :key="siteSlug(site)" :label="site.name" :value="site.selected" @change="select(siteSlug(site))"></ui-checkbox>
     </div>
     <div class="site-selector-footer">
       <ui-button type="secondary" :color="multiSelectColor" @click="multiSelect">{{ multiSelectText }}</ui-button>
@@ -59,6 +59,9 @@
       },
       select(slug) {
         this.$emit('select', slug);
+      },
+      siteSlug(site) {
+        return site.subsiteSlug || site.slug;
       }
     },
     components: {
