@@ -77,7 +77,7 @@
         </item>
       </transition-group>
     </div>
-    <ui-button v-else buttonType="button" color="accent" icon="add" @click.stop.prevent="addItem(-1)">Add Items</ui-button>
+    <ui-button v-else buttonType="button" color="accent" icon="add" :disabled="disabled" @click.stop.prevent="addItem(-1)">Add Items</ui-button>
   </transition>
 </template>
 
@@ -144,7 +144,7 @@
 
   export default {
     mixins: [DynamicEvents],
-    props: ['name', 'data', 'schema', 'args', 'initialFocus'],
+    props: ['name', 'data', 'schema', 'args', 'initialFocus', 'disabled'],
     data() {
       return {
         currentItem: _.isArray(this.data) ? this.data.length - 1 : 0,

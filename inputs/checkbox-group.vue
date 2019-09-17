@@ -70,6 +70,7 @@
     :help="args.help"
     :error="errorMessage"
     :invalid="isInvalid"
+    :disabled="disabled"
     v-dynamic-events="customEvents"
     @input="update"></ui-checkbox-group>
   </div>
@@ -88,7 +89,7 @@
 
   export default {
     mixins: [DynamicEvents],
-    props: ['name', 'data', 'schema', 'args'],
+    props: ['name', 'data', 'schema', 'args', 'disabled'],
     data() {
       return {
         isVertical: true

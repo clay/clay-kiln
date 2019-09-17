@@ -4,6 +4,7 @@
       color="default"
       type="secondary"
       :ariaLabel="args.tooltip"
+      :disabled="disabled"
       :icon="args.icon || 'check_circle'"
       :loading="loading"
       :tooltip="args.tooltip"
@@ -18,7 +19,7 @@
   import { revealProp } from '../lib/utils/references';
 
   export default {
-    props: ['name', 'data', 'schema', 'args', 'initialFocus'],
+    props: ['name', 'data', 'schema', 'args', 'initialFocus', 'disabled'],
     components: { UiIconButton },
     data() {
       return {

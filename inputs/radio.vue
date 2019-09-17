@@ -60,6 +60,7 @@
     :options="options"
     :vertical="isVertical"
     :help="args.help"
+    :disabled="disabled"
     :error="errorMessage"
     :invalid="isInvalid"
     @input="update"
@@ -79,7 +80,7 @@
 
   export default {
     mixins: [DynamicEvents],
-    props: ['name', 'data', 'schema', 'args'],
+    props: ['name', 'data', 'schema', 'args', 'disabled'],
     data() {
       return {
         isVertical: true // todo: allow setting this in the args

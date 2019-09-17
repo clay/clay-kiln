@@ -695,6 +695,10 @@
         }
       });
 
+      if (this.schema.disabled) {
+        editor.disable();
+      }
+
       if (this.schema.events && _.isObject(this.schema.events)) {
         Object.keys(this.schema.events).forEach((key) => {
           editor.on(key, this.schema.events[key]);

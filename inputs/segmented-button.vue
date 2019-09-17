@@ -28,6 +28,7 @@
           :key="optionIndex"
           :name="name"
           :option="option"
+          :disabled="disabled"
           @update="update"
           v-dynamic-events="customEvents"></segmented-button-segment>
       </div>
@@ -51,7 +52,7 @@
 
   export default {
     mixins: [DynamicEvents],
-    props: ['name', 'data', 'schema', 'args'],
+    props: ['name', 'data', 'schema', 'args', 'disabled'],
     data() {
       return {};
     },
@@ -62,6 +63,8 @@
       options() {
         const data = this.data,
           assetLocation = _.get(this.$store, 'state.site.assetHost') || _.get(this.$store, 'state.site.assetPath');
+
+        console.log('options', this.args.options);
 
         return _.map(this.args.options, (option) => {
           const hasImgIcon = option.icon && _.head(option.icon) === '/',

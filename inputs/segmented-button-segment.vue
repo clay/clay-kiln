@@ -1,5 +1,5 @@
 <template>
-  <button class="segmented-button-segment" type="button" :class="{ 'is-checked': option.checked }" :id="option.id" :ref="option.id" :name="name" @click.stop.prevent="$emit('update', option.value)">
+  <button class="segmented-button-segment" type="button" :class="{ 'is-checked': option.checked }" :id="option.id" :ref="option.id" :name="name" :disabled="disabled" @click.stop.prevent="$emit('update', option.value)">
     <ui-icon v-if="option.hasMaterialIcon" :icon="option.icon"></ui-icon>
     <img v-else-if="option.hasImgIcon" class="segmented-button-img" :src="option.icon" :alt="option.text" />
     <span v-else class="segmented-button-text">{{ option.text }}</span>
@@ -14,7 +14,7 @@
   import UiRippleInk from 'keen/UiRippleInk';
 
   export default {
-    props: ['name', 'option', 'update'],
+    props: ['name', 'option', 'update', 'disabled'],
     data() {
       return {};
     },

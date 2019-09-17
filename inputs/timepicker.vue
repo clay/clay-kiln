@@ -31,6 +31,7 @@
     :name="name"
     :schema="schema"
     :args="args"
+    :disabled="disabled"
     v-dynamic-events="customEvents"
     @update="update">
   </timepicker>
@@ -48,7 +49,7 @@
 
   export default {
     mixins: [DynamicEvents],
-    props: ['name', 'data', 'schema', 'args'],
+    props: ['name', 'data', 'schema', 'args', 'disabled'],
     data() {
       return {};
     },

@@ -83,6 +83,7 @@
     :label="label"
     :floatingLabel="true"
     :help="args.help"
+    :disabled="disabled"
     :error="errorMessage"
     :invalid="isInvalid"
     iconPosition="right"
@@ -109,7 +110,7 @@
 
   export default {
     mixins: [DynamicEvents],
-    props: ['name', 'data', 'schema', 'args'],
+    props: ['name', 'data', 'schema', 'args', 'disabled'],
     data() {
       return {
         listOptions: [],

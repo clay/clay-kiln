@@ -97,7 +97,7 @@
 
   export default {
     mixins: [DynamicEvents],
-    props: ['name', 'data', 'schema', 'args'],
+    props: ['name', 'data', 'schema', 'args', 'disabled'],
     data() {
       return {
         values: this.data || this.isDualPoint ? [0, 0] : 0
@@ -230,6 +230,8 @@
           el.noUiSlider.on(key, this.schema.events[key]);
         });
       }
+
+      slider.setAttribute('disabled', this.disabled);
     }
   };
 </script>
