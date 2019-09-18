@@ -231,7 +231,9 @@
         });
       }
 
-      slider.setAttribute('disabled', this.disabled);
+      if (this.disabled) {
+        el.setAttribute('disabled', this.disabled);
+      }
     }
   };
 </script>
