@@ -233,13 +233,38 @@
         }
       },
       removeItem(index) {
-        this.items.splice(index, 1);
+        const [removedItem] = this.items.splice(index, 1);
+
         this.update(this.items);
 
         if (this.items.length) { // you always select before deleting
           this.selectItem(this.currentItem - 1);
         } else {
           this.currentitem = null;
+        }
+
+        if (this.args.autocomplete && this.args.autocomplete.allowRemove) {
+          const listName = this.args.autocomplete.list;
+
+          return this.$store.dispatch('updateList', {
+            listName: listName,
+            fn: (items) => {
+            // validate that the list has items with these properties
+              const stringProperty = getProp(items, 'text'),
+                countProperty = getProp(items, 'count');
+
+              if (stringProperty && countProperty) {
+                const itemIndex = getItemIndex(items, removedItem.text, 'text');
+
+                if (itemIndex !== -1 && items[itemIndex][countProperty]) {
+                // decrease count if the item already exists in the list and count is more than 0
+                  items[itemIndex][countProperty]--;
+                }
+              }
+
+              return items;
+            }
+          });
         }
       },
       addItem(newItem) {
