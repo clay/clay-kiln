@@ -64,8 +64,6 @@
         const data = this.data,
           assetLocation = _.get(this.$store, 'state.site.assetHost') || _.get(this.$store, 'state.site.assetPath');
 
-        console.log('options', this.args.options);
-
         return _.map(this.args.options, (option) => {
           const hasImgIcon = option.icon && _.head(option.icon) === '/',
             hasMaterialIcon = option.icon && _.head(option.icon) !== '/';
