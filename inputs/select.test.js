@@ -30,7 +30,7 @@ describe('select input', () => {
     });
   });
 
-  test('Should set valueKey to "value" when the label and value value in args.keys are equal', () => {
+  test('Should set valueKey to "value" when the label and value in args.keys are equal', () => {
     options.propsData.args.keys = {
       label: 'text',
       value: 'text'
