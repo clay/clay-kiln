@@ -19,6 +19,8 @@ jest.mock('clay-log', () => ({
   meta: () => mockLogger
 }));
 
+global.window.kiln = { inputs: {} };
+
 // mock cuid because it doesn't like being run in jsdom
 jest.mock('cuid');
 cuid.default.mockReturnValue('abc');
