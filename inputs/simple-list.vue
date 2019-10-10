@@ -123,7 +123,7 @@
         isDisabled: false,
         currentItem: null,
         type: 'strings',
-        removedItem: null
+        removedItem: {}
       };
     },
     computed: {
@@ -265,12 +265,12 @@
           countProperty = getProp(items, 'count');
 
         if (stringProperty && countProperty) {
-          const itemIndex = getItemIndex(items, (this.removedItem || {}).text, 'text');
+          const itemIndex = getItemIndex(items, this.removedItem.text, 'text');
 
           if (itemIndex !== -1 && items[itemIndex][countProperty]) {
           // decrease count if the item already exists in the list and count is more than 0
             items[itemIndex][countProperty]--;
-            this.removedItem = null;
+            this.removedItem = {};
           }
         }
 

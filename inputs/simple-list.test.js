@@ -1,6 +1,6 @@
 import SimpleList from './simple-list.vue';
 
-describe('simple list input', () => {
+describe('SimpleList input', () => {
   const options = {
       propsData: {
         name: 'foo',
@@ -16,8 +16,11 @@ describe('simple list input', () => {
 
   let wrapper;
 
-  test('Should decrease count when there is a removedItem', () => {
+  beforeEach(() => {
     wrapper = shallowMount(SimpleList, options);
+  });
+
+  test('Should decrease count when there is a removedItem', () => {
     wrapper.vm.removedItem = { text: 'test2' };
 
     expect(wrapper.vm.handleRemoveItem(items)).toStrictEqual([
@@ -27,14 +30,12 @@ describe('simple list input', () => {
   });
 
   test("Should return same array if removedItem doesn't exist", () => {
-    wrapper = shallowMount(SimpleList, options);
     wrapper.vm.removedItem = { text: 'something else' };
 
     expect(wrapper.vm.handleRemoveItem(items)).toStrictEqual(items);
   });
 
   test('Should return same array if removedItem is null', () => {
-    wrapper = shallowMount(SimpleList, options);
     wrapper.vm.removedItem = null;
 
     expect(wrapper.vm.handleRemoveItem(items)).toStrictEqual(items);
