@@ -122,7 +122,8 @@
         isTouched: false,
         isDisabled: false,
         currentItem: null,
-        type: 'strings'
+        type: 'strings',
+        removedItem: null
       };
     },
     computed: {
@@ -235,6 +236,8 @@
       removeItem(index) {
         const [removedItem] = this.items.splice(index, 1);
 
+        this.removedItem = removedItem;
+
         this.update(this.items);
 
         if (this.items.length) { // you always select before deleting
@@ -248,24 +251,30 @@
 
           return this.$store.dispatch('updateList', {
             listName: listName,
-            fn: (items) => {
-            // validate that the list has items with these properties
-              const stringProperty = getProp(items, 'text'),
-                countProperty = getProp(items, 'count');
-
-              if (stringProperty && countProperty) {
-                const itemIndex = getItemIndex(items, removedItem.text, 'text');
-
-                if (itemIndex !== -1 && items[itemIndex][countProperty]) {
-                // decrease count if the item already exists in the list and count is more than 0
-                  items[itemIndex][countProperty]--;
-                }
-              }
-
-              return items;
-            }
+            fn: this.handleRemoveItem
           });
         }
+      },
+      /**
+       * Handles remove item from list
+       * @param {Array.<Object>} items
+       */
+      handleRemoveItem(items = []) {
+        // validate that the list has items with these properties
+        const stringProperty = getProp(items, 'text'),
+          countProperty = getProp(items, 'count');
+
+        if (stringProperty && countProperty) {
+          const itemIndex = getItemIndex(items, (this.removedItem || {}).text, 'text');
+
+          if (itemIndex !== -1 && items[itemIndex][countProperty]) {
+          // decrease count if the item already exists in the list and count is more than 0
+            items[itemIndex][countProperty]--;
+            this.removedItem = null;
+          }
+        }
+
+        return items;
       },
       addItem(newItem) {
         let countProperty,
