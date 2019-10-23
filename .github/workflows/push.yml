@@ -1,0 +1,26 @@
+on: push
+name: Deploy to GitHub Pages
+jobs:
+  filterBranch:
+    name: Filter branch
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Filter branch
+      uses: actions/bin/filter@master
+      with:
+        args: branch master
+    - name: Install
+      uses: actions/npm@master
+      with:
+        args: install --prefix ./website
+    - name: Update version
+      uses: clay/docusaurus-github-action@master
+      with:
+        args: version
+    - name: Build and push docs
+      uses: clay/docusaurus-github-action@master
+      env:
+        DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      with:
+        args: deploy

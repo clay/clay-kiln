@@ -133,21 +133,46 @@
           value: 'value'
         }, this.args.keys || {});
       },
+      equalLabelValueKeys() {
+        return this.keys.label === this.keys.value;
+      },
+      valueKey() {
+        return this.equalLabelValueKeys ? 'value' : this.keys.value;
+      },
       NULL_OPTION() {
         return {
           [this.keys.label]: 'None',
-          [this.keys.value]: null
+          [this.valueKey]: null
         };
       },
       // combine arg/prop options, fetched list options, and a null option for non-multiple selects
       options() {
         const propOptions = this.args.options || [],
           currentSlug = _.get(this.$store, 'state.site.slug'),
+          { label } = this.keys,
           noneOption = propOptions.find((val) => {
-            return val.name === 'None' || val.name === 'Default';
+            return val[label] === 'None' || val[label] === 'Default';
           });
 
         let fullOptions = propOptions.concat(this.listOptions);
+
+        // filter by site specificity
+        fullOptions = filterBySite(fullOptions, currentSlug);
+
+        // format the options for the UI
+        fullOptions = _.map(fullOptions, (option) => {
+          if (_.isString(option) || _.isNumber(option)) {
+            return {
+              [this.valueKey]: option,
+              [label]: _.startCase(option)
+            };
+          }
+
+          return {
+            [this.valueKey]: this.equalLabelValueKeys ? option[label] : option[this.valueKey],
+            [label]: option[label]
+          };
+        });
 
         // if there is no 'None' option defined then add a null option because
         // single-select must have null option, if there is no null option
@@ -155,20 +180,7 @@
           fullOptions = [this.NULL_OPTION].concat(fullOptions);
         }
 
-        // filter by site specificity
-        fullOptions = filterBySite(fullOptions, currentSlug);
-
-        // format the options for the UI
-        return _.map(fullOptions, (option) => {
-          if (_.isString(option) || _.isNumber(option)) {
-            return {
-              [this.keys.value]: option,
-              [this.keys.label]: _.startCase(option)
-            };
-          } else {
-            return option;
-          }
-        });
+        return fullOptions;
       },
       // convert store data into a format suitable for Keen UiSelect.value prop
       value() {
@@ -176,11 +188,11 @@
           // defaults to pass Keen's type check
           return this.args.multiple ? [] : this.NULL_OPTION;
         } else if (this.args.multiple) {
-          return _.filter(this.options, option => !!this.data[option.value]);
+          return _.filter(this.options, option => !!this.data[option[this.valueKey]]);
         } else if (this.args.storeRawData) {
           return this.data;
         } else {
-          return _.find(this.options, option => this.data === option.value);
+          return _.find(this.options, option => this.data === option[this.valueKey]);
         }
       },
       hasOptions() {
@@ -215,11 +227,11 @@
           // set all existing options in data to false
           data = _.mapValues(_.cloneDeep(this.data), () => false);
           // for each of the selected options, set the related key in the data to true
-          _.forEach(value, option => data[option.value] = true);
+          _.forEach(value, option => data[option[this.valueKey]] = true);
         } else if (this.args.storeRawData) {
           data = _.cloneDeep(value);
         } else {
-          data = value.value;
+          data = value[this.valueKey];
         }
 
         this.$store.commit(UPDATE_FORMDATA, { path: this.name, data });

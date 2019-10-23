@@ -122,7 +122,8 @@
         isTouched: false,
         isDisabled: false,
         currentItem: null,
-        type: 'strings'
+        type: 'strings',
+        removedItem: {}
       };
     },
     computed: {
@@ -233,7 +234,10 @@
         }
       },
       removeItem(index) {
-        this.items.splice(index, 1);
+        const [removedItem] = this.items.splice(index, 1);
+
+        this.removedItem = removedItem;
+
         this.update(this.items);
 
         if (this.items.length) { // you always select before deleting
@@ -241,6 +245,36 @@
         } else {
           this.currentitem = null;
         }
+
+        if (this.args.autocomplete && this.args.autocomplete.allowRemove) {
+          const listName = this.args.autocomplete.list;
+
+          return this.$store.dispatch('updateList', {
+            listName: listName,
+            fn: this.handleRemoveItem
+          });
+        }
+      },
+      /**
+       * Handles remove item from list
+       * @param {Array.<Object>} items
+       */
+      handleRemoveItem(items = []) {
+        // validate that the list has items with these properties
+        const stringProperty = getProp(items, 'text'),
+          countProperty = getProp(items, 'count');
+
+        if (stringProperty && countProperty) {
+          const itemIndex = getItemIndex(items, (this.removedItem || {}).text, 'text');
+
+          if (itemIndex !== -1 && items[itemIndex][countProperty]) {
+          // decrease count if the item already exists in the list and count is more than 0
+            items[itemIndex][countProperty]--;
+            this.removedItem = {};
+          }
+        }
+
+        return items;
       },
       addItem(newItem) {
         let countProperty,

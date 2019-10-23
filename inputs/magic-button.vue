@@ -370,7 +370,7 @@
         // (not field, component, or moreMagic)
         if (moreMagic.length) {
           return promise
-            .then(function (res) {
+            .then((res) => {
               return reducePromise(moreMagic, doMoreMagic.bind(this), res);
             })
             .then((finalRes) => {
