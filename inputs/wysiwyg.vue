@@ -181,7 +181,7 @@
 
   export default {
     mixins: [DynamicEvents],
-    props: ['name', 'data', 'schema', 'args', 'initialFocus'],
+    props: ['name', 'data', 'schema', 'args', 'initialFocus', 'disabled'],
     data() {
       return {
         editorData: this.data || '',
@@ -695,7 +695,7 @@
         }
       });
 
-      if (this.schema.disabled) {
+      if (this.disabled) {
         editor.disable();
       }
 

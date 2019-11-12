@@ -37,7 +37,7 @@
     <div class="ui-textbox__content">
       <label class="ui-textbox__label">
         <div class="ui-textbox__label-text is-floating">{{ label }}</div>
-        <div class="editor-range-input"></div>
+        <div class="editor-range-input" :disabled="disabled"></div>
       </label>
 
       <div class="ui-textbox__feedback" v-if="hasFeedback || showError">
@@ -229,10 +229,6 @@
         Object.keys(this.schema.events).forEach((key) => {
           el.noUiSlider.on(key, this.schema.events[key]);
         });
-      }
-
-      if (this.disabled) {
-        el.setAttribute('disabled', this.disabled);
       }
     }
   };
