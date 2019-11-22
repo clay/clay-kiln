@@ -1,5 +1,5 @@
 <template>
-  <ol class="autocomplete" v-if="showMatches">
+  <ol class="autocomplete" v-if="showMatches && !disabled">
     <li v-for="(match, index) in matches">
       <item
         :index="index"
@@ -19,7 +19,7 @@
   import { getProp, removeListItem } from '../lib/lists/helpers';
 
   export default {
-    props: ['args', 'select', 'query', 'focusIndex', 'updateFocusIndex', 'updateMatches', 'unselect'],
+    props: ['args', 'select', 'query', 'focusIndex', 'updateFocusIndex', 'updateMatches', 'unselect', 'disabled'],
     data() {
       return {
         localIndex: null,

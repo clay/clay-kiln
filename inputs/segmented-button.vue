@@ -28,6 +28,7 @@
           :key="optionIndex"
           :name="name"
           :option="option"
+          :disabled="disabled"
           @update="update"
           v-dynamic-events="customEvents"></segmented-button-segment>
       </div>
@@ -51,7 +52,7 @@
 
   export default {
     mixins: [DynamicEvents],
-    props: ['name', 'data', 'schema', 'args'],
+    props: ['name', 'data', 'schema', 'args', 'disabled'],
     data() {
       return {};
     },

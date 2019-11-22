@@ -31,7 +31,7 @@
     :floatingLabel="true"
     :help="args.help"
     :error="errorMessage"
-    :disabled="isDisabled"
+    :disabled="isDisabled || disabled"
     iconPosition="right"
     v-dynamic-events="customEvents"
     @input="update">
@@ -52,7 +52,7 @@
 
   export default {
     mixins: [DynamicEvents],
-    props: ['name', 'data', 'schema', 'args'],
+    props: ['name', 'data', 'schema', 'args', 'disabled'],
     data() {
       return {
         isDisabled: false

@@ -77,7 +77,7 @@
             :autocomplete="args.autocomplete"
             :ignoreComma="args.ignoreComma"
             :currentItem="currentItem"
-            :disabled="isDisabled"
+            :disabled="isDisabled || disabled"
             :isInitialFocus="initialFocus === name"
             @add="addItem"
             @select="selectItem"
@@ -115,7 +115,7 @@
 
   export default {
     mixins: [DynamicEvents],
-    props: ['name', 'data', 'schema', 'args', 'initialFocus'],
+    props: ['name', 'data', 'schema', 'args', 'initialFocus', 'disabled'],
     data() {
       return {
         isActive: false,

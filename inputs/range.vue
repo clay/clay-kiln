@@ -37,7 +37,7 @@
     <div class="ui-textbox__content">
       <label class="ui-textbox__label">
         <div class="ui-textbox__label-text is-floating">{{ label }}</div>
-        <div class="editor-range-input"></div>
+        <div class="editor-range-input" :disabled="disabled"></div>
       </label>
 
       <div class="ui-textbox__feedback" v-if="hasFeedback || showError">
@@ -97,7 +97,7 @@
 
   export default {
     mixins: [DynamicEvents],
-    props: ['name', 'data', 'schema', 'args'],
+    props: ['name', 'data', 'schema', 'args', 'disabled'],
     data() {
       return {
         values: this.data || this.isDualPoint ? [0, 0] : 0

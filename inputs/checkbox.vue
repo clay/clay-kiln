@@ -33,6 +33,7 @@
       :name="name"
       :label="label"
       :value="data"
+      :disabled="disabled"
       @input="update"
       v-dynamic-events="customEvents">
     </ui-checkbox>
@@ -40,7 +41,6 @@
       <div class="ui-textbox__feedback-text">{{ args.help }}</div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -51,7 +51,7 @@
 
   export default {
     mixins: [DynamicEvents],
-    props: ['name', 'data', 'schema', 'args'],
+    props: ['name', 'data', 'schema', 'args', 'disabled'],
     data() {
       return {};
     },

@@ -5,7 +5,7 @@
 </docs>
 
 <template>
-  <wysiwyg :name="name" :data="data" :schema="schema" :args="args" :initialFocus="initialFocus"  v-dynamic-events="customEvents" />
+  <wysiwyg :name="name" :data="data" :schema="schema" :args="args" :initialFocus="initialFocus" :disabled="disabled" v-dynamic-events="customEvents" />
 </template>
 
 <script>
@@ -14,7 +14,7 @@
 
   export default {
     mixins: [DynamicEvents],
-    props: ['name', 'data', 'schema', 'args', 'initialFocus'],
+    props: ['name', 'data', 'schema', 'args', 'initialFocus', 'disabled'],
     data() {
       return {
         value: null

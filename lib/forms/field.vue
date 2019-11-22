@@ -1,7 +1,7 @@
 <template>
   <transition name="reveal" mode="out-in" @after-enter="onRevealResize">
     <fieldset class="kiln-field" :style="{ minHeight: minHeight }" v-if="inputName && isShown" :disabled="isDisabled">
-      <component :is="inputName" :name="name" :data="data" :schema="schema" :args="expandedInput" :initialFocus="initialFocus" @resize="onResize"></component>
+      <component :is="inputName" :name="name" :data="data" :schema="schema" :args="expandedInput" :initialFocus="initialFocus" :disabled="isDisabled" @resize="onResize"></component>
     </fieldset>
   </transition>
 </template>
