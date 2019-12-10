@@ -65,6 +65,7 @@
           :data="item"
           :schema="args"
           :key="`complex-list-items-${index}`"
+          :disabled="disabled"
           :isFiltered="isFiltered"
           :currentItem="currentItem"
           :isBelowMaxLength="isBelowMaxLength"
