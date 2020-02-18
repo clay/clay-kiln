@@ -143,7 +143,7 @@
    * @return {string}
    */
   function findComponent(component) {
-    const firstComponent = find(`[${refAttr}*="${componentRoute}${component}"]`);
+    const firstComponent = find(`[${refAttr}*="${componentRoute}${component}/"]`);
 
     if (firstComponent) {
       return firstComponent.getAttribute(refAttr);
