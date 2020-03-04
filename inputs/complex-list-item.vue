@@ -2,7 +2,7 @@
   <div class="complex-list-item" :class="{ 'is-current': isCurrentItem, 'is-expanded': isExpanded }" :ref="name" v-observe-visibility="visibilityChanged" @click.stop="onClick" @focusin.stop="onFocus">
     <transition name="complex-list-item-collapse" appear mode="out-in">
       <div key="expanded-visible" v-if="isVisible && isExpanded" class="complex-list-item-inner">
-        <field v-for="(field, fieldIndex) in fieldNames" :key="fieldIndex" :name="name + '.' + field" :data="fields[field]" :schema="fieldSchemas[field]" :initialFocus="initialFocus"></field>
+        <field v-for="(field, fieldIndex) in fieldNames" :key="fieldIndex" :name="name + '.' + field" :data="fields[field]" :schema="fieldSchemas[field]" :initialFocus="initialFocus" :disabled="disabled"></field>
         <div v-if="hasRequiredFields" class="required-footer">* Required fields</div>
           <div class="complex-list-item-actions">
             <div class="complex-list-item-actions-inner ui-button-group">
@@ -13,9 +13,9 @@
               </div>
               <transition name="complex-list-item-actions" appear mode="out-in" :css="false" @enter="enter" @leave="leave">
                 <div v-if="isCurrentItem" class="complex-list-item-actions-right ui-button-group">
-                  <ui-button v-if="isFirstItem && !isFiltered && isBelowMaxLength" buttonType="button" type="secondary" color="accent" icon="arrow_upward" @click.stop.prevent="addItemAndUnselect(-1)">Add Above</ui-button>
-                  <ui-button buttonType="button" type="secondary" color="red" icon="delete" @click.stop.prevent="$emit('removeItem', originalIndex)">Remove</ui-button>
-                  <ui-button v-if="!isFiltered && isBelowMaxLength" buttonType="button" type="secondary" color="accent" icon="add" @click.stop.prevent="addItemAndUnselect(originalIndex)">Add Below</ui-button>
+                  <ui-button v-if="isFirstItem && !isFiltered && isBelowMaxLength" buttonType="button" type="secondary" color="accent" icon="arrow_upward" :disabled="disabled" @click.stop.prevent="addItemAndUnselect(-1)">Add Above</ui-button>
+                  <ui-button buttonType="button" type="secondary" color="red" icon="delete" @click.stop.prevent="$emit('removeItem', originalIndex)" :disabled="disabled">Remove</ui-button>
+                  <ui-button v-if="!isFiltered && isBelowMaxLength" buttonType="button" type="secondary" color="accent" icon="add" :disabled="disabled" @click.stop.prevent="addItemAndUnselect(originalIndex)">Add Below</ui-button>
                 </div>
               </transition>
             </div>
@@ -51,6 +51,7 @@
       'schema',
       'isBelowMaxLength',
       'isFiltered',
+      'disabled',
       'originalItems',
       'currentItem',
       'initialFocus'
