@@ -1,6 +1,6 @@
 {
   "name": "clay-kiln",
-  "version": "8.17.0",
+  "version": "9.0.0",
   "description": "Editor tools for Clay",
   "template": "template.handlebars",
   "scripts": {
@@ -96,7 +96,7 @@
     "caret-position": "0.0.1",
     "chrono-node": "^1.4.6",
     "clay-log": "^1.4.2",
-    "clayhandlebars": "github:clay/handlebars#upgrade-handlebars",
+    "clayhandlebars": "^5.0.1",
     "clayutils": "^2.7.1",
     "codemirror": "^5.54.0",
     "coveralls": "^3.1.0",
@@ -141,7 +141,7 @@
     "raw-loader": "^0.5.1",
     "rimraf": "^2.7.1",
     "routable": "0.0.5",
-    "sanitize-html": "^1.24.0",
+    "sanitize-html": "^1.25.0",
     "sass-loader": "^6.0.6",
     "set-dom": "^7.4.5",
     "snarkdown": "^1.2.2",
