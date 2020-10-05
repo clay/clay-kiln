@@ -316,7 +316,11 @@
       onResize() {
         // when resizing, we can let css do its work. we don't have to worry about animation or anything,
         // since we've already animated the form opening
-        this.$el.style.height = 'auto';
+        const style = _.get(this, '$el.style');
+
+        if (style) {
+          style.height = 'auto';
+        }
       },
       onTabChange() {
         // call the resizer when changing tabs, in case something should have triggered a resize in the background
