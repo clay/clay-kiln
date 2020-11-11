@@ -170,10 +170,18 @@
   Link.sanitize = (value) => {
     if (!(/^\w+:/).test(value) && !(/^#/).test(value)) {
       // no protocol, and the link doesn't start with a hash (in-page links),
-      // so add http://
+      // so add https://
       // note: links that start with // are an antipattern, and this will NOT handle them
       // https://jeremywagner.me/blog/stop-using-the-protocol-relative-url
-      value = `http://${value}`;
+      value = `https://${value}`;
+
+      // modified links that still don't pass for valid urls will default to
+      // the default quill behavior (using about:blank)
+      try {
+        new URL(value);
+      } catch (err) {
+        value = 'about:blank';
+      }
     }
 
     return originalLinkSanitize.call(Link, value);
