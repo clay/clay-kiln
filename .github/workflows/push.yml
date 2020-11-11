@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - master
+      - gh-actions-test
 
 name: Deploy to GitHub Pages
 jobs:
@@ -10,10 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Install
-      uses: actions/npm@master
-      with:
-        args: install --prefix ./website
+    - run: npm install --prefix ./website
     - name: Update version
       uses: clay/docusaurus-github-action@master
       with:
