@@ -76,7 +76,7 @@
     "no-trailing-spaces": 2,
     "no-underscore-dangle": 0,
     "no-unneeded-ternary": 1,
-    "one-var": ["error", { "const": "consecutive", "let": "consecutive" }],
+    "one-var": 0,
     "quotes": [2, "single", "avoid-escape"],
     "semi": [2, "always"],
     "keyword-spacing": 2,
@@ -102,6 +102,10 @@
     "generator-star-spacing": [2, "before"],
     // legacy jshint rules
     "max-depth": [2, 4],
-    "max-params": [2, 4]
+    "max-params": [2, 4],
+    // lodash plug-in
+    "lodash/matches-shorthand": 0,
+    "lodash/prefer-reject": 0,
+    "lodash/prefer-lodash-chain": 0
   }
 }
