@@ -1,27 +1,95 @@
+---
 version: 2
+
+references:
+  filter_all: &filter_all
+    filters:
+      branches:
+        only: /.*/
+      tags:
+        only: /.*/
+
+  filter_stg: &filter_stg
+    filters:
+      branches:
+        only: master
+      tags:
+        only: stg
+
+  filter_prd: &filter_prd
+    filters:
+      branches:
+        ignore: /.*/
+      tags:
+        only: /v[0-9]+\.[0-9]+\.[0-9]+/
+
 general:
   artifacts:
     - coverage
+
 jobs:
-  build:
+  test_node10:
     docker:
-      - image: node:8.10.0
+      - image: node:10
     working_directory: ~/repo
-    parallelism: 4
     steps:
       - checkout
-      # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+          - v2-node10-dependencies-{{ checksum "package.json" }}
+          - v2-node10-dependencies-
       - run: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-      # run tests
+          key: v2-node10-dependencies-{{ checksum "package.json" }}
       - run: npm test -- --maxWorkers=4
-      # send to coveralls
+      - run: npm run build
+
+  test_node12:
+    docker:
+      - image: node:12
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v2-node12-dependencies-{{ checksum "package.json" }}
+          - v2-node12-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v2-node12-dependencies-{{ checksum "package.json" }}
+      - run: npm test -- --maxWorkers=4
+      - run: npm run build
       - run: cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+
+  test_node14:
+    docker:
+      - image: node:14
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v2-node14-dependencies-{{ checksum "package.json" }}
+          - v2-node14-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v2-node14-dependencies-{{ checksum "package.json" }}
+      - run: npm test -- --maxWorkers=4
+      - run: npm run build
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test_node10:
+          <<: *filter_all
+      - test_node12:
+          <<: *filter_all
+      - test_node14:
+          <<: *filter_all
