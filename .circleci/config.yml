@@ -36,13 +36,13 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v2-node10-dependencies-{{ checksum "package.json" }}
-          - v2-node10-dependencies-
+          - v3-node10-dependencies-{{ checksum "package.json" }}
+          - v3-node10-dependencies-
       - run: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v2-node10-dependencies-{{ checksum "package.json" }}
+          key: v3-node10-dependencies-{{ checksum "package.json" }}
       - run: npm test -- --maxWorkers=4
       - run: npm run build
 
@@ -54,13 +54,13 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v2-node12-dependencies-{{ checksum "package.json" }}
-          - v2-node12-dependencies-
+          - v3-node12-dependencies-{{ checksum "package.json" }}
+          - v3-node12-dependencies-
       - run: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v2-node12-dependencies-{{ checksum "package.json" }}
+          key: v3-node12-dependencies-{{ checksum "package.json" }}
       - run: npm test -- --maxWorkers=4
       - run: npm run build
       - run: cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
@@ -73,13 +73,13 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v2-node14-dependencies-{{ checksum "package.json" }}
-          - v2-node14-dependencies-
+          - v3-node14-dependencies-{{ checksum "package.json" }}
+          - v3-node14-dependencies-
       - run: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v2-node14-dependencies-{{ checksum "package.json" }}
+          key: v3-node14-dependencies-{{ checksum "package.json" }}
       - run: npm test -- --maxWorkers=4
       - run: npm run build
 
@@ -90,14 +90,14 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: v2-website-dependencies-{{ checksum "website/package.json" }}
+          key: v3-website-dependencies-{{ checksum "website/package.json" }}
       - run:
           name: Build
           command: |
             sudo apt-get -y install awscli
             bash ./.circleci/scripts/deploy-docs.sh
       - save_cache:
-          key: v2-website-dependencies-{{ checksum "website/package.json" }}
+          key: v3-website-dependencies-{{ checksum "website/package.json" }}
           paths:
             - website/node_modules
 
