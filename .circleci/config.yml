@@ -83,6 +83,22 @@ jobs:
       - run: npm test -- --maxWorkers=4
       - run: npm run build
 
+  deploy_docs:
+    docker:
+      - image: node:14
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          key: v2-website-dependencies-{{ checksum "website/package.json" }}
+      - run: Build
+          sudo apt-get -y install awscli
+          bash ./.circleci/scripts/deploy-docs.sh
+      - save_cache:
+          key: v2-website-dependencies-{{ checksum "website/package.json" }}
+          paths:
+            - website/node_modules
+
 workflows:
   version: 2
   test:
@@ -93,3 +109,8 @@ workflows:
           <<: *filter_all
       - test_node14:
           <<: *filter_all
+      - deploy_docs:
+          <<: *filter_stg
+          requires:
+            - test_node12
+            - test_node14
