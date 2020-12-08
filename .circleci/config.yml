@@ -30,7 +30,7 @@ general:
 jobs:
   test_node10:
     docker:
-      - image: node:10
+      - image: circleci/node:10
     working_directory: ~/repo
     steps:
       - checkout
@@ -48,7 +48,7 @@ jobs:
 
   test_node12:
     docker:
-      - image: node:12
+      - image: circleci/node:12
     working_directory: ~/repo
     steps:
       - checkout
@@ -67,7 +67,7 @@ jobs:
 
   test_node14:
     docker:
-      - image: node:14
+      - image: circleci/node:14
     working_directory: ~/repo
     steps:
       - checkout
@@ -85,7 +85,7 @@ jobs:
 
   deploy_docs:
     docker:
-      - image: node:14
+      - image: circleci/node:14
     working_directory: ~/repo
     steps:
       - checkout
