@@ -91,9 +91,11 @@ jobs:
       - checkout
       - restore_cache:
           key: v2-website-dependencies-{{ checksum "website/package.json" }}
-      - run: Build
-          sudo apt-get -y install awscli
-          bash ./.circleci/scripts/deploy-docs.sh
+      - run:
+          name: Build
+          command: |
+            sudo apt-get -y install awscli
+            bash ./.circleci/scripts/deploy-docs.sh
       - save_cache:
           key: v2-website-dependencies-{{ checksum "website/package.json" }}
           paths:
