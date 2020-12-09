@@ -14,7 +14,8 @@
     "build": "BABEL_ENV=build webpack",
     "watch": "BABEL_ENV=build webpack -w",
     "prepublishOnly": "BABEL_ENV=build webpack -p && npm run generate-actions",
-    "generate-actions": "jsdoc2md --files lib/**/actions.js > docs/vuex-actions.md"
+    "generate-actions": "jsdoc2md --files lib/**/actions.js > docs/vuex-actions.md",
+    "release": "./.circleci/scripts/release.sh"
   },
   "repository": {
     "type": "git",
