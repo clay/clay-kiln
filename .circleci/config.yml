@@ -9,19 +9,19 @@ references:
       tags:
         only: /.*/
 
-  filter_stg: &filter_stg
+  filter_head: &filter_head
     filters:
       branches:
         only: master
       tags:
         only: stg
 
-  filter_prd: &filter_prd
+  filter_release: &filter_release
     filters:
       branches:
         ignore: /.*/
       tags:
-        only: /v[0-9]+\.[0-9]+\.[0-9]+/
+        only: /v[0-9]+\.[0-9]+\.[0-9]+(-[0-9])?/
 
 general:
   artifacts:
@@ -101,6 +101,26 @@ jobs:
           paths:
             - website/node_modules
 
+  deploy_package:
+    docker:
+      - image: circleci/node:12
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v3-node12-dependencies-{{ checksum "package.json" }}
+          - v3-node12-dependencies-
+      - run: npm install
+      - run: |
+          echo "$NPMRC" > ~/.npmrc
+          chmod 600 ~/.npmrc
+          if [[ "$CIRCLE_TAG" = *-* ]]; then
+            npm publish --tag=prerelease
+          else
+            npm publish
+          fi
+
 workflows:
   version: 2
   test:
@@ -112,9 +132,16 @@ workflows:
       - test_node14:
           <<: *filter_all
       - deploy_docs:
-          <<: *filter_stg
+          <<: *filter_head
           context:
             - Documentation
+          requires:
+            - test_node12
+            - test_node14
+      - deploy_package:
+          <<: *filter_release
+          context:
+            - npm-publish
           requires:
             - test_node12
             - test_node14
