@@ -63,7 +63,6 @@ jobs:
           key: v3-node12-dependencies-{{ checksum "package.json" }}
       - run: npm test -- --maxWorkers=4
       - run: npm run build
-      - run: cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 
   test_node14:
     docker:
