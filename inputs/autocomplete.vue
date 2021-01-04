@@ -108,8 +108,6 @@
             if (index !== -1) {
               return { remove: [items[index]] };
             }
-
-            // log error here? ie, cannot remove, item doesnt exist
           }
         }).then(list => this.listItems = _.map(list, item => _.isObject(item) ? item.text : item));
       }
