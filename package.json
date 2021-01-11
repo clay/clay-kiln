@@ -168,6 +168,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "peerDependencies": {
+    "amphora": "^7.9.0-0",
     "amphora-search": "^6.2.0"
   }
 }
