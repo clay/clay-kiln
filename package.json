@@ -1,6 +1,6 @@
 {
   "name": "clay-kiln",
-  "version": "8.17.0",
+  "version": "8.18.0",
   "description": "Editor tools for Clay",
   "template": "template.handlebars",
   "scripts": {
@@ -13,8 +13,9 @@
     "test-local": "BABEL_ENV=test npm run jest -- --watch",
     "build": "BABEL_ENV=build webpack",
     "watch": "BABEL_ENV=build webpack -w",
-    "prepublishOnly": "BABEL_ENV=build webpack -p && npm run generate-actions",
-    "generate-actions": "jsdoc2md --files lib/**/actions.js > docs/vuex-actions.md"
+    "prepublishOnly": "BABEL_ENV=build webpack -p",
+    "generate-actions": "jsdoc2md --files lib/**/actions.js > docs/vuex-actions.md",
+    "release": "./.circleci/scripts/release.sh"
   },
   "repository": {
     "type": "git",
