@@ -174,14 +174,6 @@
       // note: links that start with // are an antipattern, and this will NOT handle them
       // https://jeremywagner.me/blog/stop-using-the-protocol-relative-url
       value = `https://${value}`;
-
-      // modified links that still don't pass for valid urls will default to
-      // the default quill behavior (using about:blank)
-      try {
-        new URL(value);
-      } catch (err) {
-        value = 'about:blank';
-      }
     }
 
     return originalLinkSanitize.call(Link, value);
