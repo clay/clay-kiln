@@ -22,7 +22,7 @@
       </form>
       <span class="action-info-message">Time Zone: {{ timezone }}</span>
       <ui-button v-if="showSchedule" :disabled="disableSchedule || isArchived || hasErrors || !isLayoutPublished" class="action-button" buttonType="button" color="orange" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
-      <ui-button v-else :disabled="isPublishing || isArchived || hasErrors || !isLayoutPublished" class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
+      <ui-button v-else :disabled="isPublishing || isArchived || hasErrors || !isLayoutPublished || isComponentSaving" class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
       <span v-if="!isLayoutPublished && isAdmin" class="action-error-message" @click="goToLayout">Layout must be published first</span>
       <span v-else-if="!isLayoutPublished" class="action-error-message">Layout must be published first (by an admin)</span>
       <span v-else-if="hasErrors" class="action-error-message" @click="goToHealth">Please fix errors before publishing</span>
@@ -128,6 +128,7 @@
       isPublishing: state => state.ui.currentlyPublishing,
       isScheduled: state => state.page.state.scheduled,
       isArchived: state => state.page.state.archived,
+      isComponentSaving: state => state.ui.currentlySaving,
       uri: state => state.page.uri,
       url: state => state.page.state.url,
       publishedDate: state => state.page.state.publishTime,
