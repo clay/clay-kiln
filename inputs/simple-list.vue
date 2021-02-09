@@ -108,7 +108,7 @@
   import simpleListItem from './simple-list-item.vue';
   import simpleListInput from './simple-list-input.vue';
   import attachedButton from './attached-button.vue';
-  import { addListItem, getItemIndex, getProp } from '../lib/lists/helpers';
+  import { getItemIndex, getProp } from '../lib/lists/helpers';
   import { DynamicEvents } from './mixins';
 
   const log = logger(__filename);
@@ -249,7 +249,7 @@
         if (this.args.autocomplete && this.args.autocomplete.allowRemove) {
           const listName = this.args.autocomplete.list;
 
-          return this.$store.dispatch('updateList', {
+          return this.$store.dispatch('patchList', {
             listName: listName,
             fn: this.handleRemoveItem
           });
@@ -268,57 +268,79 @@
           const itemIndex = getItemIndex(items, (this.removedItem || {}).text, 'text');
 
           if (itemIndex !== -1 && items[itemIndex][countProperty]) {
-          // decrease count if the item already exists in the list and count is more than 0
-            items[itemIndex][countProperty]--;
+            // decrease count if the item already exists in the list and count is more than 0
+
+            const old = items[itemIndex],
+              updated = _.cloneDeep(old);
+
+            updated[countProperty]--;
+
             this.removedItem = {};
+
+            return {
+              add: [updated],
+              remove: [old]
+            };
           }
         }
-
-        return items;
       },
       addItem(newItem) {
-        let countProperty,
-          itemIndex,
-          listName,
-          stringProperty;
-
         this.items.push(newItem);
         this.update(this.items);
 
         // only add items to the list if the schema allows it
         if (this.args.autocomplete && this.args.autocomplete.allowCreate) {
-          listName = this.args.autocomplete.list;
+          const listName = this.args.autocomplete.list;
 
-          return this.$store.dispatch('updateList', {
+          return this.$store.dispatch('patchList', {
             listName: listName,
             fn: (items) => {
-            // validate that the list has items with these properties
-              stringProperty = getProp(items, 'text');
-              countProperty = getProp(items, 'count');
+              const patch = {
+                  add: [],
+                  remove: []
+                },
+                // validate that the list has items with these properties
+                stringProperty = getProp(items, 'text'),
+                countProperty = getProp(items, 'count');
 
               if (stringProperty && countProperty) {
-                itemIndex = getItemIndex(items, newItem.text, 'text');
+                const itemIndex = getItemIndex(items, newItem.text, 'text');
 
                 if (itemIndex !== -1) {
-                // increase count if the item already exists in the list
-                  items[itemIndex][countProperty]++;
+                  // remove the old, add new object with new count
+                  const old = items[itemIndex],
+                    updated = _.cloneDeep(old);
 
-                  return items;
+                  patch.remove.push(old);
+
+                  // increase count if the item already exists in the list
+                  updated[countProperty]++;
+                  patch.add.push(updated);
+
+                  return patch;
                 } else {
-                // add item to the list
+                  // add item to the list
                   _.set(newItem, countProperty, 1);
 
-                  return addListItem(items, newItem);
+                  patch.add.push(newItem);
+
+                  return patch;
                 }
               } else if (_.isString(_.head(items))) {
-              // if the list is just an array of strings, just add the string
-              // property
-                return addListItem(items, newItem.text);
+                // if the list is just an array of strings, just add the string property
+
+                if (getItemIndex(items, newItem.text) === -1) {
+                  patch.add.push(newItem.text);
+
+                  return patch;
+                }
               } else if (items.length === 0) {
                 log.warn('The list is empty, unable to determine data structure. Adding item with default data structure.', { action: 'adding item to a list' });
                 _.set(newItem, 'count', 1);
 
-                return addListItem(items, newItem);
+                patch.add.push(newItem);
+
+                return patch;
               }
             }
           });

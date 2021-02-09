@@ -16,7 +16,7 @@
 <script>
   import _ from 'lodash';
   import item from './autocomplete-item.vue';
-  import { getProp, removeListItem } from '../lib/lists/helpers';
+  import { getItemIndex, getProp } from '../lib/lists/helpers';
 
   export default {
     props: ['args', 'select', 'query', 'focusIndex', 'updateFocusIndex', 'updateMatches', 'unselect', 'disabled'],
@@ -95,25 +95,21 @@
         });
       },
       removeFromList(item) {
-        let stringProperty;
-
         const listName = this.args.list;
 
         this.unselect();
 
-        return this.$store.dispatch('updateList', {
+        return this.$store.dispatch('patchList', {
           listName: listName,
           fn: (items) => {
-            stringProperty = getProp(items, 'text');
+            const stringProperty = getProp(items, 'text'),
+              index = getItemIndex(items, item, stringProperty);
 
-            if (stringProperty) {
-              return removeListItem(items, item, stringProperty);
-            } else {
-              return removeListItem(items, item);
+            if (index !== -1) {
+              return { remove: [items[index]] };
             }
           }
-        })
-          .then(this.fetchListItems);
+        }).then(list => this.listItems = _.map(list, item => _.isObject(item) ? item.text : item));
       }
     },
     mounted() {
