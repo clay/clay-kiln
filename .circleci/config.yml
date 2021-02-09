@@ -36,13 +36,12 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v3-node10-dependencies-{{ checksum "package.json" }}
-          - v3-node10-dependencies-
+          - v4-node10-dependencies-{{ checksum "package.json" }}
       - run: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v3-node10-dependencies-{{ checksum "package.json" }}
+          key: v4-node10-dependencies-{{ checksum "package.json" }}
       - run: npm test -- --maxWorkers=4
       - run: npm run build
 
@@ -54,13 +53,12 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v3-node12-dependencies-{{ checksum "package.json" }}
-          - v3-node12-dependencies-
+          - v4-node12-dependencies-{{ checksum "package.json" }}
       - run: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v3-node12-dependencies-{{ checksum "package.json" }}
+          key: v4-node12-dependencies-{{ checksum "package.json" }}
       - run: npm test -- --maxWorkers=4
       - run: npm run build
       - run: cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js || true
@@ -73,13 +71,12 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v3-node14-dependencies-{{ checksum "package.json" }}
-          - v3-node14-dependencies-
+          - v4-node14-dependencies-{{ checksum "package.json" }}
       - run: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v3-node14-dependencies-{{ checksum "package.json" }}
+          key: v4-node14-dependencies-{{ checksum "package.json" }}
       - run: npm test -- --maxWorkers=4
       - run: npm run build
 
@@ -90,14 +87,14 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: v3-website-dependencies-{{ checksum "website/package.json" }}
+          key: v4-website-dependencies-{{ checksum "website/package.json" }}
       - run:
           name: Build
           command: |
             sudo apt-get -y install awscli
             bash ./.circleci/scripts/deploy-docs.sh
       - save_cache:
-          key: v3-website-dependencies-{{ checksum "website/package.json" }}
+          key: v4-website-dependencies-{{ checksum "website/package.json" }}
           paths:
             - website/node_modules
 
@@ -109,8 +106,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v3-node12-dependencies-{{ checksum "package.json" }}
-          - v3-node12-dependencies-
+          - v4-node12-dependencies-{{ checksum "package.json" }}
       - run: npm install
       - run: |
           echo "$NPMRC" > ~/.npmrc
