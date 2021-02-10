@@ -116,6 +116,7 @@
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.5",
     "fuse.js": "^3.2.0",
+    "handlebars": "4.2.1",
     "hash-sum": "^1.0.2",
     "he": "^1.1.1",
     "html-tags": "^2.0.0",
@@ -170,5 +171,8 @@
   "peerDependencies": {
     "amphora": "^7.9.0",
     "amphora-search": "^6.2.0"
+  },
+  "dependencies": {
+    "handlebars": "^4.7.6"
   }
 }
