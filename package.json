@@ -98,7 +98,7 @@
     "chrono-node": "^1.3.5",
     "clay-log": "^1.1.1",
     "clayhandlebars": "5.0.2-1",
-    "clayutils": "clay/clayutils#handlebars_peer_dependency",
+    "clayutils": "3.0.0-0",
     "codemirror": "^5.31.0",
     "coveralls": "^3.0.0",
     "css-loader": "^0.28.7",
