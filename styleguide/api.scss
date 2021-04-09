@@ -54,6 +54,10 @@
   @include link();
 }
 
+.kiln-link-invalid {
+ color: #FF0000 !important;
+}
+
 .kiln-keyboard {
   @include keyboard-keys();
 }
