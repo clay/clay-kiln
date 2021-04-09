@@ -116,12 +116,13 @@
   import { parsePhraseButton, parseFormats, createPhraseBlots } from './wysiwyg-phrase';
   import attachedButton from './attached-button.vue';
   import { DynamicEvents } from './mixins';
+  import SafeLink from '../lib/quill/link';
 
   const Delta = Quill.import('delta'),
     Clipboard = Quill.import('modules/clipboard'),
-    Link = Quill.import('formats/link'),
-    originalLinkSanitize = Link.sanitize,
     errorColor = '#f44336';
+
+  Quill.register(SafeLink, true);
 
   // store references for multi-paragraph paste here.
   // this way, the paste function can set these, and they can be checked
@@ -165,19 +166,6 @@
 
     return delta;
   }
-
-  // add sanitization to all quill links
-  Link.sanitize = (value) => {
-    if (!(/^\w+:/).test(value) && !(/^#/).test(value)) {
-      // no protocol, and the link doesn't start with a hash (in-page links),
-      // so add https://
-      // note: links that start with // are an antipattern, and this will NOT handle them
-      // https://jeremywagner.me/blog/stop-using-the-protocol-relative-url
-      value = `https://${value}`;
-    }
-
-    return originalLinkSanitize.call(Link, value);
-  };
 
   export default {
     mixins: [DynamicEvents],
