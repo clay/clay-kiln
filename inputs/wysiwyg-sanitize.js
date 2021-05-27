@@ -4,7 +4,7 @@ import sanitize from 'sanitize-html';
 const allowedInlineTags = ['strong', 'em', 'a', 'br', 's', 'span', 'sup', 'sub', 'p'], // note: p gets parsed out in sanitizeInlineHTML
   allowedBlockTags = allowedInlineTags.concat(['h1', 'h2', 'h3', 'h4', 'blockquote', 'ul', 'ol', 'li']),
   allowedAttributes = {
-    a: ['href']
+    a: ['class', 'href']
   },
   allowedClasses = {
     span: [

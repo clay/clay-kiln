@@ -28,23 +28,6 @@ general:
     - coverage
 
 jobs:
-  test_node10:
-    docker:
-      - image: circleci/node:10
-    working_directory: ~/repo
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-          - v4-node10-dependencies-{{ checksum "package.json" }}
-      - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v4-node10-dependencies-{{ checksum "package.json" }}
-      - run: npm test -- --maxWorkers=4
-      - run: npm run build
-
   test_node12:
     docker:
       - image: circleci/node:12
@@ -121,8 +104,6 @@ workflows:
   version: 2
   test:
     jobs:
-      - test_node10:
-          <<: *filter_all
       - test_node12:
           <<: *filter_all
       - test_node14:
