@@ -21,6 +21,7 @@ import 'keen-ui/src/bootstrap'; // import this once, for KeenUI components
 import 'velocity-animate/velocity.ui.min.js'; // import this once, for velocity ui stuff
 import VueObserveVisibility from 'vue-observe-visibility';
 import VueClickOutside from 'vue-click-outside';
+import VueCompositionAPI from '@vue/composition-api';
 
 // set animation defaults
 velocity.defaults.easing = standardCurve;
@@ -63,6 +64,9 @@ Vue.use(NProgress, {
 
 // add visibility observer directive
 Vue.use(VueObserveVisibility);
+
+// add in composition API
+Vue.use(VueCompositionAPI);
 
 // Register keys to make key events easy to call
 Vue.config.keyCodes.comma = 188;
