@@ -1,6 +1,6 @@
 {
   "name": "clay-kiln",
-  "version": "10.0.1",
+  "version": "10.1.0-1",
   "description": "Editor tools for Clay",
   "template": "template.handlebars",
   "scripts": {
@@ -84,6 +84,7 @@
   },
   "homepage": "https://github.com/clay/clay-kiln",
   "dependencies": {
+    "@vue/composition-api": "^1.0.0-rc.11",
     "clayhandlebars": "^5.0.1"
   },
   "devDependencies": {
