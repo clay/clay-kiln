@@ -83,7 +83,7 @@
     :label="label"
     :floatingLabel="true"
     :help="args.help"
-    :disabled="disabled"
+    :disabled="isDisabled"
     :error="errorMessage"
     :invalid="isInvalid"
     iconPosition="right"
@@ -114,7 +114,7 @@
     data() {
       return {
         listOptions: [],
-        isDisabled: false
+        userDisabled: false
       };
     },
     mounted() {
@@ -209,6 +209,9 @@
       },
       isInvalid() {
         return !!this.errorMessage;
+      },
+      isDisabled() {
+        return this.disabled || this.userDisabled;
       }
     },
     methods: {
@@ -252,10 +255,10 @@
         return promise;
       },
       disableInput() {
-        this.isDisabled = true;
+        this.userDisabled = true;
       },
       enableInput() {
-        this.isDisabled = false;
+        this.userDisabled = false;
       }
     },
     components: {
