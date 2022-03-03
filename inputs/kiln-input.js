@@ -147,8 +147,8 @@ export default class KilnInput {
   reRenderInstance(uri) {
     const url = addProtocol(uri);
 
-    return api.getJSON(url).then((component) => {
-      store.dispatch('triggerModelRender', { uri, component });
+    return api.getJSON(url).then((data) => {
+      store.dispatch('triggerModelRender', { uri, data });
     });
   }
 
