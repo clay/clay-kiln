@@ -48,8 +48,7 @@
       text-align: center;
       vertical-align: middle;
       width: 32px;
-      font-family: "Material Icon";
-      content:"\e838"
+     
 
       &.is-text {
         color: $pure-white;
