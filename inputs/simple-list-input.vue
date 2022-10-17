@@ -22,7 +22,7 @@
       type="text"
       class="ui-textbox__input simple-list-add"
       ref="input"
-      :disabled="disabled"
+      :disabled="!isAdmin"
       v-model.trim="val"
       @input="onChange"
       @keydown.enter.prevent="onEnter"
@@ -67,6 +67,9 @@
       };
     },
     computed: {
+      isAdmin() {
+        return _.get(this.$store, 'state.user.auth') === 'admin';
+      },
       showAutocomplete() {
         return this.autocomplete && this.displayAutocomplete;
       },
