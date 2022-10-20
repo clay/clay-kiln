@@ -26,8 +26,8 @@
       v-model.trim="val"
       @input="onChange"
       @keydown.enter.prevent="onEnter"
-      @keydown.tab="addItem"
-      @keyup.comma="ignoreComma ? null : addItem()"
+      @keydown.tab="addItem(false)"
+      @keyup.comma="ignoreComma ? null : addItem(false)"
       @keydown.delete="focusLastItem"
       @keydown.left="focusLastItem"
       @keydown.right="focusFirstItem"
@@ -96,7 +96,14 @@
         }
       },
       // Add an item to the array
-      addItem() {
+      addItem(isAutocompleteValue) {
+        // Only admins can add new tags
+        if (!this.isAdmin && this.autocomplete.list === 'tags') {
+          if (!isAutocompleteValue) {
+            return;
+          }
+        }
+
         let hasItem;
 
         if (_.isNumber(this.autocompleteIndex)) {
@@ -115,12 +122,12 @@
       },
       onAutocompleteSelect(val) {
         this.val = val;
-        this.addItem();
+        this.addItem(true);
       },
       onEnter() {
         if (this.val) {
           // if theres a value in the input, add it (like when you hit tab or comma)
-          this.addItem();
+          this.addItem(false);
         } else {
           // otherwise, close the form (which we never do on tab or comma)
           this.$store.dispatch('unfocus');
