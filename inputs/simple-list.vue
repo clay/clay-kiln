@@ -79,6 +79,7 @@
             :currentItem="currentItem"
             :disabled="isDisabled || disabled"
             :isInitialFocus="initialFocus === name"
+            :restrictTagCreation="args.restrictTagCreation"
             @add="addItem"
             @select="selectItem"
             @focus="onFocus"
