@@ -26,8 +26,8 @@
       v-model.trim="val"
       @input="onChange"
       @keydown.enter.prevent="onEnter"
-      @keydown.tab="addItem(false)"
-      @keyup.comma="ignoreComma ? null : addItem(false)"
+      @keydown.tab="addItem()"
+      @keyup.comma="ignoreComma ? null : addItem()"
       @keydown.delete="focusLastItem"
       @keydown.left="focusLastItem"
       @keydown.right="focusFirstItem"
@@ -57,10 +57,11 @@
   import autocomplete from './autocomplete.vue';
 
   export default {
-    props: ['items', 'allowRepeatedItems', 'autocomplete', 'currentItem', 'disabled', 'isInitialFocus', 'ignoreComma', 'restrictTagCreation'],
+    props: ['items', 'allowRepeatedItems', 'autocomplete', 'currentItem', 'disabled', 'isInitialFocus', 'ignoreComma', 'restrictItemCreation'],
     data() {
       return {
         val: '',
+        autocompleteValue: false,
         autocompleteIndex: null,
         autocompleteOptions: [],
         displayAutocomplete: true
@@ -96,12 +97,15 @@
         }
       },
       // Add an item to the array
-      addItem(isAutoCompleteValue) {
-        if (thisRestrictTagCreation) {
-          if (!isAutoCompleteValue) {
+      addItem() {
+        // Only saves values from the autocomplete list if tag creation restriction is enabled
+        if (this.restrictItemCreation) {
+          if (!this.autocompleteValue) {
+            this.autocompleteValue = false;
             return;
           }
         }
+        this.autocompleteValue = false;
 
         let hasItem;
 
@@ -121,12 +125,13 @@
       },
       onAutocompleteSelect(val) {
         this.val = val;
-        this.addItem(true);
+        this.autocompleteValue = true;
+        this.addItem();
       },
       onEnter() {
         if (this.val) {
           // if theres a value in the input, add it (like when you hit tab or comma)
-          this.addItem(false);
+          this.addItem();
         } else {
           // otherwise, close the form (which we never do on tab or comma)
           this.$store.dispatch('unfocus');
