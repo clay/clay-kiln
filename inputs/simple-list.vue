@@ -86,10 +86,12 @@
             @focus="onFocus"
             @blur="onBlur"
             @resize="onResize"
+            @triggerRestrictionError="onTriggerRestrictionError"
+            @click.native="disableRestrictionError"
+            @keydown.delete.native="disableRestrictionError"
             v-dynamic-events="customEvents"></simple-list-input>
         </div>
       </label>
-
       <div class="ui-textbox__feedback" v-if="hasFeedback || maxLength">
         <div class="ui-textbox__feedback-text" v-if="showError">{{ error }}</div>
         <div class="ui-textbox__feedback-text" v-else-if="showHelp">{{ args.help }}</div>
@@ -97,6 +99,7 @@
             {{ valueLength + '/' + maxLength }}
         </div>
       </div>
+      <div class="restriction-error-message" v-if="showRestrictionError">{{ args.restrictedErrrorMessage }}</div>
     </div>
   </div>
 </template>
@@ -125,7 +128,8 @@
         isDisabled: false,
         currentItem: null,
         type: 'strings',
-        removedItem: {}
+        removedItem: {},
+        showRestrictionError: false
       };
     },
     computed: {
@@ -361,6 +365,14 @@
           });
           this.update(this.items);
         }
+      },
+      onTriggerRestrictionError() {
+        if (this.args.restrictedErrrorMessage) {
+          this.showRestrictionError = true;
+        }
+      },
+      disableRestrictionError() {
+        this.showRestrictionError = false;
       }
     },
     components: {
@@ -405,6 +417,13 @@
     .list-items-enter-active,
     .list-items-leave-active {
       transition: opacity $standard-time $standard-curve;
+    }
+
+    .restriction-error-message {
+      color: rgba(255, 0, 0, 0.54);
+      font-family: "Noto Sans", Arial, sans-serif;
+      font-size: 0.875rem;
+      line-height: 1.2; 
     }
   }
 </style>

@@ -102,6 +102,7 @@
         if (this.restrictItemCreation) {
           if (!this.autocompleteValue) {
             this.autocompleteValue = false;
+            this.$emit('triggerRestrictionError');
             return;
           }
         }

@@ -578,6 +578,7 @@ An array of strings (or objects with a `text` property, if you add the `property
 * **validate.requiredMessage** - will appear when required validation fails
 * **validate.maxMessage** - will appear when maximum validation fails
 * **restrictItemCreation** - boolean that prevents the addition of new items to the list if set to true, but allows the addition of values displayed by autocomplete. If it isn't present, all items can be added to the list
+* **restrictedErrorMessage** - message that is displayed when the user is prevented from adding an item
 
 ```yaml
   -
@@ -594,7 +595,6 @@ An array of strings (or objects with a `text` property, if you add the `property
 * Pressing <kbd>backspace</kbd> in an empty text input will select the last item in the list
 * If `propertyName` is defined, you can double-click items to set the "primary" item. This will add a badge to the primary item. Only one item may be "primary" at a time
 * Double-clikcing the "primary" item will unset it as the "primary" item
-* If `restrictItemCreation` is set to true, only options from the autocomplete list can be added 
 
 ```yaml
 tags:
