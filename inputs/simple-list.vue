@@ -99,7 +99,7 @@
             {{ valueLength + '/' + maxLength }}
         </div>
       </div>
-      <div class="restriction-error-message" v-if="showRestrictionError">{{ args.restrictedErrrorMessage }}</div>
+      <div class="restriction-error-message" v-if="showRestrictionError">{{ args.restrictedErrorMessage }}</div>
     </div>
   </div>
 </template>
@@ -367,7 +367,7 @@
         }
       },
       onTriggerRestrictionError() {
-        if (this.args.restrictedErrrorMessage) {
+        if (this.args.restrictedErrorMessage) {
           this.showRestrictionError = true;
         }
       },
@@ -420,7 +420,7 @@
     }
 
     .restriction-error-message {
-      color: rgba(255, 0, 0, 0.54);
+      color: #FF0000;
       font-family: "Noto Sans", Arial, sans-serif;
       font-size: 0.875rem;
       line-height: 1.2; 

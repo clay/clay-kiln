@@ -26,7 +26,7 @@
       v-model.trim="val"
       @input="onChange"
       @keydown.enter.prevent="onEnter"
-      @keydown.tab="addItem()"
+      @keydown.tab="addItem"
       @keyup.comma="ignoreComma ? null : addItem()"
       @keydown.delete="focusLastItem"
       @keydown.left="focusLastItem"
@@ -101,7 +101,6 @@
         // Only saves values from the autocomplete list if tag creation restriction is enabled
         if (this.restrictItemCreation) {
           if (!this.autocompleteValue) {
-            this.autocompleteValue = false;
             this.$emit('triggerRestrictionError');
             return;
           }

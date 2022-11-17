@@ -692,6 +692,8 @@ An array of strings (or objects with a `text` property, if you add the `property
 * **validate.max** - Maximum number of items that the field must not exceed
 * **validate.requiredMessage** - Will appear when required validation fails
 * **validate.maxMessage** - Will appear when maximum validation fails
+* **restrictItemCreation** - boolean that prevents the addition of new items to the list if set to true, but allows the addition of values displayed by autocomplete. If it isn't present, all items can be added to the list
+* **restrictedErrorMessage** - message that is displayed when the user is prevented from adding an item
 
 ```yaml
   -
