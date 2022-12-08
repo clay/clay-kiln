@@ -100,7 +100,7 @@
       addItem() {
         // Only saves values from the autocomplete list if tag creation restriction is enabled
         if (this.restrictItemCreation) {
-          if (!this.autocompleteValue) {
+          if (!this.autocompleteValue && !_.isNumber(this.autocompleteIndex)) {
             this.$emit('triggerRestrictionError');
             return;
           }

@@ -17,7 +17,8 @@
   * **validate.requiredMessage** - will appear when required validation fails
   * **validate.maxMessage** - will appear when maximum validation fails
   * **restrictItemCreation** - boolean that prevents the addition of new items to the list if set to true, but allows the addition of values displayed by autocomplete. If it isn't present, all items can be added to the list
-
+  * **restrictedErrorMessage** - message that is displayed when the user is prevented from adding an item
+  
   ```yaml
     -
       fn: simple-list
