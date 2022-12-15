@@ -228,7 +228,7 @@
         const store = this.$store;
 
         store.commit(START_PROGRESS);
-        store.dispatch('unschedulePage', this.uri)
+        store.dispatch('unschedulePage')
           .catch((e) => {
             store.commit(FINISH_PROGRESS, 'error');
             log.error(`Error unscheduling page: ${e.message}`, { action: 'unschedulePage' });
@@ -241,6 +241,8 @@
           })
           .then(() => {
             store.commit(FINISH_PROGRESS);
+            // reset date and time values
+            this.clearScheduleForm();
             store.dispatch('showSnackbar', 'Unscheduled Page');
           });
       },
@@ -326,6 +328,7 @@
       },
       clearScheduleForm() {
         this.dateValue = null;
+        this.timeValue = null;
         this.$refs.timepicker.clear();
       },
       saveLocation(undoUrl) {

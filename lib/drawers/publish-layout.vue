@@ -274,6 +274,8 @@
           })
           .then(() => {
             store.commit(FINISH_PROGRESS);
+            // reset date and time values
+            this.clearScheduleForm();
             store.dispatch('showSnackbar', 'Unscheduled Layout');
           });
       },
@@ -324,6 +326,7 @@
       },
       clearScheduleForm() {
         this.dateValue = null;
+        this.timeValue = null;
         this.$refs.timepicker.clear();
       },
       saveTitle() {
