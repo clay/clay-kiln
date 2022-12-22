@@ -57,10 +57,11 @@
   import autocomplete from './autocomplete.vue';
 
   export default {
-    props: ['items', 'allowRepeatedItems', 'autocomplete', 'currentItem', 'disabled', 'isInitialFocus', 'ignoreComma'],
+    props: ['items', 'allowRepeatedItems', 'autocomplete', 'currentItem', 'disabled', 'isInitialFocus', 'ignoreComma', 'restrictItemCreation'],
     data() {
       return {
         val: '',
+        autocompleteValue: false,
         autocompleteIndex: null,
         autocompleteOptions: [],
         displayAutocomplete: true
@@ -97,6 +98,15 @@
       },
       // Add an item to the array
       addItem() {
+        // Only saves values from the autocomplete list if tag creation restriction is enabled
+        if (this.restrictItemCreation) {
+          if (!this.autocompleteValue && !_.isNumber(this.autocompleteIndex)) {
+            this.$emit('triggerRestrictionError');
+            return;
+          }
+        }
+        this.autocompleteValue = false;
+
         let hasItem;
 
         if (_.isNumber(this.autocompleteIndex)) {
@@ -115,6 +125,7 @@
       },
       onAutocompleteSelect(val) {
         this.val = val;
+        this.autocompleteValue = true;
         this.addItem();
       },
       onEnter() {

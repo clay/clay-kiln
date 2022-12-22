@@ -16,7 +16,9 @@
   * **validate.max** - maximum number of items that the field must not exceed
   * **validate.requiredMessage** - will appear when required validation fails
   * **validate.maxMessage** - will appear when maximum validation fails
-
+  * **restrictItemCreation** - boolean that prevents the addition of new items to the list if set to true, but allows the addition of values displayed by autocomplete. If it isn't present, all items can be added to the list
+  * **restrictedErrorMessage** - message that is displayed when the user is prevented from adding an item
+  
   ```yaml
     -
       fn: simple-list
@@ -79,15 +81,18 @@
             :currentItem="currentItem"
             :disabled="isDisabled || disabled"
             :isInitialFocus="initialFocus === name"
+            :restrictItemCreation="args.restrictItemCreation"
             @add="addItem"
             @select="selectItem"
             @focus="onFocus"
             @blur="onBlur"
             @resize="onResize"
+            @triggerRestrictionError="onTriggerRestrictionError"
+            @click.native="disableRestrictionError"
+            @keydown.delete.native="disableRestrictionError"
             v-dynamic-events="customEvents"></simple-list-input>
         </div>
       </label>
-
       <div class="ui-textbox__feedback" v-if="hasFeedback || maxLength">
         <div class="ui-textbox__feedback-text" v-if="showError">{{ error }}</div>
         <div class="ui-textbox__feedback-text" v-else-if="showHelp">{{ args.help }}</div>
@@ -95,6 +100,7 @@
             {{ valueLength + '/' + maxLength }}
         </div>
       </div>
+      <div class="restriction-error-message" v-if="showRestrictionError">{{ args.restrictedErrorMessage }}</div>
     </div>
   </div>
 </template>
@@ -123,7 +129,8 @@
         isDisabled: false,
         currentItem: null,
         type: 'strings',
-        removedItem: {}
+        removedItem: {},
+        showRestrictionError: false
       };
     },
     computed: {
@@ -359,6 +366,14 @@
           });
           this.update(this.items);
         }
+      },
+      onTriggerRestrictionError() {
+        if (this.args.restrictedErrorMessage) {
+          this.showRestrictionError = true;
+        }
+      },
+      disableRestrictionError() {
+        this.showRestrictionError = false;
       }
     },
     components: {
@@ -403,6 +418,13 @@
     .list-items-enter-active,
     .list-items-leave-active {
       transition: opacity $standard-time $standard-curve;
+    }
+
+    .restriction-error-message {
+      color: #FF0000;
+      font-family: "Noto Sans", Arial, sans-serif;
+      font-size: 0.875rem;
+      line-height: 1.2; 
     }
   }
 </style>
