@@ -842,10 +842,6 @@
     white-space: inherit;
   }
 
-  .ql-bubble .ql-editor a {
-    text-decoration: inherit;
-  }
-
   // link preview tooltip
   .ql-container.ql-bubble:not(.ql-disabled) a::before {
     @include type-caption();
