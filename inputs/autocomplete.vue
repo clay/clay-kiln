@@ -17,6 +17,7 @@
   import _ from 'lodash';
   import item from './autocomplete-item.vue';
   import { getItemIndex, getProp } from '../lib/lists/helpers';
+  import Fuse from 'fuse.js';
 
   export default {
     props: ['args', 'select', 'query', 'focusIndex', 'updateFocusIndex', 'updateMatches', 'unselect', 'disabled'],
@@ -35,13 +36,16 @@
       matches() {
         const query = this.query || '';
 
-        let matches = _.take(_.filter(this.listItems, (option) => {
-          return _.includes(option.toLowerCase(), query.toLowerCase());
-        }), 20);
+        // let matches = _.take(_.filter(this.listItems, (option) => {
+        //   return _.includes(option.toLowerCase(), query.toLowerCase());
+        // }), 20);
 
-        this.updateMatches(matches);
+        const matches = new Fuse(this.listItems, {}).search(query);
+        const items = matches.map((el) => this.listItems[el]);
 
-        return matches;
+        this.updateMatches(items);
+
+        return items;
       },
       activeIndex() {
         var activeIndex,
