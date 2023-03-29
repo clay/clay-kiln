@@ -38,22 +38,9 @@
         let items;
 
         if (this.args.fuzzy) {
-          // const matches = new Fuse(this.listItems, { threshold: 0.4 }).search(query);
-          // const items = matches.map((el) => this.listItems[el]).slice(0, 15);
-          const scoreMatches = new Fuse(this.listItems, {
-            includeScore: true,
-            threshold: 0.35
-          }).search(query);
+          const matches = new Fuse(this.listItems, { threshold: 0.4 }).search(query);
 
-          const scores = scoreMatches
-            .map((el, idx) => ({ item: this.listItems[el.item], score: el.score, idx }))
-            .slice(0, 15);
-
-          console.log(scores);
-
-          items = scoreMatches
-            .map((el) => (this.listItems[el.item]))
-            .slice(0, 15);
+          items = matches.map((el) => this.listItems[el]).slice(0, 15);
         } else {
           items = _.take(_.filter(this.listItems, (option) => {
             return _.includes(option.toLowerCase(), query.toLowerCase());
