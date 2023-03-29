@@ -35,21 +35,22 @@
       },
       matches() {
         const query = this.query || '';
-        let items;
+        let matches;
 
         if (this.args.fuzzy) {
-          const matches = new Fuse(this.listItems, { threshold: 0.4 }).search(query);
+          // fuse returns the index of the match
+          const elements = new Fuse(this.listItems, { threshold: 0.4 }).search(query);
 
-          items = matches.map((el) => this.listItems[el]).slice(0, 15);
+          matches = elements.map((el) => this.listItems[el]).slice(0, 15);
         } else {
-          items = _.take(_.filter(this.listItems, (option) => {
+          matches = _.take(_.filter(this.listItems, (option) => {
             return _.includes(option.toLowerCase(), query.toLowerCase());
           }), 20);
         }
 
-        this.updateMatches(items);
+        this.updateMatches(matches);
 
-        return items;
+        return matches;
       },
       activeIndex() {
         var activeIndex,
