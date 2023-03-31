@@ -41,7 +41,7 @@
           // fuse returns the index of the match
           const elements = new Fuse(this.listItems, { threshold: 0.4 }).search(query);
 
-          matches = elements.map((el) => this.listItems[el]).slice(0, 10);
+          matches = elements.slice(0, 10).map((el) => this.listItems[el]);
         } else {
           matches = _.take(_.filter(this.listItems, (option) => {
             return _.includes(option.toLowerCase(), query.toLowerCase());
