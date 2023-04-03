@@ -685,7 +685,7 @@ An array of strings (or objects with a `text` property, if you add the `property
 * **badge** - Name of the icon (or a two-character string) that should be displayed in the simple list item when editing. Icon names can be anything from the [Material Design Icon Set](https://material.io/icons/), or you can use two initials
 * **allowRepeatedItems** - Allows the same item more than once. defaults to false
 * **ignoreComma** - Do not listen for comma key input to delimited list items. defaults to false
-* **autocomplete** - Object with autocomplete options. The key `list`  is where the value is the name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`. The key `allowRemove` enables an X in the `autocomplete` that allows the user to remove that item from the autocomplete list. If the key `allowCreate` is set to true, Kiln will add the item to the list via the store.
+* **autocomplete** - Object with autocomplete options. The key `list`  is where the value is the name of a list that Amphora knows about accessible via `/<site>/_lists/<listName>`. The key `allowRemove` enables an X in the `autocomplete` that allows the user to remove that item from the autocomplete list. If the key `allowCreate` is set to true, Kiln will add the item to the list via the store. `fuzzy` determines whether the autocomplete will use fuzzy matching on the list.
 * **help** - Description / helper text for the field
 * **attachedButton** - An icon button that should be attached to the field, to allow additional functionality
 * **validate.required** - Either `true` or an object that described the conditions that should make this field required
