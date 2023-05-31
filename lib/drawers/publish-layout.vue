@@ -123,6 +123,7 @@
     <div class="publish-status">
       <span class="status-message">{{ statusMessage }}</span>
       <span class="status-time">{{ time }}</span>
+      <span class="prepublish-url">{{ prepublishUrl }}</span>
       <ui-button v-if="isScheduled" class="status-undo-button" buttonType="button" color="red" @click.stop="unscheduleLayout">Unschedule</ui-button>
     </div>
 
@@ -189,6 +190,7 @@
       isScheduled: state => state.layout.state.scheduled,
       uri: state => state.layout.uri,
       publishedDate: state => state.layout.state.publishTime,
+      prepublishUrl: state => state.layout.state.prepublishUrl,
       createdDate: state => state.layout.state.createTime,
       scheduledDate: state => state.layout.state.scheduledTime,
       lastUpdated: state => state.layout.state.updateTime,
@@ -224,6 +226,9 @@
       },
       showSchedule() {
         return this.dateValue || this.timeValue;
+      },
+      prepublishUrl() {
+        return this.prepublishUrl || '';
       },
       disableSchedule() {
         if (this.dateValue && !this.timeValue || this.timeValue && !this.dateValue) {

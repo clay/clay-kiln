@@ -4,6 +4,10 @@
     <div class="publish-status">
       <span class="status-message">{{ statusMessage }}</span>
       <span class="status-time">{{ time }}</span>
+      <a v-if="prepublishUrl" class="status-link" :href="prepublishUrl" target="_blank">
+        <ui-icon icon="open_in_new"></ui-icon>
+        <span class="prepublish-url-link">{{ prepublishUrl }}</span>
+      </a>
       <a v-if="isPublished" class="status-link" :href="url" target="_blank">
         <ui-icon icon="open_in_new"></ui-icon>
         <span class="status-link-text">View public page</span>
@@ -134,6 +138,7 @@
       publishedDate: state => state.page.state.publishTime,
       createdDate: state => state.page.state.createdAt,
       scheduledDate: state => state.page.state.scheduledTime,
+      prepublishUrl: state => state.page.state.prepublishUrl,
       lastUpdated: state => state.page.state.updateTime,
       currentTitle: state => state.page.state.title,
       isAdmin: state => state.user.auth === 'admin',
@@ -583,6 +588,14 @@
     display: flex;
     flex-direction: column;
     padding: 0 16px 16px;
+
+    .prepublish-url {
+      margin-top: 8px;
+    }
+
+    .prepublish-url-link {
+      font-size: 12px;
+    }
 
     .status-message {
       @include type-subheading();
