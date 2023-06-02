@@ -60,12 +60,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1151);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1215);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 111:
+/***/ 100:
 /***/ (function(module, exports) {
 
 /**
@@ -96,26 +96,26 @@ module.exports = baseFindIndex;
 
 /***/ }),
 
-/***/ 1151:
+/***/ 1215:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _shiftClay = __webpack_require__(829);
+var _shiftClay = __webpack_require__(740);
 
 var _shiftClay2 = _interopRequireDefault(_shiftClay);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // load logo styles
-__webpack_require__(311);
+__webpack_require__(260);
 
 (0, _shiftClay2.default)();
 
 /***/ }),
 
-/***/ 151:
+/***/ 137:
 /***/ (function(module, exports) {
 
 /** Used as references for various `Number` constants. */
@@ -157,7 +157,7 @@ module.exports = isLength;
 
 /***/ }),
 
-/***/ 153:
+/***/ 138:
 /***/ (function(module, exports) {
 
 // Source: http://jsfiddle.net/vWx8V/
@@ -339,12 +339,12 @@ for (var alias in aliases) {
 
 /***/ }),
 
-/***/ 157:
+/***/ 142:
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseFindIndex = __webpack_require__(111),
-    baseIsNaN = __webpack_require__(238),
-    strictIndexOf = __webpack_require__(239);
+var baseFindIndex = __webpack_require__(100),
+    baseIsNaN = __webpack_require__(211),
+    strictIndexOf = __webpack_require__(212);
 
 /**
  * The base implementation of `_.indexOf` without `fromIndex` bounds checks.
@@ -366,7 +366,7 @@ module.exports = baseIndexOf;
 
 /***/ }),
 
-/***/ 200:
+/***/ 174:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -408,62 +408,10 @@ function toggleEdit(location) {
 
 /***/ }),
 
-/***/ 204:
+/***/ 190:
 /***/ (function(module, exports, __webpack_require__) {
 
-var trimmedEndIndex = __webpack_require__(205);
-
-/** Used to match leading whitespace. */
-var reTrimStart = /^\s+/;
-
-/**
- * The base implementation of `_.trim`.
- *
- * @private
- * @param {string} string The string to trim.
- * @returns {string} Returns the trimmed string.
- */
-function baseTrim(string) {
-  return string
-    ? string.slice(0, trimmedEndIndex(string) + 1).replace(reTrimStart, '')
-    : string;
-}
-
-module.exports = baseTrim;
-
-
-/***/ }),
-
-/***/ 205:
-/***/ (function(module, exports) {
-
-/** Used to match a single whitespace character. */
-var reWhitespace = /\s/;
-
-/**
- * Used by `_.trim` and `_.trimEnd` to get the index of the last non-whitespace
- * character of `string`.
- *
- * @private
- * @param {string} string The string to inspect.
- * @returns {number} Returns the index of the last non-whitespace character.
- */
-function trimmedEndIndex(string) {
-  var index = string.length;
-
-  while (index-- && reWhitespace.test(string.charAt(index))) {}
-  return index;
-}
-
-module.exports = trimmedEndIndex;
-
-
-/***/ }),
-
-/***/ 218:
-/***/ (function(module, exports, __webpack_require__) {
-
-var toNumber = __webpack_require__(99);
+var toNumber = __webpack_require__(87);
 
 /** Used as references for various `Number` constants. */
 var INFINITY = 1 / 0,
@@ -509,7 +457,7 @@ module.exports = toFinite;
 
 /***/ }),
 
-/***/ 238:
+/***/ 211:
 /***/ (function(module, exports) {
 
 /**
@@ -528,7 +476,7 @@ module.exports = baseIsNaN;
 
 /***/ }),
 
-/***/ 239:
+/***/ 212:
 /***/ (function(module, exports) {
 
 /**
@@ -558,11 +506,11 @@ module.exports = strictIndexOf;
 
 /***/ }),
 
-/***/ 240:
+/***/ 213:
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseValues = __webpack_require__(241),
-    keys = __webpack_require__(44);
+var baseValues = __webpack_require__(214),
+    keys = __webpack_require__(42);
 
 /**
  * Creates an array of the own enumerable string keyed property values of `object`.
@@ -599,10 +547,10 @@ module.exports = values;
 
 /***/ }),
 
-/***/ 241:
+/***/ 214:
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayMap = __webpack_require__(45);
+var arrayMap = __webpack_require__(43);
 
 /**
  * The base implementation of `_.values` and `_.valuesIn` which creates an
@@ -622,6 +570,13 @@ function baseValues(object, props) {
 
 module.exports = baseValues;
 
+
+/***/ }),
+
+/***/ 260:
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 
@@ -658,14 +613,45 @@ module.exports = isArray;
 
 /***/ }),
 
-/***/ 311:
+/***/ 4:
 /***/ (function(module, exports) {
 
-// removed by extract-text-webpack-plugin
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return value != null && (type == 'object' || type == 'function');
+}
+
+module.exports = isObject;
+
 
 /***/ }),
 
-/***/ 43:
+/***/ 41:
 /***/ (function(module, exports) {
 
 /**
@@ -701,10 +687,10 @@ module.exports = isObjectLike;
 
 /***/ }),
 
-/***/ 44:
+/***/ 42:
 /***/ (function(module, exports, __webpack_require__) {
 
-var overArg = __webpack_require__(83);
+var overArg = __webpack_require__(75);
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeKeys = overArg(Object.keys, Object);
@@ -714,7 +700,7 @@ module.exports = nativeKeys;
 
 /***/ }),
 
-/***/ 45:
+/***/ 43:
 /***/ (function(module, exports) {
 
 /**
@@ -742,11 +728,11 @@ module.exports = arrayMap;
 
 /***/ }),
 
-/***/ 46:
+/***/ 44:
 /***/ (function(module, exports, __webpack_require__) {
 
-var isFunction = __webpack_require__(51),
-    isLength = __webpack_require__(151);
+var isFunction = __webpack_require__(49),
+    isLength = __webpack_require__(137);
 
 /**
  * Checks if `value` is array-like. A value is considered array-like if it's
@@ -782,11 +768,11 @@ module.exports = isArrayLike;
 
 /***/ }),
 
-/***/ 51:
+/***/ 49:
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetTag = __webpack_require__(52),
-    isObject = __webpack_require__(6);
+var baseGetTag = __webpack_require__(50),
+    isObject = __webpack_require__(4);
 
 /** `Object#toString` result references. */
 var asyncTag = '[object AsyncFunction]',
@@ -826,7 +812,44 @@ module.exports = isFunction;
 
 /***/ }),
 
-/***/ 52:
+/***/ 5:
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseGetTag = __webpack_require__(50),
+    isArray = __webpack_require__(3),
+    isObjectLike = __webpack_require__(41);
+
+/** `Object#toString` result references. */
+var stringTag = '[object String]';
+
+/**
+ * Checks if `value` is classified as a `String` primitive or object.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a string, else `false`.
+ * @example
+ *
+ * _.isString('abc');
+ * // => true
+ *
+ * _.isString(1);
+ * // => false
+ */
+function isString(value) {
+  return typeof value == 'string' ||
+    (!isArray(value) && isObjectLike(value) && baseGetTag(value) == stringTag);
+}
+
+module.exports = isString;
+
+
+/***/ }),
+
+/***/ 50:
 /***/ (function(module, exports) {
 
 /** Used for built-in method references. */
@@ -855,10 +878,10 @@ module.exports = objectToString;
 
 /***/ }),
 
-/***/ 53:
+/***/ 51:
 /***/ (function(module, exports, __webpack_require__) {
 
-var toFinite = __webpack_require__(218);
+var toFinite = __webpack_require__(190);
 
 /**
  * Converts `value` to an integer.
@@ -898,45 +921,7 @@ module.exports = toInteger;
 
 /***/ }),
 
-/***/ 6:
-/***/ (function(module, exports) {
-
-/**
- * Checks if `value` is the
- * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
- * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(_.noop);
- * // => true
- *
- * _.isObject(null);
- * // => false
- */
-function isObject(value) {
-  var type = typeof value;
-  return value != null && (type == 'object' || type == 'function');
-}
-
-module.exports = isObject;
-
-
-/***/ }),
-
-/***/ 69:
+/***/ 62:
 /***/ (function(module, exports) {
 
 /**
@@ -964,41 +949,64 @@ module.exports = stubFalse;
 /***/ 7:
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetTag = __webpack_require__(52),
-    isArray = __webpack_require__(3),
-    isObjectLike = __webpack_require__(43);
+var baseIndexOf = __webpack_require__(142),
+    isArrayLike = __webpack_require__(44),
+    isString = __webpack_require__(5),
+    toInteger = __webpack_require__(51),
+    values = __webpack_require__(213);
 
-/** `Object#toString` result references. */
-var stringTag = '[object String]';
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeMax = Math.max;
 
 /**
- * Checks if `value` is classified as a `String` primitive or object.
+ * Checks if `value` is in `collection`. If `collection` is a string, it's
+ * checked for a substring of `value`, otherwise
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * is used for equality comparisons. If `fromIndex` is negative, it's used as
+ * the offset from the end of `collection`.
  *
  * @static
- * @since 0.1.0
  * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a string, else `false`.
+ * @since 0.1.0
+ * @category Collection
+ * @param {Array|Object|string} collection The collection to inspect.
+ * @param {*} value The value to search for.
+ * @param {number} [fromIndex=0] The index to search from.
+ * @param- {Object} [guard] Enables use as an iteratee for methods like `_.reduce`.
+ * @returns {boolean} Returns `true` if `value` is found, else `false`.
  * @example
  *
- * _.isString('abc');
+ * _.includes([1, 2, 3], 1);
  * // => true
  *
- * _.isString(1);
+ * _.includes([1, 2, 3], 1, 2);
  * // => false
+ *
+ * _.includes({ 'a': 1, 'b': 2 }, 1);
+ * // => true
+ *
+ * _.includes('abcd', 'bc');
+ * // => true
  */
-function isString(value) {
-  return typeof value == 'string' ||
-    (!isArray(value) && isObjectLike(value) && baseGetTag(value) == stringTag);
+function includes(collection, value, fromIndex, guard) {
+  collection = isArrayLike(collection) ? collection : values(collection);
+  fromIndex = (fromIndex && !guard) ? toInteger(fromIndex) : 0;
+
+  var length = collection.length;
+  if (fromIndex < 0) {
+    fromIndex = nativeMax(length + fromIndex, 0);
+  }
+  return isString(collection)
+    ? (fromIndex <= length && collection.indexOf(value, fromIndex) > -1)
+    : (!!length && baseIndexOf(collection, value, fromIndex) > -1);
 }
 
-module.exports = isString;
+module.exports = includes;
 
 
 /***/ }),
 
-/***/ 829:
+/***/ 740:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1008,17 +1016,17 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _includes2 = __webpack_require__(9);
+var _includes2 = __webpack_require__(7);
 
 var _includes3 = _interopRequireDefault(_includes2);
 
 exports.default = addListeners;
 
-var _keycode = __webpack_require__(153);
+var _keycode = __webpack_require__(138);
 
 var _keycode2 = _interopRequireDefault(_keycode);
 
-var _toggleEdit = __webpack_require__(200);
+var _toggleEdit = __webpack_require__(174);
 
 var _toggleEdit2 = _interopRequireDefault(_toggleEdit);
 
@@ -1075,7 +1083,7 @@ function addListeners() {
 
 /***/ }),
 
-/***/ 83:
+/***/ 75:
 /***/ (function(module, exports) {
 
 /**
@@ -1097,75 +1105,17 @@ module.exports = overArg;
 
 /***/ }),
 
-/***/ 9:
+/***/ 87:
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseIndexOf = __webpack_require__(157),
-    isArrayLike = __webpack_require__(46),
-    isString = __webpack_require__(7),
-    toInteger = __webpack_require__(53),
-    values = __webpack_require__(240);
-
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeMax = Math.max;
-
-/**
- * Checks if `value` is in `collection`. If `collection` is a string, it's
- * checked for a substring of `value`, otherwise
- * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
- * is used for equality comparisons. If `fromIndex` is negative, it's used as
- * the offset from the end of `collection`.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Collection
- * @param {Array|Object|string} collection The collection to inspect.
- * @param {*} value The value to search for.
- * @param {number} [fromIndex=0] The index to search from.
- * @param- {Object} [guard] Enables use as an iteratee for methods like `_.reduce`.
- * @returns {boolean} Returns `true` if `value` is found, else `false`.
- * @example
- *
- * _.includes([1, 2, 3], 1);
- * // => true
- *
- * _.includes([1, 2, 3], 1, 2);
- * // => false
- *
- * _.includes({ 'a': 1, 'b': 2 }, 1);
- * // => true
- *
- * _.includes('abcd', 'bc');
- * // => true
- */
-function includes(collection, value, fromIndex, guard) {
-  collection = isArrayLike(collection) ? collection : values(collection);
-  fromIndex = (fromIndex && !guard) ? toInteger(fromIndex) : 0;
-
-  var length = collection.length;
-  if (fromIndex < 0) {
-    fromIndex = nativeMax(length + fromIndex, 0);
-  }
-  return isString(collection)
-    ? (fromIndex <= length && collection.indexOf(value, fromIndex) > -1)
-    : (!!length && baseIndexOf(collection, value, fromIndex) > -1);
-}
-
-module.exports = includes;
-
-
-/***/ }),
-
-/***/ 99:
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseTrim = __webpack_require__(204),
-    isObject = __webpack_require__(6),
-    isSymbol = __webpack_require__(69);
+var isObject = __webpack_require__(4),
+    isSymbol = __webpack_require__(62);
 
 /** Used as references for various `Number` constants. */
 var NAN = 0 / 0;
+
+/** Used to match leading and trailing whitespace. */
+var reTrim = /^\s+|\s+$/g;
 
 /** Used to detect bad signed hexadecimal string values. */
 var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
@@ -1216,7 +1166,7 @@ function toNumber(value) {
   if (typeof value != 'string') {
     return value === 0 ? value : +value;
   }
-  value = baseTrim(value);
+  value = value.replace(reTrim, '');
   var isBinary = reIsBinary.test(value);
   return (isBinary || reIsOctal.test(value))
     ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
