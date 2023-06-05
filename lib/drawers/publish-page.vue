@@ -4,6 +4,7 @@
     <div class="publish-status">
       <span class="status-message">{{ statusMessage }}</span>
       <span class="status-time">{{ time }}</span>
+      <h4>your updates are here.</h4>
       <a v-if="prepublishUrl" class="status-link" :href="prepublishUrl" target="_blank">
         <ui-icon icon="open_in_new"></ui-icon>
         <span class="prepublish-url-link">{{ prepublishUrl }}</span>
