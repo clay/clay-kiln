@@ -3104,7 +3104,7 @@ function getPrepublishUrl(uri, date) {
 
   var rawDate = new Date(date);
   var scheduledDate = rawDate.toISOString();
-  var requestUrl = 'https://localhost.vulture.com/get-scheduled-url/?uri=' + uri + '&evergreen=false&scheduledDate=' + scheduledDate;
+  var requestUrl = 'https://ss-publish-url-preview-2.vulture.com/get-scheduled-url/?uri=' + uri + '&evergreen=false&scheduledDate=' + scheduledDate;
 
   return send(addGetHeader(requestUrl)).then(expectJSONResult);
 }
