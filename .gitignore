@@ -32,7 +32,7 @@ build/Release
 node_modules
 
 # compiled scripts and styles (generated on postinstall)
-# dist
+dist
 
 # docusaurus
 lib/core/metadata.js
