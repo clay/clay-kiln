@@ -8,6 +8,7 @@
         <ui-icon icon="open_in_new"></ui-icon>
         <span class="status-link-text">View public page</span>
       </a>
+      <span class="prepublish"></span>
       <ui-button v-if="isScheduled" class="status-undo-button" buttonType="button" color="red" @click.stop="unschedulePage">Unschedule</ui-button>
       <ui-button v-else-if="isPublished" class="status-undo-button" buttonType="button" color="red" @click.stop="unpublishPage">Unpublish</ui-button>
       <ui-button v-else-if="isArchived" class="status-undo-button" buttonType="button" color="red" @click.stop="archivePage(false)">Unarchive</ui-button>
@@ -404,7 +405,7 @@
       },
       archivePage(archived) {
         this.$store.dispatch('startProgress');
-  
+
         return this.$store.dispatch('updatePageList', { archived, shouldPatchArchive: true })
           .then(() => {
             this.$store.dispatch('finishProgress');
@@ -413,7 +414,7 @@
               action: 'Undo',
               onActionClick: () => this.archivePage(!archived)
             });
-  
+
             return this.$store.dispatch('closeModal');
           })
           .catch((e) => {
