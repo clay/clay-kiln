@@ -123,6 +123,8 @@
     <div class="publish-status">
       <span class="status-message">{{ statusMessage }}</span>
       <span class="status-time">{{ time }}</span>
+      <span class="prepublish-url">prepublish-url.com</span>
+      
       <ui-button v-if="isScheduled" class="status-undo-button" buttonType="button" color="red" @click.stop="unscheduleLayout">Unschedule</ui-button>
     </div>
 
@@ -280,6 +282,7 @@
           });
       },
       scheduleLayout() {
+        console.log('is scheduled!!! ========');
         const date = dateFormat(this.dateValue, 'YYYY-MM-DD'),
           time = this.timeValue,
           datetime = parseDate(date + ' ' + time),
