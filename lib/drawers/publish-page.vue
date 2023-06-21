@@ -204,7 +204,7 @@
       },
       timezone() {
         return getTimezone();
-      },
+      }
     }),
     watch: {
       currentTitle(val) {
