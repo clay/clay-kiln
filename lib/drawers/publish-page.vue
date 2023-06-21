@@ -8,7 +8,7 @@
         <ui-icon icon="open_in_new"></ui-icon>
         <span class="status-link-text">View public page</span>
       </a>
-      <div class="prepublish-url">
+      <div class="prepublish-url hidden">
         <p class="prepublish-header">Publish URL Preview</p>
         <span class="prepublish-url-link-wrapper" @click="copyPreviewUrlToClipboard">
           <a class="prepublish-url-link"></a>
@@ -633,6 +633,10 @@
     display: flex;
     flex-direction: column;
     padding: 0 16px 16px;
+
+    .hidden {
+      display: none;
+    }
 
     .status-message {
       @include type-subheading();
