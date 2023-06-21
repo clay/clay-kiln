@@ -218,9 +218,8 @@
       copyPreviewUrlToClipboard() {
         const urlString = document.querySelector('.prepublish-url-link').innerHTML;
         const store = this.$store;
-  
+
         try {
-  
           // Copy to clipboard.
           return navigator.clipboard.writeText(urlString);
         } catch (err) {
@@ -588,9 +587,9 @@
 
     .prepublish-header {
       @include type-body();
-      margin-bottom: 0.5em; 
+      margin-bottom: 0.5em;
     }
-    
+
 
     .prepublish-url-link {
       @include type-body();
