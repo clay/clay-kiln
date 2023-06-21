@@ -8,7 +8,13 @@
         <ui-icon icon="open_in_new"></ui-icon>
         <span class="status-link-text">View public page</span>
       </a>
-      <span class="prepublish"></span>
+      <div class="prepublish-url">
+        <p class="prepublish-header">Publish URL Preview</p>
+        <span class="prepublish-url-link-wrapper" @click="copyPreviewUrlToClipboard">
+          <a class="prepublish-url-link"></a>
+          <p class="prepublish-url-link-subtext">Click to copy to clipboard</p>
+        </span>
+      </div>
       <ui-button v-if="isScheduled" class="status-undo-button" buttonType="button" color="red" @click.stop="unschedulePage">Unschedule</ui-button>
       <ui-button v-else-if="isPublished" class="status-undo-button" buttonType="button" color="red" @click.stop="unpublishPage">Unpublish</ui-button>
       <ui-button v-else-if="isArchived" class="status-undo-button" buttonType="button" color="red" @click.stop="archivePage(false)">Unarchive</ui-button>
@@ -198,7 +204,7 @@
       },
       timezone() {
         return getTimezone();
-      }
+      },
     }),
     watch: {
       currentTitle(val) {
@@ -209,6 +215,21 @@
       }
     },
     methods: {
+      copyPreviewUrlToClipboard() {
+        const urlString = document.querySelector('.prepublish-url-link').innerHTML;
+        const store = this.$store;
+  
+        try {
+  
+          // Copy to clipboard.
+          return navigator.clipboard.writeText(urlString);
+        } catch (err) {
+          console.error('Failed to copy URL string to clipboard!');
+        }
+
+        // Display confirmation slide-out.
+        store.dispatch('showSnackbar', 'Preview URL copied to clipboard.');
+      },
       goToHealth() {
         this.$emit('selectTab', 'Health');
       },
@@ -564,6 +585,34 @@
 
   .publish-drawer {
     padding: 16px 0;
+
+    .prepublish-header {
+      @include type-body();
+      margin-bottom: 0.5em; 
+    }
+    
+
+    .prepublish-url-link {
+      @include type-body();
+    }
+
+    .prepublish-url-link-wrapper {
+      &:hover {
+        background-color: #f2faff;
+      }
+
+      background-color: $placeholder-bg-color;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      display: block;
+      padding: 0.8rem 0.8rem 0.4rem 0.8rem;
+      word-wrap: break-word;
+    }
+
+    .prepublish-url-link-subtext {
+      @include type-caption();
+      text-align: center;
+    }
 
     .section-heading {
        @include type-subheading();
