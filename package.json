@@ -13,7 +13,7 @@
     "test-local": "BABEL_ENV=test npm run jest -- --watch",
     "build": "BABEL_ENV=build webpack",
     "watch": "BABEL_ENV=build webpack -w",
-    "prepublishOnly": "BABEL_ENV=build webpack -p",
+    "prepublishOnly": "BABEL_ENV=build webpack",
     "generate-actions": "jsdoc2md --files lib/**/actions.js > docs/vuex-actions.md",
     "release": "./.circleci/scripts/release.sh"
   },
