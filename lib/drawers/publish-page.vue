@@ -219,15 +219,13 @@
         const urlString = document.querySelector('.prepublish-url-link').innerHTML;
         const store = this.$store;
 
-        try {
-          // Copy to clipboard.
-          return navigator.clipboard.writeText(urlString);
-        } catch (err) {
-          console.error('Failed to copy URL string to clipboard!');
-        }
-
-        // Display confirmation slide-out.
-        store.dispatch('showSnackbar', 'Preview URL copied to clipboard.');
+        // Copy to clipboard.
+        navigator.clipboard.writeText(urlString)
+          .then(() => store.dispatch('showSnackbar', 'Preview URL successfully copied to clipboard.'))
+          .catch((err) => {
+            store.dispatch('showSnackbar', 'Error copying preview URL to clipboard.');
+            console.error('Error copying preview URL to clipboard. Error:\n', err);
+          });
       },
       goToHealth() {
         this.$emit('selectTab', 'Health');
