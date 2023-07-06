@@ -13,7 +13,7 @@
         Generating public-facing URL...
       </p>
       <div class="prepublish-url-component hidden">
-        <p class="prepublish-header">Publish URL Preview</p>
+        <p class="prepublish-header">Public-facing URL Preview</p>
         <span class="prepublish-url-link-wrapper" @click="copyPreviewUrlToClipboard">
           <a class="prepublish-url-link"></a>
           <p class="prepublish-url-link-subtext">Click to copy to clipboard</p>
