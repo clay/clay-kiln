@@ -13,7 +13,8 @@
         Generating public-facing URL...
       </p>
       <div class="prepublish-url-component hidden">
-        <p class="prepublish-header">Public-facing URL Preview</p>
+        <p class="prepublish-url-header">Public-facing URL Preview</p>
+        <p class="prepublish-url-subtext">This URL is not active until the article is published.</p>
         <span class="prepublish-url-link-wrapper" @click="copyPreviewUrlToClipboard">
           <a class="prepublish-url-link"></a>
           <p class="prepublish-url-link-subtext">Click to copy to clipboard</p>
@@ -588,7 +589,7 @@
   .publish-drawer {
     padding: 16px 0;
 
-    .prepublish-header {
+    .prepublish-url-header {
       @include type-body();
       margin-bottom: 0.5em;
     }
@@ -617,6 +618,11 @@
       display: block;
       padding: 0.8rem 0.8rem 0.4rem 0.8rem;
       word-wrap: break-word;
+    }
+
+    .prepublish-url-subtext {
+      @include type-caption();
+      margin-top: 8px; 
     }
 
     .prepublish-url-link-subtext {
