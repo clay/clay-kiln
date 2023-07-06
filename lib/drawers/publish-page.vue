@@ -590,7 +590,7 @@
     padding: 16px 0;
 
     .prepublish-url-header {
-      @include type-body();
+      @include type-subheading();
       margin-bottom: 0.5em;
     }
 
