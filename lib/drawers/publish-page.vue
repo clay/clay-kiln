@@ -8,13 +8,18 @@
         <ui-icon icon="open_in_new"></ui-icon>
         <span class="status-link-text">View public page</span>
       </a>
-      <div class="prepublish-url hidden">
+      <!-- Public Prepublish URL Preview -->
+      <p class="prepublish-waiting-message" v-if="isScheduled">
+        Generating public-facing URL...
+      </p>
+      <div class="prepublish-url-component hidden">
         <p class="prepublish-header">Publish URL Preview</p>
         <span class="prepublish-url-link-wrapper" @click="copyPreviewUrlToClipboard">
           <a class="prepublish-url-link"></a>
           <p class="prepublish-url-link-subtext">Click to copy to clipboard</p>
         </span>
       </div>
+      <!--/ Public Prepublish URL Preview -->
       <ui-button v-if="isScheduled" class="status-undo-button" buttonType="button" color="red" @click.stop="unschedulePage">Unschedule</ui-button>
       <ui-button v-else-if="isPublished" class="status-undo-button" buttonType="button" color="red" @click.stop="unpublishPage">Unpublish</ui-button>
       <ui-button v-else-if="isArchived" class="status-undo-button" buttonType="button" color="red" @click.stop="archivePage(false)">Unarchive</ui-button>
@@ -588,9 +593,17 @@
       margin-bottom: 0.5em;
     }
 
-
     .prepublish-url-link {
       @include type-body();
+    }
+
+    .prepublish-waiting-message {
+      @include type-caption();
+      border-radius: 0.5rem;
+      cursor: pointer;
+      display: block;
+      padding: 0.8rem 0.8rem 0.4rem 0.8rem; 
+      text-align: center;
     }
 
     .prepublish-url-link-wrapper {
