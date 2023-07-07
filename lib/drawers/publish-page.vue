@@ -25,7 +25,7 @@
       <ui-button v-else-if="isPublished" class="status-undo-button" buttonType="button" color="red" @click.stop="unpublishPage">Unpublish</ui-button>
       <ui-button v-else-if="isArchived" class="status-undo-button" buttonType="button" color="red" @click.stop="archivePage(false)">Unarchive</ui-button>
     </div>
-
+    
     <!-- publish actions -->
     <div class="publish-actions">
       <span class="action-message">{{ actionMessage }} <ui-icon-button v-if="showSchedule" icon="close" buttonType="button" type="secondary" color="default" size="small" tooltip="Clear Date/Time" tooltipPosition="left middle" @click.stop="clearScheduleForm"></ui-icon-button></span>
