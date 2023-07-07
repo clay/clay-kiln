@@ -123,6 +123,7 @@
     <div class="publish-status">
       <span class="status-message">{{ statusMessage }}</span>
       <span class="status-time">{{ time }}</span>
+
       <ui-button v-if="isScheduled" class="status-undo-button" buttonType="button" color="red" @click.stop="unscheduleLayout">Unschedule</ui-button>
     </div>
 

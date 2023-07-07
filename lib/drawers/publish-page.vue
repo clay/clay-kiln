@@ -8,11 +8,24 @@
         <ui-icon icon="open_in_new"></ui-icon>
         <span class="status-link-text">View public page</span>
       </a>
+      <!-- Public Prepublish URL Preview -->
+      <p class="prepublish-waiting-message" v-if="isScheduled">
+        Generating public-facing URL...
+      </p>
+      <div class="prepublish-url-component hidden">
+        <p class="prepublish-url-header">Public-facing URL Preview</p>
+        <p class="prepublish-url-subtext">This URL is not active until the article is published.</p>
+        <span class="prepublish-url-link-wrapper" @click="copyPreviewUrlToClipboard">
+          <a class="prepublish-url-link"></a>
+          <p class="prepublish-url-link-subtext">Click to copy to clipboard</p>
+        </span>
+      </div>
+      <!--/ Public Prepublish URL Preview -->
       <ui-button v-if="isScheduled" class="status-undo-button" buttonType="button" color="red" @click.stop="unschedulePage">Unschedule</ui-button>
       <ui-button v-else-if="isPublished" class="status-undo-button" buttonType="button" color="red" @click.stop="unpublishPage">Unpublish</ui-button>
       <ui-button v-else-if="isArchived" class="status-undo-button" buttonType="button" color="red" @click.stop="archivePage(false)">Unarchive</ui-button>
     </div>
-
+    
     <!-- publish actions -->
     <div class="publish-actions">
       <span class="action-message">{{ actionMessage }} <ui-icon-button v-if="showSchedule" icon="close" buttonType="button" type="secondary" color="default" size="small" tooltip="Clear Date/Time" tooltipPosition="left middle" @click.stop="clearScheduleForm"></ui-icon-button></span>
@@ -208,6 +221,18 @@
       }
     },
     methods: {
+      copyPreviewUrlToClipboard() {
+        const urlString = document.querySelector('.prepublish-url-link').innerHTML;
+        const store = this.$store;
+
+        // Copy to clipboard.
+        navigator.clipboard.writeText(urlString)
+          .then(() => store.dispatch('showSnackbar', 'Preview URL successfully copied to clipboard.'))
+          .catch((err) => {
+            store.dispatch('showSnackbar', 'Error copying preview URL to clipboard.');
+            console.error('Error copying preview URL to clipboard. Error:\n', err);
+          });
+      },
       goToHealth() {
         this.$emit('selectTab', 'Health');
       },
@@ -404,7 +429,7 @@
       },
       archivePage(archived) {
         this.$store.dispatch('startProgress');
-  
+
         return this.$store.dispatch('updatePageList', { archived, shouldPatchArchive: true })
           .then(() => {
             this.$store.dispatch('finishProgress');
@@ -413,7 +438,7 @@
               action: 'Undo',
               onActionClick: () => this.archivePage(!archived)
             });
-  
+
             return this.$store.dispatch('closeModal');
           })
           .catch((e) => {
@@ -564,6 +589,47 @@
   .publish-drawer {
     padding: 16px 0;
 
+    .prepublish-url-header {
+      @include type-subheading();
+      margin-bottom: 0.5em;
+    }
+
+    .prepublish-url-link {
+      @include type-body();
+    }
+
+    .prepublish-waiting-message {
+      @include type-caption();
+      border-radius: 0.5rem;
+      cursor: pointer;
+      display: block;
+      padding: 0.8rem 0.8rem 0.4rem 0.8rem; 
+      text-align: center;
+    }
+
+    .prepublish-url-link-wrapper {
+      &:hover {
+        background-color: #f2faff;
+      }
+
+      background-color: $placeholder-bg-color;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      display: block;
+      padding: 0.8rem 0.8rem 0.4rem 0.8rem;
+      word-wrap: break-word;
+    }
+
+    .prepublish-url-subtext {
+      @include type-caption();
+      margin-top: 8px; 
+    }
+
+    .prepublish-url-link-subtext {
+      @include type-caption();
+      text-align: center;
+    }
+
     .section-heading {
        @include type-subheading();
     }
@@ -583,6 +649,10 @@
     display: flex;
     flex-direction: column;
     padding: 0 16px 16px;
+
+    .hidden {
+      display: none;
+    }
 
     .status-message {
       @include type-subheading();
