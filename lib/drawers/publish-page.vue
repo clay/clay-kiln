@@ -210,7 +210,7 @@
     },
     methods: {
       checkPublishStatus() {
-        if (isPublishing || isArchived || hasErrors || !isLayoutPublished || isComponentSaving) this.checksPassed = true
+        if (this.isPublishing || this.isArchived || this.hasErrors || !this.isLayoutPublished || this.isComponentSaving) this.checksPassed = true
       },
       goToHealth() {
         this.$emit('selectTab', 'Health');
