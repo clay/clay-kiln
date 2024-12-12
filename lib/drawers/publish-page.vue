@@ -22,7 +22,7 @@
       </form>
       <span class="action-info-message">Time Zone: {{ timezone }}</span>
       <ui-button v-if="showSchedule" :disabled="disableSchedule || isArchived || hasErrors || !isLayoutPublished" class="action-button" buttonType="button" color="orange" @click.stop="schedulePage">{{ actionMessage }}</ui-button>
-      <ui-button v-else :disabled="checksPassed" class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
+      <ui-button v-else :disabled="checksNotPassed" class="action-button" buttonType="button" color="accent" @click.stop="publishPage">{{ actionMessage }}</ui-button>
       <span v-if="!isLayoutPublished && isAdmin" class="action-error-message" @click="goToLayout">Layout must be published first</span>
       <span v-else-if="!isLayoutPublished" class="action-error-message">Layout must be published first (by an admin)</span>
       <span v-else-if="hasErrors" class="action-error-message" @click="goToHealth">Please fix errors before publishing</span>
@@ -117,7 +117,7 @@
         error: 'Custom URL must match an available route!',
         isInvalid: false,
         hasCustomLocation: false,
-        checksPassed: false
+        checksNotPassed: true
       };
     },
     computed: mapState({
@@ -210,7 +210,7 @@
     },
     methods: {
       checkPublishStatus() {
-        if (this.isPublishing || this.isArchived || this.hasErrors || !this.isLayoutPublished || this.isComponentSaving) this.checksPassed = true
+        if (!this.isPublishing || !this.isArchived || !this.hasErrors || this.isLayoutPublished || !this.isComponentSaving) this.checksNotPassed = false
       },
       goToHealth() {
         this.$emit('selectTab', 'Health');
