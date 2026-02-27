@@ -11,11 +11,14 @@ red(){
     >&2 printf "\e[31m$1\e[39m\n"
 }
 
-export PROJECT_NAME="${PROJECT_NAME:-$CIRCLE_PROJECT_REPONAME}"
+export PROJECT_NAME="${PROJECT_NAME:-$GITHUB_REPOSITORY}"
 if [[ -z "$PROJECT_NAME" ]]; then
-    red "PROJECT_NAME not set and could not be derived from CIRCLE_PROJECT_REPONAME"
+    red "PROJECT_NAME not set and could not be derived from GITHUB_REPOSITORY"
     exit 1
 fi
+
+# Strip the org prefix if GITHUB_REPOSITORY was used (e.g. "org/repo" -> "repo")
+PROJECT_NAME="${PROJECT_NAME##*/}"
 green "PROJECT_NAME: $PROJECT_NAME"
 
 export BUILD_DIR="${BUILD_DIR:-website}"
