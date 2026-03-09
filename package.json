@@ -12,6 +12,7 @@
     "test": "npm run lint && BABEL_ENV=test npm run jest -- --coverage --no-cache",
     "test-local": "BABEL_ENV=test npm run jest -- --watch",
     "build": "BABEL_ENV=build webpack",
+    "build:dist": "node scripts/build-dist.js",
     "watch": "BABEL_ENV=build webpack -w",
     "prepublishOnly": "BABEL_ENV=build webpack -p",
     "generate-actions": "jsdoc2md --files lib/**/actions.js > docs/vuex-actions.md",
@@ -41,7 +42,8 @@
     "model.js"
   ],
   "pre-commit": [
-    "lint"
+    "lint",
+    "build:dist"
   ],
   "jest": {
     "browser": true,
