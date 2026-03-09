@@ -60,12 +60,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1251);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1217);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 103:
+/***/ 100:
 /***/ (function(module, exports) {
 
 /**
@@ -96,26 +96,26 @@ module.exports = baseFindIndex;
 
 /***/ }),
 
-/***/ 1251:
+/***/ 1217:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _shiftClay = __webpack_require__(779);
+var _shiftClay = __webpack_require__(745);
 
 var _shiftClay2 = _interopRequireDefault(_shiftClay);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // load logo styles
-__webpack_require__(272);
+__webpack_require__(261);
 
 (0, _shiftClay2.default)();
 
 /***/ }),
 
-/***/ 141:
+/***/ 138:
 /***/ (function(module, exports) {
 
 /** Used as references for various `Number` constants. */
@@ -157,7 +157,7 @@ module.exports = isLength;
 
 /***/ }),
 
-/***/ 142:
+/***/ 139:
 /***/ (function(module, exports) {
 
 // Source: http://jsfiddle.net/vWx8V/
@@ -339,12 +339,12 @@ for (var alias in aliases) {
 
 /***/ }),
 
-/***/ 146:
+/***/ 143:
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseFindIndex = __webpack_require__(103),
-    baseIsNaN = __webpack_require__(215),
-    strictIndexOf = __webpack_require__(216);
+var baseFindIndex = __webpack_require__(100),
+    baseIsNaN = __webpack_require__(211),
+    strictIndexOf = __webpack_require__(212);
 
 /**
  * The base implementation of `_.indexOf` without `fromIndex` bounds checks.
@@ -366,7 +366,7 @@ module.exports = baseIndexOf;
 
 /***/ }),
 
-/***/ 177:
+/***/ 174:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -408,62 +408,10 @@ function toggleEdit(location) {
 
 /***/ }),
 
-/***/ 181:
+/***/ 190:
 /***/ (function(module, exports, __webpack_require__) {
 
-var trimmedEndIndex = __webpack_require__(182);
-
-/** Used to match leading whitespace. */
-var reTrimStart = /^\s+/;
-
-/**
- * The base implementation of `_.trim`.
- *
- * @private
- * @param {string} string The string to trim.
- * @returns {string} Returns the trimmed string.
- */
-function baseTrim(string) {
-  return string
-    ? string.slice(0, trimmedEndIndex(string) + 1).replace(reTrimStart, '')
-    : string;
-}
-
-module.exports = baseTrim;
-
-
-/***/ }),
-
-/***/ 182:
-/***/ (function(module, exports) {
-
-/** Used to match a single whitespace character. */
-var reWhitespace = /\s/;
-
-/**
- * Used by `_.trim` and `_.trimEnd` to get the index of the last non-whitespace
- * character of `string`.
- *
- * @private
- * @param {string} string The string to inspect.
- * @returns {number} Returns the index of the last non-whitespace character.
- */
-function trimmedEndIndex(string) {
-  var index = string.length;
-
-  while (index-- && reWhitespace.test(string.charAt(index))) {}
-  return index;
-}
-
-module.exports = trimmedEndIndex;
-
-
-/***/ }),
-
-/***/ 195:
-/***/ (function(module, exports, __webpack_require__) {
-
-var toNumber = __webpack_require__(91);
+var toNumber = __webpack_require__(87);
 
 /** Used as references for various `Number` constants. */
 var INFINITY = 1 / 0,
@@ -509,7 +457,7 @@ module.exports = toFinite;
 
 /***/ }),
 
-/***/ 215:
+/***/ 211:
 /***/ (function(module, exports) {
 
 /**
@@ -528,7 +476,7 @@ module.exports = baseIsNaN;
 
 /***/ }),
 
-/***/ 216:
+/***/ 212:
 /***/ (function(module, exports) {
 
 /**
@@ -558,10 +506,10 @@ module.exports = strictIndexOf;
 
 /***/ }),
 
-/***/ 217:
+/***/ 213:
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseValues = __webpack_require__(218),
+var baseValues = __webpack_require__(214),
     keys = __webpack_require__(42);
 
 /**
@@ -599,7 +547,7 @@ module.exports = values;
 
 /***/ }),
 
-/***/ 218:
+/***/ 214:
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayMap = __webpack_require__(43);
@@ -625,10 +573,10 @@ module.exports = baseValues;
 
 /***/ }),
 
-/***/ 272:
+/***/ 261:
 /***/ (function(module, exports) {
 
-throw new Error("Module build failed: ModuleBuildError: Module build failed: Error: Node Sass does not yet support your current environment: OS X Unsupported architecture (arm64) with Unsupported runtime (115)\nFor more information on which environments are supported please see:\nhttps://github.com/sass/node-sass/releases/tag/v4.14.1\n    at module.exports (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/node-sass/lib/binding.js:13:13)\n    at Object.<anonymous> (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/node-sass/lib/index.js:14:35)\n    at Module._compile (node:internal/modules/cjs/loader:1529:14)\n    at Module._extensions..js (node:internal/modules/cjs/loader:1613:10)\n    at Module.load (node:internal/modules/cjs/loader:1275:32)\n    at Module._load (node:internal/modules/cjs/loader:1096:12)\n    at Module.require (node:internal/modules/cjs/loader:1298:19)\n    at require (node:internal/modules/helpers:182:18)\n    at Object.<anonymous> (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/sass-loader/lib/loader.js:3:14)\n    at Module._compile (node:internal/modules/cjs/loader:1529:14)\n    at Module._extensions..js (node:internal/modules/cjs/loader:1613:10)\n    at Module.load (node:internal/modules/cjs/loader:1275:32)\n    at Module._load (node:internal/modules/cjs/loader:1096:12)\n    at Module.require (node:internal/modules/cjs/loader:1298:19)\n    at require (node:internal/modules/helpers:182:18)\n    at loadLoader (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/loadLoader.js:13:17)\n    at iteratePitchingLoaders (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:169:2)\n    at iteratePitchingLoaders (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:165:10)\n    at /Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:173:18\n    at loadLoader (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/loadLoader.js:36:3)\n    at iteratePitchingLoaders (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:169:2)\n    at iteratePitchingLoaders (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:165:10)\n    at /Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:173:18\n    at loadLoader (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/loadLoader.js:36:3)\n    at iteratePitchingLoaders (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:169:2)\n    at runLoaders (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:362:2)\n    at NormalModule.doBuild (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/webpack/lib/NormalModule.js:182:3)\n    at NormalModule.build (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/webpack/lib/NormalModule.js:275:15)\n    at Compilation.buildModule (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/webpack/lib/Compilation.js:151:10)\n    at /Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/webpack/lib/Compilation.js:454:10\n    at /Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/webpack/lib/NormalModule.js:195:19\n    at /Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:364:11\n    at /Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:170:18\n    at loadLoader (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/loadLoader.js:27:11)\n    at iteratePitchingLoaders (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:169:2)\n    at iteratePitchingLoaders (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:165:10)\n    at /Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:173:18\n    at loadLoader (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/loadLoader.js:36:3)\n    at iteratePitchingLoaders (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:169:2)\n    at iteratePitchingLoaders (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:165:10)\n    at /Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:173:18\n    at loadLoader (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/loadLoader.js:36:3)\n    at iteratePitchingLoaders (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:169:2)\n    at runLoaders (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/loader-runner/lib/LoaderRunner.js:362:2)\n    at NormalModule.doBuild (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/webpack/lib/NormalModule.js:182:3)\n    at NormalModule.build (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/webpack/lib/NormalModule.js:275:15)\n    at Compilation.buildModule (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/webpack/lib/Compilation.js:151:10)\n    at /Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/webpack/lib/Compilation.js:454:10\n    at /Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/webpack/lib/NormalModuleFactory.js:243:5\n    at /Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/webpack/lib/NormalModuleFactory.js:94:13\n    at /Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/tapable/lib/Tapable.js:268:11\n    at NormalModuleFactory.<anonymous> (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/webpack/lib/CompatibilityPlugin.js:52:5)\n    at /Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/tapable/lib/Tapable.js:270:14\n    at NormalModuleFactory.<anonymous> (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/lodash-webpack-plugin/lib/index.js:101:22)\n    at NormalModuleFactory.applyPluginsAsyncWaterfall (/Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/tapable/lib/Tapable.js:272:13)\n    at /Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/webpack/lib/NormalModuleFactory.js:69:10\n    at /Users/jordan.paulino/Desktop/claycli-2/clay-kiln/node_modules/webpack/lib/NormalModuleFactory.js:196:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)");
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 
@@ -742,7 +690,7 @@ module.exports = isObjectLike;
 /***/ 42:
 /***/ (function(module, exports, __webpack_require__) {
 
-var overArg = __webpack_require__(76);
+var overArg = __webpack_require__(75);
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeKeys = overArg(Object.keys, Object);
@@ -784,7 +732,7 @@ module.exports = arrayMap;
 /***/ (function(module, exports, __webpack_require__) {
 
 var isFunction = __webpack_require__(49),
-    isLength = __webpack_require__(141);
+    isLength = __webpack_require__(138);
 
 /**
  * Checks if `value` is array-like. A value is considered array-like if it's
@@ -933,7 +881,7 @@ module.exports = objectToString;
 /***/ 51:
 /***/ (function(module, exports, __webpack_require__) {
 
-var toFinite = __webpack_require__(195);
+var toFinite = __webpack_require__(190);
 
 /**
  * Converts `value` to an integer.
@@ -1001,11 +949,11 @@ module.exports = stubFalse;
 /***/ 7:
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseIndexOf = __webpack_require__(146),
+var baseIndexOf = __webpack_require__(143),
     isArrayLike = __webpack_require__(44),
     isString = __webpack_require__(5),
     toInteger = __webpack_require__(51),
-    values = __webpack_require__(217);
+    values = __webpack_require__(213);
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeMax = Math.max;
@@ -1058,29 +1006,7 @@ module.exports = includes;
 
 /***/ }),
 
-/***/ 76:
-/***/ (function(module, exports) {
-
-/**
- * Creates a unary function that invokes `func` with its argument transformed.
- *
- * @private
- * @param {Function} func The function to wrap.
- * @param {Function} transform The argument transform.
- * @returns {Function} Returns the new function.
- */
-function overArg(func, transform) {
-  return function(arg) {
-    return func(transform(arg));
-  };
-}
-
-module.exports = overArg;
-
-
-/***/ }),
-
-/***/ 779:
+/***/ 745:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1096,11 +1022,11 @@ var _includes3 = _interopRequireDefault(_includes2);
 
 exports.default = addListeners;
 
-var _keycode = __webpack_require__(142);
+var _keycode = __webpack_require__(139);
 
 var _keycode2 = _interopRequireDefault(_keycode);
 
-var _toggleEdit = __webpack_require__(177);
+var _toggleEdit = __webpack_require__(174);
 
 var _toggleEdit2 = _interopRequireDefault(_toggleEdit);
 
@@ -1157,15 +1083,39 @@ function addListeners() {
 
 /***/ }),
 
-/***/ 91:
+/***/ 75:
+/***/ (function(module, exports) {
+
+/**
+ * Creates a unary function that invokes `func` with its argument transformed.
+ *
+ * @private
+ * @param {Function} func The function to wrap.
+ * @param {Function} transform The argument transform.
+ * @returns {Function} Returns the new function.
+ */
+function overArg(func, transform) {
+  return function(arg) {
+    return func(transform(arg));
+  };
+}
+
+module.exports = overArg;
+
+
+/***/ }),
+
+/***/ 87:
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseTrim = __webpack_require__(181),
-    isObject = __webpack_require__(4),
+var isObject = __webpack_require__(4),
     isSymbol = __webpack_require__(62);
 
 /** Used as references for various `Number` constants. */
 var NAN = 0 / 0;
+
+/** Used to match leading and trailing whitespace. */
+var reTrim = /^\s+|\s+$/g;
 
 /** Used to detect bad signed hexadecimal string values. */
 var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
@@ -1216,7 +1166,7 @@ function toNumber(value) {
   if (typeof value != 'string') {
     return value === 0 ? value : +value;
   }
-  value = baseTrim(value);
+  value = value.replace(reTrim, '');
   var isBinary = reIsBinary.test(value);
   return (isBinary || reIsOctal.test(value))
     ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
