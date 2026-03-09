@@ -1,0 +1,41 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-[0-9]+'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '12'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test -- --maxWorkers=4
+
+      - name: Build dist
+        run: npm run build
+        env:
+          BABEL_ENV: build
+
+      - name: Publish
+        run: |
+          if [[ "$GITHUB_REF_NAME" == *-* ]]; then
+            npm publish --tag=prerelease
+          else
+            npm publish
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
