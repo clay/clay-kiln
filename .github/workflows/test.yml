@@ -12,16 +12,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: ['12', '14']
-
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          # sass@^1.79 requires Node 14+; Node 12 is EOL since Apr 2022
+          node-version: '14'
           cache: 'npm'
 
       - name: Install dependencies
@@ -30,13 +27,7 @@ jobs:
       - name: Run tests
         run: npm test -- --maxWorkers=4
 
-      - name: Build dist
-        run: npm run build
-        env:
-          BABEL_ENV: build
-
       - name: Upload coverage to Coveralls
-        if: matrix.node-version == '12'
         run: cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js || true
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
