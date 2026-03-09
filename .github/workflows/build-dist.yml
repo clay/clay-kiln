@@ -1,0 +1,46 @@
+name: Build and commit dist
+
+on:
+  push:
+    branches:
+      - jordan/yolo-update
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Use a token that can push back to the branch.
+          # GITHUB_TOKEN is sufficient when the repo allows workflow writes.
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '14'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build dist
+        run: npm run build
+        env:
+          BABEL_ENV: build
+          NODE_ENV: production
+
+      - name: Commit dist if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f dist/
+          if git diff --staged --quiet; then
+            echo "dist unchanged, nothing to commit"
+          else
+            git commit -m "chore: rebuild dist [skip ci]"
+            git push
+          fi
