@@ -3,7 +3,7 @@ name: Build and commit dist
 on:
   push:
     branches:
-      - jordan/yolo-update
+      - '**'
 
 jobs:
   build:
