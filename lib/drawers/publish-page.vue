@@ -9,7 +9,7 @@
         <span class="status-link-text">View public page</span>
       </a>
       <ui-button v-if="isScheduled" class="status-undo-button" buttonType="button" color="red" @click.stop="unschedulePage">Unschedule</ui-button>
-      <ui-button v-else-if="isPublished" class="status-undo-button" buttonType="button" color="red" @click.stop="unpublishPage">Unpublish</ui-button>
+      <ui-button v-else-if="isPublished && !isUnpublishProtected" class="status-undo-button" buttonType="button" color="red" @click.stop="unpublishPage">Unpublish</ui-button>
       <ui-button v-else-if="isArchived" class="status-undo-button" buttonType="button" color="red" @click.stop="archivePage(false)">Unarchive</ui-button>
     </div>
 
@@ -140,6 +140,11 @@
       isLayoutPublished: state => state.layout.state.published,
       headComponents: state => state.page.data.head,
       hasChanges: state => hasPageChanges(state),
+      isUnpublishProtected() {
+        const protectedUris = _.get(window, 'kiln.unpublishProtectedUris', []);
+
+        return protectedUris.includes(this.uri);
+      },
       statusMessage() {
         if (this.isScheduled) {
           return `Scheduled ${distanceInWordsToNow(this.scheduledDate, { addSuffix: true })}`;
