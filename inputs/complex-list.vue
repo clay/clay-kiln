@@ -50,36 +50,41 @@
 </docs>
 
 <template>
-  <transition mode="out-in" name="hide-show" @after-enter="onResize">
-    <div class="complex-list" v-if="items.length" v-click-outside="unselect">
-      <ui-textbox v-if="isFilterable" type="text" label="Filter List"
-        v-model.trim="query"
-        :autofocus="true"
-        :floatingLabel="true"></ui-textbox>
-      <transition-group mode="out-in" name="hide-show" tag="div" class="complex-list-items" @after-enter="onListResize">
-        <item v-for="(item, index) in matches"
-          :index="index"
-          :total="items.length"
-          :originalItems="items"
-          :name="name + '.' + index"
-          :data="item"
-          :schema="args"
-          :key="`complex-list-items-${index}`"
-          :disabled="disabled"
-          :isFiltered="isFiltered"
-          :currentItem="currentItem"
-          :isBelowMaxLength="isBelowMaxLength"
-          :initialFocus="initialFocus"
-          @current="onCurrentChange"
-          @removeItem="removeItem"
-          @moveItem="moveItem"
-          @addItem="addItem"
-          v-dynamic-events="customEvents">
-        </item>
-      </transition-group>
+  <div class="complex-list-wrapper">
+    <transition mode="out-in" name="hide-show" @after-enter="onResize">
+      <div class="complex-list" v-if="items.length" v-click-outside="unselect">
+        <ui-textbox v-if="isFilterable" type="text" label="Filter List"
+          v-model.trim="query"
+          :autofocus="true"
+          :floatingLabel="true"></ui-textbox>
+        <transition-group mode="out-in" name="hide-show" tag="div" class="complex-list-items" @after-enter="onListResize">
+          <item v-for="(item, index) in matches"
+            :index="index"
+            :total="items.length"
+            :originalItems="items"
+            :name="name + '.' + index"
+            :data="item"
+            :schema="args"
+            :key="`complex-list-items-${index}`"
+            :disabled="disabled"
+            :isFiltered="isFiltered"
+            :currentItem="currentItem"
+            :isBelowMaxLength="isBelowMaxLength"
+            :initialFocus="initialFocus"
+            @current="onCurrentChange"
+            @removeItem="removeItem"
+            @moveItem="moveItem"
+            @addItem="addItem"
+            v-dynamic-events="customEvents">
+          </item>
+        </transition-group>
+      </div>
+      <ui-button v-else buttonType="button" color="accent" icon="add" :disabled="disabled" @click.stop.prevent="addItem(-1)">Add Items</ui-button>
+    </transition>
+    <div class="ui-textbox__feedback" v-if="errorMessage">
+      <div class="ui-textbox__feedback-text">{{ errorMessage }}</div>
     </div>
-    <ui-button v-else buttonType="button" color="accent" icon="add" :disabled="disabled" @click.stop.prevent="addItem(-1)">Add Items</ui-button>
-  </transition>
+  </div>
 </template>
 
 <script>
@@ -89,6 +94,7 @@
   import UiButton from 'keen/UiButton';
   import UiTextbox from 'keen/UiTextbox';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
+  import { getValidationError } from '../lib/forms/field-helpers';
   import { DynamicEvents } from './mixins';
 
   /**
@@ -180,6 +186,9 @@
         } else {
           return true; // if there's no max length, or it's not enforced, don't worry about it!
         }
+      },
+      errorMessage() {
+        return getValidationError(this.items, _.get(this.schema, '_has.validate'), this.$store, this.name);
       }
     },
     methods: {
