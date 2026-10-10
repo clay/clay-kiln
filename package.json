@@ -4,28 +4,30 @@
   "description": "Editor tools for Clay",
   "template": "template.handlebars",
   "scripts": {
-    "lint": "eslint --quiet --ext .js,.vue edit.js view.js view-public.js directives inputs lib test",
-    "lint:warnings": "eslint --ext .js,.vue edit.js view.js view-public.js directives inputs lib test",
-    "lint:fix": "eslint --fix --ext .js,.vue edit.js view.js view-public.js directives inputs lib test",
-    "lint:stats": "eslint --format node_modules/eslint-stats/byErrorandWarning.js --ext .js,.vue edit.js view.js view-public.js directives inputs lib test",
+    "lint":
+      "eslint --quiet --ext .js,.vue edit.js view.js view-public.js directives inputs lib test",
+    "lint:warnings":
+      "eslint --ext .js,.vue edit.js view.js view-public.js directives inputs lib test",
+    "lint:fix":
+      "eslint --fix --ext .js,.vue edit.js view.js view-public.js directives inputs lib test",
+    "lint:stats":
+      "eslint --format node_modules/eslint-stats/byErrorandWarning.js --ext .js,.vue edit.js view.js view-public.js directives inputs lib test",
     "jest": "jest",
-    "test": "npm run lint && BABEL_ENV=test npm run jest -- --coverage --no-cache",
+    "test":
+      "npm run lint && BABEL_ENV=test npm run jest -- --coverage --no-cache",
     "test-local": "BABEL_ENV=test npm run jest -- --watch",
     "build": "BABEL_ENV=build webpack",
     "watch": "BABEL_ENV=build webpack -w",
     "prepublishOnly": "BABEL_ENV=build webpack -p",
-    "generate-actions": "jsdoc2md --files lib/**/actions.js > docs/vuex-actions.md",
+    "generate-actions":
+      "jsdoc2md --files lib/**/actions.js > docs/vuex-actions.md",
     "release": "./.circleci/scripts/release.sh"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/clay/clay-kiln.git"
   },
-  "keywords": [
-    "clay",
-    "kiln",
-    "editor"
-  ],
+  "keywords": ["clay", "kiln", "editor"],
   "author": "New York Media",
   "license": "MIT",
   "bugs": {
@@ -40,9 +42,7 @@
     "bootstrap.yml",
     "model.js"
   ],
-  "pre-commit": [
-    "lint"
-  ],
+  "pre-commit": ["lint"],
   "jest": {
     "browser": true,
     "collectCoverageFrom": [
@@ -50,26 +50,16 @@
       "<rootDir>/inputs/**/*.{js,vue}",
       "!<rootDir>/lib/utils/api.js"
     ],
-    "coverageReporters": [
-      "lcov",
-      "text-summary"
-    ],
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "vue"
-    ],
+    "coverageReporters": ["lcov", "text-summary"],
+    "moduleFileExtensions": ["js", "json", "vue"],
     "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
+        "<rootDir>/__mocks__/fileMock.js",
       "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
       "keen/(.*)$": "<rootDir>/node_modules/keen-ui/src/$1.vue"
     },
-    "setupFiles": [
-      "<rootDir>/test/setupFile.js"
-    ],
-    "snapshotSerializers": [
-      "<rootDir>/node_modules/jest-serializer-vue"
-    ],
+    "setupFiles": ["<rootDir>/test/setupFile.js"],
+    "snapshotSerializers": ["<rootDir>/node_modules/jest-serializer-vue"],
     "testEnvironmentOptions": {
       "pretendToBeVisual": true
     },
@@ -78,9 +68,7 @@
       "^.+\\.js$": "babel-jest",
       ".*\\.(vue)$": "<rootDir>/node_modules/vue-jest"
     },
-    "transformIgnorePatterns": [
-      "<rootDir>/node_modules/(?!keen-ui)"
-    ]
+    "transformIgnorePatterns": ["<rootDir>/node_modules/(?!keen-ui)"]
   },
   "homepage": "https://github.com/clay/clay-kiln",
   "dependencies": {
