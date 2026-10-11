@@ -418,12 +418,17 @@
       // manually add the listener, so reveal's resize events are caught
       this.$root.$on('resize-form', this.onResize);
     },
-    components: _.merge({}, _.get(window, 'kiln.selectorButtons', {}), {
-      field,
-      UiIconButton,
-      UiTabs,
-      UiTab
-    })
+    // a getter so the selector buttons sites register are merged in when Vue
+    // registers this component, not when this module loads. (webpack only
+    // loaded this module after sites had registered them; Vite loads it upfront.)
+    get components() {
+      return _.merge({}, _.get(window, 'kiln.selectorButtons', {}), {
+        field,
+        UiIconButton,
+        UiTabs,
+        UiTab
+      });
+    }
   };
 </script>
 

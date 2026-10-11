@@ -43,7 +43,6 @@ jobs:
             - node_modules
           key: v4-node12-dependencies-{{ checksum "package.json" }}
       - run: npm test -- --maxWorkers=4
-      - run: npm run build
       - run: cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js || true
 
   test_node14:
@@ -61,7 +60,22 @@ jobs:
             - node_modules
           key: v4-node14-dependencies-{{ checksum "package.json" }}
       - run: npm test -- --maxWorkers=4
+
+  # The dist build uses Vite, which needs a current Node (the tests above stay on
+  # Node 12/14 until kiln's Jest 23 is upgraded). Builds the bundles and loads
+  # them in jsdom the way sites do (scripts/smoke-test.js).
+  build_node24:
+    docker:
+      - image: cimg/node:24.21
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run: npm ci
       - run: npm run build
+      - run: npm run test:dist
+      # builds are reproducible; compare with a local `md5 -q dist/*` to confirm
+      # a published dist matches the one that was tested
+      - run: md5sum dist/*
 
   deploy_docs:
     docker:
@@ -83,14 +97,12 @@ jobs:
 
   deploy_package:
     docker:
-      - image: circleci/node:12
+      # prepublishOnly builds dist with Vite and smoke-tests it, so it needs Node 24
+      - image: cimg/node:24.21
     working_directory: ~/repo
     steps:
       - checkout
-      - restore_cache:
-          keys:
-          - v4-node12-dependencies-{{ checksum "package.json" }}
-      - run: npm install
+      - run: npm ci
       - run: |
           echo "$NPMRC" > ~/.npmrc
           chmod 600 ~/.npmrc
@@ -115,6 +127,8 @@ workflows:
           requires:
             - test_node12
             - test_node14
+      - build_node24:
+          <<: *filter_all
       - deploy_package:
           <<: *filter_release
           context:
@@ -122,3 +136,4 @@ workflows:
           requires:
             - test_node12
             - test_node14
+            - build_node24

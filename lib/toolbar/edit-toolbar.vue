@@ -412,23 +412,28 @@
         });
       }
     },
-    components: _.merge({
-      background,
-      overlay,
-      'add-component': addComponent,
-      'simple-modal': simpleModal,
-      UiToolbar,
-      UiIconButton,
-      UiButton,
-      UiMenu,
-      UiSnackbarContainer,
-      'progress-bar': progressBar,
-      drawer,
-      'nav-background': navBackground,
-      'nav-menu': navMenu,
-      'nav-content': navContent,
-      confirm,
-      'alert-container': alertContainer
-    }, window.kiln.toolbarButtons)
+    // a getter so the toolbar buttons sites register are merged in when Vue
+    // registers this component, not when this module loads. (webpack only
+    // loaded this module after sites had registered them; Vite loads it upfront.)
+    get components() {
+      return _.merge({
+        background,
+        overlay,
+        'add-component': addComponent,
+        'simple-modal': simpleModal,
+        UiToolbar,
+        UiIconButton,
+        UiButton,
+        UiMenu,
+        UiSnackbarContainer,
+        'progress-bar': progressBar,
+        drawer,
+        'nav-background': navBackground,
+        'nav-menu': navMenu,
+        'nav-content': navContent,
+        confirm,
+        'alert-container': alertContainer
+      }, window.kiln.toolbarButtons);
+    }
   };
 </script>
