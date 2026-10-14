@@ -93,6 +93,9 @@
       </ui-button>
 
       <div class="kiln-toolbar-actions" slot="actions">
+        <!-- who else is on this page (real-time collaboration) -->
+        <collab-presence v-if="isCollaborating"></collab-presence>
+
         <!-- always display custom buttons -->
         <component v-for="(button, index) in customButtons" :is="button" :key="index"></component>
 
@@ -133,6 +136,7 @@
     <nav-content></nav-content>
     <simple-modal></simple-modal>
     <confirm></confirm>
+    <collab-layer v-if="isCollaborating"></collab-layer>
     <ui-snackbar-container
       ref="snacks"
       :position="snackbar.position"
@@ -167,6 +171,8 @@
   import alertContainer from './alert-container.vue';
   import { getLayoutNameAndInstance } from '../utils/references';
   import { getLastEditUser, hasPageChanges } from '../utils/history';
+  import collabPresence from '../collab/presence-bar.vue';
+  import collabLayer from '../collab/collab-layer.vue';
 
 
   export default {
@@ -178,6 +184,7 @@
       layoutState: state => state.layout.state,
       isLoading: state => state.isLoading,
       isPageEditMode: state => state.editMode === 'page',
+      isCollaborating: state => !!state.collab,
       undoEnabled: (state) => {
         return !state.undo.atStart && !state.ui.currentFocus && !state.ui.currentPane;
       },
@@ -432,7 +439,9 @@
         'nav-menu': navMenu,
         'nav-content': navContent,
         confirm,
-        'alert-container': alertContainer
+        'alert-container': alertContainer,
+        'collab-presence': collabPresence,
+        'collab-layer': collabLayer
       }, window.kiln.toolbarButtons);
     }
   };
