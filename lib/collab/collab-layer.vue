@@ -125,6 +125,7 @@
   import _ from 'lodash';
   import { getFieldEl } from '../utils/component-elements';
   import { focuses } from './presence';
+  import { cssEscape } from './remote';
 
   const TAG_HEIGHT = 18,
     TOOLBAR_HEIGHT = 60,
@@ -140,7 +141,7 @@
   function targetEl(focus) {
     const field = focus.path && getFieldEl(focus.uri, focus.path);
 
-    return field || document.querySelector(`[data-uri="${focus.uri}"]`);
+    return field || document.querySelector(`[data-uri="${cssEscape(focus.uri)}"]`);
   }
 
   /**
@@ -170,7 +171,7 @@
         const flashes = _.get(this.$store, 'state.collab.flashes', []),
           perEl = {},
           items = _.map(focuses(this.$store), entry => ({
-            key: `f-${entry.session}`,
+            key: `f-${entry.tab}`,
             focus: entry.focus,
             label: entry.focus.label,
             user: entry.user,
@@ -249,7 +250,7 @@
     },
     methods: {
       jumpTo(uri) {
-        const el = document.querySelector(`[data-uri="${uri}"]`);
+        const el = document.querySelector(`[data-uri="${cssEscape(uri)}"]`);
 
         if (el) {
           el.scrollIntoView({ behavior: 'smooth', block: 'center' });

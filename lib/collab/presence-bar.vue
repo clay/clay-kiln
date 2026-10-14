@@ -199,8 +199,8 @@
 </style>
 
 <template>
-  <div class="kiln-collab kiln-collab-presence" role="region" aria-label="People on this page" v-click-outside="close">
-    <button type="button" class="kiln-collab-stack" :aria-expanded="open ? 'true' : 'false'" :title="summary" @click.stop="toggle">
+  <div class="kiln-collab kiln-collab-presence" role="region" aria-label="People on this page" v-click-outside="close" @keydown.esc.stop="closeAndFocus">
+    <button type="button" ref="stack" class="kiln-collab-stack" :aria-expanded="open ? 'true' : 'false'" :aria-label="summary" :title="summary" @click.stop="toggle">
       <span v-if="!people.length" class="kiln-collab-live">Live</span>
       <span
         v-for="person in shown"
@@ -208,7 +208,8 @@
         class="kiln-collab-avatar"
         :class="['is-' + person.state, { 'is-editing': !!person.focus }]"
         :style="{ backgroundColor: person.user.color }"
-        :aria-label="person.user.name + ', ' + doing(person)">
+        :aria-label="person.user.name + ', ' + doing(person)"
+        aria-hidden="true">
         <img v-if="person.user.imageUrl" :src="person.user.imageUrl" alt="">
         <span v-else>{{ initialsOf(person.user.name) }}</span>
       </span>
@@ -216,7 +217,7 @@
       <span class="kiln-collab-dot" :class="{ 'is-offline': !connected }"></span>
     </button>
 
-    <div v-if="open" class="kiln-collab-panel" @click.stop>
+    <div v-if="open" ref="panel" class="kiln-collab-panel" role="dialog" aria-label="People on this page and recent changes" tabindex="-1" @click.stop>
       <h3>On this page</h3>
       <p v-if="!people.length" class="kiln-collab-empty">Just you. Anyone who opens this page will show up here.</p>
       <div v-for="person in people" :key="'p' + person.user.id" class="kiln-collab-person">
@@ -250,6 +251,7 @@
 <script>
   import _ from 'lodash';
   import { editors, describe, initials } from './presence';
+  import { cssEscape } from './remote';
   import { COLLAB_FLASH, COLLAB_FLASH_DONE } from './mutationTypes';
 
   const MAX_SHOWN = 3;
@@ -278,21 +280,33 @@
         return _.take(_.get(this.collab, 'activity', []), 10);
       },
       summary() {
-        if (!this.people.length) {
-          return this.connected ? 'Live collaboration is on. Nobody else is on this page.' : 'Reconnecting to live collaboration…';
+        if (!this.connected) {
+          return 'Reconnecting to live collaboration… Your edits still save normally.';
         }
 
-        return _.map(this.people, person => `${person.user.name}: ${describe(person)}`).join('\n');
+        if (!this.people.length) {
+          return 'Live collaboration is on. Nobody else is on this page.';
+        }
+
+        return _.map(this.people, person => `${person.user.name}: ${describe(person)}`).join('. ');
       }
     },
     watch: {
+      activity(current, previous) {
+        const latest = current[0];
+
+        // screen readers: what other people just changed (presence is otherwise visual)
+        if (latest && (!previous[0] || latest.id !== previous[0].id || latest.at !== previous[0].at)) {
+          this.announcement = `${latest.user ? latest.user.name : 'Someone'} ${latest.labels ? `edited ${latest.labels.join(', ')}` : latest.text}`;
+        }
+      },
       people(current, previous) {
         const before = _.map(previous, 'user.id'),
           after = _.map(current, 'user.id'),
           joined = _.filter(current, person => !_.includes(before, person.user.id)),
           left = _.filter(previous, person => !_.includes(after, person.user.id));
 
-        // screen readers: who came and went (presence is otherwise only visual)
+        // screen readers: who came and went
         this.announcement = _.compact([
           joined.length ? `${_.map(joined, 'user.name').join(', ')} joined` : '',
           left.length ? `${_.map(left, 'user.name').join(', ')} left` : ''
@@ -309,9 +323,18 @@
       toggle() {
         this.open = !this.open;
         this.now = Date.now();
+        if (this.open) {
+          this.$nextTick(() => this.$refs.panel && this.$refs.panel.focus());
+        }
       },
       close() {
         this.open = false;
+      },
+      closeAndFocus() {
+        if (this.open) {
+          this.open = false;
+          this.$refs.stack.focus();
+        }
       },
       doing(person) {
         return describe(person);
@@ -334,7 +357,7 @@
         return `${Math.round(seconds / 3600)}h ago`;
       },
       jumpTo(person) {
-        const el = document.querySelector(`[data-uri="${person.focus.uri}"]`),
+        const el = document.querySelector(`[data-uri="${cssEscape(person.focus.uri)}"]`),
           id = `jump-${Date.now()}`;
 
         if (!el) {
