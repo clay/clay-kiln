@@ -156,8 +156,9 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!navigator.onLine) {
         // test connection loss on page load
         store.dispatch('addAlert', { type: 'error', text: connectionLostMessage, permanent: true });
-      } else if (lastEditUser) {
+      } else if (lastEditUser && !store.state.collab) {
         // show message if another user has edited this page in the last 5 minutes
+        // (not when collaborating: the presence bar shows who's here and what changed)
         store.dispatch('addAlert', { type: 'info', text: `Edited less than 5 minutes ago${lastEditUser.name ? ` by ${lastEditUser.name}` : ''}` });
       }
 
