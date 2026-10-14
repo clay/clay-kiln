@@ -235,7 +235,7 @@
         <h3>Recent changes</h3>
         <ul class="kiln-collab-activity">
           <li v-for="entry in activity" :key="'a' + entry.id">
-            <strong>{{ entry.user ? entry.user.name : 'Someone' }}</strong> {{ entry.text }}<time :datetime="isoTime(entry.at)">{{ ago(entry.at) }}</time>
+            <strong>{{ entry.user ? entry.user.name : 'Someone' }}</strong> {{ entry.labels ? 'edited ' + entry.labels.join(', ') : entry.text }}<time :datetime="isoTime(entry.at)">{{ ago(entry.at) }}</time>
           </li>
         </ul>
       </template>
