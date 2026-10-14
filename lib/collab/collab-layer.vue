@@ -28,6 +28,14 @@
     &.is-typing {
       border-style: dashed;
     }
+
+    &.is-pending {
+      border-style: dotted;
+
+      .kiln-collab-tag {
+        max-width: 400px;
+      }
+    }
   }
 
   .kiln-collab-tag {
@@ -113,7 +121,7 @@
         :key="box.key"
         class="kiln-collab-box"
         aria-hidden="true"
-        :class="{ 'is-flash': box.flash, 'is-typing': box.typing }"
+        :class="{ 'is-flash': box.flash, 'is-typing': box.typing, 'is-pending': box.pending }"
         :style="box.style">
         <span class="kiln-collab-tag" :style="box.tagStyle"><span :class="{ 'kiln-collab-typing-dots': box.typing }">{{ box.text }}</span></span>
       </div>
@@ -130,7 +138,7 @@
   const TAG_HEIGHT = 18,
     TOOLBAR_HEIGHT = 60,
     // re-measure after anything that can move components around
-    LAYOUT_MUTATIONS = ['RENDER_COMPONENT', 'RENDER_PAGE', 'FINISHED_DECORATING', 'OPEN_FORM', 'CLOSE_FORM', 'COLLAB_SYNCED', 'COLLAB_FLASH', 'REMOVE_COMPONENT', 'COMPONENT_ADDED'];
+    LAYOUT_MUTATIONS = ['RENDER_COMPONENT', 'RENDER_PAGE', 'FINISHED_DECORATING', 'OPEN_FORM', 'CLOSE_FORM', 'COLLAB_SYNCED', 'COLLAB_FLASH', 'COLLAB_PENDING', 'COLLAB_PENDING_DONE', 'REMOVE_COMPONENT', 'COMPONENT_ADDED'];
 
   /**
    * The element to outline: the field being edited if it's on the page,
@@ -169,6 +177,8 @@
     computed: {
       boxes() {
         const flashes = _.get(this.$store, 'state.collab.flashes', []),
+          pending = _.get(this.$store, 'state.collab.pending', {}),
+          openUri = _.get(this.$store, 'state.ui.currentForm.uri'),
           perEl = {},
           items = _.map(focuses(this.$store), entry => ({
             key: `f-${entry.tab}`,
@@ -177,7 +187,15 @@
             user: entry.user,
             typing: entry.focus.typing,
             text: `${entry.user.name}${entry.focus.typing ? ' is typing' : ' is editing'}`
-          })).concat(_.map(flashes, flash => ({
+          })).concat(_.compact(_.map(pending, (change, uri) => uri === openUri && _.get(change, 'by.user') ? {
+            // someone changed what this user has open: their change shows once it's closed
+            // (only on the open component itself: containers it sits in wait quietly)
+            key: `p-${uri}`,
+            focus: { uri },
+            user: change.by.user,
+            pending: true,
+            text: `${change.by.user.name} changed this too · updates when you're done`
+          } : null))).concat(_.map(flashes, flash => ({
             key: `x-${flash.id}`,
             focus: { uri: flash.uri },
             user: flash.user,
@@ -216,6 +234,7 @@
             key: item.key,
             flash: !!item.flash,
             typing: !!item.typing,
+            pending: !!item.pending,
             text: item.text,
             style: {
               borderColor: item.user.color,
