@@ -46,6 +46,37 @@
     white-space: nowrap;
   }
 
+  .kiln-collab-edge {
+    @include quick-bar-layer();
+
+    border: 0;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    color: #fff;
+    cursor: pointer;
+    font-family: 'Noto Sans', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    left: 50%;
+    line-height: 24px;
+    max-width: 80vw;
+    overflow: hidden;
+    padding: 0 12px;
+    pointer-events: auto;
+    position: fixed;
+    text-overflow: ellipsis;
+    transform: translateX(-50%);
+    white-space: nowrap;
+
+    &.is-below {
+      bottom: 16px;
+    }
+
+    &.is-above {
+      top: 72px;
+    }
+  }
+
   .kiln-collab-typing-dots::after {
     animation: kiln-collab-dots 1.2s steps(4, end) infinite;
     content: '…';
@@ -67,15 +98,26 @@
 </style>
 
 <template>
-  <div class="kiln-collab-layer" aria-hidden="true">
-    <div
-      v-for="box in boxes"
-      :key="box.key"
-      class="kiln-collab-box"
-      :class="{ 'is-flash': box.flash, 'is-typing': box.typing }"
-      :style="box.style">
-      <span class="kiln-collab-tag" :style="box.tagStyle"><span :class="{ 'kiln-collab-typing-dots': box.typing }">{{ box.text }}</span></span>
-    </div>
+  <div class="kiln-collab kiln-collab-layer">
+    <template v-for="box in boxes">
+      <button
+        v-if="box.edge"
+        :key="box.key"
+        type="button"
+        class="kiln-collab-edge"
+        :class="'is-' + box.edge"
+        :style="box.tagStyle"
+        @click.stop="jumpTo(box.uri)">{{ box.edge === 'below' ? '↓' : '↑' }} {{ box.text }}</button>
+      <div
+        v-else
+        :key="box.key"
+        class="kiln-collab-box"
+        aria-hidden="true"
+        :class="{ 'is-flash': box.flash, 'is-typing': box.typing }"
+        :style="box.style">
+        <span class="kiln-collab-tag" :style="box.tagStyle"><span :class="{ 'kiln-collab-typing-dots': box.typing }">{{ box.text }}</span></span>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -101,6 +143,24 @@
     return field || document.querySelector(`[data-uri="${focus.uri}"]`);
   }
 
+  /**
+   * One pill per screen edge: several people out of view above (or below)
+   * share it.
+   * @param {object[]} boxes
+   * @returns {object[]}
+   */
+  function groupEdges(boxes) {
+    const [edges, rest] = _.partition(boxes, 'edge');
+
+    return rest.concat(_.map(_.groupBy(edges, 'edge'), (group, edge) => group.length === 1 ? group[0] : {
+      key: `edge-${edge}`,
+      edge,
+      uri: group[0].uri,
+      text: `${_.map(group, box => box.text.split(' is ')[0]).join(', ')} are editing ${edge === 'below' ? 'below' : 'above'}`,
+      tagStyle: group[0].tagStyle
+    }));
+  }
+
   export default {
     data() {
       return { tick: 0 };
@@ -112,6 +172,7 @@
           items = _.map(focuses(this.$store), entry => ({
             key: `f-${entry.session}`,
             focus: entry.focus,
+            label: entry.focus.label,
             user: entry.user,
             typing: entry.focus.typing,
             text: `${entry.user.name}${entry.focus.typing ? ' is typing' : ' is editing'}`
@@ -126,7 +187,7 @@
         // eslint-disable-next-line no-unused-expressions
         this.tick; // re-measure on scroll/resize/render
 
-        return _.compact(_.map(items, (item) => {
+        return groupEdges(_.compact(_.map(items, (item) => {
           const el = targetEl(item.focus),
             rect = el && el.getBoundingClientRect();
 
@@ -140,7 +201,14 @@
             inside = Math.max(TAG_HEIGHT * (stack - 1), TOOLBAR_HEIGHT - rect.top + TAG_HEIGHT * (stack - 1));
 
           if (rect.bottom < TOOLBAR_HEIGHT || rect.top > window.innerHeight) {
-            return null; // scrolled out of view
+            // out of view: point at it from the edge of the screen instead
+            return item.flash ? null : {
+              key: `${item.key}-edge`,
+              edge: rect.top > window.innerHeight ? 'below' : 'above',
+              uri: item.focus.uri,
+              text: `${item.user.name} is ${item.typing ? 'typing' : 'editing'}${item.focus.label ? ` · ${item.focus.label}` : ''}`,
+              tagStyle: { backgroundColor: item.user.color }
+            };
           }
 
           return {
@@ -160,7 +228,7 @@
               top: above ? `${-TAG_HEIGHT * stack - 2}px` : `${inside}px`
             }
           };
-        }));
+        })));
       }
     },
     mounted() {
@@ -178,6 +246,15 @@
           this.remeasure();
         }
       }, 1000);
+    },
+    methods: {
+      jumpTo(uri) {
+        const el = document.querySelector(`[data-uri="${uri}"]`);
+
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
     },
     beforeDestroy() {
       window.removeEventListener('scroll', this.remeasure, { capture: true });
