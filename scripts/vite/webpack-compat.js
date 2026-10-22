@@ -14,8 +14,8 @@ const path = require('path');
  * imported (an eager import.meta.glob would be hoisted above them, which runs
  * inputs/*.vue before the store exists and crashes on an import cycle).
  *
- * The calls stay in the source because kiln's Jest 23 / Babel 6 test setup
- * can't parse the alternatives (`import.meta`).
+ * The calls stay in the source because kiln's Jest tests run as CommonJS
+ * (Babel), which can't parse the alternatives (`import.meta`).
  */
 const REQUIRE_CONTEXTS = [
   {
