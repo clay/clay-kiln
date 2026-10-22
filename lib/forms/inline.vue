@@ -41,7 +41,11 @@
     data() {
       return {};
     },
-    store,
+    // note: no `store` option here. This module is reached through an import
+    // cycle (store -> actions -> forms -> inline-form -> inline.vue), so `store`
+    // isn't set yet at this point: webpack and Rolldown read it as undefined, and
+    // Vite 5's Rollup threw. beforeCreate (below) sets this.$store, which is
+    // what's used.
     computed: {
       path() {
         return _.get(store, 'state.ui.currentForm.path');

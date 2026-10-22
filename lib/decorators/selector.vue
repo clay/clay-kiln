@@ -446,6 +446,11 @@
         this.selectorPosition = calculateSelectorPosition(this.$options.componentEl);
       }
     },
-    components: _.assign({}, _.get(window, 'kiln.selectorButtons', {}), { UiIconButton })
+    // a getter so the selector buttons sites register are merged in when Vue
+    // registers this component, not when this module loads. (webpack only
+    // loaded this module after sites had registered them; Vite loads it upfront.)
+    get components() {
+      return _.assign({}, _.get(window, 'kiln.selectorButtons', {}), { UiIconButton });
+    }
   };
 </script>

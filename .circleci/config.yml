@@ -28,40 +28,31 @@ general:
     - coverage
 
 jobs:
-  test_node12:
+  # Lint and Jest on Node 24, the same Node the dist is built with.
+  test_node24:
     docker:
-      - image: circleci/node:12
+      - image: cimg/node:24.21
     working_directory: ~/repo
     steps:
       - checkout
-      - restore_cache:
-          keys:
-          - v4-node12-dependencies-{{ checksum "package.json" }}
-      - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v4-node12-dependencies-{{ checksum "package.json" }}
+      - run: npm ci
       - run: npm test -- --maxWorkers=4
-      - run: npm run build
       - run: cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js || true
 
-  test_node14:
+  # Builds the bundles with Vite and loads them in jsdom the way sites do
+  # (scripts/smoke-test.js).
+  build_node24:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:24.21
     working_directory: ~/repo
     steps:
       - checkout
-      - restore_cache:
-          keys:
-          - v4-node14-dependencies-{{ checksum "package.json" }}
-      - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v4-node14-dependencies-{{ checksum "package.json" }}
-      - run: npm test -- --maxWorkers=4
+      - run: npm ci
       - run: npm run build
+      - run: npm run test:dist
+      # builds are reproducible; compare with a local `md5 -q dist/*` to confirm
+      # a published dist matches the one that was tested
+      - run: md5sum dist/*
 
   deploy_docs:
     docker:
@@ -83,14 +74,12 @@ jobs:
 
   deploy_package:
     docker:
-      - image: circleci/node:12
+      # prepublishOnly builds dist with Vite and smoke-tests it, so it needs Node 24
+      - image: cimg/node:24.21
     working_directory: ~/repo
     steps:
       - checkout
-      - restore_cache:
-          keys:
-          - v4-node12-dependencies-{{ checksum "package.json" }}
-      - run: npm install
+      - run: npm ci
       - run: |
           echo "$NPMRC" > ~/.npmrc
           chmod 600 ~/.npmrc
@@ -104,21 +93,20 @@ workflows:
   version: 2
   test:
     jobs:
-      - test_node12:
-          <<: *filter_all
-      - test_node14:
+      - test_node24:
           <<: *filter_all
       - deploy_docs:
           <<: *filter_head
           context:
             - Documentation
           requires:
-            - test_node12
-            - test_node14
+            - test_node24
+      - build_node24:
+          <<: *filter_all
       - deploy_package:
           <<: *filter_release
           context:
             - npm-publish
           requires:
-            - test_node12
-            - test_node14
+            - test_node24
+            - build_node24
