@@ -8,6 +8,14 @@ import Delta from 'quill-delta';
 
 Vue.config.productionTip = false;
 
+// Quill's polyfill calls document.execCommand('enableObjectResizing') on
+// DOMContentLoaded. The jsdom bundled with Jest 29 no longer stubs execCommand
+// (the jsdom under Jest 23 did), so the call throws and kills the test worker.
+// Restore the no-op stub; nothing in the tests relies on execCommand.
+if (typeof document.execCommand !== 'function') {
+  document.execCommand = () => false;
+}
+
 // global functions to mount vue components
 global.mount = mount;
 global.shallowMount = shallowMount; // use when you don't want to render child components
