@@ -11,12 +11,16 @@ Kiln lets several people edit the same page at the same time. It turns on by its
 * **Soft locks.** Opening a component or field someone else has open asks first: "Ada is editing this — Edit anyway / Cancel". Editing *different* fields of the same component needs no prompt; those changes merge.
 * **No lost work.** If you both change the same field, your save wins (you're the one saving) and a snackbar offers "Use Ada's" to switch to theirs. If someone deletes a component you were just editing, you're offered **Restore**.
 * **Undo stays yours.** Undo and redo only step through your own changes; they never revert someone else's.
+* **Catching up after an interruption.** If live collaboration was interrupted (the server couldn't reach its store, so saves went through without anyone hearing about them), kiln re-reads the page as soon as it's back and shows whatever changed: "Updated with changes saved while live collaboration was interrupted". A component you have open waits, as above ("Someone changed this too · updates when you're done"), and your save merges with it. Until kiln has re-read the page, your saves merge with what's on the server rather than replacing it. Saving is never blocked.
+* **When kiln can't be sure.** If something on the page can't be re-read, a notice stays under the toolbar: "Collaboration was interrupted — reload to make sure you have the latest changes", with a **Reload** button. You can keep editing; your saves still merge with the server's copy. The notice goes away if a later catch-up succeeds.
 
 ## How it works
 
 On load, kiln reads `locals.collaboration` (added by amphora in edit mode) and starts a small polling loop (`POST /_collab/sync`: every 2s with others, 4s alone, 20s in a background tab, 30s when idle) that sends this tab's presence and receives everyone else's presence plus the page's change feed.
 
 Saves carry the revision of the data they were built from (`X-Clay-Rev`). If someone else saved in between, amphora answers 412 with the current data; kiln merges field by field (component lists by `_ref`, so adds/removes/moves from both people survive), retries, and then shows the merged result. Form saves only include the fields you actually changed.
+
+Revisions only cover saves the server's store saw. Kiln **catches up** (`catchUp` in `remote.js`) whenever it may have missed changes: a sync answered 503 (the store was unreachable), the sync's `gap` changed (amphora starts a new gap whenever saves may have gone around the store, including on an instance that has since restarted), the page was rendered without a feed position, or one of this tab's own saves came back without a revision. It first forgets every revision it knows (so saves send `X-Clay-Rev: -1` and merge), then re-reads every component (a few at a time), the page and the layout, and applies what changed through the same path as anyone's change, learning fresh revisions as it goes. A revision read before the tab found out (again) that it missed changes is never trusted. Catch-ups run at most every 30 seconds; anything that couldn't be re-read sets `state.collab.stale`, which shows the reload notice. Saves that came back without a revision are also reported to amphora on the next sync (`unguarded`), so their revisions move on even if the instance that took them restarted.
 
 All of this lives in `lib/collab/`. Hooks into the rest of kiln, all no-ops when collaboration is off:
 
@@ -29,11 +33,12 @@ All of this lives in `lib/collab/`. Hooks into the rest of kiln, all no-ops when
 | `undo/actions.js` | `rebaseHistory` keeps other people's changes out of undo |
 | `core-data/api.js` | every request names its tab (`X-Clay-Collab-Session`) |
 | `toolbar/edit-toolbar.vue` | presence bar and page layer |
+| `toolbar/alert-container.vue` | the reload notice when kiln couldn't catch up |
 
 ## For plugin authors
 
-* `state.collab` is `null` unless collaboration is on. When on: `{ session, connected, failures, others, activity, pending, flashes }`.
-* New mutations you can subscribe to: `COLLAB_START`, `COLLAB_SYNCED`, `COLLAB_SYNC_FAILED`, `COLLAB_ACTIVITY`, `COLLAB_PENDING`, `COLLAB_PENDING_DONE`, `COLLAB_FLASH`, `COLLAB_FLASH_DONE`, `COLLAB_STOP`.
+* `state.collab` is `null` unless collaboration is on. When on: `{ session, connected, failures, others, activity, pending, flashes, stale }`.
+* New mutations you can subscribe to: `COLLAB_START`, `COLLAB_SYNCED`, `COLLAB_SYNC_FAILED`, `COLLAB_ACTIVITY`, `COLLAB_PENDING`, `COLLAB_PENDING_DONE`, `COLLAB_FLASH`, `COLLAB_FLASH_DONE`, `COLLAB_STALE`, `COLLAB_STOP`.
 * While collaborating, `UPDATE_COMPONENT` and `REVERT_COMPONENT` on the layout also update `state.layout.data` (where kiln reads layout data from), so saves are merged against what's on screen. Remote layout changes re-render only the layout lists that changed, from the page's server html.
 * Remote changes are applied with the same mutations as local ones (`UPDATE_COMPONENT`, `RENDER_COMPONENT` with `snapshot: false`, `UPDATE_PAGE`, `UPDATE_PAGE_STATE`), so plugins that react to those keep working.
 * Save through kiln (`store.dispatch('saveComponent', ...)`, `savePage`) to get revision checks and merging. Plugins that `PUT` to the API directly still work, but their writes are unconditional (last one wins), as before.

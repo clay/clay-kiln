@@ -137,6 +137,8 @@
 
   const TAG_HEIGHT = 18,
     TOOLBAR_HEIGHT = 60,
+    // a change this tab caught up on after collaboration was interrupted has no known author
+    SOMEONE = { name: 'Someone', color: '#616161' },
     // re-measure after anything that can move components around
     LAYOUT_MUTATIONS = ['RENDER_COMPONENT', 'RENDER_PAGE', 'FINISHED_DECORATING', 'OPEN_FORM', 'CLOSE_FORM', 'COLLAB_SYNCED', 'COLLAB_FLASH', 'COLLAB_PENDING', 'COLLAB_PENDING_DONE', 'REMOVE_COMPONENT', 'COMPONENT_ADDED'];
 
@@ -187,14 +189,14 @@
             user: entry.user,
             typing: entry.focus.typing,
             text: `${entry.user.name}${entry.focus.typing ? ' is typing' : ' is editing'}`
-          })).concat(_.compact(_.map(pending, (change, uri) => uri === openUri && _.get(change, 'by.user') ? {
+          })).concat(_.compact(_.map(pending, (change, uri) => uri === openUri ? {
             // someone changed what this user has open: their change shows once it's closed
             // (only on the open component itself: containers it sits in wait quietly)
             key: `p-${uri}`,
             focus: { uri },
-            user: change.by.user,
+            user: _.get(change, 'by.user') || SOMEONE,
             pending: true,
-            text: `${change.by.user.name} changed this too · updates when you're done`
+            text: `${_.get(change, 'by.user.name') || SOMEONE.name} changed this too · updates when you're done`
           } : null))).concat(_.map(flashes, flash => ({
             key: `x-${flash.id}`,
             focus: { uri: flash.uri },
