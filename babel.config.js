@@ -2,7 +2,7 @@
 
 /**
  * Babel is only used by the Jest tests. The Vite build compiles kiln with
- * esbuild and runs Babel for one plugin with `configFile: false`
+ * Oxc and runs Babel for one plugin with `configFile: false`
  * (scripts/vite/webpack-compat.js), so it never reads this file.
  *
  * This is a project-wide config (not .babelrc) on purpose: Jest also
