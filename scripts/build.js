@@ -190,6 +190,11 @@ function configFor(entry, nodePolyfills) {
       // webpack, and builds come out identical run to run.
       rolldownOptions: {
         input: path.join(root, `${entry}.js`),
+        // Unminified output labels each module with its path relative to the
+        // working directory, so pin it: the dev build (the one that's
+        // published) is then the same from any directory, with no local
+        // directory names in it.
+        cwd: root,
         // No tree-shaking for the editor bundles, like webpack's builds. Besides
         // matching what shipped, Rollup's tree-shaking dropped function-level
         // "use strict" directives, and in non-strict code handlebars helpers
