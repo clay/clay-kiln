@@ -83,6 +83,10 @@ const stringify = obj => JSON.stringify(obj).replace(/<\/script>/g, '<"+"/script
 const HARNESS = `<script>
   window.__smoke = { errors: [], requests: [], pluginStore: null };
   document.execCommand = document.execCommand || function () { return false; };
+  // an AMD loader on the page must not take the exports of kiln's bundled UMD
+  // dependencies (see COMMONJS_GLOBALS in scripts/build.js)
+  window.define = function () { throw new Error('a kiln bundle called the page\\'s AMD define()'); };
+  window.define.amd = {};
   window.addEventListener('error', function (e) {
     window.__smoke.errors.push(String((e.error && e.error.stack) || e.message));
   });
@@ -349,11 +353,15 @@ function staticChecks() {
   check('clay-kiln-view-public.js', publicJs.length <= VIEW_PUBLIC_JS_BUDGET, `is ${publicJs.length} bytes, over the ${VIEW_PUBLIC_JS_BUDGET}-byte budget for code inlined into every public page`);
   check('clay-kiln-view-public.js', !/<\/script/i.test(publicJs), 'contains "</script", which would end the inline <script> it is rendered into');
   check('clay-kiln-view-public.css', !/<\/style/i.test(publicCss), 'contains "</style", which would end the inline <style> it is rendered into');
+  ['edit', 'view', 'view-public'].forEach((entry) => {
+    check(`clay-kiln-${entry}.css`, !distFile(`clay-kiln-${entry}.css`).includes('/*$vite$'), 'contains Vite\'s internal /*$vite$*/ marker (see kiln-strip-css-marker in scripts/build.js)');
+  });
 
   // chrono-node needs moment's UMD build; a second (ESM) copy means module
   // resolution regressed (see resolve.mainFields in scripts/build.js)
   const momentVersion = require(path.join(root, 'node_modules/moment/package.json')).version;
-  const momentCopies = (distFile('clay-kiln-edit.js').match(new RegExp(`(['"])${momentVersion.replace(/\./g, '\\.')}\\1`, 'g')) || []).length;
+  // (the minifier may write the version as a template literal)
+  const momentCopies = (distFile('clay-kiln-edit.js').match(new RegExp(`(['"\`])${momentVersion.replace(/\./g, '\\.')}\\1`, 'g')) || []).length;
 
   check('clay-kiln-edit.js', momentCopies === 1, `moment ${momentVersion} is bundled ${momentCopies} times, expected once`);
 }
