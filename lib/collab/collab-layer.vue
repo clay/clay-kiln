@@ -140,7 +140,7 @@
     // a change nobody can be named for (made while this tab was reconnecting, or by a script)
     NOBODY = { name: 'Someone', color: '#616161' },
     // re-measure after anything that can move components around
-    LAYOUT_MUTATIONS = ['RENDER_COMPONENT', 'RENDER_PAGE', 'FINISHED_DECORATING', 'OPEN_FORM', 'CLOSE_FORM', 'COLLAB_SYNCED', 'COLLAB_FLASH', 'COLLAB_PENDING', 'COLLAB_PENDING_DONE', 'REMOVE_COMPONENT', 'COMPONENT_ADDED'];
+    LAYOUT_MUTATIONS = ['RENDER_COMPONENT', 'RENDER_PAGE', 'FINISHED_DECORATING', 'OPEN_FORM', 'CLOSE_FORM', 'COLLAB_SYNCED', 'COLLAB_FLASH', 'COLLAB_PENDING', 'COLLAB_PENDING_DONE', 'COLLAB_CLAIM', 'REMOVE_COMPONENT', 'COMPONENT_ADDED'];
 
   /**
    * The element to outline: the field being edited if it's on the page,
@@ -165,6 +165,19 @@
     }
 
     return _.get(by, 'reconnecting') ? 'Changed while you were reconnecting · updates when you\'re done' : 'Someone changed this too · updates when you\'re done';
+  }
+
+  /**
+   * The note on a field this user is taking over, while whoever had it open saves it.
+   * @param {object} claim state.collab.claim
+   * @returns {string}
+   */
+  function claimText(claim) {
+    if (claim.own) {
+      return 'Saving what you typed in your other tab…';
+    }
+
+    return `Saving ${_.get(claim, 'by.user.name', 'their')}'s changes…`;
   }
 
   /**
@@ -193,6 +206,7 @@
       boxes() {
         const flashes = _.get(this.$store, 'state.collab.flashes', []),
           pending = _.get(this.$store, 'state.collab.pending', {}),
+          claim = _.get(this.$store, 'state.collab.claim'),
           openUri = _.get(this.$store, 'state.ui.currentForm.uri'),
           perEl = {},
           items = _.map(focuses(this.$store), entry => ({
@@ -210,7 +224,15 @@
             user: _.get(change, 'by.user') || NOBODY,
             pending: true,
             text: pendingText(change.by)
-          } : null))).concat(_.map(flashes, flash => ({
+          } : null))).concat(claim ? [{
+            // taking this over: whoever had it open is saving it first
+            key: `c-${claim.id}`,
+            focus: { uri: claim.uri, path: claim.path },
+            user: _.get(claim, 'by.user') || NOBODY,
+            pending: true,
+            claim: true,
+            text: claimText(claim)
+          }] : []).concat(_.map(flashes, flash => ({
             key: `x-${flash.id}`,
             focus: { uri: flash.uri },
             user: flash.user || NOBODY,
@@ -236,7 +258,7 @@
 
           if (rect.bottom < TOOLBAR_HEIGHT || rect.top > window.innerHeight) {
             // out of view: point at it from the edge of the screen instead
-            return item.flash ? null : {
+            return item.flash || item.claim ? null : {
               key: `${item.key}-edge`,
               edge: rect.top > window.innerHeight ? 'below' : 'above',
               uri: item.focus.uri,
