@@ -194,7 +194,7 @@ function webpackCompat({ root }) {
  * actually used instead of all of lodash. This matters most for
  * clay-kiln-view-public.js, which sites inline into every public page.
  *
- * Only this one Babel plugin runs; Vite/esbuild handles everything else. Applied
+ * Only this one Babel plugin runs; Vite (Oxc) handles everything else. Applied
  * to the same files webpack's babel-loader covered: kiln's own source plus the
  * few node_modules it transpiled (keen-ui, clayutils, striptags).
  * @param {object} options
