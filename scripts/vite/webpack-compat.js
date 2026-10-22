@@ -235,5 +235,48 @@ function lodashCherryPick({ root }) {
   };
 }
 
+/**
+ * Run CommonJS dependencies that declare "use strict" in strict mode, as
+ * webpack did: each module ran in its own function, directive included.
+ * Rolldown also gives every CommonJS module its own function but drops the
+ * directive, and the bundle itself isn't strict (output.strict in build.js), so
+ * ~120 of them (sanitize-html's postcss, readable-stream, call-bind, qs,
+ * striptags, ...) would run sloppy. Moving the module's code into a strict
+ * function keeps their mode; `.call(this)` keeps top-level `this`
+ * (module.exports).
+ * @returns {object} vite plugin
+ */
+function strictCommonJS() {
+  return {
+    name: 'kiln-strict-commonjs',
+    transform: {
+      filter: { id: /[\\/]node_modules[\\/].+\.c?js$/, code: /use strict/ },
+      handler(code) {
+        let body;
+
+        try {
+          // fails on ES modules (import/export), which can't be moved into a function
+          ({ body } = this.parse(code, { sourceType: 'commonjs' }));
+        } catch (e) {
+          return null;
+        }
+
+        // the directive prologue: leading string-literal statements
+        for (const node of body) {
+          if (!node.directive) {
+            return null;
+          }
+          if (node.directive === 'use strict') {
+            return { code: `(function () {\n${code}\n}).call(this);`, map: null };
+          }
+        }
+
+        return null;
+      }
+    }
+  };
+}
+
 module.exports = webpackCompat;
 module.exports.lodashCherryPick = lodashCherryPick;
+module.exports.strictCommonJS = strictCommonJS;

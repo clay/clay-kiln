@@ -136,6 +136,7 @@ function configFor(entry, nodePolyfills) {
       // after kilnVue2, so it sees compiled .vue output too
       webpackCompat.lodashCherryPick({ root }),
       ...webpackCompat({ root }),
+      webpackCompat.strictCommonJS(),
       // webpack 3 polyfilled Node built-ins for the browser automatically. These
       // are the ones kiln's dependencies pulled in under webpack (sanitize-html's
       // htmlparser2 stream, url/punycode, etc.).
@@ -216,7 +217,9 @@ function configFor(entry, nodePolyfills) {
           // webpack ran CommonJS dependencies in sloppy mode; several rely on it
           // (caret-position and handlebars use top-level `this`, comma-it assigns
           // undeclared variables). A single IIFE can't mix modes, so no
-          // "use strict" for the bundle. kiln's own ES modules don't depend on it.
+          // "use strict" for the bundle. kiln's own ES modules don't depend on it,
+          // and CommonJS dependencies that declare it keep it (strictCommonJS in
+          // scripts/vite/webpack-compat.js).
           strict: false,
           intro: COMMONJS_GLOBALS,
           // Unminified, Rolldown keeps every JSDoc and /* @__PURE__ */ comment,
