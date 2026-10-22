@@ -137,8 +137,8 @@
 
   const TAG_HEIGHT = 18,
     TOOLBAR_HEIGHT = 60,
-    // a change this tab caught up on after collaboration was interrupted has no known author
-    SOMEONE = { name: 'Someone', color: '#616161' },
+    // a change nobody can be named for (made while this tab was reconnecting, or by a script)
+    NOBODY = { name: 'Someone', color: '#616161' },
     // re-measure after anything that can move components around
     LAYOUT_MUTATIONS = ['RENDER_COMPONENT', 'RENDER_PAGE', 'FINISHED_DECORATING', 'OPEN_FORM', 'CLOSE_FORM', 'COLLAB_SYNCED', 'COLLAB_FLASH', 'COLLAB_PENDING', 'COLLAB_PENDING_DONE', 'REMOVE_COMPONENT', 'COMPONENT_ADDED'];
 
@@ -152,6 +152,19 @@
     const field = focus.path && getFieldEl(focus.uri, focus.path);
 
     return field || document.querySelector(`[data-uri="${cssEscape(focus.uri)}"]`);
+  }
+
+  /**
+   * The note on a component this user has open that changed meanwhile.
+   * @param {object} [by] { user }, or { reconnecting: true } for a change this tab caught up on
+   * @returns {string}
+   */
+  function pendingText(by) {
+    if (_.get(by, 'user')) {
+      return `${by.user.name} changed this too · updates when you're done`;
+    }
+
+    return _.get(by, 'reconnecting') ? 'Changed while you were reconnecting · updates when you\'re done' : 'Someone changed this too · updates when you\'re done';
   }
 
   /**
@@ -194,15 +207,15 @@
             // (only on the open component itself: containers it sits in wait quietly)
             key: `p-${uri}`,
             focus: { uri },
-            user: _.get(change, 'by.user') || SOMEONE,
+            user: _.get(change, 'by.user') || NOBODY,
             pending: true,
-            text: `${_.get(change, 'by.user.name') || SOMEONE.name} changed this too · updates when you're done`
+            text: pendingText(change.by)
           } : null))).concat(_.map(flashes, flash => ({
             key: `x-${flash.id}`,
             focus: { uri: flash.uri },
-            user: flash.user,
+            user: flash.user || NOBODY,
             flash: true,
-            text: `Updated by ${flash.user.name}`
+            text: flash.user ? `Updated by ${flash.user.name}` : 'Updated while you were reconnecting'
           })));
 
         // eslint-disable-next-line no-unused-expressions

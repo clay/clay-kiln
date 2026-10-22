@@ -200,7 +200,7 @@
 
 <template>
   <div class="kiln-collab kiln-collab-presence" role="region" aria-label="People on this page" v-click-outside="close" @keydown.esc.stop="closeAndFocus">
-    <button type="button" ref="stack" class="kiln-collab-stack" :aria-expanded="open ? 'true' : 'false'" :aria-label="summary" :title="summary" @click.stop="toggle">
+    <button type="button" ref="stack" class="kiln-collab-stack" :aria-expanded="open ? 'true' : 'false'" :aria-label="summary" :title="connected ? summary : null" @click.stop="toggle">
       <span v-if="!people.length" class="kiln-collab-live">Live</span>
       <span
         v-for="person in shown"
@@ -216,6 +216,8 @@
       <span v-if="overflow" class="kiln-collab-avatar kiln-collab-more">+{{ overflow }}</span>
       <span class="kiln-collab-dot" :class="{ 'is-offline': !connected }"></span>
     </button>
+    <!-- while reconnecting (gray dot): say so the way the rest of the toolbar does -->
+    <ui-tooltip v-if="!connected" trigger="stack" position="bottom right">{{ reconnecting }}</ui-tooltip>
 
     <div v-if="open" ref="panel" class="kiln-collab-panel" role="dialog" aria-label="People on this page and recent changes" tabindex="-1" @click.stop>
       <h3>On this page</h3>
@@ -241,7 +243,7 @@
         </ul>
       </template>
 
-      <p v-if="!connected" class="kiln-collab-note">Reconnecting to live collaboration… Your edits still save normally.</p>
+      <p v-if="!connected" class="kiln-collab-note">{{ reconnecting }}</p>
     </div>
 
     <div class="kiln-collab-sr" aria-live="polite">{{ announcement }}</div>
@@ -250,6 +252,7 @@
 
 <script>
   import _ from 'lodash';
+  import UiTooltip from 'keen/UiTooltip';
   import { editors, describe, initials } from './presence';
   import { cssEscape } from './remote';
   import { COLLAB_FLASH, COLLAB_FLASH_DONE } from './mutationTypes';
@@ -258,7 +261,9 @@
 
   export default {
     data() {
-      return { open: false, now: Date.now(), announcement: '' };
+      return {
+        open: false, now: Date.now(), announcement: '', reconnecting: 'Reconnecting… your changes are still being saved.'
+      };
     },
     computed: {
       collab() {
@@ -281,11 +286,11 @@
       },
       summary() {
         if (!this.connected) {
-          return 'Reconnecting to live collaboration… Your edits still save normally.';
+          return this.reconnecting;
         }
 
         if (!this.people.length) {
-          return 'Live collaboration is on. Nobody else is on this page.';
+          return 'Nobody else is on this page right now.';
         }
 
         return _.map(this.people, person => `${person.user.name}: ${describe(person)}`).join('. ');
@@ -369,6 +374,9 @@
         this.$store.commit(COLLAB_FLASH, { id, uri: person.focus.uri, user: person.user });
         setTimeout(() => this.$store.commit(COLLAB_FLASH_DONE, id), 2500);
       }
+    },
+    components: {
+      UiTooltip
     }
   };
 </script>
