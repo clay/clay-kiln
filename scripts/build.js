@@ -138,8 +138,9 @@ function configFor(entry, nodePolyfills) {
       ...webpackCompat({ root }),
       webpackCompat.strictCommonJS(),
       // webpack 3 polyfilled Node built-ins for the browser automatically. These
-      // are the ones kiln's dependencies pulled in under webpack (sanitize-html's
-      // htmlparser2 stream, url/punycode, etc.).
+      // are the ones kiln's dependencies pulled in under webpack (sanitize-html 1's
+      // htmlparser2 stream, url/punycode, etc.). Some are no longer imported by
+      // anything (sanitize-html 2 doesn't stream), and are only used if one is.
       nodePolyfills({
         include: ['buffer', 'events', 'path', 'process', 'punycode', 'stream', 'string_decoder', 'timers', 'url', 'util'],
         globals: { Buffer: true, global: true, process: true },

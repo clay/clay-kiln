@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import sanitize from 'sanitize-html';
+import sanitizeHtml from 'sanitize-html';
 
 const allowedInlineTags = ['strong', 'em', 'a', 'br', 's', 'span', 'sup', 'sub', 'p'], // note: p gets parsed out in sanitizeInlineHTML
   allowedBlockTags = allowedInlineTags.concat(['h1', 'h2', 'h3', 'h4', 'blockquote', 'ul', 'ol', 'li']),
@@ -49,6 +49,29 @@ const allowedInlineTags = ['strong', 'em', 'a', 'br', 's', 'span', 'sup', 'sub',
     decodeEntities: true,
     lowerCaseTags: true
   };
+
+/**
+ * sanitize-html 2 changed two defaults and one detail of its output compared to 1.x,
+ * which is what pasted text has always been sanitized with. Pin them back so the same
+ * paste gives the same result.
+ */
+const sanitizeDefaults = {
+  // 2.x also lets tel: links through
+  allowedSchemes: ['http', 'https', 'ftp', 'mailto'],
+  // 2.x also throws away the text inside <option>
+  nonTextTags: ['style', 'script', 'textarea']
+};
+
+/**
+ * sanitize html with the options kiln has always used
+ * @param  {string} str
+ * @param  {object} options
+ * @return {string}
+ */
+function sanitize(str, options) {
+  // 2.x writes a " in text as it is, where 1.x wrote &quot; (tags and attributes are escaped the same way in both)
+  return sanitizeHtml(str, _.assign({}, sanitizeDefaults, options)).replace(/(<[^>]*>)|"/g, (match, tag) => tag || '&quot;');
+}
 
 /**
  * unescape manually-written tags before running through sanitizer
