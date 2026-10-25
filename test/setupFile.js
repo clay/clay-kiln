@@ -8,6 +8,13 @@ import Delta from 'quill-delta';
 
 Vue.config.productionTip = false;
 
+// kiln relies on the browser's own fetch (it used to import the whatwg-fetch polyfill, which
+// does nothing in any browser kiln supports) but Jest's jsdom has none. Tests mock the api,
+// so this only fails loudly if one reaches for the network by accident.
+if (typeof global.fetch !== 'function') {
+  global.fetch = () => Promise.reject(new Error('fetch is not stubbed in this test'));
+}
+
 // Quill's polyfill calls document.execCommand('enableObjectResizing') on
 // DOMContentLoaded. The jsdom bundled with Jest 29 no longer stubs execCommand
 // (the jsdom under Jest 23 did), so the call throws and kills the test worker.
