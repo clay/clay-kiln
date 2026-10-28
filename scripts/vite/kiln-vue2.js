@@ -83,17 +83,23 @@ function kilnVue2({ root, isProduction }) {
       const descriptor = getDescriptor(id, code);
       const relative = path.relative(root, id);
       const parts = [];
+      let styleImports = '';
 
       descriptor.styles.forEach((style, index) => {
         if (style.scoped || style.module) {
           this.error(`${relative}: scoped/module styles are not supported by the kiln build`);
         }
         if (style.content.trim()) {
-          parts.push(`import ${JSON.stringify(`${id}?vue&type=style&index=${index}&lang.${styleLang(style.lang)}`)};`);
+          styleImports += `import ${JSON.stringify(`${id}?vue&type=style&index=${index}&lang.${styleLang(style.lang)}`)};`;
         }
       });
 
-      parts.push(normalizeScript(descriptor.script && descriptor.script.content));
+      // The style imports share a line with the start of the script, which Vue's
+      // parser pads with newlines so it keeps its line numbers from the .vue
+      // file. Imports on lines of their own would shift every script line, and
+      // with no sourcemap for this transform the bundle's map would point that
+      // many lines off.
+      parts.push(styleImports + normalizeScript(descriptor.script && descriptor.script.content));
 
       if (descriptor.template) {
         if (descriptor.template.attrs && descriptor.template.attrs.functional) {
