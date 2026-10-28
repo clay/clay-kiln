@@ -262,11 +262,16 @@
         this.openFirstAllowedNav();
       }
     },
-    components: _.merge({
-      'nav-menu-button': navMenuButton,
-      UiIconButton,
-      UiMenu,
-      UiButton
-    }, _.get(window, 'kiln.navButtons', {}))
+    // a getter so the nav buttons sites register are merged in when Vue
+    // registers this component, not when this module loads. (webpack only
+    // loaded this module after sites had registered them; Vite loads it upfront.)
+    get components() {
+      return _.merge({
+        'nav-menu-button': navMenuButton,
+        UiIconButton,
+        UiMenu,
+        UiButton
+      }, _.get(window, 'kiln.navButtons', {}));
+    }
   };
 </script>
