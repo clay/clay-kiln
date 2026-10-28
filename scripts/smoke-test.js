@@ -345,6 +345,27 @@ function staticChecks() {
     // webpack ran CommonJS dependencies in sloppy mode and some rely on it
     check(bundle, !/^\s*(\(function\s*\(\)\s*\{\s*)?["']use strict["']/.test(js.slice(0, 200)), 'bundle starts with "use strict" (see output.strict in scripts/build.js)');
     check(bundle, !js.includes('import.meta'), 'bundle contains import.meta, which throws in a classic script');
+
+    // every bundle ships a sourcemap beside it that the bundle doesn't link to:
+    // view-public is inlined into pages, and sites copies the others as plain
+    // <script> files with nowhere to serve a map (see build.sourcemap in scripts/build.js)
+    check(bundle, !/\/\/[#@] sourceMappingURL=/.test(js.slice(-300)), 'bundle links to its sourcemap');
+
+    let map;
+
+    try {
+      map = JSON.parse(distFile(`${bundle}.map`));
+    } catch (e) {
+      fail(`${bundle}.map`, `is missing or not JSON (${e.message})`);
+    }
+
+    if (map) {
+      const mapName = `${bundle}.map`;
+
+      check(mapName, map.version === 3 && map.sources.length > 0 && map.sourcesContent && map.sourcesContent.length === map.sources.length, 'is not a version 3 map with its sources included');
+      check(mapName, map.sources.every(source => !path.isAbsolute(source) && !/^[a-z][a-z0-9+.-]*:/i.test(source)), 'has sources that are absolute paths or URLs');
+      check(mapName, !JSON.stringify(map).includes(root), 'contains the path of the directory it was built in (builds are the same from any directory)');
+    }
   });
 
   const publicJs = distFile('clay-kiln-view-public.js');

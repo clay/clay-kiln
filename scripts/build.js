@@ -182,7 +182,13 @@ function configFor(entry, nodePolyfills) {
       // one CSS file per entry; with code splitting on, Vite would inline CSS
       // into IIFE bundles as a <style> injection instead of emitting the .css file
       cssCodeSplit: false,
-      sourcemap: false,
+      // 'hidden' writes dist/clay-kiln-<entry>.js.map without a sourceMappingURL
+      // comment, so the bundles stay byte-identical to the ones without maps
+      // (view-public is inlined into every public page, and sites copies the
+      // others as plain <script> files with nowhere for a map to be served).
+      // Whatever consumes the maps (Sentry upload, a debugging session) is
+      // given them in the package. --watch links them, for devtools.
+      sourcemap: isWatch ? true : 'hidden',
       modulePreload: false,
       reportCompressedSize: false,
       copyPublicDir: false,
