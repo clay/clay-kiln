@@ -154,7 +154,7 @@
     "vuex": "^3.0.0"
   },
   "peerDependencies": {
-    "amphora": "8",
+    "amphora": "8 || ^9.0.0-0",
     "amphora-search": "8",
     "handlebars": "4"
   },
