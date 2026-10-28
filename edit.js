@@ -19,6 +19,7 @@ import { META_PRESS, META_UNPRESS } from './lib/preloader/mutationTypes';
 import { getEventPath } from './lib/utils/events';
 import { standardCurve } from './lib/utils/references';
 import { getLastEditUser } from './lib/utils/history';
+import { start as startCollaboration } from './lib/collab';
 import 'keen-ui/src/bootstrap'; // import this once, for KeenUI components
 import 'velocity-animate/velocity.ui.min.js'; // import this once, for velocity ui stuff
 import VueObserveVisibility from 'vue-observe-visibility';
@@ -134,6 +135,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   store.dispatch('preload')
     .then(() => decorateAll())
+    // real-time collaboration, if the server turned it on for this page
+    .then(() => startCollaboration(store))
     .then(() => store.dispatch('parseURLHash'))
     .then(() => store.dispatch('getList', 'new-pages'))
     .then(() => store.dispatch('getList', 'bookmarks'))
@@ -153,8 +156,9 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!navigator.onLine) {
         // test connection loss on page load
         store.dispatch('addAlert', { type: 'error', text: connectionLostMessage, permanent: true });
-      } else if (lastEditUser) {
+      } else if (lastEditUser && !store.state.collab) {
         // show message if another user has edited this page in the last 5 minutes
+        // (not when collaborating: the presence bar shows who's here and what changed)
         store.dispatch('addAlert', { type: 'info', text: `Edited less than 5 minutes ago${lastEditUser.name ? ` by ${lastEditUser.name}` : ''}` });
       }
 
@@ -168,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.body.addEventListener('click', (e) => {
     const ePath = getEventPath(e);
 
-    if (_.find(ePath, el => el.classList && (el.classList.contains('ui-calendar') || el.classList.contains('kiln-overlay-form')))) {
+    if (_.find(ePath, el => el.classList && (el.classList.contains('ui-calendar') || el.classList.contains('kiln-overlay-form') || el.classList.contains('kiln-collab')))) {
       return;
     }
 
