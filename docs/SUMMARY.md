@@ -9,6 +9,7 @@
   * [Editing Components](editing-components.md)
   * [Form Inputs](inputs.md)
 * [Deep Linking](deep-linking.md)
+* [Real-time Collaboration](collaboration.md)
 
 ## API Documentation
 
