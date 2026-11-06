@@ -84,7 +84,7 @@
   },
   "homepage": "https://github.com/clay/clay-kiln",
   "dependencies": {
-    "clayhandlebars": "^5.0.1",
+    "clayhandlebars": "^6.0.0",
     "js-base64": "^3.7.5"
   },
   "devDependencies": {
