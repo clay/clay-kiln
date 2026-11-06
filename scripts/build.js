@@ -12,11 +12,13 @@
  * Each is a self-contained IIFE (no shared chunks, no ES modules, no globals
  * beyond what kiln itself sets on window).
  *
- *   node scripts/build.js           development build (unminified, Vue dev mode).
- *                                   This is what kiln 10.2.3 actually shipped, so
- *                                   it's the default for publishing too.
- *   node scripts/build.js --prod    minified, NODE_ENV=production (Vue prod mode)
- *   node scripts/build.js --watch   rebuild on change
+ *   node scripts/build.js --prod    production build: minified, NODE_ENV=production
+ *                                   (Vue production mode, no Vuex strict mode). What
+ *                                   `npm run build` and publishing produce.
+ *   node scripts/build.js           development build: unminified, Vue dev mode and
+ *                                   Vuex strict mode, for debugging (`npm run
+ *                                   build:dev`). kiln 10.2.3 shipped this kind of build.
+ *   node scripts/build.js --watch   development build, rebuilt on change
  */
 
 const path = require('path');
@@ -192,9 +194,8 @@ function configFor(entry, nodePolyfills) {
       rolldownOptions: {
         input: path.join(root, `${entry}.js`),
         // Unminified output labels each module with its path relative to the
-        // working directory, so pin it: the dev build (the one that's
-        // published) is then the same from any directory, with no local
-        // directory names in it.
+        // working directory, so pin it: the dev build is then the same from any
+        // directory, with no local directory names in it.
         cwd: root,
         // No tree-shaking for the editor bundles, like webpack's builds. Besides
         // matching what shipped, Rollup's tree-shaking dropped function-level

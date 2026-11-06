@@ -11,12 +11,12 @@
     "jest": "jest",
     "test": "npm run lint && BABEL_ENV=test npm run jest -- --coverage --no-cache",
     "test-local": "BABEL_ENV=test npm run jest -- --watch",
-    "build": "node scripts/build.js",
+    "build": "node scripts/build.js --prod",
+    "build:dev": "node scripts/build.js",
     "watch": "node scripts/build.js --watch",
     "prepublishOnly": "npm run build && npm run test:dist",
     "generate-actions": "jsdoc2md --files lib/**/actions.js > docs/vuex-actions.md",
     "release": "./scripts/release.sh",
-    "build:prod": "node scripts/build.js --prod",
     "test:dist": "node scripts/smoke-test.js"
   },
   "repository": {
@@ -155,8 +155,7 @@
   },
   "peerDependencies": {
     "amphora": "8 || ^9.0.0-0",
-    "amphora-search": "8",
-    "handlebars": "4"
+    "amphora-search": "8"
   },
   "overrides": {
     "whatwg-encoding": "1.0.3"

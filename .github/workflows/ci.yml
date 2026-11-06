@@ -42,3 +42,6 @@ jobs:
       # to confirm that a published dist is the one that was tested
       - name: Show bundle checksums
         run: sha256sum dist/*
+      # the unminified development build (Vue dev mode) is the one to debug with
+      - name: Build and smoke test the development bundles
+        run: npm run build:dev && npm run test:dist
