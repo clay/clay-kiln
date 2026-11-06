@@ -17,7 +17,7 @@
     "generate-actions": "jsdoc2md --files lib/**/actions.js > docs/vuex-actions.md",
     "release": "./scripts/release.sh",
     "build:prod": "node scripts/build.js --prod",
-    "test:dist": "node scripts/smoke-test.js"
+    "test:dist": "node scripts/smoke-test.js && node scripts/exports-test.js"
   },
   "repository": {
     "type": "git",
@@ -33,7 +33,19 @@
   "bugs": {
     "url": "https://github.com/clay/clay-kiln/issues"
   },
+  "type": "commonjs",
   "main": "model.js",
+  "exports": {
+    ".": "./model.js",
+    "./model": "./model.js",
+    "./model.js": "./model.js",
+    "./package.json": "./package.json",
+    "./template.handlebars": "./template.handlebars",
+    "./schema.yml": "./schema.yml",
+    "./bootstrap.yml": "./bootstrap.yml",
+    "./dist/*": "./dist/*",
+    "./media/*": "./media/*"
+  },
   "files": [
     "dist",
     "media",
