@@ -12,6 +12,8 @@ import conditionalFocus from './directives/conditional-focus';
 import utilsAPI from './lib/utils/api';
 import { init as initTransformers } from './inputs/magic-button-transformers';
 import { hasClickedFocusableEl } from './lib/decorators/focus';
+import { decorateAll } from './lib/decorators';
+import toolbar from './lib/toolbar/edit-toolbar.vue';
 import { hasClickedSelectableEl } from './lib/decorators/select';
 import { META_PRESS, META_UNPRESS } from './lib/preloader/mutationTypes';
 import { getEventPath } from './lib/utils/events';
@@ -93,8 +95,6 @@ function isStuffOpen(store) {
 // note: preloaded data, external inputs, decorators, and validation rules should already be added
 // when this event fires
 document.addEventListener('DOMContentLoaded', function () {
-  let toolbar;
-
   // init custom kiln plugins after utils is set (if they exist)
   if (_.has(window, 'modules["kiln_index.kilnplugin"]')) {
     const pluginInitializer = window.require('kiln_index.kilnplugin');
@@ -102,10 +102,12 @@ document.addEventListener('DOMContentLoaded', function () {
     pluginInitializer();
   }
 
-  toolbar = require('./lib/toolbar/edit-toolbar.vue');
   // instantiate toolbar on DOMContentLoaded, so custom buttons and modals can be
-  // added as child components to the toolbar and simple-modal
-
+  // added as child components to the toolbar and simple-modal.
+  // note: the toolbar used to be require()d here for that reason. It's imported
+  // up top now; the components that merge in site-registered buttons, modals and
+  // nav items read those registries when Vue registers them (below), not when
+  // their module loads.
   Vue.component('edit-toolbar', toolbar);
 
   new Vue({
@@ -131,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.body.classList.add('kiln-edit-mode');
 
   store.dispatch('preload')
-    .then(() => require('./lib/decorators').decorateAll())
+    .then(() => decorateAll())
     .then(() => store.dispatch('parseURLHash'))
     .then(() => store.dispatch('getList', 'new-pages'))
     .then(() => store.dispatch('getList', 'bookmarks'))

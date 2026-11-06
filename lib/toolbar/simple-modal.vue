@@ -89,17 +89,22 @@
         toggleNoScroll(false);
       }
     },
-    components: _.merge(_.get(window, 'kiln.modals', {}), {
-      UiModal,
-      info: infoModal,
-      keyboard: keyboardModal,
-      'add-contributor': addContributorModal,
-      'add-page': addPageModal,
-      'add-user': addUserModal,
-      'type-confirm': typeConfirmModal,
-      'type-reason': typeReasonModal,
-      'add-bookmark': addBookmarkModal,
-      typeRestorePublishedVersionModal
-    })
+    // a getter so the modals sites register are merged in when Vue
+    // registers this component, not when this module loads. (webpack only
+    // loaded this module after sites had registered them; Vite loads it upfront.)
+    get components() {
+      return _.merge(_.get(window, 'kiln.modals', {}), {
+        UiModal,
+        info: infoModal,
+        keyboard: keyboardModal,
+        'add-contributor': addContributorModal,
+        'add-page': addPageModal,
+        'add-user': addUserModal,
+        'type-confirm': typeConfirmModal,
+        'type-reason': typeReasonModal,
+        'add-bookmark': addBookmarkModal,
+        typeRestorePublishedVersionModal
+      });
+    }
   };
 </script>

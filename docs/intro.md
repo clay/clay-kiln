@@ -4,7 +4,7 @@
 
 🔥 Editing tools for Clay 🔥
 
-[![CircleCI](https://circleci.com/gh/clay/clay-kiln.svg?style=svg)](https://circleci.com/gh/clay/clay-kiln) [![Coverage Status](https://coveralls.io/repos/nymag/clay-kiln/badge.svg?branch=master&service=github&t=C3xeVy)](https://coveralls.io/github/nymag/clay-kiln?branch=master)
+[![CI](https://github.com/clay/clay-kiln/actions/workflows/ci.yml/badge.svg)](https://github.com/clay/clay-kiln/actions/workflows/ci.yml)
 
 Powering [New York Magazine](http://nymag.com/), [Vulture](http://www.vulture.com/), [The Cut](http://www,thecut.com/), [Grub Street](http://www.grubstreet.com/).
 Created by New York Media.

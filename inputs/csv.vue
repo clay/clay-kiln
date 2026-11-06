@@ -39,7 +39,7 @@
 
 <script>
   import _ from 'lodash';
-  import { toObject } from 'csvjson';
+  import { toObject } from '../lib/utils/csv';
   import label from '../lib/utils/label';
   import { UPDATE_FORMDATA } from '../lib/forms/mutationTypes';
   import UiFileupload from 'keen/UiFileupload';

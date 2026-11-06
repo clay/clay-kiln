@@ -22,6 +22,19 @@
     }
   }
 
+  // panels that are filterable lists (e.g. New Page) get both classes, and
+  // .filterable-list sets height: 100% at the same specificity. Which one won
+  // depended on the order the bundler emitted the two components' CSS; under
+  // webpack .nav-content won, so keep that explicitly. (Otherwise, on phones,
+  // the New Page panel overflows and hides its "add current page" button.)
+  .filterable-list.nav-content {
+    height: calc(100vh - 48px);
+
+    @media screen and (min-width: 600px) {
+      height: 100%;
+    }
+  }
+
   .nav-content-enter,
   .nav-content-leave-to {
     opacity: 0;
@@ -65,11 +78,16 @@
         return !!this.$options.components[this.currentDrawer];
       }
     },
-    components: _.merge({
-      'new-page': newPage,
-      users,
-      'my-pages': myPages,
-      'all-pages': allPages
-    }, _.get(window, 'kiln.navContent', {}))
+    // a getter so the nav content panes sites register are merged in when Vue
+    // registers this component, not when this module loads. (webpack only
+    // loaded this module after sites had registered them; Vite loads it upfront.)
+    get components() {
+      return _.merge({
+        'new-page': newPage,
+        users,
+        'my-pages': myPages,
+        'all-pages': allPages
+      }, _.get(window, 'kiln.navContent', {}));
+    }
   };
 </script>
